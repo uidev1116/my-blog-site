@@ -1,0 +1,23 @@
+<!-- BEGIN_MODULE Touch_GeolocationEntryFunction -->
+<div id="geometry" class="js-entry-geo-edit clearfix">
+  <table class="entryFormTable acms-admin-table-entry">
+    <tr>
+      <th style="vertical-align: top;">位置情報</th>
+      <td>
+        <div class="acms-admin-form-group">
+          <!-- BEGIN_IF [{geo_lat}/nem/_and_/{geo_lng}/nem/] -->
+          <input class="js-geo_input acms-admin-btn" type="button" data-type="delete" />
+          <!-- ELSE -->
+          <input class="js-geo_input acms-admin-btn" type="button" data-type="add" />
+          <!-- END_IF -->
+        </div>
+        <!-- BEGIN_IF [<!-- BEGIN_MODULE Config -->{geolocation_map_type}<!-- END_MODULE Config -->/eq/gmap] -->
+        @include("/admin/map/_google-map-picker.html")
+        <!-- ELSE -->
+        @include("/admin/map/_open-street-map-picker.html")
+        <!-- END_IF -->
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- END_MODULE Touch_GeolocationEntryFunction -->

@@ -1,0 +1,12 @@
+<!-- BEGIN_MODULE Admin_Entry_Autocomplete id="%{moduleId}" ctx="%{ctx}" -->[<!-- BEGIN entry:loop -->
+\{
+	"label": "<!-- BEGIN categoryField -->（{fieldCategoryName}[jsonEscape|raw]）<!-- END categoryField -->{title}[jsonEscape|raw]",
+	"value": "<!-- BEGIN categoryField -->（{fieldCategoryName}[jsonEscape|raw]）<!-- END categoryField -->{title}[jsonEscape|raw]",
+	"title": "{title}[jsonEscape|raw]",
+	"id": {eid},
+	"url": "{url}[jsonEscape|raw]",
+	"image": "%{ROOT_DIR}{path}",
+	"datetime": "{date#Y}/{date#m}/{date#d} {date#H}:{date#i}",
+	"categoryName": "<!-- BEGIN categoryField -->{fieldCategoryName}[jsonEscape|raw]<!-- END categoryField -->"
+\}<!-- BEGIN glue -->, <!-- END glue --><!-- END entry:loop -->
+]<!-- END_MODULE Admin_Entry_Autocomplete -->

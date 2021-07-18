@@ -1,0 +1,86 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+$_ticket-genre-list-grid: 20px;
+$_ticket-genre-list-title-border: 2px solid;
+
+/* ------------------------------
+　　チケット一覧
+------------------------------ */
+
+/* ジャンル毎のチケット一覧
+=============================== */
+.p-ticket-genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-self: flex-start;
+  margin: 0 $_ticket-genre-list-grid/-2;
+  &__item {
+    width: calc(100% - #{$_ticket-genre-list-grid});
+    margin: $_ticket-genre-list-grid 0;
+    padding: 0 $_ticket-genre-list-grid/2;
+  }
+  &__info {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    line-height: global.$line-height-title;
+    border-bottom: $_ticket-genre-list-title-border map-get(global.$color-border, plain);
+  }
+  &__title {
+    margin: 0;
+    border-bottom: $_ticket-genre-list-title-border map-get(global.$color-primary, base);
+    transform: translateY(6px);
+  }
+  &__link-wrap {
+    text-align: center;
+  }
+  // &__contents {
+  // }
+}
+@media screen and (min-width: acms.$breakpoint-sm-min){
+  .p-ticket-genre-list {
+    &__item {
+      width: calc(50% - #{$_ticket-genre-list-grid});
+    }
+  }
+}
+
+/* タグ
+=============================== */
+.p-ticket-tag-search-btn {
+  cursor: pointer;
+}
+
+.p-ticket-tag-search {
+  $parent: &;
+
+  display: inline-block;
+  margin-right: 10px;
+  @include global.font-size(26);
+
+  &.-size1 {
+    @include global.font-size(12);
+  }
+  &.-size2 {
+    @include global.font-size(14);
+  }
+  &.-size3 {
+    @include global.font-size(16);
+  }
+  &.-size4 {
+    @include global.font-size(18);
+  }
+  &.-size5 {
+    @include global.font-size(20);
+  }
+  &.-size6 {
+    @include global.font-size(22);
+  }
+  &.-size7 {
+    @include global.font-size(24);
+  }
+}
+

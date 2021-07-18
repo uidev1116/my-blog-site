@@ -1,0 +1,31 @@
+<div class="js-related-entry" data-type="{related_type}" data-module-id="{{module_id}}" data-ctx="{{ctx}}" data-max-item="{{max_item}}" data-title="{{title}}">
+	<table class="entryFormTable acms-admin-table-entry {{block_name}}">
+		<tr>
+			<th><label for="entry-related"><!--T-->関連エントリー<!--/T--></label></th>
+			<td><input id="entry-related"　class="js-related_entry_autocomplete_word acms-admin-form-width-medium" type="text"　placeholder="<!--T-->検索ワード<!--/T-->" value=""></td>
+		</tr>
+	</table>
+	<!-- BEGIN relatedAdminField -->
+	<table class="js-fieldgroup-sortable adminTable acms-admin-table-sort acms-admin-margin-bottom-small">
+		<tbody class="js-related_entry_index"><!-- BEGIN {{block_name}} -->
+		<tr class="js-related_entry_item sortable-item" data-id="{related.eid}" data-title="{related.title}" data-category-name="{related.categoryName}" data-url="{related.url}" data-image="%{ROOT_DIR}{related.path}[resizeImg(50)]">
+			<td class="acms-admin-table-nowrap item-handle"><i class="acms-admin-icon-sort"　aria-hidden="true"></i></td>
+			<td><!-- BEGIN_IF [{related.path}/nem/] -->
+				<img src="%{ROOT_DIR}{related.path}[resizeImg(50)]" alt="{related.title}" /><!-- END_IF -->
+			</td>
+			<td>
+				<input type="hidden" name="related[]" value="{related.eid}">
+				{related.title}<!-- BEGIN_IF [{related.categoryName}/nem] --> / <span
+				class="acms-admin-icon-category acms-admin-icon-mute acms-admin-margin-right-mini"></span>{related.categoryName}
+				<!-- END_IF -->
+				<div class="entryFormRelatedActions">
+					<input type="button"　class="js-related_entry_remove acms-admin-btn-admin acms-admin-btn-admin-danger" value="<!--T-->削除<!--/T-->"/>
+					<a href="{related.url}" class="acms-admin-btn-admin" target="_blank"><!--T-->確認<!--/T--></a>
+				</div>
+			</td>
+		</tr><!-- END {{block_name}} -->
+		</tbody>
+		<tfoot></tfoot>
+	</table>
+	<!-- END relatedAdminField -->
+</div>

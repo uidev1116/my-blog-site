@@ -1,0 +1,119 @@
+/* ------------------------------
+ タブ
+------------------------------- */
+.acms-tabs{
+
+	.acms-tabs-panel {
+		padding: 10px;
+		background: #FFF;
+		border: 1px solid #CFCFCF;
+	}
+
+	// タブの切り替え
+	.js-acms_tabs,
+  .js-acms_admin_tabs,
+  .acms-tabs-inner{
+		@include clearfix();
+		margin: 0;
+		padding: 0;
+		li{
+			float: left;
+			margin-right: 2px;
+			list-style: none;
+		}
+		a{
+			position: relative;
+			display: block;
+			padding: 10px 8px;
+			color: #404040;
+			font-weight: 500;
+			@include font-size(14);
+			line-height: 1;
+			text-decoration: none;
+			outline: none;
+
+			 &:hover{
+				color: #666666;
+				background: #F2F2F4;
+			}
+
+			// 現在いる位置
+       &.js-acms_tab-active,
+       &.acms-tab-active{
+				color: #014cc5;
+				 background: #F2F2F4;
+				border-bottom: 3px solid #014cc5;
+				&:before {
+					position: absolute;
+						bottom: -1px;
+						left: 0;
+					width: 100%;
+					height: 1px;
+					background: #F2F2F4;
+					content: "";
+				}
+			}
+		}
+	}
+}
+
+.acms-tabs-inverse {
+	.acms-tabs-panel {
+		padding: 20px;
+		background: #FFF;
+	}
+
+	// タブの切り替え
+	.js-acms_tabs,
+	.js-acms_admin_tabs{
+
+		@include clearfix();
+		margin: -10px -10px 0 -10px;
+		padding: 10px 0 0 0;
+		background: #f0f1f5;
+		li{
+			float: left;
+			margin-right: 2px;
+			list-style: none;
+		}
+		a{
+			display: block;
+			padding: 10px 8px;
+			color: #333333;
+			line-height: 1;
+			background: #f0f1f5;
+			border-radius: 3px 3px 0 0;
+			outline: none;
+			transition: background-color .2s;
+			@include font-size(14);
+
+			 &:hover{
+				text-decoration: none;
+				background: #e4e6ea;
+				border-bottom: 1px solid #FFF;
+			}
+
+			// 現在いる位置
+			 &.js-acms_tab-active{
+				background: #FFF;
+				border-bottom: 1px solid #FFF;
+			}
+		}
+	}
+}
+
+// タブ内の見出しはmarginを外す
+.acms-tabs-panel {
+
+	.acms-table-admin-edit:last-child {
+		margin-bottom: 5px;
+	}
+}
+
+@media screen and (min-width: $breakpoint-md-min){
+  .acms-tabs{
+    .acms-tabs-panel {
+      padding: 20px;
+    }
+  }
+}

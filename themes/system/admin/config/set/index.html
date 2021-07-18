@@ -1,0 +1,131 @@
+<header>
+	<div>
+		@include("/admin/topicpath.html")
+	</div>
+	<div>
+		@include("/admin/config/parts/header.html", {"title": "<!--T--> コンフィグセット管理<!--/T--> ", "isConfigSet": 1})
+	</div>
+</header>
+
+<!-- BEGIN_MODULE Admin_Config_Set_Index -->
+
+<!-- BEGIN_MODULE Admin_Errors -->
+<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
+	<span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
+	{error}
+</p>
+<!-- END_MODULE Admin_Errors -->
+
+<!-- BEGIN_MODULE Admin_Messages -->
+<!-- BEGIN message:loop -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+	<span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+	{message}
+</p>
+<!-- END message:loop -->
+<!-- END_MODULE Admin_Messages -->
+
+<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+<form action="" method="post" class="acms-admin-margin-bottom-small clearfix">
+	<input type="hidden" name="bid" value="%{BID}"/>
+	<input type="hidden" name="admin" value="config_set_edit"/>
+	<input type="hidden" name="edit" value="insert"/>
+	<input type="hidden" name="query[]" value="edit"/>
+	<button type="submit" name="ACMS_POST_2GET" class="acms-admin-btn acms-admin-btn-success acms-admin-float-right">
+		<!--T-->コンフィグセットの作成<!--/T-->
+	</button>
+</form>
+<!-- END_MODULE Touch_SessionWithAdministration -->
+
+<div class="acms-admin-table-responsive">
+	<table class="js-admin_table-sortable exceptionSort acms-admin-table-admin acms-admin-table-hover"
+		   data-sort-enable="on" data-sort-submit="ACMS_POST_Config_Sets_Sort" data-sort-target="#sortableForm">
+		<thead class="acms-admin-table-heading">
+		<tr>
+			<th><!--T-->セット名<!--/T--></th>
+			<th class="acms-admin-table-nowrap"><!--T-->グローバル<!--/T--></th>
+			<th><!--T-->詳細<!--/T--></th>
+			<th class="acms-admin-table-nowrap"><!--T-->アクション<!--/T--></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><a href="%{HTTP_ROOT}bid/%{BID}/admin/config_index/<!-- BEGIN_IF [%{rid}/nem/] -->?rid=%{rid}<!-- END_IF -->"><!--T-->このブログの初期コンフィグ<!--/T--></a></td>
+			<td class="acms-admin-table-nowrap"> -</td>
+			<td>
+				<!--T-->このブログの標準コンフィグです。<!--/T-->
+			</td>
+			<td class="acms-admin-table-nowrap">
+				<div class="acms-admin-btn-group acms-admin-btn-group-entry admin-entry-dropdown-toggle" style="width: 120px">
+					<div class="js-acms-dropdown-toggle">
+						<a class="acms-admin-btn-admin" href="%{HTTP_ROOT}bid/%{BID}/admin/config_index/<!-- BEGIN_IF [%{rid}/nem/] -->?rid=%{rid}<!-- END_IF -->"><!--T-->コンフィグ<!--/T--></a>
+						<button type="button" class="acms-admin-btn-admin js-acms-dropdown-btn" >
+							<span class="acms-admin-arrow-bottom"></span>
+						</button>
+						<ul class="js-acms-dropdown-menu" role="menu">
+							<li class="js-fake-form" data-method="post">
+								<input type="hidden" name="config_set_id" value="0"/>
+								<input type="hidden" name="ACMS_POST_Config_Set_Duplicate" value="on" />
+								<a href="#" class="js-submit" data-confirm="<!--T-->コンフィグを複製してコンフィグセットを作成します。よろしいですか？<!--/T-->">複製</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</td>
+		</tr>
+
+		<!-- BEGIN config_set:loop -->
+		<tr>
+			<td class="acms-admin-title-sp"><!-- BEGIN mine --><a href="{configUrl}"><!-- END mine -->
+				<!-- BEGIN notMinePermit --><a href="{configUrl}"><!-- END notMinePermit -->{name}</a></td>
+			<td class="acms-admin-table-nowrap">
+				<!-- BEGIN scope:touch#global --><span
+				class="acms-admin-label acms-admin-label-info admin-status-label"><!--T-->グローバル<!--/T--></span>
+				<!-- END scope:touch#global --><!-- BEGIN scope:touch#local --> - <!-- END scope:touch#local -->
+				<!-- BEGIN scope:touch#parental --> <!--T-->親に所属<!--/T-->  <!-- END scope:touch#parental -->
+			</td>
+			<td>
+				{description}
+			</td>
+			<td class="acms-admin-table-nowrap">
+				<div class="acms-admin-btn-group acms-admin-btn-group-entry admin-entry-dropdown-toggle" style="width: 120px">
+					<div class="js-acms-dropdown-toggle">
+						<!-- BEGIN mine -->
+						<a class="acms-admin-btn-admin" href="{configUrl}"><!--T-->コンフィグ<!--/T--></a>
+						<!-- END mine -->
+						<!-- BEGIN notMinePermit-->
+						<a class="acms-admin-btn-admin" href="{configUrl}"><!--T-->コンフィグ<!--/T--></a>
+						<!-- END notMinePermit -->
+						<button type="button" class="acms-admin-btn-admin js-acms-dropdown-btn">
+							<span class="acms-admin-arrow-bottom"></span>
+						</button>
+						<ul class="js-acms-dropdown-menu" role="menu">
+							<!-- BEGIN mine -->
+							<li><a href="{itemUrl}&edit=update"><!--T-->変更<!--/T--></a></li>
+							<li class="acms-admin-divider"></li>
+							<li class="js-fake-form" data-method="post">
+								<input type="hidden" name="config_set_id" value="{configSetId}"/>
+								<input type="hidden" name="ACMS_POST_Config_Set_Duplicate" value="on" />
+								<a href="#" class="js-submit" data-confirm="<!--T-->コンフィグを複製してコンフィグセットを作成します。よろしいですか？<!--/T-->">複製</a>
+							</li>
+							<!-- END mine -->
+							<!-- BEGIN notMinePermit -->
+							<li><a href="{itemUrl}&edit=update"><!--T-->変更<!--/T--></a></li>
+							<li class="js-fake-form" data-method="post">
+								<input type="hidden" name="config_set_id" value="{configSetId}"/>
+								<input type="hidden" name="ACMS_POST_Config_Set_Duplicate" value="on" />
+								<a href="#" class="js-submit" data-confirm="<!--T-->コンフィグを複製してコンフィグセットを作成します。よろしいですか？<!--/T-->">複製</a>
+							</li>
+							<!-- END notMinePermit -->
+							<!-- BEGIN notMine -->
+							<!--T-->親ブログに所属<!--/T-->
+							<!-- END notMine -->
+					</div>
+				</div>
+			</td>
+		</tr>
+		<!-- END config_set:loop -->
+		</tbody>
+	</table>
+</div>
+<!-- END_MODULE Admin_Config_Set_Index -->

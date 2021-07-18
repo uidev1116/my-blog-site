@@ -1,0 +1,35 @@
+@use "../foundation/global/acms-common" as acms;
+@use "../foundation/global/common" as global;
+
+/* ------------------------------
+　　ヘッダー
+------------------------------ */
+.l-header {
+	margin-bottom: 20px;
+	padding-top: global.$global-nav-height + 20px; /* 固定したときの高さを保つ */
+}
+@media (min-width : acms.$breakpoint-lg-min) {
+	.l-header {
+		padding-top: 20px;
+	}
+}
+
+/* ナビ PC */
+.l-header-nav-scrn-wide {
+	display: none;
+}
+@media (min-width : acms.$breakpoint-lg-min) {
+	.l-header-nav-scrn-wide {
+		display: block;
+	}
+}
+
+/* ナビ SP */
+.l-header-nav-scrn-narrow {
+	display: block;
+}
+@media (min-width : acms.$breakpoint-lg-min) {
+	.l-header-nav-scrn-narrow {
+		display: none;
+	}
+}

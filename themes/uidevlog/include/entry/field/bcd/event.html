@@ -1,0 +1,205 @@
+<!-- BEGIN_MODULE Touch_Unlogin -->
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+<!-- END_MODULE Touch_Unlogin -->
+<!-- BEGIN_MODULE Touch_SessionIsSubscription -->
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+<!-- END_MODULE Touch_SessionIsSubscription -->
+
+<!-- BEGIN_IF [{ticket_code}/nem] -->
+<p><a href="#{ticket_code}" class="c-btn-primary-bg is-large">ぴあゲッティへのURLボタンを表示<span class="c-btn-primary-bg__icon-right fas fa-chevron-circle-right"></span></a></p>
+<!-- ELSE_IF [<!-- BEGIN group_ticket_place:loop -->1<!-- END group_ticket_place:loop -->/eq/1] -->
+  <!-- BEGIN group_ticket_place:loop -->
+  <p><a href="#{ticket_code_place}" class="c-btn-primary-bg is-large">{ticket_place_entry_id}[entryId2Title]のぴあゲッティへのURLボタンを表示（会場一つ）<span class="c-btn-primary-bg__icon-right fas fa-chevron-circle-right"></span></a></p>
+  <!-- END group_ticket_place:loop -->
+<!-- ELSE -->
+  <h3>会場選択画面遷移ボタンまたは会場ボタンを表示</h3>
+  <p><a href="#" class="c-btn-primary is-large">会場選択画面へページ遷移<span class="c-btn-primary-bg__icon-right fas fa-chevron-circle-right"></span></a></p>
+  <!-- BEGIN group_ticket_place:loop -->
+  <p><a href="#{ticket_code_place}" class="c-btn-primary-bg is-large">{ticket_place_entry_id}[entryId2Title]のぴあゲッティへのURLボタンを表示<span class="c-btn-primary-bg__icon-right fas fa-chevron-circle-right"></span></a></p>
+  <!-- END group_ticket_place:loop -->
+<!-- END_IF -->
+
+<hr>
+
+<h3>公演コード（1タイトル毎に公演コードを持つ場合）</h3>
+<p>{ticket_code}</p>
+
+<hr>
+
+<h3>詳細ページ用タイトル</h3>
+<td>{ticket_title_entry}[nl2br]</td>
+
+<hr>
+
+<h3>メイン画像</h3>
+<div>
+  <!-- BEGIN_IF [{main_image@type}/eq/file] -->
+  <a href="{main_image@path}">
+    <img alt="{main_image@alt}" src="{main_image@thumbnail}" style="width:64px;height:auto" />
+  </a>
+  <!-- END_IF -->
+  <!-- BEGIN_IF [{main_image@type}/eq/image] -->
+  <!-- BEGIN_IF [{main_image@link}/nem] -->
+  <a href="{main_image@link}">
+    <!-- END_IF -->
+    <img alt="{main_image@alt}" src="%{MEDIA_ARCHIVES_DIR}{main_image@path}" />
+    <!-- BEGIN_IF [{main_image@link}/nem] -->
+  </a>
+  <!-- END_IF -->
+  <!-- BEGIN_IF [{main_image@text}/nem] -->
+  <p>{main_image@text}</p>
+  <!-- END_IF -->
+  <!-- END_IF -->
+</div>
+<p>代替テキスト：{main_image_alt}</p>
+<p>コピーライト：{main_image_copy}</p>
+
+<hr>
+
+<h3>表示期間設定</h3>
+<p>公開日：{sdate#}</p>
+<p>掲載終了日：{edate#}</p>
+
+<hr>
+
+<h3>ラベル設定</h3>
+<p>公演地域：<!-- BEGIN ticket_area:loop --><!-- BEGIN_IF [{ticket_area}/eq/kanto] -->関東 <!-- END_IF --><!-- BEGIN_IF [{ticket_area}/eq/kansai] -->関西 <!-- END_IF --><!-- BEGIN_IF [{ticket_area}/eq/tokai] -->東海 <!-- END_IF --><!-- BEGIN_IF [{ticket_area}/eq/other] -->その他<!-- END_IF --><!-- END ticket_area:loop --></p>
+<p>その他：<!-- BEGIN_IF [<!-- BEGIN ticket_area:loop -->{ticket_area}<!-- END ticket_area:loop -->/lk/other] -->{other_text}<!-- END_IF --></p>
+<p>ラベル：<!-- BEGIN ticket_label:loop --><!-- BEGIN_IF [{ticket_label}/eq/web_only] -->Web限定<!-- END_IF --><!-- END ticket_label:loop --></p>
+<p>購入するボタン：<!-- BEGIN_IF [{ticket_purchase_button_hide}/eq/true] -->クリックできない<!-- ELSE -->クリックできる<!-- END_IF --></p>
+<hr>
+
+<h3>公演概要情報</h3>
+<h4>リード文</h4>
+<p>{ticket_lead}[nl2br]</p>
+<h4>概要</h4>
+<p>{ticket_overview}[raw]</p>
+<h4>特記事項</h4>
+<p>{ticket_notices}[nl2br]</p>
+
+<hr>
+
+<h3>サブ画像</h3>
+
+<p>列数：{ticket_image_sub_media_column}</p>
+
+<div>
+  <!-- BEGIN group_ticket_image_sub:loop -->
+  <div>
+    <div>
+      <!-- BEGIN_IF [{ticket_image_sub_media@type}/eq/file] -->
+      <a href="{ticket_image_sub_media@path}">
+        <img alt="{ticket_image_sub_media@alt}" src="{ticket_image_sub_media@thumbnail}" style="width:64px;height:auto" />
+      </a>
+      <!-- END_IF -->
+      <!-- BEGIN_IF [{ticket_image_sub_media@type}/eq/image] -->
+      <!-- BEGIN_IF [{ticket_image_sub_media@link}/nem] -->
+      <a href="{ticket_image_sub_media@link}">
+        <!-- END_IF -->
+        <img alt="{ticket_image_sub_media@alt}" src="%{MEDIA_ARCHIVES_DIR}{ticket_image_sub_media@path}" />
+        <!-- BEGIN_IF [{ticket_image_sub_media@link}/nem] -->
+      </a>
+      <!-- END_IF -->
+      <!-- BEGIN_IF [{ticket_image_sub_media@text}/nem] -->
+      <p>{ticket_image_sub_media@text}</p>
+      <!-- END_IF -->
+      <!-- END_IF -->
+    </div>
+    <p>代替テキスト:{ticket_image_sub_alt}</p>
+    <p>コピーライト:{ticket_image_sub_copy}</p>
+  </div>
+  <!-- END group_ticket_image_sub:loop -->
+</div>
+
+<hr>
+
+<h3>公式サイト</h3>
+<p>{ticket_official_site_link}</p>
+<p>表示の仕方要検討</p>
+<div class="column-quote-{align}"{display_size}[raw]><!-- BEGIN html:veil -->
+	{quote_html}[raw]<!-- END html:veil --><!-- BEGIN_IF [{quote_title}/nem/] -->
+	<blockquote class="js-biggerlink"><!-- BEGIN image:veil -->
+		<div class="quoteImageContainer">
+			<img src="{quote_image}" class="quoteImage" width="{x}" height="{y}"  alt="">
+		</div><!-- END image:veil -->
+		<div>
+			<p class="quoteTitle"><a href="{quote_url}" class="quoteTitleLink">{quote_title}</a></p><!-- BEGIN description:veil --><!-- BEGIN site_name:veil -->
+			<p class="quoteSiteName">{quote_site_name}</p><!-- END site_name:veil -->
+			<p class="quoteDescription">{quote_description}[raw|trim(180, '...')]</p><!-- END description:veil -->
+		</div>
+		<hr class="clearHidden">
+	</blockquote><!-- END_IF -->
+</div>
+
+<hr>
+
+<h3>公演概要</h3>
+<div class="column-table-">
+	<div class="entry-container scroll-hint" style="position: relative; overflow: auto;">
+    <table class="js-table-unit-scroll-hint">
+      <tbody>
+        <tr>
+          <th>日程</th>
+          <td>{ticket_agenda}[raw]</td>
+        </tr>
+        <tr>
+          <th>場所</th>
+          <td>
+            <ul>
+              <!-- BEGIN group_ticket_place:loop -->
+              <!-- BEGIN_MODULE\ Entry_List id="list_ticket_place_eid_context" ctx="eid/{ticket_place_entry_id}" -->
+              <!-- BEGIN\ entry:loop -->
+              <li><a href="\{url\}">\{title\}</a></li>
+              <!-- END\ entry:loop -->
+              <!-- END_MODULE\ Entry_List -->
+              <!-- END group_ticket_place:loop -->
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th>価格</th>
+          <td>{ticket_price}[raw]</td>
+        </tr>
+        <!-- BEGIN group_ticket_info:loop -->
+        <tr>
+          <th>{ticket_info_item_title}</th>
+          <td>{ticket_info_item_note}[raw]</td>
+        </tr>
+        <!-- END group_ticket_info:loop -->
+      </tbody>
+    </table>
+    <div class="scroll-hint-icon-wrap" data-target="scrollable-icon">
+      <span class="scroll-hint-icon scroll-hint-icon-white">
+        <div class="scroll-hint-text">スクロールできます</div>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div>
+  <!-- BEGIN group_ticket_place:loop -->
+  <div>
+    <h3>{ticket_place_entry_id}[entryId2Title]</h3>
+    <p>チケットID：{ticket_code_place}</p>
+    <p>販売方法：<!-- BEGIN_IF [{ticket_sale_type}/eq/early_come] -->先着順<!-- ELSE_IF [{ticket_sale_type}/eq/lottery] -->抽選<!-- END_IF --></p>
+    <p>特徴：<!-- BEGIN_IF [{ticket_feature_first_come}/eq/true] -->先行 <!-- END_IF --><!-- BEGIN_IF [{ticket_feature_preferential}/eq/true] -->優待 <!-- END_IF --><!-- BEGIN_IF [{ticket_feature_special}/eq/true] -->特典付き <!-- END_IF --></p>
+  </div>
+  <!-- END group_ticket_place:loop -->
+</div>
+
+<hr>
+
+<div>
+  <h3>カレンダー</h3>
+  @include("/include/siteparts/ticket-calendar.html")
+</div>
+
+<hr>
+
+<h3>↓ユニット↓</h3>

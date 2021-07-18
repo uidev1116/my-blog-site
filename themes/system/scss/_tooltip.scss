@@ -1,0 +1,142 @@
+/* ------------------------------
+ ツールチップ
+------------------------------- */
+.acms-tooltip-wrap {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: zIndex(acms-tooltip);
+	width: 100%;
+}
+.acms-tooltip {
+	position: absolute;
+	z-index: zIndex(acms-tooltip);
+	display: inline-block;
+	max-width: 300px;
+	padding: 6px 10px;
+	color: #FFF;
+	word-break: break-all;
+	background: #333333;
+	border-radius: 4px;
+	opacity: 0.9;
+	@include font-size(11);
+
+	a {
+		color: #8EBEF7;
+		text-decoration: underline;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
+}
+// 上にポップアップ
+.acms-tooltip:after {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	width: 0;
+	height: 0;
+	margin-left: -6px;
+	border: 6px solid transparent;
+	border-top-color: #333;
+	content: ' ';
+}
+.acms-tooltip.top-left:after {
+	right: 10px;
+	left: auto;
+}
+.acms-tooltip.top-right:after {
+	right: auto;
+	left: 15px;
+}
+// 下にポップアップ
+.acms-tooltip.bottom:after {
+	top: 0;
+	margin-top: -10px;
+	border-top-color: transparent;
+	border-bottom-color: #333;
+}
+.acms-tooltip.bottom-left:after {
+	top: 0;
+	right: 10px;
+	left: auto;
+	margin-top: -10px;
+	border-top-color: transparent;
+	border-bottom-color: #333;
+}
+.acms-tooltip.bottom-right:after {
+	top: 0;
+	right: auto;
+	left: 15px;
+	margin-top: -10px;
+	border-top-color: transparent;
+	border-bottom-color: #333;
+}
+// 右にポップアップ
+.acms-tooltip.right:after {
+	top: 50%;
+	right: 100%;
+	left: auto;
+	margin-top: -6px;
+	margin-left: 0;
+	border-top-color: transparent;
+	border-right-color: #333;
+}
+// 左にポップアップ
+.acms-tooltip.left:after {
+	top: 50%;
+	right: auto;
+	left: 100%;
+	margin-top: -6px;
+	margin-left: 0;
+	border-top-color: transparent;
+	border-left-color: #333;
+}
+.acms-table-admin-edit .acms-icon-tooltip,
+.acms-admin-mini-table .acms-icon-tooltip {
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+// スマートフォンの時
+@media (max-width : $breakpoint-md-max) {
+	.acms-tooltip{
+		left: 0 !important; //デスクトップのときにJSで左寄りを調節しているのを強制的に左側に寄せる
+		max-width: 150px;
+	}
+}
+
+// JSを使わないツールチップ
+.acms-tooltip-simple {
+	position: relative;
+	.acms-tooltip-simple-content {
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		display: none;
+		width: 140px;
+		transform: translate(-50%,0);
+	}
+	&:hover,
+	&:focus,
+	&:active {
+		.acms-tooltip-simple-content {
+			display: block;
+		}
+	}
+}
+@media (max-width : $breakpoint-md-max) {
+	.acms-tooltip-simple-content {
+		left: auto!important;
+		.acms-tooltip-simple-arrow-right-md & {
+			right: 0;
+		}
+		.acms-tooltip-simple-arrow-right-md &:after {
+			right: 0;
+			left: auto;
+			margin-right: 10px;
+			margin-left: 0;
+		}
+	}
+}

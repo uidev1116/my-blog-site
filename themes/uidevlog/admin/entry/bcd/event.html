@@ -1,0 +1,699 @@
+<!-- ピックアップ -->
+@include("/admin/entry/field-pickup.html")
+
+<h3 class="acms-admin-admin-title2 acms-admin-margin-top-medium">公演情報</h3>
+<table class="acms-admin-table-admin-edit">
+  <tbody>
+    <tr>
+      <th>詳細ページ用タイトル</th>
+      <td>
+        <textarea name="ticket_title_entry" rows="4" class="acms-admin-form-width-large">{ticket_title_entry}</textarea>
+        <input type="hidden" name="field[]" value="ticket_title_entry" />
+      </td>
+    </tr>
+    <tr>
+      <th>メイン画像</th>
+      <td class="js-media-field">
+        <div class="js-droparea" data-thumbnail="{main_image@thumbnail}" data-type="image" data-thumbnail-type="{main_image@type}" data-width="200px" data-height="200px"></div>
+        <p class="js-text acms-admin-text-danger" style="display:none">許可されていないファイルのため挿入できません。</p>
+        <div class="acms-admin-margin-top-mini">
+          <button type="button" class="js-insert acms-admin-btn" data-type="image">メディアを選択</button>
+        </div>
+        <input type="hidden" name="main_image" value="{main_image}" class="js-value" />
+        <input type="hidden" name="field[]" value="main_image" />
+        <input type="hidden" name="main_image:extension" value="media" />
+      </td>
+    </tr>
+    <tr>
+      <th>代替テキスト</th>
+      <td>
+        <input type="text" name="main_image_alt" value="{main_image_alt}" class="acms-admin-form-width-large" />
+        <input type="hidden" name="field[]" value="main_image_alt" />
+      </td>
+    </tr>
+    <tr>
+      <th>コピーライト</th>
+      <td>
+        <input type="text" name="main_image_copy" value="{main_image_copy}" class="acms-admin-form-width-large" />
+        <input type="hidden" name="field[]" value="main_image_copy" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="acms-admin-table-admin-edit">
+  <tbody id="js-date-prepend">
+    <tr>
+      <th>公演地域</th>
+      <td>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="ticket_area[]" value="kanto" {ticket_area:checked#kanto} id="input-checkbox-ticket_area-kanto" />
+          <label for="input-checkbox-ticket_area-kanto">
+            <i class="acms-admin-ico-checkbox"></i>関東</label>
+        </div>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="ticket_area[]" value="kansai" {ticket_area:checked#kansai} id="input-checkbox-ticket_area-kansai" />
+          <label for="input-checkbox-ticket_area-kansai">
+            <i class="acms-admin-ico-checkbox"></i>関西</label>
+        </div>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="ticket_area[]" value="tokai" {ticket_area:checked#tokai} id="input-checkbox-ticket_area-tokai" />
+          <label for="input-checkbox-ticket_area-tokai">
+            <i class="acms-admin-ico-checkbox"></i>東海</label>
+        </div>
+        <br>
+        <div class="acms-admin-form-checkbox acms-admin-margin-top-small">
+          <input type="checkbox" name="ticket_area[]" value="other" {ticket_area:checked#other} id="input-checkbox-ticket_area-other" />
+          <label for="input-checkbox-ticket_area-other">
+            <i class="acms-admin-ico-checkbox"></i>その他</label>
+        </div>
+        <input type="text" name="other_text" value="{other_text}" class="acms-admin-form-width-mini acms-admin-margin-top-mini" />
+        <input type="hidden" name="field[]" value="other_text" />
+        <input type="hidden" name="field[]" value="ticket_area" />
+      </td>
+    </tr>
+    <tr>
+      <th>ラベル</th>
+      <td>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="ticket_label[]" value="web_only" {ticket_label:checked#web_only} id="input-checkbox-ticket_label-web_only" />
+          <label for="input-checkbox-ticket_label-web_only">
+            <i class="acms-admin-ico-checkbox"></i>WEBサイト限定</label>
+        </div>
+        <input type="hidden" name="field[]" value="ticket_label" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="acms-admin-table-admin-edit">
+  <tr>
+    <th>リード文</th>
+    <td>
+      <textarea name="ticket_lead" rows="3" class="acms-admin-form-width-full">{ticket_lead}</textarea>
+      <input type="hidden" name="field[]" value="ticket_lead" />
+    </td>
+  </tr>
+  <tr>
+    <th>概要</th>
+    <td class="p-field-lite-editor-wrap">
+      <textarea name="ticket_overview" class="js-lite-editor-field acms-admin-form-width-full">{ticket_overview}</textarea>
+      <input type="hidden" name="field[]" value="ticket_overview" />
+    </td>
+  </tr>
+  <tr>
+    <th>特記事項</th>
+    <td>
+      <textarea name="ticket_notices" class="acms-admin-form-width-full" rows="3">{ticket_notices}</textarea>
+      <input type="hidden" name="field[]" value="ticket_notices" />
+    </td>
+  </tr>
+  <tr>
+    <th>公式サイトURL</th>
+    <td>
+      <input type="text" name="ticket_official_site_link" value="{ticket_official_site_link}" class="acms-admin-form-width-full" />
+      <input type="hidden" name="field[]" value="ticket_official_site_link" />
+    </td>
+  </tr>
+  <tr>
+    <th>日程</th>
+    <td class="p-field-lite-editor-wrap">
+      <textarea name="ticket_agenda" class="js-lite-editor-field acms-admin-form-width-full">{ticket_agenda}</textarea>
+      <input type="hidden" name="field[]" value="ticket_agenda" />
+    </td>
+  </tr>
+  <tr>
+    <th>価格</th>
+    <td class="p-field-lite-editor-wrap">
+      <textarea name="ticket_price" class="js-lite-editor-field acms-admin-form-width-full">{ticket_price}</textarea>
+      <input type="hidden" name="field[]" value="ticket_price" />
+    </td>
+  </tr>
+</table>
+<table class="js-fieldgroup-sortable adminTable acms-admin-table-admin-edit p-admin-table-field-group-vertical">
+  <thead class="acms-admin-hide-sp">
+    <tr>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-item-handle"> </th>
+      <th></th>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-action">削除</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- BEGIN_IF [%{EID}/em] -->
+    <!-- エントリー作成時のデフォルト設定 -->
+    <tr class="sortable-item">
+      @include("/admin/entry/field-parts/event-field-ticket-group-default-item.html"{
+        "title_value": "脚本"
+      })
+    </tr>
+    <tr class="sortable-item">
+      @include("/admin/entry/field-parts/event-field-ticket-group-default-item.html"{
+        "title_value": "作・演出"
+      })
+    </tr>
+    <tr class="sortable-item">
+      @include("/admin/entry/field-parts/event-field-ticket-group-default-item.html"{
+        "title_value": "出演"
+      })
+    </tr>
+    <!-- END_IF -->
+
+    <!-- BEGIN group_ticket_info:loop -->
+    <tr class="sortable-item">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>見出し</th>
+            <td>
+              <input type="text" name="ticket_info_item_title[]" value="{ticket_info_item_title}" class="acms-admin-form-width-full" />
+            </td>
+          </tr>
+          <tr>
+            <th>内容</th>
+            <td class="p-field-lite-editor-wrap">
+              <textarea name="ticket_info_item_note[]" class="js-lite-editor-field acms-admin-form-width-full">{ticket_info_item_note}</textarea>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+    <!-- END group_ticket_info:loop -->
+    <tr class="sortable-item item-template">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>見出し</th>
+            <td>
+              <input type="text" name="ticket_info_item_title[]" value="" class="acms-admin-form-width-full" />
+            </td>
+          </tr>
+          <tr>
+            <th>内容</th>
+            <td class="p-field-lite-editor-wrap">
+              <textarea name="ticket_info_item_note[]" class="js-lite-editor-field acms-admin-form-width-full"></textarea>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colSpan="3">
+        <input type="button" class="item-insert acms-admin-btn-admin" value="追加" />
+      </td>
+    </tr>
+  </tfoot>
+</table>
+<input type="hidden" name="@group_ticket_info[]" value="ticket_info_item_title" />
+<input type="hidden" name="field[]" value="ticket_info_item_title" />
+<input type="hidden" name="@group_ticket_info[]" value="ticket_info_item_note" />
+<input type="hidden" name="field[]" value="ticket_info_item_note" />
+<input type="hidden" name="field[]" value="@group_ticket_info" />
+
+<h3 class="acms-admin-admin-title2 acms-admin-margin-top-medium">サブ画像</h3>
+<table class="acms-admin-table-admin-edit">
+  <tr>
+    <th>列数</th>
+    <td>
+      <select name="ticket_image_sub_media_column">
+        <option value="is-2column" {ticket_image_sub_media_column:selected#is-2column}>2列</option>
+        <option value="is-3column" {ticket_image_sub_media_column:selected#is-3column}>3列</option>
+        <option value="is-4column" {ticket_image_sub_media_column:selected#is-4column}>4列</option>
+        <option value="is-1column" {ticket_image_sub_media_column:selected#is-1column}>1列</option>
+      </select>
+      <input type="hidden" name="field[]" value="ticket_image_sub_media_column" />
+    </td>
+  </tr>
+</table>
+<table class="js-fieldgroup-sortable adminTable acms-admin-table-admin-edit p-admin-table-field-group-vertical">
+  <thead class="acms-admin-hide-sp">
+    <tr>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-item-handle"> </th>
+      <th></th>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-action">削除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- BEGIN group_ticket_image_sub:loop -->
+    <tr class="sortable-item">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>画像</th>
+            <td class="js-media-field">
+              <div class="js-droparea" data-thumbnail="{ticket_image_sub_media@thumbnail}" data-type="image" data-width="200px" data-height="200px"></div>
+              <p class="js-text acms-admin-text-danger" style="display:none">許可されていないファイルのため挿入できません。</p>
+              <div class="acms-admin-margin-top-mini">
+                <button type="button" class="js-insert acms-admin-btn" data-type="image">メディアを選択</button>
+              </div>
+              <input type="hidden" name="ticket_image_sub_media[]" value="{ticket_image_sub_media}" class="js-value" />
+            </td>
+          </tr>
+          <tr>
+            <th>代替テキスト</th>
+            <td>
+              <input type="text" name="ticket_image_sub_alt[]" value="{ticket_image_sub_alt}" class="acms-admin-form-width-large" />
+            </td>
+          </tr>
+          <tr>
+            <th>コピーライト</th>
+            <td>
+              <input type="text" name="ticket_image_sub_copy[]" value="{ticket_image_sub_copy}" class="acms-admin-form-width-large" />
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+    <!-- END group_ticket_image_sub:loop -->
+    <tr class="sortable-item item-template">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>画像</th>
+            <td class="js-media-field">
+              <div class="js-droparea" data-type="image" data-thumbnail-type="{ticket_image_sub_media@type}" data-width="200px" data-height="200px"></div>
+              <p class="js-text acms-admin-text-danger" style="display:none">許可されていないファイルのため挿入できません。</p>
+              <div class="acms-admin-margin-top-mini">
+                <button type="button" class="js-insert acms-admin-btn" data-type="image">メディアを選択</button>
+              </div>
+              <input type="hidden" name="ticket_image_sub_media[]" value="" class="js-value" />
+            </td>
+          </tr>
+          <tr>
+            <th>代替テキスト</th>
+            <td>
+              <input type="text" name="ticket_image_sub_alt[]" value="" class="acms-admin-form-width-large" />
+            </td>
+          </tr>
+          <tr>
+            <th>コピーライト</th>
+            <td>
+              <input type="text" name="ticket_image_sub_copy[]" value="" class="acms-admin-form-width-large" />
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colSpan="3">
+        <input type="button" class="item-insert acms-admin-btn-admin" value="追加" />
+      </td>
+    </tr>
+  </tfoot>
+</table>
+<input type="hidden" name="ticket_image_sub_media:extension" value="media" />
+<input type="hidden" name="@group_ticket_image_sub[]" value="ticket_image_sub_media" />
+<input type="hidden" name="field[]" value="ticket_image_sub_media" />
+<input type="hidden" name="@group_ticket_image_sub[]" value="ticket_image_sub_alt" />
+<input type="hidden" name="field[]" value="ticket_image_sub_alt" />
+<input type="hidden" name="@group_ticket_image_sub[]" value="ticket_image_sub_copy" />
+<input type="hidden" name="field[]" value="ticket_image_sub_copy" />
+<input type="hidden" name="field[]" value="@group_ticket_image_sub" />
+
+<h3 class="acms-admin-admin-title2 acms-admin-margin-top-medium">購入ボタン設定</h3>
+<table class="acms-admin-table-admin-edit">
+  <tr>
+    <th>ぴあゲッティ連携</th>
+    <td>
+      <div class="acms-admin-form-radio">
+        <input type="radio" name="ticket_cooperation" value="ticket_coop_title" {ticket_cooperation:checked#ticket_coop_title} id="input-radio-ticket_cooperation-ticket_coop_title" <!-- BEGIN_IF [{ticket_cooperation}/em] -->checked<!-- END_IF --> />
+        <label for="input-radio-ticket_cooperation-ticket_coop_title">
+          <i class="acms-admin-ico-radio"></i>公演<stromg>タイトル毎</stromg>に公演コードを設定する</label>
+      </div>
+      <div class="acms-admin-form-radio">
+        <input type="radio" name="ticket_cooperation" value="ticket_coop_place" {ticket_cooperation:checked#ticket_coop_place} id="input-radio-ticket_cooperation-ticket_coop_place" />
+        <label for="input-radio-ticket_cooperation-ticket_coop_place">
+          <i class="acms-admin-ico-radio"></i>公演タイトルの<stromg>会場毎</stromg>に公演コードを設定する</label>
+      </div>
+      <input type="hidden" name="field[]" value="ticket_cooperation" />
+    </td>
+  </tr>
+</table>
+<table class="acms-admin-table-admin-edit js-ticket-coop-title">
+  <tr>
+    <th>公演コード</th>
+    <td>
+      <input type="text" name="ticket_code" value="{ticket_code}" class="acms-admin-form-width-small" />
+      <input type="hidden" name="field[]" value="ticket_code" />
+    </td>
+  </tr>
+  <tr>
+    <th>ボタン表示設定</th>
+    <td>
+      <div class="acms-admin-form-checkbox">
+        <input type="checkbox" name="ticket_purchase_button_hide[]" value="true" {ticket_purchase_button_hide:checked#true} id="input-checkbox-ticket_purchase_button_hide-true" />
+        <label for="input-checkbox-ticket_purchase_button_hide-true">
+          <i class="acms-admin-ico-checkbox"></i>購入ボタンを非表示にする</label>
+      </div>
+      <input type="hidden" name="field[]" value="ticket_purchase_button_hide" />
+    </td>
+  </tr>
+  <tr>
+    <th>販売期間</th>
+    <td>
+      <table class="p-admin-inner-table">
+        <tr>
+          <th>開始日時</th>
+          <td>
+            <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+              <input type="text" name="ticket_purchase_start_date" value="{ticket_purchase_start_date}" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+              <input type="hidden" name="field[]" value="ticket_purchase_start_date" />
+            </div>
+            <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+              <input type="text" name="ticket_purchase_start_time" value="{ticket_purchase_start_time}" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+              <input type="hidden" name="field[]" value="ticket_purchase_start_time" />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>終了日時</th>
+          <td>
+            <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+              <input type="text" name="ticket_purchase_end_date" value="{ticket_purchase_end_date}" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+              <input type="hidden" name="field[]" value="ticket_purchase_end_date" />
+            </div>
+            <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+              <input type="text" name="ticket_purchase_end_time" value="{ticket_purchase_end_time}" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+              <input type="hidden" name="field[]" value="ticket_purchase_end_time" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<h3 class="acms-admin-admin-title2 acms-admin-margin-top-medium">会場登録</h3>
+<!-- BEGIN_MODULE Blog_Field id="BF_place" -->
+<p class="p-admin-edit-link acms-admin-margin-bottom-small acms-admin-margin-right-mini acms-admin-margin-left-mini"><a href="%{HOME_URL}bid/{id}/admin/entry_editor/"><span class="acms-admin-icon acms-admin-icon-control-edit"></span><span>会場を追加する</span></a></p>
+<!-- END_MODULE Blog_Field -->
+
+<table class="js-fieldgroup-sortable adminTable acms-admin-table-admin-edit p-admin-table-field-group-vertical">
+  <thead class="acms-admin-hide-sp">
+    <tr>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-item-handle"> </th>
+      <th></th>
+      <th class="acms-admin-table-left acms-admin-admin-config-table-action">削除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- BEGIN group_ticket_place:loop -->
+    <tr class="sortable-item">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>会場</th>
+            <td>
+              <select name="ticket_place_entry_id[]" class="acms-admin-form-width-medium js-select2-custom">
+                <option value="">選択してください</option>
+                <!-- BEGIN_MODULE Entry_List id="list_ticket_place" -->
+                <!-- BEGIN entry:loop -->
+                <option value="{eid}" \{ticket_place_entry_id:selected#{eid}\}>{title}</option>
+                <!-- END entry:loop -->
+                <!-- END_MODULE Entry_List -->
+              </select>
+            </td>
+          </tr>
+          <tr class="js-ticket-coop-place">
+            <th>購入ボタン設定</th>
+            <td>
+              <table class="p-admin-inner-table">
+                <tr>
+                  <th>公演コード</th>
+                  <td>
+                    <input type="text" name="ticket_code_place[]" value="{ticket_code_place}" class="acms-admin-form-width-small" />
+                  </td>
+                </tr>
+                <tr>
+                  <th>ボタン表示設定</th>
+                  <td>
+                    <div class="acms-admin-form-checkbox">
+                      <input type="checkbox" name="ticket_purchase_button_place_hide[]" value="true" {ticket_purchase_button_place_hide:checked#true} id="input-checkbox-ticket_purchase_button_place_hide-true" />
+                      <label for="input-checkbox-ticket_purchase_button_place_hide-true">
+                        <i class="acms-admin-ico-checkbox"></i>購入ボタンを非表示にする</label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>販売期間</th>
+                  <td>
+                    <table class="p-admin-inner-table">
+                      <tr>
+                        <th>開始日時</th>
+                        <td>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_start_date[]" value="{ticket_purchase_place_start_date}" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+                          </div>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_start_time[]" value="{ticket_purchase_place_start_time}" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+                          </div>
+                       </td>
+                      </tr>
+                      <tr>
+                        <th>終了日時</th>
+                        <td>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_end_date[]" value="{ticket_purchase_place_end_date}" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+                          </div>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_end_time[]" value="{ticket_purchase_place_end_time}" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+                          </div>
+                       </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <th>販売方法</th>
+            <td>
+              <div class="acms-admin-form-radio">
+                <input type="radio" name="ticket_sale_type[]" value="early_come" {ticket_sale_type:checked#early_come} id="input-radio-ticket_sale_type-early_come" />
+                <label for="input-radio-ticket_sale_type-early_come">
+                  <i class="acms-admin-ico-radio"></i>先着順</label>
+              </div>
+              <div class="acms-admin-form-radio">
+                <input type="radio" name="ticket_sale_type[]" value="lottery" {ticket_sale_type:checked#lottery} id="input-radio-ticket_sale_type-lottery" />
+                <label for="input-radio-ticket_sale_type-lottery">
+                  <i class="acms-admin-ico-radio"></i>抽選</label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>特徴</th>
+            <td>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_first_come[]" value="true" {ticket_feature_first_come:checked#true} id="input-checkbox-ticket_feature_first_come-true" />
+                <label for="input-checkbox-ticket_feature_first_come-true">
+                  <i class="acms-admin-ico-checkbox"></i>先行</label>
+              </div>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_preferential[]" value="true" {ticket_feature_preferential:checked#true} id="input-checkbox-ticket_feature_preferential-true" />
+                <label for="input-checkbox-ticket_feature_preferential-true">
+                  <i class="acms-admin-ico-checkbox"></i>優待</label>
+              </div>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_special[]" value="true" {ticket_feature_special:checked#true} id="input-checkbox-ticket_feature_special-true" />
+                <label for="input-checkbox-ticket_feature_special-true">
+                  <i class="acms-admin-ico-checkbox"></i>特典付き</label>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+    <!-- END group_ticket_place:loop -->
+    <tr class="sortable-item item-template">
+      <td class="item-handle acms-admin-table-nowrap">
+        <i class="acms-admin-icon-sort"></i>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <th>会場</th>
+            <td>
+              <select name="ticket_place_entry_id[]" class="acms-admin-form-width-medium js-select2-custom">
+                <option value="">選択してください</option>
+                <!-- BEGIN_MODULE Entry_List id="list_ticket_place" -->
+                <!-- BEGIN entry:loop -->
+                <option value="{eid}">{title}</option>
+                <!-- END entry:loop -->
+                <!-- END_MODULE Entry_List -->
+              </select>
+            </td>
+          </tr>
+          <tr class="js-ticket-coop-place">
+            <th>購入ボタン設定</th>
+            <td>
+              <table class="p-admin-inner-table">
+                <tr>
+                  <th>公演コード</th>
+                  <td>
+                    <input type="text" name="ticket_code_place[]" value="" class="acms-admin-form-width-small" />
+                  </td>
+                </tr>
+                <tr>
+                  <th>ボタン表示設定</th>
+                  <td>
+                    <div class="acms-admin-form-checkbox">
+                      <input type="checkbox" name="ticket_purchase_button_place_hide[]" value="true" id="input-checkbox-ticket_purchase_button_place_hide-true" />
+                      <label for="input-checkbox-ticket_purchase_button_place_hide-true">
+                        <i class="acms-admin-ico-checkbox"></i>購入ボタンを非表示にする</label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>販売期間</th>
+                  <td>
+                    <table class="p-admin-inner-table">
+                      <tr>
+                        <th>開始日時</th>
+                        <td>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_start_date[]" value="" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+                          </div>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_start_time[]" value="" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+                          </div>
+                       </td>
+                      </tr>
+                      <tr>
+                        <th>終了日時</th>
+                        <td>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_end_date[]" value="" placeholder="例）%{NOW_DATE}" class="acms-admin-form-width-mini js-datepicker2" />
+                          </div>
+                          <div class="acms-admin-inline-block acms-admin-margin-right-mini">
+                            <input type="text" name="ticket_purchase_place_end_time[]" value="" placeholder="例）%{NOW_TIME}" class="acms-admin-form-width-mini js-timepicker" />
+                          </div>
+                       </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <th>販売方法</th>
+            <td>
+              <div class="acms-admin-form-radio">
+                <input type="radio" name="ticket_sale_type[]" value="early_come" id="input-radio-ticket_sale_type-early_come" />
+                <label for="input-radio-ticket_sale_type-early_come">
+                  <i class="acms-admin-ico-radio"></i>先着順</label>
+              </div>
+              <div class="acms-admin-form-radio">
+                <input type="radio" name="ticket_sale_type[]" value="lottery" id="input-radio-ticket_sale_type-lottery" />
+                <label for="input-radio-ticket_sale_type-lottery">
+                  <i class="acms-admin-ico-radio"></i>抽選</label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>特徴</th>
+            <td>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_first_come[]" value="true" id="input-checkbox-ticket_feature_first_come-true" />
+                <label for="input-checkbox-ticket_feature_first_come-true">
+                  <i class="acms-admin-ico-checkbox"></i>先行</label>
+              </div>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_preferential[]" value="true" id="input-checkbox-ticket_feature_preferential-true" />
+                <label for="input-checkbox-ticket_feature_preferential-true">
+                  <i class="acms-admin-ico-checkbox"></i>優待</label>
+              </div>
+              <div class="acms-admin-form-checkbox">
+                <input type="checkbox" name="ticket_feature_special[]" value="true" id="input-checkbox-ticket_feature_special-true" />
+                <label for="input-checkbox-ticket_feature_special-true">
+                  <i class="acms-admin-ico-checkbox"></i>特典付き</label>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="acms-admin-table-nowrap">
+        <input type="button" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger" value="削除" />
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colSpan="3">
+        <input type="button" class="item-insert acms-admin-btn-admin" value="追加" />
+      </td>
+    </tr>
+  </tfoot>
+</table>
+<input type="hidden" name="field[]" value="@group_ticket_place" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_place_entry_id" />
+<input type="hidden" name="field[]" value="ticket_place_entry_id" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_sale_type" />
+<input type="hidden" name="field[]" value="ticket_sale_type" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_feature_first_come" />
+<input type="hidden" name="field[]" value="ticket_feature_first_come" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_feature_preferential" />
+<input type="hidden" name="field[]" value="ticket_feature_preferential" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_feature_special" />
+<input type="hidden" name="field[]" value="ticket_feature_special" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_code_place" />
+<input type="hidden" name="field[]" value="ticket_code_place" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_purchase_place_start_date" />
+<input type="hidden" name="field[]" value="ticket_purchase_place_start_date" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_purchase_place_start_time" />
+<input type="hidden" name="field[]" value="ticket_purchase_place_start_time" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_purchase_place_end_date" />
+<input type="hidden" name="field[]" value="ticket_purchase_place_end_date" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_purchase_place_end_time" />
+<input type="hidden" name="field[]" value="ticket_purchase_place_end_time" />
+<input type="hidden" name="@group_ticket_place[]" value="ticket_purchase_button_place_hide" />
+<input type="hidden" name="field[]" value="ticket_purchase_button_place_hide" />
+
+<h3 class="acms-admin-admin-title2 acms-admin-margin-top-medium">スケジュール登録</h3>
+<!-- BEGIN_IF [<!-- BEGIN group_ticket_place:loop -->1<!-- END group_ticket_place:loop -->/em] -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-warning"><span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
+	<button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+	会場登録後[保存]をすると開演スケジュール登録画面が表示されます。
+</p>
+<!-- ELSE -->
+<p class="acms-admin-margin-bottom-small acms-admin-margin-right-mini acms-admin-margin-left-mini">※ 上記「会場登録」で会場の追加や変更を行った場合は[保存]をしてからスケジュール登録を行ってください。</p>
+<!-- END_IF -->
+
+<!-- BEGIN_MODULE Entry_Field id="EF_urlcontext" -->
+<!-- BEGIN group_ticket_place:loop -->
+@include("/admin/entry/field-parts/event-field-ticket-group-ticket-schedule.html")
+<!-- END group_ticket_place:loop -->
+<!-- END_MODULE Entry_Field -->

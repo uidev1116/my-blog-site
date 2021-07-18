@@ -1,0 +1,13 @@
+@extends("/_layouts/admin.html")
+
+@section("admin-css")
+@include("/include/head/favicon.html")
+@parent
+@include("/admin/lib/edit-include/link-stylesheet.html")
+<link rel="stylesheet" href="/dest/admin.css">
+@endsection
+
+@section("admin-js")
+@parent
+@include("/admin/lib/edit-include/js.html")
+@endsection

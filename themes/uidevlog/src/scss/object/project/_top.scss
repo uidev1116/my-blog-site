@@ -1,0 +1,59 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+
+/* ------------------------------
+　　サイトTOP
+------------------------------ */
+.p-top-list-bg-em {
+  $parent: &;
+
+  &__list {
+    @include global.list-unstyled();
+  }
+  &__item {
+    &:first-child {
+      #{$parent}__link {
+        background-color: map-get(global.$color-primary, base);
+        border-top: 1px solid map-get(global.$color-primary, base);
+        &,
+        &:link,
+        &:focus,
+        &:active,
+        &:visited,
+        &:hover {
+          color: map-get(global.$color-primary, base-invers);
+        }
+      }
+    }
+  }
+  &__link {
+    display: block;
+    padding: 1.2em 0;
+    background-color: map-get(global.$color-primary, lighter);
+    border-bottom: 1px solid map-get(global.$color-primary, base);
+    &,
+    &:link,
+    &:focus,
+    &:active,
+    &:hover {
+      color: map-get(global.$color-primary, base);
+      text-decoration: none;
+    }
+    &:visited {
+      color: map-get(global.$color-primary, base);
+    }
+    &:hover #{$parent}__title {
+      text-decoration: underline;
+    }
+  }
+  &__inner {
+    text-align: center;
+  }
+  &__title {
+    /* block-no-empty 抑制コメント */
+  }
+  &__icon {
+    padding-left: 10px;
+  }
+}

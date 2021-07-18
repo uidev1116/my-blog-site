@@ -1,0 +1,109 @@
+// ------------------------------
+//　設定
+// ------------------------------
+$enable-iphonex: true;
+
+
+// ------------------------------
+//　ベース
+// ------------------------------
+
+// コンテイナー
+$container-lg                  : 1170px;
+$container-md                  : 960px;
+$container-sm                  : 750px;
+
+// ------------------------------
+//　ファイルのパス
+// ------------------------------
+$root-theme-img                    : '/themes/develop/images/';
+
+// ------------------------------
+//　カラー【要対応】
+// ------------------------------
+// 背景色
+$bg-color                          : #fff;
+
+// ベースカラー
+$base-color                        : #ffed1f;
+
+// リンクカラー
+$link-color                        : #006DD9;
+$link-color-visited                : #7F5AD7;
+
+// ボタン
+$btn-color                         : #333;
+$btn-active-color                  : #000;
+
+// 各sns色
+$facebook-color                    : #3b5999;
+$twitter-color                     : #55acee;
+$gplus-color                       : #dd4b39;
+$youtube-color                     : #cd201f;
+
+// ------------------------------
+//　ヘッダー
+// ------------------------------
+// $sp-header-height                  : 60px;
+$global-nav-height                 : 50px;
+
+// ------------------------------
+//　行間
+// ------------------------------
+$line-height-summary: 1.5;
+$line-height-text: 1.7;
+$line-height-title: 1.7;
+$line-height-text-area: 2;
+
+// ------------------------------
+//　エントリー
+// ------------------------------
+$entry-margin-bottom               : 25px;
+
+$entry-element-margin-top          : 0;
+
+$entry-element-margin-bottom-sm    : 10px !default;
+$entry-element-margin-bottom-md    : 20px !default;
+$entry-element-margin-bottom-lg    : 30px !default;
+
+$entry-class                       : entry-column;
+$entry-text-unit                   : entry-text-unit;
+
+$entry-text-base-color             : #333;
+$entry-font-weight-normal          : 400;
+$entry-font-weight-bold            : 700;
+$entry-color-point-base            : #C41134;
+$entry-color-border-base           : #CCC;
+$entry-color-bg-base               : #EFEFEF;
+
+$entry-font-size-base              : 14;
+$entry-font-size-title-sm          : 16;
+$entry-font-size-title-md          : 18;
+$entry-font-size-title-lg          : 20;
+
+$entry-font-size-base-wide-screen       : 16;
+$entry-font-size-title-sm-wide-screen   : 18;
+$entry-font-size-title-md-wide-screen   : 20;
+$entry-font-size-title-lg-wide-screen   : 22;
+
+$entry-text-line-height              : $line-height-text;
+$entry-title-line-height             : $line-height-title;
+
+$entry-list-li-bottom-space        : .25em;
+$entry-list-marker-space           : 28px;
+
+$entry-dl-space                    : 18px;
+$entry-dl-border                   : 1px solid $entry-color-border-base;
+$entry-dt-border-width             : 4px;
+$entry-dt-border-space             : 10px;
+
+$entry-quote-color                 : #8E8787;
+
+// ------------------------------
+//　transition
+// ------------------------------
+$hover-opacity: .7;
+$hover-scale: scale(1.1);
+$hover-scale-transition: transform .3s linear;
+$hover-default-opacity: opacity .2s;
+$hover-text-transition: color .2s linear;

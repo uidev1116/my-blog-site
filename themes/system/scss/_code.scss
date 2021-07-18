@@ -1,0 +1,35 @@
+/* ------------------------------
+ コード pre code
+------------------------------- */
+.acms-pre,
+.acms-style pre {
+	padding: 10px;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	background-color: #fafafa;
+	border: solid 1px #dfdfdf;
+	border-radius: 5px;
+}
+
+.acms-pre code,
+.acms-style code,
+.acms-code {
+	margin: 0 5px;
+	padding: 2px 5px;
+	color: #da0909;
+	background-color: #fff3f3;
+	border: 1px solid #ffabab;
+	border-radius: 3px;
+}
+
+.acms-pre,
+.acms-pre code,
+.acms-pre kbd,
+.acms-pre samp,
+.acms-style pre,
+.acms-style code,
+.acms-style kbd,
+.acms-style samp,
+.acms-code {
+	font-family: $acms-code-font-family;
+}

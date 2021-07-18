@@ -1,0 +1,34 @@
+/* ------------------------------
+ バッジ
+------------------------------- */
+
+.acms-badge {
+	padding: 3px 7px;
+	color: $acms-badge-text-color;
+  font-weight: bold;
+	background-color: $acms-badge-default;
+	border-radius: 10px;
+	@include font-size(10);
+}
+.acms-badge-success {
+  color: $acms-badge-text-success-color;
+	background-color: $acms-badge-success-color;
+}
+.acms-badge-info {
+  color: $acms-badge-text-info-color;
+	background-color: $acms-badge-info-color;
+}
+.acms-badge-warning {
+  color: $acms-badge-text-warning-color;
+	background-color: $acms-badge-warning-color;
+}
+.acms-badge-danger {
+  color: $acms-badge-text-danger-color;
+	background-color: $acms-badge-danger-color;
+}
+
+/* 承認機能用バッジ */
+.acms-badge-approval {
+  color: $acms-badge-approval-text-color;
+	background-color: $acms-badge-approval-color;
+}

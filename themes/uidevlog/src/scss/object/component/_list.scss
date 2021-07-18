@@ -1,0 +1,86 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+$_list-new-label-font-size: 13;
+$_list-new-label-left-space: 5px;
+$_list-item-title-font-size: global.$font-base-size;
+$_list-item-label-margin-right: 5px;
+$_list-item-space-wide: 32px;
+$_list-item-space: 24px;
+$_list-item-line-width: 2px;
+$_list-item-border: $_list-item-line-width solid map-get(global.$color-border, plain);
+
+/* ------------------------------
+　　リスト
+------------------------------ */
+/* ライン付きURLリスト
+=============================== */
+.c-list-line {
+  &__list {
+    @include global.list-unstyled();
+    display: flex;
+    flex-wrap: wrap;
+
+    /* acms-grid */
+    margin-right: (acms.$grid-space / -2);
+    margin-left: (acms.$grid-space / -2);
+  }
+
+  &__item {
+    margin-bottom: -#{$_list-item-line-width};
+    /* acms-col-** */
+    padding-right: (acms.$grid-space / 2);
+    padding-left: (acms.$grid-space / 2);
+    line-height: global.$line-height-title;
+  }
+
+  &__link {
+    @include global.hover-opacity();
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    height: 100%;
+    padding: $_list-item-space 0;
+    border-top: $_list-item-border;
+    border-bottom: $_list-item-border;
+  }
+
+  &__label {
+    display: inline-block;
+    margin: 0 $_list-item-label-margin-right 0 0;
+    padding-right: 10px;
+    color: map-get(global.$color-text, light-label);
+    line-height: 21px;
+    vertical-align: middle;
+  }
+
+  &__title {
+    @include global.font-size($_list-item-title-font-size);
+    display: inline-block;
+    margin: 0;
+    line-height: 21px;
+    vertical-align: middle;
+
+    .c-label-simple-new {
+      @include global.font-size($_list-new-label-font-size);
+      margin-left: $_list-new-label-left-space;
+    }
+  }
+
+  &__indexlink-wrap {
+    margin: 24px 0 0;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: acms.$breakpoint-sm-min){
+  .c-list-line {
+    &__link {
+      padding: $_list-item-space-wide 0;
+    }
+    &__indexlink-wrap {
+      margin-top: 40px;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+/* ------------------------------
+ jQuery UI の上書き
+------------------------------- */
+
+// ---------------
+// dialog
+// ---------------
+body .ui-dialog {
+	z-index: zIndex(ui-dialog);
+}
+
+body .ui-widget-overlay {
+	opacity: .3;
+}

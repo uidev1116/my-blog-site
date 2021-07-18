@@ -1,0 +1,8 @@
+---
+%{PREFIX}log_access: 
+  log_access_404: log_access_http_status_code
+  log_access_action: log_access_acms_post
+%{PREFIX}session: 
+  session_host: session_unique_ua
+%{PREFIX}trackback: 
+  trackback_ response: trackback_response

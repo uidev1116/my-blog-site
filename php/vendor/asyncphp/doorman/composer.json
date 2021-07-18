@@ -1,0 +1,23 @@
+{
+    "name": "asyncphp/doorman",
+    "description": "Child process management",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.3",
+        "ramsey/array_column": "^1.1",
+        "jeremeamia/SuperClosure": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "AsyncPHP\\Doorman\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AsyncPHP\\Doorman\\Tests\\": "tests"
+        }
+    }
+}

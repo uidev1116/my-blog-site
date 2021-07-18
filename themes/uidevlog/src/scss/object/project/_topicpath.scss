@@ -1,0 +1,40 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　トピックパス
+------------------------------ */
+.p-topicpath-wrap {
+	margin-bottom: 30px;
+}
+
+.p-topicpath {
+	padding: 10px 0;
+	background: #F5F5F5;
+
+	&__list {
+		margin: 0 auto;
+		list-style: none;
+	}
+	&__item {
+		float: left;
+		&::before {
+			padding: 0 10px;
+			content: " / ";
+		}
+		&:first-child {
+			&::before {
+				content: none;
+			}
+		}
+	}
+	&__link {
+		color: #666;
+		@include global.font-size(14);
+		&:visited,
+		&:focus,
+		&:active {
+			color: #666;
+		}
+	}
+}

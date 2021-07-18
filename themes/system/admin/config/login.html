@@ -1,0 +1,375 @@
+<header>
+	<div>
+		@include("/admin/topicpath.html")
+	</div>
+	<div>
+		@include("/admin/config/parts/header.html", {"title": "<!--T-->ログイン設定<!--/T-->"})
+	</div>
+</header>
+
+<!-- BEGIN_MODULE Admin_Config -->
+<!-- BEGIN_IF [{notice_mess}/nem/] -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->機能設定を保存しました<!--/T--></p><!-- END_IF -->
+
+<p class="transaction-notice-{config:validator} acms-admin-alert acms-admin-alert-danger"><!--T-->コンフィグを保存出来ませんでした。<!--/T--></p>
+
+<form action="" method="post" class="js-adminSave acms-admin-form">
+	<div class="js-acms_fix_marker acms_fix_bg">
+		<div class="acms-admin-form-group acms_fix_bg_index">
+			<a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+
+			<input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
+
+			<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+			<div class="acms-admin-float-right">
+				<a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_import-part/?setid=%{setid}&rid=%{rid}" class="acms-admin-btn-admin"><!--T-->インポート<!--/T--></a>
+				<input type="submit" name="ACMS_POST_Config_PartExport" class="acms-admin-btn-admin" value="<!--T-->エクスポート<!--/T-->"/>
+				<a href="{shortcutUrl}" class="acms-admin-btn-admin"><i class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a>
+			</div>
+			<!-- END_MODULE Touch_SessionWithAdministration -->
+		</div>
+	</div>
+
+	<h3 class="acms-admin-admin-title2"><!--T-->基本設定<!--/T--></h3>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th><!--T-->現在のURLでログイン<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン後にリダイレクトされずに、そのままのページでログインします。<!--/T-->"></i></th>
+			<td>
+				<div class="acms-admin-form-checkbox">
+					<input id="input-checkbox-login_auto_redirect" type="checkbox" name="login_auto_redirect" value="on"{login_auto_redirect:checked#on} />
+					<label for="input-checkbox-login_auto_redirect"><i class="acms-admin-ico-checkbox"></i><!--T-->現在のURLでログイン ※チェックされている場合、管理ページへのリダイレクトは無効になります。<!--/T--></label>
+				</div><br />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->ログイン後ページの指定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン後に表示したい管理ページのacmsパスを指定できます。<!--/T-->"></i></th>
+			<td>
+				admin/<input type="text" name="login_admin_path" value="{login_admin_path}" size="20" />
+				<input type="hidden" name="config[]" value="login_auto_redirect" />
+				<input type="hidden" name="config[]" value="login_admin_path" />
+				<!--T-->※ログイン後に表示したい管理ページのacmsパスを指定できます。<!--/T-->
+			</td>
+		</tr>
+		<!-- BEGIN_MODULE Touch_SslEnable -->
+		<tr>
+			<th><!--T-->ログイン後ページのSSL<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン後に表示するページでSSLを使用します。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="login_ssl" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="login_ssl" value="on"{login_ssl:checked#on} id="input-checkbox-login_ssl" />
+					<label for="input-checkbox-login_ssl">
+						<i class="acms-admin-ico-checkbox"></i>
+						<!--T-->ログイン後に表示するページでSSLを使用する。<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="login_ssl" />
+			</td>
+		</tr><!-- END_MODULE Touch_SslEnable -->
+		<tr>
+			<th><!--T-->ログイン中の投稿者<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると投稿者権限ユーザーがログインしている場合、自身が投稿したエントリーのみ表示されるようになります。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="session_contributor_only_own_entry" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="session_contributor_only_own_entry" value="on"{session_contributor_only_own_entry:checked#on} id="input-checkbox-session_contributor_only_own_entry" />
+					<label for="input-checkbox-session_contributor_only_own_entry">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->ログイン中の投稿者には、自分が投稿したエントリーのみ表示する<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="session_contributor_only_own_entry" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->編集、管理ページ以外の表示<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示するようになります。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="subscriber_view_mode" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="subscriber_view_mode" value="on"{subscriber_view_mode:checked#on} id="input-checkbox-subscriber_view_mode" />
+					<label for="input-checkbox-subscriber_view_mode">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示する<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="subscriber_view_mode" />
+			</td>
+		</tr>
+	</table>
+
+	<h3 class="acms-admin-admin-title2"><!--T-->セキュリティ<!--/T--></h3>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th><!--T-->ログインクッキー有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン画面で「パスワードを保存」のチェックボックスにチェックした場合、この有効時間内はログイン状態を保持できます。<!--/T-->"></i></th>
+			<td>
+				<input class="acms-admin-form-width-mini" type="text" name="login_cookie_lifetime" value="{login_cookie_lifetime}" size="8" /> <!--T-->秒<!--/T-->
+				<input type="hidden" name="config[]" value="login_cookie_lifetime" />
+				<input type="hidden" name="login_cookie_lifetime:validator#digits" id="validator-login_cookie_lifetime-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-login_cookie_lifetime-digits" class="validator-result-{login_cookie_lifetime:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->アカウントロック<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->パスワード入力の失敗回数の制限を設定できます。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="login_trial_time" value="{login_trial_time}" size="4" /> <!--T-->分の間に<!--/T-->
+				<input type="text" name="login_trial_number" value="{login_trial_number}" size="2" /> <!--T-->回パスワードが間違った場合、アカウントをロックする<!--/T-->
+				<input type="hidden" name="config[]" value="login_trial_time" />
+				<input type="hidden" name="config[]" value="login_trial_number" />
+				<input type="hidden" name="login_cookie_lifetime:login_trial_time#digits" id="validator-login_trial_time-digits" />
+				<input type="hidden" name="login_cookie_lifetime:login_trial_number#digits" id="validator-login_trial_number-digits" />
+
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-login_trial_time-digits" class="validator-result-{login_trial_time:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-login_trial_number-digits" class="validator-result-{login_trial_number:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->アカウントロック時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->アカウントロックされた場合のロック時間を設定します。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="login_lock_time" value="{login_lock_time}" size="4" /> <!--T-->分間ロックする<!--/T-->
+				<input type="hidden" name="config[]" value="login_lock_time" />
+				<input type="hidden" name="login_lock_time:validator#digits" id="validator-login_lock_time-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-login_lock_time-digits" class="validator-result-{login_lock_time:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->パスワード変更の有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->パスワード再発行リンクの有効時間の設定をします。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="password_reset_url_lifetime" value="{password_reset_url_lifetime}" size="4" /> <!--T-->分間<!--/T-->
+				<input type="hidden" name="config[]" value="password_reset_url_lifetime" />
+				<input type="hidden" name="login_lock_time:validator#digits" id="validator-password_reset_url_lifetime-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-password_reset_url_lifetime-digits" class="validator-result-{password_reset_url_lifetime:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->２段階認証<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->２段階認証を利用できるか設定します。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="two_factor_auth" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="two_factor_auth" value="on"{two_factor_auth:checked#on} id="input-checkbox-two_factor_auth" />
+					<label for="input-checkbox-two_factor_auth"><i class="acms-admin-ico-checkbox"></i><!--T-->設定できるようにする<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="two_factor_auth" />
+			</td>
+		</tr>
+	</table>
+
+	<h3 class="acms-admin-admin-title2"><!--T-->パスワードポリシー<!--/T--></h3>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th><!--T-->最小文字数<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->最小文字数を設定します<!--/T-->"></i></th>
+			<td>
+				<input  type="text" name="password_validator_min" value="{password_validator_min}" size="3" /> <!--T-->文字<!--/T-->
+				<input type="hidden" name="config[]" value="password_validator_min" />
+				<input type="hidden" name="password_validator_min:validator#digits" id="validator-password_validator_min-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-password_validator_min-digits" class="validator-result-{password_validator_min:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->最大文字数<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->最大文字数を設定します<!--/T-->"></i></th>
+			<td>
+				<input  type="text" name="password_validator_max" value="{password_validator_max}" size="3" /> <!--T-->文字<!--/T-->
+				<input type="hidden" name="config[]" value="password_validator_max" />
+				<input type="hidden" name="password_validator_max:validator#digits" id="validator-password_validator_max-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-password_validator_max-digits" class="validator-result-{password_validator_max:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->大文字<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->半角大文字を１つ以上含めるか設定します<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="password_validator_uppercase" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="password_validator_uppercase" value="on"{password_validator_uppercase:checked#on} id="input-checkbox-password_validator_uppercase" />
+					<label for="input-checkbox-password_validator_uppercase"><i class="acms-admin-ico-checkbox"></i><!--T-->１つ以上含める<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="password_validator_uppercase" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->小文字<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->半角小文字を１つ以上含めるか設定します<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="password_validator_lowercase" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="password_validator_lowercase" value="on"{password_validator_lowercase:checked#on} id="input-checkbox-password_validator_lowercase" />
+					<label for="input-checkbox-password_validator_lowercase"><i class="acms-admin-ico-checkbox"></i><!--T-->１つ以上含める<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="password_validator_lowercase" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->数値<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->半角数値を１つ以上含めるか設定します<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="password_validator_digits" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="password_validator_digits" value="on"{password_validator_digits:checked#on} id="input-checkbox-password_validator_digits" />
+					<label for="input-checkbox-password_validator_digits"><i class="acms-admin-ico-checkbox"></i><!--T-->１つ以上含める<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="password_validator_digits" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->記号<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->半角記号を１つ以上含めるか設定します<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="password_validator_symbols" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="password_validator_symbols" value="on"{password_validator_symbols:checked#on} id="input-checkbox-password_validator_symbols" />
+					<label for="input-checkbox-password_validator_symbols"><i class="acms-admin-ico-checkbox"></i><!--T-->１つ以上含める<!--/T--> ( ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [  ] ^ _ ` { | } ~ )</label>
+				</div>
+				<input type="hidden" name="config[]" value="password_validator_symbols" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->種類<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->大文字、小文字、数値、記号のうち３種類以上使用の判定を設定します<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="password_validator_3type" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="password_validator_3type" value="on"{password_validator_3type:checked#on} id="input-checkbox-password_validator_3type" />
+					<label for="input-checkbox-password_validator_3type"><i class="acms-admin-ico-checkbox"></i><!--T-->大文字、小文字、数値、記号のうち、３種類を含む<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="password_validator_3type" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->メッセージ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->パスワード入力時に表示するメッセージです。<!--/T-->"></i></th>
+			<td>
+				<textarea name="password_validator_message" class="acms-admin-form-width-full" rows="5" placeholder="">{password_validator_message}</textarea>
+				<input type="hidden" name="config[]" value="password_validator_message" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->ブラックリスト<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->パスワードで使うNGワードの設定です。カンマ、スペース、改行のいずれかで単語が区切れます。<!--/T-->"></i></th>
+			<td>
+				<textarea name="password_validator_blacklist" class="acms-admin-form-width-full" rows="5" placeholder="Passw0rd,Password123,password,pass">{password_validator_blacklist}</textarea>
+				<input type="hidden" name="config[]" value="password_validator_blacklist" />
+			</td>
+		</tr>
+	</table>
+
+	<h3 class="acms-admin-admin-title2"><!--T-->読者機能<!--/T--></h3>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th><!--T-->ユーザー登録の外部申請<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると読者登録の受付ができるようになります。ログインページ内に読者登録ページへのリンクが表示されます。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="subscribe" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="subscribe" value="on"{subscribe:checked#on} id="input-checkbox-subscribe" />
+					<label for="input-checkbox-subscribe"><i class="acms-admin-ico-checkbox"></i><!--T-->ユーザー登録の外部申請を受け付ける<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="subscribe" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->メールアドレスの有効性確認<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、読者登録フォームに入力された内容で、即座に有効なユーザーが作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに記載されているパスワードを使って最初にログインした時点で有効なユーザーとして登録されます。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="subscribe_activation" value="on" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="subscribe_activation" value="off"{subscribe_activation:checked#off} id="input-checkbox-subscribe_activation" />
+					<label for="input-checkbox-subscribe_activation"><i class="acms-admin-ico-checkbox"></i><!--T-->メールアドレスの有効性とパスワード認証を行わない<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="subscribe_activation" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->確認メールの有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->読者登録後の有効リンク有効時間の設定をします。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="user_activation_url_lifetime" value="{user_activation_url_lifetime}" size="4" /> <!--T-->分間<!--/T-->
+				<input type="hidden" name="config[]" value="user_activation_url_lifetime" />
+				<input type="hidden" name="login_lock_time:validator#digits" id="validator-user_activation_url_lifetime-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-user_activation_url_lifetime-digits" class="validator-result-{user_activation_url_lifetime:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->どこでもログイン<!--/T--><i class="acms-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると読者登録ユーザの「どこでもログイン」の初期値が「ON」に設定されます。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="subscribe_login_anywhere" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="subscribe_login_anywhere" value="on"{subscribe_login_anywhere:checked#on} id="input-checkbox-subscribe_login_anywhere" />
+					<label for="input-checkbox-subscribe_login_anywhere"><i class="acms-admin-ico-checkbox"></i><!--T-->購読者を「どこでもログイン」を有効で作成する<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="subscribe_login_anywhere" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請で登録されるユーザーの権限を設定します。<!--/T-->"></i></th>
+			<td>
+				<select name="subscribe_auth" class="js-select2">
+					<option value="subscriber"{subscribe_auth:selected#subscriber}><!--T-->読者<!--/T--></option>
+					<option value="contributor"{subscribe_auth:selected#contributor}><!--T-->投稿者<!--/T--></option>
+					<option value="editor"{subscribe_auth:selected#editor}><!--T-->編集者<!--/T--></option>
+					<!--<option value="administrator"{subscribe_auth:selected#administrator}>管理者</option>-->
+				</select> <!--T-->でユーザーを登録する<!--/T-->
+				<input type="hidden" name="config[]" value="subscribe_auth" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->ステータス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請で登録されるユーザーのステータスを設定します。<!--/T-->"></i></th>
+			<td>
+				<select name="subscribe_init_status" class="js-select2">
+					<option value="open"{subscribe_init_status:selected#open}><!--T-->有効<!--/T--></option>
+					<option value="close"{subscribe_init_status:selected#close}><!--T-->無効<!--/T--></option>
+				</select> <!--T-->でユーザーを登録する<!--/T-->
+				<input type="hidden" name="config[]" value="subscribe_init_status" />
+			</td>
+		</tr>
+	</table>
+
+	<h3 class="acms-admin-admin-title2"><!--T-->SNSログイン<!--/T--></h3>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th><!--T-->SNSログイン機能<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをするとSNSログインができるようになります。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="snslogin" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="snslogin" value="on"{snslogin:checked#on} id="input-checkbox-snslogin" />
+					<label for="input-checkbox-snslogin"><i class="acms-admin-ico-checkbox"></i><!--T-->SNSログインを利用可能にする<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="snslogin" />
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->SNSログイン使用権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->SNSログイン機能を使えるユーザー権限を設定します。<!--/T-->"></i></th>
+			<td>
+				<select name="snslogin_auth" class="js-select2">
+					<option value="subscriber"{snslogin_auth:selected#subscriber}><!--T-->読者のみ<!--/T--></option>
+					<option value="contributor"{snslogin_auth:selected#contributor}><!--T-->投稿者以下<!--/T--></option>
+					<option value="editor"{snslogin_auth:selected#editor}><!--T-->編集者以下<!--/T--></option>
+					<option value="administrator"{snslogin_auth:selected#administrator}><!--T-->全ての権限<!--/T--></option>
+				</select> <!--T-->でSNSログインを使用する。<!--/T-->
+				<input type="hidden" name="config[]" value="snslogin_auth" />
+			</td>
+		</tr>
+	</table>
+
+	<!-- BEGIN_MODULE Admin_Rule_Name -->
+	<input type="hidden" name="rid" value="{rid}" /><!-- END_MODULE Admin_Rule_Name --><!-- BEGIN_MODULE Admin_Module_Name -->
+	<input type="hidden" name="mid" value="{mid}" /><!-- END_MODULE Admin_Module_Name --><!-- BEGIN_MODULE Admin_Config_Set_Name -->
+	<input type="hidden" name="setid" value="{setid}" /><!-- END_MODULE Admin_Config_Set_Name -->
+</form>
+<!-- END_MODULE Admin_Config -->
