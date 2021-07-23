@@ -25,6 +25,9 @@
   display: block;
   width: 94px;
   height: 22px;
+  &__img {
+    height: inherit;
+  }
 }
 
 /* 検索アイコン
