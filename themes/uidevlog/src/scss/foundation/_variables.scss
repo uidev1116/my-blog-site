@@ -16,7 +16,7 @@ $container-sm                  : 750px;
 // ------------------------------
 //　ファイルのパス
 // ------------------------------
-$root-theme-img                    : '/themes/develop/images/';
+$root-theme-img                    : '../../../../themes/uidevlog/images/';
 
 // ------------------------------
 //　カラー【要対応】
@@ -44,7 +44,7 @@ $youtube-color                     : #cd201f;
 // ------------------------------
 //　ヘッダー
 // ------------------------------
-// $sp-header-height                  : 60px;
+$header-height                  : 64px;
 $global-nav-height                 : 50px;
 
 // ------------------------------

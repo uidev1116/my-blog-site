@@ -1,6 +1,6 @@
 import { library, dom, config } from '@fortawesome/fontawesome-svg-core';
 import {
-  faUser, faSignOutAlt, faLock, faChevronCircleRight,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
@@ -14,7 +14,7 @@ import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg
 export default () => {
   config.searchPseudoElements = false;
   library.add(
-    faUser, faSignOutAlt, faLock, faChevronCircleRight,
+    faSearch,
     faFacebook, faTwitter, faInstagram,
   );
   dom.watch();
