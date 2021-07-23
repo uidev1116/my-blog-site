@@ -6,12 +6,12 @@ $color-primary: (
   // lightest: カラーコードを指定してください,
   lighter:  #fde5ea,
   // light: カラーコードを指定してください,
-  base: #C41134,
+  base: #3ea8ff,
   base-invers: #FFF,
-  base-hover: #910021,
   // dark: カラーコードを指定してください,
-  // darker: カラーコードを指定してください,
+  darker: #0f83fd,
   // darkest: カラーコードを指定してください,
+  base-hover: #0f83fd,
 );
 
 // セカンダリーカラー
@@ -33,8 +33,8 @@ $color-border: (
 
 // 背景
 $color-bg: (
-  lightest: #F5F9FA,
-  base: #FFF,
+  white: #FFF,
+  primary: #edf2f7,
 );
 
 // 各sns色
