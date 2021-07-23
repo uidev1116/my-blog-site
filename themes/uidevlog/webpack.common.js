@@ -123,7 +123,7 @@ module.exports = {
       context: './src/scss',
       emitError: true,
       emitWarning: true,
-      failOnError: true,
+      failOnError: false,
       fix: true,
     }),
     // Vue Loader
