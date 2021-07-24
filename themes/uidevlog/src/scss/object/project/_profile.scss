@@ -1,0 +1,44 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　プロフィール
+------------------------------ */
+.p-profile {
+  display: flex;
+  flex-flow: column;
+  padding: 24px 0;
+}
+
+/* プロフィール画像
+=============================== */
+.p-profile__img-wrap {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+}
+
+.p-profile__img {
+  border-radius: inherit;
+}
+
+/* 自己紹介
+=============================== */
+.p-profile__content {
+  margin-top: 12px;
+}
+
+.p-profile__name {
+  margin: 0;
+  font-weight: bold;
+  @include global.font-size(21);
+}
+
+.p-profile__bio-wrap {
+  margin-top: 12px;
+}
+
+.p-profile__bio {
+  margin: 0;
+  @include global.font-size(14);
+}
