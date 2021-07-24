@@ -10,6 +10,12 @@
   padding: 24px 0;
 }
 
+@media screen and (min-width: acms.$breakpoint-sm-min) {
+  .p-profile {
+    flex-flow: row;
+  }
+}
+
 /* プロフィール画像
 =============================== */
 .p-profile__img-wrap {
@@ -22,6 +28,13 @@
   border-radius: inherit;
 }
 
+@media screen and (min-width: acms.$breakpoint-sm-min) {
+  .p-profile__img-wrap {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 /* 自己紹介
 =============================== */
 .p-profile__content {
@@ -31,7 +44,7 @@
 .p-profile__name {
   margin: 0;
   font-weight: bold;
-  @include global.font-size(21);
+  @include global.font-size(22);
 }
 
 .p-profile__bio-wrap {
@@ -41,4 +54,12 @@
 .p-profile__bio {
   margin: 0;
   @include global.font-size(14);
+}
+
+@media screen and (min-width: acms.$breakpoint-sm-min) {
+  .p-profile__content {
+    flex: 1;
+    margin-top: 0;
+    padding-left: 32px;
+  }
 }
