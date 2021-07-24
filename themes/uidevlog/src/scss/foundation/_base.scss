@@ -35,3 +35,12 @@ a:hover {
   color: #006dd9;
   text-decoration: underline;
 }
+
+/* 行間 */
+h1, h2, h3, h4 {
+  line-height: global.$line-height-title;
+}
+
+p {
+  line-height: global.$line-height-text;
+}
