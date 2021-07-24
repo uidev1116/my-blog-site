@@ -1,8 +1,10 @@
 import { library, dom, config } from '@fortawesome/fontawesome-svg-core';
 import {
-  faSearch,
+  faSearch, faRss, faLink,
 } from '@fortawesome/free-solid-svg-icons';
-import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebook, faTwitter, faInstagram, faGithub, faYoutube,
+} from '@fortawesome/free-brands-svg-icons';
 
 /**
  * fontawesome5
@@ -15,7 +17,13 @@ export default () => {
   config.searchPseudoElements = false;
   library.add(
     faSearch,
-    faFacebook, faTwitter, faInstagram,
+    faFacebook,
+    faTwitter,
+    faInstagram,
+    faGithub,
+    faYoutube,
+    faRss,
+    faLink,
   );
   dom.watch();
 };
