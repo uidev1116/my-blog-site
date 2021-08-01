@@ -29,6 +29,7 @@ $color-gray: (
 $color-text: (
   base: #333,
   light-label: #7e7979,
+  gray: map-get($color-gray, base),
 );
 
 // 線

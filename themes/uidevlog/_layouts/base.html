@@ -32,11 +32,6 @@
 @include("/include/parts/profile.html")
 @endsection
 
-@section("topic-path")
-	<!-- トピックパス -->
-	<!-- @include("/include/siteparts/topicpath.html") -->
-@endsection
-
 <!-- ※管理用パーツ -->
 <!-- BEGIN_MODULE Touch_Login -->
 @section("admin-part")
@@ -59,6 +54,11 @@
 
 <!-- オフキャンバス -->
 @include("/include/siteparts/sp-global-nav.html")
+
+@section("topic-path")
+<!-- トピックパス -->
+@include("/include/siteparts/topicpath.html", {"module_id": "topicpath"})
+@endsection
 
 <!-- フッター -->
 @section("footer")
