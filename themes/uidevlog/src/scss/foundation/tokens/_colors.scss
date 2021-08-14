@@ -30,6 +30,7 @@ $color-text: (
   base: #333,
   light-label: #7e7979,
   gray: map-get($color-gray, base),
+  inverse: #FFF,
 );
 
 // 線
@@ -50,6 +51,8 @@ $color-sns: (
   facebook: #3b5999,
   youtubes: #CD201F,
 );
+
+$color-shadow: rgba(#000a3c, .2);
 
 // フォームカラー
 // $color-form: (

@@ -14,8 +14,9 @@
 /**
  * Component
  */
+@use "object/component/article";
 @use "object/component/button";
-@use "object/component/calendar";
+@use "object/component/container";
 @use "object/component/card";
 @use "object/component/list";
 @use "object/component/sns-links";
@@ -25,7 +26,6 @@
 /**
  * Layout
  */
-@use "layout/container";
 @use "layout/footer";
 @use "layout/header" as layout-header;
 @use "layout/list" as layout-list;
