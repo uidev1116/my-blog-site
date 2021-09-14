@@ -1,0 +1,33 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　トピックパス
+------------------------------ */
+
+.p-topicpath {
+  margin: 0 auto;
+  padding: 10px 0;
+  list-style: none;
+
+  &__item {
+    &::before {
+      padding: 0 10px;
+      content: " / ";
+    }
+    &:first-child {
+      &::before {
+        content: none;
+      }
+    }
+  }
+  &__link {
+    color: map-get(global.$color-text, gray);
+    @include global.font-size(14);
+    &:visited,
+    &:focus,
+    &:active {
+      color: map-get(global.$color-text, gray);
+    }
+  }
+}

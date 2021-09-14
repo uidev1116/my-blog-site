@@ -1,0 +1,33 @@
+<div class="acms-container">
+  <!-- BEGIN_MODULE User_Profile id="{{module_id}}"-->
+  <div class="p-profile">
+  <!-- BEGIN user:loop -->
+    <!-- BEGIN icon:veil -->
+    <div class="p-profile__img-wrap">
+      <img
+        src="/themes/uidevlog/images/marker/icon-lazy-load-image.svg"
+        data-src="%{ARCHIVES_DIR}{icon}"
+        width="85px"
+        height="85px"
+        alt="{name}"
+        class="p-profile__img acms-img-responsive js-lazy-load"
+      >
+    </div>
+    <!-- END icon:veil -->
+    <div class="p-profile__content">
+      <!-- BEGIN name:veil -->
+      <div class="p-profile__name-wrap">
+        <h2 class="p-profile__name">{name}</h2>
+      </div>
+      <!-- END name:veil -->
+      <!-- BEGIN bio:veil -->
+      <div class="p-profile__bio-wrap">
+        <p class="p-profile__bio">{bio}[raw|nl2br]</p>
+      </div>
+      <!-- END bio:veil -->
+      @include(/include/parts/sns-links.html)
+    </div>
+    <!-- END user:loop -->
+  </div>
+  <!-- END_MODULE User_Profile -->
+</div>

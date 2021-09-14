@@ -1,0 +1,98 @@
+// ------------------------------
+//　カラー
+// ------------------------------
+// ブランドカラー
+$color-primary: (
+  // lightest: カラーコードを指定してください,
+  lighter:  #fde5ea,
+  // light: カラーコードを指定してください,
+  base: #3ea8ff,
+  base-invers: #FFF,
+  // dark: カラーコードを指定してください,
+  darker: #0f83fd,
+  // darkest: カラーコードを指定してください,
+  base-hover: #0f83fd,
+);
+
+// セカンダリーカラー
+$color-secondary: (
+  base: #ffd93c,
+);
+
+// グレー
+$color-gray: (
+  base: #93a5b1,
+  darker: #77838c,
+);
+
+// テキスト
+$color-text: (
+  base: #333,
+  light-label: #7e7979,
+  gray: map-get($color-gray, base),
+  inverse: #FFF,
+);
+
+// 線
+$color-border: (
+  base: #cfdce6,
+  admin-table: #D8D5D5,
+);
+
+// 背景
+$color-bg: (
+  white: #FFF,
+  primary: #edf2f7,
+);
+
+// 各sns色
+$color-sns: (
+  twitter: #1DA1F2,
+  facebook: #3b5999,
+  youtubes: #CD201F,
+);
+
+$color-shadow: rgba(#000a3c, .2);
+
+// フォームカラー
+// $color-form: (
+//   error: #A20915,
+//   invalid: #FFEBEE,
+// );
+
+// ボタン プレーン
+$color-btn-plain: (
+  text: #000,
+  text-hover: #000,
+  border: #CCC,
+  border-hover: #000,
+  bg: transparent,
+  bg-hover: transparent,
+);
+
+// ボタン プライマリー
+$color-btn-primary: (
+  text: map-get($color-primary, base),
+  text-hover: map-get($color-primary, base),
+  border: map-get($color-primary, base),
+  border-hover: map-get($color-primary, base-hover),
+  bg: transparent,
+  bg-hover: transparent,
+);
+
+// ボタン プライマリー
+$color-btn-primary-bg: (
+  text: map-get($color-primary, base-invers),
+  text-hover: map-get($color-primary, base-invers),
+  border: map-get($color-primary, base),
+  border-hover: map-get($color-primary, base-hover),
+  bg: map-get($color-primary, base),
+  bg-hover: map-get($color-primary, base-hover),
+);
+
+
+// ラベル
+$color-label: (
+  base: map-get($color-primary, base),
+  base-hover: lighten(map-get($color-primary, base), 10%),
+);

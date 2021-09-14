@@ -1,0 +1,13 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　コンテナ
+------------------------------ */
+.c-grid-container {
+  display: grid;
+}
+
+.c-flex-container {
+  display: flex;
+}

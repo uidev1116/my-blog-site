@@ -1,0 +1,16 @@
+@use "../foundation/global/acms-common" as acms;
+@use "../foundation/global/common" as global;
+
+/* ------------------------------
+　　フッター
+------------------------------ */
+.p-footer {
+  padding: 16px 0;
+  border-top: 1px solid map-get(global.$color-border, base);
+
+  &__copyright {
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+  }
+}
