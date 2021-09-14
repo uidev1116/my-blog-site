@@ -838,9 +838,16 @@ class Helper
                         $list   = $Field->getArray($fd, true);
                         $base   = substr($fd, 0, (-1 * strlen('@path')));
                         $set    = false;
-                        foreach ( $list as $i => $val ) {
-                            $path   = $val;
-                            if ( Storage::isFile(ARCHIVES_DIR.$temp.$path) ) {
+                        foreach ($list as $i => $val) {
+                            $path = $val;
+                            if (!$set) {
+                                $Field->delete($fd);
+                                $Field->delete($base.'@largePath');
+                                $Field->delete($base.'@tinyPath');
+                                $Field->delete($base.'@squarePath');
+                                $set = true;
+                            }
+                            if (Storage::isFile(ARCHIVES_DIR.$temp.$path)) {
                                 $info       = pathinfo($path);
                                 $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
                                 Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
@@ -861,24 +868,26 @@ class Helper
                                 Storage::copy($tinyPath, $ARCHIVES_DIR_TO.$newTinyPath);
                                 Storage::copy($squarePath, $ARCHIVES_DIR_TO.$newSquarePath);
 
-                                if ( !$set ) {
-                                    $Field->delete($fd);
-                                    $Field->delete($base.'@largePath');
-                                    $Field->delete($base.'@tinyPath');
-                                    $Field->delete($base.'@squarePath');
-                                    $set = true;
+                                if (!Storage::isReadable($newLargePath)) {
+                                    $newLargePath = '';
+                                }
+                                if (!Storage::isReadable($newTinyPath)) {
+                                    $newTinyPath = '';
+                                }
+                                if (!Storage::isReadable($newSquarePath)) {
+                                    $newSquarePath = '';
                                 }
                                 $Field->add($fd, $newPath);
-                                if ( Storage::isReadable($largePath) ) {
-                                    $Field->add($base.'@largePath', $newLargePath);
-                                }
-                                if ( Storage::isReadable($tinyPath) ) {
-                                    $Field->add($base.'@tinyPath', $newTinyPath);
-                                }
-                                if ( Storage::isReadable($squarePath) ) {
-                                    $Field->add($base.'@squarePath', $newSquarePath);
-                                }
+                                $Field->add($base.'@largePath', $newLargePath);
+                                $Field->add($base.'@tinyPath', $newTinyPath);
+                                $Field->add($base.'@squarePath', $newSquarePath);
+                            } else {
+                                $Field->add($fd, '');
+                                $Field->add($base.'@largePath', '');
+                                $Field->add($base.'@tinyPath', '');
+                                $Field->add($base.'@squarePath', '');
                             }
+
                         }
                     }
                 }

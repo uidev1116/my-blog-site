@@ -251,12 +251,9 @@ ACMS.Config({
       fs: 1,
       h1: null,
       iv_load_policy: 1,
-      list: '',
-      listType: '', // search | user_uploads | playlist
       loop: 0,
       modestbranding: 0,
       origin: 0,
-      playlist: '',
       playsinline: 0,
       rel: 0,
       showinfo: 1,
