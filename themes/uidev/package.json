@@ -1,5 +1,5 @@
 {
-  "name": "uidevlog",
+  "name": "uidev",
   "version": "1.0.0",
   "description": "個人ブログ Webサイト制作プロジェクト",
   "keywords": [
@@ -7,8 +7,8 @@
     "a-blog cms"
   ],
   "config": {
-    "local": "uidevlog.lab",
-    "theme": "uidevlog"
+    "local": "uidev.lab",
+    "theme": "uidev"
   },
   "main": "index.js",
   "scripts": {

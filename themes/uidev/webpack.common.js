@@ -79,7 +79,7 @@ module.exports = {
               postcssOptions: {
                 plugins: [
                   autoprefixer({
-                    grid: true,
+                    grid: 'autoplace',
                   }),
                 ],
               },
