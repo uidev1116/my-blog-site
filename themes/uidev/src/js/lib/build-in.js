@@ -297,10 +297,41 @@ const focusedImage = (context, selector = '') => {
   });
 };
 
+const unitGroupAlign = () => {
+  let timer;
+  const align = () => {
+    const unitGroups = document.querySelectorAll('.js-unit_group-align');
+    let currentWidth = 0;
+    let count = 0;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      [].forEach.call(unitGroups, (unit) => {
+        const containerWidth = parseFloat(getComputedStyle(unit.parentNode, null).width.replace('px', ''));
+        const unitW = unit.offsetWidth - 1;
+        unit.style.clear = 'none'; // eslint-disable-line no-param-reassign
+        if (!unit.previousElementSibling || !unit.previousElementSibling.classList.contains('js-unit_group-align')) {
+          currentWidth = 0;
+          count = 0;
+        }
+        if (count > 0 && ((containerWidth - (currentWidth + unitW)) < -1)) {
+          unit.style.clear = 'both'; // eslint-disable-line no-param-reassign
+          currentWidth = unitW;
+          count = 1;
+        } else {
+          currentWidth += unitW;
+          count += 1;
+        }
+      });
+    }, 400);
+  };
+  window.addEventListener('resize', align);
+  align();
+};
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   validator, linkMatchLocation, externalLinks, scrollTo,
   alertUnload, smartPhoto, lazyLoad, inView,
   modalVideo, scrollHint, googleMap, openStreetMap,
-  datePicker, postInclude, pdfPreview, focusedImage,
+  datePicker, postInclude, pdfPreview, focusedImage, unitGroupAlign,
 };

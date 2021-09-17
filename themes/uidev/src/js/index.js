@@ -1,19 +1,14 @@
 import domContentLoaded from 'dom-content-loaded';
 import Dispatcher from 'a-dispatcher';
-import lozad from 'lozad';
-import MasonryLayout from 'masonry-layout';
-import ImagesLoaded from 'imagesloaded';
 import './lib/polyfill';
 import fonts from './fonts';
 import {
   validator, linkMatchLocation, externalLinks, scrollTo,
   alertUnload, smartPhoto, lazyLoad, inView,
   modalVideo, scrollHint, googleMap, openStreetMap,
-  datePicker, postInclude, pdfPreview, focusedImage,
+  datePicker, postInclude, pdfPreview, focusedImage, unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
-import pageTopBtn from './page-top-btn';
-import mobileNav from './mobile-nav';
-// import examplePage from './example';
+import offcanvas from './offcanvas';
 
 /**
  * スタイルの読み込み
@@ -53,6 +48,7 @@ if (window.ACMS === undefined) {
     postInclude(context);
     pdfPreview(context);
     focusedImage(context);
+    unitGroupAlign(context);
   };
   window.dispatch(document);
 }
@@ -74,8 +70,7 @@ dispatcher.addRoute('^/app.html$', async () => {
 dispatcher.run(window.location.pathname);
 
 // 全ページで読み込むjQuery使用コード
-pageTopBtn();
-mobileNav();
+offcanvas();
 
 /**
  * Content Ready
@@ -94,51 +89,4 @@ domContentLoaded(() => {
   //     }
   // });
   // });
-
-  /**
-   * pintarest風レイアウト
-   */
-  const observer = lozad('.js-images-loaded-container', { // eslint-disable-line no-undef
-    loaded: (container) => {
-      const images = container.querySelectorAll('img');
-      [].forEach.call(images, (img) => {
-        const src = img.getAttribute('data-src');
-        if (src) {
-          img.setAttribute('src', src);
-        }
-      });
-      ImagesLoaded(container, () => { // eslint-disable-line no-undef
-        const grid = container.querySelector('.js-masonry-grid');
-        if (grid) {
-          new MasonryLayout(grid, { // eslint-disable-line no-undef, no-new
-            itemSelector: '.js-masonry-grid-item',
-          });
-        }
-      });
-    },
-  });
-  observer.observe();
-
-  /**
-   * ポップアップ
-   */
-  function popupImage() {
-    const popup = document.getElementById('js-popup');
-    if (!popup) return;
-
-    const blackBg = document.getElementById('js-black-bg');
-    const closeBtn = document.getElementById('js-close-btn');
-    const showBtn = document.getElementById('js-show-popup');
-
-    closePopUp(blackBg); // eslint-disable-line no-use-before-define
-    closePopUp(closeBtn); // eslint-disable-line no-use-before-define
-    closePopUp(showBtn); // eslint-disable-line no-use-before-define
-    function closePopUp(elem) {
-      if (!elem) return;
-      elem.addEventListener('click', () => {
-        popup.classList.toggle('is-show');
-      });
-    }
-  }
-  popupImage();
 });
