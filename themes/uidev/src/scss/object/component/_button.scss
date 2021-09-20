@@ -5,13 +5,6 @@
 　　ボタン
 ------------------------------ */
 
-/* 標準ボタン
-=============================== */
-/* プレーンなボタン */
-.c-btn-plain {
-  @include global.btn-base();
-}
-
 /* プライマリーカラーなボタン */
 .c-btn-primary {
   @include global.btn-base(
@@ -21,51 +14,6 @@
     $color-border-hover: map-get(global.$color-btn-primary, border-hover),
     $color-bg: map-get(global.$color-btn-primary, bg),
     $color-bg-hover: map-get(global.$color-btn-primary, bg-hover),
-  )
-}
-
-/* プライマリーカラーなボタン（背景付き） */
-.c-btn-primary-bg {
-  @include global.btn-base(
-    $color-text: map-get(global.$color-btn-primary-bg, text),
-    $color-text-hover: map-get(global.$color-btn-primary-bg, text-hover),
-    $color-border: map-get(global.$color-btn-primary-bg, border),
-    $color-border-hover: map-get(global.$color-btn-primary-bg, border-hover),
-    $color-bg: map-get(global.$color-btn-primary-bg, bg),
-    $color-bg-hover: map-get(global.$color-btn-primary-bg, bg-hover),
-  )
-}
-
-/* 標準ボタン共通装飾 */
-.c-btn-plain,
-.c-btn-primary,
-.c-btn-primary-bg {
-
-  /* ボタン内アイコン右 */
-  &__icon-right {
-    padding-left: 5px;
-  }
-
-  /* ボタン内アイコンを右にfix */
-  /* セレクタ {
-  } */
-
-  /* ボタンサイズ 大 */
-  &.is-large {
-    width: 500px;
-    max-width: 100%;
-    padding: 1.5em 1em;
-    text-align: center;
-  }
-  /* ボタンサイズ 中 */
-  // &.is-medium {
-  // }
-}
-
-/* テキストボタン
-=============================== */
-.c-btn-text {
-  margin: 0;
-  padding: 0;
-  @include global.hover-underline-colorfix();
+  );
+  width: 100%;
 }

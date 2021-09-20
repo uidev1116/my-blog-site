@@ -1,9 +1,16 @@
 import { library, dom, config } from '@fortawesome/fontawesome-svg-core';
 import {
-  faSearch, faRss, faLink,
+  faSearch,
+  faRss,
+  faLink,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  faFacebook, faTwitter, faInstagram, faGithub, faYoutube,
+  faFacebook,
+  faTwitter,
+  faInstagram,
+  faGithub,
+  faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
 
 /**
@@ -24,6 +31,7 @@ export default () => {
     faYoutube,
     faRss,
     faLink,
+    faPlus,
   );
   dom.watch();
 };

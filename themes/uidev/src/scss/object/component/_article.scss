@@ -7,6 +7,8 @@ $_article-horizonal-space: 8px;
 　　記事
 ------------------------------ */
 .c-articles-container {
+  position: relative;
+  display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px 16px;
 }
@@ -22,7 +24,8 @@ $_article-horizonal-space: 8px;
   position: relative;
   display: flex;
   flex-flow: column;
-  border-radius: global.$border-radius-tmp;
+  overflow: hidden;
+  border-radius: global.$border-radius-base;
   box-shadow: 0 3px 6px -2px global.$color-shadow;
 
   &__category-label {

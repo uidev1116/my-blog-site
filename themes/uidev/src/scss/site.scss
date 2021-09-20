@@ -16,7 +16,6 @@
  */
 @use "object/component/article";
 @use "object/component/button";
-@use "object/component/container";
 @use "object/component/card";
 @use "object/component/list";
 @use "object/component/sns-links";
@@ -28,7 +27,6 @@
  */
 @use "layout/footer";
 @use "layout/header" as layout-header;
-@use "layout/list" as layout-list;
 @use "layout/section";
 
 /**
@@ -41,7 +39,7 @@
 @use "object/project/nav";
 @use "object/project/search";
 @use "object/project/profile";
-@use "object/project/top";
+@use "object/project/more-btn";
 @use "object/project/topicpath";
 
 /**
