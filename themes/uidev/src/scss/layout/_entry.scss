@@ -1,0 +1,43 @@
+@use "../foundation/global/acms-common" as acms;
+@use "../foundation/global/common" as global;
+
+$_grid-row: (acms.$grid-space / 2);
+$_grid-column: 24px;
+
+/* ------------------------------
+　　エントリー
+------------------------------ */
+.l-entry {
+  display: grid;
+  grid-template:
+      "... header      ..." auto
+      "... main-column ..." auto
+      "... .....       ..." #{$_grid-column}
+      "... sub-column  ..." auto
+      "... .....       ..." #{$_grid-column}
+      / #{$_grid-row} (1fr) #{$_grid-row};
+
+  &__header {
+    grid-area: header;
+  }
+
+  &__main-column {
+    grid-area: main-column;
+  }
+
+  &__sub-column {
+    grid-area: sub-column;
+  }
+}
+
+@media screen and (min-width: acms.$breakpoint-lg-min) {
+  .l-entry {
+    grid-template:
+      "... header       header header ..." auto
+      "... main-column  ...... sub-column ..." auto
+      "... ......       ...... ......     ... " #{$_grid-column}
+      / #{$_grid-row} 1fr 32px 300px #{$_grid-row};
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}

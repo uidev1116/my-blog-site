@@ -3,12 +3,26 @@ import Dispatcher from 'a-dispatcher';
 import './lib/polyfill';
 import fonts from './fonts';
 import {
-  validator, linkMatchLocation, externalLinks, scrollTo,
-  alertUnload, smartPhoto, lazyLoad, inView,
-  modalVideo, scrollHint, googleMap, openStreetMap,
-  datePicker, postInclude, pdfPreview, focusedImage, unitGroupAlign,
+  validator,
+  linkMatchLocation,
+  externalLinks,
+  scrollTo,
+  alertUnload,
+  smartPhoto,
+  lazyLoad,
+  inView,
+  modalVideo,
+  scrollHint,
+  googleMap,
+  openStreetMap,
+  datePicker,
+  postInclude,
+  pdfPreview,
+  focusedImage,
+  unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
-import offcanvas from './offcanvas';
+import tocbot from './tocbot';
+import prettyScroll from './pretty-scroll';
 
 /**
  * スタイルの読み込み
@@ -60,7 +74,9 @@ const dispatcher = new Dispatcher();
 
 // ダイナミックインポート
 dispatcher.addRoute('^/app.html$', async () => {
-  const { default: appPage } = await import(/* webpackChunkName: "app" */'./containers/app');
+  const { default: appPage } = await import(
+    /* webpackChunkName: "app" */ './containers/app'
+  );
   appPage();
 });
 
@@ -69,8 +85,9 @@ dispatcher.addRoute('^/app.html$', async () => {
 
 dispatcher.run(window.location.pathname);
 
-// 全ページで読み込むjQuery使用コード
-offcanvas();
+// 外部スクリプト
+tocbot();
+prettyScroll();
 
 /**
  * Content Ready

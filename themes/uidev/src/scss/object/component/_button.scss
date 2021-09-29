@@ -15,5 +15,18 @@
     $color-bg: map-get(global.$color-btn-primary, bg),
     $color-bg-hover: map-get(global.$color-btn-primary, bg-hover),
   );
-  width: 100%;
+}
+
+.c-btn-arrow {
+  display: inline-flex;
+  align-items: center;
+  color: map-get(global.$color-gray, darker);
+  @include global.font-size(14.5);
+  background-color: transparent;
+  border: none;
+
+  &__icon {
+    margin-left: 4px;
+    @include global.font-size(13);
+  }
 }

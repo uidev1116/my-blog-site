@@ -1,6 +1,7 @@
 @extends("/_layouts/base.html")
 
 @section("main")
+@include("/include/parts/profile.html", {"module_id", "user_profile"})
 
 <div class="acms-container">
 @include("/include/entry/summary.html")

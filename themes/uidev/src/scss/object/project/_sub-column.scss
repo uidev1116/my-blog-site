@@ -1,0 +1,151 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　サブカラム
+------------------------------ */
+.p-sub-column {
+  &__inner {
+    display: flex;
+    flex-flow: column;
+    gap: 24px;
+    max-height: calc(100vh - 30px);
+  }
+}
+
+/* タグ
+=============================== */
+.p-sub-column-tags {
+  position: sticky;
+  display: none;
+  padding: 15px 20px;
+  background: map-get(global.$color-bg, white);
+  border-radius: global.$border-radius-lg;
+
+  &__title {
+    margin: 0;
+    font-weight: bold;
+    @include global.font-size(16);
+  }
+
+  &__contents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: .3em;
+    border: solid 1px map-get(global.$color-border, base);
+    border-radius: global.$border-radius-lg;
+    @include global.font-size(12);
+  }
+}
+
+@media screen and (min-width: acms.$breakpoint-lg-min) {
+  .p-sub-column-tags {
+    display: block;
+  }
+}
+
+/* ユーザー
+=============================== */
+.p-sub-column-user {
+  padding: 20px;
+  background: map-get(global.$color-bg, white);
+  border-radius: global.$border-radius-lg;
+
+  &__bio-container {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &__icon {
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  &__name {
+    display: block;
+    color: map-get(global.$color-text, base);
+    font-weight: bold;
+
+    &:visited,
+    &:active,
+    &:hover {
+      color: map-get(global.$color-text, base);
+      text-decoration: none;
+    }
+  }
+
+  &__bio {
+    @include global.font-size(14);
+  }
+}
+
+
+/* 目次
+=============================== */
+.p-sub-column-toc {
+  display: none;
+  padding: 15px 20px;
+  overflow: auto;
+  word-break: break-word;
+  background: map-get(global.$color-bg, white);
+  border-radius: global.$border-radius-lg;
+
+  &__title {
+    margin: 0;
+    font-weight: bold;
+    @include global.font-size(16);
+  }
+
+  &__list {
+    @include global.list-unstyled();
+  }
+
+  &__item {
+    position: relative;
+    padding: 0 0 0 24px;
+
+    &::before {
+      position: absolute;
+      top: 0.5em;
+      left: 12px;
+      display: inline-block;
+      width: 0px;
+      height: 0px;
+      border: 3px solid map-get(global.$color-primary, base);
+      border-radius: 50%;
+      transform: translateY(50%);
+      content: "";
+    }
+  }
+
+  &__link {
+    position: relative;
+    display: inline-block;
+    margin: 8px 0;
+    color: map-get(global.$color-text, base);
+    @include global.font-size(14);
+
+    &:visited,
+    &:active,
+    &:hover {
+      color: map-get(global.$color-text, base);
+      text-decoration: none;
+    }
+  }
+}
+
+@media screen and (min-width: acms.$breakpoint-lg-min) {
+  .p-sub-column-toc {
+    display: block;
+  }
+}

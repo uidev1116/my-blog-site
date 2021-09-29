@@ -20,11 +20,6 @@ $root-theme-img: "../../../../themes/uidev/images/";
 // ------------------------------
 //　カラー【要対応】
 // ------------------------------
-// 背景色
-$bg-color: #fff;
-
-// ベースカラー
-$base-color: #ffed1f;
 
 // リンクカラー
 $link-color: #006dd9;
@@ -35,7 +30,8 @@ $btn-color: #333;
 $btn-active-color: #000;
 
 // 角丸
-$border-radius-base: 8px;
+$border-radius-md  : 8px;
+$border-radius-lg  : 12px;
 
 // ------------------------------
 //　ヘッダー
@@ -72,15 +68,10 @@ $entry-color-point-base: #c41134;
 $entry-color-border-base: #ccc;
 $entry-color-bg-base: #efefef;
 
-$entry-font-size-base: 14;
-$entry-font-size-title-sm: 16;
-$entry-font-size-title-md: 18;
-$entry-font-size-title-lg: 20;
-
-$entry-font-size-base-wide-screen: 16;
-$entry-font-size-title-sm-wide-screen: 18;
-$entry-font-size-title-md-wide-screen: 20;
-$entry-font-size-title-lg-wide-screen: 22;
+$entry-font-size-base: 16;
+$entry-font-size-title-sm: 17.6;
+$entry-font-size-title-md: 19.2;
+$entry-font-size-title-lg: 22.4;
 
 $entry-text-line-height: $line-height-text;
 $entry-title-line-height: $line-height-title;
@@ -93,7 +84,7 @@ $entry-dl-border: 1px solid $entry-color-border-base;
 $entry-dt-border-width: 4px;
 $entry-dt-border-space: 10px;
 
-$entry-quote-color: #8e8787;
+$entry-quote-color: #b3bfc7;
 
 // ------------------------------
 //　transition

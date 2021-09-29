@@ -16,23 +16,23 @@ body {
 
 /* リンクの設定 */
 a {
-  color: #006dd9;
+  color: global.$link-color;
   text-decoration: none;
   border: none;
 }
 
 a:visited {
-  color: #7f5ad7;
+  color: global.$link-color-visited;
   text-decoration: none;
 }
 
 a:active {
-  color: #006dd9;
+  color: global.$link-color;
   text-decoration: none;
 }
 
 a:hover {
-  color: #006dd9;
+  color: global.$link-color;
   text-decoration: underline;
 }
 

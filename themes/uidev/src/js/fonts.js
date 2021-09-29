@@ -4,6 +4,10 @@ import {
   faRss,
   faLink,
   faPlus,
+  faChevronDown,
+  faHashtag,
+  faAngleLeft,
+  faAngleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -12,6 +16,7 @@ import {
   faGithub,
   faYoutube,
 } from '@fortawesome/free-brands-svg-icons';
+import { faListAlt } from '@fortawesome/free-regular-svg-icons';
 
 /**
  * fontawesome5
@@ -32,6 +37,11 @@ export default () => {
     faRss,
     faLink,
     faPlus,
+    faChevronDown,
+    faHashtag,
+    faListAlt,
+    faAngleRight,
+    faAngleLeft,
   );
   dom.watch();
 };
