@@ -9,7 +9,8 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  background-color: map-get(global.$color-bg, primary);
+  padding: 0 (acms.$grid-space / 2);
+  background-color: map-get(global.$color-bg, white);
 }
 
 /* ヘッダーロゴ
@@ -37,7 +38,7 @@
     display: block;
   }
 
-  &__icon {
+  &__ico {
     color: map-get(global.$color-gray, darker);
     @include global.font-size(23);
   }
