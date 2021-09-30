@@ -5,12 +5,18 @@
 　　ヘッダー
 ------------------------------ */
 .p-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   height: 100%;
-  padding: 0 (acms.$grid-space / 2);
   background-color: map-get(global.$color-bg, white);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 acms.$grid-space;
+  }
 }
 
 /* ヘッダーロゴ

@@ -1,7 +1,6 @@
 @use "../foundation/global/acms-common" as acms;
 @use "../foundation/global/common" as global;
 
-$_grid-row: (acms.$grid-space / 2);
 $_grid-column: 24px;
 
 /* ------------------------------
@@ -10,12 +9,12 @@ $_grid-column: 24px;
 .l-entry {
   display: grid;
   grid-template:
-      "... header      ..." auto
-      "... main-column ..." auto
-      "... .....       ..." #{$_grid-column}
-      "... sub-column  ..." auto
-      "... .....       ..." #{$_grid-column}
-      / #{$_grid-row} (1fr) #{$_grid-row};
+      "header" auto
+      "main-column" auto
+      "....." #{$_grid-column}
+      "sub-column" auto
+      "....." #{$_grid-column}
+      / 1fr;
 
   &__header {
     grid-area: header;
@@ -33,11 +32,9 @@ $_grid-column: 24px;
 @media screen and (min-width: acms.$breakpoint-lg-min) {
   .l-entry {
     grid-template:
-      "... header       header header ..." auto
-      "... main-column  ...... sub-column ..." auto
-      "... ......       ...... ......     ... " #{$_grid-column}
-      / #{$_grid-row} 1fr 32px 300px #{$_grid-row};
-    max-width: 1200px;
-    margin: 0 auto;
+      "header       header header" auto
+      "main-column  ...... sub-column" auto
+      "......       ...... ......" #{$_grid-column}
+      / 1fr 32px 300px;
   }
 }

@@ -239,6 +239,29 @@
 }
 
 // ------------------------------
+//リンク
+// ------------------------------
+// スタイルリセット
+@mixin link-unstyled($color: inherit) {
+  color: $color;
+
+  &,
+  &:link,
+  &:focus,
+  &:active {
+    color: $color;
+    text-decoration: none;
+  }
+  &:visited {
+    color: $color;
+  }
+  &:hover {
+    color: $color;
+    text-decoration: none;
+  }
+}
+
+// ------------------------------
 //　hover
 // ------------------------------
 // ホバーすると透過

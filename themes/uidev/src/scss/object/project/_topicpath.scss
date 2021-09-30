@@ -7,13 +7,19 @@
 
 .p-topicpath {
   display: flex;
-  margin: 0;
-  padding: 10px 0;
+  padding-top: 12px;
+  padding-bottom: 12px;
   overflow: auto;
   white-space: nowrap;
   list-style: none;
 
+  &__wrap {
+    background: map-get(global.$color-bg, white);
+  }
+
   &__item {
+    color: map-get(global.$color-text, gray);
+    @include global.font-size(14);
     &::before {
       padding: 0 10px;
       content: " / ";
@@ -25,12 +31,6 @@
     }
   }
   &__link {
-    color: map-get(global.$color-text, gray);
-    @include global.font-size(14);
-    &:visited,
-    &:focus,
-    &:active {
-      color: map-get(global.$color-text, gray);
-    }
+    @include global.link-unstyled();
   }
 }
