@@ -1,20 +1,21 @@
 <!-- BEGIN_MODULE Entry_TagRelational id="{{module_id}}" -->
-<div class="acms-margin-bottom-medium">
+<section class="l-section">
   @include("/admin/module/setting.html")
-    <div class="acms-grid">
-      <!-- BEGIN entry:loop -->
-      <div class="acms-col-md-4 js-autoheight-r">
-        <div class="acms-thumbnail">
-        <!-- BEGIN_IF [{path}/nem] --><img src="%{ROOT_DIR}{path}" alt="{alt}"><!-- ELSE --><img src="/images/default/noimage.gif" alt="" class="acms-img-responsive" /><!-- END_IF -->
-          <div>
-            <h3>{title}</h3>
-            <p>{summary}</p>
-            <p class="acms-text-muted">関連度: {grade}</p>
-            <p><a href="{url}" class="acms-btn acms-btn-primary" role="button">詳細をみる</a></p>
-          </div>
+  <!-- BEGIN moduleField -->
+  <h2 class="c-title -md">{module_heading}</h2><!-- END moduleField -->
+  <div class="l-container-md -column2">
+    <!-- BEGIN entry:loop -->
+    <article class="c-article -transparent">
+      <a href="{url}" class="c-article__link">
+        <div class="c-article__title-wrap">
+          <h3 class="c-article__title">{title}</h3>
         </div>
+      </a>
+      <div class="c-article__foot">
+        <time datetime="{date#Y}-{date#m}-{date#d}">{date#Y}/{date#m}/{date#d}</time>
       </div>
-      <!-- END entry:loop -->
-    </div>
+    </article>
+    <!-- END entry:loop -->
   </div>
-  <!-- END_MODULE Entry_TagRelational -->
+</section>
+<!-- END_MODULE Entry_TagRelational -->

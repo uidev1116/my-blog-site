@@ -1,4 +1,4 @@
-<!-- BEGIN_MODULE Entry_Body id="body_date" -->
+<!-- BEGIN_MODULE Entry_Body id="{{module_id}}" -->
 
 <!-- BEGIN_SetRendered id="pager" -->
 @include("/include/parts/pager.html")
@@ -7,7 +7,6 @@
 <!-- BEGIN notFound -->
 <p>ただいまページを準備しております。もうしばらくお待ちください。</p>
 <!-- END notFound -->
-@include("/admin/module/setting.html")
 
 <!-- BEGIN entry:loop -->
 @include("/admin/entry/revision-info.html")
@@ -28,27 +27,19 @@
     <div class="l-entry__main-column entry-column entry-style js-toc-content">
     @include("/include/unit.html")
     <hr class="clearHidden">
+    @include("/admin/entry/edit-%{IS_ADMIN}.html")
+    @include("/admin/entry/action.html")
     <!-- GET_Rendered id="pager" -->
     </div>
     <!-- END unit:veil -->
 
-    @include("/admin/entry/edit-%{IS_ADMIN}.html")
-    @include("/admin/entry/action.html")
+
 
     <aside class="l-entry__sub-column p-sub-column js-container">
       <div class="p-sub-column__inner js-pretty-scroll">
-        <div class="p-sub-column-tags">
-          <h2 class="p-sub-column-tags__title">Tags</h2>
-          <div class="p-sub-column-tags__contents">
-            <!-- BEGIN tag:veil -->
-            <!-- BEGIN tag:loop --><a href="{url}" class="p-sub-column-tags__tag">#{name}</a><!-- END tag:loop --><!-- END tag:veil -->
-          </div>
-        </div>
-        @include("/include/parts/user.html")
-        <div class="p-sub-column-toc">
-          <h2 class="p-sub-column-toc__title">Toc</h2>
-          <div class="p-sub-column-toc__toc js-toc"></div>
-        </div>
+        @include("/include/sub-column/tags.html")
+        @include("/include/sub-column/user.html")
+        @include("/include/sub-column/toc.html")
       </div>
     </aside>
 
@@ -67,5 +58,11 @@
   </div>
 </article>
 <!-- END entry:loop -->
+
+<!-- BEGIN_IF [{{relational | default("on")}}/eq/on] -->
+<div class="l-container-md">
+@include("/include/entry/relational.html", {"module_id": "tag_relational"})
+</div>
+<!-- END_IF -->
 
 <!-- END_MODULE Entry_Body -->

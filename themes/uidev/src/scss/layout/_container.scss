@@ -5,25 +5,32 @@
 　　コンテナー
 ------------------------------ */
 .l-container-lg {
-  max-width: global.$container-lg + acms.$grid-space * 2;
+  max-width: global.$container-lg + acms.$grid-space;
   margin: 0 auto;
-  padding-right: acms.$grid-space;
-  padding-left: acms.$grid-space;
+  padding-right: (acms.$grid-space / 2);
+  padding-left: (acms.$grid-space / 2);
   @include acms.box-sizing(border-box);
 }
 
 .l-container-md {
-  max-width: global.$container-md + acms.$grid-space * 2;
+  max-width: global.$container-md + acms.$grid-space;
   margin: 0 auto;
-  padding-right: acms.$grid-space;
-  padding-left: acms.$grid-space;
+  padding-right: (acms.$grid-space / 2);
+	padding-left: (acms.$grid-space / 2);
   @include acms.box-sizing(border-box);
 }
 
 .l-container-sm {
-  max-width: global.$container-sm + acms.$grid-space * 2;
+  max-width: global.$container-sm + acms.$grid-space;
   margin: 0 auto;
-  padding-right: acms.$grid-space;
-  padding-left: acms.$grid-space;
+  padding-right: (acms.$grid-space / 2);
+	padding-left: (acms.$grid-space / 2);
   @include acms.box-sizing(border-box);
+}
+
+@media screen and (min-width: acms.$breakpoint-md-min) {
+  [class^="l-container-"].-column2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

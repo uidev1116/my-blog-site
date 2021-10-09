@@ -373,7 +373,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   width: 100%;
+  height: global.$footer-nav-height;
   padding: 8px;
   background: map-get(global.$color-bg, white);
   border-top: solid 1px map-get(global.$color-border, lighter);

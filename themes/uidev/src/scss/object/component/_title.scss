@@ -6,25 +6,18 @@
 ------------------------------ */
 
 /* セクション見出し */
-.c-title-section {
-  margin-bottom: 24px;
-  text-align: center;
-  &__main {
-    margin: 0;
+.c-title {
+  margin: 0 0 24px 0;
+
+  &__md {
     line-height: global.$line-height-title;
     @include global.font-size(24);
   }
-  &__sub {
-    margin: 0;
-    color: map-get(global.$color-primary, base);
-    font-weight: global.$font-base-weight-bold;
-    line-height: global.$line-height-title;
-    @include global.font-size(18);
-  }
+
 }
 
 @media (min-width : acms.$breakpoint-sm-min) {
-  .c-title-section {
+  .c-title {
     margin-bottom: 40px;
   }
 }
