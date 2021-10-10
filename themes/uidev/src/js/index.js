@@ -1,6 +1,7 @@
 import domContentLoaded from 'dom-content-loaded';
 import Dispatcher from 'a-dispatcher';
 import './lib/polyfill';
+import Prism from 'prismjs';
 import fonts from './fonts';
 import {
   validator,
@@ -93,6 +94,8 @@ prettyScroll();
  * Content Ready
  */
 domContentLoaded(() => {
+  Prism.manual = true;
+  Prism.highlightAll();
   // $(() => {
   // 郵便番号の「-」の挿入
   // $('.js-insert-hyphen').blur(function(){

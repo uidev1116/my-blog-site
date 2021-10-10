@@ -14,11 +14,10 @@
 <dl{class}>{text}[raw|definition_list]</dl><!-- END dl --><!-- BEGIN blockquote -->
 <div class="entry-container"><blockquote{class}>{text}[raw|nl2br]</blockquote></div><!-- END blockquote --><!-- BEGIN table -->
 <div class="entry-container"><table{class}>{text}[raw|table]</table></div><!-- END table --><!-- BEGIN pre -->
-<pre{class}><code>{text}</code></pre><!-- END pre --><!-- BEGIN none -->
+<pre class="line-numbers"><code{class}>{text}</code></pre><!-- END pre --><!-- BEGIN none -->
 {text}[raw]<!-- END none --><!-- BEGIN markdown -->
 {text}[raw|markdown]<!-- END markdown --><!-- BEGIN wysiwyg -->
 {text}[raw]<!-- END wysiwyg -->
-
 @include("/include/unit/tag-select.html")
 </div>
 @endsection

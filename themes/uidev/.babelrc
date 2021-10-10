@@ -1,6 +1,7 @@
 {
   "presets": [
-    ["@babel/preset-env",
+    [
+      "@babel/preset-env",
       {
         "targets": {
           "ie": 11
@@ -19,13 +20,20 @@
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",
-    ["@babel/plugin-transform-modules-commonjs", { "strictMode": false }]
+    ["@babel/plugin-transform-modules-commonjs", { "strictMode": false }],
+    [
+      "prismjs",
+      {
+        "languages": ["javascript", "css", "markup", "bash", "scss", "jsx", "tsx", "typescript"],
+        "plugins": ["line-numbers"],
+        "theme": "tomorrow",
+        "css": true
+      }
+    ]
   ],
   "env": {
     "production": {
-      "plugins": [
-        "babel-plugin-minify-dead-code-elimination"
-      ]
+      "plugins": ["babel-plugin-minify-dead-code-elimination"]
     }
   }
 }
