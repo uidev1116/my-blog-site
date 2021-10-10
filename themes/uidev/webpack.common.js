@@ -11,6 +11,10 @@ const pkg = require('./package.json');
 
 module.exports = {
   cache: true,
+  performance: {
+    maxAssetSize: 1500000,
+    maxEntrypointSize: 1500000,
+  },
   target: ["web", "es5"],
   entry: {
     bundle: `${__dirname}/src/js/index.js`,
