@@ -23,18 +23,18 @@
       </div>
     </header>
 
-    <!-- BEGIN unit:veil -->
     <div class="l-entry__main-column entry-column entry-style js-toc-content">
+    <!-- BEGIN unit:veil -->
     @include("/include/unit.html")
     <hr class="clearHidden">
-    @include("/admin/entry/edit-%{IS_ADMIN}.html")
     @include("/admin/entry/action.html")
     <!-- GET_Rendered id="pager" -->
-    </div>
     <!-- END unit:veil -->
+    @include("/admin/entry/edit-%{IS_ADMIN}.html")
+    </div>
 
 
-
+    <!-- BEGIN_MODULE Touch_NotEdit -->
     <aside class="l-entry__sub-column p-sub-column js-container">
       <div class="p-sub-column__inner js-pretty-scroll">
         @include("/include/sub-column/tags.html")
@@ -55,6 +55,7 @@
         </li>
       </ul>
     </nav>
+    <!-- END_MODULE Touch_NotEdit -->
   </div>
 </article>
 <!-- END entry:loop -->
