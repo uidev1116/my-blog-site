@@ -22,6 +22,7 @@ import {
   focusedImage,
   unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
+import autoLink from './auto-link';
 import tocbot from './tocbot';
 import prettyScroll from './pretty-scroll';
 
@@ -87,6 +88,7 @@ dispatcher.addRoute('^/app.html$', async () => {
 dispatcher.run(window.location.pathname);
 
 // 外部スクリプト
+autoLink();
 tocbot();
 prettyScroll();
 
