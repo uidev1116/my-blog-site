@@ -37,7 +37,7 @@
 
   &__tag {
     display: inline-block;
-    padding: .3em;
+    padding: 0.3em;
     border: solid 1px map-get(global.$color-border, base);
     border-radius: global.$border-radius-lg;
     @include global.font-size(12);
@@ -88,7 +88,6 @@
   }
 }
 
-
 /* 目次
 =============================== */
 .p-sub-column-toc {
@@ -105,40 +104,47 @@
     @include global.font-size(16);
   }
 
+  &__toc {
+    margin: 0 0 0 -12px;
+  }
+
   &__list {
     @include global.list-unstyled();
   }
 
   &__item {
+    padding: 0 0 0 12px;
+  }
+
+  &__link {
     position: relative;
-    padding: 0 0 0 24px;
+    display: block;
+    padding: 4px 0 4px 12px;
+    color: map-get(global.$color-text, base);
+    @include global.font-size(14);
 
     &::before {
       position: absolute;
-      top: 0.5em;
-      left: 12px;
+      top: .5em;
+      left: 0;
       display: inline-block;
       width: 0px;
       height: 0px;
       border: 3px solid map-get(global.$color-primary, base);
       border-radius: 50%;
       transform: translateY(50%);
-      content: "";
+      content: '';
     }
-  }
-
-  &__link {
-    position: relative;
-    display: inline-block;
-    margin: 8px 0;
-    color: map-get(global.$color-text, base);
-    @include global.font-size(14);
 
     &:visited,
     &:active,
     &:hover {
       color: map-get(global.$color-text, base);
       text-decoration: none;
+    }
+
+    &.is-active-link {
+      background: map-get(global.$color-primary, light);
     }
   }
 }
