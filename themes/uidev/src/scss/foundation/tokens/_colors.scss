@@ -73,12 +73,12 @@ $color-btn-plain: (
 
 // ボタン プライマリー
 $color-btn-primary: (
-  text: map-get($color-primary, base),
-  text-hover: map-get($color-primary, base),
+  text: map-get($color-text, inverse),
+  text-hover: map-get($color-text, inverse),
   border: map-get($color-primary, base),
   border-hover: map-get($color-primary, base-hover),
-  bg: transparent,
-  bg-hover: transparent,
+  bg: map-get($color-primary, base),
+  bg-hover: map-get($color-primary, base-hover),
 );
 
 // ボタン プライマリー
