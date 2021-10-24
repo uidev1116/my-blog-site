@@ -6,7 +6,7 @@
 
 @mixin font-size($sizeValue){
 	font-size: $sizeValue + px;
-	// font-size: ($sizeValue / 10) * 1rem;
+	font-size: ($sizeValue / 16) * 1rem;
 }
 @mixin font-size-important($sizeValue){
 	font-size: $sizeValue + px!important;
@@ -25,11 +25,6 @@
   overflow: hidden;
   border: 0;
   clip: rect(0 0 0 0);
-}
-
-@mixin font-size($sizeValue){
-  font-size: $sizeValue + px;
-  // font-size: ($sizeValue / 10) * 1rem;
 }
 
 @mixin opacity($opacity){
