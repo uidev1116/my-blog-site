@@ -62,18 +62,28 @@ export const triggerEvent = (el, eventName, options) => {
 
 export const closest = (node, selector) =>
   // IEや一部ブラウザでは.closet()が実装されていないので自前も用意
-  // eslint-disable-next-line implicit-arrow-linebreak, func-names
-  (node.closest || function (_selector) {
-    do {
-      // nodeとselectorがマッチしたら返す
-      if ((node.matches || node.msMatchesSelector).call(node, _selector)) {
-        return node;
-      }
-      // マッチしなかったら親要素を代入
-      // eslint-disable-next-line no-param-reassign
-      node = node.parentElement || node.parentNode;
-    } while (node !== null && node.nodeType === 1);
+  // eslint-disable-next-line implicit-arrow-linebreak
+  (
+    node.closest
+    || function (_selector) { // eslint-disable-line func-names
+      do {
+        // nodeとselectorがマッチしたら返す
+        if ((node.matches || node.msMatchesSelector).call(node, _selector)) {
+          return node;
+        }
+        // マッチしなかったら親要素を代入
+        // eslint-disable-next-line no-param-reassign
+        node = node.parentElement || node.parentNode;
+      } while (node !== null && node.nodeType === 1);
 
-    return null;
-  }
+      return null;
+    }
   ).call(node, selector);
+
+export const addMQListener = (mq, callback) => {
+  mq.addEventListener('change', (event) => {
+    if (event.matches) {
+      callback();
+    }
+  });
+};

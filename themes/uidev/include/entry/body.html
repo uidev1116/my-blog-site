@@ -37,26 +37,21 @@
     <!-- BEGIN_MODULE Touch_NotEdit -->
     <aside class="l-entry__sub-column p-sub-column js-container">
       <div class="p-sub-column__inner js-pretty-scroll">
-        @include("/include/sub-column/tags.html")
-        @include("/include/sub-column/user.html")
-        @include("/include/sub-column/toc.html")
+        @include("/include/parts/tags.html", {
+          "class": "p-sub-column__tags"
+        })
+        @include("/include/parts/user.html", {
+          "class": "p-sub-column__user"
+        })
+        @include("/include/parts/toc.html", {
+          "class": "p-sub-column__toc",
+          "selector": "js-toc"
+        })
       </div>
     </aside>
-
-    <nav class="p-nav-bottom acms-hide-lg acms-hide-xl">
-      <ul class="p-nav-bottom__list">
-        <li class="p-nav-bottom__item">
-          <i class="fas fa-hashtag p-nav-bottom__ico"></i>
-          <span class="p-nav-bottom__text">Tags</span>
-        </li>
-        <li class="p-nav-bottom__item">
-          <i class="far fa-list-alt p-nav-bottom__ico"></i>
-          <span class="p-nav-bottom__text">Toc</span>
-        </li>
-      </ul>
-    </nav>
     <!-- END_MODULE Touch_NotEdit -->
   </div>
+  @include("/include/parts/nav-bottom.html")
 </article>
 <!-- END entry:loop -->
 

@@ -20,8 +20,11 @@
 @use "object/component/list";
 @use "object/component/pager";
 @use "object/component/sns-links";
+@use "object/component/tags";
 @use "object/component/thumbnail";
 @use "object/component/title";
+@use "object/component/toc";
+@use "object/component/user";
 
 /**
  * Layout

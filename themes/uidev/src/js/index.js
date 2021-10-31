@@ -22,9 +22,6 @@ import {
   focusedImage,
   unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
-import autoLink from './auto-link';
-import tocbot from './tocbot';
-import prettyScroll from './pretty-scroll';
 
 /**
  * スタイルの読み込み
@@ -75,22 +72,21 @@ if (window.ACMS === undefined) {
 const dispatcher = new Dispatcher();
 
 // ダイナミックインポート
-dispatcher.addRoute('^/app.html$', async () => {
-  const { default: appPage } = await import(
-    /* webpackChunkName: "app" */ './containers/app'
-  );
-  appPage();
+dispatcher.addRoute('^/.*.html', async () => {
+  const { default: autoLink } = await import(/* webpackChunkName: "app" */ './auto-link');
+  const { default: tocbot } = await import(/* webpackChunkName: "app" */ './tocbot');
+  const { default: prettyScroll } = await import(/* webpackChunkName: "app" */ './pretty-scroll');
+  const { default: popup } = await import(/* webpackChunkName: "app" */ './popup');
+  autoLink();
+  tocbot();
+  prettyScroll();
+  popup();
 });
 
 // 通常のバンドル
 // dispatcher.addRoute('^/example/$', examplePage);
 
 dispatcher.run(window.location.pathname);
-
-// 外部スクリプト
-autoLink();
-tocbot();
-prettyScroll();
 
 /**
  * Content Ready

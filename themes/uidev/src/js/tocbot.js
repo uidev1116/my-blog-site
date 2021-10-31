@@ -9,9 +9,9 @@ export default () => {
       contentSelector: '.js-toc-content',
       headingSelector: 'h2, h3, h4',
       hasInnerContainers: true,
-      linkClass: 'p-sub-column-toc__link',
-      listClass: 'p-sub-column-toc__list',
-      listItemClass: 'p-sub-column-toc__item',
+      linkClass: 'c-toc__link',
+      listClass: 'c-toc__list',
+      listItemClass: 'c-toc__item',
       collapseDepth: 6,
     });
   });

@@ -15,142 +15,24 @@
 
 /* タグ
 =============================== */
-.p-sub-column-tags {
+.p-sub-column__tags {
   display: none;
-  padding: 15px 20px;
-  background: map-get(global.$color-bg, white);
-  border-radius: global.$border-radius-lg;
-
-  &__title {
-    margin: 0;
-    font-weight: bold;
-    @include global.font-size(16);
-  }
-
-  &__contents {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    margin-top: 12px;
-  }
-
-  &__tag {
-    display: inline-block;
-    padding: 0.3em;
-    border: solid 1px map-get(global.$color-border, base);
-    border-radius: global.$border-radius-lg;
-    @include global.font-size(12);
-  }
 }
 
 @media screen and (min-width: acms.$breakpoint-lg-min) {
-  .p-sub-column-tags {
+  .p-sub-column__tags {
     display: block;
-  }
-}
-
-/* ユーザー
-=============================== */
-.p-sub-column-user {
-  padding: 20px;
-  background: map-get(global.$color-bg, white);
-  border-radius: global.$border-radius-lg;
-
-  &__bio-container {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-
-  &__icon {
-    width: 60px;
-    height: 60px;
-    overflow: hidden;
-    border-radius: 50%;
-  }
-
-  &__name {
-    display: block;
-    color: map-get(global.$color-text, base);
-    font-weight: bold;
-
-    &:visited,
-    &:active,
-    &:hover {
-      color: map-get(global.$color-text, base);
-      text-decoration: none;
-    }
-  }
-
-  &__bio {
-    @include global.font-size(14);
   }
 }
 
 /* 目次
 =============================== */
-.p-sub-column-toc {
+.p-sub-column__toc {
   display: none;
-  padding: 15px 20px;
-  overflow: auto;
-  word-break: break-word;
-  background: map-get(global.$color-bg, white);
-  border-radius: global.$border-radius-lg;
-
-  &__title {
-    margin: 0;
-    font-weight: bold;
-    @include global.font-size(16);
-  }
-
-  &__toc {
-    margin: 0 0 0 -12px;
-  }
-
-  &__list {
-    @include global.list-unstyled();
-  }
-
-  &__item {
-    padding: 0 0 0 12px;
-  }
-
-  &__link {
-    position: relative;
-    display: block;
-    padding: 4px 0 4px 12px;
-    color: map-get(global.$color-text, base);
-    @include global.font-size(14);
-
-    &::before {
-      position: absolute;
-      top: .5em;
-      left: 0;
-      display: inline-block;
-      width: 0px;
-      height: 0px;
-      border: 3px solid map-get(global.$color-primary, base);
-      border-radius: 50%;
-      transform: translateY(50%);
-      content: '';
-    }
-
-    &:visited,
-    &:active,
-    &:hover {
-      color: map-get(global.$color-text, base);
-      text-decoration: none;
-    }
-
-    &.is-active-link {
-      background: map-get(global.$color-primary, light);
-    }
-  }
 }
 
 @media screen and (min-width: acms.$breakpoint-lg-min) {
-  .p-sub-column-toc {
+  .p-sub-column__toc {
     display: block;
   }
 }

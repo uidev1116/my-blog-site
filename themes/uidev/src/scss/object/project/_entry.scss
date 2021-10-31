@@ -398,7 +398,7 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: global.$nav-bottom;
+  z-index: global.$z-index-nav-bottom;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -419,6 +419,7 @@
   }
 
   &__item {
+    position: relative;
     display: flex;
     flex: 1;
     flex-flow: column;
@@ -432,6 +433,13 @@
 
   &__text {
     @include global.font-size(12);
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 120%;
+    width: 300px;
+    max-width: 90vw;
   }
 }
 
