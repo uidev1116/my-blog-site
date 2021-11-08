@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @use "../../foundation/global/acms-common" as acms;
 @use "../../foundation/global/common" as global;
 
@@ -12,11 +14,11 @@ $_search-genre-border: 1px solid #CCC;
     display: flex;
     align-items: stretch;
     justify-content: space-between;
-    margin: 0 $_genre-list-grid/-2;
+    margin: 0 math.div($_genre-list-grid, -2);
   }
   &__item {
     width: 100%;
-    padding: $_genre-list-grid/2 $_genre-list-grid/2;
+    padding: $_genre-list-grid*0.5 $_genre-list-grid*0.5;
     text-align: center;
     border-right: $_search-genre-border;
     &:first-child {

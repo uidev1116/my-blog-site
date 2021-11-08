@@ -1,9 +1,12 @@
+@use "sass:math";
+
 @use "../../global/acms-variables" as acms;
 
 // ------------------------------
 // 上書き内容
 // ・ mixins/_buttons.scss の @import をやめて、buttons.scssの内容を直接記述
 // ・ @use の使用
+// ・ math.div の使用
 // ------------------------------
 
 // ------------------------------
@@ -135,7 +138,7 @@
 				} @else{
 					float: none;
 				}
-				width: percentage($i / $number);
+				width: percentage(math.div($i, $number));
 			}
 		} @else {
 			.#{$name}-#{$i}{
@@ -144,7 +147,7 @@
 				} @else{
 					float: none;
 				}
-				width: percentage($i / $number);
+				width: percentage(math.div($i, $number));
 			}
 		}
 	}
@@ -155,11 +158,11 @@
 	@for $i from 1 through $limit{
 		@if $grid-name{
 			.#{$name}-#{$grid-name}-#{$i}{
-				right: percentage($i / $number);
+				right: percentage(math.div($i, $number));
 			}
 		} @else {
 			.#{$name}-#{$i}{
-				right: percentage($i / $number);
+				right: percentage(math.div($i, $number));
 			}
 		}
 	}
@@ -170,11 +173,11 @@
 	@for $i from 1 through $limit{
 		@if $grid-name{
 			.#{$name}-#{$grid-name}-#{$i}{
-				left: percentage($i / $number);
+				left: percentage(math.div($i, $number));
 			}
 		} @else {
 			.#{$name}-#{$i}{
-				left: percentage($i / $number);
+				left: percentage(math.div($i, $number));
 			}
 		}
 	}

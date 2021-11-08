@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @use "global/variables" as global;
 
 // ------------------------------
@@ -6,7 +8,7 @@
 
 @mixin font-size($sizeValue){
 	font-size: $sizeValue + px;
-	font-size: ($sizeValue / 16) * 1rem;
+	font-size: (math.div($sizeValue, 16)) * 1rem;
 }
 @mixin font-size-important($sizeValue){
 	font-size: $sizeValue + px!important;

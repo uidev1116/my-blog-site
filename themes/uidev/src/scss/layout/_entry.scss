@@ -1,3 +1,5 @@
+@use "sass:list";
+
 @use "../foundation/global/acms-common" as acms;
 @use "../foundation/global/common" as global;
 
@@ -13,8 +15,7 @@ $_grid-column: 24px;
       "main-column" auto
       "....." #{$_grid-column}
       "sub-column" auto
-      "....." #{$_grid-column}
-      / 1fr;
+      "....." list.slash($_grid-column, 1fr);
 
   &__header {
     grid-area: header;
@@ -34,7 +35,6 @@ $_grid-column: 24px;
     grid-template:
       "header       header header" auto
       "main-column  ...... sub-column" auto
-      "......       ...... ......" #{$_grid-column}
-      / 1fr 32px 300px;
+      "......       ...... ......" list.slash($_grid-column, 1fr) 32px 300px;
   }
 }

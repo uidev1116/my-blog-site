@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @use "../../global/acms-common" as acms;
 
 /* ------------------------------
@@ -8,8 +10,8 @@
 	max-width: acms.$acms-container;
 	margin-right: auto;
 	margin-left: auto;
-	padding-right: (acms.$grid-space / 2);
-	padding-left: (acms.$grid-space / 2);
+	padding-right: (acms.$grid-space * 0.5);
+	padding-left: (acms.$grid-space * 0.5);
 	@include acms.box-sizing(border-box);
 }
 
@@ -21,33 +23,33 @@
 
 .acms-grid,
 .acms-grid-r {
-	margin-right: (acms.$grid-space / -2);
-	margin-left: (acms.$grid-space / -2);
+	margin-right: math.div(acms.$grid-space, -2);
+	margin-left: math.div(acms.$grid-space, -2);
 	@include acms.clearfix();
 }
 
 //.acms-grid-negativeは左右-10pxになって欲しくないときに使用する
 .acms-grid-negative {
-	margin-right: (acms.$mobile-grid-space / -2);
-	margin-left: (acms.$mobile-grid-space / -2);
+	margin-right: math.div(acms.$mobile-grid-space, -2);
+	margin-left: math.div(acms.$mobile-grid-space, -2);
 }
 
 //各acms-col-の左右の幅
 [class*='acms-col'] {
 	min-height: 1px;
-	padding-right: (acms.$grid-space / 2); //各col-はpaddingを左右に着ける
-	padding-left: (acms.$grid-space / 2); //各col-はpaddingを左右に着ける
+	padding-right: (acms.$grid-space * 0.5); //各col-はpaddingを左右に着ける
+	padding-left: (acms.$grid-space * 0.5); //各col-はpaddingを左右に着ける
 }
 
 @media (min-width : acms.$breakpoint-md-min) {
 	.acms-grid,
 	.acms-grid-r {
-		margin-right: (acms.$grid-space / -2);
-		margin-left: (acms.$grid-space / -2);
+		margin-right: math.div(acms.$grid-space, -2);
+		margin-left: math.div(acms.$grid-space, -2);
 	}
 	[class*='acms-col'] {
-		padding-right: (acms.$grid-space / 2); //各col-はpadding左右に着ける
-		padding-left: (acms.$grid-space / 2); //各col-はpadding左右に着ける
+		padding-right: (acms.$grid-space * 0.5); //各col-はpadding左右に着ける
+		padding-left: (acms.$grid-space * 0.5); //各col-はpadding左右に着ける
 	}
 }
 

@@ -41,8 +41,8 @@
   p,
   dl,
   > blockquote {
-    margin-right: (acms.$unit-gutter / 2);
-    margin-left: (acms.$unit-gutter / 2);
+    margin-right: (acms.$unit-gutter * 0.5);
+    margin-left: (acms.$unit-gutter * 0.5);
   }
 
   /* リンク */
@@ -154,7 +154,7 @@
 /* リスト */
 .#{global.$entry-text-unit} ul {
   margin: global.$entry-element-margin-top 0 global.$entry-element-margin-bottom-md 0;
-  padding: 0 (acms.$unit-gutter / 2);
+  padding: 0 (acms.$unit-gutter * 0.5);
 
   li {
     position: relative;
@@ -186,7 +186,7 @@
 /* 番号付きリスト */
 .#{global.$entry-text-unit} ol {
   margin: global.$entry-element-margin-top 0 global.$entry-element-margin-bottom-md 0;
-  padding: 0 (acms.$unit-gutter / 2);
+  padding: 0 (acms.$unit-gutter * 0.5);
   list-style: none;
   counter-reset: ol-counter;
 
@@ -268,8 +268,8 @@
 /* ソースコード */
 .#{global.$entry-text-unit} pre {
   box-sizing: border-box;
-  margin: global.$entry-element-margin-top (acms.$unit-gutter / 2)
-    global.$entry-element-margin-bottom-lg (acms.$unit-gutter / 2);
+  margin: global.$entry-element-margin-top (acms.$unit-gutter * 0.5)
+    global.$entry-element-margin-bottom-lg (acms.$unit-gutter * 0.5);
 
   code {
     padding: 0;
@@ -301,7 +301,7 @@
 .#{global.$entry-text-unit} table,
 [class^='column-table-'] table {
   width: calc(100% - acms.$unit-gutter);
-  margin: 0 (acms.$unit-gutter / 2) global.$entry-element-margin-bottom-lg;
+  margin: 0 (acms.$unit-gutter * 0.5) global.$entry-element-margin-bottom-lg;
   border: 0 solid map-get(global.$color-border, base);
   border-right-width: 1px;
   border-bottom-width: 1px;

@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @use "../../foundation/global/acms-common" as acms;
 @use "../../foundation/global/common" as global;
 
@@ -62,7 +64,7 @@ $_article-horizonal-space: 8px;
 
     &::before {
       display: block;
-      padding-top: percentage(630 / 1200);
+      padding-top: percentage(math.div(630, 1200));
       content: "";
     }
   }

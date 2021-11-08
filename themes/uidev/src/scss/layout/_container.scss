@@ -7,24 +7,24 @@
 .l-container-lg {
   max-width: global.$container-lg + acms.$grid-space;
   margin: 0 auto;
-  padding-right: (acms.$grid-space / 2);
-  padding-left: (acms.$grid-space / 2);
+  padding-right: (acms.$grid-space * 0.5);
+  padding-left: (acms.$grid-space * 0.5);
   @include acms.box-sizing(border-box);
 }
 
 .l-container-md {
   max-width: global.$container-md + acms.$grid-space;
   margin: 0 auto;
-  padding-right: (acms.$grid-space / 2);
-	padding-left: (acms.$grid-space / 2);
+  padding-right: (acms.$grid-space * 0.5);
+	padding-left: (acms.$grid-space * 0.5);
   @include acms.box-sizing(border-box);
 }
 
 .l-container-sm {
   max-width: global.$container-sm + acms.$grid-space;
   margin: 0 auto;
-  padding-right: (acms.$grid-space / 2);
-	padding-left: (acms.$grid-space / 2);
+  padding-right: (acms.$grid-space * 0.5);
+	padding-left: (acms.$grid-space * 0.5);
   @include acms.box-sizing(border-box);
 }
 

@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // ------------------------------
 // 上書き内容
 // ・ ファイルパス変数の変更
@@ -7,6 +9,7 @@
 // ・ ユニットガター変数の変更
 // ・ ユニットの下余白変数の変更
 // ・ @use の使用
+// ・ math.div の使用
 // ------------------------------
 
 // 条件設定
@@ -74,18 +77,18 @@ $acms-container    : 1200px;
 $acms-columns      : 12;
 
 // 各カラムの幅
-$acms-col-1        : percentage(1 / $acms-columns);
-$acms-col-2        : percentage(2 / $acms-columns);
-$acms-col-3        : percentage(3 / $acms-columns);
-$acms-col-4        : percentage(4 / $acms-columns);
-$acms-col-5        : percentage(5 / $acms-columns);
-$acms-col-6        : percentage(6 / $acms-columns);
-$acms-col-7        : percentage(7 / $acms-columns);
-$acms-col-8        : percentage(8 / $acms-columns);
-$acms-col-9        : percentage(9 / $acms-columns);
-$acms-col-10       : percentage(10 / $acms-columns);
-$acms-col-11       : percentage(11 / $acms-columns);
-$acms-col-12       : percentage(12 / $acms-columns);
+$acms-col-1        : percentage(math.div(1, $acms-columns));
+$acms-col-2        : percentage(math.div(2, $acms-columns));
+$acms-col-3        : percentage(math.div(3, $acms-columns));
+$acms-col-4        : percentage(math.div(4, $acms-columns));
+$acms-col-5        : percentage(math.div(5, $acms-columns));
+$acms-col-6        : percentage(math.div(6, $acms-columns));
+$acms-col-7        : percentage(math.div(7, $acms-columns));
+$acms-col-8        : percentage(math.div(8, $acms-columns));
+$acms-col-9        : percentage(math.div(9, $acms-columns));
+$acms-col-10       : percentage(math.div(10, $acms-columns));
+$acms-col-11       : percentage(math.div(11, $acms-columns));
+$acms-col-12       : percentage(math.div(12, $acms-columns));
 
 // ※合計のカラム数を増やしたら、各カラムの幅も増やしてください。
 
@@ -146,7 +149,7 @@ $unit-type                    : 'image','file','map','yolp','street-view','youtu
 $align                        : 'left','right','center','auto';
 $unit-gutter                  : 20px;
 $unit-margin-bottom           : 25px;
-$unit-margin-bottom-no-caption: ($unit-gutter/2);
+$unit-margin-bottom-no-caption: ($unit-gutter*0.5);
 
 $hightlight-colors            : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000;
 
