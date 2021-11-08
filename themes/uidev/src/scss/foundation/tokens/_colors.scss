@@ -1,6 +1,8 @@
 // ------------------------------
 //　カラー
 // ------------------------------
+$color-shadow: rgba(#000a3c, .2);
+
 // ブランドカラー
 $color-primary: (
   // lightest: カラーコードを指定してください,
@@ -30,6 +32,7 @@ $color-text: (
   base: #333,
   light-label: #7e7979,
   gray: map-get($color-gray, base),
+  placeholder: #b5bcbf,
   inverse: #FFF,
 );
 
@@ -52,14 +55,6 @@ $color-sns: (
   facebook: #3b5999,
   youtubes: #CD201F,
 );
-
-$color-shadow: rgba(#000a3c, .2);
-
-// フォームカラー
-// $color-form: (
-//   error: #A20915,
-//   invalid: #FFEBEE,
-// );
 
 // ボタン プレーン
 $color-btn-plain: (
@@ -92,8 +87,9 @@ $color-btn-primary-bg: (
 );
 
 
-// ラベル
-$color-label: (
-  base: map-get($color-primary, base),
-  base-hover: lighten(map-get($color-primary, base), 10%),
+$color-form: (
+  bg: map-get($color-bg, whtie),
+  border: map-get($color-border, base),
+  border-focus: map-get($color-primary, darker),
+  placeholder: map-get($color-text, placeholder),
 );

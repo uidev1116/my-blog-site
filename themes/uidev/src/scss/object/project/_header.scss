@@ -40,6 +40,10 @@
 /* 検索アイコン
 =============================== */
 .p-header-search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
   &__link {
     display: block;
   }

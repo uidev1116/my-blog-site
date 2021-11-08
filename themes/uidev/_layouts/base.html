@@ -28,18 +28,14 @@
 @include("/include/header.html")
 @endsection
 
-<!-- ※管理用パーツ -->
-<!-- BEGIN_MODULE Touch_Login -->
-@section("admin-part")
-<section class="acms-container">
-	@include("/admin/action.html")
-</section>
-@endsection
-<!-- END_MODULE Touch_Login -->
-
 <main class="l-main">
 	@section("main")
-	<p>継承してメインコンテンツを設定してください</p>
+	<!-- ※管理用パーツ -->
+  <!-- BEGIN_MODULE Touch_Login -->
+  <section class="l-container-md">
+  @include("/admin/action.html")
+  </section>
+  <!-- END_MODULE Touch_Login -->
 	@endsection
 
 	@section("check-seo")

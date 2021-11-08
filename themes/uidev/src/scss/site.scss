@@ -16,13 +16,12 @@
  */
 @use "object/component/article";
 @use "object/component/button";
-@use "object/component/card";
+@use "object/component/forms";
 @use "object/component/pager";
 @use "object/component/sns-links";
 @use "object/component/tags";
-@use "object/component/thumbnail";
-@use "object/component/title";
 @use "object/component/toc";
+@use "object/component/typo";
 @use "object/component/user";
 
 /**

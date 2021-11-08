@@ -1,0 +1,43 @@
+@use "../../foundation/global/acms-common" as acms;
+@use "../../foundation/global/common" as global;
+
+/* ------------------------------
+　　フォームパーツ
+------------------------------ */
+input[type='text'],
+input[type='password'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='date'],
+input[type='month'],
+input[type='time'],
+input[type='week'],
+input[type='number'],
+input[type='email'],
+input[type='url'],
+input[type='search'],
+input[type='tel'],
+select,
+textarea {
+  &.c-form-control {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5em;
+    line-height: global.$line-height-form;
+    background-color: map-get(global.$color-form, bg);
+    background-clip: padding-box;
+    border: 1px solid map-get(global.$color-form, border);
+    transition: border-color 0.15s ease-in-out;
+    appearance: none;
+
+    &::placeholder {
+      color: map-get(global.$color-form, placeholder);
+    }
+
+    &:focus {
+      border-color: map-get(global.$color-form, border-focus);
+      outline: 0;
+    }
+  }
+}
