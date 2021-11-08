@@ -1,10 +1,16 @@
 @extends("/_layouts/base.html")
 
 @section("main")
-@include("/include/parts/profile.html", {"module_id", "user_profile"})
+<section class="l-section -bg-inverse">
+  <div class="l-container-md">
+  @include("/include/parts/profile.html", {"module_id", "user_profile"})
+  </div>
+</section>
 
-<div class="acms-container">
-@include("/include/entry/summary.html")
-</div>
+<section class="l-section">
+  <div class="l-container-md">
+  @include("/include/entry/summary.html")
+  </div>
+</section>
 
 @endsection
