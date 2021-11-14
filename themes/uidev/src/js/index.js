@@ -4,22 +4,15 @@ import './lib/polyfill';
 import Prism from 'prismjs';
 import fonts from './fonts';
 import {
-  validator,
-  linkMatchLocation,
   externalLinks,
-  scrollTo,
-  alertUnload,
   smartPhoto,
   lazyLoad,
   inView,
-  modalVideo,
   scrollHint,
-  googleMap,
   openStreetMap,
   datePicker,
   postInclude,
   pdfPreview,
-  focusedImage,
   unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
 
@@ -45,22 +38,22 @@ window.root = '/';
  */
 if (window.ACMS === undefined) {
   window.dispatch = (context) => {
-    validator(context);
-    linkMatchLocation(context);
+    // validator(context);
+    // linkMatchLocation(context);
     externalLinks(context);
-    scrollTo(context);
-    alertUnload(context);
+    // scrollTo(context);
+    // alertUnload(context);
     smartPhoto(context);
     lazyLoad(context);
     inView(context);
-    modalVideo(context);
+    // modalVideo(context);
     scrollHint(context);
-    googleMap(context);
+    // googleMap(context);
     openStreetMap(context);
     datePicker(context);
     postInclude(context);
     pdfPreview(context);
-    focusedImage(context);
+    // focusedImage(context);
     unitGroupAlign(context);
   };
   window.dispatch(document);
@@ -72,15 +65,9 @@ if (window.ACMS === undefined) {
 const dispatcher = new Dispatcher();
 
 // ダイナミックインポート
-dispatcher.addRoute('^/.*.html', async () => {
-  const { default: autoLink } = await import(/* webpackChunkName: "app" */ './auto-link');
-  const { default: tocbot } = await import(/* webpackChunkName: "app" */ './tocbot');
-  const { default: prettyScroll } = await import(/* webpackChunkName: "app" */ './pretty-scroll');
-  const { default: popup } = await import(/* webpackChunkName: "app" */ './popup');
-  autoLink();
-  tocbot();
-  prettyScroll();
-  popup();
+dispatcher.addRoute('^/(?!.*search).*html$', async () => {
+  const { default: entryPage } = await import(/* webpackChunkName: "entry" */ './entry');
+  entryPage();
 });
 
 // 通常のバンドル
