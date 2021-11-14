@@ -4,14 +4,25 @@
   <article class="c-article">
     <a href="{url}" class="c-article__link">
       <div class="c-article__img-wrap">
-        <!-- BEGIN image:veil -->
+        <!-- BEGIN_IF [{ogp_image@path}/nem] -->
         <img
-          src="%{ROOT_DIR}{path}[resizeImg(374, 197)]"
-          alt="{alt}"
-          width="{imgX}"
-          height="{imgY}"
-          class="c-article__img acms-img-responsive js-lazy-load"
-        ><!-- END image:veil -->
+          src="/images/marker/icon-lazy-load-image.svg"
+          data-src="%{MEDIA_ARCHIVES_DIR}{ogp_image@path}[resizeImg(374, 197)]"
+          alt="{ogp_image@alt}"
+          width="374"
+          height="197"
+          class="c-article__img js-lazy-load"
+        >
+        <!-- ELSE --><!-- BEGIN blogField -->
+        <img
+          src="/images/marker/icon-lazy-load-image.svg"
+          data-src="%{MEDIA_ARCHIVES_DIR}{no_image@path}[resizeImg(374, 197)]"
+          alt="{no_image@alt}"
+          width="374"
+          height="197"
+          class="c-article__img js-lazy-load"
+        ><!-- END blogField -->
+        <!-- END_IF -->
       </div>
       <div class="c-article__title-wrap">
         <h3 class="c-article__title">{title}</h3>
