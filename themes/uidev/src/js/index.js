@@ -57,6 +57,9 @@ if (window.ACMS === undefined) {
     unitGroupAlign(context);
   };
   window.dispatch(document);
+} else {
+  // eslint-disable-next-line no-undef
+  ACMS.Config.googleCodePrettifyClass = 'no-highlight';
 }
 
 /**
