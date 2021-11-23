@@ -5,7 +5,7 @@
 　　フッター
 ------------------------------ */
 .p-footer {
-  background: map-get(global.$color-bg, white);
+  background: map-get(global.$color-bg, inverse);
 
   &__copyright {
     margin: 0;

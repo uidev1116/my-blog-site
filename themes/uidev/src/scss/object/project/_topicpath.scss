@@ -14,7 +14,7 @@
   list-style: none;
 
   &__wrap {
-    background: map-get(global.$color-bg, white);
+    background: map-get(global.$color-bg, inverse);
   }
 
   &__item {
@@ -22,7 +22,7 @@
     @include global.font-size(14);
     &::before {
       padding: 0 10px;
-      content: " / ";
+      content: ' / ';
     }
     &:first-child {
       &::before {

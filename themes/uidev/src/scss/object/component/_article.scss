@@ -27,7 +27,7 @@ $_article-horizonal-space: 8px;
   display: flex;
   flex-flow: column;
   overflow: hidden;
-  background: map-get(global.$color-bg, white);
+  background: map-get(global.$color-bg, base);
   border-radius: global.$border-radius-md;
   box-shadow: 0 3px 6px -2px global.$color-shadow;
 
@@ -65,7 +65,7 @@ $_article-horizonal-space: 8px;
     &::before {
       display: block;
       padding-top: percentage(math.div(630, 1200));
-      content: "";
+      content: '';
     }
   }
 
@@ -80,6 +80,7 @@ $_article-horizonal-space: 8px;
 
   &__title {
     margin: 0;
+    color: map-get(global.$color-text, inverse);
     @include global.font-size(14);
   }
 

@@ -9,9 +9,13 @@
 .c-title {
   margin: 0 0 24px 0;
 
-  &__md {
+  &.-md {
     line-height: global.$line-height-title;
     @include global.font-size(24);
+  }
+
+  &.-inverse {
+    color: map-get(global.$color-text, inverse);
   }
 
 }

@@ -1,7 +1,6 @@
 @use "../foundation/global/acms-common" as acms;
 @use "../foundation/global/common" as global;
 
-
 /* ------------------------------
 　　セクション
 ------------------------------ */
@@ -9,11 +8,11 @@
   padding: 24px 0;
 
   &.-bg-inverse {
-    background: map-get(global.$color-bg, white);
+    background: map-get(global.$color-bg, inverse);
   }
 }
 
-@media screen and (min-width: acms.$breakpoint-sm-min){
+@media screen and (min-width: acms.$breakpoint-sm-min) {
   .l-section {
     padding: 40px 0;
   }

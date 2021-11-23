@@ -6,14 +6,14 @@ $color-shadow: rgba(#000a3c, .2);
 // ブランドカラー
 $color-primary: (
   // lightest: カラーコードを指定してください,
-  light:  #edf2f7,
+  light:  #f7f7ed,
   // light: カラーコードを指定してください,
-  base: #3ea8ff,
+  base: #facc15,
   base-invers: #FFF,
   // dark: カラーコードを指定してください,
-  darker: #0f83fd,
+  darker: darken(#facc15, 30%),
   // darkest: カラーコードを指定してください,
-  base-hover: #0f83fd,
+  base-hover: #B8944D,
 );
 
 // セカンダリーカラー
@@ -29,11 +29,11 @@ $color-gray: (
 
 // テキスト
 $color-text: (
-  base: #333,
+  base: #FFF,
   light-label: #7e7979,
   gray: map-get($color-gray, base),
   placeholder: #b5bcbf,
-  inverse: #FFF,
+  inverse: #333,
 );
 
 // 線
@@ -45,8 +45,9 @@ $color-border: (
 
 // 背景
 $color-bg: (
-  white: #FFF,
-  primary: #edf2f7,
+  base: #FFF,
+  inverse: #16181D,
+  primary: #FEF9DE,
 );
 
 // 各sns色

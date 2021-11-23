@@ -6,7 +6,7 @@
 ------------------------------ */
 .p-header {
   height: 100%;
-  background-color: map-get(global.$color-bg, white);
+  background-color: map-get(global.$color-bg, inverse);
 
   &__inner {
     display: flex;

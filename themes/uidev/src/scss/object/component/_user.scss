@@ -6,7 +6,8 @@
 ------------------------------ */
 .c-user {
   padding: 20px;
-  background: map-get(global.$color-bg, white);
+  color: map-get(global.$color-text, inverse);
+  background: map-get(global.$color-bg, base);
   border-radius: global.$border-radius-lg;
 
   &__bio-container {

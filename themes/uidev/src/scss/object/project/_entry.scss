@@ -8,7 +8,7 @@
   padding: 35px 0;
   overflow: hidden;
   word-break: break-word;
-  background: map-get(global.$color-bg, white);
+  background: map-get(global.$color-bg, base);
   border-radius: global.$border-radius-lg;
 }
 
@@ -273,7 +273,7 @@
 
   code {
     padding: 0;
-    color: map-get(global.$color-text, inverse);
+    color: map-get(global.$color-text, base);
     background: none;
     border-radius: 0;
   }
@@ -337,6 +337,8 @@
   overflow-x: auto;
   overflow-y: visible !important;
   -webkit-overflow-scrolling: touch;
+  color: map-get(global.$color-text, inverse);
+
 
   /* entry-containerで余白を保つため打ち消し */
   table {
@@ -406,7 +408,7 @@
   width: 100%;
   height: global.$footer-nav-height;
   padding: 8px;
-  background: map-get(global.$color-bg, white);
+  background: map-get(global.$color-bg, inverse);
   border-top: solid 1px map-get(global.$color-border, lighter);
   border-bottom: solid 1px map-get(global.$color-border, lighter);
 
@@ -450,11 +452,12 @@
   text-align: center;
 
   &__title {
+    @include global.font-size(20);
     display: inline-block;
     max-width: 780px;
     margin: 0 auto;
+    color: map-get(global.$color-text, inverse);
     text-align: left;
-    @include global.font-size(20);
   }
 
   &__meta {
