@@ -1,0 +1,10 @@
+@use "../foundation/global/acms-common" as acms;
+@use "../foundation/global/common" as global;
+
+/* ------------------------------
+　　フッター
+------------------------------ */
+.l-footer {
+  position: sticky;
+  top: 100vh;
+}

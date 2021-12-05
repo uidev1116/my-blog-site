@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  height: 100%;
   color: map-get(global.$color-text, base);
   font-family: global.$font-base;
   background: map-get(global.$color-bg, primary);
