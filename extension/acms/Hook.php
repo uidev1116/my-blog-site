@@ -115,7 +115,11 @@ class Hook
      */
     public function afterBuild(&$res)
     {
-
+        if ( ADMIN == 'entry-edit' || substr(ADMIN, 0, 9) === 'entry-add' || !ADMIN ) {
+            $inlineCss = \Storage::get(SCRIPT_DIR . 'themes/uidev/dest/bundle.css');
+            $css = '<style>' . $inlineCss . '</style>';
+            $res = preg_replace('@(?=<\s*/\s*head[^\w]*>)@i', $css, $res);
+        }
     }
 
     /**
