@@ -29,11 +29,12 @@ $color-gray: (
 
 // テキスト
 $color-text: (
-  base: #FFF,
+  base: #16181D,
   light-label: #7e7979,
   gray: map-get($color-gray, base),
   placeholder: #b5bcbf,
-  inverse: #333,
+  inverse: #FFF,
+  code: #FFF,
 );
 
 // 線
@@ -45,8 +46,8 @@ $color-border: (
 
 // 背景
 $color-bg: (
-  base: #FFF,
-  inverse: #16181D,
+  base: #16181D,
+  inverse: #FFF,
   primary: #FEF9DE,
 );
 

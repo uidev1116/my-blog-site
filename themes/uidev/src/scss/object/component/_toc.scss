@@ -15,9 +15,9 @@
   max-height: calc(100vh - 130px);
   padding: 15px 20px;
   overflow: auto;
-  color: map-get(global.$color-text, inverse);
+  color: map-get(global.$color-text, base);
   word-break: break-word;
-  background: map-get(global.$color-bg, base);
+  background: map-get(global.$color-bg, inverse);
   border-radius: global.$border-radius-lg;
   box-shadow: 0 5px 15px #001b443b;
 
@@ -43,7 +43,7 @@
     position: relative;
     display: block;
     padding: 4px 0 4px 12px;
-    color: map-get(global.$color-text, inverse);
+    color: map-get(global.$color-text, base);
     @include global.font-size(14);
 
     &::before {

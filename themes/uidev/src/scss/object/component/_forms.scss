@@ -28,6 +28,7 @@ textarea {
     background-color: map-get(global.$color-form, bg);
     background-clip: padding-box;
     border: 1px solid map-get(global.$color-form, border);
+    border-radius: 0;
     transition: border-color 0.15s ease-in-out;
     appearance: none;
 

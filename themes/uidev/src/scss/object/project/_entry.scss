@@ -8,7 +8,7 @@
   padding: 35px 0;
   overflow: hidden;
   word-break: break-word;
-  background: map-get(global.$color-bg, base);
+  background: map-get(global.$color-bg, inverse);
   border-radius: global.$border-radius-lg;
 }
 
@@ -273,7 +273,7 @@
 
   code {
     padding: 0;
-    color: map-get(global.$color-text, base);
+    color: map-get(global.$color-text, code);
     background: none;
     border-radius: 0;
   }
@@ -337,7 +337,7 @@
   overflow-x: auto;
   overflow-y: visible !important;
   -webkit-overflow-scrolling: touch;
-  color: map-get(global.$color-text, inverse);
+  color: map-get(global.$color-text, base);
 
 
   /* entry-containerで余白を保つため打ち消し */
@@ -456,7 +456,7 @@
     display: inline-block;
     max-width: 780px;
     margin: 0 auto;
-    color: map-get(global.$color-text, inverse);
+    color: map-get(global.$color-text, base);
     text-align: left;
   }
 

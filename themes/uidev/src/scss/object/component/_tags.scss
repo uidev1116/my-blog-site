@@ -14,8 +14,8 @@
   max-width: 90vw;
   max-height: calc(100vh - 130px);
   padding: 15px 20px;
-  color: map-get(global.$color-text, inverse);
-  background: map-get(global.$color-bg, base);
+  color: map-get(global.$color-text, base);
+  background: map-get(global.$color-bg, inverse);
   border-radius: global.$border-radius-lg;
   box-shadow: 0 5px 15px #001b443b;
 
@@ -37,14 +37,14 @@
     @include global.font-size(12);
     display: inline-block;
     padding: 0.3em;
-    color: map-get(global.$color-text, inverse);
+    color: map-get(global.$color-text, base);
     border: solid 1px map-get(global.$color-border, base);
     border-radius: global.$border-radius-lg;
 
     &:visited,
     &:active,
     &:hover {
-      color: map-get(global.$color-text, inverse);
+      color: map-get(global.$color-text, base);
     }
   }
 }

@@ -6,8 +6,8 @@
 ------------------------------ */
 .c-user {
   padding: 20px;
-  color: map-get(global.$color-text, inverse);
-  background: map-get(global.$color-bg, base);
+  color: map-get(global.$color-text, base);
+  background: map-get(global.$color-bg, inverse);
   border-radius: global.$border-radius-lg;
 
   &__bio-container {
@@ -38,5 +38,6 @@
 
   &__bio {
     @include global.font-size(14);
+    margin: 16px 0 0 0;
   }
 }
