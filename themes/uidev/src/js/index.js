@@ -58,8 +58,10 @@ if (window.ACMS === undefined) {
   };
   window.dispatch(document);
 } else {
-  // eslint-disable-next-line no-undef
-  ACMS.Config.googleCodePrettifyClass = 'no-highlight';
+  ACMS.Ready(() => {
+    // eslint-disable-next-line no-undef
+    ACMS.Config.googleCodePrettifyClass = 'no-highlight';
+  });
 }
 
 /**

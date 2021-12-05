@@ -17,7 +17,8 @@
     "window": true,
     "event": true,
     "$": true,
-    "jQuery": true
+    "jQuery": true,
+    "ACMS": true
   },
   "rules": {
     "no-new": 0
