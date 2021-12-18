@@ -81,6 +81,16 @@
     background: #215aa012;
     border-radius: 4px;
   }
+
+  /* prism.js */
+  code[class*='language-'],
+  pre[class*='language-'] {
+    line-height: 1.2;
+  }
+
+  .line-numbers .line-numbers-rows {
+    line-height: 1.4;
+  }
 }
 
 /* 見出し */
@@ -338,7 +348,6 @@
   overflow-y: visible !important;
   -webkit-overflow-scrolling: touch;
   color: map-get(global.$color-text, base);
-
 
   /* entry-containerで余白を保つため打ち消し */
   table {
