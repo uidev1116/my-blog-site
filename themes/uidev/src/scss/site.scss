@@ -17,8 +17,10 @@
 @use "object/component/article";
 @use "object/component/button";
 @use "object/component/forms";
+@use "object/component/label";
 @use "object/component/pager";
 @use "object/component/sns-links";
+@use "object/component/step";
 @use "object/component/tags";
 @use "object/component/toc";
 @use "object/component/typo";
@@ -30,6 +32,7 @@
 @use "layout/container";
 @use "layout/entry" as layout-entry;
 @use "layout/footer" as layout-footer;
+@use "layout/grid";
 @use "layout/header" as layout-header;
 @use "layout/section";
 
@@ -40,6 +43,7 @@
 @use "object/project/contact";
 @use "object/project/entry";
 @use "object/project/footer";
+@use "object/project/form";
 @use "object/project/header";
 @use "object/project/search";
 @use "object/project/profile";

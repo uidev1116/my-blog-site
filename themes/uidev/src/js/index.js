@@ -4,6 +4,7 @@ import './lib/polyfill';
 import Prism from 'prismjs';
 import fonts from './fonts';
 import {
+  validator,
   externalLinks,
   smartPhoto,
   lazyLoad,
@@ -38,7 +39,7 @@ window.root = '/';
  */
 if (window.ACMS === undefined) {
   window.dispatch = (context) => {
-    // validator(context);
+    validator(context);
     // linkMatchLocation(context);
     externalLinks(context);
     // scrollTo(context);

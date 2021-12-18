@@ -15,7 +15,7 @@ $container-sm: 750px;
 // ------------------------------
 //　ファイルのパス
 // ------------------------------
-$root-theme-img: "../../../../themes/uidev/images/";
+$root-theme-img: "../../images/marker/";
 
 // ------------------------------
 //　カラー【要対応】
@@ -51,7 +51,20 @@ $line-height-summary: 1.5;
 $line-height-text: 1.7;
 $line-height-title: 1.7;
 $line-height-text-area: 2;
-$line-height-form: 1;
+$line-height-form: 2;
+
+// ------------------------------
+//　余白
+// ------------------------------
+$component-margin-bottom                 : 24px;
+$component-margin-bottom-wide-screen     : 40px;
+$component-margin-bottom-lg              : 40px;
+$component-margin-bottom-lg-wide-screen  : 80px;
+
+$component-margin-top                    : $component-margin-bottom;
+$component-margin-top-wide-screen        : $component-margin-bottom-wide-screen;
+$component-margin-top-lg                 : $component-margin-bottom-lg;
+$component-margin-top-lg-wide-screen     : $component-margin-bottom-lg-wide-screen;
 
 // ------------------------------
 //　エントリー

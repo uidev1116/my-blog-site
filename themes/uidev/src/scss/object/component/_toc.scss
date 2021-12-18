@@ -68,7 +68,7 @@
 
     &.is-active-link {
       font-weight: normal;
-      background: map-get(global.$color-primary, light);
+      background: map-get(global.$color-primary, lightest);
     }
   }
 }

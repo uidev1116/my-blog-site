@@ -1,6 +1,7 @@
 @use "sass:math";
 
 @use "global/variables" as global;
+@use "global/acms-variables" as acms;
 
 // ------------------------------
 // フォントサイズ
@@ -380,3 +381,80 @@
     padding-left: (acms.$grid-space / 2);
   }
 }
+
+// ------------------------------
+//　グリッド
+// ------------------------------
+$breakpoints: (
+  xs: 0,
+  sm: acms.$breakpoint-sm-min,
+  md: acms.$breakpoint-md-min,
+  lg: acms.$breakpoint-lg-min,
+  xl: acms.$breakpoint-xl-min
+);
+
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+}
+
+@mixin media-breakpoint-up($name, $breakpoints: $breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin make-col-ready() {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+@mixin make-col-auto() {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+@mixin make-col($size, $columns: acms.$acms-columns) {
+  flex: 0 0 auto;
+  width: percentage(math.div($size, $columns));
+}
+
+@mixin make-grid-columns(
+  $columns: acms.$acms-columns,
+  $breakpoints: $breakpoints
+) {
+  @each $breakpoint in map-keys($breakpoints) {
+    $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      // Provide basic `.col-{bp}` classes for equal-width flexbox columns
+      .l-grid-col#{$infix} {
+        flex: 1 0 0%; // Flexbugs #4: https://github.com/philipwalton/flexbugs#flexbug-4
+      }
+
+      .l-grid-col#{$infix}-auto {
+        @include make-col-auto();
+      }
+
+      @if $columns > 0 {
+        @for $i from 1 through $columns {
+          .l-grid-col#{$infix}-#{$i} {
+            @include make-col($i, $columns);
+          }
+        }
+      }
+    }
+  }
+}
+

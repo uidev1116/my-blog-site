@@ -5,13 +5,12 @@ $color-shadow: rgba(#000a3c, .2);
 
 // ブランドカラー
 $color-primary: (
-  // lightest: カラーコードを指定してください,
-  light:  #f7f7ed,
+  lightest:  #f7f7ed,
   // light: カラーコードを指定してください,
   base: #facc15,
   base-invers: #FFF,
   // dark: カラーコードを指定してください,
-  darker: darken(#facc15, 30%),
+  dark: darken(#facc15, 30%),
   // darkest: カラーコードを指定してください,
   base-hover: #B8944D,
 );
@@ -35,13 +34,15 @@ $color-text: (
   placeholder: #b5bcbf,
   inverse: #FFF,
   code: #FFF,
+  emphasis: #bc2531,
 );
 
 // 線
 $color-border: (
   base: #cfdce6,
   lighter: #5c93bb2b,
-  admin-table: #D8D5D5,
+  light: #c9d4d8,
+  dark: #b6bdc1,
 );
 
 // 背景
@@ -49,6 +50,7 @@ $color-bg: (
   base: #16181D,
   inverse: #FFF,
   primary: #FEF9DE,
+  step: #e5e5e5,
 );
 
 // 各sns色
@@ -91,7 +93,18 @@ $color-btn-primary-bg: (
 
 $color-form: (
   bg: map-get($color-bg, whtie),
+  bg-invalid: #FFF8F9,
   border: map-get($color-border, base),
-  border-focus: map-get($color-primary, darker),
+  border-invalid: map-get($color-text, emphasis),
+  outline-focus: #189BF5,
   placeholder: map-get($color-text, placeholder),
 );
+
+$color-form: (
+  bg: map-get($color-bg, white),
+  bg-invalid: #FFF8F9,
+  border: map-get($color-border, dark),
+  border-invalid: map-get($color-text, emphasis),
+  outline-focus: #189BF5,
+  placeholder: map-get($color-text, placeholder),
+)

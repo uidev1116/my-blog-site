@@ -8,6 +8,7 @@ import {
   faHashtag,
   faAngleLeft,
   faAngleRight,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faFacebook,
@@ -42,6 +43,7 @@ export default () => {
     faListAlt,
     faAngleRight,
     faAngleLeft,
+    faExclamationTriangle,
   );
   dom.watch();
 };

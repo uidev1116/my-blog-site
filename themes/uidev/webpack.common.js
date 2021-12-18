@@ -10,6 +10,9 @@ const sass = require('sass');
 const pkg = require('./package.json');
 
 module.exports = {
+  stats: {
+    children: false,
+  },
   cache: true,
   performance: {
     maxAssetSize: 1500000,
