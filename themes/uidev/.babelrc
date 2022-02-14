@@ -24,7 +24,7 @@
     [
       "prismjs",
       {
-        "languages": ["javascript", "css", "markup", "bash", "scss", "jsx", "tsx", "typescript"],
+        "languages": ["javascript", "css", "markup", "bash", "scss", "jsx", "tsx", "typescript", "php", "ignore", "ini", "json", "sql", "yaml", "csv"],
         "plugins": ["line-numbers"],
         "theme": "tomorrow",
         "css": true
