@@ -397,6 +397,20 @@ ACMS.Config({
     rootMargin: '10px 0px', // syntax similar to that of CSS Margin
     threshold: 0.1, // ratio of element convergence
     loaded: function(el) {
+      el.addEventListener('load', function () {
+        if (el.tagName === 'IMG') {
+          var img = new Image();
+          img.onload = function () {
+            el.classList.add('loaded');
+          }
+          img.src = el.getAttribute('src');
+        } else {
+          el.classList.add('loaded');
+        }
+      });
+      setTimeout(function () {
+        el.classList.add('loading');
+      }, 100);
       ACMS.dispatchEvent('acmsLazyLoaded', el);
     }
   },
