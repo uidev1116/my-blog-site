@@ -396,7 +396,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
             }
 
             foreach ( $Config->getArray('column_add_type') as $i => $type ) {
-                if ( !preg_match('/^(text|table|image|file|osmap|map|yolp|video|youtube|eximage|break|quote|media|module|custom)($|_)/', $type) ) {
+                if ( !preg_match('/^(text|table|rich-editor|image|file|osmap|map|yolp|video|youtube|eximage|break|quote|media|module|custom)($|_)/', $type) ) {
                     continue;
                 }
                 $Tpl->add(array_merge(array('add_type:loop', 'mode:loop'), $rootBlock), array(

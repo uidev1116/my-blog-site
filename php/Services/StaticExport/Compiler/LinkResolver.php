@@ -37,6 +37,12 @@ class LinkResolver extends Resolver
             if ( is_int(strpos($path, '://')) ) continue;
             if ( '#' === substr($path, 0, 1) ) continue;
             if ( '/' !== substr($path, 0, 1) ) continue;
+            if (defined('REWRITE_PATH_EXTENSION')) {
+                $extensionRegex  = '/\.(?:acms|'.REWRITE_PATH_EXTENSION.')/';
+                if (preg_match($extensionRegex, $path)) {
+                    continue; // ファイルリンクだった場合は書き換えない
+                }
+            }
 
             $path = substr($path, 1);
             $path = '/' . $offset_dir . $path;

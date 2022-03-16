@@ -1,3 +1,3 @@
-const cacheBusting = '?date=202108191111';
+const cacheBusting = '?date=202201191620';
 
 export { cacheBusting };

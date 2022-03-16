@@ -44,7 +44,7 @@
 <form method="post" action="" id="entry-list-form" class="acms-admin-form">
 	<div class="js-acms-tab-select clearfix js-acms_fix_marker acms-admin-margin-bottom-small">
 		<!-- BEGIN_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
-		<select name="action-entry" class="js-acms-tab-select-value acms-admin-float-left">
+		<select name="action-entry" class="js-acms-tab-select-value acms-admin-float-left acms-admin-margin-bottom-mini">
 			<option value="action-order"{action-entry:selected#action-order}><!--T-->表示順<!--/T--></option>
 			<option value="action-status"{action-entry:selected#action-status}><!--T-->ステータス<!--/T--></option>
 			<!-- BEGIN_MODULE Touch_SessionWithCompilation -->
@@ -118,14 +118,14 @@
 		<!-- END_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
 
 		<div class="js-fake-form acms-admin-float-right" data-method="post">
-			<div class="js-admin-category-select acms-admin-select2 is-single" data-creation="false" style="display: inline-block;">
+			<div class="js-admin-category-select acms-admin-select2 is-single acms-admin-margin-bottom-mini" data-creation="false" style="display: inline-block;">
 				<div class="js-target"></div>
 				<input type="hidden" name="cid" value="%{CID}" class="js-value">
 			</div>
 			<input type="hidden" name="ACMS_POST_2GET" value="on" />
 			<input type="hidden" name="admin" value="entry_editor" />
 			<input type="hidden" name="bid" value="%{BID}" />
-			<button class="js-submit acms-admin-btn acms-admin-btn-success" style="vertical-align: top;"><!--T-->エントリー作成<!--/T--></button>
+			<button class="js-submit acms-admin-btn acms-admin-btn-success acms-admin-margin-bottom-mini" style="vertical-align: top;"><!--T-->エントリー作成<!--/T--></button>
 		</div>
 	</div>
 

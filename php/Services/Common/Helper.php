@@ -238,6 +238,7 @@ class Helper
             && !defined('IS_LOGIN_PAGE')
             && strpos($tpl,'ACMS_POST_Form_') === false
             && strpos($tpl,'ACMS_POST_Comment_') === false
+            && strpos($tpl,'ACMS_POST_Shop') === false
             && strpos($tpl,'check-csrf-token') === false
             && 'secret' !== ACMS_RAM::blogStatus(BID)
             && !(defined('IS_OTHER_LOGIN') && IS_OTHER_LOGIN)

@@ -1035,7 +1035,7 @@
 	text-align: center;
 	text-decoration: none;
 	vertical-align: middle;
-	background: url(../images/marker/arrow_black03.png?v=2021081924918) right center;
+	background: url(../images/marker/arrow_black03.png?v=2022011974637) right center;
 	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgMTggNSI+PGc+PGc+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxOHY1SDB6Ii8+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTQuMjIgMGg0LjIyTDYuMzMgMi41IDQuMjIgNSAyLjExIDIuNSAwIDBoNC4yMnoiLz48L2c+PC9nPjwvc3ZnPg==") right center;
 	background-repeat: no-repeat;
 	background-color: #F7F7F7;
@@ -2073,7 +2073,7 @@ label {
 	text-align: center;
 	text-decoration: none;
 	vertical-align: middle;
-	background: url(../images/marker/arrow_black03.png?v=2021081924918) right center;
+	background: url(../images/marker/arrow_black03.png?v=2022011974637) right center;
 	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgMTggNSI+PGc+PGc+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxOHY1SDB6Ii8+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTQuMjIgMGg0LjIyTDYuMzMgMi41IDQuMjIgNSAyLjExIDIuNSAwIDBoNC4yMnoiLz48L2c+PC9nPjwvc3ZnPg==") right center;
 	background-repeat: no-repeat;
 	background-color: #F7F7F7;
@@ -2486,7 +2486,7 @@ label {
 }
 
 .acms-admin-ico-checkbox {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat left top;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat left top;
 	*background-image: none;
 	_background-image: none;
 	background-size: 40px 80px;
@@ -2502,19 +2502,19 @@ label {
 
 .acms-admin-form-checkbox input:focus + label .acms-admin-ico-checkbox,
 .acms-admin-form-checkbox input:focus + .acms-admin-ico-checkbox {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat left -60px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat left -60px;
 	background-size: 40px 80px;
 }
 
 .acms-admin-form-checkbox input:checked + label .acms-admin-ico-checkbox,
 .acms-admin-form-checkbox input:checked + .acms-admin-ico-checkbox {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat left -20px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat left -20px;
 	background-size: 40px 80px;
 }
 
 .acms-admin-form-checkbox input:disabled + label .acms-admin-ico-checkbox,
 .acms-admin-form-checkbox input:disabled + .acms-admin-ico-checkbox {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat left -40px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat left -40px;
 	background-size: 40px 80px;
 	cursor: not-allowed;
 }
@@ -2531,7 +2531,7 @@ label {
 }
 
 .acms-admin-ico-radio {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat -20px top;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat -20px top;
 	background-size: 40px 80px;
 }
 
@@ -2545,19 +2545,19 @@ label {
 
 .acms-admin-form-radio input:focus + label .acms-admin-ico-radio,
 .acms-admin-form-radio input:focus + .acms-admin-ico-radio {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat -20px -60px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat -20px -60px;
 	background-size: 40px 80px;
 }
 
 .acms-admin-form-radio input:checked + label .acms-admin-ico-radio,
 .acms-admin-form-radio input:checked + .acms-admin-ico-radio {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat -20px -20px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat -20px -20px;
 	background-size: 40px 80px;
 }
 
 .acms-admin-form-radio input:disabled + label .acms-admin-ico-radio,
 .acms-admin-form-radio input:disabled + .acms-admin-ico-radio {
-	background: url(../images/marker/ico_input.png?v=2021081924918) no-repeat -20px -40px;
+	background: url(../images/marker/ico_input.png?v=2022011974637) no-repeat -20px -40px;
 	background-size: 40px 80px;
 	cursor: not-allowed;
 }
@@ -3526,7 +3526,7 @@ a.acms-admin-label-danger:focus {
  プレースホルダー
 ------------------------------- */
 .acms-admin-placeholder-movie {
-	background: url(../images/placeholder/movie.svg?v=2021081924918) center;
+	background: url(../images/placeholder/movie.svg?v=2022011974637) center;
 	background-repeat: no-repeat;
 	background-size: cover;
 }
@@ -4778,7 +4778,7 @@ a.acms-admin-label-danger:focus {
 	border-bottom: solid 1px #FFF;
 }
 .acms-admin-sidebar-sp .acms-admin-dropdown a {
-	background: url(../images/marker/arrow_white03.png?v=2021081924918) no-repeat 95% center;
+	background: url(../images/marker/arrow_white03.png?v=2022011974637) no-repeat 95% center;
 }
 
 /* ------------------------------
@@ -5803,8 +5803,8 @@ a.acms-admin-label-danger:focus {
 	font-weight: normal;
 	font-family: "acms-admin-fonts";
 	font-style: normal;
-	src: url(../fonts//acms-fonts.eot?v=2021081924918);
-	src: url(../fonts//acms-fonts.eot?v=2021081924918) format("embedded-opentype"), url(../fonts//acms-fonts.ttf?v=2021081924918) format("truetype"), url(../fonts//acms-fonts.woff?v=2021081924918) format("woff"), url(../fonts//acms-fonts.svg?v=2021081924918) format("svg");
+	src: url(../fonts/acms-fonts.eot?v=2022011974637);
+	src: url(../fonts/acms-fonts.eot?v=2022011974637) format("embedded-opentype"), url(../fonts/acms-fonts.ttf?v=2022011974637) format("truetype"), url(../fonts/acms-fonts.woff?v=2022011974637) format("woff"), url(../fonts/acms-fonts.svg?v=2022011974637) format("svg");
 }
 
 .acms-admin-icon,
@@ -11069,7 +11069,7 @@ a.acms-admin-label-danger:focus {
 	padding: 7px 10px 7px 28px;
 	color: #FFF;
 	font-weight: bold;
-	background: url(../images/marker/arrow_black05.png?v=2021081924918) no-repeat 10px center #9898A2;
+	background: url(../images/marker/arrow_black05.png?v=2022011974637) no-repeat 10px center #9898A2;
 	background-size: 8px 5px;
 	border-top: 1px solid #FFF;
 	border-radius: 0;
@@ -11297,7 +11297,7 @@ a.acms-admin-label-danger:focus {
 	display: block;
 	width: 100%;
 	height: 13px;
-	background: url(../images/marker/ico_dragabble.png?v=2021081924918) no-repeat center center;
+	background: url(../images/marker/ico_dragabble.png?v=2022011974637) no-repeat center center;
 	background-size: 23px 13px;
 	content: "";
 }
@@ -12137,7 +12137,7 @@ td.acms-admin-media-row-image:before {
 	height: 12px;
 	margin-right: 5px;
 	vertical-align: middle;
-	background-image: url(../images/system/pencil.png?v=2021081924918);
+	background-image: url(../images/system/pencil.png?v=2022011974637);
 	background-size: cover;
 	content: "";
 }
@@ -12927,13 +12927,20 @@ body .ui-widget-overlay {
 	line-height: 2.2;
 }
 
+.acms-admin-select2.is-single .js-target > div > div {
+	max-width: calc(100vw - 40px);
+}
+
 .acms-admin-select2.is-single .Select-control .Select-value {
+	line-height: 1.7 !important;
 	background-color: #FBFBFB;
 	border: none;
-	line-height: 1.7 !important;
 }
 
 @media (min-width: 768px) {
+	.acms-admin-select2.is-single .js-target > div > div {
+		max-width: inherit;
+	}
 	.acms-admin-select2 .Select-control {
 		height: 26px;
 		background-color: #F7F7F7;
@@ -12949,18 +12956,18 @@ body .ui-widget-overlay {
 }
 
 body .Select-multi-value-wrapper > .Select-value {
-	background-color: #EDEDED;
-	color: #5A5A5A;
-	border: 1px solid #B7B7B7;
-	line-height: 1.8;
 	margin-top: 3px;
+	color: #5A5A5A;
+	line-height: 1.8;
+	background-color: #EDEDED;
+	border: 1px solid #B7B7B7;
 }
 body .Select-multi-value-wrapper > .Select-value .Select-value-icon {
 	border-right: 1px solid #B7B7B7;
 }
 body .Select-multi-value-wrapper > .Select-value .Select-value-icon:hover {
-	background-color: inherit;
 	color: inherit;
+	background-color: inherit;
 }
 
 .acms-admin-editor-media-placeholder {

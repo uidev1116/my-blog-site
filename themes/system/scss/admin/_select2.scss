@@ -20,16 +20,24 @@
 	}
 
 	&.is-single {
+		.js-target > div > div {
+			max-width: calc(100vw - 40px);
+		}
 		.Select-control {
 			.Select-value {
+				line-height: 1.7 !important;
 				background-color: #fbfbfb;
 				border: none;
-				line-height: 1.7 !important;
 			}
 		}
 	}
 
 	@media (min-width: $breakpoint-md-min) {
+		&.is-single {
+			.js-target > div > div {
+				max-width: inherit;
+			}
+		}
 		.Select-control {
 			height: $acms-form-height;
 			background-color: #f7f7f7;
@@ -46,16 +54,16 @@
 }
 
 body .Select-multi-value-wrapper>.Select-value {
-	background-color: #EDEDED;
-	color: #5A5A5A;
-	border: 1px solid #B7B7B7;
-	line-height: 1.8;
 	margin-top: 3px;
+	color: #5A5A5A;
+	line-height: 1.8;
+	background-color: #EDEDED;
+	border: 1px solid #B7B7B7;
 	.Select-value-icon {
 		border-right: 1px solid #B7B7B7;
 		&:hover {
-			background-color: inherit;
 			color: inherit;
+			background-color: inherit;
 		}
 	}
 }

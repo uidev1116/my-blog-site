@@ -124,15 +124,15 @@ class Helper
             if ( class_exists('Imagick') && config('image_magick') == 'on' ) {
                 $this->editImageForImagick($from, $to, $width, $height, $size, $angle);
                 $this->createWebpWithImagick($to, $to . '.webp');
-            } else if ( empty($toFunc[$toExt]) ) {
+            } else if (empty($toFunc[$toExt])) {
                 $resource = $this->editImage($fromFunc[$fromExt]($from), $width, $height, $size, $angle);
                 $imageQuality = intval(config('image_jpeg_quality'));
                 imagejpeg($resource, $to, $imageQuality);
                 $this->createWebpWithGd($resource, $to . '.webp', $imageQuality);
             } else {
-                $toFunc[$toExt]($this->editImage(
-                    $fromFunc[$fromExt]($from), $width, $height, $size, $angle
-                ), $to);
+                $resource = $this->editImage($fromFunc[$fromExt]($from), $width, $height, $size, $angle);
+                $toFunc[$toExt]($resource, $to);
+                $this->createWebpWithGd($resource, $to . '.webp', intval(config('image_jpeg_quality')));
             }
         //----------
         // raw copy

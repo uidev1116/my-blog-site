@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
+class ComposerStaticInit9975d9663d073708c37f60fb0557b2f7
 {
     public static $files = array (
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
@@ -532,6 +532,7 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
         'AsyncPHP\\Doorman\\Task\\CallbackTask' => __DIR__ . '/..' . '/asyncphp/doorman/src/Task/CallbackTask.php',
         'AsyncPHP\\Doorman\\Task\\ProcessCallbackTask' => __DIR__ . '/..' . '/asyncphp/doorman/src/Task/ProcessCallbackTask.php',
         'CallbackFilterIterator' => __DIR__ . '/..' . '/symfony/polyfill-php54/Resources/stubs/CallbackFilterIterator.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Doctrine\\Common\\Collections\\AbstractLazyCollection' => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections/AbstractLazyCollection.php',
         'Doctrine\\Common\\Collections\\ArrayCollection' => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections/ArrayCollection.php',
         'Doctrine\\Common\\Collections\\Collection' => __DIR__ . '/..' . '/doctrine/collections/lib/Doctrine/Common/Collections/Collection.php',
@@ -887,7 +888,6 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
         'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerInterface.php',
         'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/Psr/Log/LoggerTrait.php',
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/NullLogger.php',
-        'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'React\\Cache\\ArrayCache' => __DIR__ . '/..' . '/react/cache/src/ArrayCache.php',
         'React\\Cache\\CacheInterface' => __DIR__ . '/..' . '/react/cache/src/CacheInterface.php',
@@ -1082,9 +1082,6 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
         'Symfony\\Component\\Finder\\Tests\\Iterator\\FilecontentFilterIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/FilecontentFilterIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\FilenameFilterIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/FilenameFilterIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\FilterIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/FilterIteratorTest.php',
-        'Symfony\\Component\\Finder\\Tests\\Iterator\\InnerNameIterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/FilenameFilterIteratorTest.php',
-        'Symfony\\Component\\Finder\\Tests\\Iterator\\InnerSizeIterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/SizeRangeFilterIteratorTest.php',
-        'Symfony\\Component\\Finder\\Tests\\Iterator\\InnerTypeIterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/FileTypeFilterIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\Iterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/Iterator.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\IteratorTestCase' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/IteratorTestCase.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\MockFileListIterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/MockFileListIterator.php',
@@ -1095,7 +1092,6 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
         'Symfony\\Component\\Finder\\Tests\\Iterator\\RecursiveDirectoryIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/RecursiveDirectoryIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\SizeRangeFilterIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/SizeRangeFilterIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Iterator\\SortableIteratorTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/SortableIteratorTest.php',
-        'Symfony\\Component\\Finder\\Tests\\Iterator\\TestMultiplePcreFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Iterator/MultiplePcreFilterIteratorTest.php',
         'Symfony\\Component\\Finder\\Tests\\Shell\\CommandTest' => __DIR__ . '/..' . '/symfony/finder/Symfony/Component/Finder/Tests/Shell/CommandTest.php',
         'Symfony\\Component\\OptionsResolver\\Debug\\OptionsResolverIntrospector' => __DIR__ . '/..' . '/symfony/options-resolver/Debug/OptionsResolverIntrospector.php',
         'Symfony\\Component\\OptionsResolver\\Exception\\AccessException' => __DIR__ . '/..' . '/symfony/options-resolver/Exception/AccessException.php',
@@ -1134,8 +1130,6 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
         'Symfony\\Component\\Yaml\\Exception\\RuntimeException' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Exception/RuntimeException.php',
         'Symfony\\Component\\Yaml\\Inline' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Inline.php',
         'Symfony\\Component\\Yaml\\Parser' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Parser.php',
-        'Symfony\\Component\\Yaml\\Tests\\A' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Tests/DumperTest.php',
-        'Symfony\\Component\\Yaml\\Tests\\B' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Tests/ParserTest.php',
         'Symfony\\Component\\Yaml\\Tests\\DumperTest' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Tests/DumperTest.php',
         'Symfony\\Component\\Yaml\\Tests\\InlineTest' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Tests/InlineTest.php',
         'Symfony\\Component\\Yaml\\Tests\\ParseExceptionTest' => __DIR__ . '/..' . '/symfony/yaml/Symfony/Component/Yaml/Tests/ParseExceptionTest.php',
@@ -1199,11 +1193,11 @@ class ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09::$fallbackDirsPsr0;
-            $loader->classMap = ComposerStaticInitc5f93c44d03e23638ce8e5c65dd64f09::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9975d9663d073708c37f60fb0557b2f7::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9975d9663d073708c37f60fb0557b2f7::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit9975d9663d073708c37f60fb0557b2f7::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit9975d9663d073708c37f60fb0557b2f7::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInit9975d9663d073708c37f60fb0557b2f7::$classMap;
 
         }, null, ClassLoader::class);
     }

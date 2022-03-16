@@ -26,7 +26,7 @@ class Helper
                 return false;
             }
         } else {
-            if (!sessionWithContribution()) {
+            if (!sessionWithContribution($bid, false)) {
                 return false;
             }
         }

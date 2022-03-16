@@ -539,19 +539,22 @@ class Helper
                 continue;
             }
             $set = false;
-            foreach ( $Field->getArray($fd, true) as $i => $path ) {
-                if ( !Storage::isFile(REVISON_ARCHIVES_DIR.$path) ) continue;
-                $info       = pathinfo($path);
-                $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-                $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
-                $newPath    = $dirname.uniqueString().$ext;
-                Storage::copy(REVISON_ARCHIVES_DIR.$path, ARCHIVES_DIR.$newPath);
-                if ( !$set ) {
+            foreach ($Field->getArray($fd, true) as $i => $path) {
+                if (!$set) {
                     $Field->delete($fd);
                     $set = true;
                 }
-                $Field->add($fd, $newPath);
+                if (Storage::isFile(REVISON_ARCHIVES_DIR.$path)) {
+                    $info       = pathinfo($path);
+                    $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
+                    Storage::makeDirectory(ARCHIVES_DIR.$dirname);
+                    $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
+                    $newPath    = $dirname.uniqueString().$ext;
+                    Storage::copy(REVISON_ARCHIVES_DIR.$path, ARCHIVES_DIR.$newPath);
+                    $Field->add($fd, $newPath);
+                } else {
+                    $Field->add($fd, '');
+                }
             }
         }
         Common::saveField('eid', EID, $Field);

@@ -238,9 +238,9 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
         }
 
         $multi = false;
-        $multi = $multi || $this->categoryFilterQuery($SQL);
-        $multi = $multi || $this->userFilterQuery($SQL);
-        $multi = $multi || $this->entryFilterQuery($SQL);
+        $multi = $this->categoryFilterQuery($SQL) || $multi;
+        $multi = $this->userFilterQuery($SQL) || $multi;
+        $multi = $this->entryFilterQuery($SQL) || $multi;
         $this->blogFilterQuery($SQL, $multi);
 
         $this->tagFilterQuery($SQL);
