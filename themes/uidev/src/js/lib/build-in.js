@@ -297,10 +297,10 @@ const focusedImage = (context, selector = '') => {
   });
 };
 
-const unitGroupAlign = () => {
+const unitGroupAlign = (context, selector = '.js-unit_group-align') => {
   let timer;
   const align = () => {
-    const unitGroups = document.querySelectorAll('.js-unit_group-align');
+    const unitGroups = context.querySelectorAll(selector);
     let currentWidth = 0;
     let count = 0;
     clearTimeout(timer);

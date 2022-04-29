@@ -8,12 +8,12 @@ import {
   externalLinks,
   smartPhoto,
   lazyLoad,
-  inView,
+  // inView,
   scrollHint,
   openStreetMap,
-  datePicker,
+  // datePicker,
   postInclude,
-  pdfPreview,
+  // pdfPreview,
   unitGroupAlign,
 } from './lib/build-in'; // ToDo: いらないものは削除する
 
@@ -46,14 +46,14 @@ if (window.ACMS === undefined) {
     // alertUnload(context);
     smartPhoto(context);
     lazyLoad(context);
-    inView(context);
+    // inView(context);
     // modalVideo(context);
     scrollHint(context);
     // googleMap(context);
     openStreetMap(context);
-    datePicker(context);
+    // datePicker(context);
     postInclude(context);
-    pdfPreview(context);
+    // pdfPreview(context);
     // focusedImage(context);
     unitGroupAlign(context);
   };
