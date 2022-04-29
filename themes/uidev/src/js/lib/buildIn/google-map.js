@@ -1,15 +1,26 @@
 import { Loader } from 'google-maps';
 import queryString from 'query-string';
 
+let googlePromise;
+
+const loadGoogleMap = (key) => {
+  if (googlePromise) {
+    return googlePromise;
+  }
+  const options = {};
+  const loader = new Loader(key, options);
+  googlePromise = loader.load();
+  return googlePromise;
+};
+
 export default async (elm) => {
   const query = queryString.parse(elm.src.replace(/^[^?]*\?/, ''));
   const msgs = elm.alt.split('[[:split:]]');
   if (!query.key) {
     return;
   }
-  const options = {};
-  const loader = new Loader(query.key, options);
-  const google = await loader.load();
+
+  const google = await loadGoogleMap(query.key);
   const output = document.createElement('div');
   const size = query.size.split('x');
   const width = size[0] || null;
@@ -17,7 +28,8 @@ export default async (elm) => {
   const centerLatLng = query.center.split(',');
   const markerCollectionStack = [];
   const googleInfoWindow = new google.maps.InfoWindow();
-  const googleMap = new google.maps.Map(output, { // eslint-disable-line no-new
+  const googleMap = new google.maps.Map(output, {
+    // eslint-disable-line no-new
     center: { lat: parseFloat(centerLatLng[0]), lng: parseFloat(centerLatLng[1]) },
     zoom: parseInt(query.zoom, 10),
   });
@@ -55,7 +67,9 @@ export default async (elm) => {
         // markers's latlng
       } else {
         const latLng = params[i].split(',');
-        if (!latLng[0].length) { return; } // latlngの不正なマーカー
+        if (!latLng[0].length) {
+          return;
+        } // latlngの不正なマーカー
         markerCollection.optAry.push({
           position: new google.maps.LatLng(parseFloat(latLng[0]), parseFloat(latLng[1])),
           map: googleMap,
@@ -83,7 +97,14 @@ export default async (elm) => {
               googleInfoWindow.open(googleMap, gMarker);
             });
           }
-        })(marker, msgs[msgI].replace(/\[\[:quot:\]\]/igm, '"').replace(/\[\[:lt:\]\]/igm, '<').replace(/\[\[:gt:\]\]/igm, '>').replace(/\[\[:amp:\]\]/igm, '&'));
+        })(
+          marker,
+          msgs[msgI]
+            .replace(/\[\[:quot:\]\]/gim, '"')
+            .replace(/\[\[:lt:\]\]/gim, '<')
+            .replace(/\[\[:gt:\]\]/gim, '>')
+            .replace(/\[\[:amp:\]\]/gim, '&'),
+        );
       }
       msgI += 1;
     }
