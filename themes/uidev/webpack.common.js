@@ -21,8 +21,7 @@ module.exports = {
   target: ["web", "es5"],
   entry: {
     bundle: `${__dirname}/src/js/index.js`,
-    'admin': `${__dirname}/src/scss/site-admin.scss`,
-    // 'amp': `${__dirname}/src/scss/site-amp.scss`
+    admin: `${__dirname}/src/js/admin.js`,
   },
   output: {
     path: `${__dirname}/dest/`,

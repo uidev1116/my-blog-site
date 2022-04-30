@@ -62,6 +62,15 @@ if (window.ACMS === undefined) {
   ACMS.Ready(() => {
     // eslint-disable-next-line no-undef
     ACMS.Config.googleCodePrettifyClass = 'no-highlight';
+
+    /**
+     * LiteEditor
+     */
+
+    ACMS.Config.LiteEditorConf.btnOptions.push({
+      label: 'コード',
+      tag: 'code',
+    });
   });
 }
 
