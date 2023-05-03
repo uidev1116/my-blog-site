@@ -1,35 +1,23 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cPqHqsilEtZxibyHFwEEHnLaQKC4eQ7ehLy9WSUqDip+X/2zYKyNlQBpRgdmoBSqtCAd8pWDe
-HuvtgBa2lsVth+kdWV1WNAlY2X6shx9zumMjOUhXlzlfk7ynPz5FxScKGoT31a8we+D8LmFrVudk
-DKJF7SbHeBEMSL6CnKXAvYA/YIELVD+5qE8KYfTGjZMtNWqsCdjWHGfnhKrxigCNrLBDwZXaDZFt
-6J+j5hJCYbBHVUODHr5DABttTsNby2v3GZXT6QQP3jIt4sL1xRXLzWSD6A/mE6llPpPIUyMmaTCW
-A/ACFL5y7Nn0JQN8ElGOAE0/YQfPWSm/nCBHbg1+JnW7VoaPiCnndGwNLn5NIBPlGtrtfg/r27qo
-Uja+IpsN3+oUZCABTIdY7AiHiXz4eXaEIYDyM1IrcriFgG9IT4kAs77/vW+Wwf3BiSQpN4hKMdOr
-fofR3a3rwZxkj7n7vd8wbP65NWmXBHb5SWhgTizKP6kU2XvipBAoMh+1VEL6tumn/kaQy/v6tyO7
-o8nQeYZLfwKGkv91uaurDEYEoVjXvtXZvlgxB+HRusS+AFIC7QIKbKc1f5rpxEGo6rBoN1iA6rIz
-ktb02VC2SDdE84gjynbv7ujHOhlNHqSuAozVQTT0dkLW29GsAswION/AAryxTrjq0tlJgJBAyVb0
-q+kHM4ZmVOwsRT5OyewTn07KULLEh3hMoAmTLiCYG0WnSul0ocWqIyKP2jhkwV24ZXRdi2E+kxQ3
-rbp6AggfY/Y04jTkrdpDY5OMA9i6zzVp+ej0Ev/4PaYQLfCr9aVuDM8WaFaxZgc3x66q3hxUHp4K
-+nK8yKuu/umCAgGwVeFgqsf0YSQa+48EePzoeb3Rtegs5IiBAlDiW/IzQXlv6AjLf9lM5Qd8XfTL
-7L9G1k3553g+HuuEZ8Giz0oG+Wsa115b2SKs1l6h3zbVtd1xT0uYzVNsu8yWAOe79T/IvvFytVwC
-DVChGMFZOVrMxOzEJ0zQpbjUbZ5kZQWgKWNDriTqtSY9dT5oSn6YCV7V4I57Epav6wXuQVi5ZdmW
-7Yymne0hBd7CBkS+GoZocaarCTZgnjLUc1j7tVGraOcswNZr7z6PP5G2n8WEUcHctT4+KbmpA20J
-21wNK7Ybpb4+GGym+Me/NDtkMhLHZfJgNUQnrzk+jZiGvyttKcjjIB5P/w9lau1Lwbsj0iMCN9u1
-QsWI1PLFR6n//In7cRX7TWUh4CGs3qT8Emzx0I+h+pdrw5UuA/++srF3SMsYvZBiPK+UlXuKe4kt
-oU86yswgGd7oqSxfl1rf5HeLmWbvh/P0pAXJG1GWDBeOlKL54TqaD1D3RS/qxTgLvrvAtRzbNj+M
-aqxtqnTPdSsw0bT+3Wf+bX7E1uJUTEoeaRBOTKtOyztJOF3vy5AWf0k06XBXUS+ihunloC2gSpeg
-XdMP07uV8udUo0UUgKrIAcAdZrOo2S4nquzY5zfd4DEkf5NeKFAoylQqon2uK7MXYeGfTfBs5Aoi
-IbRx8miInK5oNbK145NUhnMtdcejAAByxhnnrRtSLlN/GmV8/mVSPerhCM51qgzRNmi4ENQ3qaHd
-TK4EognFAG1Tm0NMQSp8ZjtBUAtgqpql/MYB7eNyMCHDL6/BTdSHt5l3lva/MOz9ptE8R86xgQml
-PFmVUUtg0+XRCOtMfmenRKE2B9yVvR/xNzzjPgyadazfSwF//8fTfB1ife4KyM5ZTqGOBDbebyOb
-XgNuJuLOjSYrMNC1hFjmkzNEVarl9EpTDpfNEIj2pStN3GuEDsAZALJc6dxogZ4FTEwOGYfzPlg/
-mwMQ+qTmo5atJJFjupR2aZ0JVMSTd4N5H3aKXx+EuAcxqFzXAzspl4xjBAnrIecW+rR/57lxv+Qc
-dNR4Qe9UNylzms/jtSDUV49mvAYyRTXAmfYRRQdlNLobXkukJo4mhpIJZDUZ88U3DbpHyPN4zg8e
-oQhnf+1V+/w/8Mx4vEPV1FWWKJ30k8jqnOMNgVBaMPhih51gRspG0BmD2k5VAdmUUcuizkH+D9yI
-txWWuR9UA2R0vKzPDxsK7Evnk1K3sv64iPXwX96q3TO/3ThXrU7lwigvY5qH1vTvzhC6GkIKv+We
-thXk+dDfl4SD/JJVyQGGWGDVVfF9UvSnLQdrm/9X4Sl4rdyUa7Uf84dsGo9csvxjFnnusegeBrHZ
-4us3ZZA2km6pncYSAoIwMUAAo5lECF5WYkDAID9EQhV847XSt0ESLNrSrQr4gZdVLRMoFP8xBE16
-D1elJw1jLcmsz4EF3gzxvlLD0B15vqRJXmwM20dXjCZlgQM8Cy9TEzotjAOazfqUvJK6V5DSBXSg
-SQF50GjY
+<?php
+
+class ACMS_POST_Blog_Reset extends ACMS_POST_Blog
+{
+    function post()
+    {
+        $this->Post->reset(true);
+        $this->Post->setMethod('blog', 'operable', sessionWithAdministration());
+        $this->Post->validate();
+        if ( $this->Post->isValidAll() ) {
+            $DB     = DB::singleton(dsn());
+            $SQL    = SQL::newDelete('config');
+            $SQL->addWhereOpr('config_blog_id', BID);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            Config::forgetCache(BID);
+
+            $this->Post->set('msg', 'reset');
+        }
+
+        return $this->Post;
+    }
+}

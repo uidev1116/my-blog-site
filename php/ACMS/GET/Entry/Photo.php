@@ -10,6 +10,7 @@ class ACMS_GET_Entry_Photo extends ACMS_GET_Entry_Summary
                 config('entry_photo_order2'),
             ),
             'orderFieldName'   => config('entry_photo_order_field_name'),
+            'noNarrowDownSort' => config('entry_photo_no_narrow_down_sort', 'off'),
             'limit'            => intval(config('entry_photo_limit')),
             'offset'           => intval(config('entry_photo_offset')),
             'indexing'         => config('entry_photo_indexing'),

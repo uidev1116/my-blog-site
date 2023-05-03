@@ -1,167 +1,214 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-EeJ2WW==
+<?php
+
+class ACMS_POST_Form extends ACMS_POST
+{
+    var $isCacheDelete  = false;
+
+    /**
+     * 残った添付ファイルの削除
+     * 送信まで行かず確認画面でフォームをキャンセルした場合に添付ファイルが残る為
+     *
+     * @param int $lifetime
+     */
+    public static function clearAttachedFile($lifetime=1800)
+    {
+        $temp_dir = ARCHIVES_DIR . config('mail_attachment_temp_dir', 'temp/');
+
+        $cur    = getcwd();
+        Storage::changeDir(SCRIPT_DIR);
+
+        if ( !Storage::isDirectory($temp_dir) ) {
+            return;
+        }
+
+        $target_dir = opendir($temp_dir);
+        while ( $file = readdir($target_dir) ) {
+            $path = $temp_dir.$file;
+
+            if ( $file === '.' || $file === '..' ) {
+                continue;
+            }
+            if ( !Storage::isReadable($path) ) {
+                continue;
+            }
+            if ( Storage::isDirectory($path) ) {
+                continue;
+            }
+            $mtime = Storage::lastModified($path);
+            if ( REQUEST_TIME - $lifetime > $mtime){
+                Storage::remove($path);
+                if ( HOOK_ENABLE ) {
+                    $Hook = ACMS_Hook::singleton();
+                    $Hook->call('mediaDelete', $path);
+                }
+            }
+        }
+        closedir($target_dir);
+        Storage::changeDir($cur);
+    }
+
+    /**
+     * フォームのロード
+     *
+     * @param string $id
+     * @return array
+     */
+    function loadForm($id)
+    {
+        if ( empty($id) ) { return false; }
+        $form   = false;
+
+        $DB     = DB::singleton(dsn());
+        $SQL    = SQL::newSelect('form');
+        $SQL->addWhereOpr('form_code', $id);
+        $SQL->addLeftJoin('blog', 'blog_id', 'form_blog_id');
+        ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
+
+        $Where  = SQL::newWhere();
+        $Where->addWhereOpr('form_blog_id', BID, '=', 'OR');
+        $Where->addWhereOpr('form_scope', 'global', '=', 'OR');
+        $SQL->addWhere($Where);
+
+        if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
+            $form   = array(
+                'id'    => $row['form_id'],
+                'bid'   => $row['form_blog_id'],
+                'code'  => $row['form_code'],
+                'name'  => $row['form_name'],
+                'scope' => $row['form_scope'],
+                'log'   => $row['form_log'],
+                'data'  => unserialize($row['form_data']),
+            );
+        }
+
+        return $form;
+    }
+
+    /**
+     * フォームオプション（サーバーサイドのバリデーション）を組み込み
+     *
+     * @param Field $Option
+     * @return array
+     */
+    function buildOptions($Option)
+    {
+        $dup = array(); // メールアドレスの重複オプション
+        $field = $this->extract('field');
+
+        foreach ( $Option->getArray('field') as $i => $fd ) {
+            if ( empty($fd) ) continue;
+            if ( !($method = $Option->get('method', '', $i)) ) continue;
+            $value  = $Option->get('value', '', $i);
+            if ( 'converter' == $method ) {
+                $this->Post->set($fd.':converter', $value);
+            } elseif ( 'duplication' == $method ) {
+                $dup[] = $fd;
+                $dup[] = $field->get($fd);
+            } else {
+                $field->setMethod($fd, $method, $value);
+            }
+        }
+        return $dup;
+    }
+
+    /**
+     * フォームオプション（サーバーサイドのバリデーション）を組み込み
+     *
+     * @param Field $Field
+     * @param string $fd
+     * @return array
+     */
+    function getAttachedFilePath($Field, $fd)
+    {
+        if ( 1
+            and preg_match('@^(.+)\@path$@', $fd, $match)
+            and $Field->isExists($match[1])
+            and $Field->isExists($match[1].'@baseName')
+        ) {
+            $fd_file    = $match[1];
+            $filename   = $Field->get($fd_file.'@baseName');
+            $path       = $Field->get($fd_file.'@path');
+            $original_name = $Field->get($fd_file.'@originalName');
+
+            if ( $download_name = $Field->get($fd_file . '@downloadName') ) {
+                $original_name = $download_name;
+            }
+            if( strlen($filename) === 0 ){
+                $filename = Storage::mbBasename($path);
+            }
+            $realpath = ARCHIVES_DIR.$path;
+            $temppath = ARCHIVES_DIR.config('mail_attachment_temp_dir').$filename;
+
+            if ( Storage::exists($realpath) && Storage::isFile($realpath) ) {
+                return array(
+                    'realpath'  => $realpath,
+                    'temppath'  => $temppath,
+                    'fieldpath' => config('mail_attachment_temp_dir').$filename,
+                    'fdname'    => $fd_file,
+                    'original_name' => $original_name,
+                );
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * フォームIDの重複チェック
+     *
+     * @param string $code
+     * @param string $fmid
+     * @param string $scope
+     * @return boolean
+     */
+    function double($code, $fmid=null, $scope='local')
+    {
+        if ( empty($code) ) return true;
+        $DB     = DB::singleton(dsn());
+        $SQL    = SQL::newSelect('form');
+        $SQL->setSelect('form_id');
+        $SQL->addLeftJoin('blog', 'blog_id', 'form_blog_id');
+
+        // local
+        if ( $scope === 'local' ) {
+            ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
+            $Where  = SQL::newWhere();
+            $Where->addWhereOpr('form_blog_id', BID, '=', 'OR');
+            $Where->addWhereOpr('form_scope', 'global', '=', 'OR');
+            $SQL->addWhere($Where);
+        // global
+        } else {
+            ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-descendant-or-self');
+        }
+
+        $SQL->addWhereOpr('form_code', $code);
+        if ( is_int($fmid) ) {
+            $SQL->addWhereOpr('form_id', $fmid, '<>');
+        }
+        $SQL->setLimit(1);
+
+        return !$DB->query($SQL->get(dsn()), 'one');
+    }
+
+    /**
+     * メールアドレスの重複チェック
+     *
+     * @param string $code
+     * @param string $mail
+     * @return boolean
+     */
+    function mailToDouble($id, $mail)
+    {
+        $DB     = DB::singleton(dsn());
+        $mail   = preg_quote($mail);
+        $regex  = "^{$mail}$|[^a-z]{$mail}\s?[>]?[^a-z]";
+
+        $SQL    = SQL::newSelect('log_form');
+        $SQL->addSelect('log_form_mail_to');
+        $SQL->addWhereOpr('log_form_mail_to', $regex, 'REGEXP');
+        $SQL->addWhereOpr('log_form_form_id', $id);
+        $SQL->addWhereOpr('log_form_blog_id', BID);
+
+        return !($DB->query($SQL->get(dsn()), 'one'));
+    }
+}

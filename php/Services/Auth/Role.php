@@ -50,7 +50,7 @@ class Role extends General
     }
 
     /**
-     * 指定ユーザーが購読者か
+     * 指定ユーザーが読者か
      *
      * @param int|null $uid
      * @return bool

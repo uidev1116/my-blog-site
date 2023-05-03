@@ -13,8 +13,8 @@ use ACMS_POST_Image;
 use ACMS_Validator;
 use Field;
 use ACMS_Hook;
-use OpenGraph;
 use ACMS_Services_Twitter;
+use Embed\Embed;
 
 class Helper
 {
@@ -71,12 +71,12 @@ class Helper
         $tags = $Entry->get('tag');
         if (!empty($tags)) {
             $tags = Common::getTagsFromString($tags, false);
-            foreach ( $tags as $sort => $tag ) {
+            foreach ($tags as $sort => $tag) {
                 if (isReserved($tag)) {
                     $Entry->setMethod('tag', 'reserved', false);
                     break;
                 }
-                if ( !preg_match('/^[^#,\/]*$/u', $tag) ) {
+                if (!preg_match(REGEX_INVALID_TAG_NAME, $tag)) {
                     $Entry->setMethod('tag', 'string', false);
                     break;
                 }
@@ -175,6 +175,7 @@ class Helper
         $SQL    = SQL::newDelete('entry');
         $SQL->addWhereOpr('entry_id', $eid);
         $DB->query($SQL->get(dsn()), 'exec');
+        ACMS_RAM::entry($eid, null);
 
         //----------------------
         // column, tag, comment
@@ -286,22 +287,19 @@ class Helper
                     break;
                 case 'custom':
                     if ( empty($row['column_field_6']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_6']);
-                    foreach ( $oldAry as $fieldString ) {
-                        $Field = acmsUnserialize($fieldString);
-                        foreach ( $Field->listFields() as $fd ) {
-                            if ( 1
-                                and !strpos($fd, '@path')
-                                and !strpos($fd, '@tinyPath')
-                                and !strpos($fd, '@largePath')
-                                and !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                $path = REVISON_ARCHIVES_DIR.$old;
-                                deleteFile($path);
-                            }
+                    $Field = acmsUnserialize($row['column_field_6']);
+                    foreach ( $Field->listFields() as $fd ) {
+                        if ( 1
+                            && !strpos($fd, '@path')
+                            && !strpos($fd, '@tinyPath')
+                            && !strpos($fd, '@largePath')
+                            && !strpos($fd, '@squarePath')
+                        ) {
+                            continue;
+                        }
+                        foreach ( $Field->getArray($fd, true) as $i => $old ) {
+                            $path = REVISON_ARCHIVES_DIR.$old;
+                            deleteFile($path);
                         }
                     }
                     break;
@@ -467,42 +465,37 @@ class Helper
                     break;
                 case 'custom':
                     if ( empty($row['column_field_6']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_6']);
-                    foreach ( $oldAry as $fieldString ) {
-                        $Field = acmsUnserialize($fieldString);
-                        $newAry = array();
-                        foreach ( $Field->listFields() as $fd ) {
-                            if ( 1
-                                and !strpos($fd, '@path')
-                                and !strpos($fd, '@tinyPath')
-                                and !strpos($fd, '@largePath')
-                                and !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            $set = false;
-                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                $info       = pathinfo($old);
-                                $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                                Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-
-                                $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
-                                $newOld = $dirname.uniqueString().$ext;
-
-                                $path   = REVISON_ARCHIVES_DIR.$old;
-                                $newPath    = ARCHIVES_DIR.$newOld;
-
-                                copyFile($path, $newPath);
-                                if ( !$set ) {
-                                    $Field->delete($fd);
-                                    $set = true;
-                                }
-                                $Field->add($fd, $newOld);
-                            }
+                    $Field = acmsUnserialize($row['column_field_6']);
+                    foreach ( $Field->listFields() as $fd ) {
+                        if ( 1
+                            and !strpos($fd, '@path')
+                            and !strpos($fd, '@tinyPath')
+                            and !strpos($fd, '@largePath')
+                            and !strpos($fd, '@squarePath')
+                        ) {
+                            continue;
                         }
-                        $newAry[] = acmsSerialize($Field);
+                        $set = false;
+                        foreach ( $Field->getArray($fd, true) as $i => $old ) {
+                            $info       = pathinfo($old);
+                            $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
+                            Storage::makeDirectory(ARCHIVES_DIR.$dirname);
+
+                            $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
+                            $newOld = $dirname.uniqueString().$ext;
+
+                            $path   = REVISON_ARCHIVES_DIR.$old;
+                            $newPath    = ARCHIVES_DIR.$newOld;
+
+                            copyFile($path, $newPath);
+                            if ( !$set ) {
+                                $Field->delete($fd);
+                                $set = true;
+                            }
+                            $Field->add($fd, $newOld);
+                        }
                     }
-                    $row['column_field_6'] = implodeUnitData($newAry);
+                    $row['column_field_6'] = acmsSerialize($Field);
                     break;
             }
             foreach ( $row as $key => $val ) {
@@ -525,6 +518,7 @@ class Helper
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
+        ACMS_RAM::entry(EID, null);
 
         //-------
         // field
@@ -582,6 +576,20 @@ class Helper
         $SQL = SQL::newDelete('entry_sub_category');
         $SQL->addWhereOpr('entry_sub_category_eid', $eid);
         $DB->query($SQL->get(dsn()), 'exec');
+
+        $SQL = SQL::newSelect('entry_sub_category_rev');
+        $SQL->addWhereOpr('entry_sub_category_eid', EID);
+        $SQL->addWhereOpr('entry_sub_category_rev_id', $rvid);
+        $q = $SQL->get(dsn());
+        $SubCategory = SQl::newInsert('entry_sub_category');
+        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) { do {
+            foreach ($row as $key => $val) {
+                if ($key !== 'entry_sub_category_rev_id') {
+                    $SubCategory->addInsert($key, $val);
+                }
+            }
+            $DB->query($SubCategory->get(dsn()), 'exec');
+        } while ($row = $DB->fetch($q)); }
 
         //---------------
         // related entry
@@ -649,22 +657,19 @@ class Helper
                     break;
                 case 'custom':
                     if ( empty($row['column_field_6']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_6']);
-                    foreach ( $oldAry as $fieldString ) {
-                        $Field = acmsUnserialize($fieldString);
-                        foreach ( $Field->listFields() as $fd ) {
-                            if ( 1
-                                and !strpos($fd, '@path')
-                                and !strpos($fd, '@tinyPath')
-                                and !strpos($fd, '@largePath')
-                                and !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                $path = ARCHIVES_DIR.$old;
-                                deleteFile($path);
-                            }
+                    $Field = acmsUnserialize($row['column_field_6']);
+                    foreach ( $Field->listFields() as $fd ) {
+                        if ( 1
+                            && !strpos($fd, '@path')
+                            && !strpos($fd, '@tinyPath')
+                            && !strpos($fd, '@largePath')
+                            && !strpos($fd, '@squarePath')
+                        ) {
+                            continue;
+                        }
+                        foreach ( $Field->getArray($fd, true) as $i => $old ) {
+                            $path = ARCHIVES_DIR.$old;
+                            deleteFile($path);
                         }
                     }
                     break;
@@ -958,18 +963,6 @@ class Helper
                     'msg'   => $_POST['map_msg_'.$id],
                     'size'  => $_POST['map_size_'.$id],
                 );
-            //------
-            // yolp
-            } else if ( 'yolp' == $type ) {
-                $data   = array(
-                    'lat'   => $_POST['yolp_lat_'.$id],
-                    'lng'   => $_POST['yolp_lng_'.$id],
-                    'zoom'  => $_POST['yolp_zoom_'.$id],
-                    'msg'   => $_POST['yolp_msg_'.$id],
-                    'size'  => $_POST['yolp_size_'.$id],
-                    'layer' => $_POST['yolp_layer_'.$id],
-                );
-
             //---------
             // youtube
             } else if ( 'youtube' == $type ) {
@@ -1250,22 +1243,19 @@ class Helper
                             break;
                         case 'custom':
                             if ( empty($row['column_field_6']) ) break;
-                            $oldAry = explodeUnitData($row['column_field_6']);
-                            foreach ( $oldAry as $fieldString ) {
-                                $Field = acmsUnserialize($fieldString);
-                                foreach ( $Field->listFields() as $fd ) {
-                                    if ( 1
-                                        and !strpos($fd, '@path')
-                                        and !strpos($fd, '@tinyPath')
-                                        and !strpos($fd, '@largePath')
-                                        and !strpos($fd, '@squarePath')
-                                    ) {
-                                        continue;
-                                    }
-                                    foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                        $path   = ARCHIVES_DIR.$old;
-                                        deleteFile($path);
-                                    }
+                            $Field = acmsUnserialize($row['column_field_6']);
+                            foreach ( $Field->listFields() as $fd ) {
+                                if ( 1
+                                    && !strpos($fd, '@path')
+                                    && !strpos($fd, '@tinyPath')
+                                    && !strpos($fd, '@largePath')
+                                    && !strpos($fd, '@squarePath')
+                                ) {
+                                    continue;
+                                }
+                                foreach ( $Field->getArray($fd, true) as $i => $old ) {
+                                    $path   = ARCHIVES_DIR.$old;
+                                    deleteFile($path);
                                 }
                             }
                             break;
@@ -1314,22 +1304,19 @@ class Helper
                         break;
                     case 'custom':
                         if ( empty($row['column_field_6']) ) break;
-                        $oldAry = explodeUnitData($row['column_field_6']);
-                        foreach ( $oldAry as $fieldString ) {
-                            $Field = acmsUnserialize($fieldString);
-                            foreach ( $Field->listFields() as $fd ) {
-                                if ( 1
-                                    and !strpos($fd, '@path')
-                                    and !strpos($fd, '@tinyPath')
-                                    and !strpos($fd, '@largePath')
-                                    and !strpos($fd, '@squarePath')
-                                ) {
-                                    continue;
-                                }
-                                foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                    $path   = REVISON_ARCHIVES_DIR.$old;
-                                    deleteFile($path);
-                                }
+                        $Field = acmsUnserialize($row['column_field_6']);
+                        foreach ( $Field->listFields() as $fd ) {
+                            if ( 1
+                                && !strpos($fd, '@path')
+                                && !strpos($fd, '@tinyPath')
+                                && !strpos($fd, '@largePath')
+                                && !strpos($fd, '@squarePath')
+                            ) {
+                                continue;
+                            }
+                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
+                                $path   = REVISON_ARCHIVES_DIR.$old;
+                                deleteFile($path);
                             }
                         }
                         break;
@@ -1353,10 +1340,14 @@ class Helper
             $DB->query($SQL->get(dsn()), 'exec');
 
             $arySort    = array();
-            foreach ( $Column as $data ) {
-                $arySort[]  = $data['sort'];
+            foreach ($Column as $data) {
+                if (is_array($data)) {
+                    $arySort[] = $data['sort'];
+                }
             }
-            $offset = @min($arySort) - 1;
+            if (!empty($arySort)) {
+                $offset = min($arySort) - 1;
+            }
         }
         $Res    = array();
 
@@ -1539,30 +1530,6 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_5']  = $display_size;
                 }
-
-            } else if ( 'yolp' == $type ) {
-                if ( 1
-                    and empty($data['msg'])
-                    and empty($data['lat'])
-                    and empty($data['lng'])
-                    and empty($data['zoom'])
-                    and empty($data['layer'])
-                ) {
-                    $offset++;
-                    continue;
-                }
-                $row['column_field_1']  = $data['msg'];
-                $row['column_field_2']  = $data['lat'];
-                $row['column_field_3']  = $data['lng'];
-                $row['column_field_4']  = $data['zoom'];
-                $row['column_field_5']  = $data['layer'];
-
-                if ( strpos($row['column_size'], ':') !== false ) {
-                    list($size, $display_size) = preg_split('/:/', $row['column_size']);
-                    $row['column_size']     = $size;
-                    $row['column_field_6']  = $display_size;
-                }
-
             } else if ( 'youtube' == $type ) {
                 if ( empty($data['youtube_id']) ) {
                     $offset++;
@@ -1682,20 +1649,21 @@ class Helper
                             $htmlAry        = explodeUnitData($old_['html']);
                             $field7Ary[]    = isset($htmlAry[$i]) ? $htmlAry[$i] : '';
                         }
-                        if ( !$no_change ) {
+                        if (!$no_change) {
                             $html = null;
                             if ( HOOK_ENABLE ) {
                                 $Hook = ACMS_Hook::singleton();
                                 $Hook->call('extendsQuoteUnit', array($url, &$html));
                             }
 
-                            if ( !empty($html) ) {
+                            if (!empty($html)) {
                                 $field7Ary[] = $html;
                             } else {
                                 //----------
                                 // twitter
                                 if ( 1
                                     && $parsed_url['host'] === 'twitter.com'
+                                    && ACMS_Services_Twitter::loadAcsToken(1)
                                     && count(ACMS_Services_Twitter::loadAcsToken(1)) == 2
                                 ) {
                                     preg_match('/status\/([\w]+).*/', $parsed_url['path'], $matches);
@@ -1715,9 +1683,9 @@ class Helper
                                     }
                                 //------------
                                 // OGP Check
-                                } else if ( $graph = OpenGraph::fetch($url) ) {
-                                    $field1Ary[]    = $graph->site_name;
-                                    $field2Ary[]    = $graph->author;
+                                } else if ($graph = Embed::create($url)) {
+                                    $field1Ary[]    = $graph->providerName;
+                                    $field2Ary[]    = $graph->authorName;
                                     $field3Ary[]    = $graph->title;
                                     $field4Ary[]    = $graph->description;
                                     $field5Ary[]    = $graph->image;
@@ -1784,45 +1752,40 @@ class Helper
                     $offset++;
                     continue;
                 }
-                $row['column_field_6']  = acmsSerialize($data['field']);
+                $row['column_field_6'] = acmsSerialize($data['field']);
 
-                if ( $revision || !empty($moveArchive) ) {
-                    $oldAry = explodeUnitData($row['column_field_6']);
-                    foreach ( $oldAry as $fieldString ) {
-                        $Field = acmsUnserialize($fieldString);
-                        $newAry = array();
-                        foreach ( $Field->listFields() as $fd ) {
-                            if ( 1
-                                and !strpos($fd, '@path')
-                                and !strpos($fd, '@tinyPath')
-                                and !strpos($fd, '@largePath')
-                                and !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            $set = false;
-                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                $info = pathinfo($old);
-                                $dirname = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                                Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
-                                $ext = empty($info['extension']) ? '' : '.'.$info['extension'];
-                                $newOld = $dirname.uniqueString().$ext;
-
-                                $path = ARCHIVES_DIR.$temp.$old;
-                                $newPath = $ARCHIVES_DIR_TO.$newOld;
-
-                                copyFile($path, $newPath);
-                                if ( !$set ) {
-                                    $Field->delete($fd);
-                                    $set = true;
-                                }
-                                $Field->add($fd, $newOld);
-                            }
+                if ($revision || !empty($moveArchive)) {
+                    $Field = $data['field'];
+                    foreach ($Field->listFields() as $fd) {
+                        if ( 1
+                            && !strpos($fd, '@path')
+                            && !strpos($fd, '@tinyPath')
+                            && !strpos($fd, '@largePath')
+                            && !strpos($fd, '@squarePath')
+                        ) {
+                            continue;
                         }
-                        $newAry[] = acmsSerialize($Field);
+                        $set = false;
+                        foreach ($Field->getArray($fd, true) as $i => $old) {
+                            $info = pathinfo($old);
+                            $dirname = empty($info['dirname']) ? '' : $info['dirname'].'/';
+                            Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
+                            $ext = empty($info['extension']) ? '' : '.'.$info['extension'];
+                            $newOld = $dirname . uniqueString() . $ext;
+
+                            $path = ARCHIVES_DIR . $temp . $old;
+                            $newPath = $ARCHIVES_DIR_TO . $newOld;
+                            copyFile($path, $newPath);
+
+                            if (!$set) {
+                                $Field->delete($fd);
+                                $set = true;
+                            }
+                            $Field->add($fd, $newOld);
+                        }
                     }
-                    $row['column_field_6'] = implodeUnitData($newAry);
-                    $Column[$key] = implodeUnitData($newAry);
+                    $row['column_field_6'] = acmsSerialize($Field);
+                    $Column[$key]['field'] = $Field;
                 }
             } else {
                 $offset++;
@@ -1970,20 +1933,21 @@ class Helper
         $exists = array();
         foreach ( $entryAry as $i => $reid ) {
             try {
-                $type = $typeAry[$i];
-                if ( isset($exists[$type]) && in_array($reid, $exists[$type]) ) continue;
+                $type = $typeAry[$i] ?? '';
+                $exists[$type] = [];
+                if (isset($exists[$type]) && in_array($reid, $exists[$type])) continue;
                 $SQL = SQL::newInsert($table);
                 $SQL->addInsert('relation_id', $eid);
                 $SQL->addInsert('relation_eid', $reid);
                 $SQL->addInsert('relation_order', $i);
-                if ($typeAry[$i]) {
+                if (!empty($type)) {
                     $SQL->addInsert('relation_type', $type);
                 }
                 if ( !empty($rvid) ) {
                     $SQL->addInsert('relation_rev_id', $rvid);
                 }
                 $DB->query($SQL->get(dsn()), 'exec');
-                $exists[$type] = $reid;
+                $exists[$type][] = $reid;
             } catch (\Exception $e) {}
         }
     }

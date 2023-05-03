@@ -11,9 +11,11 @@
  */
 class ACMS_RAM
 {
-    private static $cacheAttached   = array();
-    private static $funcCache       = array();
+    private static $cacheAttached = array();
 
+    private static $funcCache = array();
+
+    private static $cache = null;
     /**
      * functionキャッシュ
      * 指定されたメソッドのキャッシュを取得、設定する
@@ -67,34 +69,51 @@ class ACMS_RAM
     {
         static $table = array();
 
-        if (!$id = intval($id)) { return false; }
-        $s      = explode('_', $key, 2);
-        $type   = $s[0];
-        $all    = 1 == count($s);
+        if (!$id = intval($id)) {
+            return false;
+        }
+        if (empty(self::$cache)) {
+            self::$cache = Cache::temp();
+        }
+
+        $s = explode('_', $key, 2);
+        $type = $s[0];
+        $all = count($s) === 1;
+        $cacheKey = "cache-ram-$type-$id";
+        $DB = DB::singleton(dsn());
+        $nocache = ($type === 'unit' || $type === 'comment') ? true : false;
 
         if (3 <= func_num_args()) {
-            if ( $all ) {
-                $table[$type][$id]  = $val;
+            if (empty($val)) {
+                self::$cache->forget($cacheKey);
             } else {
-                $table[$type][$id][$key]    = $val;
+                if ($all) {
+                    $table[$type][$id] = $val;
+                } else {
+                    $table[$type][$id][$key] = $val;
+                }
+                if ($nocache) {
+                    self::$cache->put($cacheKey, $table[$type][$id]);
+                }
             }
             return true;
         } else {
-            if ( !isset($table[$type]) ) $table[$type]              = array();
-            if ( !isset($table[$type][$id]) ) $table[$type][$id]    = array();
-
-            if ( $all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id]) ) {
-                $DB     = DB::singleton(dsn());
-                $SQL    = new SQL_Select();
-
-                $SQL->setTable($type);
-                $SQL->addWhereOpr($type.'_id', $id);
-
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) return null;
-
-                $table[$type][$id] = $row;
-
-                if ( $all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id]) ) {
+            if (!isset($table[$type])) $table[$type] = array();
+            if (!isset($table[$type][$id])) $table[$type][$id] = array();
+            if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
+                if (self::$cache->has($cacheKey)) {
+                    $table[$type][$id] = self::$cache->get($cacheKey);
+                } else {
+                    $SQL = new SQL_Select();
+                    $SQL->setTable($type);
+                    $SQL->addWhereOpr($type.'_id', $id);
+                    if (!$row = $DB->query($SQL->get(dsn()), 'row')) return null;
+                    $table[$type][$id] = $row;
+                    if ($nocache) {
+                        self::$cache->put($cacheKey, $row);
+                    }
+                }
+                if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
                     trigger_error('Mapper unsolved', E_USER_ERROR);
                 }
             }
@@ -880,6 +899,30 @@ class ACMS_RAM
     public static function entryDatetime($eid)
     {
         return ACMS_RAM::_mapping('entry_datetime', $eid);
+    }
+
+    /**
+     * 指定されたidから該当するエントリーの更新日時を返します
+     * $datetime = ACMS_RAM::entryUpdatedDatetime($eid);
+     *
+     * @param int $eid
+     * @return string
+     */
+    public static function entryUpdatedDatetime($eid)
+    {
+        return ACMS_RAM::_mapping('entry_updated_datetime', $eid);
+    }
+
+    /**
+     * 指定されたidから該当するエントリーの投稿日を返します
+     * $datetime = ACMS_RAM::entryPostedDatetime($eid);
+     *
+     * @param int $eid
+     * @return string
+     */
+    public static function entryPostedDatetime($eid)
+    {
+        return ACMS_RAM::_mapping('entry_posted_datetime', $eid);
     }
 
     /**

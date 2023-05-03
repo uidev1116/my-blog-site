@@ -12,7 +12,7 @@ const IconListWrap = styled.div`
     bottom: calc(100% - 1px);
     left: 20px;
     border: solid transparent;
-    content: " ";
+    content: ' ';
     height: 0;
     width: 0;
     position: absolute;
@@ -33,7 +33,7 @@ const IconListWrap = styled.div`
 `;
 
 const IconListInner = styled.div`
-  border: 1px solid #CCC;
+  border: 1px solid #ccc;
   overflow-y: scroll;
   max-height: 200px;
   top: 0;
@@ -46,7 +46,7 @@ const IconList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 10px;
-  background: #FFF;
+  background: #fff;
   white-space: normal;
   li {
     margin: 0;
@@ -54,114 +54,134 @@ const IconList = styled.ul`
   }
 `;
 
-const IconItem = styled.li`
+const IconButton = styled.button`
   padding: 8px;
   color: #333;
+  background-color: #fff;
   font-size: 18px;
-  border: 1px solid #FFF;
+  border: 1px solid #fff;
   border-radius: 4px;
-  transition: background-color linear .15s;
+  transition: background-color linear 0.15s;
   cursor: pointer;
   &:hover {
     text-decoration: none;
-    background: #BAE2F3;
+    background: #bae2f3;
   }
-`
-
-const ButtonSeparator = styled.span`
-  width: 50px;
-  height: 100%;
-  display: block;
-`
+`;
 
 interface IconPickerProps {
-  icons: string[],
-  defaultValue: string,
-  onChange(icon: string): void
+  icons?: string[];
+  defaultValue?: string;
+  onChange(icon: string): void;
 }
 
 interface IconPickerState {
-  icon: string,
-  isOpen: boolean,
-  top: number,
-  left: number
+  icon: string;
+  isOpen: boolean;
+  top: number;
+  left: number;
 }
 
 export default class IconPicker extends React.Component<IconPickerProps, IconPickerState> {
-
-  button: HTMLButtonElement;
-  listener: EventListener;
+  button: HTMLButtonElement | undefined;
 
   static defaultProps = {
-    icons: []
-  }
+    icons: [],
+  };
 
-  constructor(props) {
+  constructor(props: IconPickerProps) {
     super(props);
     this.state = {
-      icon: props.defaultValue ? props.defaultValue : '',
+      icon: props.defaultValue ?? '',
       isOpen: false,
       top: 0,
-      left: 0
-    }
+      left: 0,
+    };
   }
 
   componentDidMount() {
-    this.listener = (e) => {
-      if (e.target !== this.button && e.target !== this.button.children[0]) {
-        this.setState({
-          isOpen: false
-        })
-      }
-    };
-    document.addEventListener('click', this.listener);
-
+    document.addEventListener('click', this.handleDocumentClick.bind(this));
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.listener);
+    document.removeEventListener('click', this.handleDocumentClick.bind(this));
   }
 
-  selectIcon(icon) {
+  handleDocumentClick(e: MouseEvent) {
+    if (e.target === this.button || e.target === this.button?.children[0]) {
+      return;
+    }
+    this.setState({
+      isOpen: false,
+    });
+  }
+
+  selectIcon(icon: string) {
     this.setState({ icon });
     this.props.onChange(icon);
   }
 
   openIconList = () => {
+    const clientRect = this.button?.getBoundingClientRect();
+    if (!clientRect) {
+      return;
+    }
     const { isOpen } = this.state;
-    const clientRect = this.button.getBoundingClientRect();
     this.setState({
       isOpen: !isOpen,
       top: clientRect.top,
-      left: clientRect.left
+      left: clientRect.left,
     });
-  }
+  };
 
   render() {
     const { icons } = this.props;
-    const { icon, isOpen, top, left } = this.state;
-    return (<>
-      <div className="acms-admin-btn-group" style={{padding: '0'}}>
-        <button type="button" className="acms-admin-btn" style={{ width: '50px' }}><span className={icon}></span></button>
-        <button type="button" className="acms-admin-btn" onClick={this.openIconList} ref={(button) => {
-          this.button = button;
-        }}>
-          <span className="acms-admin-icon-arrow-small-down"></span>
-        </button>
-      </div>
-      <div style={{ position: 'relative' }}>
-        {isOpen && <IconListWrap style={{ top: `${top + 45}px`, left: `${left}px`}}>
-          <IconListInner>
-            <IconList>
-              {icons.map((icon, index) => {
-                return (<li key={index}><IconItem onClick={() => {
-                  this.selectIcon(icon);
-                }}><span className={icon}></span></IconItem></li>);
-              })}
-            </IconList>
-          </IconListInner>
-        </IconListWrap>}
-      </div>
-    </>);
+    const {
+      icon, isOpen, top, left,
+    } = this.state;
+    return (
+      <>
+        <div className="acms-admin-btn-group" style={{ padding: '0' }}>
+          <button type="button" className="acms-admin-btn" style={{ width: '50px' }}>
+            <span className={icon} />
+          </button>
+          <button
+            type="button"
+            className="acms-admin-btn"
+            onClick={this.openIconList}
+            ref={(button) => {
+              if (button) {
+                this.button = button;
+              }
+            }}
+          >
+            <span className="acms-admin-icon-arrow-small-down" />
+          </button>
+        </div>
+        <div style={{ position: 'relative' }}>
+          {isOpen && (
+            <IconListWrap style={{ top: `${top + 45}px`, left: `${left}px` }}>
+              <IconListInner>
+                <IconList>
+                  {icons?.length
+                    && icons.map((icon) => (
+                      <li key={icon}>
+                        <IconButton
+                          type="button"
+                          onClick={() => {
+                            this.selectIcon(icon);
+                          }}
+                        >
+                          <span className={icon} />
+                        </IconButton>
+                      </li>
+                    ))}
+                </IconList>
+              </IconListInner>
+            </IconListWrap>
+          )}
+        </div>
+      </>
+    );
   }
 }

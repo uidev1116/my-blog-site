@@ -1,10 +1,8 @@
+## CMS
 config.server.php
-php.ini
 license.php
 /.htaccess
 /.htpasswd
-/.idea
-/.vscode
 /archives/*
 !/archives/.htaccess
 /archives_rev/*
@@ -16,6 +14,28 @@ license.php
 /cache/*
 !/cache/.htaccess
 /private/backup*
-/*setup*
-node_modules
+/_setup*
+/setup*
+# /themes/*/dest/*
+
+## Backup
+/backup_*
+
+## Editor
+.idea
+.vscode
+
+## MacOS
 .DS_Store
+
+## Logs
+/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## Etc
+.env
+node_modules
+php.ini

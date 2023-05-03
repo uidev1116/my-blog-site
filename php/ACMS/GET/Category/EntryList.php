@@ -98,6 +98,9 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
                             $i++;
                             $this->entries[$i] = $eRow;
                         } while ( !!($eRow = $DB->fetch($eQ) ) ); }
+                        foreach ($this->entries as $entry) {
+                            ACMS_RAM::entry($entry['entry_id'], $entry);
+                        }
                         $this->preBuildUnit();
                         foreach ($this->entries as $i => $entry) {
                             $this->buildUnit($entry, $Tpl, $cid, $level, $i);
@@ -227,7 +230,8 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
 
     protected function buildUnit($eRow, &$Tpl, $cid, $level, $count = 0)
     {
-        $eid  = intval($eRow['entry_id']);
+        $eid = intval($eRow['entry_id']);
+        $cid = intval($eRow['entry_category_id']);
         if ( !empty($eRow['entry_link']) ) {
             $entryUrl   = $eRow['entry_link'];
         } else {
@@ -237,8 +241,8 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
                 'eid'   => $eid,
             ));
         }
-        $vars   = array();
-        $vars   += array(
+        $vars = array();
+        $vars += array(
             'entryUrl'      => $entryUrl,
             'entryTitle'    => addPrefixEntryTitle($eRow['entry_title']
                 , $eRow['entry_status']
@@ -251,6 +255,20 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
             'entryId'       => $eid,
             'entry:loop.class'  => $this->_config['entryLoopClass'],
         );
+        if (!empty($cid)) {
+            $categoryName = $eRow['category_name'];
+            $categoryCode = $eRow['category_code'];
+            $categoryUrl = acmsLink(array(
+                'bid'   => $eRow['category_blog_id'],
+                'cid'   => $cid,
+            ));
+            $vars += array(
+                'categoryName' => $categoryName,
+                'categoryCode' => $categoryCode,
+                'categoryUrl' => $categoryUrl,
+                'cid' => $cid,
+            );
+        }
         $vars   += $this->buildField(loadEntryField($eid), $Tpl);
         $Tpl->add('entry:loop', $vars);
     }

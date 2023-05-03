@@ -1,23 +1,23 @@
 interface DrawInfo {
-  rad: number,
-  dx: number,
-  dy: number
+  rad: number;
+  dx: number;
+  dy: number;
 }
 
 interface DestinationSize {
-  width: number,
-  height: number,
-  resize: boolean
+  width: number;
+  height: number;
+  resize: boolean;
 }
 
 interface DataUrlRes {
-  dataUrl: string,
-  resize: boolean
+  dataUrl: string;
+  resize: boolean;
 }
 
 interface BlobRes {
-  blob: Blob,
-  resize: boolean
+  blob: Blob;
+  resize: boolean;
 }
 
 export default class ResizeImageUtil {
@@ -29,8 +29,13 @@ export default class ResizeImageUtil {
    * @param resizeSize (length)
    * @param callback
    */
-  async getDataUrlFromUrl(url: string, resizeType: string, resizeSize: number, callback: Function): Promise<DataUrlRes> {
-    const Mime = await import(/* webpackChunkName: "mime-types" */'mime-types');
+  async getDataUrlFromUrl(
+    url: string,
+    resizeType: string,
+    resizeSize: number,
+    callback: () => void,
+  ): Promise<DataUrlRes> {
+    const Mime = await import(/* webpackChunkName: "mime-types" */ 'mime-types');
     const mimeType = Mime.lookup(url) || 'image/png';
     const image = new Image();
     image.crossOrigin = 'anonymous';
@@ -48,8 +53,8 @@ export default class ResizeImageUtil {
    * @param resizeSize
    * @param callback
    */
-  async getBlobFromUrl(url: string, resizeType: string, resizeSize: number, callback: Function): Promise<BlobRes> {
-    const Mime = await import(/* webpackChunkName: "mime-types" */'mime-types');
+  async getBlobFromUrl(url: string, resizeType: string, resizeSize: number, callback: () => void): Promise<BlobRes> {
+    const Mime = await import(/* webpackChunkName: "mime-types" */ 'mime-types');
     const mimeType = Mime.lookup(url) || 'image/png';
     const image = new Image();
     image.crossOrigin = 'anonymous';
@@ -68,7 +73,12 @@ export default class ResizeImageUtil {
    * @param callback
    * @returns {Promise}
    */
-  async getDataUrlFromFile(file: File, resizeType: string, resizeSize: number, callback: Function): Promise<DataUrlRes> {
+  async getDataUrlFromFile(
+    file: File,
+    resizeType: string,
+    resizeSize: number,
+    callback: () => void,
+  ): Promise<DataUrlRes> {
     const mimeType = file.type || 'image/png';
     const image = new Image();
     image.src = this._createObjectURL(file);
@@ -86,11 +96,10 @@ export default class ResizeImageUtil {
    * @param callback
    * @returns {Promise}
    */
-  async getBlobFromFile(file: File, resizeType: string, resizeSize: number, callback?: Function): Promise<BlobRes> {
+  async getBlobFromFile(file: File, resizeType: string, resizeSize: number, callback?: () => void): Promise<BlobRes> {
     const mimeType = file.type || 'image/png';
     const image = new Image();
     image.src = this._createObjectURL(file);
-
     const res = await this.getBlob(image, mimeType, resizeType, resizeSize, callback);
     return res;
   }
@@ -105,7 +114,13 @@ export default class ResizeImageUtil {
    * @param callback
    * @returns {Promise}
    */
-  getDataURL(image: HTMLImageElement, mimeType: string, resizeType: string, resizeSize: number, callback: Function): Promise<DataUrlRes> {
+  getDataURL(
+    image: HTMLImageElement,
+    mimeType: string,
+    resizeType: string,
+    resizeSize: number,
+    callback: (dataUrl: string, resize: boolean) => void,
+  ): Promise<DataUrlRes> {
     return new Promise((resolve) => {
       const onload = () => {
         const canvas = document.createElement('canvas');
@@ -116,7 +131,7 @@ export default class ResizeImageUtil {
         const drawInfo = {
           rad: 0,
           dx: 0,
-          dy: 0
+          dy: 0,
         };
 
         canvas.width = destinationSize.width;
@@ -126,7 +141,7 @@ export default class ResizeImageUtil {
         const dataUrl = canvas.toDataURL(mimeType);
         resolve({
           dataUrl,
-          resize: destinationSize.resize
+          resize: destinationSize.resize,
         });
         if (typeof callback === 'function') {
           callback(dataUrl, destinationSize.resize);
@@ -141,7 +156,7 @@ export default class ResizeImageUtil {
   }
 
   /**
-   * Blobデータを取得
+   * リサイズした上で、Blobデータを取得
    *
    * @param image
    * @param mimeType
@@ -150,21 +165,48 @@ export default class ResizeImageUtil {
    * @param callback
    * @returns {Promise}
    */
-  getBlob(image: HTMLImageElement, mimeType: string, resizeType: string, resizeSize: number, callback: Function): Promise<BlobRes> {
-    return new Promise((resolve, reject) => {
-      this.getDataURL(image, mimeType, resizeType, resizeSize).then(({ dataUrl, resize }) => {
-        if (!dataUrl) {
-          reject();
+  getBlob(
+    image: HTMLImageElement,
+    mimeType: string,
+    resizeType: string,
+    resizeSize: number,
+    callback?: (blob: Blob | null, resize: boolean) => void,
+  ): Promise<BlobRes> {
+    return new Promise((resolve) => {
+      const onload = () => {
+        const canvas = document.createElement('canvas');
+        if (!resizeSize) {
+          resizeSize = image.width;
         }
-        const blob = this.dataUrlToBlob(dataUrl);
-        resolve({
-          blob,
-          resize
-        });
-        if (typeof callback === 'function') {
-          callback(blob, resize);
-        }
-      });
+        const destinationSize = this._getDestinationSize(image, resizeType, resizeSize);
+        const drawInfo = {
+          rad: 0,
+          dx: 0,
+          dy: 0,
+        };
+        canvas.width = destinationSize.width;
+        canvas.height = destinationSize.height;
+
+        this._drawImage(image, canvas, destinationSize, drawInfo);
+        canvas.toBlob(
+          (blob) => {
+            resolve({
+              blob,
+              resize: destinationSize.resize,
+            });
+            if (typeof callback === 'function') {
+              callback(blob, destinationSize.resize);
+            }
+          },
+          mimeType,
+          1,
+        );
+      };
+      if (image.width) {
+        onload();
+      } else {
+        image.onload = onload;
+      }
     });
   }
 
@@ -180,6 +222,7 @@ export default class ResizeImageUtil {
     let bstr = '';
 
     if (arr.length > 1) {
+      // eslint-disable-next-line prefer-destructuring
       mime = arr[0].match(/:(.*?);/)[1];
       bstr = atob(arr[1]);
     } else {
@@ -202,7 +245,7 @@ export default class ResizeImageUtil {
    * @returns {*}
    * @private
    */
-  _createObjectURL(file:File): string {
+  _createObjectURL(file: File): string {
     const createObjectURL = window.URL && window.URL.createObjectURL;
     return createObjectURL(file);
   }
@@ -216,15 +259,47 @@ export default class ResizeImageUtil {
    * @param drawInfo
    * @returns {*}
    */
-  _drawImage(image: HTMLImageElement, canvas: HTMLCanvasElement, destinationSize: {width: number, height: number}, drawInfo: DrawInfo): HTMLCanvasElement {
+  _drawImage(
+    image: HTMLImageElement,
+    canvas: HTMLCanvasElement,
+    destinationSize: { width: number; height: number },
+    drawInfo: DrawInfo,
+  ): HTMLCanvasElement {
     const ctx = canvas.getContext('2d');
     const { rad, dx, dy } = drawInfo;
+    const diff = 0.5;
 
-    if (drawInfo.rad !== 0) {
-      ctx.setTransform(Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), dx, dy);
+    if (image.width * diff > destinationSize.width) {
+      // スムーズ処理を入れて、リサイズ
+      const oc = document.createElement('canvas');
+      const octx = oc.getContext('2d');
+
+      // step 1 we reduce the image to half by using an off-screen canvas
+      oc.width = image.width * diff;
+      oc.height = image.height * diff;
+      octx.drawImage(image, 0, 0, oc.width, oc.height);
+
+      let { width } = oc;
+      let { height } = oc;
+
+      // step 2 reuses the off-screen canvas and draws the image reduced to half again
+      while (width * diff > destinationSize.width) {
+        octx.drawImage(oc, 0, 0, width, height, 0, 0, width * diff, height * diff);
+        width *= diff;
+        height *= diff;
+      }
+      // step 3 we draw once more to main canvas, again reduced to half but to the final size
+      if (drawInfo.rad !== 0) {
+        ctx.setTransform(Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), dx, dy);
+      }
+      ctx.drawImage(oc, 0, 0, width, height, 0, 0, destinationSize.width, destinationSize.height);
+    } else {
+      // 一気にリサイズ
+      if (drawInfo.rad !== 0) {
+        ctx.setTransform(Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), dx, dy);
+      }
+      ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, destinationSize.width, destinationSize.height);
     }
-    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, destinationSize.width, destinationSize.height);
-
     return canvas;
   }
 
@@ -240,7 +315,7 @@ export default class ResizeImageUtil {
     const destinationSize: DestinationSize = {
       width: 0,
       height: 0,
-      resize: true
+      resize: true,
     };
 
     // Long side
@@ -284,31 +359,35 @@ export default class ResizeImageUtil {
    * @param destinationSize
    * @returns {Promise}
    */
-  _fixImageRotation(image: HTMLImageElement, canvas: HTMLCanvasElement, destinationSize: DestinationSize): Promise<DrawInfo> {
+  _fixImageRotation(
+    image: HTMLImageElement,
+    canvas: HTMLCanvasElement,
+    destinationSize: DestinationSize,
+  ): Promise<DrawInfo> {
     return new Promise((resolve) => {
       this._getExifData(image).then((exif) => {
         const drawInfo = {
           rad: 0,
           dx: 0,
-          dy: 0
+          dy: 0,
         };
 
         switch (exif.Orientation) {
           case 8:
             canvas.width = destinationSize.height;
             canvas.height = destinationSize.width;
-            drawInfo.rad = -90 * Math.PI / 180;
+            drawInfo.rad = (-90 * Math.PI) / 180;
             drawInfo.dy = canvas.height;
             break;
           case 3:
-            drawInfo.rad = 180 * Math.PI / 180;
+            drawInfo.rad = (180 * Math.PI) / 180;
             drawInfo.dx = canvas.width;
             drawInfo.dy = canvas.height;
             break;
           case 6:
             canvas.width = destinationSize.height;
             canvas.height = destinationSize.width;
-            drawInfo.rad = 90 * Math.PI / 180;
+            drawInfo.rad = (90 * Math.PI) / 180;
             drawInfo.dx = canvas.width;
             break;
           default:
@@ -327,7 +406,7 @@ export default class ResizeImageUtil {
    */
   _getExifData(image: HTMLImageElement) {
     return new Promise((resolve) => {
-      import(/* webpackChunkName: "exif-js" */'exif-js').then((Exif) => {
+      import(/* webpackChunkName: "exif-js" */ 'exif-js').then((Exif) => {
         Exif.getData(image, () => {
           const res = Exif.getAllTags(image);
           resolve(res);

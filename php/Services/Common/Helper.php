@@ -2,12 +2,15 @@
 
 namespace Acms\Services\Common;
 
+use App;
 use DB;
 use SQL;
 use Tpl;
 use Storage;
 use Image;
 use Field;
+use Cache;
+use Media;
 use Field_Search;
 use Field_Validation;
 use Template;
@@ -16,10 +19,11 @@ use ACMS_Corrector;
 use ACMS_POST_Image;
 use ACMS_RAM;
 use ACMS_Hook;
-use ACMS_Session;
+use Session;
 use Acms\Services\Facades\RichEditor;
-use \phpseclib\Crypt\AES;
-use \phpseclib\Crypt\Random;
+use phpseclib\Crypt\AES;
+use phpseclib\Crypt\Random;
+use cebe\markdown\MarkdownExtra;
 
 class Helper
 {
@@ -46,6 +50,11 @@ class Helper
     protected $deleteField;
 
     /**
+     * @var Cache
+     */
+    protected $cacheField;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -54,45 +63,7 @@ class Helper
         $this->Q =& $app->getQueryParameter();
         $this->Get =& $app->getGetParameter();
         $this->Post =& $app->getPostParameter();
-    }
-
-    /**
-     * @param string $path キャッシュファイルのパス
-     * @param string $txt テキストデータ
-     * @param int $expire 秒指定
-     *
-     * @return string|boolean
-     */
-    public function cacheTextData($path, $txt = '', $expire = 120)
-    {
-        try {
-            if (Storage::exists($path)) {
-                if (Storage::lastModified($path) + $expire > REQUEST_TIME) {
-                    return Storage::get($path);
-                }
-                Storage::remove($path);
-            }
-            if (empty($txt)) {
-                return false;
-            }
-            Storage::makeDirectory(dirname($path));
-            Storage::put($path, $txt);
-        } catch (\Exception $e) {}
-
-        return $txt;
-    }
-
-    /**
-     * @param $className
-     * @param $identifier
-     * @return string
-     */
-    public function getModuleCacheBasePath($className, $identifier) {
-        $path = CACHE_DIR . 'module/' . $className . '/';
-        if ($identifier) {
-            return $path . $identifier . '/';
-        }
-        return $path;
+        $this->cacheField = Cache::field();
     }
 
     /**
@@ -158,6 +129,15 @@ class Helper
         return $cipher->decrypt(base64_decode($cipherText));
     }
 
+    public function parseMarkdown($txt)
+    {
+        static $parser = null;
+        if ($parser === null) {
+            $parser = new MarkdownExtra();
+        }
+        return $parser->parse($txt);
+    }
+
     /**
      * すぐにリダイレクトし、同一プロセスのバックグラウンドで処理を実行
      *
@@ -216,6 +196,16 @@ class Helper
         if ( !empty($csp) && $csp !== 'off' ) {
             header('Content-Security-Policy: ' . $csp);
         }
+        // Referrer-Policy
+        $referrerPolicy = config('referrer_policy', 'strict-origin-when-cross-origin');
+        if (in_array($referrerPolicy, array(
+            'no-referrer','no-referrer-when-downgrade',
+            'origin','origin-when-cross-origin',
+            'same-origin','strict-origin',
+            'strict-origin-when-cross-origin','unsafe-url'
+        ))) {
+            header('Referrer-Policy: ' . $referrerPolicy);
+        }
     }
 
     /**
@@ -243,15 +233,28 @@ class Helper
             && 'secret' !== ACMS_RAM::blogStatus(BID)
             && !(defined('IS_OTHER_LOGIN') && IS_OTHER_LOGIN)
         ) {
+            // 有効期限がきれたCSRFセッションを削除
+            $cookie = App::getCookieParameter();
+            if ($sid = $cookie->get(SESSION_NAME)) {
+                $session = Session::handle();
+                if ($session->get('formTokenExpireAt') < REQUEST_TIME) {
+                    $session->destroy();
+                }
+            }
             $token = uniqueString();
+
         } else {
-            $Session = ACMS_Session::singleton();
-            $token = $Session->get('formToken');
+            $session = Session::handle();
+            $token = $session->get('formToken');
             if (empty($token)) {
                 $token = uniqueString();
-                $Session->set('formToken', $token);
-                $Session->save();
+                if (!$session->getSessionId()) {
+                    $session->regenerate();
+                }
+                $session->set('formToken', $token);
             }
+            $session->set('formTokenExpireAt', (REQUEST_TIME + (60 * 5)));
+            $session->save();
         }
 
         // form unique token の埋め込み
@@ -307,7 +310,11 @@ class Helper
             $extend_section_stack = array();
             $txt = buildVarBlocks($txt, true);
             $txt = spreadTemplate(setGlobalVars($txt));
+            if (isTemplateCacheEnabled()) {
+                $txt = setGlobalVars($txt);
+            }
             $tpl = build($txt, Field_Validation::singleton('post'), true);
+            $extend_section_stack = array();
 
             $Tpl = new Template($tpl, new ACMS_Corrector());
             $vars = Tpl::buildField($field, $Tpl);
@@ -330,29 +337,18 @@ class Helper
         $config = array();
 
         foreach ( array(
-            'mail_smtp-host'        => 'smtp-host',
-            'mail_smtp-port'        => 'smtp-port',
-            'mail_smtp-user'        => 'smtp-user',
-            'mail_smtp-pass'        => 'smtp-pass',
-            'mail_smtp-auth_method' => 'smtp-auth_method',
-            'mail_smtp-timeout'     => 'smtp-timeout',
-            'mail_localhost'        => 'localhost',
-            'mail_from'             => 'mail_from',
-            'mail_sendmail_path'    => 'sendmail_path',
-            'mail_sendmail_params'  => 'sendmail_params',
+            'mail_smtp-host' => 'smtp-host',
+            'mail_smtp-port' => 'smtp-port',
+            'mail_smtp-user' => 'smtp-user',
+            'mail_smtp-pass' => 'smtp-pass',
+            'mail_from' => 'mail_from',
+            'mail_sendmail_path' => 'sendmail_path',
         ) as $cmsConfigKey => $mailConfigKey ) {
             $config[$mailConfigKey] = config($cmsConfigKey, '');
         }
-
-        $config['additional_headers']   = 'X-Mailer: '
-            .(LICENSE_OPTION_OEM ? LICENSE_OPTION_OEM : 'a-blog cms');
-
-        $config['sendmail_path'] = ini_get('sendmail_path');
-
-        if ( config('mail_additional_headers') ) {
-            $config['additional_headers']   .= "\x0D\x0A".config('mail_additional_headers');
+        if (empty($config['sendmail_path'])) {
+            $config['sendmail_path'] = ini_get('sendmail_path');
         }
-
         return $argConfig + $config;
     }
 
@@ -427,7 +423,7 @@ class Helper
             if ( 'text' == $type ) {
                 $_text  = $row['column_field_1'];
                 if ( 'markdown' == $row['column_field_2'] ) {
-                    $_text = \Michelf\MarkdownExtra::defaultTransform($_text);
+                    $_text = $this->parseMarkdown($_text);
                 }
                 $text   .= $_text.' ';
             } else if ( 'custom' == $type ) {
@@ -679,11 +675,11 @@ class Helper
     {
         $fileNameEncode = urlencode($fileName);
         $size = filesize($path);
-        $fp = fopen($path,"rb");
-
         if ($extension) {
             $inlineExtensions = configArray('media_inline_download_extension');
             $mime = false;
+            $fp = fopen($path,"rb");
+
             foreach ($inlineExtensions as $i => $value) {
                 if ($extension == $value) {
                     $mime = config('media_inline_download_mime', false, $i);
@@ -712,7 +708,16 @@ class Helper
                 // ファイルポインタを開始位置まで移動
                 fseek($fp, $start);
             }
+            header('Content-Length: ' . $size);
 
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            if ($size) {
+                echo fread($fp, $size);
+            }
+            fclose($fp);
         } else {
             header("Content-Disposition: attachment; filename=\"$fileName\"; filename*=UTF-8''$fileNameEncode");
             if (strpos(UA, 'MSIE')) {
@@ -720,21 +725,167 @@ class Helper
             } else {
                 header('Content-Type: application/octet-stream');
             }
+            header('Content-Length: ' . $size);
+
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            readfile($path);
         }
-        header('Content-Length: ' . $size);
-
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-        ob_start();
-
-        if ($size) echo fread($fp, $size);
-        fclose($fp);
-
         if ($remove) {
             Storage::remove($path);
         }
         die();
+    }
+
+    /**
+     * カスタムフィールドキャッシュの削除
+     *
+     * @param string $type
+     * @param int $id
+     * @param int $rvid
+     */
+    public function deleteFieldCache($type, $id, $rvid = '')
+    {
+        // キャッシュ削除
+        if ($type) {
+            $cacheBid = $type === 'bid' ? $id : '';
+            $cacheUid = $type === 'uid' ? $id : '';
+            $cacheCid = $type === 'cid' ? $id : '';
+            $cacheMid = $type === 'mid' ? $id : '';
+            $cacheEid = $type === 'eid' ? $id : '';
+        }
+        $cacheKey = "cache-field-bid_$cacheBid-uid_$cacheUid-cid_$cacheCid-mid_$cacheMid-eid_$cacheEid-rvid_$rvid-";
+
+        $this->cacheField->forget($cacheKey . '0');
+        $this->cacheField->forget($cacheKey . '1');
+    }
+
+    public function flushCache()
+    {
+        $this->cacheField->flush();
+    }
+
+    /**
+     * カスタムフィールドの削除
+     *
+     * @param string $type
+     * @param int $id
+     * @param int $rvid
+     */
+    public function deleteField($type, $id, $rvid = null)
+    {
+        $this->deleteFieldCache($type, $id, $rvid);
+
+        if ($type === 'eid' && $rvid) {
+            $sql = SQL::newDelete('field_rev');
+            $sql->addWhereOpr('field_eid', $id);
+            $sql->addWhereOpr('field_rev_id', $rvid);
+            DB::query($sql->get(dsn()), 'exec');
+        } else {
+            $sql = SQL::newDelete('field');
+            $sql->addWhereOpr('field_' . $type, $id);
+            DB::query($sql->get(dsn()), 'exec');
+        }
+    }
+
+    /**
+     * ブログID, カテゴリーID, エントリーID，ユーザーIDの
+     * いずれか指定されたカスタムフィールドをFieldオブジェクトで返す
+     *
+     * @param null|int $bid
+     * @param null|int $uid
+     * @param null|int $cid
+     * @param null|int $eid
+     * @return Field
+     */
+    public function loadField($bid=null, $uid=null, $cid=null, $mid=null, $eid=null, $rvid=null, $rewrite=false)
+    {
+        $cacheKey = "cache-field-bid_$bid-uid_$uid-cid_$cid-mid_$mid-eid_$eid-rvid_$rvid-";
+        $cacheKey .= ($rewrite ? '1' : '0');
+
+        if (empty($rvid) && $this->cacheField->has($cacheKey)) {
+            return $this->cacheField->get($cacheKey);
+        }
+        $Field = new Field();
+        if ( 1
+            && is_null($bid)
+            && is_null($uid)
+            && is_null($cid)
+            && is_null($eid)
+            && is_null($mid)
+        ) {
+            return $Field;
+        }
+        $DB = DB::singleton(dsn());
+        if ($rvid && $eid) {
+            $SQL    = SQL::newSelect('field_rev');
+            $SQL->addWhereOpr('field_rev_id', $rvid);
+        } else {
+            $SQL    = SQL::newSelect('field');
+        }
+        $SQL->addSelect('field_key');
+        $SQL->addSelect('field_value');
+        $SQL->addSelect('field_search');
+        if (!is_null($bid)) {
+            $SQL->addWhereOpr('field_bid', $bid);
+        }
+        if (!is_null($uid)) {
+            $SQL->addWhereOpr('field_uid', $uid);
+        }
+        if (!is_null($cid)) {
+            $SQL->addWhereOpr('field_cid', $cid);
+        }
+        if (!is_null($eid)) {
+            $SQL->addWhereOpr('field_eid', $eid);
+        }
+        if (!is_null($mid)) {
+            $SQL->addWhereOpr('field_mid', $mid);
+        }
+        $SQL->setOrder('field_sort');
+        $q  = $SQL->get(dsn());
+        $DB->query($q, 'fetch');
+
+        $mediaList = array();
+        $mediaIds = array();
+        $useMediaField = array();
+        while ($row = $DB->fetch($q)) {
+            $fixPaht    = '';
+            $fd         = $row['field_key'];
+            if ( 0
+                or strpos($fd, '@path')
+                or strpos($fd, '@tinyPath')
+                or strpos($fd, '@largePath')
+                or strpos($fd, '@squarePath')
+            ) {
+                if ($rvid && $eid && $rewrite && $row['field_value']) {
+                    $fixPaht = '../'.REVISON_ARCHIVES_DIR;
+                }
+            }
+            if (strpos($fd, '@media') !== false) {
+                $fdSource = substr($fd, 0, -6);
+                $mediaIds[] = intval($row['field_value']);
+                $useMediaField[] = $fdSource;
+            }
+            $Field->addField($row['field_key'], $fixPaht.$row['field_value']);
+            $Field->setMeta($row['field_key'], 'search', $row['field_search'] === 'on');
+        }
+        if ($mediaIds) {
+            $DB = DB::singleton(dsn());
+            $SQL = SQL::newSelect('media');
+            $SQL->addWhereIn('media_id', $mediaIds);
+            $q  = $SQL->get(dsn());
+            $DB->query($q, 'fetch');
+            while ($media = $DB->fetch($q)) {
+                $mid = intval($media['media_id']);
+                $mediaList[$mid] = $media;
+            }
+        }
+        Media::injectMediaField($Field, $mediaList, $useMediaField);
+
+        $this->cacheField->put($cacheKey, $Field);
+
+        return $Field;
     }
 
     /**
@@ -752,7 +903,9 @@ class Helper
      */
     public function saveField($type, $id, $Field=null, $deleteField=null, $rvid=null, $moveFieldArchive='', $targetBid=BID)
     {
-        if ( empty($id) ) return false;
+        if (empty($id)) return false;
+
+        $this->deleteFieldCache($type, $id, $rvid);
 
         $DB                 = DB::singleton(dsn());
         $ARCHIVES_DIR_TO    = REVISON_ARCHIVES_DIR;
@@ -1811,15 +1964,15 @@ class Helper
         jsModule('uid', UID);
         jsModule('cid', CID);
         jsModule('eid', EID);
-        jsModule('bcd', ACMS_RAM::blogCode(BID));
+        jsModule('bcd', htmlspecialchars(ACMS_RAM::blogCode(BID), ENT_QUOTES));
         jsModule('rid', $this->Get->get('rid', null));
         jsModule('mid', $this->Get->get('mid', null));
         jsModule('setid', $this->Get->get('setid', null));
         jsModule('layout', LAYOUT_EDIT);
-        jsModule('yahooApiKey', config('yahoo_search_api_key'));
         jsModule('googleApiKey', config('google_api_key'));
         jsModule('jQuery', config('jquery_version'));
         jsModule('jQueryMigrate', config('jquery_migrate', 'off'));
+        jsModule('mediaClientResize', config('media_client_resize', 'on'));
         jsModule('delStorage', $delStorage);
         jsModule('fulltimeSSL', (SSL_ENABLE and FULLTIME_SSL_ENABLE) ? 1 : 0);
         jsModule('v', md5(VERSION));
@@ -1863,7 +2016,7 @@ class Helper
             $ccds   = array(ACMS_RAM::categoryCode($cid));
             while ( $cid = ACMS_RAM::categoryParent($cid) ) {
                 if ( 'on' == ACMS_RAM::categoryIndexing($cid) ) {
-                    $ccds[] = ACMS_RAM::categoryCode($cid);
+                    $ccds[] = htmlspecialchars(ACMS_RAM::categoryCode($cid), ENT_QUOTES);
                 }
             }
             jsModule('ccd', join('/', array_reverse($ccds)));
@@ -1889,6 +2042,7 @@ class Helper
             if ( $key === 'domains' ) {
                 $value = implode(',', $value);
             }
+            $value = htmlspecialchars($value, ENT_QUOTES);
             $jsModules[] = $key.(!is_bool($value) ? '='.$value : '');
         }
 
@@ -2044,6 +2198,72 @@ class Helper
         return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
     }
 
+    /**
+     * @param false $noCache
+     */
+    public function clientCacheHeader($noCache = false)
+    {
+        $cacheExpireClient = intval(config('cache_expire_client'));
+        if ( 1
+            && !DEBUG_MODE
+            && !ACMS_POST
+            && ('200' == substr(httpStatusCode(), 0, 3))
+            && !ACMS_SID
+            && $cacheExpireClient > 0
+            && !$noCache
+        ) {
+            header('Cache-Control: public, max-age=' . $cacheExpireClient);
+            header('Last-Modified: ' . getRFC2068Time(REQUEST_TIME));
+            header('Expires: ' . getRFC2068Time(REQUEST_TIME + $cacheExpireClient));
+        } else if (0
+            || DEBUG_MODE
+            || ACMS_POST
+            || ('200' !== substr(httpStatusCode(), 0, 3))
+            || ACMS_SID
+            || $noCache
+        ) {
+            header('Cache-Control: no-store, max-age=0'); // HTTP/1.1
+            header('Pragma: no-cache'); // HTTP/1.0
+            header('Expires: 0');
+        }
+    }
+
+    /**
+     * @param string $chid
+     * @param string $contents
+     * @param string $mime
+     */
+    public function saveCache($chid, $contents, $mime)
+    {
+        $no_cache_page = false;
+        $pageCache = Cache::page();
+
+        if (0
+            || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE)
+            || (defined('IS_LOGIN_PAGE') && IS_LOGIN_PAGE)
+            || strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET'
+        ) {
+            $no_cache_page = true;
+        }
+        if ( 1
+            && !!$chid
+            && !$no_cache_page
+            && '200 OK' === httpStatusCode()
+        ) {
+            $tagBid = 'bid-' . BID;
+            $tagEid = 'eid-' . EID;
+            $pageCache->put($chid, [
+                'mime' => $mime,
+                'charset' => config('charset'),
+                'data' => $contents,
+            ], intval(config('cache_expire')), [$tagBid, $tagEid]);
+        }
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
     protected function fixSerialized($string)
     {
         // securities

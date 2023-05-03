@@ -8,7 +8,6 @@ import { findAncestor, addClass, removeClass } from './lib/dom';
 import { contrastColor, rgb2hex } from './lib/utility';
 
 export default (context) => {
-
   //--------
   // resize
   $(ACMS.Config.resizeImageTargetMarkCF, context).each(function () {
@@ -35,13 +34,11 @@ export default (context) => {
   // lazy load
   ACMS.Library.LazyLoad(ACMS.Config.lazyLoadMark, ACMS.Config.lazyLoadConfig);
 
-
   //---------
   // in-view
-  lazyLoad(ACMS.Config.lazyContentsMark,
-    () => {
-      return true;
-    },
+  lazyLoad(
+    ACMS.Config.lazyContentsMark,
+    () => true,
     (item) => {
       const type = item.getAttribute('data-type');
       if (!type) {
@@ -55,19 +52,19 @@ export default (context) => {
         }
       });
       item.appendChild(script);
-    }
+    },
   );
 
   //--------------
   // focus image
   [].forEach.call(document.querySelectorAll('.js-focused-image'), (image) => {
     image.style.visibility = 'visible';
-    const newImage = new FocusedImage(image); // eslint-disable-line no-unused-vars
+    new FocusedImage(image); // eslint-disable-line no-new
   });
 
   //-------------
   // pdf viewer
-  const pdfPreviewConfig = ACMS.Config.pdfPreviewConfig;
+  const { pdfPreviewConfig } = ACMS.Config;
   lazyLoad(pdfPreviewConfig.mark, (wrapper) => {
     const elm = wrapper.querySelector(pdfPreviewConfig.previewMark);
     if (elm) {
@@ -137,88 +134,50 @@ export default (context) => {
 
   //---------------
   // OpenStreetMap
-  lazyLoad(ACMS.Config.openStreetMapMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
-    },
+  lazyLoad(
+    ACMS.Config.openStreetMapMark,
+    (elm) => elm.getAttribute('data-lazy') === 'true',
     (item) => {
       import(/* webpackChunkName: "open-street-map" */'./lib/open-street-map').then(({ default: openStreetMap }) => {
         openStreetMap(item);
       });
-    }
+    },
   );
 
   //-------------
   // Google Maps
-  lazyLoad(ACMS.Config.s2dReadyMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
-    },
+  lazyLoad(
+    ACMS.Config.s2dReadyMark,
+    (elm) => elm.getAttribute('data-lazy') === 'true',
     (item) => {
       ACMS.Library.googleLoadProxy('maps', '3', {
         callback: () => {
           ACMS.Dispatch._static2dynamic(item);
         },
         options: {
-          region: ACMS.Config.s2dRegion
-        }
+          region: ACMS.Config.s2dRegion,
+        },
       });
-    }
-  );
-  lazyLoad(ACMS.Config.s2dMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
     },
+  );
+  lazyLoad(
+    ACMS.Config.s2dMark,
+    (elm) => elm.getAttribute('data-lazy') === 'true',
     (item) => {
       ACMS.Dispatch.static2dynamic(item);
-    }
-  );
-
-  //-----------
-  // yahoo-map
-  lazyLoad(ACMS.Config.yahooMapMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
     },
-    (item) => {
-      import(/* webpackChunkName: "scroll-hint-css" */'./lib/yahoo-map').then(({ default: YahooMap }) => {
-        YahooMap(item);
-      });
-    }
-  );
-  // OLD yahoo-map（ユニットで使用）
-  lazyLoad(ACMS.Config.s2dYolpReadyMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
-    },
-    (item) => {
-      ACMS.Library.yahooLoadProxy({
-        callback: () => {
-          ACMS.Dispatch._static2dynamic_yolp(item);
-        }
-      });
-    }
-  );
-  lazyLoad(ACMS.Config.s2dYolpMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
-    },
-    (item) => {
-      ACMS.Dispatch.static2dynamic_yolp(item);
-    }
   );
 
   //---------------
   // StreetView
-  lazyLoad(ACMS.Config.streetViewMark,
-    (elm) => {
-      return elm.getAttribute('data-lazy') === 'true';
-    },
+  lazyLoad(
+    ACMS.Config.streetViewMark,
+    (elm) => elm.getAttribute('data-lazy') === 'true',
     (item) => {
       import(/* webpackChunkName: "open-street-map" */'./lib/street-view').then(({ default: streetView }) => {
         streetView(item, ACMS.Config.googleApiKey);
       });
-    }
+    },
   );
 
   //---------
@@ -309,7 +268,7 @@ export default (context) => {
       const { default: flatPicker } = await import(/* webpackChunkName: "flatpickr" */'flatpickr');
       import(/* webpackChunkName: "flatpickr-css" */'flatpickr/dist/flatpickr.min.css');
       const options = {
-        ...ACMS.Config.flatDatePickerConfig
+        ...ACMS.Config.flatDatePickerConfig,
       };
       if (/^ja/.test(ACMS.i18n.lng)) {
         const lang = await import(/* webpackChunkName: "flatpickr-ja" */'flatpickr/dist/l10n/ja');
@@ -345,10 +304,6 @@ export default (context) => {
           defaultDate: item.value,
         });
         item.setAttribute('autocomplete', 'off');
-        item.addEventListener('input', (e) => {
-          picker.jumpToDate(e.target.value);
-          picker.setDate(e.target.value);
-        });
         item.addEventListener('change', (e) => {
           picker.jumpToDate(e.target.value);
           picker.setDate(e.target.value);
@@ -404,7 +359,7 @@ export default (context) => {
   if (twitterLogin) {
     (async () => {
       const { default: login } = await import(/* webpackChunkName: "twitter-login" */'./lib/twitter-login');
-      const type = twitterLogin.dataset.type;
+      const { type } = twitterLogin.dataset;
       login(twitterLogin, type);
     })();
   }
@@ -433,7 +388,7 @@ export default (context) => {
             overrideConfig[key] = value;
           }
         });
-        const config = Object.assign({}, ACMS.Config.documentOutlinerConfig, overrideConfig);
+        const config = { ...ACMS.Config.documentOutlinerConfig, ...overrideConfig };
 
         outline.makeList(target, config);
         [].forEach.call(document.querySelectorAll(ACMS.Config.scrollToMark), (anchor) => {

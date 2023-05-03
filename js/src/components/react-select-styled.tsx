@@ -48,7 +48,7 @@ const StyledCreatable = styled(Creatable)`
     .Select-value {
       line-height: 1.2;
     }
-  } 
+  }
   .Select-multi-value-wrapper > .Select-value {
     margin-top: 5px;
   }

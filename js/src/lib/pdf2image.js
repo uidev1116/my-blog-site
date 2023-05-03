@@ -1,4 +1,4 @@
-import pdfjs from 'pdfjs-dist';
+import * as pdfjs from 'pdfjs-dist';
 
 export default class Pdf2Image {
   /**
@@ -77,7 +77,7 @@ export default class Pdf2Image {
 
     return pdfPage.render({
       canvasContext: canvas.getContext('2d'),
-      viewport: viewport
+      viewport,
     }).promise;
   }
 
@@ -89,7 +89,7 @@ export default class Pdf2Image {
       try {
         const src = {
           cMapUrl: `${this.baseUrl}cmaps/`,
-          cMapPacked: true
+          cMapPacked: true,
         };
         if (typeof this.url === 'string') {
           src.url = this.url;

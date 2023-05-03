@@ -7,6 +7,16 @@ use Acms\Services\Facades\Storage;
 
 class TopGenerator extends Generator
 {
+    /**
+     * @var array
+     */
+    protected $exclusionList = array();
+
+    public function setExclusionList($list)
+    {
+        $this->exclusionList = $list;
+    }
+
     protected function getName()
     {
         return 'トップページの書き出し';
@@ -26,8 +36,12 @@ class TopGenerator extends Generator
         try {
             $url = acmsLink(array('bid'=>BID), false);
             $this->request($url, 'index.html');
-            $this->request($url . 'rss2.xml', 'rss2.xml');
-            $this->request($url . 'sitemap.xml', 'sitemap.xml');
+            if (!in_array('rss2.xml', $this->exclusionList)) {
+                $this->request($url . 'rss2.xml', 'rss2.xml');
+            }
+            if (!in_array('sitemap.xml', $this->exclusionList)) {
+                $this->request($url . 'sitemap.xml', 'sitemap.xml');
+            }
         } catch ( \Exception $e ) {
             $this->logger->error($e->getMessage(), $url);
         }

@@ -1,0 +1,12 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// ベンチマーク
+// ------------------------------
+@media screen and (min-width: global.$breakpoint-md-min) {
+  .acms-benchmark-container {
+    padding: 0 20px 0 245px;
+    padding: 0 calc(30px + constant(safe-area-inset-right)) 0 20px;
+  }
+}
+

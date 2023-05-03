@@ -1,0 +1,47 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// 管理画面固定ヘッダー
+// ------------------------------
+.js-acms_fix_marker {
+  z-index: global.zIndex(js-acms_fix_marker);
+  margin: 0 0 10px 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #FFF;
+  &.js-acms-tab-select {
+    margin-bottom: 0;
+  }
+  &[style*="position: fixed;"] {
+    margin: 0;
+    box-shadow: 0 3px 0 rgba(50,50,50,0.1);
+  }
+}
+
+.acms-fix-right{
+  position: relative;
+  z-index: global.zIndex(acms-fix-right);
+}
+
+
+// ------------------------------
+// jQuery UI Tabs
+// ------------------------------
+// スマートフォンのとき
+@media screen and (max-width: global.$breakpoint-md-max) {
+  #main .ui-tabs {
+    margin-bottom: 20px;
+
+    .ui-tabs-panel {
+      padding: 0;
+    }
+  }
+}
+
+// ------------------------------
+// 管理画面 SmartPhoto
+// ------------------------------
+.is-admin-page .smartphoto {
+  z-index: global.zIndex(smartphoto);
+  background-color: rgba(0, 0, 0, .9);
+}

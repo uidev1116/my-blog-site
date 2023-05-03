@@ -107,7 +107,7 @@
 	<h2 id="editScreen" class="acms-admin-admin-title2"><!--T-->エントリー項目設定<!--/T--></h2>
 
 	<div class="acms-admin-table-scroll-xs acms-admin-table-scroll-sm acms-admin-table-scroll-md">
-		<table class="adminTable acms-admin-admin-mini-table">
+		<table class="acms-admin-admin-mini-table">
 			<thead>
 				<tr>
 					<th class="acms-admin-table-left acms-admin-admin-config-table-display"><!--T-->項目名<!--/T--></th>
@@ -430,7 +430,6 @@
 								<option value="file" {column_add_type:selected#file}><!--T-->ファイル<!--/T--></option>
 								<option value="osmap" {column_add_type:selected#osmap}><!--T-->標準マップ<!--/T--></option>
 								<option value="map" {column_add_type:selected#map}><!--T-->Googleマップ<!--/T--></option>
-								<option value="yolp" {column_add_type:selected#yolp}><!--T-->Yahoo!地図<!--/T--></option>
 								<option value="video" {column_add_type:selected#video}><!--T-->ビデオ<!--/T--></option>
 								<option value="eximage" {column_add_type:selected#eximage}><!--T-->画像URL<!--/T--></option>
 								<option value="quote" {column_add_type:selected#quote}><!--T-->引用<!--/T--></option>
@@ -476,7 +475,6 @@
 								<option value="file"><!--T-->ファイル<!--/T--></option>
 								<option value="osmap"><!--T-->標準マップ<!--/T--></option>
 								<option value="map"><!--T-->Googleマップ<!--/T--></option>
-								<option value="yolp"><!--T-->Yahoo!地図<!--/T--></option>
 								<option value="video"><!--T-->ビデオ<!--/T--></option>
 								<option value="eximage"><!--T-->画像URL<!--/T--></option>
 								<option value="quote"><!--T-->引用<!--/T--></option>
@@ -1010,7 +1008,7 @@
 	<input type="hidden" name="config[]" value="@column_eximage_size_group" />
 
 	<h2 id="entryCode" class="acms-admin-admin-title2"><!--T-->エントリーコード<!--/T--></h2>
-	<table class="adminTable acms-admin-table-admin-edit">
+	<table class="acms-admin-table-admin-edit">
 		<tr>
 			<th><!--T-->ファイル名接頭辞<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ファイル名を自動生成するときの接頭辞です。<!--/T-->"></i></th>
 			<td>
@@ -1052,7 +1050,7 @@
 	</table>
 
 	<h2 id="imageSize" class="acms-admin-admin-title2"><!--T-->イメージサイズ<!--/T--></h2>
-	<table class="adminTable acms-admin-table-admin-edit">
+	<table class="acms-admin-table-admin-edit">
 		<tr>
 			<th><!--T-->拡大表示時の最大サイズ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->拡大表示時の画像サイズとして使用されます。<!--/T-->"></i></th>
 			<td>
@@ -1148,7 +1146,7 @@
 	</table>
 
 	<h2 id="uploadFileExtention" class="acms-admin-admin-title2"><!--T-->アップロード許可ファイル拡張子<!--/T--></h2>
-	<table class="adminTable acms-admin-table-admin-edit">
+	<table class="acms-admin-table-admin-edit">
 		<tr>
 			<th><!--T-->命名方法<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->「ファイル」ユニットでアップロードするファイルの命名方法を選択します。<!--/T-->"></i>
 			</th>

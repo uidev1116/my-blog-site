@@ -9,6 +9,7 @@ use ACMS_Filter;
 use Acms\Services\Facades\Storage;
 use Acms\Services\StaticExport\Generator\TopGenerator;
 use Acms\Services\StaticExport\Generator\ThemeGenerator;
+use Acms\Services\StaticExport\Generator\RequireThemeGenerator;
 use Acms\Services\StaticExport\Generator\CategoryGenerator;
 use Acms\Services\StaticExport\Generator\CategoryPageGenerator;
 use Acms\Services\StaticExport\Generator\CategoryArchivesGenerator;
@@ -161,9 +162,11 @@ class Engine
     protected function processExportAssets($themes)
     {
         $this->copyThemeItems(THEMES_DIR . 'system/');
+        $this->copyThemeRequireItems(THEMES_DIR . 'system/');
         foreach ( $themes as $theme ) {
             $path = THEMES_DIR . $theme . '/';
             $this->copyThemeItems($path);
+            $this->copyThemeRequireItems($path);
         }
     }
 
@@ -192,6 +195,12 @@ class Engine
             $path = THEMES_DIR . $theme . '/';
             $themeGenerator = new ThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
             $themeGenerator->setSourceTheme($path);
+            $themeGenerator->setExclusionList($this->config->exclusion_list);
+            $themeGenerator->run();
+
+            $themeGenerator = new RequireThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
+            $themeGenerator->setSourceTheme($path);
+            $themeGenerator->setIncludeList($this->config->include_list);
             $themeGenerator->run();
         }
     }
@@ -202,6 +211,7 @@ class Engine
     protected function processExportTop()
     {
         $generator = new TopGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
+        $generator->setExclusionList($this->config->exclusion_list);
         $generator->run();
     }
 
@@ -264,14 +274,16 @@ class Engine
      */
     protected function processExportCategoryPagenation($categories)
     {
-        $this->logger->start('カテゴリーの2ページ以降を生成', count($categories));
-        foreach ( $categories as $i => $cid ) {
-            // カテゴリーのページを書き出し
-            $this->logger->processing();
-            $generator = new CategoryPageGenerator($this->compiler, $this->destination, null, $this->maxPublish);
-            $generator->setCategoryId($cid);
-            $generator->setMaxPage($this->getConfig('static_page_max', 5, $i));
-            $generator->run(true);
+        if (is_array($categories) && count($categories) > 0) {
+            $this->logger->start('カテゴリーの2ページ以降を生成', count($categories));
+            foreach ($categories as $i => $cid) {
+                // カテゴリーのページを書き出し
+                $this->logger->processing();
+                $generator = new CategoryPageGenerator($this->compiler, $this->destination, null, $this->maxPublish);
+                $generator->setCategoryId($cid);
+                $generator->setMaxPage($this->getConfig('static_page_max', 5, $i));
+                $generator->run(true);
+            }
         }
     }
 
@@ -282,15 +294,17 @@ class Engine
      */
     protected function processExportArchivePage($categories)
     {
-        foreach ( $categories as $i => $cid ) {
-            try {
-                $generator = new CategoryArchivesGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-                $generator->setCategoryId($cid);
-                $generator->setMonthRange($this->getConfig('static_archive_start', date('Y-m-d', REQUEST_TIME), $i));
-                $generator->setMaxPage($this->getConfig('static_archive_max', 5, $i));
-                $generator->run();
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage(), $e->getFile() . ':' . $e->getLine());
+        if (is_array($categories) && count($categories) > 0) {
+            foreach ($categories as $i => $cid) {
+                try {
+                    $generator = new CategoryArchivesGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
+                    $generator->setCategoryId($cid);
+                    $generator->setMonthRange($this->getConfig('static_archive_start', date('Y-m-d', REQUEST_TIME), $i));
+                    $generator->setMaxPage($this->getConfig('static_archive_max', 5, $i));
+                    $generator->run();
+                } catch (\Exception $e) {
+                    $this->logger->error($e->getMessage(), $e->getFile() . ':' . $e->getLine());
+                }
             }
         }
     }
@@ -308,9 +322,14 @@ class Engine
         $dest_archives_dir = $this->destination->getDestinationPath() . ARCHIVES_DIR . $blog_archives_dir;
         Storage::copyDirectory($src_archives_dir, $dest_archives_dir);
 
-        $src_media_dir = MEDIA_LIBRARY_DIR . $blog_archives_dir;
-        $dest_media_dir = $this->destination->getDestinationPath() . MEDIA_LIBRARY_DIR . $blog_archives_dir;
+        $src_media_dir = MEDIA_LIBRARY_DIR;
+        $dest_media_dir = $this->destination->getDestinationPath() . MEDIA_LIBRARY_DIR;
         Storage::copyDirectory($src_media_dir, $dest_media_dir);
+
+        $src_storage_dir = MEDIA_STORAGE_DIR;
+        $dest_storage_dir = $this->destination->getDestinationPath() . MEDIA_STORAGE_DIR;
+        Storage::copyDirectory($src_storage_dir, $dest_storage_dir);
+        Storage::remove($this->destination->getDestinationPath() . MEDIA_STORAGE_DIR . '.htaccess');
 
         Storage::copyDirectory(JS_DIR, $this->destination->getDestinationPath() . JS_DIR);
         Storage::copy('acms.js', $this->destination->getDestinationPath() . 'acms.js');
@@ -324,21 +343,26 @@ class Engine
      */
     protected function copyThemeItems($theme)
     {
-        if (empty($this)) {
+        if (empty($theme)) {
             return;
         }
-
         $finder = new Finder();
         $iterator = $finder
             ->in($theme)
             ->name('/\.(js|json|css|ttf|img|png|gif|jpeg|jpg|svg|txt|pdf|ppt|xls|csv|docx|pptx|xlsx|zip)$/')
             ->exclude('acms-code')
-            ->exclude('admin')
-            ->files();
-
+            ->exclude('admin');
+        if (property_exists($this->config, 'exclusion_list')) {
+            foreach ($this->config->exclusion_list as $path) {
+                if (!empty($path)) {
+                    $iterator->notPath($path);
+                }
+            }
+        }
+        $iterator->files();
         $this->logger->start('テーマのリソース書き出し ( ' . $theme . ' )', iterator_count($iterator));
 
-        foreach ( $iterator as $file ) {
+        foreach ($iterator as $file) {
             try {
                 $relative_dir_path = $file->getRelativePath();
                 $relative_file_path = $file->getRelativePathname();
@@ -347,6 +371,48 @@ class Engine
                 Storage::copy($theme . $relative_file_path, $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path);
             } catch ( \Exception $e ) {
                 $this->logger->error($e->getMessage(), $file->getRelativePathname());
+            }
+        }
+    }
+
+    /**
+     * copy theme require items
+     *
+     * @param string $theme
+     * @return void
+     */
+    protected function copyThemeRequireItems($theme)
+    {
+        if (empty($theme)) {
+            return;
+        }
+        if (property_exists($this->config, 'include_list')) {
+            $includeList = array();
+            foreach ($this->config->include_list as $path) {
+                if (!empty($path)) {
+                    $includeList[] = $path;
+                }
+            }
+            if (count($includeList) > 0) {
+                $finder = new Finder();
+                $iterator = $finder->in($theme);
+                foreach ($includeList as $path) {
+                    $iterator->path($path);
+                }
+                $iterator->files();
+                $this->logger->start('テーマの必須リソース書き出し ( ' . $theme . ' )', iterator_count($iterator));
+
+                foreach ($iterator as $file) {
+                    try {
+                        $relative_dir_path = $file->getRelativePath();
+                        $relative_file_path = $file->getRelativePathname();
+                        $this->logger->processing();
+                        Storage::makeDirectory($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_dir_path);
+                        Storage::copy($theme . $relative_file_path, $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path);
+                    } catch ( \Exception $e ) {
+                        $this->logger->error($e->getMessage(), $file->getRelativePathname());
+                    }
+                }
             }
         }
     }
@@ -364,8 +430,16 @@ class Engine
             ->in($theme)
             ->name('/\.css$/')
             ->exclude('acms-code')
-            ->exclude('admin')
-            ->files();
+            ->exclude('admin');
+
+        if (property_exists($this->config, 'exclusion_list')) {
+            foreach ($this->config->exclusion_list as $path) {
+                if (!empty($path)) {
+                    $iterator->notPath($path);
+                }
+            }
+        }
+        $iterator->files();
 
         $this->logger->start('CSSのURL属性を解決 ( ' . $theme . ' )', iterator_count($iterator));
 
@@ -391,8 +465,11 @@ class Engine
         $finder = new Finder();
         $iterator = $finder
             ->in($this->destination->getDestinationPath() . $this->destination->getBlogCode())
-            ->notPath(ARCHIVES_DIR)
             ->date('< ' . date('Y-m-d H:i:s', REQUEST_TIME));
+
+        $iterator->notPath(ARCHIVES_DIR)
+            ->notPath(MEDIA_LIBRARY_DIR)
+            ->notPath(MEDIA_STORAGE_DIR);
 
         $SQL = SQL::newSelect('blog');
         $SQL->addSelect('blog_code');
@@ -415,7 +492,8 @@ class Engine
 
         foreach ( $iterator as $file ) {
             $this->logger->processing();
-            $path = $this->destination->getDestinationPath() . $file->getRelativePathname();
+            $path = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $file->getRelativePathname();
+            $this->logger->error('削除', $path, '204');
             Storage::remove($path);
         }
     }

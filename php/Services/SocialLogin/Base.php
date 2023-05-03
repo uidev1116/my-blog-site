@@ -2,13 +2,14 @@
 
 namespace Acms\Services\SocialLogin;
 
-use ACMS_POST;
 use DB;
 use SQL;
+use ACMS_RAM;
+use Acms\Services\Facades\Common;
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Config;
 use Acms\Services\Facades\Image;
-use ACMS_Session;
+use Acms\Services\Facades\Session;
 use Acms\Services\SocialLogin\Exceptions\SocialLoginException;
 use Acms\Services\SocialLogin\Exceptions\SocialLoginDuplicationException;
 
@@ -51,7 +52,7 @@ abstract class Base
      */
     public function setLoginType($type, $bid, $uid = null)
     {
-        $session = ACMS_Session::singleton();
+        $session = Session::handle();
         $session->set('social_login_type', $type);
         $session->set('social_login_bid', $bid);
         if ($type === 'addition') {
@@ -65,7 +66,7 @@ abstract class Base
      */
     public function getLoginType()
     {
-        $session = ACMS_Session::singleton();
+        $session = Session::handle();
         return $session->get('social_login_type');
     }
 
@@ -74,7 +75,7 @@ abstract class Base
      */
     public function getLoginBid()
     {
-        $session = ACMS_Session::singleton();
+        $session = Session::handle();
         return $session->get('social_login_bid');
     }
 
@@ -83,7 +84,7 @@ abstract class Base
      */
     public function getLoginUid()
     {
-        $session = ACMS_Session::singleton();
+        $session = Session::handle();
         return $session->get('social_login_uid');
     }
 
@@ -94,9 +95,6 @@ abstract class Base
      */
     public function loginFailed($query = '')
     {
-        $session = ACMS_Session::singleton();
-        $session->clear();
-
         if (!empty($query)) {
             $query = '?' . $query;
         }
@@ -113,7 +111,7 @@ abstract class Base
             throw new SocialLoginException();
         }
 
-        $sid = generateSession($user);
+        generateSession($user);
         $bid = intval($user['user_blog_id']);
         $loginBid = BID;
 
@@ -123,10 +121,8 @@ abstract class Base
         ) {
             $loginBid = $bid;
         }
-
         redirect(acmsLink(array(
             'bid' => $loginBid,
-            'sid' => $sid,
             'query' => array(),
         )));
     }
@@ -152,11 +148,10 @@ abstract class Base
             throw new SocialLoginException();
         }
         // generate session id
-        $sid = generateSession($all[0]);
+        generateSession($all[0]);
 
         redirect(acmsLink(array(
             'bid' => $bid,
-            'sid' => $sid,
             'query' => array(),
         ), false));
     }
@@ -191,6 +186,7 @@ abstract class Base
             $SQL->addUpdate($this->getUserKey(), $this->getId());
             $SQL->addWhereOpr('user_id', $uid);
             DB::query($SQL->get(dsn()), 'exec');
+            ACMS_RAM::user($uid, null);
         }
         redirect(acmsLink(array(
             'bid' => $bid,
@@ -257,7 +253,7 @@ abstract class Base
         $sql->addInsert('user_code', $this->getCode());
         $sql->addInsert('user_status', 'open');
         $sql->addInsert('user_name', $this->getName());
-        $sql->addInsert('user_pass', ACMS_POST::genPass(8));
+        $sql->addInsert('user_pass', Common::genPass(8));
         $sql->addInsert($this->getUserKey(), $this->getId());
         $sql->addInsert('user_mail', $this->getEmail());
         $sql->addInsert('user_mail_magazine', 'off');

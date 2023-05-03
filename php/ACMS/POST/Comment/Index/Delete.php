@@ -1,37 +1,22 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Comment_Index_Delete extends ACMS_POST_Comment
+{
+    function post()
+    {
+        $this->Post->setMethod('comment', 'operative', sessionWithCompilation());
+        $this->Post->validate(new ACMS_Validator());
+
+        if ( $this->Post->isValidAll() ) {
+            $DB     = DB::singleton(dsn());
+            foreach ( $this->Post->getArray('checks') as $cmid ) {
+                $SQL    = SQL::newDelete('comment');
+                $SQL->addWhereOpr('comment_id', intval($cmid));
+                $SQL->addWhereOpr('comment_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+        }
+
+        return $this->Post;
+    }
+}

@@ -15,13 +15,14 @@ forbid_tpl_inheritance_when_path_unresolved: off # on | off パス解決に失�
 html_format_validate      : on # on | off htmlフォーマットでない場合は404で返す
 session_remote_addr_check : off # on | off ログイン中に接続元IPアドレスが変更された場合にログインセッションを切るかの設定
 forbidden_blog_http_status: 404 # 404 | 403
+referrer_policy           : strict-origin-when-cross-origin # no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin | strict-origin-when-cross-origin | unsafe-url
 
 ## ログイン・セッション
 login_white_hosts         : # CIDR記法(例：a.b.c.d/32)で指定されたIPアドレスからのアクセスに限りログインできるようになります。
 login_black_hosts         : # CIDR記法(例：a.b.c.d/32)で指定されたIPアドレスからのアクセスに限りログインできないようになります。
 basic_auth_user           : # ベーシック認証のアカウント
 basic_auth_pass           : # ベーシック認証のパスワード
-@basic_auth_group         : [basic_auth_user, basic_auth_pass]
+'@basic_auth_group'       : [basic_auth_user, basic_auth_pass]
 basic_auth_skip_hosts     : # CIDR記法(例：a.b.c.d/32)で指定されたIPアドレスからのアクセスに限り、ベーシック認証をスキップできます。
 same_login_enable         : off # on | off 同アカウントによる、同時ログインを許可（ユーザー数無制限時のみ有効）
 switch_user_enable        : on # on | off 管理者ユーザーが他のユーザーに切り替える機能
@@ -36,6 +37,7 @@ user_activation_url_lifetime : 15 # ここで指定した期間、ユーザー�
 password_validator_min    : 8 # パスワードの最小文字数
 password_validator_3type  : off # パスワードは大文字、小文字、数値、記号のうち、３種類を含む
 password_validator_message : パスワードは8文字以上で入力してください。 # パスワードポリシーのメッセージを表示
+session_lifetime_update   : off # on | off この値がonだと、最終アクセスから指定した有効時間内にアクセスがない時、セッションが切れるようになります。offだと、ログイン時から時間を計測します。
 
 ## 自動アップデート
 system_update_range       : patch # patch | minor | none アップデートを行う範囲。パッチのみアップデートか、マイナーバージョンを含めてアップデートするか、更新メニューを表示しない。
@@ -44,48 +46,49 @@ system_update_ignore      : [] # アップデートしないファイルを配�
 system_update_ignore_config : [] # ここで指定した項目は、CMS更新で再設定されなくなります。（config.server.php の項目で除外したい対象を追加。例: [SESSION_NAME]）
 
 ## パフォーマンス
-img_optimizer           : on # on | off ロスレス圧縮をするかどうかを設定
-cache					: on
-cache_expire			: 86400
-cache_life_time			: 259200
-cache_sensitivity		: high
-zip_http				: on
-send_email_asynchronous : off # on | off メール送信をバックグランドで実行するかを設定（フォームは個別に設定）
-mysql_optimize_table    : off # on | off
-cache_busting_type      : date # date | random | disable
+img_optimizer: on # on | off ロスレス圧縮をするかどうかを設定
+cache: on
+cache_expire: 86400
+cache_expire_entry: 86400
+cache_clear_when_post: on # on | off
+cache_clear_target: all
+zip_http: on
+mysql_optimize_table: off # on | off
+cache_busting_type: date # date | random | disable
 cache_busting_extension_type: [css, js]
-content_length_header   : on # on | off Content-Lengthヘッダーを付与するかを設定
-webp_support            : on # on | off webp画像を生成するかどうかを設定
+content_length_header: on # on | off Content-Lengthヘッダーを付与するかを設定
+webp_support: on # on | off webp画像を生成するかどうかを設定
+template_cache: off # on | off テンプレートのキャッシュを使用するかどうかを設定（onにするとDEBUG_MODEオフの時、include文内で、特定のグローバル変数しか利用できなくなります。またテンプレート編集した時は、キャッシュクリアの操作が必要です）
 
 ## 基本設定
-log_access				: post
-log_access_save_period  : 30
-charset					: UTF-8
-default_extension		: html
-addtype_mimetype		:
-addtype_extension		:
-@addtype_group			: [addtype_mimetype, addtype_extension]
-login_admin_path		:
-login_ssl				: off
-convert_kana			:
-subscribe				: off
-remove_comment			: off
-remove_blank			: off
-mailmagazine			: off
-cache_expire_client		: 0
-generator : off
-generator_end_tag : on
-jquery_version: 3.5.1 # (3.5.1|3.4.1|2.2.3|2.1.1|2.0.3|1.12.3|1.11.1|1.10.1|1.9.1|1.8.3|1.7.2|1.6.4) 2.xはIE9〜
+log_access: post
+log_access_save_period: 30
+charset: UTF-8
+default_extension: html
+addtype_mimetype:
+addtype_extension:
+'@addtype_group': [addtype_mimetype, addtype_extension]
+login_admin_path:
+login_ssl: off
+convert_kana:
+subscribe: off
+remove_comment: off
+remove_blank: off
+mailmagazine: off
+cache_expire_client: 0
+generator: off
+generator_end_tag: on
+jquery_version: 3.6.1 # (3.6.1|3.5.1|3.4.1|2.2.3|2.1.1|2.0.3|1.12.3|1.11.1|1.10.1|1.9.1|1.8.3|1.7.2|1.6.4) 2.xはIE9〜
 jquery_migrate: migrate-3.0.1 # migrate-3.0.1
-session_contributor_only_own_entry  : off
-tpl_find_from_ascendants_ccd    : on
-query_keyword : on
-preprocess_touch    : on
-entry_301_redirect  : off
-corrector_replace : on
-experimental_enable_global_rule : on
-directory_index   : []
-subscriber_view_mode: off # on | off 投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示する
+session_contributor_only_own_entry: off
+tpl_find_from_ascendants_ccd: on
+query_keyword: on
+preprocess_touch: on
+entry_301_redirect: off
+corrector_replace: on
+experimental_enable_global_rule: on
+directory_index: []
+subscriber_view_mode: off # on | off 投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条件で表示する
 url_preview_expire: 48
 
 ## プレビューモード
@@ -95,7 +98,10 @@ approval_preview_default_device: iPhone 6/7/8
 timemachine_preview_default_device: PC
 
 ## アドバンス
+media_client_resize: on # on | off メディアでの画像アップロードで、ブラウザでのリサイズを行うかどうかを設定（onにすると、大きな画像もアップロードできるようになりますが、若干画質が劣化します）
 media_download_link: v2 # v1: media-download/xxx/ v2: media-download/xxx/hash値/
+file_icon_size: fix # fix | dynamic ファイルアイコンの{x},{y}変数を固定にするか、常に画像サイズを取得するか設定します。常に画像サイズを取得する場合、パフォーマンスに影響します。
+media_image_ramdom_filename: off # on | off メディアでの画像アップロードしたファイル名をランダムファイル名にするか設定します。
 form_admin_authority: editor # administrator | editor
 schedule_admin_authority: editor # administrator | editor
 entry_edit_page_type: normal # normal | front | admin
@@ -122,7 +128,6 @@ post_cache_delete: on
 global_category_sort: DESC
 subscribe_login_anywhere : off # on | off
 javascript_nocache : off # on | off
-cache_only_200 : off
 cache_publish_fail_continue : on
 update_datetime_as_entry_open : on
 update_datetime_as_duplicate_entry : on
@@ -168,7 +173,7 @@ meta_keywords:
 meta_description:
 
 ## テーマ
-theme : blog2020
+theme : blog
 load_yaml_tpl : on
 
 ## テンプレート
@@ -239,6 +244,7 @@ mail_subscribe_bcc  :
 mail_subscribe_reply-to :
 mail_subscribe_tpl_subject  : mail/subscribe/subject.txt
 mail_subscribe_tpl_body : mail/subscribe/body.txt
+mail_subscribe_tpl_body_html : mail/subscribe/body.html
 
 ## 読者登録（管理者）
 mail_subscribe_admin_from   : info@example.com
@@ -248,6 +254,7 @@ mail_subscribe_admin_bcc    :
 mail_subscribe_admin_reply-to   :
 mail_subscribe_admin_tpl_subject    : mail/subscribe/adminSubject.txt
 mail_subscribe_admin_tpl_body   : mail/subscribe/adminBody.txt
+mail_subscribe_admin_tpl_body_html  : mail/subscribe/adminBody.html
 
 ## ユーザ情報変更
 mail_update_user_from : info@example.com
@@ -257,6 +264,7 @@ mail_update_user_bcc  :
 mail_update_user_reply-to :
 mail_update_user_tpl_subject  : mail/updateuser/subject.txt
 mail_update_user_tpl_body : mail/updateuser/body.txt
+mail_update_user_tpl_body_html : mail/updateuser/body.html
 
 ## ユーザ情報変更（管理者）
 mail_update_user_admin_from   :
@@ -266,6 +274,7 @@ mail_update_user_admin_bcc    :
 mail_update_user_admin_reply-to   :
 mail_update_user_admin_tpl_subject    : mail/updateuser/adminSubject.txt
 mail_update_user_admin_tpl_body   : mail/updateuser/adminBody.txt
+mail_update_user_admin_tpl_body_html  : mail/updateuser/adminBody.html
 
 ## パスワード再発行
 mail_remind_from    : info@example.com
@@ -275,6 +284,7 @@ mail_remind_bcc :
 mail_remind_reply-to :
 mail_remind_tpl_subject  : mail/remind/subject.txt
 mail_remind_tpl_body : mail/remind/body.txt
+mail_remind_tpl_body_html : mail/remind/body.html
 
 ## コメント
 mail_comment_from   : info@example.com
@@ -284,6 +294,7 @@ mail_comment_bcc    :
 mail_comment_reply-to   :
 mail_comment_tpl_subject    : mail/comment/subject.txt
 mail_comment_tpl_body   : mail/comment/body.txt
+mail_comment_tpl_body_html  : mail/comment/body.html
 
 ## 承認
 mail_approval_from : info@example.com
@@ -293,6 +304,7 @@ mail_approval_bcc  :
 mail_approval_reply-to :
 mail_approval_tpl_subject : mail/approval/subject.txt
 mail_approval_tpl_body : mail/approval/body.txt
+mail_approval_tpl_body_html : mail/approval/body.html
 
 ## メールマガジン
 mail_entry_from : info@example.com
@@ -310,9 +322,6 @@ mail_smtp-host  :
 mail_smtp-port  :
 mail_smtp-user  :
 mail_smtp-pass  :
-mail_smtp-auth_method   :
-mail_smtp-timeout   :
-mail_localhost  :
 mail_from   :
 mail_sendmail_path  :
 
@@ -355,7 +364,7 @@ entry_body_order2       : id-desc
 entry_body_offset       : 0
 entry_body_indexing       : on
 entry_body_sub_category   : on
-entry_body_image_viewer     : ' data-rel="SmartPhoto[{unit_eid}]"'
+entry_body_image_viewer     : 'data-rel="SmartPhoto"'
 entry_body_newtime        : 259200
 entry_body_tag_on       : on
 entry_body_summary_on     : on
@@ -664,7 +673,7 @@ calendar_year_week_label :
 ## リンク集
 links_value :
 links_label :
-@linkgroup  : [links_value, links_label]
+'@linkgroup': [links_value, links_label]
 
 ## バナー
 banner_status :
@@ -742,7 +751,6 @@ user_profile_subscriber   : off
 user_profile_indexing  : on
 
 ## ユーザー検索
-entry_geo-list_reference_point : url_context
 user_search_limit   : 5
 user_search_order   : field-asc # ((code|id|sort|login_datetime|updated_datetime|field|intfield)-(asc|desc)|random)
 user_search_auth    :
@@ -833,6 +841,7 @@ twitter_statuses_usertl_cache_expire : 60
 twitter_search_private : on
 twitter_search_limit   : 20
 twitter_search_cache_expire : 60
+twitter_search_locale  : off
 #twitter_search_lat    :
 #twitter_search_lon    :
 #twitter_search_radius :
@@ -844,11 +853,6 @@ twitter_list_statuses_cache_expire : 60
 
 # List_Members
 twitter_list_members_cache_expire : 3600
-
-# Search
-twitter_search_limit    : 20
-twitter_search_cache_expire : 60
-twitter_search_locale   : off
 
 # Facebook Warn Messages
 api_facebook_warn_invalid_sign : '<p>デバッグ：Facebookからのリクエスト署名が正しくないため、%CLASS%を利用できません。プロパティ設定内の、Facebookアプリケーションの設定を確認してください。</p>'
@@ -954,7 +958,7 @@ column_text_tag_label :
   - マークダウン
   - WYSIWYG
 
-@column_text_tag_group : [column_text_tag, column_text_tag_label]
+'@column_text_tag_group' : [column_text_tag, column_text_tag_label]
 
 column_text_attr  :
 column_text_attr_label  :
@@ -999,7 +1003,7 @@ entry_edit_link_url_display: 'true'
 ## ユニットグループ
 unit_group          : on
 unit_group_clear    : 'acms-column-clear'
-@nesting_unit_group : [unit_group_class, unit_group_label]
+'@nesting_unit_group' : [unit_group_class, unit_group_label]
 
 unit_group_class  :
   -
@@ -1008,7 +1012,7 @@ unit_group_class  :
   - acms-col-sm-4
 
 unit_group_label  :
-  - ---
+  - '---'
   - 1カラム
   - 2カラム
   - 3カラム
@@ -1038,7 +1042,7 @@ column_image_size_criterion:
   - width
   - width
 
-@column_image_size_group : [column_image_size_criterion, column_image_size, column_image_size_label, column_image_display_size]
+'@column_image_size_group' : [column_image_size_criterion, column_image_size, column_image_size_label, column_image_display_size]
 
 column_image_attr :
 column_image_attr_label :
@@ -1065,7 +1069,7 @@ column_map_size_label:
   - 中 (340x320)
   - 小 (220x200)
 
-@column_map_size_group : [column_map_size, column_map_size_label, column_map_display_size]
+'@column_map_size_group' : [column_map_size, column_map_size_label, column_map_display_size]
 
 column_map_attr :
 column_map_attr_label :
@@ -1086,7 +1090,7 @@ column_youtube_size_label:
   - 中 (340x191)
   - 小 (220x123)
 
-@column_youtube_size_group : [column_youtube_size, column_youtube_size_label, column_youtube_display_size]
+'@column_youtube_size_group' : [column_youtube_size, column_youtube_size_label, column_youtube_display_size]
 
 column_youtube_attr :
 column_youtube_attr_label :
@@ -1107,7 +1111,7 @@ column_video_size_label:
   - 中 (340x192)
   - 小 (220x124)
 
-@column_video_size_group : [column_video_size, column_video_size_label, column_video_display_size]
+'@column_video_size_group' : [column_video_size, column_video_size_label, column_video_display_size]
 
 column_video_attr :
 column_video_attr_label :
@@ -1128,7 +1132,7 @@ column_media_size_label:
   - 中：幅1/2 ( 340px )
   - 小：幅1/3 ( 220px )
 
-@column_media_size_group : [column_media_size, column_media_size_label, column_media_display_size]
+'@column_media_size_group' : [column_media_size, column_media_size_label, column_media_display_size]
 
 column_media_attr :
 column_media_attr_label :
@@ -1149,7 +1153,7 @@ column_eximage_size_label:
   - 中 ( 長辺340px )
   - 小 ( 長辺220px )
 
-@column_eximage_size_group : [column_eximage_size, column_eximage_size_label, column_eximage_display_size]
+'@column_eximage_size_group' : [column_eximage_size, column_eximage_size_label, column_eximage_display_size]
 
 column_eximage_attr :
 column_eximage_attr_label :
@@ -1169,20 +1173,20 @@ column_def_insert_field_5 : ['', '']
 
 column_add_type : [text, media, osmap]
 column_add_type_label : [テキスト, 画像・ファイル, 地図]
-@column_add_type_group : [column_add_type, column_add_type_label]
+'@column_add_type_group' : [column_add_type, column_add_type_label]
 
 layout_add_type : [col12, col6-6, col3-9, col4-8, col9-3, col8-4, col4-4-4]
 layout_add_type_set : [layout-column-1, layout-column-2, layout-column-2, layout-column-2, layout-column-2, layout-column-2, layout-column-3]
 layout_add_type_label : [col12, col6-6, col3-9, col4-8, col9-3, col8-4, col4-4-4]
-@layout_add_type_group : [layout_add_type, layout_add_type_set, layout_add_type_label]
+'@layout_add_type_group' : [layout_add_type, layout_add_type_set, layout_add_type_label]
 
 layout_group_class  : [layout-column-1, layout-column-2, layout-column-3, layout-column-4]
 layout_group_label  : [1カラム, 2カラム, 3カラム, 4カラム]
-@layout_group       : [layout_group_class, layout_group_label]
+'@layout_group'     : [layout_group_class, layout_group_label]
 
 column_form_add_type : [text, textarea, radio, select, checkbox]
 column_form_add_type_label : [テキスト, テキストエリア, ラジオ, セレクト, チェックボックス]
-@column_form_add_type_group : [column_form_add_type, column_form_add_type_label]
+'@column_form_add_type_group' : [column_form_add_type, column_form_add_type_label]
 
 column_map_layer_type : ['map', 'photo', 'map-b1', 'railway', 'monotone', 'bold', 'midnight']
 column_map_layer_type_label : [標準, 航空写真, 地下街, 路線図, モノトーン, ボールド, ミッドナイト]
@@ -1212,7 +1216,6 @@ column_def_add_table_field_5 : ['', '']
 column_def_add_image_type   : [image, '']
 column_def_add_image_align    : [left, '']
 column_def_add_image_class    : ['', '']
-column_def_insert_size_criterion  : [width, '']
 column_def_add_image_size   : [w340, ]
 column_def_add_image_edit   : ['', '']
 column_def_add_image_field_1  : ['', '']
@@ -1253,17 +1256,6 @@ column_def_add_osmap_field_2  : [35.185574, '']
 column_def_add_osmap_field_3  : [136.899066, '']
 column_def_add_osmap_field_4  : [10, '']
 column_def_add_osmap_field_5  : [1, '']
-
-column_def_add_yolp_type   : [yolp, '']
-column_def_add_yolp_align  : [auto, '']
-column_def_add_yolp_class  : ['', '']
-column_def_add_yolp_size   : [700x405, '']
-column_def_add_yolp_edit   : ['', '']
-column_def_add_yolp_field_1  : ['', '']
-column_def_add_yolp_field_2  : [35.185574, '']
-column_def_add_yolp_field_3  : [136.899066, '']
-column_def_add_yolp_field_4  : [11, '']
-column_def_add_yolp_field_5  : [normal, '']
 
 column_def_add_youtube_type   : [youtube, '']
 column_def_add_youtube_align  : [auto, '']
@@ -1443,6 +1435,7 @@ admin_menu_card_id:
   - config_set_index # コンフィグ
   - rule_index # ルール
   - module_index # モジュールID
+  - webhook_index # Webhook
   - checklist # チェックリスト
   - shortcut_index # ショートカット
   - alias_index # エイリアス
@@ -1472,6 +1465,7 @@ admin_menu_card_laneid:
   - lane4 # コンフィグ
   - lane4 # ルール
   - lane4 # モジュールID
+  - lane4 # Webhook
   - lane5 # チェックリスト
   - lane5 # ショートカット
   - lane5 # エイリアス
@@ -1500,6 +1494,7 @@ admin_menu_card_icon:
   - acms-admin-icon-config # コンフィグ
   - acms-admin-icon-rule # ルール
   - acms-admin-icon-module # モジュールID
+  - acms-admin-icon-custom-field # Webhook
   - acms-admin-icon-checklist # チェックリスト
   - acms-admin-icon-shortcut # ショートカット
   - acms-admin-icon-alias # エイリアス
@@ -1510,6 +1505,7 @@ admin_menu_card_icon:
   - acms-admin-icon-publish # 静的書き出し
   - acms-admin-icon-app # 拡張アプリ
 admin_menu_card_admin:
+  - 'true'
   - 'true'
   - 'true'
   - 'true'
@@ -1578,6 +1574,7 @@ admin_menu_card_title:
   - コンフィグ
   - ルール
   - モジュールID
+  - Webhook
   - チェックリスト
   - ショートカット
   - エイリアス
@@ -1605,7 +1602,7 @@ attr_checked: ' checked="checked"'
 attr_disabled:  ' disabled="disabled"'
 attr_multiple:  ' multiple="multiple"'
 
-ua_default  : 13
+ua_default  : 12
 
 ua_label  :
   - 携帯電話
@@ -1619,7 +1616,6 @@ ua_label  :
   - "&nbsp;&nbsp;&nbsp;&nbsp;Androidフォン"
   - "&nbsp;&nbsp;&nbsp;&nbsp;Windowsフォン"
   - タブレット
-  - "&nbsp;&nbsp;&nbsp;&nbsp;iPad"
   - "&nbsp;&nbsp;&nbsp;&nbsp;Androidタブレット"
   - PC
   - "&nbsp;&nbsp;&nbsp;&nbsp;Internet Explorer"
@@ -1640,7 +1636,6 @@ ua_value  :
   - AndroidPhone
   - WindowsPhone
   - Tablet
-  - iPad
   - AndroidTablet
   - PC
   - Internet Explorer
@@ -1652,16 +1647,15 @@ ua_value  :
 ua_regex  :
   -
   - "@^DoCoMo@"
-  - "@^DoCoMo.+\(c500;@"
-  - "@^KDDI-|^UP\.Browser@"
+  - "@^DoCoMo.+\\(c500;@"
+  - "@^KDDI-|^UP\\.Browser@"
   - "@^SoftBank|^Semulator|^Vodafone|^Vemulator|^MOT-|^MOTEMULATOR|^J-PHONE|^J-EMULATOR@"
-  - "@^Mozilla/3\.0\((?:DDIPOCKET|WILLCOM);@"
+  - "@^Mozilla/3\\.0\\((?:DDIPOCKET|WILLCOM);@"
   -
   - "@^.+iPhone.+AppleWebKit.+Mobile.+$@"
   - "@^.+Android.+AppleWebKit.+Mobile.+$@"
   - "@^.+MSIE.+Windows Phone.+$@"
   -
-  - "@^.+iPad;.+AppleWebKit.+Mobile.+$@"
   - "@^.+Android.+AppleWebKit.+$@"
   -
   - "@MSIE|Trident@"
@@ -1683,12 +1677,11 @@ ua_parent :
   - 6
   -
   - 10
-  - 10
   -
+  - 12
   - 13
-  - 14
-  - 13
-  - 13
+  - 12
+  - 12
   -
 
 session_host_group  :
@@ -1738,6 +1731,68 @@ session_host_group_softbank :
   - 202.253.96.160/28
   - 202.253.99.160/28
   - 210.228.189.196/30
+
+webhook_types:
+  - entry
+  - form
+#  - user
+#  - category
+#  - blog
+
+webhook_types_label:
+  - エントリー
+  - フォーム
+#  - ユーザー
+#  - カテゴリー
+#  - ブログ
+
+webhook_event_entry:
+  - entry:created
+  - entry:updated
+  - entry:deleted
+  - entry:opened
+
+webhook_event_entry_label:
+  - エントリー作成
+  - エントリー更新
+  - エントリー削除
+  - エントリー公開
+
+webhook_event_form:
+  - form:sent
+
+webhook_event_form_label:
+  - 送信
+
+webhook_event_user:
+  - user:created
+  - user:updated
+  - user:deleted
+
+webhook_event_user_label:
+  - ユーザー作成
+  - ユーザー更新
+  - ユーザー削除
+
+webhook_event_category:
+  - category:created
+  - category:updated
+  - category:daleted
+
+webhook_event_category_label:
+  - カテゴリー作成
+  - カテゴリー更新
+  - カテゴリー削除
+
+webhook_event_blog:
+  - blog:created
+  - blog:updated
+  - blog:deleted
+
+webhook_event_blog_label:
+  - ブログ作成
+  - ブログ更新
+  - ブログ削除
 
 ###########
 ## Plugin

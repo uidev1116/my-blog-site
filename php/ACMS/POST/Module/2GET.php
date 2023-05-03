@@ -1,38 +1,27 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-YFclyEt1j/CRioXXo80=
+<?php
+
+class ACMS_POST_Module_2GET extends ACMS_POST_Module
+{
+    function post()
+    {
+        if ( sessionWithAdministration() and ($mid = idval($this->Post->get('mid'))) ) {
+            $DB     = DB::singleton(dsn());
+            $SQL    = SQL::newSelect('module');
+            $SQL->setSelect('module_name');
+            $SQL->addWhereOpr('module_id', $mid);
+
+            if ( $name = $DB->query($SQL->get(dsn()), 'one') ) {
+                $url    = acmsLink(array(
+                    'bid'   => BID,
+                    'admin' => 'config_'.strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $name)),
+                    'query' => array(
+                        'mid'   => $mid,
+                    ),
+                ));
+                $this->redirect($url);
+            }
+        }
+
+        return $this->Post;
+    }
+}

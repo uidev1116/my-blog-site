@@ -219,6 +219,20 @@
 					</td>
 				</tr>
 				<tr>
+					<th><!--T-->書き出し除外パス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->書き出しから除外するパスを改行して設定します。<!--/T-->"></i></th>
+					<td>
+						<textarea name="static_export_exclusion_list" rows="10" class="acms-admin-form-width-full">{static_export_exclusion_list}</textarea>
+						<input type="hidden" name="config[]" value="static_export_exclusion_list"/>
+					</td>
+				</tr>
+				<tr>
+					<th><!--T-->書き出し必須パス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->フル書き出し・差分書き出し共に必ず書き出すパスを改行して設定します。<!--/T-->"></i></th>
+					<td>
+						<textarea name="static_export_include_list" rows="10" class="acms-admin-form-width-full">{static_export_include_list}</textarea>
+						<input type="hidden" name="config[]" value="static_export_include_list"/>
+					</td>
+				</tr>
+				<tr>
 					<th><!--T-->削除除外パス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->フル書き出し時に削除しないパスを改行して設定します。<!--/T-->"></i></th>
 					<td>
 						<textarea name="static_export_delete_exclusion_list" rows="10" class="acms-admin-form-width-full">{static_export_delete_exclusion_list}</textarea>

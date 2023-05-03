@@ -1,115 +1,154 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-h7KSi7kPUudyTCz7FUjdiEldqTu=
+<?php
+
+use Acms\Services\Facades\Storage;
+
+class ACMS_POST_File extends ACMS_POST
+{
+    var $delete;
+    var $ARCHIVES_DIR;
+
+    var $olddel;
+    var $directAdd;
+    var $moveArchive;
+
+    /*
+     * Image = new ACMS_File();
+     *
+     */
+    public function __construct($olddel=true, $directAdd=false, $moveArchive='')
+    {
+        //-------
+        // init
+        $this->pattern      = '@'.REVISON_ARCHIVES_DIR.'@';
+        $this->delete       = null;
+
+        $this->olddel       = $olddel;
+        $this->directAdd    = $directAdd;
+        $this->moveArchive  = $moveArchive;
+
+        $this->ARCHIVES_DIR = ARCHIVES_DIR;
+        if ( !empty($moveArchive) ) {
+            $this->ARCHIVES_DIR = ARCHIVES_DIR.'TEMP/';
+        }
+    }
+
+    public function buildAndSave($id, $old, $FILES, $name, $n, $edit)
+    {
+        $this->id           = $id;
+        $this->delete       = null;
+        $this->old          = ltrim($old, './');
+        $this->edit         = $edit;
+        $this->pathArray    = array();
+        $this->num          = $n;
+
+        $pattern    = '@'.REVISON_ARCHIVES_DIR.'@';
+        $this->old  = preg_replace($pattern, '', $this->old, 1);
+
+        //----------------
+        // build and save
+        $fileArray = array();
+
+        foreach ( $this->buildFileData($FILES, $name) as $fileData ) {
+            if ( empty($fileData) ) continue;
+            array_push($fileArray, $fileData);
+        }
+        $this->editAndSaveFiles($fileArray);
+        $this->deleteFiles();
+
+        return $this->pathArray;
+    }
+
+    private function buildFileData($FILES, $name)
+    {
+        $files = array();
+
+        if ( 'delete' === $this->edit ) {
+            $this->delete      = $this->ARCHIVES_DIR.$this->old;
+            $this->pathArray[] = '';
+        } else {
+            if ( 1
+                && isset($FILES)
+                && is_array($FILES)
+            ) {
+                for ( $m = 0; $m < count($FILES); $m++ ) {
+                    if ( ( is_uploaded_file($FILES[$m]) ) and preg_match('@^([^/]+)\.([^./]+)$@', $name[$m]) ) {
+                        $files[]    = array(
+                            'tmp_name'  => $FILES[$m],
+                            'name'      => $name[$m],
+                        );
+                    }
+                }
+            } else if ( 1
+                && isset($FILES)
+                && ( $this->directAdd || is_uploaded_file($FILES) ) and preg_match('@^([^/]+)\.([^./]+)$@', $name)
+            ) {
+                $files[]  = array(
+                    'tmp_name'  => $FILES,
+                    'name'      => $name,
+                );
+            }
+
+            if ( empty($files) ) {
+                $this->pathArray[]    = $this->old;
+            }
+        }
+        return $files;
+    }
+
+    private function editAndSaveFiles($files=array())
+    {
+        foreach ( $files as $value ) {
+            $ufile  = $value['tmp_name'];
+            $fname  = $value['name'];
+            if ( 1
+                and ( $this->directAdd || is_uploaded_file($ufile) )
+                and preg_match('@^([^/]+)\.([^./]+)$@', $fname, $match)
+            ) {
+                $basename   = $match[0];
+                $extension  = strtolower($match[2]);
+
+                if ( in_array($extension, array_merge(
+                    configArray('file_extension_document'),
+                    configArray('file_extension_archive'),
+                    configArray('file_extension_movie'),
+                    configArray('file_extension_audio')
+                )) ) {
+                    $dir    = Storage::archivesDir();
+                    Storage::makeDirectory($this->ARCHIVES_DIR.$dir);
+
+                    $path   = ('rawfilename' == config('file_savename'))
+                        ? $dir.$basename : $dir.uniqueString().'.'.$extension;
+
+                    // 重複対応
+                    $path   = Storage::uniqueFilePath($this->ARCHIVES_DIR . $path);
+                    $path   = mb_substr($path, strlen($this->ARCHIVES_DIR));
+
+                    Storage::copy($ufile, $this->ARCHIVES_DIR.$path);
+
+                    if ( HOOK_ENABLE ) {
+                        $Hook = ACMS_Hook::singleton();
+                        $Hook->call('mediaCreate', $this->ARCHIVES_DIR.$path);
+                    }
+
+                    if ( 1
+                        and empty($this->delete)
+                        and !empty($this->old)
+                        and $this->old <> $path
+                    ) {
+                        $this->delete     = $this->ARCHIVES_DIR.$this->old;
+                    }
+                    $this->pathArray[]    = $path;
+                }
+            }
+        }
+    }
+
+    private function deleteFiles()
+    {
+        if ( $this->olddel === TRUE ) {
+            if ( !empty($this->delete) ) {
+                deleteFile($this->delete);
+            }
+        }
+    }
+}

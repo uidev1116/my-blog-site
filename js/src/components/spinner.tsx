@@ -15,12 +15,12 @@ const spinnerAnimation = keyframes`
   }
 `;
 
-export default styled.div<{size: number}>`
+export default styled.div < { size: number } >`
   position: absolute;
   z-index: 101;
   top: 50%;
   left: 50%;
-  ${props => `
+  ${(props) => `
   width: ${props.size || 30}px;
   height: ${props.size || 30}px;
   `}
@@ -29,5 +29,5 @@ export default styled.div<{size: number}>`
   border: 8px solid #333;
   border-right-color: transparent;
   border-radius: 50%;
-  animation: ${spinnerAnimation} .5s infinite linear;
+  animation: ${spinnerAnimation} 0.5s infinite linear;
 `;

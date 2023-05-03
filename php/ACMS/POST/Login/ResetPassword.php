@@ -1,90 +1,115 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cPpPtwZQcx+uvlxD/5HUSJkGnlG1wmQK72SkfkoMZoD/PcU3SPtzEd2O8j68r41paybPQ0OkQ
-jReBpwRchekmBbdg0gkcQbBUKezZ4cQ2aPpGMDUxV1TUpem9CD5EIgkyK4FhihGKgARPGJyRy5xb
-OLOq3BkKg9JbUROJU4Jg1xXEcOmvpbipxlyBiAYR/lBNRDaWwLI9DA8hkOdXi63HE19Hn5u1TU69
-ydPEkL5dPeBN7uSk/Qlx8EZ2pMDa18OzThnDffiErBSJPK7jk5Ns1mqOh/2sQmgHpOjZMim5Auyh
-CdObBFz5MOhkcxZZGni0rlk0bYiM3dThyitgEHbuWRuIarpL4FfV3G41Rr1EzZPk9ONJYodI1SN8
-WhlJY0G0NU5jZhJ04WMDKGCvSdPXcLGbvfALvKfOROcpKKcdJL9vTd/9TIS7pGNJUCSxp5DpNhQH
-DjuUohrEb9dHV5tk1gA+qgenK5UNSH367osW5pzQrw8GiaWjbd10MJFmUx+FglcTyhDAhlkJuJVF
-fAmnib/GZzELzZH/dZI+KepH8V6fmUZyJDcATb00d76byw5+j8luFlwxL0Gm0XUzQh6MBT0e7L4R
-QcmXZKc4E2Qzip+ahjEPHhY6bf3WeJdGItsNerrLpkC6fjRzPoewAl+uAEaKSn6x2i6ukVM9HvzB
-kKlYFnYETapog6YGVzTpD4qslHqu4u2Zxp8lT/3mE95mItsF2f1jm4L3IMj+9B+fCf5+Hqq2O+hw
-dSPyf2Esc2KDp7HfL6RWwL/wMInHz7J8EwMfu09MlVPhNaMIw+rKGAhLXy7XZnIYrCaXOPUGgXfk
-O3NBHKHsk9T7aO9GJGghFqTt+hQApruPnlnhiQQ6YJLO2cmd+urvaSeBWgnWRllgBjOUcvtoI9m5
-+/Wxe44qH/r/JcFabPU4wampxOyL17xGHR+qpa5wBSbx68nY/RnsnADOG/g+KKVgh1WFSKwzlT0B
-+gOQs+cLbHV/9peNvwfiDgDJRQrCh/hwiUn0T8D/jNHGpCNFe7v5u9RJ6PHoFYQd9fzF7SoxZzQE
-sDUXXloa8B3jK91a3eOnFyyoRfL0wlGuGZRPO9TYeDPgxUFI8js4juT+6hNJsk04C4iLQyUU506e
-IVezNjGw4VfGbheXvMKzI1lsPbc4ZX5yVti7RzTzM4E3N9FNTBlogfXvB16DgFJKKoPzoICQ17xO
-GOMsVQhIp6xHqrt1xRfr6RKQIGV5Q1kX1H8Jq/05GvqdzxyVmESQ2Mme1QzGzxRctKAzMq6xxv2+
-J0MnutEbGbbe5hrhAW+vsakwY8X463OvH53/keGZH8V+Tpsb8d5YEmupob32Q4etu1bofBeNs6st
-Wp17KkezO8wF1kF3N1rb/0SGPWXX61JbCa9+W4ppqBPptbzJvj45AdmFPZJAQS4ju9Njr5oIKX3W
-AYY8c8b7Y6F9sspCACJqZn8mpOXlaOloZCzmhd4VhpjETXBvRO9XSmYJb4L5FqjsTvCDHeIoJvEt
-u+JcZsQXN+Ob5vAuNRt6CS1wv+fbY8BuvV9yQLErbdHeT3ujAyQ4mZDf9p8HFyCA4I/uR80jUj/P
-tq8dTP2MJYNLqMAZYtpGDSSu+CzC2zAMahMzinNSmrNibYSjPHVhJyLMVhqF6Uq9jyltrmgFflly
-tzFL6Zhownjml/7dwcTC/n7uRVjp8UUIKPWVYNOBUpCZ1Ew/1iSavBqpHJvTeg09DVEHu9/7Ehob
-LiQVY5koaMyRuwa0qzlA96c2kHP5iZeeZysQZe3pZEZC9oGwIo+nAMVjIqVhCo5rKcrnlvyEv3+N
-lsoCwfvokMmPNT7BDLWvWWU71p00fEjPYR8L1qw0AVf7OOrQus8OQzOvVpr2YKFQJbLJ+M07VY8i
-5IanQ+qcKAM34yOd2U3Meg0PxNu9DE5/kOHOx4zxuTEwdPEQw6CGNz+SS7HJEptmBrRZUm1K9yqR
-N/aMPrghtBEJHfCvulv6BBnms0AgiA5fBRJeoKw1PcCsokjqMkcw9fLo8ri4sECEyfloRH9yEN/P
-nVeH83szCoLv0RP6Z4kDmNJdWCrKkPEXDLsFT3lj30wgAVUYLE135ayJAvRmIy0p2sbylSzTkzUD
-veBPIJx0lKNueSBGSUkatJ5vJ/7+HhQQwU9rOtq8OMw1rcpkkVZ7ypsV4kekTimW9AXdxDfXQaeg
-cszbudF/M6hgfocxosyCvi+GbGLln/szXwI7mnC3p4N0WAgkLWkaGu9ZCosEMhb2fuDfB7UBDohC
-BOToQzPfP1WvAHqJKwFNbqY0RrBab516RSF+hPgrPZZp8lEoGFDI5k616aX6wHALWMrwLk/LoQUZ
-xPbXwVRJHrEXUOjNhxWZChfnshpS9F+xdMXhN+U01sz+zw6Qzs9AayEtg5kwYFVwlw6QwmaPq5Hb
-OYKi+QW4/X7C62UKXgzf2i7x2rQCascbb2BHLuagT0hR8nYHcYSO0vaNm+J0pTY5l8oJCQXfDgUd
-t5EJBvOO7SHsCwubYkyCNV0i1hmp1BIGhvzTVM0Slh0tzyrW8xmzHAg8sfxRYoy8cSZtrrVTHkmS
-LFf/WUFWFJW1wiWj/J+E3GlcQ2LXHTHzQNOirO9fp04AGoHpdg7+pNOxL7Ocqlomox7MfS+AbGWI
-1KrQ0xC1JBOs4+fq0B+1phsu0gCmLUK6NoWUWC9ML6mJou+9hcJOpIOd1fTJ0HyV8ATGPJr8ZHa2
-cBLzILt8kffd9FeCmcdgAG7BYDPkZyZgHyCq2b+5+Yv6xQJdBpaGXnukLIeHcSW2qg9U2gMGjGh8
-2M0xgjWe8VC6H5aLvcB89+w9oKQTPkcXiUAkiyX6azcw5OiUHXifa9zfED9zI71OX8jYfib+DFMz
-NYv8JDtvH9rcj7ywBSQ6YpG+fu+h4trOKnQIDbEYVC/FtmOGKoHqAgSrYVHPO1sPMIREe/EjSE7h
-VWS4Ui5Pft5sxHMv3QL3zWaYT57O+4jCNCfMuZJXBEz/2ABqW4ck/iKlI0G7sHdbe5Fsci8GaM2J
-b/3a46WMc9hAm7Uc8Fd/zZjrTnHnje8n6MYAX73iV0tF/T9IqRdp2bti7Lf502z4o389yDiZI1p5
-WTy0/eVlbtBXc63I+vHm71PqllebzJRZY2TpWUIunxUar4UDOwRS1itLyBbBfSVHI4mSMkVH1vmr
-L6b5TA9mJ58kwZ6OOIPkbtMBHwUYE2i83JL6UVkl/Am96EA4sAzC8QStWCXrsxVDR/mEhYAzfNov
-I9zFvv814ndqTGH0kgOJmTGCXYXt4F5bokmLXW8eSMOHQxFhYQF7PBRUq5ysmR9OG1VkOoWdHxp6
-sgY+RPSJC58Pg5+WoUJ+mczhLQDtCzIIljFib9q9RbFtQlH79dsGBnKIrLLnlfGxB/njzNT+2EE5
-Bg+D7/zM5NLCJQhe1ewlYQtwOaW0pu81ULuxc/SGO2HhPNMCJlMBg7k7p9by9xNuOFFYcC8zUos/
-YEyGT8gs9g9kulfhBjt2bh7VT9yp5ioo1zWeLVlyFwDQ6Q0TmCCqGDCLDPXkfnoXTPaDSgzOcMcK
-sT8PYvFjIn232xXr86P/tz8wAa/oAabVNp2Mz3qpAL/KrgDXCaB1k+FwyOL07xY0T9B6955MNVoC
-rQig9rxMuyA9WAl5/KWWE3eBkQqIlIS+McwkpKxBMopzIuZmYGq+r6R/z7IIRBQMEtkabqvEnB+i
-idzDpSVT/LSbw2f4Sfs0yQ/CbWHIbgZaIB8q7kMlN39dxAxkvKDGULf89LurdP6FTKoJZrsgNMXf
-ORx5kXbE9BZJ8N0MmYHaIEec2dt6ae9ZOWaOx0Yj8t3dGWVHyG6JSNHwOrAOmTVg3guiBz/Zal3d
-yW6Rgg87xVQtYSQBECMOb1agJ/MB5fLsvRi6u6bWqsY4cpbX/Q4uSeDAKOFcmhJIIc/PxeGlnyML
-1TPcdaZlDt7+T9j1Pl1IFy8VNGc5OZz0s7TOid1Nc4tnVTUDi237eD1HKkbKWYQcYbTqTzzKU6bd
-uNowrCVor3SaQbj+Wm/RRyIYg3MfeYUjPGPkp+DeH7ZACLNNrFLMaJsCXvzm4bl6slFFzSJ9Yq7s
-KoF/bjH5W5r3/p0aTuEHzBNmICfvuAeANzJk72ZepLpvOUzrVGBMd07c4jLfXliHopA+WejHrO54
-+1VhFwbcRr3i288ZdupXpaQ7iPrPAJg/6jo3bRFh0FVBQLrbgaBLaE370qaU3NMeXrE7m7WNYOVA
-KfqNyxQackwot0CebnIYgrpNTqDbK83fYRGUW4Wxs75QTt7WNeVy+azhU9WiM7xIDA7SQAO5/5KK
-BcQGzm5UnIWf6mRF53SLRo7yOo/M50Lkk+RZTHrOgc1Kx184oxTStkg6uK3kh4vQI2Vw1jwuZwV6
-LCvuLj7o0UFzLl9vm6apvbr/OJuzAXsszw6jON3xCQoTU79Crb4ibGLjRIs8KGfuC0O0htq91PRX
-XqePqStadgWpBG1JpDATGP5qTBdpifKjOl+2+GI6W3cD/1OrB7z/4QX1VWpiun1DOVW63TYDCEIO
-O7hCmWhoCrG63nJIjt34d5aMiQjpuYGr4b/K3aHmRMMMGW8xDTQlR7323ZVr1CA956C6T2qvZLlQ
-pDyfiz0MzBVKXpvnXvhvtMF81lKxqRr5CZYzvHoB3edFM+zjXTis0TgMxKLU51ndUkgbwBa5jwE3
-3m1FlDsX+3je7OdJ2oydBOMgGPDzNeKVrvcZ960+w+ih8gE62cfK3Um4yyIzCKAL4bcebEfplXB0
-lKcPk6d3zbrHxC38DMu6gq6I3Ou8FuVRdpV/hLC2jc0KA3kxcRAHiNTeQmWE/RfIIUfwTZQEhiGM
-ffS66Z4newWmDXMoUevVFqRWTTvPZ8RYnBnlW1ykfnaLMnPNDBdqI7ljqCAJz9ExPiDvSgSBTze9
-zM+AGtP7123OEN7vXRQYNjobStULWtf/Q2sa+WNlssB4cjM1W4FahPRiM7uF/NeRnEL9Yv9JP2Ro
-Oa7KeMtXbiJN8oAXIfoV20VxHvRnXpgJVV4XqC9P9yuEFVfdpQlGvAgr1iQ+06FAsHfy9cvtL+9e
-EzzJl67JWFKSuvzWe8vrtrfFpVPNbz3nviTo36JlaHMu0vJRdEWkSSlmpHLrJwjYVGPAPoSbFVy7
-tXefH6o6fvVWxpYawZ8Y5ktOk7mIcw5SVwWCmlPCiOATRMZsGyRGS8QJJBkPOzx5NMq0pC/Gpxhx
-PAvbidux7MlliwnnG4txwU/j/rezh39XdjAtI/C6phRvbZlLGGBmwICo244oXAlOUSNzisvsYnCx
-0ZHh9Q2gnKOOjcEiqB/HU6OXt7WOh1OAkjWI0ai72uoQ/540JyVXKXWIQGwqNY7aJTvd9D32Dnjv
-2YUYwChAygPnZn8BCUSK7ojQ7T0t8rUB4cYa882T7Tt8QAZcwAEbYL/QcdDyIym4sQUz/9sU0tWr
-h9afiNKTcdqV+nhyGSg8jaWN/s0SOmX9tkvHXsy3VRDWcAh8OC1bUcCvokRXlqLazdn0Fs5y2/o8
-lMR4YvQHgkK6VOW41yDWk1jaXluMiylcqxnLCHwxEHDh8jOls5oz7BizmHqnhP2pMWEMZAR3a4sy
-xwK/BEwTgTTEYW6Mj0xitnQT/6x1kiMr61O2U8ISesjAAw596fmvHfrxcErvtCHrMf5bAHOD+t9W
-8gz1oHKYhp8o+IPj5dnJUVD4YPPe1Ft68uE8jd1R/ctlQ+376wRNPdssZpA+aHVaV2bmtbjMzv31
-/6UuzLrQn5wGUJKQFhXD4nNm5rG2g9O0CIZU2jLNNcHnxyGVEoPsS0f4A04vq2AHeMdm6zQr+XSX
-7OzFwoRhY3l3bIHyOQZI23yenZ/JgeNrl+dL8+/syiRU86Yl8JCLjJCIJYWb05lxhBljIhwKRN29
-mgOHS6fPvObUwrnxHWuLo2aRXX0RWOxCVkB1r+DpBWBGtEoNNvNbokieln28jj20rPHJC6ZrTAYP
-JJWLfqIV4vd7a3eOhGjdDuOKO4ujg1ibW5EI+vOHgVbiBUQmq9h6SeP+OK2MJ6FczqufesnGWkDf
-/H7Xl4mDf6WdtgfZXq2X/Ks1v0Ubh2bVbYw+acK73AADcqrPCP4j7iLT1raYbmF1RHwi/HieKflg
-+YtXPs2ZaU6mqBA2aT/YCHavXi1v90FJN5K+Hi2PcpO9t0PJvp3s3DiMNFt2BxIIt8y0bbyFN+nj
-L2LxXxlepU1/91r5ExpCHHSUw3yAFrd26IBILQ8EJ9CMb7pecV7+itgyCJ+4l23ULJXJ/iW78uez
-4HKFp9X/4RYRJqOhw6V/rb+9FqigCvsfh7Y18kxxrUctEoVsxyJSkCFaBHHrKyVde1AslYNosr/B
-hLfX/zPpAYOfEoe8uhxnJsIOI51CStYK0hc4JpP8WVoHfMeG5zNoLi2WQT+GruJA8MkZTc+OU31N
-As8+Y506jeYdOhFWQHmtM3AjSpLeMN8QbeL/LUQVZx49kzMMipdHnrwjyLaF9xGbwDD68WE3Wl6G
-kpfM2qrzP9Pr+HRWiA4HT6G=
+<?php
+
+class ACMS_POST_Login_ResetPassword extends ACMS_POST_Login
+{
+    /**
+     * CSRF対策
+     *
+     * @var bool
+     */
+    protected $isCSRF = true;
+
+    /**
+     * 二重送信対策
+     *
+     * @var bool
+     */
+    protected $checkDoubleSubmit = true;
+
+    /**
+     * @return Field
+     */
+    public function post()
+    {
+        $User = $this->extract('user');
+        $Login = $this->extract('login');
+        $context = $this->validateResetUrl();
+        $user = $this->validate($User, $context);
+
+        if (!$this->Post->isValidAll()) {
+            return $this->Post;
+        }
+        $uid = $user['user_id'];
+        $this->updatePassword($uid, $User->get('pass'));
+        if (Tfa::isAvailableAccount($uid)) {
+            $Login->set('reset', 'success');
+            return $this->Post;
+        }
+
+        // ログイン日時更新
+        $sql = SQL::newUpdate('user');
+        $sql->addUpdate('user_pass_reset', '');
+        $sql->addUpdate('user_login_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
+        $sql->addWhereOpr('user_id', $uid);
+        DB::query($sql->get(dsn()), 'exec');
+
+        $sid = generateSession($user);
+        $url = acmsLink(array(
+            'bid' => BID,
+            'sid' => $sid,
+            'query' => array(),
+        ));
+        $this->redirect($url, $sid, true);
+    }
+
+    /**
+     * @param Field $User
+     * @param array $context
+     * @return array | boolean
+     */
+    protected function validate($User, $context)
+    {
+        $isOperable = true;
+        $User->reset();
+        $User->setMethod('pass', 'required');
+        $User->setMethod('pass', 'password');
+        $User->setMethod('retype_pass', 'equalTo', 'pass');
+        if (!isset($context['email']) || !isset($context['token'])) {
+            $isOperable = false;
+        }
+        $sql = SQL::newSelect('user');
+        $sql->addWhereOpr('user_status', 'open');
+        $sql->addWhereOpr('user_mail', $context['email']);
+        $sql->addWhereOpr('user_reset_password_token', $context['token']);
+        $user = DB::query($sql->get(dsn()), 'row');
+        if (empty($user)) {
+            $isOperable = false;
+        }
+        $User->setMethod('reset', 'isOperable', !SUID && $isOperable);
+        $User->validate(new ACMS_Validator());
+
+        return $user;
+    }
+
+    /**
+     * @return bool | int
+     */
+    protected function validateResetUrl()
+    {
+        $key = $this->Get->get('key');
+        $salt = $this->Get->get('salt');
+        $context = $this->Get->get('context');
+
+        try {
+            $context = Login::validateTimedLinkParams($key, $salt, $context);
+            return $context;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param $uid
+     * @param $newPassword
+     */
+    protected function updatePassword($uid, $newPassword)
+    {
+        $sql = SQL::newUpdate('user');
+        $sql->addUpdate('user_pass', acmsUserPasswordHash($newPassword));
+        $sql->addUpdate('user_pass_generation', PASSWORD_ALGORITHM_GENERATION);
+        $sql->addUpdate('user_reset_password_token', '');
+        $sql->addWhereOpr('user_id', $uid);
+        DB::query($sql->get(dsn()), 'exec');
+        ACMS_RAM::user($uid, null);
+    }
+}

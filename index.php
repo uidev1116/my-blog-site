@@ -4,6 +4,21 @@ define('REQUEST_TIME', time());
 define('START_TIME', microtime(true));
 define('ACTIVATION_ENDPOINT', 'https://mypage.a-blogcms.jp/api/activation');
 
+require_once 'php/vendor/autoload.php';
+
+/**
+ * .env
+ */
+if (preg_match('@(.*?)([^/]+)$@', $_SERVER['SCRIPT_FILENAME'], $match)) {
+    $scriptDir = $match[1];
+    if (file_exists($scriptDir . '.env')) {
+        Dotenv\Dotenv::createImmutable($scriptDir)->load();
+    }
+}
+function env($key, $default = '') {
+    return isset($_ENV[$key]) ? $_ENV[$key] : $default;
+}
+
 /**
  * config.server.php
  */
@@ -23,9 +38,8 @@ if (file_exists('config.user.php')) {
 setPath($_SERVER['SCRIPT_FILENAME']);
 
 /**
- * autoload
+ * custom autoload
  */
-require_once LIB_DIR . 'vendor/autoload.php';
 spl_autoload_register('autoload');
 
 try {
@@ -52,8 +66,6 @@ try {
     if ( is_file(SCRIPT_DIR . 'setup/index.php') ) {
         die(header('Location: ' . BASE_URL . 'setup/index.php'));
     }
-
-    libxml_disable_entity_loader(true);
     require_once LIB_DIR . 'main.php';
 
     $acms_application->checkException();

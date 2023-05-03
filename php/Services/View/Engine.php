@@ -4,7 +4,7 @@ namespace Acms\Services\View;
 
 class Engine implements Contracts\ViewInterface
 {
-    /** 
+    /**
      * @var array
      */
     protected $_tokens = array();
@@ -23,22 +23,22 @@ class Engine implements Contracts\ViewInterface
      * @var array
      */
     protected $_blockIdTokenBegin = array();
-    
+
     /**
      * @var array
      */
     protected $_blockIdTokenEnd = array();
-    
+
     /**
      * @var array
      */
     protected $_blockTokenIdBegin = array();
-    
+
     /**
      * @var array
      */
     protected $_blockTokenIdEnd = array();
-    
+
     /**
      * @var array
      */
@@ -48,7 +48,7 @@ class Engine implements Contracts\ViewInterface
      * @var array
      */
     protected $_blockEmptyToken = array();
-    
+
     /**
      * @var array
      */
@@ -58,22 +58,22 @@ class Engine implements Contracts\ViewInterface
      * @var array
      */
     protected $_varIdLabel = array();
-    
+
     /**
      * @var array
      */
     protected $_varLabelId = array();
-    
+
     /**
      * @var array
      */
     protected $_varIdOption = array();
-    
+
     /**
      * @var array
      */
     protected $_varIdToken = array();
-    
+
     /**
      * @var array
      */

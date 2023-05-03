@@ -10,9 +10,9 @@
 <!-- BEGIN_MODULE Admin_Role_Index -->
 
 <!-- BEGIN refresh -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ロール一覧を更新しました。<!--/T--></p><!-- END refresh --><!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ロールがありません。<!--/T--></p><!-- END index#notFound -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ロール一覧を更新しました。<!--/T--></p><!-- END refresh -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
 	<form action="" method="post" class="acms-admin-form">
 		<div class="acms-admin-filter-body">
@@ -34,17 +34,39 @@
 		</div>
 	</form>
 </div>
+<!-- END_IF -->
+
+
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->ロールがありません<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->機能を使用するには新しくロールを作成してください。<br>（作成するには管理者以上の権限が必要です）<!--/T--></p>
+  <div class="acms-admin-announce-action">
+      <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+      <form action="" method="post">
+        <input type="hidden" name="bid" value="1" />
+        <input type="hidden" name="admin" value="role_edit" />
+        <input type="hidden" name="edit" value="insert" />
+        <input type="hidden" name="query[]" value="edit" />
+        <input type="submit" name="ACMS_POST_2GET" value="<!--T-->ロールの作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+      </form>
+      <!-- END_MODULE Touch_SessionWithAdministration -->
+  </div>
+</div>
+<!-- END index#notFound -->
+
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 
 <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
 <form action="" method="post" class="acms-admin-float-right acms-admin-float-none-sp">
-	<input type="hidden" name="bid" value="1" />
-	<input type="hidden" name="admin" value="role_edit" />
-	<input type="hidden" name="edit" value="insert" />
-	<input type="hidden" name="query[]" value="edit" />
-	<input type="submit" name="ACMS_POST_2GET" value="<!--T-->ロールの作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+  <input type="hidden" name="bid" value="1" />
+  <input type="hidden" name="admin" value="role_edit" />
+  <input type="hidden" name="edit" value="insert" />
+  <input type="hidden" name="query[]" value="edit" />
+  <input type="submit" name="ACMS_POST_2GET" value="<!--T-->ロールの作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
 </form>
 <!-- END_MODULE Touch_SessionWithAdministration -->
-
 
 <!-- BEGIN index -->
 <form method="post" action="" id="sortableForm" class="acms-admin-form">
@@ -77,5 +99,5 @@
 		</table>
 	</div>
 </form><!-- END index -->
-
+<!-- END_IF -->
 <!-- END_MODULE Admin_Role_Index -->

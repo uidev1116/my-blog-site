@@ -1,53 +1,57 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-agstLA199ooczxt8whRbloesohSa+vQ2
+<?php
+
+class ACMS_POST_Search_GlobalVars extends ACMS_POST
+{
+    var $isCacheDelete = false;
+
+    function post()
+    {
+        try {
+            if (!sessionWithAdministration()) {
+                throw new \RuntimeException('Permission denied.');
+            }
+            $tpl = Storage::get(SCRIPT_DIR . THEMES_DIR . 'system/acms-code/global-vars.json');
+            if (empty($tpl)) {
+                throw new \RuntimeException('Failed to get template.');
+            }
+            if ( defined('I18N') ) {
+                $tpl = i18n($tpl);
+            } else {
+                $tpl = preg_replace(
+                    '/<!--[\t 　]*(T|\/T|TRANS|\/TRANS)([\t 　]*)([^>]*?)-->/i',
+                    '',
+                    $tpl
+                );
+            }
+            $json = setGlobalVars($tpl);
+
+            if ( HOOK_ENABLE ) {
+                $obj = json_decode($json);
+                $Hook = ACMS_Hook::singleton();
+                $exVars = new Field();
+                $Hook->call('extendsGlobalVars', array(& $exVars));
+
+                if ( is_array($exVars->_aryField) ) {
+                    foreach ( $exVars->_aryField as $key => $val ) {
+                        $varname = '%{'.$key.'}';
+                        if (isset($val[0])) {
+                            array_unshift($obj->items, array(
+                                "bid" => BID,
+                                "title" => $varname,
+                                "subtitle" => "custom vars",
+                                "url" => $val[0],
+                            ));
+                        }
+                    }
+                }
+                $json = json_encode($obj);
+            }
+        } catch ( \Exception $e ) {
+            $json = '{"title": "<!--T-->グローバル変数<!--/T-->","enTitle": "Global vars","items": []}';
+        }
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo($json);
+        die();
+    }
+}

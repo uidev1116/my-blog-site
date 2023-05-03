@@ -33,67 +33,6 @@
 	<h3 class="acms-admin-admin-title2"><!--T-->基本<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
-			<th><!--T-->キャッシュ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->キャッシュ機能の設定状態です。チェックが外された場合、キャッシュ機能は動作しません。<!--/T-->"></i></th>
-			<td>
-				<input type="hidden" name="cache" value="off" />
-				<div class="acms-admin-form-checkbox">
-					<input type="checkbox" name="cache" value="on"{cache:checked#on} id="input-checkbox-cache" />
-					<label for="input-checkbox-cache"><i class="acms-admin-ico-checkbox"></i><!--T-->有効<!--/T--></label>
-				</div>
-				<input type="hidden" name="config[]" value="cache" />
-			</td>
-		</tr><!-- BEGIN_MODULE Touch_RootBlog -->
-		<tr>
-			<th><!--T-->キャッシュ自動生成<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->キャッシュクリア後に自動的にキャッシュ生成リストにあるページをキャッシュします。<!--/T-->"></i></th>
-			<td>
-				<input type="hidden" name="cache_auto_generate" value="off" />
-				<div class="acms-admin-form-checkbox">
-					<input type="checkbox" name="cache_auto_generate" value="on"{cache_auto_generate:checked#on} id="input-checkbox-cache-auto-generate" />
-					<label for="input-checkbox-cache-auto-generate"><i class="acms-admin-ico-checkbox"></i><!--T-->有効<!--/T--></label>
-				</div>
-				<input type="hidden" name="config[]" value="cache_auto_generate" />
-			</td>
-		</tr><!-- END_MODULE Touch_RootBlog -->
-		<tr>
-			<th><!--T-->キャッシュ有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->キャッシュが有効な時間です。この時間内で同じデータに複数回アクセスがあった場合、2回目以降はキャッシュファイルが表示されます。<!--/T-->"></i></th>
-			<td>
-				<input class="acms-admin-form-width-mini" type="text" name="cache_expire" value="{cache_expire}" size="8" /> <!--T-->秒<!--/T-->
-				<input type="hidden" name="config[]" value="cache_expire" />
-				<input type="hidden" name="cache_expire:validator#digits" id="validator-cache_expire-digits" />
-				<div role="alert" aria-live="assertive">
-					<div data-validator-label="validator-cache_expire-digits" class="validator-result-{cache_expire:validator#digits}">
-						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
-					</div>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<th><!--T-->キャッシュの感度<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックすると、下位または上位ブログが更新された場合にもキャッシュのリフレッシュ（現在存在するキャッシュの有効期限を終了）を行うようになります。<!--/T-->"></i></th>
-			<td>
-				<input type="hidden" name="cache_sensitivity" value="low" />
-				<div class="acms-admin-form-checkbox">
-					<input type="checkbox" name="cache_sensitivity" value="high"{cache_sensitivity:checked#high} id="input-checkbox-cache_sensitivity" />
-					<label for="input-checkbox-cache_sensitivity">
-						<i class="acms-admin-ico-checkbox"></i><!--T-->祖先ブログまたは子孫ブログが更新されたときにもキャッシュをリフレッシュする<!--/T-->
-					</label>
-				</div>
-				<input type="hidden" name="config[]" value="cache_sensitivity" />
-			</td>
-		</tr>
-		<tr>
-			<th><!--T-->クライアントのキャッシュ有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->サイトを閲覧している端末のクライアント（ブラウザ）のキャッシュの有効時間です。この時間内はクライアント側のキャッシュが使用されサーバにアクセスしません。そのためページが更新された場合にも反映されないことがあります。ブラウザの再読込ボタンを押したり、キャッシュを消去しないとページが切り替わらないことがあります。<!--/T-->"></i></th>
-			<td>
-				<input class="acms-admin-form-width-mini" type="text" name="cache_expire_client" value="{cache_expire_client}" size="4" /> <!--T-->秒<!--/T-->
-				<input type="hidden" name="config[]" value="cache_expire_client" />
-				<input type="hidden" name="cache_expire_client:validator#digits" id="validator-cache_expire_client-digits" />
-				<div role="alert" aria-live="assertive">
-					<div data-validator-label="validator-cache_expire_client-digits" class="validator-result-{cache_expire_client:validator#digits}">
-						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
-					</div>
-				</div>
-			</td>
-		</tr>
-		<tr>
 			<th><!--T-->アクセスログ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->アクセスに関するログを記録してデータベースに記録します。取得しないという選択肢もあります。保存期間を越えたログは自動的に削除されます。また、ここで取得したログは「その他管理」内の「チェックリスト」からCSVデータとしてダウンロードできます。<!--/T-->"></i></th>
 			<td>
 				<select type="text" name="log_access" class="js-select2">
@@ -160,7 +99,22 @@
 				</div>
 				<input type="hidden" name="config[]" value="manage_approval" />
 			</td>
-		</tr><!-- BEGIN_IF [%{BID}/neq/1] -->
+		</tr>
+    <tr>
+			<th><!--T-->承認機能有効時の編集権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると承認機能有効時に投稿者は自身が投稿した記事のみを編集できます。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="approval_contributor_edit_auth" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="approval_contributor_edit_auth" value="on"{approval_contributor_edit_auth:checked#on} id="input-checkbox-approval_contributor_edit_auth" />
+					<label for="input-checkbox-approval_contributor_edit_auth">
+						<i class="acms-admin-ico-checkbox"></i>
+						<!--T-->投稿者は自身が投稿した記事のみ編集できる<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="approval_contributor_edit_auth" />
+			</td>
+		</tr>
+    <!-- BEGIN_IF [%{BID}/neq/1] -->
 		<tr>
 			<th><!--T-->承認ブログ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると祖先ブログの管理者・編集者でも承認できるようになります。<!--/T-->"></i></th>
 			<td>
@@ -214,7 +168,7 @@
 		<tr>
 			<th><!--T-->プレビュー共有の有効期限<!--/T--></th>
 			<td>
-				<input type="text" name="url_preview_expire" value="{url_preview_expire}" size="5" /> <!--T-->時間<!--/T-->（<!--T-->プロ版以上<!--/T-->）
+				<input type="text" name="url_preview_expire" value="{url_preview_expire}" size="5" /> <!--T-->時間<!--/T-->
 				<input type="hidden" name="config[]" value="url_preview_expire" />
 				<input type="hidden" name="url_preview_expire:validator#digits" id="validator-url_preview_expire-digits" />
 				<div role="alert" aria-live="assertive">

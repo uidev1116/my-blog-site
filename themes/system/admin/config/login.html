@@ -79,13 +79,13 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->編集、管理ページ以外の表示<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示するようになります。<!--/T-->"></i></th>
+			<th><!--T-->編集、管理ページ以外の表示<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条件で表示するようになります。<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="subscriber_view_mode" value="off" />
 				<div class="acms-admin-form-checkbox">
 					<input type="checkbox" name="subscriber_view_mode" value="on"{subscriber_view_mode:checked#on} id="input-checkbox-subscriber_view_mode" />
 					<label for="input-checkbox-subscriber_view_mode">
-						<i class="acms-admin-ico-checkbox"></i><!--T-->投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示する<!--/T-->
+						<i class="acms-admin-ico-checkbox"></i><!--T-->投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条件で表示する<!--/T-->
 					</label>
 				</div>
 				<input type="hidden" name="config[]" value="subscriber_view_mode" />
@@ -96,16 +96,10 @@
 	<h3 class="acms-admin-admin-title2"><!--T-->セキュリティ<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
-			<th><!--T-->ログインクッキー有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン画面で「パスワードを保存」のチェックボックスにチェックした場合、この有効時間内はログイン状態を保持できます。<!--/T-->"></i></th>
+			<th><!--T-->ログインクッキー有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->この有効時間内はログイン状態を保持できます。<!--/T-->"></i></th>
 			<td>
-				<input class="acms-admin-form-width-mini" type="text" name="login_cookie_lifetime" value="{login_cookie_lifetime}" size="8" /> <!--T-->秒<!--/T-->
-				<input type="hidden" name="config[]" value="login_cookie_lifetime" />
-				<input type="hidden" name="login_cookie_lifetime:validator#digits" id="validator-login_cookie_lifetime-digits" />
-				<div role="alert" aria-live="assertive">
-					<div data-validator-label="validator-login_cookie_lifetime-digits" class="validator-result-{login_cookie_lifetime:validator#digits}">
-						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
-					</div>
-				</div>
+				{session_cookie_lifetime} <!--T-->秒<!--/T-->
+				<!--T-->（「.env」ファイルの「SESSION_COOKIE_LIFETIME」に秒数を設定することで変更できます。）<!--/T-->
 			</td>
 		</tr>
 		<tr>
@@ -268,10 +262,10 @@
 		</tr>
 	</table>
 
-	<h3 class="acms-admin-admin-title2"><!--T-->読者機能<!--/T--></h3>
+	<h3 class="acms-admin-admin-title2"><!--T-->読者登録機能<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
-			<th><!--T-->ユーザー登録の外部申請<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると読者登録の受付ができるようになります。ログインページ内に読者登録ページへのリンクが表示されます。<!--/T-->"></i></th>
+			<th><!--T-->ユーザー登録の外部申請<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、外部からのユーザー登録申請を有効にします。ログインページ内に新規ユーザー登録ページへのリンクが表示されます。<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="subscribe" value="off" />
 				<div class="acms-admin-form-checkbox">
@@ -282,7 +276,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->メールアドレスの有効性確認<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、読者登録フォームに入力された内容で、即座に有効なユーザーが作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに記載されているパスワードを使って最初にログインした時点で有効なユーザーとして登録されます。<!--/T-->"></i></th>
+			<th><!--T-->メールアドレスの有効性確認<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ユーザー登録フォームに入力された内容で、即座に有効なユーザーが作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに記載されているパスワードを使って最初にログインした時点で有効なユーザーとして登録します。<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="subscribe_activation" value="on" />
 				<div class="acms-admin-form-checkbox">
@@ -293,7 +287,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->確認メールの有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->読者登録後の有効リンク有効時間の設定をします。<!--/T-->"></i></th>
+			<th><!--T-->確認メールの有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請からのユーザー登録後の有効リンク有効時間の設定をします。<!--/T-->"></i></th>
 			<td>
 				<input type="text" name="user_activation_url_lifetime" value="{user_activation_url_lifetime}" size="4" /> <!--T-->分間<!--/T-->
 				<input type="hidden" name="config[]" value="user_activation_url_lifetime" />
@@ -311,13 +305,13 @@
 				<input type="hidden" name="subscribe_login_anywhere" value="off" />
 				<div class="acms-admin-form-checkbox">
 					<input type="checkbox" name="subscribe_login_anywhere" value="on"{subscribe_login_anywhere:checked#on} id="input-checkbox-subscribe_login_anywhere" />
-					<label for="input-checkbox-subscribe_login_anywhere"><i class="acms-admin-ico-checkbox"></i><!--T-->購読者を「どこでもログイン」を有効で作成する<!--/T--></label>
+					<label for="input-checkbox-subscribe_login_anywhere"><i class="acms-admin-ico-checkbox"></i><!--T-->読者を「どこでもログイン」を有効で作成する<!--/T--></label>
 				</div>
 				<input type="hidden" name="config[]" value="subscribe_login_anywhere" />
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請で登録されるユーザーの権限を設定します。<!--/T-->"></i></th>
+			<th><!--T-->権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請から登録を行うユーザーの権限を設定します。<!--/T-->"></i></th>
 			<td>
 				<select name="subscribe_auth" class="js-select2">
 					<option value="subscriber"{subscribe_auth:selected#subscriber}><!--T-->読者<!--/T--></option>
@@ -329,7 +323,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->ステータス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請で登録されるユーザーのステータスを設定します。<!--/T-->"></i></th>
+			<th><!--T-->ステータス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->外部申請から登録を行うユーザーのステータスを設定します。<!--/T-->"></i></th>
 			<td>
 				<select name="subscribe_init_status" class="js-select2">
 					<option value="open"{subscribe_init_status:selected#open}><!--T-->有効<!--/T--></option>

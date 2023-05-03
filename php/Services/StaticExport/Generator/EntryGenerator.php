@@ -65,7 +65,10 @@ class EntryGenerator extends Generator
         $this->logger->start($this->getName(), $this->getTasks());
 
         if ($this->withArchive) {
-            $this->copyArchiveEngine = new CopyEntryArchive($this->destination->getDestinationPath());
+            $this->copyArchiveEngine = new CopyEntryArchive(array(
+                $this->destination->getDestinationPath(),
+                $this->destination->getDestinationDocumentRoot() . $this->destination->getDestinationOffsetDir()
+            ));
         }
 
         foreach ($this->targetEntries as $eid) {

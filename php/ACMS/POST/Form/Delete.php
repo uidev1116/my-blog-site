@@ -1,51 +1,33 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Form_Delete extends ACMS_POST_Form
+{
+    function post()
+    {
+        $this->Post->setMethod('form', 'fmidIsNull', ($fmid = intval($this->Get->get('fmid'))));
+        if ( roleAvailableUser() ) {
+            $this->Post->setMethod('form', 'operative', roleAuthorization('form_edit', BID));
+        } else {
+            $this->Post->setMethod('form', 'operative', sessionWithFormAdministration());
+        }
+        $this->Post->validate();
+
+        if ( $this->Post->isValidAll() ) {
+            $DB     = DB::singleton(dsn());
+            $SQL    = SQL::newDelete('form');
+            $SQL->addWhereOpr('form_id', $fmid);
+            $SQL->addWhereOpr('form_blog_id', BID);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            $DB     = DB::singleton(dsn());
+            $SQL    = SQL::newDelete('log_form');
+            $SQL->addWhereOpr('log_form_form_id', $fmid);
+            $SQL->addWhereOpr('log_form_blog_id', BID);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            $this->Post->set('edit', 'delete');
+        }
+
+        return $this->Post;
+    }
+}

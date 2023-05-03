@@ -27,7 +27,7 @@ export default (item) => {
   });
 
   Leaflet.tileLayer(ACMS.Config.openStreetMapTileLayer, {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
   if (multiple && markers) {
@@ -40,7 +40,7 @@ export default (item) => {
       const latlng = point.split(',');
       if (latlng.length === 2) {
         const view = Leaflet.marker([latlng[0].trim(), latlng[1].trim()], {
-          draggable: false
+          draggable: false,
         }).addTo(map);
         if (panels[i]) {
           view.bindPopup(panels[i]);
@@ -52,7 +52,7 @@ export default (item) => {
      * Single marker
      */
     const view = Leaflet.marker(map.getCenter(), {
-      draggable: false
+      draggable: false,
     }).addTo(map);
     if (msg) {
       view.bindPopup(msg);

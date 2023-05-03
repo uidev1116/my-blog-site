@@ -31,7 +31,7 @@ interface Base
      * @param string $url
      * @return string
      */
-    public function getShareUrl($url);
+    public function getShareUrl($url, $lifetime = false);
 
     /**
      * 共有URLで実際に表示するiFrameのURL

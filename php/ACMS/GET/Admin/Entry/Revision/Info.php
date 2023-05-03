@@ -43,7 +43,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_rev_id', RVID);
         $SQL->addWhereOpr('entry_blog_id', BID);
-        
+
         if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
             $auid   = $row['entry_rev_user_id'];
             $author = ACMS_RAM::user($auid);
@@ -54,7 +54,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry
                     $status = '承認中';
                     break;
                 case 'reject':
-                    $status = '承認却下';
+                    $status = '差し戻し';
                     break;
                 case 'approved':
                     $status = '承認済み';

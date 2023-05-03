@@ -4,9 +4,9 @@ namespace Acms\Services\Blog;
 
 use SQL;
 use DB;
-use Symfony\Component\Yaml\Yaml;
+use Acms\Services\Contracts\Export as ExportBase;
 
-class Export
+class Export extends ExportBase
 {
     /**
      * @var array
@@ -44,7 +44,6 @@ class Export
 
     public function export($fp, $bid)
     {
-        $db = DB::singleton(dsn());
         $queryList = array();
         foreach ($this->tables as $table) {
             $sql = SQL::newSelect($table);
@@ -56,44 +55,7 @@ class Export
             $q = $sql->get(dsn());
             $queryList[$table] = $q;
         }
-        foreach ($queryList as $table => $q) {
-            $db->query($q, 'fetch', false);
-            fwrite($fp, "$table:\n");
-            while ($row = $db->fetch($q)) {
-                $this->fix($row, $table);
-                $record = Yaml::dump(array('dummy' => $row), 1);
-                if ($record) {
-                    $record = $this->fixYaml($record);
-                    fwrite($fp, str_replace('dummy:', '    -', $record));
-                }
-            }
-        }
-    }
-
-    /**
-     * set export tables
-     *
-     * @param array $tables
-     *
-     * @return void
-     *
-     * @throws \RuntimeException
-     */
-    public function setTables($tables = array())
-    {
-        if (!is_array($tables)) {
-            throw new \RuntimeException('Not specified tables.');
-        }
-        $this->tables = $tables;
-    }
-
-    /**
-     * @param string $txt
-     * @return string
-     */
-    private function fixYaml($txt)
-    {
-        return preg_replace('@(001)/(.*)\.([^\.]{2,6})@ui', '001/$2.$3', $txt, -1);
+        $this->dumpYaml($fp, $queryList);
     }
 
     /**
@@ -104,10 +66,11 @@ class Export
      *
      * @return void
      */
-    private function fix(& $record, $table)
+    protected function fix(& $record, $table)
     {
-        if ($table === 'column') {
-            $this->fixHalfSpace($record);
+        if ($table === 'column' && 'text' === $record['column_type']) {
+            $txt = $record['column_field_1'];
+            $record['column_field_1'] = $this->fixNextLine($txt);
         }
         if ($table === 'schedule') {
             $this->fixSchedule($record);
@@ -115,28 +78,6 @@ class Export
         if ($table === 'fulltext') {
             $this->fixFulltext($record);
         }
-    }
-
-    /**
-     * escape single byte spaces of row's header
-     *
-     * @param $record
-     *
-     * @return void
-     */
-    private function fixHalfSpace(& $record)
-    {
-        if ('text' !== $record['column_type']) {
-            return;
-        }
-        $txt = $record['column_field_1'];
-        /*
-         * carrige returns \r and \r\n
-         * Paragraph Separator (U+2028)
-         * Line Separator (U+2029)
-         * Next Line (NEL) (U+0085)
-         */
-        $record['column_field_1'] = preg_replace('/(\xe2\x80[\xa8-\xa9]|\xc2\x85|\r\n|\r)/', "\n", $txt);
     }
 
     /**
@@ -150,7 +91,7 @@ class Export
             $record = false;
         }
         $txt = $record['fulltext_value'];
-        $record['fulltext_value'] = preg_replace('/(\xe2\x80[\xa8-\xa9]|\xc2\x85|\r\n|\r)/', "\n", $txt);
+        $record['fulltext_value'] = $this->fixNextLine($txt);
     }
 
     /**

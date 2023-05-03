@@ -57,6 +57,17 @@
 			<input type="hidden" name="config[]" value="entry_headline_order_field_name" />
 		</td>
 	</tr>
+  <tr>
+    <th><!--T-->絞り込み時の表示順<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->表示順が「表示順（昇順 or 降順）」の場合、チェックをつけると、カテゴリーやユーザーで絞り込み時に、絞り込み時の表示順を使用しなくなります。<!--/T-->"></i></th>
+    <td>
+      <input type="hidden" name="entry_headline_no_narrow_down_sort" value="off" />
+			<div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="entry_headline_no_narrow_down_sort" value="on"{entry_headline_no_narrow_down_sort:checked#on} id="input-checkbox-entry_headline_no_narrow_down_sort" />
+				<label for="input-checkbox-entry_headline_no_narrow_down_sort"><i class="acms-admin-ico-checkbox"></i><!--T-->カテゴリー、ユーザー絞り込み時にも、絞り込み時の表示順を使用しない<!--/T--></label>
+			</div>
+			<input type="hidden" name="config[]" value="entry_headline_no_narrow_down_sort" />
+    </td>
+  </tr>
 	<tr>
 		<th><!--T-->表示件数<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->一度に表示される件数です。<!--/T-->"></i></th>
 		<td>

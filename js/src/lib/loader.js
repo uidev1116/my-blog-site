@@ -1,5 +1,5 @@
-import AcmsSyncLoader from './sync-loader.js';
-import { cacheBusting } from '../config.js';
+import AcmsSyncLoader from './sync-loader';
+import { cacheBusting } from '../config';
 
 /**
  * 名前からオブジェクトへの参照を取得する
@@ -30,7 +30,7 @@ const getObjectPointerFromName = (name) => {
   return {
     current: objPointer,
     token,
-    parent: parentPointer
+    parent: parentPointer,
   };
 };
 
@@ -41,11 +41,12 @@ const getObjectPointerFromName = (name) => {
  * @param {String}   [charset]  文字コード指定
  * @param {Function} [pre]      ロード前実行
  * @param {Function} [post]     ロード後実行
+ * @param {Function} [loaded]
  */
 const loadClosureFactory = (url, charset, pre, post, loaded) => {
-  url = (typeof (url) === 'string') ? url : '';
+  url = typeof url === 'string' ? url : '';
   url += cacheBusting;
-  charset = (typeof (charset) === 'string') ? charset : '';
+  charset = typeof charset === 'string' ? charset : '';
   pre = $.isFunction(pre) ? pre : function () {};
   post = $.isFunction(post) ? post : function () {};
   loaded = $.isFunction(loaded) ? loaded : function () {};
@@ -57,7 +58,7 @@ const loadClosureFactory = (url, charset, pre, post, loaded) => {
     if (!$.isFunction(callSpecifiedFunction)) {
       callSpecifiedFunction = function () {};
     }
-    const self = arguments.callee;
+    const self = arguments.callee; // eslint-disable-line no-restricted-properties
 
     if (!self.executed) {
       self.executed = true;
@@ -69,12 +70,12 @@ const loadClosureFactory = (url, charset, pre, post, loaded) => {
         .next(loaded)
         .next(() => {
           while (self.stack.length) {
-            (self.stack.shift())();
+            self.stack.shift()();
           }
         })
         .load(() => {
           post();
-          ACMS.dispatchEvent(`${url.match('.+/(.+?)\.[a-z]+([\?#;].*)?$')[1]}Ready`);
+          ACMS.dispatchEvent(`${url.match('.+/(.+?).[a-z]+([?#;].*)?$')[1]}Ready`);
         });
     } else {
       self.stack.push(callSpecifiedFunction);
@@ -93,7 +94,7 @@ const loadClosureFactory = (url, charset, pre, post, loaded) => {
 const assignLoadClosure = (name, loadClosure, del) => {
   const pointerInfo = getObjectPointerFromName(name);
   const parentPointer = pointerInfo.parent;
-  const token = pointerInfo.token;
+  const { token } = pointerInfo;
 
   //-------
   // proxy
@@ -103,7 +104,7 @@ const assignLoadClosure = (name, loadClosure, del) => {
   // ACMS.Dispatch['Edit'] = function() {...};
   parentPointer[token] = function (...args) {
     const scope = this;
-    const placeholder = arguments.callee;
+    const placeholder = arguments.callee; // eslint-disable-line no-restricted-properties
 
     if (del) {
       global[name.replace(/\..*$/, '')] = undefined;
@@ -121,7 +122,7 @@ const assignLoadClosure = (name, loadClosure, del) => {
         return false;
       }
 
-      if (typeof (func) !== 'function') {
+      if (typeof func !== 'function') {
         return false;
       }
       if (func === placeholder) {
@@ -150,12 +151,12 @@ const assignLoadClosure = (name, loadClosure, del) => {
 /**
  * cssのロード
  *
- * @param url
- * @param charset
- * @param prepend
- * @returns {boolean}
+ * @param {string} url
+ * @param {?string} charset
+ * @param {?boolean} prepend
+ * @return {boolean}
  */
-const loadClosureFactoryCss = (url, charset, prepend) => {
+const loadClosureFactoryCss = (url, charset = '', prepend = false) => {
   if (!url) {
     return false;
   }

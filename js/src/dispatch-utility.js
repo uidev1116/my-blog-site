@@ -4,12 +4,15 @@ export default () => {
   //------------------
   // Dispatch.Utility
   ACMS.Dispatch.Utility = function (context) {
-    const Config = ACMS.Config;
+    const { Config } = ACMS;
 
     //-----------
     // fix align
     if (Config.unitFixAlign !== 'off') {
-      $('div[class^=column-image], div[class^=column-file], div[class^=column-eximage],  div[class^=column-media]', context).each(function () {
+      $(
+        'div[class^=column-image], div[class^=column-file], div[class^=column-eximage],  div[class^=column-media]',
+        context,
+      ).each(function () {
         const $img = $('img', this);
         let width = $img.width();
         const offset = $img.outerWidth() - width;
@@ -33,27 +36,25 @@ export default () => {
           $(this).width(width);
         }
       });
-      $('[class^=column-map], [class^=column-yolp]', context).each(() => {
-        // let region = '';
-        // if (ACMS.Config.s2dRegion) {
-        //   region = `&region=${ACMS.Config.s2dRegion}`;
-        // }
-
+      $('[class^=column-map]', context).each(() => {
         ACMS.Library.googleLoadProxy('maps', '3', {
           callback() {
             const style = $(this).attr('style');
             if (style === undefined && !$(this).hasClass('js_notStyle')) {
-              $(this).width(($(':first-child', this).width()));
+              $(this).width($(':first-child', this).width());
             }
           },
           options: {
-            region: ACMS.Config.s2dRegion
-          }
+            region: ACMS.Config.s2dRegion,
+          },
         });
       });
 
       if (ACMS.Dispatch.Utility.browser_ie6() && !$.boxModel) {
-        $('.column-image-center, .column-file-center, .column-youtube-center, .column-eximage-center, .column-media-center', context).css('width', '100%');
+        $(
+          '.column-image-center, .column-file-center, .column-youtube-center, .column-eximage-center, .column-media-center',
+          context,
+        ).css('width', '100%');
         $('.column-map-center', context).wrap('<div style="text-align:center; width:100%"></div>');
       }
     }
@@ -63,41 +64,40 @@ export default () => {
     if (Config.unitGroupAlign) {
       let timer;
 
-      $(window).resize(() => {
-        const $unitGroup = $(Config.unitGroupAlignMark);
-        const containerWidth = $unitGroup.parent().width();
-        let currentWidth = 0;
-        let count = 0;
+      $(window)
+        .resize(() => {
+          const $unitGroup = $(Config.unitGroupAlignMark);
+          const containerWidth = $unitGroup.parent().width();
+          let currentWidth = 0;
+          let count = 0;
 
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          _.each($unitGroup, (v) => {
-            const $unit = $(v);
-            const unitW = $unit.outerWidth(true) - 1;
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            _.each($unitGroup, (v) => {
+              const $unit = $(v);
+              const unitW = $unit.outerWidth(true) - 1;
 
-            $unit.css({
-              clear: 'none'
-            });
-            if (!$unit.prev().hasClass(Config.unitGroupAlignMark.substring(1))) {
-              currentWidth = 0;
-              count = 0;
-            }
-            if (1
-              && count > 0
-              && ((containerWidth - (currentWidth + unitW)) < -1)
-            ) {
               $unit.css({
-                clear: 'both'
+                clear: 'none',
               });
-              currentWidth = unitW;
-              count = 1;
-            } else {
-              currentWidth += unitW;
-              count++;
-            }
-          });
-        }, Config.unitGroupAlignInterval);
-      }).trigger('resize');
+              if (!$unit.prev().hasClass(Config.unitGroupAlignMark.substring(1))) {
+                currentWidth = 0;
+                count = 0;
+              }
+              if (1 && count > 0 && containerWidth - (currentWidth + unitW) < -1) {
+                $unit.css({
+                  clear: 'both',
+                });
+                currentWidth = unitW;
+                count = 1;
+              } else {
+                currentWidth += unitW;
+                count++;
+              }
+            });
+          }, Config.unitGroupAlignInterval);
+        })
+        .trigger('resize');
     }
 
     //------------
@@ -109,12 +109,20 @@ export default () => {
       }
       $.each(Config.keyword.split(' '), function (j) {
         const word = this;
-        $(Config.searchKeywordHighlightMark, context).find('*').addBack().contents()
+        $(Config.searchKeywordHighlightMark, context)
+          .find('*')
+          .addBack()
+          .contents()
           .filter(function () { // eslint-disable-line array-callback-return
             if (this.nodeType === 3) {
               const elm = this;
               let text = elm.nodeValue;
-              text = text.replace(new RegExp(`(${word})`, 'ig'), `<${searchKeywordTag} class="${Config.searchKeywordMatchClass}${parseInt(j, 10) + 1}">$1</${searchKeywordTag}>`);
+              text = text.replace(
+                new RegExp(`(${word})`, 'ig'),
+                `<${searchKeywordTag} class="${Config.searchKeywordMatchClass}${
+                  parseInt(j, 10) + 1
+                }">$1</${searchKeywordTag}>`,
+              );
               $(elm).before($.parseHTML(text));
               $(elm).remove();
             }
@@ -124,26 +132,30 @@ export default () => {
 
     //--------
     // toggle
-    $(`[class*=${Config.toggleHeadClassSuffix}]`, context).css('cursor', 'pointer').click(function () {
-      if (!(new RegExp(`([^\\s]*)${Config.toggleHeadClassSuffix}`)).test(this.className)) return false;
-      const mark = RegExp.$1;
-      const $target = $(`.${mark}${Config.toggleBodyClassSuffix}`);
-      if (!$target.size()) return false;
-      $target.slideToggle();
-      return false;
-    });
+    $(`[class*=${Config.toggleHeadClassSuffix}]`, context)
+      .css('cursor', 'pointer')
+      .click(function () {
+        if (!new RegExp(`([^\\s]*)${Config.toggleHeadClassSuffix}`).test(this.className)) return false;
+        const mark = RegExp.$1;
+        const $target = $(`.${mark}${Config.toggleBodyClassSuffix}`);
+        if (!$target.size()) return false;
+        $target.slideToggle();
+        return false;
+      });
     $(`[class*="${Config.toggleBodyClassSuffix}"]`, context).hide();
 
     //------
     // fade
-    $(`[class*=${Config.fadeHeadClassSuffix}]`, context).css('cursor', 'pointer').click(function () {
-      if (!(new RegExp(`([^\\s]*)${Config.fadeHeadClassSuffix}`)).test(this.className)) return false;
-      const mark = RegExp.$1;
-      const $target = $(`.${mark}${Config.fadeBodyClassSuffix}`);
-      if (!$target.size()) return false;
-      $target.css('display') === 'none' ? $target.fadeIn() : $target.fadeOut(); // eslint-disable-line no-unused-expressions
-      return false;
-    });
+    $(`[class*=${Config.fadeHeadClassSuffix}]`, context)
+      .css('cursor', 'pointer')
+      .click(function () {
+        if (!new RegExp(`([^\\s]*)${Config.fadeHeadClassSuffix}`).test(this.className)) return false;
+        const mark = RegExp.$1;
+        const $target = $(`.${mark}${Config.fadeBodyClassSuffix}`);
+        if (!$target.size()) return false;
+        $target.css('display') === 'none' ? $target.fadeIn() : $target.fadeOut(); // eslint-disable-line no-unused-expressions
+        return false;
+      });
     $(`[class*="${Config.fadeBodyClassSuffix}"]`, context).hide();
 
     //-------------------
@@ -193,9 +205,15 @@ export default () => {
       if (!url) {
         url = '';
       }
-      $('input:text[name=name]', this).replaceWith(`<strong>${name}</strong><input type="hidden" name="name" value="${name}" />`);
-      $('input:text[name=mail]', this).replaceWith(`<strong>${mail}</strong><input type="hidden" name="mail" value="${mail}" />`);
-      $('input:text[name=url]', this).replaceWith(`<strong>${url}</strong><input type="hidden" name="url" value="${url}" />`);
+      $('input:text[name=name]', this).replaceWith(
+        `<strong>${name}</strong><input type="hidden" name="name" value="${name}" />`,
+      );
+      $('input:text[name=mail]', this).replaceWith(
+        `<strong>${mail}</strong><input type="hidden" name="mail" value="${mail}" />`,
+      );
+      $('input:text[name=url]', this).replaceWith(
+        `<strong>${url}</strong><input type="hidden" name="url" value="${url}" />`,
+      );
     });
 
     //-------------
@@ -212,7 +230,8 @@ export default () => {
     //-----------
     // copyright
     $(Config.copyrightMark, context).click(function () {
-      return hs.htmlExpand(this, { // eslint-disable-line no-undef
+      return hs.htmlExpand(this, {
+        // eslint-disable-line no-undef
         objectType: 'iframe',
         wrapperClassName: 'draggable-header',
         headingText: this.title,
@@ -220,17 +239,9 @@ export default () => {
         width: $(window).width() * 0.5,
         height: $(window).height() * 0.5,
         dimmingOpacity: 0.75,
-        dimmingDuration: 25
+        dimmingDuration: 25,
       });
     });
-
-    // function msie_under8() {
-    //   const _ua = ua(); // eslint-disable-line no-undef
-    //   if (_ua.ltIE8 || _ua.ltIE7 || _ua.ltIE6) {
-    //     return true;
-    //   }
-    //   return false;
-    // }
   };
 
   ACMS.Dispatch.Utility.getBrowser = getBrowser;
@@ -248,11 +259,17 @@ export default () => {
       if (browser === 'ie9') {
         IE9 = true;
       } else if (browser === 'ie8') {
-        IE9 = true; IE8 = true;
+        IE9 = true;
+        IE8 = true;
       } else if (browser === 'ie7') {
-        IE9 = true; IE8 = true; IE7 = true;
+        IE9 = true;
+        IE8 = true;
+        IE7 = true;
       } else if (browser === 'ie6') {
-        IE9 = true; IE8 = true; IE7 = true; IE6 = true;
+        IE9 = true;
+        IE8 = true;
+        IE7 = true;
+        IE6 = true;
       }
 
       return {
@@ -260,8 +277,10 @@ export default () => {
         ltIE7: IE7,
         ltIE8: IE8,
         ltIE9: IE9,
-        mobile: /^(.+iPhone.+AppleWebKit.+Mobile.+|^.+Android.+AppleWebKit.+Mobile.+)$/i.test(navigator.userAgent.toLowerCase()),
-        tablet: /^(.+iPad;.+AppleWebKit.+Mobile.+|.+Android.+AppleWebKit.+)$/i.test(navigator.userAgent.toLowerCase())
+        mobile: /^(.+iPhone.+AppleWebKit.+Mobile.+|^.+Android.+AppleWebKit.+Mobile.+)$/i.test(
+          navigator.userAgent.toLowerCase(),
+        ),
+        tablet: /^(.+iPad;.+AppleWebKit.+Mobile.+|.+Android.+AppleWebKit.+)$/i.test(navigator.userAgent.toLowerCase()),
       };
     }());
     return _ua;

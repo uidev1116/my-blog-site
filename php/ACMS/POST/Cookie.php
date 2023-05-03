@@ -1,45 +1,31 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-IIOnkfYZ9Fir6U5tf0qsR0O=
+<?php
+
+class ACMS_POST_Cookie extends ACMS_POST
+{
+    var $isCacheDelete = false;
+
+    function post()
+    {
+        $Meta = $this->extract('meta');
+        $lifetime = intval($Meta->get('lifetime'));
+        $expire = $lifetime ? (REQUEST_TIME + $lifetime) : null;
+        $Cookie = $this->extract('cookie');
+        foreach ($Cookie->listFields() as $key) {
+            if ($Cookie->isNull($key)) {
+                foreach (array($key . '[0]', $key) as $_key) {
+                    acmsSetCookie($_key, null, REQUEST_TIME - 1, '/');
+                }
+            } else {
+                foreach ($Cookie->getArray($key) as $i => $val) {
+                    $_expire = $expire;
+                    if (empty($val)) {
+                        $val = null;
+                        $_expire = REQUEST_TIME - 1;
+                    }
+                    acmsSetCookie($key . '[' . $i . ']', $val, $_expire, '/');
+                }
+            }
+        }
+        $this->redirect(REQUEST_URL);
+    }
+}

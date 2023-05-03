@@ -3,19 +3,18 @@ import queryString from 'qs';
 import classnames from 'classnames';
 
 import Modal from './modal';
-import MediaList from '../components/media-list';
-import MediaModal from '../components/media-modal';
-import MediaUploadModal from '../components/media-upload-modal';
-import { MediaInsertContainerProp } from '../types/media'
+import MediaList from './media-list';
+import MediaModal from './media-modal';
+import MediaUploadModal from './media-upload-modal';
+import { MediaInsertContainerProp } from '../types/media';
 import { RefObject } from '../types';
 
 export default class MediaInsertModal extends Component<MediaInsertContainerProp> {
-
   static defaultProps = {
-    filetype: 'all'
-  }
+    filetype: 'all',
+  };
 
-  uploadChild: RefObject<ReactNode>
+  uploadChild: RefObject<ReactNode>;
 
   constructor(props) {
     super(props);
@@ -46,13 +45,11 @@ export default class MediaInsertModal extends Component<MediaInsertContainerProp
 
   insertMedia() {
     const { items, onInsert } = this.props;
-    const filters = items.filter(item => item.checked);
+    const filters = items.filter((item) => item.checked);
     if (typeof onInsert === 'function') {
       onInsert(filters);
     }
-    this.props.actions.setMediaList(items.map((item) => {
-      return {...item, checked: false};
-    }));
+    this.props.actions.setMediaList(items.map((item) => ({ ...item, checked: false })));
   }
 
   upsert() {
@@ -64,14 +61,36 @@ export default class MediaInsertModal extends Component<MediaInsertContainerProp
 
   render() {
     const {
-      items, actions, item, largeSize, formToken, archives, selectedTags, filetype, extensions,
-      upload, label, mode, lastPage, config, tags, total, loading, files, radioMode
+      items,
+      actions,
+      item,
+      largeSize,
+      formToken,
+      archives,
+      selectedTags,
+      filetype,
+      extensions,
+      upload,
+      label,
+      mode,
+      lastPage,
+      config,
+      tags,
+      total,
+      loading,
+      files,
+      radioMode,
     } = this.props;
 
-    const footer = upload ?
-      <button type="button" className="acms-admin-btn acms-admin-btn-primary" onClick={this.upsert.bind(this)}>{ACMS.i18n("media.upload_insert")}</button>
-      :
-      <button type="button" className="acms-admin-btn acms-admin-btn-primary" onClick={this.insertMedia.bind(this)}>{ACMS.i18n("media.insert_selections")}</button>;
+    const footer = upload ? (
+      <button type="button" className="acms-admin-btn acms-admin-btn-primary" onClick={this.upsert.bind(this)}>
+        {ACMS.i18n('media.upload_insert')}
+      </button>
+    ) : (
+      <button type="button" className="acms-admin-btn acms-admin-btn-primary" onClick={this.insertMedia.bind(this)}>
+        {ACMS.i18n('media.insert_selections')}
+      </button>
+    );
 
     return (
       <Modal
@@ -79,7 +98,7 @@ export default class MediaInsertModal extends Component<MediaInsertContainerProp
         tabContentScrollable
         className="acms-admin-media-modal"
         isOpen
-        title={<h3 class="acms-admin-modal-heading">{ACMS.i18n("media.media_insert")}</h3>}
+        title={<h3 className="acms-admin-modal-heading">{ACMS.i18n('media.media_insert')}</h3>}
         footer={footer}
         dialogStyle={{ maxWidth: '1200px' }}
         dialogClassName="acms-admin-modal-dialog large"
@@ -90,60 +109,71 @@ export default class MediaInsertModal extends Component<MediaInsertContainerProp
       >
         <div className="acms-admin-tabs" style={{ marginTop: '10px' }}>
           <ul className="acms-admin-tabs-inner">
-            <li><a
-              href="#"
-              className={classnames('js-acms_tab', {
-                'acms-admin-tab-active': !upload
-              })}
-              onClick={(e) => {
-                e.preventDefault();
-                actions.setUpload(false);
-              }}
-            >{ACMS.i18n("media.media_list")}</a></li>
-            <li><a
-              href="#"
-              className={classnames('js-acms_tab', {
-                'acms-admin-tab-active': upload
-              })}
-              onClick={(e) => {
-                e.preventDefault();
-                actions.setUpload(true);
-              }}
-            >{ACMS.i18n("media.upload")}</a></li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                href="#"
+                className={classnames('js-acms_tab', {
+                  'acms-admin-tab-active': !upload,
+                })}
+                onClick={(e) => {
+                  e.preventDefault();
+                  actions.setUpload(false);
+                }}
+              >
+                {ACMS.i18n('media.media_list')}
+              </a>
+            </li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                href="#"
+                className={classnames('js-acms_tab', {
+                  'acms-admin-tab-active': upload,
+                })}
+                onClick={(e) => {
+                  e.preventDefault();
+                  actions.setUpload(true);
+                }}
+              >
+                {ACMS.i18n('media.upload')}
+              </a>
+            </li>
           </ul>
-          {!upload && <div className="acms-admin-tabs-panel">
-            <MediaList
-              extensions={extensions}
-              filetype={filetype}
-              items={items}
-              actions={actions}
-              mode={mode}
-              radioMode={radioMode}
-              lastPage={lastPage}
-              config={config}
-              archives={archives}
-              tags={tags}
-              total={total}
-              loading={loading}
-              selectedTags={selectedTags}
-            />
-          </div>}
-          {upload && <div className="acms-admin-tabs-panel">
-            <MediaUploadModal
-              actions={actions}
-              largeSize={largeSize}
-              tags={tags}
-              label={label}
-              config={config}
-              ref={this.uploadChild}
-              files={files}
-              showUploadButton={false} />
-          </div>}
-          {item && <MediaModal
-            item={item}
-            actions={actions}
-            formToken={formToken}
-            config={config} />}
+          {!upload && (
+            <div className="acms-admin-tabs-panel">
+              <MediaList
+                extensions={extensions}
+                filetype={filetype}
+                items={items}
+                actions={actions}
+                mode={mode}
+                radioMode={radioMode}
+                lastPage={lastPage}
+                config={config}
+                archives={archives}
+                tags={tags}
+                total={total}
+                loading={loading}
+                selectedTags={selectedTags}
+              />
+            </div>
+          )}
+          {upload && (
+            <div className="acms-admin-tabs-panel">
+              <MediaUploadModal
+                actions={actions}
+                largeSize={largeSize}
+                tags={tags}
+                label={label}
+                config={config}
+                ref={this.uploadChild}
+                files={files}
+                showUploadButton={false}
+              />
+            </div>
+          )}
+          {item && <MediaModal item={item} actions={actions} formToken={formToken} config={config} />}
         </div>
       </Modal>
     );

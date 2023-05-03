@@ -30,6 +30,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
                 config('entry_summary_order2'),
             ),
             'orderFieldName'        => config('entry_summary_order_field_name'),
+            'noNarrowDownSort'      => config('entry_summary_no_narrow_down_sort', 'off'),
             'limit'                 => intval(config('entry_summary_limit')),
             'offset'                => intval(config('entry_summary_offset')),
             'indexing'              => config('entry_summary_indexing'),
@@ -90,7 +91,9 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
 
         $q = $this->buildQuery();
         $this->entries = $DB->query($q, 'all');
-
+        foreach ($this->entries as $entry) {
+            ACMS_RAM::entry($entry['entry_id'], $entry);
+        }
         $this->buildSimplePager($Tpl);
         $this->buildEntries($Tpl);
         if ( $this->buildNotFound($Tpl) ) {
@@ -190,7 +193,14 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
             $SQL->setFieldOrder('entry_id', $this->eids);
             return;
         }
-        if ( $sortFd = ACMS_Filter::entryOrder($SQL, $this->config['order'], $this->uid, $this->cid, false, $this->config['orderFieldName']) ) {
+        $sortFd = false;
+        if (isset($this->config['noNarrowDownSort']) && $this->config['noNarrowDownSort'] === 'on') {
+            // カテゴリー、ユーザー絞り込み時でも、絞り込み時用のソートを利用しない
+            $sortFd = ACMS_Filter::entryOrder($SQL, $this->config['order'], null, null, false, $this->config['orderFieldName']);
+        } else {
+            $sortFd = ACMS_Filter::entryOrder($SQL, $this->config['order'], $this->uid, $this->cid, false, $this->config['orderFieldName']);
+        }
+        if ($sortFd) {
             $SQL->setGroup($sortFd);
         }
         $SQL->addGroup('entry_id');

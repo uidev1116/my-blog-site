@@ -264,13 +264,12 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         }
 
         $block  = empty($block) ? array() : (is_array($block) ? $block : array($block));
-
         if ( ADMIN ) {
             if ( 'entry-add' == substr(ADMIN, 0, 9) ) {
                 $Tpl->add(array_merge(array('adminEntryEdit'), $block));
             }
         } else if ( 0
-            || ( !roleAvailableUser() && ( enableApproval() || sessionWithCompilation() || (sessionWithContribution() && $uid == SUID) ) )
+            || ( !roleAvailableUser() && ( (config('approval_contributor_edit_auth') !== 'on' && enableApproval()) || sessionWithCompilation() || (sessionWithContribution() && $uid == SUID) ) )
             || ( roleAvailableUser() && ( roleAuthorization('entry_edit_all', BID) || (roleAuthorization('entry_edit', BID) && $uid == SUID) ) )
         ) {
             $entry  = ACMS_RAM::entry($eid);
@@ -685,6 +684,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 $SQLCommon  = SQL::newSelect('entry');
                 $SQLCommon->addLeftJoin('category', 'category_id', 'entry_category_id');
                 $SQLCommon->setLimit(1);
+                $SQLCommon->addWhereOpr('entry_link', ''); // リンク先URLが設定されているエントリーはリンクに含まないようにする
                 $SQLCommon->addWhereOpr('entry_blog_id', $this->bid);
                 if ($this->serial_navi_ignore_category_on !== 'on') {
                     ACMS_Filter::categoryTree($SQLCommon, $this->cid, $this->categoryAxis());
@@ -704,12 +704,21 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 $SQLCommon->addWhereOpr('entry_indexing', 'on');
                 $aryOrder1 = explode('-', $entryOrder[0]);
                 $fd = isset($aryOrder1[0]) ? $aryOrder1[0] : null;
+                $sortOrder = isset($aryOrder1[1]) ? $aryOrder1[1] : 'desc';
 
                 if ( 'random' <> $fd ) {
                     switch ( $fd ) {
                         case 'datetime':
                             $field  = 'entry_datetime';
                             $value  = ACMS_RAM::entryDatetime($this->eid);
+                            break;
+                        case 'updated_datetime':
+                            $field  = 'entry_updated_datetime';
+                            $value  = ACMS_RAM::entryUpdatedDatetime($this->eid);
+                            break;
+                        case 'posted_datetime':
+                            $field  = 'entry_posted_datetime';
+                            $value  = ACMS_RAM::entryPostedDatetime($this->eid);
                             break;
                         case 'code':
                             $field  = 'entry_code';
@@ -741,21 +750,29 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                     $W1->addWhereOpr('entry_id', $this->eid, '<');
                     $W2 = SQL::newWhere();
                     $W2->addWhere($W1);
-                    $W2->addWhereOpr($field, $value, '<', 'OR');
+                    if ($sortOrder === 'desc') {
+                        $W2->addWhereOpr($field, $value, '<', 'OR');
+                    } else {
+                        $W2->addWhereOpr($field, $value, '>', 'OR');
+                    }
                     $SQL->addWhere($W2);
-                    ACMS_Filter::entryOrder($SQL, array($fd.'-desc', 'id-desc'), $this->uid, $this->cid);
+                    if ($sortOrder === 'desc') {
+                        ACMS_Filter::entryOrder($SQL, array($fd.'-desc', 'id-desc'), $this->uid, $this->cid);
+                    } else {
+                        ACMS_Filter::entryOrder($SQL, array($fd.'-asc', 'id-asc'), $this->uid, $this->cid);
+                    }
                     ACMS_Filter::entrySession($SQL);
                     $q  = $SQL->get(dsn());
 
                     if ( $row = $DB->query($q, 'row') ) {
                         $Tpl->add('prevLink', array(
-                           'name'   => addPrefixEntryTitle($row['entry_title']
+                            'name' => addPrefixEntryTitle($row['entry_title']
                                 , $row['entry_status']
                                 , $row['entry_start_datetime']
                                 , $row['entry_end_datetime']
                                 , $row['entry_approval']
                             ),
-                           'url'    => acmsLink(array(
+                            'url' => acmsLink(array(
                                 '_inherit'  => true,
                                 'eid'       => $row['entry_id'],
                             )),
@@ -773,21 +790,29 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                     $W1->addWhereOpr('entry_id', $this->eid, '>');
                     $W2 = SQL::newWhere();
                     $W2->addWhere($W1);
-                    $W2->addWhereOpr($field, $value, '>', 'OR');
+                    if ($sortOrder === 'desc') {
+                        $W2->addWhereOpr($field, $value, '>', 'OR');
+                    } else {
+                        $W2->addWhereOpr($field, $value, '<', 'OR');
+                    }
                     $SQL->addWhere($W2);
-                    ACMS_Filter::entryOrder($SQL, array($fd.'-asc', 'id-asc'), $this->uid, $this->cid);
+                    if ($sortOrder === 'desc') {
+                        ACMS_Filter::entryOrder($SQL, array($fd.'-asc', 'id-asc'), $this->uid, $this->cid);
+                    } else {
+                        ACMS_Filter::entryOrder($SQL, array($fd.'-desc', 'id-desc'), $this->uid, $this->cid);
+                    }
                     ACMS_Filter::entrySession($SQL);
                     $q  = $SQL->get(dsn());
 
                     if ( $row = $DB->query($q, 'row') ) {
                         $Tpl->add('nextLink', array(
-                           'name'   => addPrefixEntryTitle($row['entry_title']
+                            'name' => addPrefixEntryTitle($row['entry_title']
                                 , $row['entry_status']
                                 , $row['entry_start_datetime']
                                 , $row['entry_end_datetime']
                                 , $row['entry_approval']
                             ),
-                           'url'    => acmsLink(array(
+                            'url' => acmsLink(array(
                                 '_inherit'  => true,
                                 'eid'       => $row['entry_id'],
                             )),

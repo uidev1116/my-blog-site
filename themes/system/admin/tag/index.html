@@ -46,7 +46,11 @@
 </div>
 
 <!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->タグがありません。<!--/T--></p><!-- END index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->タグがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->登録されたタグはありません。<!--/T--></p>
+</div><!-- END index#notFound -->
+
 <!-- BEGIN index -->
 <ul id="tagList" class="acms-admin-list-inline js-incremental_search"><!-- BEGIN tag:loop -->
 	<li class="search_element"><a href="{url}?edit=update">{name} <span class="acms-admin-label">{amount}</span></a></li><!-- END tag:loop -->

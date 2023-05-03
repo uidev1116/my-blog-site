@@ -11,7 +11,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET
         if ( !$cnt = count($this->tags) ) { return false; }
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
-        $categoryContext = config('tag_cloud_link_category_context') === 'on';
+        $categoryContext = config('tag_filter_link_category_context') === 'on';
 
         if ( $cnt > config('tag_filter_selected_limit') ) {
             $cnt    = config('tag_filter_selected_limit');

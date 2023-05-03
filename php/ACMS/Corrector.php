@@ -57,7 +57,7 @@ class ACMS_Corrector
                 $args   = array();
                 if ( !empty($match[2]) ) {
                     while ( preg_match('@'.'(?:'
-                        .'([\d.]+)'.'|'
+                        .'([-\d.]+)'.'|'
                         .'"((?:[^"]|\\\")*)"'.'|'
                         ."'((?:[^']|\\\')*)'"
                     .')'.'\s*(,|\))\s*(.*)@', $opt, $match) ) {

@@ -8,16 +8,53 @@ namespace Acms\Custom;
 class Hook
 {
     /**
+     * 起動時
+     */
+    public function init()
+    {
+
+    }
+
+    /**
+     * ログイン判定前
+     * @return void
+     */
+    public function beforeAuthenticate()
+    {
+
+    }
+
+    /**
+     * ログイン判定後
+     * @return void
+     */
+    public function afterAuthenticate()
+    {
+
+    }
+
+    /**
+     * 権限チェック
+     * @param int $suid
+     * @param int $bid
+     * @return void
+     */
+    public function restrictionAuthority($suid, $bid)
+    {
+
+    }
+
+    /**
      * header指定
      *
      * @param bool $cache キャッシュ利用
      */
     public function header($cache)
     {
-//        header('Vary: User-Agent');
-//        header('Vary: Accept-Encoding');
-//        header('Vary: Accept-Language');
-//        header('Vary: Cookie');
+        // header('Vary: User-Agent');
+        // header('Vary: Accept-Encoding');
+        // header('Vary: Accept-Language');
+        // header('Vary: Cookie');
     }
 
     /**
@@ -27,7 +64,6 @@ class Hook
      */
     public function query(&$sql)
     {
-
     }
 
     /**
@@ -35,10 +71,10 @@ class Hook
      *
      * @param string $value
      */
-    public function customRuleValue(& $value)
+    public function customRuleValue(&$value)
     {
         // ここで設定した値を、ルール判定に使用できるようになります。
-        $value = '';
+        // $value = '';
     }
 
     /**
@@ -48,7 +84,7 @@ class Hook
      */
     public function addCacheRule(&$customRuleString)
     {
-//        $customRuleString = UA_GROUP; // デバイスによってルールを分ける場合
+        // $customRuleString = UA_GROUP; // デバイスによってルールを分ける場合
     }
 
     /**
@@ -60,7 +96,6 @@ class Hook
      */
     public function beforeGetFire(&$tpl, $thisModule)
     {
-
     }
 
     /**
@@ -72,7 +107,6 @@ class Hook
      */
     public function afterGetFire(&$res, $thisModule)
     {
-
     }
 
     /**
@@ -83,7 +117,6 @@ class Hook
      */
     public function beforePostFire($thisModule)
     {
-
     }
 
     /**
@@ -94,7 +127,6 @@ class Hook
      */
     public function afterPostFire($thisModule)
     {
-
     }
 
     /**
@@ -104,7 +136,6 @@ class Hook
      */
     public function beforeBuild(&$tpl)
     {
-
     }
 
     /**
@@ -123,6 +154,15 @@ class Hook
     }
 
     /**
+     * HTTPレスポンス直前に呼ばれます
+     *
+     * @param string &$res レスポンス文字列
+     */
+    public function beforeResponse(&$res)
+    {
+    }
+
+    /**
      * エントリー作成、更新時 または エントリーインポート時（CSV, WordPress, Movable Type）
      *
      * @param int $eid エントリーID
@@ -130,7 +170,6 @@ class Hook
      */
     public function saveEntry($eid, $revisionId)
     {
-
     }
 
     /**
@@ -141,7 +180,6 @@ class Hook
      */
     public function formSubmit($mail, $mailAdmin)
     {
-
     }
 
     /**
@@ -152,7 +190,6 @@ class Hook
      */
     public function approvalNotification($data, &$send = true)
     {
-
     }
 
     /**
@@ -162,7 +199,6 @@ class Hook
      */
     public function beforeShutdown()
     {
-
     }
 
     /**
@@ -182,59 +218,6 @@ class Hook
      */
     public function extendsQuoteUnit($url, &$html)
     {
-//        if ( preg_match("/thebase\.in\/items\/([\d]+)$/", $url, $matches) ) {
-//            try {
-//                $item_id = $matches[1];
-//                $client = AAPP_Base_GET_Base_Api::create();
-//                $json = $client->get('items/detail/' . $item_id, array());
-//                $tpl = <<< EOT
-//
-//<!-- BEGIN item -->
-//<blockquote class="js-biggerlink">
-//    <div class="quoteImageContainer">
-//        <img src="{img1_300}" class="quoteImage" width="154" alt="" />
-//    </div>
-//    <div>
-//        <p class="quoteTitle"><a href="https://ablogcms.thebase.in/items/{item_id}" class="quoteTitleLink">{title}</a></p>
-//        <p class="quoteSiteName">{detail}</p>
-//        <p class="quoteDescription">{quote_description2}[trim(180, '...')]</p>
-//    </div>
-//    <hr class="clearHidden" />
-//</blockquote>
-//<!-- END item -->
-//EOT;
-//                $Tpl = new Template($tpl, new ACMS_Corrector());
-//                $html = $Tpl->render(array(
-//                    'item' => $json->item,
-//                ));
-//            } catch ( Exception $e ) {}
-//
-//        }
-
-        // $Amazon = new ACMS_Services_Amazon(
-        //     'tracking_id',
-        //     'access_key',
-        //     'secret_access_key'
-        // );
-        // if ( 1
-        //     && $Amazon->isValid()
-        //     && $asin = $Amazon->getAsinFromUrl($url)
-        // ) {
-        //     $xml            = $Amazon->amazonItemLookup($asin);
-
-        //     $url            = $xml->Items->Item->DetailPageURL;
-        //     $image          = $xml->Items->Item->LargeImage->URL;
-        //     $manufacturer   = $xml->Items->Item->ItemAttributes->Manufacturer;
-        //     $title          = $xml->Items->Item->ItemAttributes->Title;
-        //     $price          = $xml->Items->Item->OfferSummary->LowestNewPrice->FormattedPrice;
-
-        //     $html = "<h1><a href=\"$url\">$title</a></h1>"
-        //         ."<img src=\"$image\" width=\"150px\">"
-        //         ."<p>$manufacturer</p>"
-        //         ."<p>$price</p>";
-
-        //     sleep(2);
-        // }
     }
 
     /**
@@ -256,7 +239,6 @@ class Hook
      */
     public function cacheRefresh()
     {
-
     }
 
     /**
@@ -265,16 +247,6 @@ class Hook
      */
     public function cacheClear()
     {
-
-    }
-
-    /**
-     * キャッシュの削除時
-     *
-     */
-    public function cacheDelete()
-    {
-
     }
 
     /**
@@ -284,7 +256,6 @@ class Hook
      */
     public function mediaCreate($path)
     {
-
     }
 
     /**
@@ -294,6 +265,5 @@ class Hook
      */
     public function mediaDelete($path)
     {
-
     }
 }

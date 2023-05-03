@@ -4,7 +4,7 @@ namespace Acms\Services\Blog;
 
 use SQL;
 use DB;
-use Acms\Services\Facades\Common;
+use Common;
 use Symfony\Component\Yaml\Yaml;
 
 class Import
@@ -75,6 +75,7 @@ class Import
             $this->insertData($table);
         }
 
+        Common::flushCache();
         $this->generateFulltext();
 
         return $this->errors;
@@ -330,7 +331,7 @@ class Import
         } else if ( $field === 'module_uid' ) {
             $value = $this->getNewID('user', $value);
         } else if ( $field === 'module_bid' ) {
-            $value = empty($value) ? null : $this->bid;
+            $value = empty($value) ? null : $value;
         }
         return $value;
     }
@@ -415,10 +416,24 @@ class Import
      */
     private function getNewID($table, $id)
     {
-        if ( !isset($this->ids[$table][$id])  ) {
-            return $id;
+        if (is_numeric($id)) {
+            if (!isset($this->ids[$table][$id])) {
+                return $id;
+            }
+            return $this->ids[$table][$id];
         }
-        return $this->ids[$table][$id];
+        if (strpos($id, ':acms_unit_delimiter:') !== false) {
+            $temp = explode(':acms_unit_delimiter:', $id);
+            $responseIds = [];
+            foreach ($temp as $tempId) {
+                if (!isset($this->ids[$table][$tempId])) {
+                    $responseIds[] = $tempId;
+                    continue;
+                }
+                $responseIds[] = $this->ids[$table][$tempId];
+            }
+            return implode(':acms_unit_delimiter:', $responseIds);
+        }
     }
 
     /**

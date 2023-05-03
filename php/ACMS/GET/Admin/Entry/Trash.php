@@ -131,12 +131,14 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
             $cid    = $row['entry_category_id'];
             $uid    = $row['entry_user_id'];
             $bid    = $row['entry_blog_id'];
+            $delUid = $row['entry_delete_uid'];
 
-            $_vars   = array();
-            $_vars   += array(
+            $_vars = array();
+            $_vars += array(
                 'eid'       => $eid,
                 'bid'       => $bid,
                 'datetime'  => $row['entry_datetime'],
+                'del_datetime' => $row['entry_updated_datetime'],
                 'title'     => $row['entry_title'],
                 'code'      => $row['entry_code'],
                 'blogName'  => ACMS_RAM::blogName($bid),
@@ -160,13 +162,23 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
                     'eid'   => $eid,
                 )),
             );
-
-            if ( $cid ) {
-                $_vars   += array(
-                    'categoryName'  => ACMS_RAM::categoryName($cid),
-                    'categoryUrl'   => acmsLink(array(
+            if (!empty($delUid)) {
+                $_vars += array(
+                    'delUserName' => ACMS_RAM::userName($delUid),
+                    'delUserIcon' => loadUserIcon($delUid),
+                    'delUserUrl' => acmsLink(array(
                         'admin' => ADMIN,
-                        'cid'   => $cid,
+                        'uid' => $delUid,
+                    )),
+                );
+            }
+
+            if ($cid) {
+                $_vars += array(
+                    'categoryName' => ACMS_RAM::categoryName($cid),
+                    'categoryUrl' => acmsLink(array(
+                        'admin' => ADMIN,
+                        'cid' => $cid,
                     )),
                 );
             }
@@ -191,7 +203,7 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
             //---------
             // delete
             do {
-                if ( enableApproval(BID, CID) ) {
+                if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
                     if ( !sessionWithApprovalAdministrator(BID, CID) ) break;
                 } else if ( roleAvailableUser() ) {
                     if ( !roleAuthorization('entry_delete', BID, $eid) ) break;
@@ -208,7 +220,7 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
         }
 
         do {
-            if ( enableApproval(BID, CID) ) {
+            if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
                 if ( !sessionWithApprovalAdministrator(BID, CID) ) break;
             } else if ( roleAvailableUser() ) {
                 if ( !roleAuthorization('entry_delete', BID) ) break;

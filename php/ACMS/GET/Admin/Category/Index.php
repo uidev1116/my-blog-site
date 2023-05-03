@@ -173,8 +173,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         $parent = array();
         $last = array();
         $DB->query($q, 'fetch');
-        $row = $DB->fetch($q);
-        do {
+        while ($row = $DB->fetch($q)) {
             $bid = intval($row['category_blog_id']);
             $cid = intval($row['category_id']);
             $pid = intval($row['category_parent']);
@@ -185,12 +184,12 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 $amount[$bid][$pid] = 0;
             }
             $amount[$bid][$pid] += 1;
-        } while ($row = $DB->fetch($q));
+        };
 
         $stack = array();
         if ($layered) {
             $stack = isset($all[$_cid]) ? $all[$_cid] : array();
-        } else {
+        } else if (isset($all[0])) {
             $stack = $all[0];
         }
         unset($all[0]);

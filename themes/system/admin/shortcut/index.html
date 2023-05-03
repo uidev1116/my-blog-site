@@ -8,10 +8,19 @@
 	</div>
 </header>
 
-<!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ショートカットがありません。<!--/T--></p><!-- END index#notFound --><!-- BEGIN sort#success -->
+<!-- BEGIN sort#success -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->表示順を変更しました<!--/T--></p><!-- END sort#success -->
 
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->ショートカットがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->ショートカットは、ショートカットに登録できる各機能のページから追加できます。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+  </div>
+</div>
+<!-- END index#notFound -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 <!-- BEGIN index:veil -->
 <form method="post" action="" id="sortableForm" class="acms-admin-form">
 	<div class="acms-admin-table-responsive">
@@ -44,4 +53,6 @@
 		</table>
 	</div>
 </form><!-- END index:veil -->
+<!-- END_IF -->
+
 <!-- END_MODULE Admin_Shortcut_Index -->

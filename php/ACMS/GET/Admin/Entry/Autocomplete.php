@@ -57,6 +57,7 @@ class ACMS_GET_Admin_Entry_Autocomplete extends ACMS_GET_Entry_Summary
             '|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
             '|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
             '?', $Tpl->get());
+        $json = buildIF($json);
 
         header('Content-Type: application/json; charset=utf-8');
         echo($json);
@@ -77,6 +78,7 @@ class ACMS_GET_Admin_Entry_Autocomplete extends ACMS_GET_Entry_Summary
 
         $this->filterQuery($SQL);
         $this->limitQuery($SQL);
+        $this->orderQuery($SQL);
 
         return $SQL->get(dsn());
     }

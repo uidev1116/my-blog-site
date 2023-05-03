@@ -1,39 +1,38 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cP/z4RQsXMxOLbYBSE8ArgCx6W6Ub00VksSwfZ/LYTnVnx7iNFdRqjLQ5FSsxXWVnX6glIQGB
-tONvI942oYgH/xcS4FFGDUl03rTUtiDGTujPrxVzxGljO+sBPeEswIiL7X3JomYJdkZK4gKwmEfK
-tROmi8sMAXaKIvN4BS+QfJjIZcziYBznI1S4hFHoSLtD7l98J0LYI1cFhO9+ofUctBO25mmszh9M
-Lxifbtz7wFsdMWq6yBBosK/64wChlgOm4u82feWErBSJPK7jk5Ns1mqOh/1BQt/wf8mM8jewpWSh
-yhy9TtotoAuRUHe4eTYfvm0h6cv4knFZqsmGqa743gN4fvZ39+7GpLWeRTKR+53DiZJDwpkZ/3vp
-b/xIXNIewbIlBpuXRscLUuBrRh8uArDwRIgvWwCJtZfAmJbu8mpnFZdZrW2u0LpG57uRHTtLnTkS
-SMu61t+iN8EKbaRvY+ZBbm0BWkqLA7Fk67gBFNwSpAMnQQmdMOetgEDxT2la2vqrRpzibKuqNfY2
-nJrZ3Zfu8nxv3OL/oCUXm4GCD8Ap1U3/Zrxw0s4eVNhOoT5AbQ+dTFSYactf2aZRMMmqbHdeaAMU
-Hfn35Xmjfsth+tNQywDYHlGEnJ+uTgoTmJq6FodGWmCWE44wFotbbC8vVLwWHTNN9uJitt8L+0Br
-u70B6x6zCdNVGW8JmBz0aMa+2yh6kPASM1AnjzlUUHSNhWdb+kaoOTKGj9he0xyMJAGRbbphwgcO
-Bl4U/z74+/Fnh0vO8Hu2KYtaZSppDuz/NLG58dJ4MoU6XrzDvcr+19b1f+uQ7eIfMhZZZtMSwWEq
-/p1NJcGYjOWoockzgkAimNAlvNeeHGPD8e+Vn9dv0RGJCqyzLiuv287UfEkUdtu3HSmwIKmuZg3F
-LpQ+8fgMsWEqNY850jcuW+ekPibpLQGdSx2hHtoRSUbfG8b1VPtjsw+tng9S4Lzephx4SYQdTTeH
-/OOwML6sZzaiX5n4HiH6706nHQLUcQlNl5fPEaik5aoPCx5ciVu6QfMDyb52XIWcOmqpdkqCtAM+
-Fw/MoueqbJT9EsCpV6PvI+HM29sXuFoSnN+wpK7R2MmHxllM8IAMqjOYaHZW0dwTgSXWnyY79Fe7
-98lWZKNyWO9HmflG0h0BTUPy0SRnBN1iu6kNhFZqPiQXKpL3J8k5Ck2JHRpBEvjZhLlw7JGZlJQ3
-p8ZeYqNuGWOE6fXMbR2pNBeoPJCJtWEf+hZYZ1MMAGucsYmsjn5ukpdHwbuC2YD6/pVyFa5VTizi
-99o3a79zN5MjBYfk1recJCOQSc6u6NlLsnb33ohKw/Gf+J9ts9P6YQsd4abWZi9ywMK7Nx2bBDTf
-+P5k0wy/34Sr1WIiYQOdDN+BjGbww59OrvRbJNLv+x7cVc63+CPe8yHeW8EplF+MkQfrHG2c+NyZ
-KWj7abqB2dPcGMrjx3745u6Bv1Qg17b1/qiBu65hgTUtTInbeS++KZHvdUFI5/9Y+m6IiVEpqFmn
-EzmzszX0fPCmgNQuSRBM0Sr47Q18UAIjhkAtZwz0220gKmzrQqR6gbx4EFKpppyLpZEeGs/O2fZR
-Snzt57tK9/TpYBagVc3rdZ+ROerV1eJWEiPTmyJSzL9jJF0xjroT7TMNay/Q3DCTs4qJBH21JI91
-IH9DRKTMYhMWAvEVC7GvxUiVT4H0/rJKGAFavtr+4tsBrX9qQMGKkKWAMC5qzfI9yaUAYxtsMiqt
-rcvvqqpd/HzPTaBuXH1iaOAQIla38yxCaxwLNNR6QlKgeDyGxFwKXJJDNZbEfVhW2zsuZIkQcoPG
-eFqsIGiRTEf4r2VSn29MCb0drpgH91gvhaJk4HZshn8J1tuNVD3j4iEUYdS/FjL7IX5mxgXwL1g2
-pei+yzCHCNSxBd5yehIsnsP+rTKmwmCCguHsKeep4nIfVm/wPtT5vxw26D5D/82aQbhOIepMdTpz
-J6a8L5o4S4zRkCxA39+fWzc35DYkuNjeQFkSuKhbWZH/zNiZw+exvx9M/bicnzsuj1VfsqKFDE7M
-wIiNyHVnv4CqihyTpZKcPrxBWV+Bob+WwYm7CSqDhgu+rtMs7k21ziCXjzz3Atk3yflgE4pl7EUU
-pKaUENUUdWQI49mI2TOB8eO8EOP+FNh52ogLw6OtKxUS3JWOuU7yfVS4VKN3oy/mwZsEiKU9FcPW
-O6FcPMdcL4ZZ0/DvOoqoE1CRXFGgq/9FUQx+SaBk2fcxWJRdYvFSf/uBQGO8oOAOpi7YQLE3wMbC
-Qb3xhb5uh2PAAQqxJyK/zSxhpllNt+AHsXpLQMK+HTuDjpNL7XiOvlxOBRQuRXg7i0Sui4C+RHYN
-rsmL+0OaZ4GNlF45hDCdv3Jas/wcta0GP42UuDCUxBq8iXJPQIE6Vgj6DCv0Lv1eddTYOLvsbSH8
-DRWfDOnQeEkBXBOkwwdXLXGNDyClz0zHaEGlivRlw+nYXBDiLti+Uf3hY5AF2hF6Z1cllVWFVtws
-9PHXh+xkp/zG2yQGvtJlwwSaQ1JaIfwsKDHFsmt/t4GfJhOITFwcBNwfQQUd1wyR+feoXM1uA6nM
-E7YowxDLS1ePUupV1JilWOWqmu/4K1SgTrBbdg+01D5my4bEYf0rXuBVcSU+ex30CgC0ypDWKRPA
-xOGQ8qlm6qEMEfPYoKcuvG81ugmXS9rm
+<?php
+
+class ACMS_POST_Fix_Tag_Preview extends ACMS_POST_Fix_Tag
+{
+    var $preview = array();
+
+    function init()
+    {
+        $this->Post->set('preview', 'on');
+    }
+
+    function process($data, $word)
+    {
+        $this->preview[$word][] = array(
+            'title'     => $data['entry_title'],
+            'fulltext'  => substr($data['fulltext_value'], 0, 512),
+            'word'      => $word,
+            'eid'       => $data['entry_id'],
+        );
+    }
+
+    function success()
+    {
+        $i = 0;
+        foreach ( $this->preview as $word => $data ) {
+            $$word = new Field_Validation();
+            foreach ( $data as $val ) {
+                foreach ( $val as $k => $v ) {
+                    $$word->add($k, $v);
+                }
+            }
+            $this->Post->addChild('data'.$i, $$word);
+            $this->Post->add('word', $word);
+
+            $i++;
+        }
+    }
+}

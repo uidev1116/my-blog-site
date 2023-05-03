@@ -1,33 +1,30 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-tV9xkVzHsIQulmbQxjh0DEkpSkMq/Gcq1jnyrm==
+<?php
+
+class ACMS_POST_Blog extends ACMS_POST
+{
+    protected $workflowData = false;
+
+    /**
+     * ToDo: deprecated method 2.7.0
+     */
+    function isCodeExists($domain, $code, $bid=null, $aid=null)
+    {
+        return Blog::isCodeExists($domain, $code, $bid, $aid);
+    }
+
+    /**
+     * ToDo: deprecated method 2.7.0
+     */
+    function isValidStatus($val, $update=false)
+    {
+        return Blog::isValidStatus($val, $update);
+    }
+
+    /**
+     * ToDo: deprecated method 2.7.0
+     */
+    function isDomain($domain, $isAlias=false, $update=false)
+    {
+        return Blog::isDomain($domain, $this->Get->get('aid'), $isAlias, $update);
+    }
+}

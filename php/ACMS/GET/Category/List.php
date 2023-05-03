@@ -61,7 +61,9 @@ class ACMS_GET_Category_List extends ACMS_GET
                 ACMS_Filter::categoryField($SQL, $this->Field);
             }
         }
-
+        if (empty($this->cid) && $this->categoryAxis() === 'self') {
+            $SQL->addWhereOpr('category_parent', 0);
+        }
         $Where  = SQL::newWhere();
         $Where->addWhereOpr('category_blog_id', $this->bid, '=', 'OR');
         $Where->addWhereOpr('category_scope', 'global', '=', 'OR');
@@ -78,19 +80,19 @@ class ACMS_GET_Category_List extends ACMS_GET
         $SQL->addSelect($Case, 'category_entry_amount', null, 'count');
         $SQL->setGroup('category_id');
 
-        if ( !($all = $DB->query($SQL->get(dsn()), 'all')) ) return '';
+        if (!($all = $DB->query($SQL->get(dsn()), 'all'))) return '';
 
         //-------------
         // restructure
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $cid = intval($row['category_id']);
             $categoryIds[] = $cid;
-            foreach ( $row as $key => $val ) {
-                $All[$key][$cid]    = $val;
+            foreach ($row as $key => $val) {
+                $All[$key][$cid] = $val;
             }
             $All['all_amount'][$cid]    = intval($All['category_entry_amount'][$cid]);
         }
-        $All['all_amount'][0]   = 0;
+        $All['all_amount'][0] = 0;
 
         //--------------------------
         // indexing ( swap parent )

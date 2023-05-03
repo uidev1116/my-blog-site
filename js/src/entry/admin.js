@@ -1,6 +1,6 @@
 import '../lib/polyfill';
 import React from 'react';
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import DispatchSystemUpdate from '../admin/system-update';
 import DispatchDatabaseExport from '../admin/database-export';
 import DispatchStaticExport from '../admin/static-export';
@@ -43,8 +43,8 @@ ACMS.Ready(() => {
    */
   const fieldMaker = document.querySelector('#custom-field-maker');
   if (fieldMaker) {
-    import(/* webpackChunkName: "custom-field-maker-css" */'custom-field-maker/src/css/custom-field-maker.css');
-    import(/* webpackChunkName: "custom-field-maker" */'custom-field-maker').then(({ default: CustomFieldMaker }) => {
+    import(/* webpackChunkName: "custom-field-maker-css" */ 'custom-field-maker/src/css/custom-field-maker.css');
+    import(/* webpackChunkName: "custom-field-maker" */ 'custom-field-maker').then(({ default: CustomFieldMaker }) => {
       render(<CustomFieldMaker />, fieldMaker);
     });
   }
@@ -53,7 +53,7 @@ ACMS.Ready(() => {
    * OpenSereetMap
    */
   const dispatchGeoPicker = (item) => {
-    import(/* webpackChunkName: "geo-picker" */'../lib/geo-picker').then(({ default: geoPicker }) => {
+    import(/* webpackChunkName: "geo-picker" */ '../lib/geo-picker').then(({ default: geoPicker }) => {
       geoPicker(item);
     });
   };
@@ -76,19 +76,146 @@ ACMS.Ready(() => {
    */
   (async () => {
     if (!/^ie/.test(ACMS.Dispatch.Utility.getBrowser())) {
-      const { default: PerfectScrollbar } = await import(/* webpackChunkName: "perfect-scrollbar" */'perfect-scrollbar');
-      await import(/* webpackChunkName: "perfect-scrollbar-css" */'perfect-scrollbar/css/perfect-scrollbar.css');
+      const { default: PerfectScrollbar } = await import(
+        /* webpackChunkName: "perfect-scrollbar" */ 'perfect-scrollbar'
+      );
+      await import(/* webpackChunkName: "perfect-scrollbar-css" */ 'perfect-scrollbar/css/perfect-scrollbar.css');
       const psDom = document.querySelector('.js-scroll-contents');
       if (psDom) {
         const ps = new PerfectScrollbar(psDom, {
           wheelSpeed: 1,
           wheelPropagation: true,
-          minScrollbarLength: 20
+          minScrollbarLength: 20,
         });
         ps.update();
       }
     }
   })();
+
+  /**
+   * API管理画面のAPI KEY生成
+   */
+  (() => {
+    const target = document.querySelector('.js-x-api-key');
+    const generateUuid = () => {
+      // https://github.com/GoogleChrome/chrome-platform-analytics/blob/master/src/internal/identifier.js
+      // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+      const chars = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('');
+      for (let i = 0, len = chars.length; i < len; i++) {
+        // eslint-disable-next-line default-case
+        switch (chars[i]) {
+          case 'x':
+            chars[i] = Math.floor(Math.random() * 16).toString(16);
+            break;
+          case 'y':
+            chars[i] = (Math.floor(Math.random() * 4) + 8).toString(16);
+            break;
+        }
+      }
+      return chars.join('');
+    };
+    if (target) {
+      const input = target.querySelector('.js-key-input');
+      const updateButton = target.querySelector('.js-update-key');
+      if (input && !input.value) {
+        input.value = generateUuid();
+      }
+      if (updateButton) {
+        updateButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.confirm('本当にキーを更新してもよろしいですか？保存するまでは変更されません。')) {
+            input.value = generateUuid();
+          }
+        });
+      }
+    }
+  })();
+
+  /**
+   * Webhook 管理ページ
+   */
+  const dispatchWebhookSelect = (webhookType, reset) => {
+    const webhookEventSelector = document.querySelector('.js-webhook-event');
+    if (!webhookEventSelector) {
+      return;
+    }
+    import(/* webpackChunkName: "rich-select" */ '../components/rich-select').then(({ default: RichSelect }) => {
+      const targetElm = webhookEventSelector.querySelector('.js-target');
+      const valueElm = webhookEventSelector.querySelector('.js-value');
+      const options = [];
+      const endpoint = ACMS.Library.acmsLink(
+        {
+          bid: ACMS.Config.bid,
+          tpl: 'ajax/edit/webhook-event.json',
+          Query: {
+            type: webhookType,
+          },
+        },
+        false,
+      );
+
+      if (reset) {
+        valueElm.value = '';
+      }
+
+      if (valueElm) {
+        const events = valueElm.value.split(',');
+        const labels = valueElm.getAttribute('data-label').split(',');
+        const l = Math.min(events.length, labels.length);
+
+        for (let i = 0; i < l; i++) {
+          if (!events[i] || !labels[i]) {
+            continue;
+          }
+          options.push({
+            value: events[i],
+            label: labels[i],
+          });
+        }
+      }
+
+      unmountComponentAtNode(targetElm);
+      render(
+        <RichSelect
+          dataUrl={endpoint}
+          defaultValue={options}
+          className="admin-admin-tag-select"
+          isMulti
+          creatable={false}
+          closeOnSelect={false}
+          placeholder="イベントを選択します"
+          noResultsText="イベントが見つかりません"
+          onChange={(data) => {
+            const list = [];
+            data.forEach((item) => {
+              list.push(item.value);
+            });
+            valueElm.value = list.join(',');
+          }}
+          filterOption={(option, filter) => {
+            if (!filter) {
+              return true;
+            }
+            if (option.label.indexOf(filter) !== -1) {
+              return true;
+            }
+            return false;
+          }}
+        />,
+        targetElm,
+      );
+    });
+  };
+  const webhookTypeSelector = document.querySelector('.js-webhook-type');
+  if (webhookTypeSelector) {
+    webhookTypeSelector.addEventListener('change', (e) => {
+      const webhookType = e.currentTarget.value;
+      dispatchWebhookSelect(webhookType, true);
+    });
+    if (webhookTypeSelector.value) {
+      dispatchWebhookSelect(webhookTypeSelector.value, false);
+    }
+  }
 
   /**
    * Color picker（IE10以上）
@@ -102,9 +229,11 @@ ACMS.Ready(() => {
     } else {
       const colorPickers = document.querySelector('.js-acms-color-picker');
       if (colorPickers) {
-        import(/* webpackChunkName: "color-picker" */'../admin/color-picker').then(({ default: DispatchColorPicker }) => {
-          DispatchColorPicker();
-        });
+        import(/* webpackChunkName: "color-picker" */ '../admin/color-picker').then(
+          ({ default: DispatchColorPicker }) => {
+            DispatchColorPicker();
+          },
+        );
       }
     }
   };
@@ -113,12 +242,11 @@ ACMS.Ready(() => {
   });
   dispatchColorPicer();
 
-
   /**
    * クイックサーチ（IE10以上）
    */
   const dispatchQuickSearch = () => {
-    import(/* webpackChunkName: "quick-search" */'../components/quick-search').then(({ default: QuickSearch }) => {
+    import(/* webpackChunkName: "quick-search" */ '../components/quick-search').then(({ default: QuickSearch }) => {
       if (ACMS.Dispatch.Utility.browser().ltIE9 || ACMS.Config.auth === 'subscriber') {
         const buttons = document.querySelectorAll('.js-search-everything');
         [].forEach.call(buttons, (button) => {
@@ -139,7 +267,7 @@ ACMS.Ready(() => {
   /**
    * プレビュー, タイムマシンモード
    */
-  import(/* webpackChunkName: "preview" */'../lib/preview').then(({ default: preview }) => {
+  import(/* webpackChunkName: "preview" */ '../lib/preview').then(({ default: preview }) => {
     preview();
   });
 
@@ -150,34 +278,38 @@ ACMS.Ready(() => {
     const fakeForms = document.querySelectorAll('.js-fake-form');
     [].forEach.call(fakeForms, (item) => {
       const submit = item.querySelector('.js-submit');
-      $(submit).unbind('click').bind('click', (e) => {
-        e.preventDefault();
+      $(submit)
+        .unbind('click')
+        .bind('click', (e) => {
+          e.preventDefault();
 
-        const confirmMsg = $(submit).data('confirm');
+          const confirmMsg = $(submit).data('confirm');
 
-        if (confirmMsg && !window.confirm(confirmMsg)) {
-          return false;
-        }
-        const method = item.getAttribute('data-method');
-        const form = document.createElement('form');
+          if (confirmMsg && !window.confirm(confirmMsg)) {
+            return false;
+          }
+          const method = item.getAttribute('data-method');
+          const form = document.createElement('form');
 
-        form.setAttribute('method', method);
-        form.style.display = 'none';
+          form.setAttribute('method', method);
+          form.style.display = 'none';
 
-        $(item).find(':input, :radio, :checkbox, :submit').each((i, elm) => {
-          const copy = elm.cloneNode(true);
-          copy.value = elm.value;
-          form.appendChild(copy);
+          $(item)
+            .find(':input, :radio, :checkbox, :submit')
+            .each((i, elm) => {
+              const copy = elm.cloneNode(true);
+              copy.value = elm.value;
+              form.appendChild(copy);
+            });
+
+          const csrfToken = document.createElement('input');
+          csrfToken.type = 'hidden';
+          csrfToken.name = 'formToken';
+          csrfToken.value = window.csrfToken;
+          form.appendChild(csrfToken);
+          document.body.appendChild(form);
+          form.submit();
         });
-
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = 'formToken';
-        csrfToken.value = window.csrfToken;
-        form.appendChild(csrfToken);
-        document.body.appendChild(form);
-        form.submit();
-      });
     });
     $('form').submit(function () {
       $(this).find('.js-fake-form').remove();
@@ -187,7 +319,6 @@ ACMS.Ready(() => {
     dispatchFakeForms();
   });
   dispatchFakeForms();
-
 
   /**
    * System update
@@ -231,7 +362,7 @@ ACMS.Ready(() => {
         dropdownCssClass: 'acms-admin-select-dropdown',
       };
       if (item.querySelectorAll('option').length >= ACMS.Config.select2Threshold) {
-        import(/* webpackChunkName: "select2" */'../lib/select2').then(({ default: select2 }) => {
+        import(/* webpackChunkName: "select2" */ '../lib/select2').then(({ default: select2 }) => {
           select2(item, option);
         });
       }
@@ -287,7 +418,7 @@ ACMS.Ready(() => {
       setTimeout(() => {
         item.classList.add(closeClass);
       }, 5000);
-      localStorage.setItem(storageKey, Date.now() + (60 * 60 * 12 * 1000));
+      localStorage.setItem(storageKey, Date.now() + 60 * 60 * 12 * 1000);
     }
   });
 
@@ -297,13 +428,13 @@ ACMS.Ready(() => {
   const dispatchAdminMenuEditor = (elm) => {
     const adminMenuEditor = elm.querySelector(ACMS.Config.adminMenuEditMark);
     if (adminMenuEditor) {
-      import(/* webpackChunkName: "admin-menu" */'../components/admin-menu').then(({ default: AdminMenuEdit }) => {
+      import(/* webpackChunkName: "admin-menu" */ '../components/admin-menu').then(({ default: AdminMenuEdit }) => {
         const json = JSON.parse(document.querySelector('#admin-menu-json').innerHTML);
-        json.cards = json.cards.filter((card => card.id));
-        json.lanes = json.lanes.filter((lane => lane.id));
+        json.cards = json.cards.filter((card) => card.id);
+        json.lanes = json.lanes.filter((lane) => lane.id);
         const { lanes: laneArry } = json;
         const lanes = laneArry.map((lane) => {
-          const cards = json.cards.filter(card => card.laneId === lane.id);
+          const cards = json.cards.filter((card) => card.laneId === lane.id);
           return { ...lane, cards };
         });
         if (lanes[0]) {
@@ -324,28 +455,23 @@ ACMS.Ready(() => {
   const dispatchNavigationEditor = (elm) => {
     const navigationEditor = elm.querySelector(ACMS.Config.navigationEditMark);
     if (navigationEditor && !/^ie/.test(ACMS.Dispatch.Utility.getBrowser())) {
-      import(/* webpackChunkName: "navigation-edit" */'../components/navigation-edit').then(({ default: NavigationEdit }) => {
-        $('.js-navigation-ie').remove();
-        const json = document.querySelector('#js-navigation-json');
-        const items = JSON.parse(json.innerHTML);
+      import(/* webpackChunkName: "navigation-edit" */ '../components/navigation-edit').then(
+        ({ default: NavigationEdit }) => {
+          $('.js-navigation-ie').remove();
+          const json = document.querySelector('#js-navigation-json');
+          const items = JSON.parse(json.innerHTML);
 
-        import(/* webpackChunkName: "html-entities" */'html-entities').then(({ AllHtmlEntities: Entities }) => {
-          const entities = new Entities();
-          items.forEach((item) => {
-            item.navigation_attr = entities.decode(item.navigation_attr);
-            item.navigation_a_attr = entities.decode(item.navigation_a_attr);
-            item.navigation_label = entities.decode(item.navigation_label);
+          import(/* webpackChunkName: "html-entities" */ 'html-entities').then(({ AllHtmlEntities: Entities }) => {
+            const entities = new Entities();
+            items.forEach((item) => {
+              item.navigation_attr = entities.decode(item.navigation_attr);
+              item.navigation_a_attr = entities.decode(item.navigation_a_attr);
+              item.navigation_label = entities.decode(item.navigation_label);
+            });
+            render(<NavigationEdit items={items} message={ACMS.Config.navigationMessage} />, navigationEditor);
           });
-          render(
-            <NavigationEdit
-              items={items}
-              message={ACMS.Config.navigationMessage
-              }
-            />,
-            navigationEditor
-          );
-        });
-      });
+        },
+      );
     } else {
       $('.js-navigation-ie').show();
     }
@@ -358,12 +484,12 @@ ACMS.Ready(() => {
   const dispatchMediaEditor = async (elm) => {
     try {
       const mediaEditor = elm.querySelector(ACMS.Config.mediaAdminMark);
-      const { default: MediaEdit } = await import(/* webpackChunkName: "media-edit" */'../components/media-edit');
+      const { default: MediaEdit } = await import(/* webpackChunkName: "media-edit" */ '../components/media-edit');
       if (mediaEditor) {
         render(<MediaEdit />, mediaEditor);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
     }
   };
   dispatchMediaEditor(document);
@@ -378,8 +504,8 @@ ACMS.Ready(() => {
     if (!bannerEditor) {
       return;
     }
-    const { AllHtmlEntities: Entities } = await import(/* webpackChunkName: "html-entities" */'html-entities');
-    const { default: BannerEdit } = await import(/* webpackChunkName: "banner-edit" */'../components/banner-edit');
+    const { AllHtmlEntities: Entities } = await import(/* webpackChunkName: "html-entities" */ 'html-entities');
+    const { default: BannerEdit } = await import(/* webpackChunkName: "banner-edit" */ '../components/banner-edit');
     $('.js-banner-ie').remove();
     const ele = document.querySelector('#js-banner-json');
     const json = ele.innerHTML;
@@ -409,7 +535,7 @@ ACMS.Ready(() => {
         items={items}
         message={ACMS.Config.bannerMessage}
       />,
-      bannerEditor
+      bannerEditor,
     );
   };
   dispatchBannerEditor(document);
@@ -418,14 +544,16 @@ ACMS.Ready(() => {
   });
 
   const dispatchMediaField = async (dom) => {
-    const { default: dispatch } = await import(/* webpackChunkName: "media-field" */'../admin/media-insert-field');
+    const { default: dispatch } = await import(/* webpackChunkName: "media-field" */ '../admin/media-insert-field');
     dispatch(dom);
   };
 
   dispatchMediaField(document);
 
   ACMS.addListener('acmsAddUnit', async (event) => {
-    const { default: dispatchMediaInsert } = await import(/* webpackChunkName: "media-insert" */'../admin/media-insert');
+    const { default: dispatchMediaInsert } = await import(
+      /* webpackChunkName: "media-insert" */ '../admin/media-insert'
+    );
     dispatchMediaInsert(event.target);
     dispatchMediaField(event.target);
   });
@@ -447,60 +575,70 @@ ACMS.Ready(() => {
   /**
    * GeoPicker
    */
-  const dispatchGeoInput = () => {
-    const $geoInput = $('.js-geo_input');
-    const $geoForm = $('.js-geo_form');
-    if ($geoInput.size() && $geoForm.size()) {
-      const $lat = $geoForm.find('[name=geo_lat]');
-      const $lng = $geoForm.find('[name=geo_lng]');
-      const $zoom = $geoForm.find('[name=geo_zoom]');
-      const $gmapTarget = $geoForm.find('.js-map_editable-container-flag');
-      const defaultLat = ACMS.Config.adminLocationDefaultLat ? ACMS.Config.adminLocationDefaultLat : '';
-      const defaultLng = ACMS.Config.adminLocationDefaultLng ? ACMS.Config.adminLocationDefaultLng : '';
-      const defaultZoom = ACMS.Config.adminLocationDefaultZoom ? ACMS.Config.adminLocationDefaultZoom : '10';
-      const addGeo = function () {
-        $geoForm.show();
-        $geoInput.val(ACMS.i18n('geo.message1'));
-        $geoInput.data('type', 'add');
-        if (!$lat.val()) {
-          $lat.val(defaultLat);
-        }
-        if (!$lng.val()) {
-          $lng.val(defaultLng);
-        }
-        if (!$zoom.val()) {
-          $zoom.val(defaultZoom);
-        }
-        if ($gmapTarget) {
-          $gmapTarget.addClass('js-map_editable-container');
-          ACMS.Dispatch.Admin($geoForm.parent().get(0));
-        }
-        ACMS.dispatchEvent('onGeoInfoAdded', $geoForm.get(0));
-      };
-      const deleteGeo = function () {
-        $geoForm.hide();
-        $geoInput.val(ACMS.i18n('geo.message2'));
-        $geoInput.data('type', 'delete');
-        $lat.val('');
-        $lng.val('');
-        $zoom.val('');
-      };
+  const dispatchGeoInput = (context) => {
+    const $geoInput = $('.js-geo_input', context);
+    const $geoForm = $('.js-geo_form', context);
+    if (
+      !$geoInput.length
+      || !$geoForm.length
+    ) {
+      return;
+    }
+    const $lat = $geoForm.find('[name=geo_lat]');
+    const $lng = $geoForm.find('[name=geo_lng]');
+    const $zoom = $geoForm.find('[name=geo_zoom]');
+    const $gmapTarget = $geoForm.find('.js-map_editable-container-flag');
+    const defaultLat = ACMS.Config.adminLocationDefaultLat || '';
+    const defaultLng = ACMS.Config.adminLocationDefaultLng || '';
+    const defaultZoom = ACMS.Config.adminLocationDefaultZoom || '10';
 
-      $geoInput.bind('click', () => {
+    const addGeo = function () {
+      $geoForm.show();
+      $geoInput.val(ACMS.i18n('geo.message1'));
+      $geoInput.data('type', 'add');
+      if (!$lat.val()) {
+        $lat.val(defaultLat);
+      }
+      if (!$lng.val()) {
+        $lng.val(defaultLng);
+      }
+      if (!$zoom.val()) {
+        $zoom.val(defaultZoom);
+      }
+      if ($gmapTarget) {
+        $gmapTarget.addClass('js-map_editable-container');
+        ACMS.Dispatch.Admin($geoForm.parent().get(0));
+      }
+      ACMS.dispatchEvent('onGeoInfoAdded', $geoForm.parent().get(0));
+    };
+    const deleteGeo = function () {
+      $geoForm.hide();
+      $geoInput.val(ACMS.i18n('geo.message2'));
+      $geoInput.data('type', 'delete');
+      $lat.val('');
+      $lng.val('');
+      $zoom.val('');
+    };
+
+    $geoInput
+      .on('click', () => {
         const type = $geoInput.data('type');
         if (type === 'add') {
           deleteGeo();
         } else if (type === 'delete') {
           addGeo();
         }
-      }).trigger('click');
-    }
+      })
+      .trigger('click');
   };
-  dispatchGeoInput();
+  dispatchGeoInput(document);
+  ACMS.addListener('acmsDialogOpened', (event) => {
+    dispatchGeoInput(event.obj.item);
+  });
 
   /**
    * 編集画面のラベル変更
-  */
+   */
   const changeEntryLabels = () => {
     const EditorJson = document.getElementById('entry-labels');
     if (!EditorJson) {
@@ -515,7 +653,7 @@ ACMS.Ready(() => {
         }
       });
     } catch (e) {
-      console.log('JSONのparseに失敗しました。');
+      console.log('JSONのparseに失敗しました。'); // eslint-disable-line no-console
     }
     const table = document.getElementById('js-entry-detail-table');
     if (!table) {
@@ -561,4 +699,3 @@ ACMS.Ready(() => {
     });
   }
 });
-

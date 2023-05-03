@@ -1,39 +1,24 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-psgnuTvKYdggrhLST8EO
+<?php
+
+class ACMS_POST_Shop_Receipt_Status extends ACMS_POST
+{
+    function post()
+    {
+        $aryCode    = $this->Post->getArray('checks');
+        $status     = $this->Post->get('status');
+        $this->Post->validate();
+
+        if ( $this->Post->isValidAll() ) {
+            $DB = DB::singleton(dsn());
+            while ( !!($code = array_shift($aryCode)) ) {
+                $SQL    = SQL::newUpdate('shop_receipt');
+                $SQL->addUpdate('receipt_status', $status);
+                $SQL->addUpdate('receipt_updated_datetime', date('Y-m-d H:i:s'));
+                $SQL->addWhereOpr('receipt_code', $code);
+                $SQL->addWhereOpr('receipt_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+        }
+        return $this->Post;
+    }
+}

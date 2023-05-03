@@ -6,6 +6,7 @@ class ACMS_GET_Admin_Schedule_View extends ACMS_GET_Plugin_Schedule
     {
         $config = Config::loadDefaultField();
         $config->overload(Config::loadBlogConfig(BID));
+        $this->unit = config('schedule_unit');
 
         // POSTから年月日を取得
         if ( !empty($_POST['dateArgs']) ) {

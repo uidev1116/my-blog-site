@@ -1,29 +1,31 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cP/EuUTaUW48Vvmxi+YnOjCKY4CR7/h76USLJbnBid/ZAQOVlnzZ4EK9c/ivaOuEZuONQNE7l
-nZXKBQRrdWTUqShpWaMG604no/TsttseqM5UTZlTKKrwicnidIhCdUBl/JX5IxYEY4dGqPGtTpxh
-LJ6fwwVxT/xXQmGjXJv7rBBuVP2jfm21unnHgQlPEYj2jhAToUKS7T/E6jM0q7FpyU+XT42bQuuA
-8ubsQWP+z8McxKhO4lScIvJA6hlkpa04EDb8FwQI3jIt4sL1xRXLzWSD6A/mE7EuTmpshVqdM6Mf
-ApAFFN7/w6AviIEkwen+WZ8nyzoQIL7zOCy9qRFeRapmDTEzh92AyD/DpcUZVMy6MTzuQgcutYno
-OD+SmRorraww7klBBUbacQaNyAxtQfrZ8Q1tJYqqKMMoujSpwFxrsXU0YpikwKBO2Ofqf8eXZ6qF
-izTiM2U/N3wd7RP4noCTgFg03qlPERikzp0Cu1LChxyVKxy2eRTVV2LGHx6ncxbIYXQXhYAjswah
-MGBNguIOzmXB4OjxfEezlDSJC1ispaiIm2DwaiXRop13+7xbOA6gBnSayXYkIVrdIB8z3dV7HNna
-C7e3ttZRNQtgIeSMQ4/z7yHo6zj7NUShADHplZetoJ6aDV+Xprazl1udHSItQq9Lsifu1RN38qaO
-dGdpupgtMJLsqrDLQ1B0pWeC6CC1PHfikZcY6j7tKhu/rVu3IRMYqiX5Vds+oTGcCuiuboC2qRY0
-y4TkossE0HljLlrGCjARGilFSBrwrl6njZW6JpCwVN8mPfPycyQEwzg9WVGjRb0Rq6CY5S2yTzZh
-o0pR4AG/nyBvt+swtnMvgQSKkEeqvv7oczUIhimquReGkW7v1PlPTO91eOCpMWL54QbZdJ29R98X
-1NFRtx78a3w8rGNwB34ccXi4Lx5vcMm+P4RVwtktQBk/9yT7q+TGW8EXAZOuUsmlN4XllPG9G7w7
-xHpttrLF/r6CX3g/JUuAil2RHdH7COucHUJsXGu5CmEvryt1aoyGgdoW9clNLLAGGpPOuuQ1YWRg
-HjcyGiK4M7EhHIS97VRAd0lPM8sPmwp0t18wTbMd4jYJFuB+MBNUky8UCWkwS1lTYO0XhIHru6mZ
-mBSnB2m5z3c8HgvMT+c/TiUjl4sYiC6cGR7/4N5uTMHkjFkMo+gbdfMwLQx9Nru26dvq1KuGcJJA
-NvTvveTJ/90GPZqfFspr1naBornytU0r6wdmVYAoPArifzM+hAHmCQBBKrvwx3MhG2OjlqAD1QJM
-O+B9K7LRGsB7t62cMV0UnCWHV1gy+WeeLLJjm1D7sspSDHh/YCZ2Q3GztnN3UMzMZq/ysJDGglDr
-/r5lxTg0MNWuWjvlnuhSYPMygvygj3wTmn5N45ihIMu6h1U1zZltMrwcyHtcmXNXlwo7fjpKSvY1
-dMl4/kto8awbAUsX5IpJf+lwDFKT15COwQ7LnnbG/AOgLIOZOsgMWm2TT7NmywaQpOXryv1TlnsH
-5iF/7YCx1ZiIauntYCijNi0KfF3s0Z88sgsxConbGkhARw1MAV6owoB3Ot2YUWI8BGqDkx722wkj
-pzQhA3beDTDWkIKrvtPl48PcE9oKno3ywTrmbXmcPPRDnF0LFnQdiGNO+h4mR8BOixhiPvg6bHbV
-dfPmhU/W3xTgqL9HOJ0F3FHkpp+0+q+M4+4DT44A1LWjPlP39q2i5CDoPb9AJt0LDNOvpcDchuzb
-Ble2JwdGndWU4e1ilbTGu8nwPtgXbMkWLBMGxVDJ2Liw9NW+Zprrcld3wno3OLzDaYAvrZJxbbOm
-8qb2V3LCvNe8FSYeCXqqAmot3/WQ0JjphpaAwlJZe+OsrO6m880jAWH99Iiv6Xq27+f2JHt74lP8
-NcU3ejCV4EaphqInceWtlhdmJXw/YrDgEm==
+<?php
+
+class ACMS_POST_Comment_Confirm_Insert extends ACMS_POST_Comment
+{
+    /**
+     * CSRF対策
+     *
+     * @var bool
+     */
+    protected $isCSRF = true;
+
+    /**
+     * 二重送信対策
+     *
+     * @var bool
+     */
+    protected $checkDoubleSubmit = true;
+
+    /**
+     * @return false|Field
+     */
+    function post()
+    {
+        $Comment    =& $this->extractComment();
+        $this->Post->set('action', 'insert');
+        $this->Post->set('step', $this->Post->isValidAll() ?
+            $this->Post->get('nextstep') : $this->Post->get('step')
+        );
+        return $this->Post;
+    }
+}

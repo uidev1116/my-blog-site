@@ -1,130 +1,173 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Shop_Form_Confirm extends ACMS_POST_Shop
+{   
+    function post()
+    {
+        $this->initVars();
+
+        $Order = $this->extract('order');
+        $Order->setMethod('payment', 'required', true);
+        $Order->setMethod('deliver', 'required', true);
+        $Order->validate(new ACMS_Validator());
+
+        if ( $this->alreadySubmit() ) {
+            $this->screenTrans();
+        }
+
+        if ( $this->Post->isValidAll() ) {
+
+            $SESSION =& $this->openSession();
+            $SESSION->set('payment', $Order->get('payment'));
+            $SESSION->set('deliver', $Order->get('deliver'));
+            $SESSION->set('request_date', $Order->get('request_date'));
+            $SESSION->set('request_time', $Order->get('request_time'));
+            $SESSION->set('request_others', $Order->get('request_others'));
+
+            /*
+            * 合計類の一括計算（税抜き計など）
+            */
+            $ADDRESS = $SESSION->getChild('address');
+            $TEMP = $this->openCart();
+            $amount = array();
+
+            foreach ( $TEMP as $row ) {
+                $price  = $row[$this->item_price];
+                $qty    = $row[$this->item_qty];
+                $tax    = $row[$this->item_price.'#tax'];
+                $sum    = $row[$this->item_price.'#sum'];
+
+                @$amount['amount']   += intval($qty);
+                @$amount['subtotal'] += intval($sum);
+                @$amount['tax-only'] += intval($tax   * $qty);
+                @$amount['tax-omit'] += intval($price * $qty);
+
+                //if ( !empty($row[$this->item_except]) ) $except_flg = true;
+                if ( !empty($row[$this->item_except]) && empty($except_flg) ){
+                    $except_flg = ($row[$this->item_except] == 'on') ? true: false;
+                }
+            }
+
+            /*
+            * detect exception item
+            */
+            if ( !empty($except_flg) ) {
+                $SESSION->set($this->item_except, 'on');
+            } elseif ( !$SESSION->isNull($this->item_except) ) {
+                $SESSION->delete($this->item_except);
+            }
+
+            /*
+            * 諸費用の計算（送料／支払い手数料）
+            */
+            $charge = array();
+            $charge['deliver'] = $this->deliverCharge($SESSION->get('deliver'), $ADDRESS->get('prefecture'));
+            $charge['payment'] = $this->paymentCharge($SESSION->get('payment'));
+            $charge['others']  = $this->othersCharge($SESSION->get('request_others'));
+
+            $common = config('shop_order_shipping_common');
+            $charge['deliver'] = is_numeric($common) ? $common : $charge['deliver'];
+            $charge['deliver'] = ( $amount['subtotal'] < config('shop_order_shipping_limit') ) ? $charge['deliver'] : 0;
+
+            // total = subtotal + charge( deliver + payment + others )
+            $involve = explode('-', config('shop_total_involve'));
+            $amount['total'] = $amount['subtotal'];
+            foreach ( $involve as $row ) {
+                if ( $row != ('deliver'||'payment'||'others') ) continue;
+                $amount['total'] += $charge[$row];
+            }
+
+            $amount['charge#deliver'] = $charge['deliver'];
+            $amount['charge#payment'] = $charge['payment'];
+            $amount['charge#others']  = $charge['others'];
+            $amount['settle']  = $this->settleMethod($SESSION->get('payment'));
+
+            foreach ( $amount as $key => $val ) {
+                $SESSION->set($key, $val);
+            }
+
+            $this->closeSession($SESSION);
+
+            $step = 'confirm';
+
+        } else {
+
+            $step = 'deliver';
+
+        }
+
+        $this->Post->set('step', $step);
+        return $this->Post;
+    }
+
+    function othersCharge($request)
+    {
+        $labels = configArray('shop_order_request_others_label');
+        $charge = configArray('shop_order_request_others_charge');
+
+        foreach ( $labels as $key => $label ) {
+            if ( $request == $label ) {
+                return @$charge[$key];
+            }
+        }
+    }
+
+    function deliverCharge($deliver, $prefecture = null)
+    {
+        $labels = configArray('shop_order_deliver_label');
+        $charge = configArray('shop_order_deliver_charge');
+        
+        foreach ( $labels as $key => $label ) {
+            if ( $deliver == $label ) {
+                if ( !is_numeric(@$charge[$key]) && !empty($prefecture) ) {
+                    return $this->shipping($prefecture);
+                } else {
+                    return @$charge[$key];
+                }
+            }
+        }
+    }
+
+    function paymentCharge($payment)
+    {
+        $labels = configArray('shop_order_payment_label');
+        $charge = configArray('shop_order_payment_charge');
+
+        foreach ( $labels as $key => $label ) {
+            if ( $payment == $label ) {
+                return intval(@$charge[$key]);
+            }
+        }
+    }
+
+    function settleMethod($payment)
+    {
+        $labels   = configArray('shop_order_payment_label');
+        $kuroneko = config('shop_order_payment_kuroneko');
+        $sgp      = config('shop_order_payment_sgp');
+        $paypal   = config('shop_order_payment_paypal');
+
+        if ( @$labels[$kuroneko] == $payment ) {
+            return 'kuroneko';
+        }
+        if ( @$labels[$sgp] == $payment ) {
+            return 'sgp';
+        }
+        if ( @$labels[$paypal] == $payment ) {
+            return 'paypal';
+        }
+
+    }
+
+    function shipping($prefecture)
+    {
+        $labels = configArray('shop_order_shipping_label');
+        $charge = configArray('shop_order_shipping_charge');
+
+        foreach ( $labels as $key => $label ) {
+            if ( $prefecture == $label ) {
+                return @$charge[$key];
+            }
+        }
+    }
+}

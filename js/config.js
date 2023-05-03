@@ -48,7 +48,7 @@ ACMS.Config({
   //----------
   // CKEditor
   ckeMark: 'textarea.js-ckeditor',
-  ckeAutoInline: false,
+  ckeAutoInline: false, // contenteditable 属性がtrueの要素に対するCKEditorの自動生成をOFF
 
   //----------------------------------
   // イメージビューア ( prettyPhoto )
@@ -381,6 +381,7 @@ ACMS.Config({
     enableOverflowScrolling: true,
     suggestiveShadow: false,
     applyToParents: false,
+    offset: 0,
     i18n: {
       scrollable: ACMS.i18n("scrollhint.scrollable")
     }
@@ -917,24 +918,6 @@ ACMS.Config({
     // }
   ],
   streetViewMark: '.js-street-view',
-  //-------------------
-  // yahoo map (YOLP)
-  yahoo_api_url : (function(protocol) {
-    if (protocol !== 'https:') {
-      return 'http://js.api.olp.yahooapis.jp/OpenLocalPlatform/V1/jsapi?appid=' + ACMS.Config.yahooApiKey;
-    } else {
-      return 'https://map.yahooapis.jp/js/V1/jsapi?appid=' + ACMS.Config.yahooApiKey;
-    }
-  })(location.protocol),
-  yolpLayerSet: 'on',
-
-  //---------------------------
-  // 静的ヤフーマップの動的化 (YOLP)
-  s2dYolpMark: '[class^="column-yolp-"]>img:not(.js-s2d-ready)',
-  s2dYolpReadyMark: 'img.js-s2d-yolp-ready',
-
-  // もともと動的なYahooMap (YOLP)
-  yahooMapMark: '.js-yahoo-map',
 
   //-----------
   // swfobject
@@ -1172,11 +1155,11 @@ ACMS.Config({
   postIncludeReadyDelay: 0,
   postIncludeIntervalTime: 20000,
   postIncludeArray: [{
-    //        'mark'      : '.js-post_include-original',
-    //        'type'      : 'submit',
-    //        'method'    : 'swap',
-    //        'effect'    : 'slide',
-    //        'speed'     : 'slow'
+    //        'mark'           : '.js-post_include-original',
+    //        'type'           : 'submit',
+    //        'method'         : 'swap',
+    //        'effect'         : 'slide',
+    //        'effectSpeed'    : 'slow'
   }],
 
   //---------------------
@@ -1427,7 +1410,7 @@ ACMS.Config.Admin = {
     'Blog_Field': [],
     'Blog_ChildList': [],
 
-    'Tag_Cloud': ['bid_axis'],
+    'Tag_Cloud': ['bid_axis', 'cid_axis'],
     'Tag_Filter': ['cid_axis'],
 
     'Calendar_Month': ['bid_axis', 'cid_axis'],

@@ -268,7 +268,7 @@ class Export
      *
      * @return void
      */
-    protected function setYaml($records = array(), $table)
+    protected function setYaml($records, $table)
     {
         if ( isset($this->yaml[$table]) ) {
             $this->yaml[$table] = array_merge($this->yaml[$table], $records);

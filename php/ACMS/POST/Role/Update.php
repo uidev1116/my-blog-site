@@ -1,55 +1,45 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-ZVlDYyr8Ue7wFkJi1hcssrFbkhD9HZ6X
+<?php
+
+class ACMS_POST_Role_Update extends ACMS_POST
+{
+    function post()
+    {
+        $Role = $this->extract('role');
+        $Role->setMethod('name', 'required');
+        $Role->setMethod('role', 'operable', sessionWithEnterpriseAdministration() and $rid = intval($this->Get->get('rid')) and BID === 1 );
+
+        $Role->validate(new ACMS_Validator());
+
+        if ( $this->Post->isValidAll() ) {
+            $DB     = DB::singleton(dsn());
+
+            //-----------
+            // role
+            $SQL    = SQL::newUpdate('role');
+            foreach ( $Role->listFields() as $key ) {
+                if ( $key !== 'blog_list' ) {
+                    $SQL->addUpdate('role_'.$key, $Role->get($key));
+                }
+            }
+            $SQL->addWhereOpr('role_id', $rid);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            //-----------
+            // blog list
+            $SQL    = SQL::newDelete('role_blog');
+            $SQL->addWhereOpr('role_id', $rid);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            foreach ($Role->getArray('blog_list') as $bid ) {
+                $SQL    = SQL::newInsert('role_blog');
+                $SQL->addInsert('role_id', $rid);
+                $SQL->addInsert('blog_id', $bid);
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+
+            $this->Post->set('edit', 'update');
+        }
+        return $this->Post;
+    }
+}
+

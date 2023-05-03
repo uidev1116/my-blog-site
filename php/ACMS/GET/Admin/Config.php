@@ -37,6 +37,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
             $post_config->overload($config);
             return $post_config;
         }
+        $config->set('session_cookie_lifetime', env('SESSION_COOKIE_LIFETIME', 259200));
 
         return $config;
     }
@@ -206,7 +207,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         $column = array('insert' => '新規エントリー作成');
         foreach ( $Config->getArray('column_add_type') as $mode ) {
             $label = array_shift($labels);
-            if ( preg_match('@^(text|table|rich-editor|image|file|osmap|map|yolp|video|youtube|eximage|break|quote|media|module|custom)[^_]+(.*)@', $mode) ) continue;
+            if ( preg_match('@^(text|table|rich-editor|image|file|osmap|map|video|youtube|eximage|break|quote|media|module|custom)[^_]+(.*)@', $mode) ) continue;
             $column['add_'.$mode] = $label;
         }
         foreach ( $column as $mode => $modeLabel ) {
@@ -282,27 +283,6 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
                         $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
-                    }
-                } else if ( 'yolp' == $type ) {
-                    foreach ( $Config->getArray('column_map_size') as $j => $size ) {
-                        $_vars  = array(
-                            'value' => $size,
-                            'label' => $Config->get('column_map_size_label', '', $j),
-                        );
-                        if ( $Field->get('size') == $size ) {
-                            $_vars['selected']  = $Config->get('attr_selected');
-                        }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
-                    }
-                    foreach ( $Config->getArray('column_map_layer_type') as $j => $layer ) {
-                        $_vars  = array(
-                            'value' => $layer,
-                            'label' => $Config->get('column_map_layer_type_label', '', $j),
-                        );
-                        if ( $Field->get('field_5') == $layer ) {
-                            $_vars['selected']  = $Config->get('attr_selected');
-                        }
-                        $Tpl->add(array_merge(array('layer:loop', $type), $rootBlock), $_vars);
                     }
                 } else if ( 'youtube' == $type ) {
                     foreach ( $Config->getArray('column_youtube_size') as $j => $size ) {
@@ -396,7 +376,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
             }
 
             foreach ( $Config->getArray('column_add_type') as $i => $type ) {
-                if ( !preg_match('/^(text|table|rich-editor|image|file|osmap|map|yolp|video|youtube|eximage|break|quote|media|module|custom)($|_)/', $type) ) {
+                if ( !preg_match('/^(text|table|rich-editor|image|file|osmap|map|video|youtube|eximage|break|quote|media|module|custom)($|_)/', $type) ) {
                     continue;
                 }
                 $Tpl->add(array_merge(array('add_type:loop', 'mode:loop'), $rootBlock), array(

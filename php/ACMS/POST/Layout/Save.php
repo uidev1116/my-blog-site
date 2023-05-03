@@ -1,63 +1,51 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cPthZJlRiORFvwItRrQJmvMtgkoEW9oRaIzUfRbPfhKmVRLIy8NnPJ4Ui3gtZYHjGtmYdpR5j
-SmFQH3tiWq7yMDn4H46guJqGgwiFD9Zw2ecvblSUa68Yb/o3AkOgTjkfjaV5mM2kBoBQiJ9tJzmo
-U2/I3FjVRjk+eVCYXaE7pSXTogBwQsGoqliAtlxkW/0/Z29eA7L4mqql2LmbU2H9O2oCSAdzrEqQ
-/8b3mnEQsb0V3IiKbA0RYjag/pk3J40R47VEfhWErBSJPK7jk5Ns1mqOh/0LQbYL8XwdA0cdr+yh
-yXOEHl/QuZR6RUnCHWn1GYGBZCtgyTFnuqRxOAa21s8rIdQtU7XFGVJ4XerTlckwrgF5U7+v0fiR
-74GC9huTW3hRqCKo/vx3MEocJjB4X5rQRpcGp5n62sXXYxvT3/Xd58hNC5OsHT/8KtcS2C2/MdB2
-/ak1+YuRd2YnDR0Bxjh7lFqso0gVUvBlm8P3V5cnMZvKA+ykXSgZwpGS4hJQhAxbUKhIe1TQSIl8
-lTNug0N849F4kXKLkLQlF/k5bitQ+a2bZWEvHnpclO91iL3RviW9lEgDCR+FQmtYJR0mLpzFEsr3
-7ILYrLfGpHROSq3QmxreASHgTKaJOimssTJrSeAZIFHw/wRg8D4HtHzwdWSXUUhNnLV81ZMIgwv1
-JYrhz/izZljhfdZ8nK7fUxypXN6mWuRrjk85kwjgly1rCrHT1j1Q69Ka9Apx2tmcihp19upUtFtL
-ZTbi7Vyu59/kdzgIrBQBzFH+vHybxG7TAOFXkUKmYv0fkIgs5yYAZsziVJKOUfNcOTBqxKk0Nher
-uKwQ4P5QC01FN9328IbmDfRmGKbp3GZ1Ey7NvWpZj4QrYe/LAtNNR8gYJ4BrfpQfzz4jNchMLCM+
-4bf0RHp88pFZL/PNLcgRgplkbCC5O966kvlyH4Mhq6O9wS/16O1paF+CkJTksWbvQrw4Jnbbvu0x
-/Byn93GFQQMPErX7EMRUa9zunX2Sb4imSuHTLp6QZzQ9caWSPIVWGtJ0Qv5pd1z4t5IvyEYFtbhV
-LnjvJp7Kfm6igq42LGdIOzRPDGVHRm+Mjwb2F+ae2Jz+O5D1bOH7n44j3p/qabyHMO4fQKrXSbr+
-NXEjBFweowe1O7XNu9IwA/+Wf2b3P3SiH7YGSKreTZ2r7rSSUGYDHpzZjOC860E3kstaLHrVIvOA
-/RLbVFzP/fsclVaJvHpMb+PVeeyJsXFsE1pRTEegNv8Zzi/Ek4SdPt342w8SsDMHqeuWK/alKJQy
-WfWfo4gnM+JHy6Erjfeugmx11RsDCaiITkeahgl6OQV8mogMXVGQy9/UUJ5uW+dLoT7SEvPHuN1/
-gAZertnVYPwXpjcF1qth5rCcORUBxI5Vt0b5dj4PTgTz/YUJcHGKpN14kCOuD7RzCx9cy0G5Xykc
-Xfy+AAwTOjo1NsddM5kw0Tc5eD2vh4H6lOq3s/6qCbY3A1YpgaZWUG8pPrQ+j6uOQkR0qVqNkQJJ
-ms5/8tZmLzFoORRBNrFJsNCbV4zGtMFun1tjx5mAyF8XgFhjChEYYFb9ur0OptRNb8xLE7Nr1I/s
-wrCE+KJADvGtHojFudC6CA7yC+aVpVFwVul6GCE/dN9fDRg3g1KsCRO3wbubrrFtNGWIu33bTxzO
-BmUumCIZeHHjRsEZztvzgWyT/yr0IO0BlfvUVqoDtchzFvWe6hFIb37Fe9WtIyOE0MsQbfaOr8rm
-W2W0GPR6rvYQcEjrOvC07wwlBz0o2SrRLLTI6tFqjoMP7DlppcBE2N4EevrPk/KrcT1SnZVw4ZtF
-nhzSMt57FnCklYDYAAeCIRLfmsZ/7yz6rIRsRvm1VucCxgD1ZF+ubJDGuK97I0/sjdkBeFJihgcA
-ChCx3akMGT62df1PRkWP/NVmDmA35/5wUs3an4UMFtvWaxigYRU4qcOHriVgTP3CXJtISlwYs/qI
-56ZSL0arEkohHIoQrKxdIG+41kXToOUYHrsr1Eu1D4NneXrr2VLukNW4uEQxrcs4VhvDi0RukmFU
-gDvce1ZSvNUtmNj5rqomcqGTvYDQuJHHONE8uebNUIub3MJPkBR7YJ4GDoo2+9mcooK/n8/SeYvd
-1TtvhoP6GV8Dty0PY7eL59darICVZ8XLPx8WS2ydk5XhllNcseCvBDvoRNoAk1BtNXdG5wQSyk3k
-iTmV7p/8EZW2ZNK4Emsyx1DzkAUGPS0hF/LsA4qVpSAheEYu3r7HUwthmhsTx9PbQzIjvGR+Qkd6
-vnY1uhtCS/v0S8bQ6+BJXB4NFgjr9ZuAUoV0lrQ3kjOfoBtZNVfUM23hFKkL+uYNf9fsoP8b+NYR
-jjtV/3rNOGG1I6hSoNIWbctLTA2QI3FnUmCfmVcRerb2Lstx7cBVVRFlhufqN86Be5z9Cbof771p
-u45P0bPppZVt+e8J7pW5cu2aE0hM2YmbKW9weaoILroX4blyVCiS5eOqcT5JWe6fDiw+FZ7Cr47e
-0MtNR/Wg9YkTtO3TcMzT/xeFKmMH5JaL3nwBPVoJNgG9ZCRsq8W+rdnUXUsUvwWvYe8L2bDXPokJ
-mcIGVTtTh9SGX9OdgSx5pUfAcPSnQPKUuFpkN3KD+oW6FZW5YjNMCe5tMFI9KtKnzAt+aGBrq9Pw
-PZRdn+cJYX0rxU8uv6pbBE5YY+IYWYBW/xpyjYu97sh+aXkB2P6hcoNG/Gnj/1kHceBWYzHD/0Ta
-mpje7wffXvvCpgxJSJLYStZvJuQ2FhYmtN572Lmk4zPoRRSYJt293UcuMbnr92CCfhNF6y0t6ZzL
-JKCfN7rUYMB6hW3UtRlH/XzRyG6X7mrh2tBIVRx8uhtJBWsTSpGZ6mWKSS1brlQoiADiby6fiQLW
-hNtBL0xzeYHimrTQK2u657vFEMbBkACvamQb/Ocw4dVcQKZgt4VFQTvXhcnW9EmE0fmfhk/LW02A
-kPSlgKVPjWbuuysTQ3YRBRzp0zRATfyVqzunjf1bpYKNvnUy1KgOx3eO1vRsYB8ahIAMCwx6W4Rg
-xa6lSMoYLdwzrntOv/O6C9HRFlsjDBI926YBLTvwcoDEwSjywo7/kmTavbvvwrInIbwCH8r/YNOd
-ZFM5a3LcxD49O3290pRWVltoJd70d0Te7OWvIRkEmG4nM1mYXb0Zg/fYuNT4JWKT+KOcGgjNWK0U
-OjWoOhmATgOiDwwQxqWF0N2/pIKHWSSgA3doTmZcvKrCj4NnzZins5KKyVT82Q50AFZDurOUiBc+
-TLdfbpAALwD3kZSP8ZylxqktpGibc9D7U6a59E6P0R8qK00ZtOu1MR/4DTUZpxo5BH/yrSWQ8g8w
-aXUOQ/lZxPPcJw/TcsDC4iq/gbrGp/MgB4D3LsJ0VnbY6nishiFzRb/THz2LnaKOTH6G6wkjnm5l
-E9L4ZYvbQTD1711UTOzUFaFMvhw28s3v4VhSdCD6RIsWIWIsPBq6RcG/oeTSNZOSc/bJqhV3rqPv
-b2hJe2L6jSlan5xnscrfNcxr/HtpadtEz8LxnKwCtuEq9CimdRF5ctiKiHjd2gT3bQyODPTN78N3
-Sr0rlo2d24RqO86f9XF1e8WpgGmByIbsiOI6WYCJWP9NPbapxA6+ua5BxuzG77kxAuDuAGdCcdSx
-2OfTTVI9at8gWZ1R3nt5Xgam00+hhPACTfdXO3LDBaXwrjxwL2hQ1PdWEsg5SZUQYiovakPrBhS5
-b0LBskWtlwCILZAYso1nK534txaGQi+puV5qmUDT36OwzGNaVrn+Mf0b+NsLsW483ylwsAfUozWt
-E/WrzlwM1PIFEICPmcvSPQtV98wexF4DxwfMdzR6n3620HqDC2FjwLZ7SWIJDHq/EtqDHPsKecHD
-nlXCbvD6mr44BFFNl5tpMwiAwdeckXVS7ez4Wm22nlR/tQMdd1vf2ZlJKfaLkgGca06xibW4zRKp
-mqkeT/Hj9okPPyQi5LnCKnkc951G2qmvk+VZb2TfvniCyVT/cLTyj/51o1wbYYGqEuqlNdguaeWt
-aHJejEo09qaONQiQ+K+WyUT7Vf+oMt/2AihHYzYxUGy5HKoJ1UcDx5puWB9FpCqC7+Jsy9IHOtP/
-LiO9zZFOTV8KfnYKLm8ZqwyBmMUpg9jYKei4HU1ZgndAIl41rRCNbXNOKi1CqMk6Q7AlBZ/OBF+d
-YkJuyQ6YKOtrb2qCY+XXu/TXB4DIx2RgvAvV6nhS7BMU0je552yP0ULGEBpto7xyElgd9dqcpoKz
-5G4O6JgYw79GbIiJ+d9z3y2Ak2+zvmP1Q6O/fnJ+wx+FDR5YnySU2GalEpOEX0eRvoaTHoUPfbTA
-bPzQVglKisfh2EexQ1N31mUP7tmBAQGflirm+uuLsrwJEIyUoTAjiPBebjzgZS9+HXQXsO8B6rQY
-/1qXsLaqbvcELZFWOw58wpaYmUN94L+jjBCrdgPHgndglBTknKqll1mHJsEPoGO6bJkQ5ItV3om8
-itsRuwkgnWmYi0==
+<?php
+
+class ACMS_POST_Layout_Save extends ACMS_POST_Layout
+{
+    function post()
+    {
+        $DB = DB::singleton(dsn());
+        $identifier = $this->Post->get('id');
+        $ids = $this->Post->getArray('ids');
+
+        $SQL = SQL::newDelete('layout_grid');
+        $SQL->addWhereOpr('layout_grid_identifier', $identifier);
+        $DB->query($SQL->get(dsn()), 'exec');
+
+        $map = array();
+        foreach ($ids as $i => $id) {
+            $map[$id] = $i + 1;
+        }
+        foreach ($ids as $i => $id) {
+            $pid = $this->Post->get('parent_'.$id);
+            $pid = !empty($pid) ? $map[$pid] : 0;
+            $data = array(
+                'id'        => $id,
+                'serial'    => $i + 1,
+                'identifier'=> $identifier,
+                'class'     => $this->Post->get('class_'.$id),
+                'pid'       => $pid,
+                'col'       => $this->Post->get('col_'.$id),
+                'row'       => $this->Post->get('row_'.$id),
+                'mid'       => $this->Post->get('mid_'.$id),
+                'tpl'       => $this->Post->get('tpl_'.$id),
+            );
+            $this->save($data);
+        }
+        $Get = $this->Get;
+        $query = '';
+        $url = HTTP_REQUEST_URL;
+
+        if (!$Get->isNull()) {
+            foreach ( $Get->listFields() as $fd ) {
+                if ( $fd === 'layout' || !$aryVal = $Get->get($fd) ) continue;
+                $query  .= ($fd.'='.$aryVal);
+            }
+        }
+        if (!empty($query)) {
+            $url .= ('?'.$query);
+        }
+
+        $this->redirect($url);
+    }
+}

@@ -146,6 +146,9 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
             $uid    = $row['user_id'];
             $auth   = getAuthConsideringRole($uid);
             $Tpl->add('auth#'.$auth);
+            if (isRoleAvailableUser($uid)) {
+                $Tpl->add('auth_default#' . $row['user_auth']);
+            }
             $Tpl->add('status#'.$row['user_status']);
 
             $_vars  = array(

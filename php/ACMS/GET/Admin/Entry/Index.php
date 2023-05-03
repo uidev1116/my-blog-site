@@ -139,10 +139,10 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
 
         //-------------
         // contributor
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $UID = !roleAuthorization('entry_edit_all', BID) ? SUID : UID;
         } else {
-            if ( !enableApproval(BID, CID) && !sessionWithCompilation() ) {
+            if (!sessionWithCompilation() && (config('approval_contributor_edit_auth') === 'on' || !enableApproval(BID, CID))) {
                 $UID = SUID;
             } else {
                 $UID = UID;
@@ -286,8 +286,8 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             //---------
             // delete
             do {
-                if ( enableApproval(BID, CID) ) {
-                    if ( !sessionWithApprovalAdministrator(BID, CID) ) break;
+                if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
+                    if (!sessionWithApprovalAdministrator(BID, CID)) break;
                 } else if ( roleAvailableUser() ) {
                     if ( !roleAuthorization('entry_delete', BID, $eid) ) break;
                 }
@@ -304,7 +304,7 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             $Tpl->add('entry:loop', $_vars);
         }
         do {
-            if ( enableApproval(BID, CID) ) {
+            if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
                 if ( !sessionWithApprovalAdministrator(BID, CID) ) break;
             } else if ( roleAvailableUser() ) {
                 if ( !roleAuthorization('entry_delete', BID) ) break;

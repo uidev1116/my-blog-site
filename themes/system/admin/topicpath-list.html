@@ -44,12 +44,12 @@
 <!--T-->テキスト置換<!--/T--><!-- END fix_replacement --><!-- BEGIN fix_ngram -->
 <!--T-->N-gramインデックス<!--/T--><!-- END fix_ngram --><!-- BEGIN fix_tag -->
 <!--T-->タグ追加<!--/T--><!-- END fix_tag --><!-- BEGIN config_function -->
-<!--T-->機能設定<!--/T--><!-- END config_function --><!-- BEGIN config_output -->
+<!--T-->機能設定<!--/T--><!-- END config_function --><!-- BEGIN config_api -->
+<!--T-->API設定<!--/T--><!-- END config_api --><!-- BEGIN config_output -->
 <!--T-->出力設定<!--/T--><!-- END config_output --><!-- BEGIN config_property -->
 <!--T-->プロパティ設定<!--/T--><!-- END config_property --><!-- BEGIN config_authorize -->
 <!--T-->外部認証設定<!--/T--><!-- END config_authorize --><!-- BEGIN config_cache -->
-<!--T-->キャッシュ消去予約管理<!--/T--><!-- END config_cache --><!-- BEGIN config_cache-list -->
-<!--T-->キャッシュ生成リスト<!--/T--><!-- END config_cache-list --><!-- BEGIN config_mail -->
+<!--T-->ページキャッシュ<!--/T--><!-- END config_cache --><!-- BEGIN config_mail -->
 <!--T-->メール設定<!--/T--><!-- END config_mail --><!-- BEGIN config_access -->
 <!--T-->アクセス設定<!--/T--><!-- END config_access --><!-- BEGIN config_theme -->
 <!--T-->テーマ設定<!--/T--><!-- END config_theme --><!-- BEGIN config_edit -->
@@ -107,15 +107,16 @@
 <!--T-->Twitterユーザータイムライン<!--/T--><!-- END config_api_twitter_statuses_user-timeline --><!-- BEGIN config_api_twitter_search -->
 <!--T-->Twitterサーチ<!--/T--><!-- END config_api_twitter_search --><!-- BEGIN config_api_twitter_list_statuses -->
 <!--T-->Twitterリストタイムライン<!--/T--><!-- END config_api_twitter_list_statuses --><!-- BEGIN config_api_twitter_list_members -->
-<!--T-->Twitterリストメンバーズ<!--/T--><!-- END config_api_twitter_list_members --><!-- BEGIN config_api_instagram_users_media_recent -->
-<!--T-->Instagram 最近の投稿<!--/T--><!-- END config_api_instagram_users_media_recent --><!-- BEGIN config_api_instagram_users_media_liked -->
-<!--T-->Instagram 最近のLiked<!--/T--><!-- END config_api_instagram_users_media_liked -->
+<!--T-->Twitterリストメンバーズ<!--/T--><!-- END config_api_twitter_list_members -->
 <!-- BEGIN config_api_bing_web-search -->
 <!--T-->Bingウェブ検索<!--/T--><!-- END config_api_bing_web-search -->
 <!-- BEGIN config_api_bing_image-search -->
 <!--T-->Bingイメージ検索<!--/T--><!-- END config_api_bing_image-search --><!-- BEGIN rule_index -->
 <!--T-->ルール<!--/T--><!-- END rule_index --><!-- BEGIN rule_edit -->
-<!-- BEGIN_MODULE Admin_Rule_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->ルールなし<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Rule_Name --><!-- END rule_edit --><!-- BEGIN module_index -->
+<!-- BEGIN_MODULE Admin_Rule_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->ルールなし<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Rule_Name --><!-- END rule_edit --><!-- BEGIN webhook_index -->
+<!--T-->Webhook 管理<!--/T--><!-- END webhook_index --><!-- BEGIN webhook_edit -->
+<!--T-->Webhook 詳細<!--/T--><!-- END webhook_edit --><!-- BEGIN webhook_log -->
+<!--T-->Webhook 履歴<!--/T--><!-- END webhook_log --><!-- BEGIN module_index -->
 <!--T-->モジュールID管理<!--/T--><!-- END module_index --><!-- BEGIN module_edit -->
 <!-- BEGIN_MODULE Admin_Module_Name --> {label} <!-- END_MODULE Admin_Module_Name --><!-- END module_edit --><!-- BEGIN shortcut_index -->
 <!--T-->ショートカット管理<!--/T--><!-- END shortcut_index --><!-- BEGIN shortcut_edit -->

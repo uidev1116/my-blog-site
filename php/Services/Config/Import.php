@@ -5,6 +5,9 @@ namespace Acms\Services\Config;
 use SQL;
 use DB;
 use Module;
+use Common;
+use Config;
+use Cache;
 
 class Import
 {
@@ -170,6 +173,7 @@ class Import
             $SQL->addWhereOpr('config_module_id', $mid);
             $SQL->addWhereOpr('config_blog_id', $this->bid);
             DB::query($SQL->get(dsn()), 'exec');
+            Config::forgetCache(BID, null, $mid);
         }
 
         // module filed
@@ -186,6 +190,7 @@ class Import
             $SQL->addWhereOpr('field_key', '%@%', 'LIKE');
             $SQL->addWhereOpr('field_blog_id', $this->bid);
             DB::query($SQL->get(dsn()), 'exec');
+            Common::deleteFieldCache('mid', $mid);
         }
 
         // Layout Module
@@ -271,7 +276,6 @@ class Import
             $WHERE->addWhereNotIn('config_module_id', $banner_mids, 'OR');
             $SQL->addWhere($WHERE);
             $SQL->addWhereOpr('config_blog_id', $this->bid);
-
             DB::query($SQL->get(dsn()), 'exec');
         }
 
@@ -297,6 +301,9 @@ class Import
             $SQL->addWhereOpr('field_mid', null, '<>');
             DB::query($SQL->get(dsn()), 'exec');
         }
+
+        Config::cacheClear();
+        Cache::flush('temp');
     }
 
     /**

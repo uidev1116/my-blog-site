@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ReactDeviceMode from 'react-device-mode';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import dayjs from 'dayjs';
@@ -12,40 +12,42 @@ import Notify from './notify';
 import Splash from './splash';
 
 type PreviewState = {
-  date: string,
-  time: string,
-  rule: number,
-  token: string,
-  src: string,
-  copied: boolean,
-  isLoading: boolean,
-  capturing: boolean,
-  isModalOpened: boolean,
-  isNaked: boolean,
-  isMessageModalOpened: boolean,
-  urlShareStatus: 'standby' | 'waiting' | 'done',
-  url: string,
-  ua: string
-}
+  date: string;
+  time: string;
+  rule: number;
+  token: string;
+  src: string;
+  copied: boolean;
+  isLoading: boolean;
+  capturing: boolean;
+  isModalOpened: boolean;
+  isNaked: boolean;
+  isMessageModalOpened: boolean;
+  urlShareStatus: 'standby' | 'waiting' | 'done';
+  url: string;
+  ua: string;
+};
 
 type PreviewProps = {
-  hasCloseBtn: boolean,
-  hasShareBtn: boolean,
-  defaultDevice: string,
-  timemachine: boolean,
-  onClose: Function
-}
+  hasCloseBtn?: boolean;
+  hasShareBtn?: boolean;
+  defaultDevice?: string;
+  timemachine: boolean;
+  ruleList: { id: string; label: string }[];
+  onClose: () => void;
+};
 
 export default class Preview extends Component<PreviewProps, PreviewState> {
+  shareInput: HTMLInputElement | null;
 
-  shareInput: HTMLInputElement;
   iframe: HTMLIFrameElement;
+
   firstUrl: string;
 
   static defaultProps = {
     hasCloseBtn: true,
     hasShareBtn: true,
-    defaultDevice: ''
+    defaultDevice: '',
   };
 
   constructor(props) {
@@ -68,28 +70,16 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
       isMessageModalOpened: isNaked,
       urlShareStatus: 'standby', // standby | waiting | done,
       url: '',
-      ua: ''
+      ua: '',
     };
   }
 
   componentDidUpdate() {
     const { urlShareStatus } = this.state;
     if (urlShareStatus === 'done') {
-      this.shareInput.focus();
-      this.shareInput.select();
+      this.shareInput?.focus();
+      this.shareInput?.select();
     }
-  }
-
-  getUniqueStr(myStrong?: number) {
-    let strong = 1000;
-    if (myStrong) strong = myStrong;
-    return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16);
-  }
-
-  inputDate(e) {
-    this.setState({
-      date: e.target.value
-    });
   }
 
   changeDate(date) {
@@ -106,7 +96,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
 
   changeRule(event) {
     if (event.target.value) {
-      this.setState({ rule: event.target.value});
+      this.setState({ rule: event.target.value });
     }
   }
 
@@ -116,32 +106,31 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     setTimeout(() => {
       this.iframe.src = src;
       this.iframe.onload = () => {
-        this.iframe.onload = () => {}
+        this.iframe.onload = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
         this.setState({ isLoading: false });
-      }
+      };
     }, 10);
   }
 
   close() {
     const { timemachine, onClose } = this.props;
-    const { token } = this.state;
     const fd = new FormData();
 
     if (timemachine) {
-      fd.append('ACMS_POST_Timemachine_Disable', true);
+      fd.append('ACMS_POST_Timemachine_Disable', 'true');
       fd.append('formToken', window.csrfToken);
     } else {
-      fd.append('ACMS_POST_Preview_Disable', true);
+      fd.append('ACMS_POST_Preview_Disable', 'true');
       fd.append('formToken', window.csrfToken);
     }
     $.ajax({
       url: ACMS.Library.acmsLink({
-        bid: ACMS.Config.bid
+        bid: ACMS.Config.bid,
       }),
       type: 'POST',
       data: fd,
       processData: false,
-      contentType: false
+      contentType: false,
     }).then(() => {
       if (timemachine) {
         location.reload();
@@ -156,7 +145,7 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     const fd = new FormData();
     const { timemachine } = this.props;
     const {
-      date, time, token, ua, rule
+      date, time, token, ua, rule,
     } = this.state;
 
     this.setState({ isLoading: true });
@@ -164,32 +153,32 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     if (timemachine) {
       fd.append('date', date);
       fd.append('time', time);
-      fd.append('rule', rule);
+      fd.append('rule', `${rule}`);
       fd.append('preview_fake_ua', ua);
       fd.append('preview_token', token);
-      fd.append('ACMS_POST_Timemachine_Enable', true);
+      fd.append('ACMS_POST_Timemachine_Enable', 'true');
       fd.append('formToken', window.csrfToken);
     } else {
       fd.append('preview_fake_ua', ua);
       fd.append('preview_token', token);
-      fd.append('ACMS_POST_Preview_Mode', true);
+      fd.append('ACMS_POST_Preview_Mode', 'true');
       fd.append('formToken', window.csrfToken);
     }
     $.ajax({
       url: ACMS.Library.acmsLink({
-        bid: ACMS.Config.bid
+        bid: ACMS.Config.bid,
       }),
       type: 'POST',
       data: fd,
       processData: false,
-      contentType: false
+      contentType: false,
     }).then(() => {
       if (this.props.ready) {
         this.props.ready();
       }
       if (!this.state.src) {
         this.setState({
-          src: this.firstUrl
+          src: this.firstUrl,
         });
       } else {
         this.reload();
@@ -220,24 +209,30 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
 
   openShareModal() {
     this.setState({
-      isModalOpened: true
+      isModalOpened: true,
     });
   }
 
   async captureHtml() {
+    const target = this.iframe.contentDocument?.querySelector('body');
+    if (!target) {
+      return;
+    }
     this.setState({
-      capturing: true
+      capturing: true,
     });
-    const target = this.iframe.contentDocument.querySelector('body');
     const canvas = await html2canvas(target, {
-      allowTaint: true,
+      // allowTaint: true,
       logging: false,
-      width: this.iframe.offsetWidth
+      width: this.iframe.offsetWidth,
     });
     canvas.toBlob((blob) => {
+      if (!blob) {
+        return;
+      }
       saveAs(blob, `${(window.location.host + window.location.pathname).replace(/(\/|\.)/g, '_')}.png`);
       this.setState({
-        capturing: false
+        capturing: false,
       });
     });
   }
@@ -245,13 +240,13 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
   hideShareModal() {
     this.setState({
       isModalOpened: false,
-      urlShareStatus: 'standby'
+      urlShareStatus: 'standby',
     });
   }
 
   hideMessageModal() {
     this.setState({
-      isMessageModalOpened: false
+      isMessageModalOpened: false,
     });
   }
 
@@ -260,99 +255,124 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
     const fd = new FormData();
 
     this.setState({
-      urlShareStatus: 'waiting'
+      urlShareStatus: 'waiting',
     });
     fd.append('uri', src);
-    fd.append('ACMS_POST_Preview_Share', true);
+    fd.append('ACMS_POST_Preview_Share', 'true');
     fd.append('formToken', window.csrfToken);
 
     $.ajax({
       url: ACMS.Library.acmsLink({
-        bid: ACMS.Config.bid
+        bid: ACMS.Config.bid,
       }),
       type: 'post',
       data: fd,
       processData: false,
       contentType: false,
-      dataType: 'json'
+      dataType: 'json',
     }).done((json) => {
       if (json.status === true) {
         this.setState({
           urlShareStatus: 'done',
-          url: json.uri
+          url: json.uri,
         });
       }
     });
   }
 
   render() {
-    const { timemachine, hasShareBtn, defaultDevice, ruleList } = this.props;
     const {
-      date, time, rule, src, isModalOpened, urlShareStatus, url, copied, isNaked, isMessageModalOpened, capturing
+      timemachine, hasShareBtn, defaultDevice, ruleList,
+    } = this.props;
+    const {
+      date,
+      time,
+      rule,
+      src,
+      isModalOpened,
+      urlShareStatus,
+      url,
+      copied,
+      isNaked,
+      isMessageModalOpened,
+      capturing,
     } = this.state;
-    let header = null;
-    let sub = [];
-    sub.push(<div style={{ display: 'inline-block', marginLeft: '25px' }}>
+    let header: JSX.Element | null = null;
+    const sub: JSX.Element[] = [];
+    sub.push(
+      <div style={{ display: 'inline-block', marginLeft: '25px' }}>
         <div
           onClick={this.captureHtml.bind(this)}
+          onKeyDown={this.captureHtml.bind(this)}
           style={{ color: '#666', fontSize: '18px', cursor: 'pointer' }}
           role="button"
           tabIndex={0}
         >
           <span className="acms-admin-icon-config_entry_photo" />
         </div>
-      </div>);
+      </div>,
+    );
     if (timemachine) {
-      header = (<div style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
-        <DatePicker
-          value={date}
-          onInput={this.inputDate.bind(this)}
-          onChange={this.changeDate.bind(this)}
-          style={{ marginRight: '5px' }}
-        />
-        <TimePicker
-          value={time}
-          onInput={this.changeTime.bind(this)}
-          onChange={this.changeTime.bind(this)}
-          style={{ marginRight: '5px' }}
-        />
-        <select
-          value={rule}
-          onChange={this.changeRule.bind(this)}
-          style={{ marginRight: '5px' }}
-        >
-          <option>ルールなし</option>
-          {ruleList.map((rule) => {
-            return (
+      header = (
+        <div style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+          <DatePicker
+            value={date}
+            onChange={this.changeDate.bind(this)}
+            style={{ marginRight: '5px' }}
+          />
+          <TimePicker
+            value={time}
+            onInput={this.changeTime.bind(this)}
+            onChange={this.changeTime.bind(this)}
+            style={{ marginRight: '5px' }}
+          />
+          <select value={rule} onChange={this.changeRule.bind(this)} style={{ marginRight: '5px' }}>
+            <option>ルールなし</option>
+            {ruleList.map((rule) => (
               <option value={rule.id}>{rule.label}</option>
-            );
-          })}
-        </select>
-        <button type="button" className="acms-admin-btn-admin" onClick={this.changeContents.bind(this)} style={{ minWidth: '50px' }}>{ACMS.i18n("preview.change")}</button>
-      </div>);
-    } else if (hasShareBtn) {
-      sub.push(<div style={{ display: 'inline-block', marginLeft: '25px' }}>
-        <div
-          onClick={this.openShareModal.bind(this)}
-          style={{ color: '#666', fontSize: '18px', cursor: 'pointer' }}
-          onKeyDown={this.handleKeyDown}
-          role="button"
-          tabIndex={0}
-        >
-          <span className="acms-admin-icon-config_export" />
+            ))}
+          </select>
+          <button
+            type="button"
+            className="acms-admin-btn-admin"
+            onClick={this.changeContents.bind(this)}
+            style={{ minWidth: '50px' }}
+          >
+            {ACMS.i18n('preview.change')}
+          </button>
         </div>
-      </div>);
+      );
+    } else if (hasShareBtn) {
+      sub.push(
+        <div style={{ display: 'inline-block', marginLeft: '25px' }}>
+          <div
+            onClick={this.openShareModal.bind(this)}
+            style={{ color: '#666', fontSize: '18px', cursor: 'pointer' }}
+            onKeyDown={this.openShareModal.bind(this)}
+            role="button"
+            tabIndex={0}
+          >
+            <span className="acms-admin-icon-config_export" />
+          </div>
+        </div>,
+      );
     }
     return (
-      <Fragment>
-        <div style={{
-          position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0
-        }}
+      <>
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+          }}
         >
           <ReactDeviceMode
             isNaked={isNaked}
             src={this.rewriteUrl(src)}
-            i18n={{ fitWindow: ACMS.i18n("preview.fit_to_screen") }}
+            i18n={{ fitWindow: ACMS.i18n('preview.fit_to_screen') }}
             header={header}
             sub={sub}
             onClose={() => {
@@ -364,12 +384,15 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
               this.iframe = iframe;
             }}
             onDeviceUpdated={(device) => {
-              this.setState({
-                ua: device.ua,
-                isLoading: true
-              }, () => {
-                this.changeContents();
-              });
+              this.setState(
+                {
+                  ua: device.ua,
+                  isLoading: true,
+                },
+                () => {
+                  this.changeContents();
+                },
+              );
             }}
             onUrlChange={(nextUrl) => {
               if (nextUrl && nextUrl !== 'about:blank') {
@@ -377,18 +400,24 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
                 if (/(&|\?)acms-preview-mode=/.test(nextUrl)) {
                   isLoading = false;
                 }
-                this.setState({
-                  src: nextUrl,
-                  isLoading
-                }, () => {
-                  this.forceUpdate();
-                });
+                this.setState(
+                  {
+                    src: nextUrl,
+                    isLoading,
+                  },
+                  () => {
+                    this.forceUpdate();
+                  },
+                );
               } else {
-                this.setState({
-                  isLoading: false
-                }, () => {
-                  this.forceUpdate();
-                });
+                this.setState(
+                  {
+                    isLoading: false,
+                  },
+                  () => {
+                    this.forceUpdate();
+                  },
+                );
               }
             }}
             hasCloseBtn={this.props.hasCloseBtn}
@@ -397,70 +426,92 @@ export default class Preview extends Component<PreviewProps, PreviewState> {
         </div>
         <Modal
           isOpen={isMessageModalOpened}
-          title={<h3>{ACMS.i18n("preview.preview_mode")}</h3>}
+          title={<h3>{ACMS.i18n('preview.preview_mode')}</h3>}
           onClose={this.hideMessageModal.bind(this)}
           dialogStyle={{ maxWidth: '600px', marginTop: '100px' }}
           style={{ backgroundColor: 'rgba(0, 0, 0, .5)' }}
         >
-          <p>{ACMS.i18n("preview.confirm_txt")}</p>
+          <p>{ACMS.i18n('preview.confirm_txt')}</p>
         </Modal>
 
         <Modal
           isOpen={isModalOpened}
-          title={<h3>{ACMS.i18n("preview.share")}</h3>}
+          title={<h3>{ACMS.i18n('preview.share')}</h3>}
           onClose={this.hideShareModal.bind(this)}
           dialogStyle={{ maxWidth: '600px', marginTop: '100px' }}
           style={{ backgroundColor: 'rgba(0, 0, 0, .5)' }}
         >
           <div>
-            {urlShareStatus === 'standby' &&
-            <p>
-              <button
-                type="button"
-                className="acms-admin-btn acms-admin-btn-large acms-admin-btn-flat-primary acms-admin-btn-block"
-                onClick={this.getShareUrl.bind(this)}
-                disabled={ACMS.Config.edition !== 'professional' && ACMS.Config.edition !== 'enterprise'}
-              > <span className="acms-admin-icon acms-admin-icon-config_links" /> {ACMS.i18n("preview.get_link")}
-              </button>
-            </p>}
-            {urlShareStatus === 'waiting' && <div style={{ position: 'relative', height: '50px' }}>
-              <Spinner size={20} />
-            </div>}
-            {urlShareStatus === 'done' && <div className="acms-admin-form-group">
-              <p className="acms-admin-form">
-                <div className="acms-admin-form-action">
-                  <input
-                    type="email"
-                    className="acms-admin-form-width-full"
-                    value={url}
-                    ref={(shareInput) => {
-                      this.shareInput = shareInput;
-                    }}
-                  />
-                  <span className="acms-admin-form-side-btn">
-                    <CopyToClipboard
-                      text={url}
-                      onCopy={() => {
-                      this.setState({
-                        copied: true
-                      });
-                    }}
-                    >
-                      <button type="button" className="acms-admin-btn">{ACMS.i18n("preview.copy")}</button>
-                    </CopyToClipboard>
-                  </span>
-                </div>
+            {urlShareStatus === 'standby' && (
+              <p>
+                <button
+                  type="button"
+                  className="acms-admin-btn acms-admin-btn-large acms-admin-btn-flat-primary acms-admin-btn-block"
+                  onClick={this.getShareUrl.bind(this)}
+                >
+                  {' '}
+                  <span className="acms-admin-icon acms-admin-icon-config_links" />
+                  {' '}
+                  {ACMS.i18n('preview.get_link')}
+                </button>
               </p>
-            </div>}
-            {(ACMS.Config.edition !== 'professional' && ACMS.Config.edition !== 'enterprise') && <p className="acms-admin-alert acms-admin-alert-danger">
-             {ACMS.i18n("preview.only_pro")}
-            </p>}
-            <p>{ACMS.i18n("preview.get_link_detail")}</p>
-            <p>（{ACMS.i18n("preview.expiration")}: {ACMS.Config.urlPreviewExpire} {ACMS.i18n("preview.hours")}）</p>
+            )}
+            {urlShareStatus === 'waiting' && (
+              <div style={{ position: 'relative', height: '50px' }}>
+                <Spinner size={20} />
+              </div>
+            )}
+            {urlShareStatus === 'done' && (
+              <div className="acms-admin-form-group">
+                <p className="acms-admin-form">
+                  <div className="acms-admin-form-action">
+                    <input
+                      type="email"
+                      className="acms-admin-form-width-full"
+                      value={url}
+                      ref={(shareInput) => {
+                        this.shareInput = shareInput;
+                      }}
+                    />
+                    <span className="acms-admin-form-side-btn">
+                      <CopyToClipboard
+                        text={url}
+                        onCopy={() => {
+                          this.setState({
+                            copied: true,
+                          });
+                        }}
+                      >
+                        <button type="button" className="acms-admin-btn">
+                          {ACMS.i18n('preview.copy')}
+                        </button>
+                      </CopyToClipboard>
+                    </span>
+                  </div>
+                </p>
+              </div>
+            )}
+            <p>{ACMS.i18n('preview.get_link_detail')}</p>
+            <p>
+              （
+              {ACMS.i18n('preview.expiration')}
+              :
+              {ACMS.Config.urlPreviewExpire}
+              {' '}
+              {ACMS.i18n('preview.hours')}
+              ）
+            </p>
           </div>
         </Modal>
-        <Notify message={ACMS.i18n("preview.copy_to_clipboard")} show={copied} onFinish={() => { this.setState({ copied: false }); }} />
-        {capturing && <Splash message={ACMS.i18n("preview.capturing")}></Splash>}
-      </Fragment>);
+        <Notify
+          message={ACMS.i18n('preview.copy_to_clipboard')}
+          show={copied}
+          onFinish={() => {
+            this.setState({ copied: false });
+          }}
+        />
+        {capturing && <Splash message={ACMS.i18n('preview.capturing')} />}
+      </>
+    );
   }
 }

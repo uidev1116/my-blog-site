@@ -8,7 +8,7 @@ class ACMS_GET_Banner extends ACMS_GET
         $this->buildModuleField($Tpl);
 
         if ( !$aryStatus = configArray('banner_status') ) return '';
-        
+
         $order      = config('banner_order');
         $loopClass  = config('banner_loop_class');
 
@@ -38,34 +38,34 @@ class ACMS_GET_Banner extends ACMS_GET
         } else {
             $limit = 0;
         }
-        
+
         foreach ( $aryStatus as $i => $status ) {
 
             if ( 'open' <> $status ) continue;
-            
+
             $datestart = mb_convert_kana(config('banner_datestart', '', $i),"a",'UTF-8');
             $timestart = mb_convert_kana(config('banner_timestart', '', $i),"a",'UTF-8');
             $dateend = mb_convert_kana(config('banner_dateend', '', $i),"a",'UTF-8');
             $timeend = mb_convert_kana(config('banner_timeend', '', $i),"a",'UTF-8');
-            
+
             $datestart = ( strlen($datestart) > 0 )?$datestart:'0000-01-01';
             $timestart = ( strlen($timestart) > 0 )?$timestart:'00:00:00';
             $dateend = ( strlen($dateend) > 0 )?$dateend:'9999-12-31';
             $timeend = ( strlen($timeend) > 0 )?$timeend:'23:59:59';
-            
+
             if( ! ( ( ($datestart . ' ' . $timestart) <= date('Y-m-d H:i:s', requestTime()) ) && ( date('Y-m-d H:i:s', requestTime()) <= ($dateend . ' ' . $timeend) ) ) ) {
                 continue;
             }
-            
+
             $int_display++;
             if ( $int_display > $limit ) break;
-            
+
             if ( $img = config('banner_img', '', $i) ) {
                 $xy = Storage::getImageSize(ARCHIVES_DIR.$img);
                 $Tpl->add('banner#img', array(
                     'img'   => $img,
-                    'x'     => $xy[0],
-                    'y'     => $xy[1],
+                    'x'     => isset($xy[0]) ? $xy[0] : '',
+                    'y'     => isset($xy[1]) ? $xy[1] : '',
                     'url'   => config('banner_url', '', $i),
                     'alt'   => config('banner_alt', '', $i),
                     'attr1' => config('banner_attr1', '', $i),

@@ -197,7 +197,7 @@ class ACMS_GET
 
         //----------------
         // execute & hook
-        if ( HOOK_ENABLE ) {
+        if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
             $Hook->call('beforeGetFire', array(&$this->tpl, $this));
             $rendered = $this->cache();
@@ -209,18 +209,18 @@ class ACMS_GET
     }
 
     function cache() {
-        $cacheOn = $this->cache > 0;
-        $cachePath = '';
+        $cacheOn = $this->cache > 0 && $this->identifier;
         if ($cacheOn) {
+            $cache = Cache::module();
             $className = str_replace(array('ACMS_GET_', 'ACMS_User_GET_'), '', get_class($this));
-            $cachePath = Common::getModuleCacheBasePath($className, $this->identifier) . md5(Common::getModuleCacheRule($this));
-            if ($rendered = Common::cacheTextData($cachePath)) {
-                return $rendered;
+            $cacheKey = md5($className . $this->identifier);
+            if ($cache->has($cacheKey)) {
+                return $cache->get($cacheKey);
             }
         }
         $rendered = $this->get();
         if ($cacheOn) {
-            Common::cacheTextData($cachePath, $rendered, $this->cache * 60);
+            $cache->put($cacheKey, $rendered, $this->cache * 60);
         }
         return $rendered;
     }

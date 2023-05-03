@@ -14,6 +14,9 @@ function appConfig()
          * ****************************************************
          */
         'providers' => array(
+            'Acms\Services\Cache\CacheServiceProvider',
+            'Acms\Services\Session\SessionServiceProvider',
+            'Acms\Services\Api\ApiServiceProvider',
             'Acms\Services\Database\DatabaseServiceProvider',
             'Acms\Services\Auth\AuthServiceProvider',
             'Acms\Services\Mailer\MailerServiceProvider',
@@ -29,9 +32,9 @@ function appConfig()
             'Acms\Services\Common\CommonServiceProvider',
             'Acms\Services\Http\HttpServiceProvider',
             'Acms\Services\Login\LoginServiceProvider',
-            'Acms\Services\Process\ProcessServiceProvider',
             'Acms\Services\Update\UpdateServiceProvider',
             'Acms\Services\Media\MediaServiceProvider',
+            'Acms\Services\Webhook\WebhookServiceProvider',
             'Acms\Services\React\ReactServiceProvider',
             'Acms\Services\StaticExport\StaticExportServiceProvider',
             'Acms\Services\Preview\PreviewServiceProvider',
@@ -46,6 +49,9 @@ function appConfig()
          */
         'aliases' => array(
             'App'       => 'Acms\Services\Facades\Application',
+            'Cache'     => 'Acms\Services\Facades\Cache',
+            'Session'   => 'Acms\Services\Facades\Session',
+            'Api'       => 'Acms\Services\Facades\Api',
             'DB'        => 'Acms\Services\Facades\Database',
             'Auth'      => 'Acms\Services\Facades\Auth',
             'Mailer'    => 'Acms\Services\Facades\Mailer',
@@ -63,8 +69,8 @@ function appConfig()
             'Login'     => 'Acms\Services\Facades\Login',
             'Tfa'       => 'Acms\Services\Facades\Tfa',
             'Media'     => 'Acms\Services\Facades\Media',
-            'Process'   => 'Acms\Services\Facades\Process',
             'Preview'   => 'Acms\Services\Facades\Preview',
+            'Webhook'   => 'Acms\Services\Facades\Webhook',
             'ACMS_Hook' => 'Acms\Services\Common\HookFactory',
         ),
     );

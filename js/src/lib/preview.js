@@ -48,12 +48,12 @@ export default () => {
 
     $.ajax({
       url: ACMS.Library.acmsLink({
-        bid: ACMS.Config.bid
+        bid: ACMS.Config.bid,
       }),
       type: 'POST',
       data: fd,
       processData: false,
-      contentType: false
+      contentType: false,
     }).then((ruleList) => {
       render(<Preview
         timemachine

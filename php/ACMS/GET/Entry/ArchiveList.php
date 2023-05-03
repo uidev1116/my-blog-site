@@ -39,8 +39,8 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
                 break;
             case 'biz_year' :
                 $substr = 7;
-                $biz_year = !empty($date[0]) ? $date[0] : date('Y');
-                if (!!$date[1]) {
+                $biz_year = isset($date[0]) && !empty($date[0]) ? $date[0] : date('Y');
+                if (isset($date[1]) && !empty($date[1])) {
                     $biz_year = date('Y', strtotime($date[0]. '-' .$date[1]. '-01 -3month'));
                 }
                 $this->start = $biz_year++.'-04-01 00:00:00';

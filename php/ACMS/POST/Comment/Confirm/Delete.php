@@ -1,50 +1,46 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-aqfiaSK6mwpP5Yz8W/AtB/X5+t/tEg0wk1gn
+<?php
+
+class ACMS_POST_Comment_Confirm_Delete extends ACMS_POST_Comment
+{
+    /**
+     * CSRF対策
+     *
+     * @var bool
+     */
+    protected $isCSRF = true;
+
+    /**
+     * 二重送信対策
+     *
+     * @var bool
+     */
+    protected $checkDoubleSubmit = true;
+
+    /**
+     * @return false|Field
+     */
+    function post()
+    {
+        $Comment = $this->extract('comment');
+        $Comment->reset('name');
+        $Comment->reset('mail');
+        $Comment->reset('url');
+        $Comment->reset('title');
+        $Comment->reset('body');
+
+        $Comment->setField('name', ACMS_RAM::commentName(CMID));
+        $Comment->setField('mail', ACMS_RAM::commentMail(CMID));
+        $Comment->setField('url', ACMS_RAM::commentUrl(CMID));
+        $Comment->setField('title', ACMS_RAM::commentTitle(CMID));
+        $Comment->setField('body', ACMS_RAM::commentBody(CMID));
+
+        if ( !$this->validatePassword($Comment) ) {
+            return false;
+        }
+        $this->Post->set('action', 'delete');
+        $this->Post->set('step', $this->Post->isValidAll() ?
+            $this->Post->get('nextstep') : $this->Post->get('step')
+        );
+        return $this->Post;
+    }
+}

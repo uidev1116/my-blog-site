@@ -1,19 +1,20 @@
 import { Component } from 'react';
 import clone from 'clone';
 import PropTypes from 'prop-types';
-
 import { nestify, flatify } from 'nestify';
 
 import StateManager from '../lib/state-manager';
 
+/* eslint react/no-unused-class-component-methods: 0 */
+
 export default class NestableEdit extends Component {
   static propTypes = {
-    message: PropTypes.object
-  }
+    message: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  };
 
   static defaultProps = {
-    message: {}
-  }
+    message: {},
+  };
 
   onInitialize({ items }) {
     this.setup(items);
@@ -24,9 +25,7 @@ export default class NestableEdit extends Component {
   setup(items) {
     const def = this.defineDefaultItem();
     if (items.length === 0) {
-      items.push(Object.assign({}, {
-        parent: null
-      }, def));
+      items.push({ parent: null, ...def });
     }
     items.forEach((item, i) => {
       item.id = i + 1;
@@ -36,27 +35,28 @@ export default class NestableEdit extends Component {
       items,
       preventAnimation: false,
       removeAlert: false,
-      changed: false
+      changed: false,
     };
   }
 
   findItemById(id) {
-    return this.state.items.find(target => target.id === id);
+    return this.state.items.find((target) => target.id === id);
   }
 
   findChildById(id) {
-    return this.state.items.find(target => target.parent === id);
+    return this.state.items.find((target) => target.parent === id);
   }
 
   addChild(item) {
     const def = this.defineDefaultItem();
     const items = clone(this.state.items);
-    const parent = item.parent;
-    const index = items.findIndex(target => target.id === item.id);
-    const newitem = Object.assign({}, {
+    const { parent } = item;
+    const index = items.findIndex((target) => target.id === item.id);
+    const newitem = {
       parent,
       id: this.state.items.length + 1,
-    }, def);
+      ...def,
+    };
     const inserted = [...items.slice(0, index + 1), newitem, ...items.slice(index + 1)];
     this.setState({ items: inserted });
     this.manager.pushState({ items: inserted });
@@ -65,9 +65,7 @@ export default class NestableEdit extends Component {
   addItem(item = {}) {
     const def = this.defineDefaultItem();
     const items = clone(this.state.items);
-    const newitem = Object.assign({}, {
-      id: this.state.items.length + 1,
-    }, def, item);
+    const newitem = { id: this.state.items.length + 1, ...def, ...item };
     const inserted = [...items, newitem];
     this.setState({ items: inserted });
     this.manager.pushState({ items: inserted });
@@ -77,7 +75,7 @@ export default class NestableEdit extends Component {
     const state = this.manager.redo();
     if (state) {
       this.setState({
-        items: state.items
+        items: state.items,
       });
     }
   }
@@ -86,13 +84,14 @@ export default class NestableEdit extends Component {
     const state = this.manager.undo();
     if (state) {
       this.setState({
-        items: state.items
+        items: state.items,
       });
     }
   }
 
   updateItem(id, key, value, changed = true) {
-    const items = this.state.items;
+    // eslint-disable-next-line react/no-access-state-in-setstate
+    const { items } = this.state;
     items.forEach((item) => {
       if (item.id === id) {
         item[key] = value;
@@ -107,7 +106,8 @@ export default class NestableEdit extends Component {
   }
 
   selectItem(id) {
-    const items = this.state.items;
+    // eslint-disable-next-line react/no-access-state-in-setstate
+    const { items } = this.state;
     items.forEach((item) => {
       if (item.id === id) {
         item.selected = true;
@@ -120,9 +120,10 @@ export default class NestableEdit extends Component {
   }
 
   removeItem(id) {
-    if (confirm(this.props.message.onRemove)) { // eslint-disable-line no-alert, no-console
-      const items = this.state.items;
-      const removeIndex = items.findIndex(item => item.id === id);
+    if (confirm(this.props.message.onRemove)) {
+      // eslint-disable-line no-alert, no-console
+      const { items } = this.state;
+      const removeIndex = items.findIndex((item) => item.id === id);
       items.forEach((item) => {
         if (item.parent === id) {
           item.parent = items[removeIndex].parent;
@@ -131,29 +132,32 @@ export default class NestableEdit extends Component {
       const removed = [...items.slice(0, removeIndex), ...items.slice(removeIndex + 1)];
       this.setState({
         items: this.reIndex(removed),
-        changed: true
+        changed: true,
       });
 
       this.manager.pushState({
         items: removed,
-        changed: true
+        changed: true,
       });
     }
   }
 
   toggleItem(item) {
     this.setState({
-      preventAnimation: false
+      preventAnimation: false,
     });
     this.nestable.onToggleCollapse(item);
   }
 
   getNested(items) {
-    return nestify({
-      id: 'id',
-      parentId: 'parent',
-      children: 'children'
-    }, clone(items));
+    return nestify(
+      {
+        id: 'id',
+        parentId: 'parent',
+        children: 'children',
+      },
+      clone(items),
+    );
   }
 
   defineDefaultItem() {
@@ -164,22 +168,25 @@ export default class NestableEdit extends Component {
     items.forEach((item) => {
       item.parent = null;
     });
-    const flat = flatify({
-      id: 'id',
-      parentId: 'parent',
-      children: 'children'
-    }, clone(items));
+    const flat = flatify(
+      {
+        id: 'id',
+        parentId: 'parent',
+        children: 'children',
+      },
+      clone(items),
+    );
     this.setState({
       items: flat,
       preventAnimation: true,
-      changed: true
+      changed: true,
     });
     this.manager.pushState(this.state);
   }
 
   reIndex(items) {
     items.forEach((item) => {
-      const index = items.findIndex(obj => obj.id === item.parent);
+      const index = items.findIndex((obj) => obj.id === item.parent);
       if (index >= 0) {
         item.parent = index + 1;
       } else {

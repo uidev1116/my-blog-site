@@ -1,4 +1,13 @@
-@charset "UTF-8";
+@charset "utf-8";
+/*!
+ * acms.css Ver. 2.1.3
+ * Copyright appleple
+ * license: MIT
+ *
+ * カスタマイズする場合は、オリジナルのテーマにコピーしてご利用ください。
+ *
+ */
+
 /* ------------------------------
  ユニットグループ
 ------------------------------- */
@@ -6,12 +15,12 @@
  フロート解除
 ------------------------------ */
 .clearHidden {
-	display: block;
-	clear: both;
-	height: 0;
-	margin: 0;
-	border: none;
-	visibility: hidden;
+  display: block;
+  clear: both;
+  height: 0;
+  margin: 0;
+  border: none;
+  visibility: hidden;
 }
 
 /* ------------------------------
@@ -21,647 +30,658 @@
  エントリー内 主な要素
 ------------------------------ */
 .acms-entry [class*=acms-col-] {
-	padding: 0;
+  padding: 0;
 }
 
 /* ------------------------------
  テキストユニットの設定
 ------------------------------ */
 .acms-entry h2 {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry h3 {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry h4 {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry h5 {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry h6 {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry dl {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry p {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
 .acms-entry blockquote {
-	margin: 0 0 20px 0;
-	padding: 10px 20px;
-	border-left: solid 5px #CCC;
+  margin: 0 0 20px 0;
+  padding: 10px 20px;
+  border-left: solid 5px #ccc;
 }
 
 /* ------------------------------
 各種ユニットの設定
 ------------------------------ */
-.acms-entry [class*="column-image"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-image] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-file"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-file] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-map"] {
-	border-right: 10px solid transparent;
-	border-left: 10px solid transparent;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-map] {
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-yolp"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-yolp] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-street-view"]:not(.column-street-view-inner) {
-	padding-right: 10px;
-	padding-left: 10px;
+.acms-entry [class*=column-street-view]:not(.column-street-view-inner) {
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
-.acms-entry [class*="column-youtube"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-youtube] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-video"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-video] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-eximage"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-eximage] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-media"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-media] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-.acms-entry [class*="column-quote"] {
-	margin-right: 10px;
-	margin-left: 10px;
+.acms-entry [class*=column-quote] {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
-.acms-entry [class*="column-module"] {
-	padding-left: 10px;
-	padding-right: 10px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+.acms-entry [class*=column-module] {
+  padding-left: 10px;
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-[class*="column-image"] {
-	margin-bottom: 20px;
+[class*=column-image] {
+  margin-bottom: 20px;
 }
 
-[class*="column-file"] {
-	margin-bottom: 20px;
+[class*=column-file] {
+  margin-bottom: 20px;
 }
 
-[class*="column-map"] {
-	margin-bottom: 20px;
+[class*=column-map] {
+  margin-bottom: 20px;
 }
 
-[class*="column-yolp"] {
-	margin-bottom: 20px;
+[class*=column-yolp] {
+  margin-bottom: 20px;
 }
 
-[class*="column-street-view"] {
-	margin-bottom: 20px;
+[class*=column-street-view] {
+  margin-bottom: 20px;
 }
 
-[class*="column-youtube"] {
-	margin-bottom: 20px;
+[class*=column-youtube] {
+  margin-bottom: 20px;
 }
 
-[class*="column-video"] {
-	margin-bottom: 20px;
+[class*=column-video] {
+  margin-bottom: 20px;
 }
 
-[class*="column-eximage"] {
-	margin-bottom: 20px;
+[class*=column-eximage] {
+  margin-bottom: 20px;
 }
 
-[class*="column-media"] {
-	margin-bottom: 20px;
+[class*=column-media] {
+  margin-bottom: 20px;
 }
 
-[class*="column-quote"] {
-	margin-bottom: 20px;
+[class*=column-quote] {
+  margin-bottom: 20px;
 }
 
-[class*="column-module"] {
-	margin-bottom: 20px;
+[class*=column-module] {
+  margin-bottom: 20px;
 }
 
 /* 画像・メディア・画像URLの共通設定 */
-[class*="column-image"],
-[class*="column-media"],
-[class*="column-eximage"] {
-	display: block;
+[class*=column-image],
+[class*=column-media],
+[class*=column-eximage] {
+  display: block;
 }
-[class*="column-image"].caption,
-[class*="column-media"].caption,
-[class*="column-eximage"].caption {
-	margin-bottom: 10px;
+[class*=column-image].caption,
+[class*=column-media].caption,
+[class*=column-eximage].caption {
+  margin-bottom: 10px;
 }
-[class*="column-image"] a,
-[class*="column-media"] a,
-[class*="column-eximage"] a {
-	display: block;
+[class*=column-image] a,
+[class*=column-media] a,
+[class*=column-eximage] a {
+  display: block;
 }
-[class*="column-image"] img,
-[class*="column-media"] img,
-[class*="column-eximage"] img {
-	max-width: 100%;
-	height: auto;
-	vertical-align: top;
+[class*=column-image] img,
+[class*=column-media] img,
+[class*=column-eximage] img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
 }
-[class*="column-image"] .caption,
-[class*="column-media"] .caption,
-[class*="column-eximage"] .caption {
-	margin: 5px 0 0 0;
+[class*=column-image] .caption,
+[class*=column-media] .caption,
+[class*=column-eximage] .caption {
+  margin: 5px 0 0 0;
 }
 
 /* 画像ユニットの設定 */
-[class*="column-image"][style*="width"] {
-	max-width: 100%;
+[class*=column-image][style*=width] {
+  max-width: 100%;
 }
 
 /* メディアの種類がファイルだった時の設定 */
-[class*="column-media"] a[href*="media-download"] {
-	display: inline-block;
-	width: 100%;
+[class*=column-media] a[href*=media-download] {
+  display: inline-block;
+  width: 100%;
 }
 
 /* 地図・Yahooo!地図の共通設定 */
-[class*="column-map"] > img,
-[class*="column-yolp"] > img {
-	max-width: 100%;
+[class*=column-map] > img,
+[class*=column-yolp] > img {
+  max-width: 100%;
+}
+[class*=column-map] img,
+[class*=column-yolp] img {
+  width: auto;
+  height: auto;
 }
 
-[class*="column-map"] img,
-[class*="column-yolp"] img {
-	width: auto;
-	height: auto;
+[class*=column-map] > div {
+  max-width: 100%;
 }
 
-[class*="column-map"] > div {
-	max-width: 100%;
+[class*=column-yolp] {
+  width: auto !important;
 }
 
-[class*="column-yolp"] {
-	width: auto !important;
+[class*=column-quote] {
+  /* 引用ユニット画像 */
+  /* 引用ユニットテキスト */
 }
-
-[class*="column-quote"] {
-	/* 引用ユニット画像 */
-	/* 引用ユニットテキスト */
+[class*=column-quote] blockquote {
+  padding: 20px 10px 20px 20px;
 }
-[class*="column-quote"] blockquote {
-	padding: 20px 10px 20px 20px;
+[class*=column-quote] .quoteImageContainer {
+  position: relative;
+  float: left;
+  max-width: 154px;
+  margin-right: 25px;
 }
-[class*="column-quote"] .quoteImageContainer {
-	position: relative;
-	float: left;
-	max-width: 154px;
-	margin-right: 25px;
+[class*=column-quote] .quoteImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
-[class*="column-quote"] .quoteImage {
-	display: block;
-	max-width: 100%;
-	height: auto;
+[class*=column-quote] .quoteTitle {
+  margin: 0 0 5px 0;
+  padding: 0;
+  line-height: 1.4;
+  font-size: 18px;
 }
-[class*="column-quote"] .quoteTitle {
-	margin: 0 0 5px 0;
-	padding: 0;
-	line-height: 1.4;
-	font-size: 18px;
+@media print {
+  [class*=column-quote] .quoteTitle {
+    font-size: 18px;
+  }
 }
-[class*="column-quote"] .quoteTitleLink {
-	color: #006CD8;
+[class*=column-quote] .quoteTitleLink {
+  color: #006cd8;
 }
-[class*="column-quote"] .quoteSiteName {
-	margin: 0 0 10px 0;
-	padding: 0;
-	color: #666;
-	font-size: 11px;
+[class*=column-quote] .quoteSiteName {
+  margin: 0 0 10px 0;
+  padding: 0;
+  color: #666;
+  font-size: 11px;
 }
-[class*="column-quote"] .quoteDescription {
-	margin: 0;
-	padding: 0;
-	color: #333;
-	line-height: 1.6;
-	font-size: 12px;
+@media print {
+  [class*=column-quote] .quoteSiteName {
+    font-size: 11px;
+  }
+}
+[class*=column-quote] .quoteDescription {
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+  font-size: 12px;
+}
+@media print {
+  [class*=column-quote] .quoteDescription {
+    font-size: 12px;
+  }
 }
 
 /* 配置のスタイル */
 .column-image-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-image-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-image-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-image-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-file-left {
-	text-align: left;
-	float: left;
-	text-align: left;
+  text-align: left;
+  float: left;
+  text-align: left;
 }
 .column-file-left + .caption {
-	text-align: left;
+  text-align: left;
 }
 
 .column-file-right {
-	text-align: right;
-	float: right;
-	text-align: right;
+  text-align: right;
+  float: right;
+  text-align: right;
 }
 .column-file-right + .caption {
-	text-align: right;
+  text-align: right;
 }
 
 .column-file-center {
-	text-align: center;
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 .column-file-center + .caption {
-	text-align: center;
+  text-align: center;
 }
 
 .column-file-auto {
-	text-align: auto;
-	float: none;
+  text-align: auto;
+  float: none;
 }
 .column-file-auto + .caption {
-	text-align: auto;
+  text-align: auto;
 }
 
 /* 配置のスタイル */
 .column-map-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-map-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-map-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-map-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-yolp-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-yolp-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-yolp-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-yolp-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-street-view-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-street-view-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-street-view-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-street-view-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-youtube-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-youtube-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-youtube-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-youtube-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-video-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-video-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-video-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-video-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-eximage-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-eximage-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-eximage-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-eximage-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-media-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
-.column-media-left :not([href*="media-download"]) + .caption {
-	text-align: center;
+.column-media-left :not([href*=media-download]):not([href*=storage]) + .caption {
+  /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
+  text-align: center;
 }
 
 .column-media-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
-.column-media-right :not([href*="media-download"]) + .caption {
-	text-align: center;
+.column-media-right :not([href*=media-download]):not([href*=storage]) + .caption {
+  /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
+  text-align: center;
 }
 
 .column-media-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
-.column-media-center :not([href*="media-download"]) + .caption {
-	text-align: center;
+.column-media-center :not([href*=media-download]):not([href*=storage]) + .caption {
+  /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
+  text-align: center;
 }
 
 .column-media-auto {
-	float: none;
+  float: none;
 }
-.column-media-auto :not([href*="media-download"]) + .caption {
-	text-align: center;
+.column-media-auto :not([href*=media-download]):not([href*=storage]) + .caption {
+  /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
+  text-align: center;
 }
 
 /* 配置のスタイル */
 .column-quote-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-quote-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-quote-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-quote-auto {
-	float: none;
+  float: none;
 }
 
 /* 配置のスタイル */
 .column-module-left {
-	float: left;
-	text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .column-module-right {
-	float: right;
-	text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .column-module-center {
-	display: block;
-	float: none;
-	margin-right: auto;
-	margin-left: auto;
-	text-align: center;
+  display: block;
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
 
 .column-module-auto {
-	float: none;
+  float: none;
 }
 
 /* .acms-entry-unit-fullの設定 */
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-image"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-image] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-file"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-file] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-map"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-map] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-yolp"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-yolp] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-street-view"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-street-view] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-youtube"] {
-	width: 100% !important;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-youtube] {
+  width: 100% !important;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-video"] {
-	width: 100% !important;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-video] {
+  width: 100% !important;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-eximage"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-eximage] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-media"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-media] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-quote"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-quote] {
+  width: auto !important;
+  max-width: 100%;
 }
 
-.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-module"] {
-	width: auto !important;
-	max-width: 100%;
+.acms-entry-unit-full:not(.acms-unit-size-inherit) [class*=column-module] {
+  width: auto !important;
+  max-width: 100%;
 }
 
 @media (max-width: 480px) {
-	[class*="acms-col-"][class*="-right"] {
-		float: left;
-	}
-	[class*="acms-col-"][class*="-right"] + * {
-		clear: both;
-	}
-}
+  [class*=acms-col-][class*=-right] {
+    float: left;
+  }
 
+  [class*=acms-col-][class*=-right] + * {
+    clear: both;
+  }
+}
 /* ------------------------------
  共通の要素
 ------------------------------ */
 .entry-container {
-	margin-right: 10px;
-	margin-left: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 /* PDFプレビュー */
 .column-pdf-image {
-	width: 100%;
-	border: solid 1px #AAA;
+  width: 100%;
+  border: solid 1px #aaa;
 }
 
 /* ストリートビュー */
 .column-inner-street-view {
-	width: 100%;
-	padding-bottom: 100%;
+  width: 100%;
+  padding-bottom: 100%;
 }
 
 /* YouTube動画をレスポンシブ対応させるための記述 */
 .column-youtube,
 .column-iframe {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	padding-top: 30px;
-	padding-bottom: 56.25%;
-	overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding-top: 30px;
+  padding-bottom: 56.25%;
+  overflow: hidden;
 }
 .column-youtube iframe,
 .column-youtube object,
@@ -669,11 +689,11 @@
 .column-iframe iframe,
 .column-iframe object,
 .column-iframe embed {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* ------------------------------
@@ -682,32 +702,32 @@
 /* 検索結果のハイライト
 ------------------------------ */
 .highlight1 {
-	background-color: #FF6;
+  background-color: #FFFF66;
 }
 
 .highlight2 {
-	background-color: #A0FFFF;
+  background-color: #a0FFFF;
 }
 
 .highlight3 {
-	background-color: #9F9;
+  background-color: #99FF99;
 }
 
 .highlight4 {
-	background-color: #F99;
+  background-color: #FF9999;
 }
 
 .highlight5 {
-	background-color: #F6F;
+  background-color: #FF66FF;
 }
 
 .highlight6 {
-	background-color: #800;
+  background-color: #880000;
 }
 
 /* ユーティリティ */
 .acms-admin-clear {
-	clear: both;
+  clear: both;
 }
 
 /* フォームのバリデーター */
@@ -716,7 +736,7 @@
 .validator-result-1,
 .v-result-,
 .v-result-1 {
-	display: none;
+  display: none;
 }
 
 /* 問題発生時には表示 */
@@ -725,5 +745,5 @@
 .validator-result-0,
 .v-result-error,
 .v-result-0 {
-	display: block;
+  display: block;
 }

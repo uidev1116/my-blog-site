@@ -10,17 +10,17 @@ use Acms\Services\Facades\Storage;
 class CopyEntryArchive
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $destinationPath;
+    protected $destinationPaths;
 
     /**
      * CopyEntryArchive constructor.
-     * @param $destinationPath
+     * @param array $destinationPaths
      */
-    public function __construct($destinationPath)
+    public function __construct($destinationPaths)
     {
-        $this->destinationPath = $destinationPath;
+        $this->destinationPaths = $destinationPaths;
     }
 
     /**
@@ -94,11 +94,8 @@ class CopyEntryArchive
      */
     protected function copyCustomUnit($row)
     {
-        $oldAry = explodeUnitData($row['column_field_6']);
-        foreach ($oldAry as $old) {
-            $Field = acmsUnserialize($old);
-            $this->fieldDupe($Field);
-        }
+        $Field = acmsUnserialize($row['column_field_6']);
+        $this->fieldDupe($Field);
     }
 
     /**
@@ -146,17 +143,19 @@ class CopyEntryArchive
      */
     protected function allCopy($path)
     {
-        Storage::makeDirectory(dirname($this->destinationPath . $path));
-        Storage::copy($path, $this->destinationPath . $path);
+        foreach ($this->destinationPaths as $destinationPath) {
+            Storage::makeDirectory(dirname($destinationPath . $path));
+            Storage::copy($path, $destinationPath . $path);
 
-        if ($dirname = dirname($path)) {
-            $dirname .= '/';
-        }
-        $basename = Storage::mbBasename($path);
-        $files = glob($dirname . '*-' . $basename);
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                Storage::copy($file, $this->destinationPath . $file);
+            if ($dirname = dirname($path)) {
+                $dirname .= '/';
+            }
+            $basename = Storage::mbBasename($path);
+            $files = glob($dirname . '*-' . $basename);
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    Storage::copy($file, $destinationPath . $file);
+                }
             }
         }
     }

@@ -73,14 +73,14 @@ ACMS.Library.Validator =
       }
       return false;
     },
-    'all_justChecked': function ($obj, num) {
-      return parseInt(num, 10) == $obj.size();
+    'all_justChecked': function ($checkbox, num) {
+      return parseInt(num, 10) === $checkbox.filter(':checked').length;
     },
-    'all_minChecked': function ($obj, num) {
-      return parseInt(num, 10) <= $obj.size();
+    'all_minChecked': function ($checkbox, num) {
+      return parseInt(num, 10) <= $checkbox.filter(':checked').length;
     },
-    'all_maxChecked': function ($obj, num) {
-      return parseInt(num, 10) >= $obj.size();
+    'all_maxChecked': function ($checkbox, num) {
+      return parseInt(num, 10) >= $checkbox.filter(':checked').length;
     },
     'dates': function (val) {
       if (!val) {

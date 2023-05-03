@@ -1,40 +1,26 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-qrlcjvyUC0IrPD5xfnU5CWu=
+<?php
+
+class ACMS_POST_Api_Google_OAuth_Deauthorize extends ACMS_POST_Api_Google
+{
+    function post()
+    {
+        if ( !SUID || !sessionWithSubscription() ) { return true; }
+        if ( UID <> SUID && !sessionWithAdministration() ) { return true; }
+
+        $session = Session::handle();
+        $session->delete('access_token');
+
+        $DB = DB::singleton(dsn());
+        $SQL    = SQL::newUpdate('user');
+        $SQL->addUpdate('user_google_id', '');
+        $SQL->addWhereOpr('user_id', UID);
+        $DB->query($SQL->get(dsn()), 'exec');
+        ACMS_RAM::user(UID, null);
+
+        $this->redirect(acmsLink(array(
+            'bid'           => BID,
+            'uid'           => UID,
+            'admin'         => 'user_edit',
+        )));
+    }
+}

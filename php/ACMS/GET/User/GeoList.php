@@ -134,6 +134,18 @@ class ACMS_GET_User_GeoList extends ACMS_GET_User_Search
     }
 
     /**
+     * ユーザー数取得sqlの準備
+     *
+     * @param SQL_Select $SQL
+     * @return void
+     */
+    protected function setAmount($SQL)
+    {
+        $this->amount = SQL::newSelect($SQL, 'amount');
+        $this->amount->setSelect('DISTINCT(user_id)', 'user_amount', null, 'COUNT');
+    }
+
+    /**
      * limitクエリ組み立て
      *
      * @param SQL_Select & $SQL

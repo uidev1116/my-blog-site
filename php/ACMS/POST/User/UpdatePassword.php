@@ -1,62 +1,44 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-hOtIrKPQ0VqU4zFxyBApaNmgVWxJWEQ+nIFYim==
+<?php
+
+class ACMS_POST_User_UpdatePassword extends ACMS_POST_User_Update
+{
+    public function post()
+    {
+        $this->user = $this->extract('user');
+        $this->validate();
+
+        if ($this->Post->isValidAll()) {
+            $this->updatePassword();
+            $this->Post->set('edit', 'update');
+        }
+        return $this->Post;
+    }
+
+    protected function validate()
+    {
+        $this->user->setMethod('pass', 'required');
+        $this->user->setMethod('pass', 'password');
+        $this->user->setMethod('user', 'operable', 1
+            and !!UID
+            and !!SUID
+            and IS_LICENSED
+            and (0
+                or (sessionWithAdministration() or UID == SUID)
+                or (sessionWithAdministration() ? true : Auth::checkShortcut('User_Update', ADMIN, 'uid', UID))
+            )
+        );
+        $this->user->validate(new ACMS_Validator());
+    }
+
+    protected function updatePassword()
+    {
+        $DB = DB::singleton(dsn());
+        $SQL = SQL::newUpdate('user');
+        $SQL->addUpdate('user_pass', acmsUserPasswordHash($this->user->get('pass')));
+        $SQL->addUpdate('user_pass_generation', PASSWORD_ALGORITHM_GENERATION);
+        $SQL->addWhereOpr('user_id', UID);
+        $SQL->addWhereOpr('user_blog_id', BID);
+        $DB->query($SQL->get(dsn()), 'exec');
+        ACMS_RAM::user(UID, null);
+    }
+}

@@ -30,7 +30,7 @@
 <form action="" method="post" enctype="multipart/form-data" class="acms-admin-form js-dialog-body">
 	<div class="acms-admin-form-group js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
-			<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/category_index/" class="acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></a>
+			<a href="%{HTTP_ROOT}bid/%{BID}/admin/category_index/" class="acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></a>
 
 			<!-- BEGIN submit#insert -->
 			<input type="submit" name="ACMS_POST_Category_Insert" value="<!--T-->作成<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
@@ -214,7 +214,11 @@
 						<!-- END_MODULE Touch_BlogParent -->
 
 						<!-- BEGIN_MODULE Touch_NotBlogParent -->
-						<input type="checkbox" disabled="disable"> <!--T-->下の階層のブログと共有する ( 子ブログを持たないブログでは設定できません )<!--/T-->
+            <div class="acms-admin-form-checkbox">
+              <input type="checkbox" name="scope" value="global" id="input-checkbox-scope" disabled="disable" />
+              <label for="input-checkbox-scope"><i class="acms-admin-ico-checkbox"></i><!--T-->下の階層のブログと共有する ( 子ブログを持たないブログでは設定できません )<!--/T-->
+              </label>
+            </div>
 						<!-- END_MODULE Touch_NotBlogParent -->
 					</td>
 				</tr>

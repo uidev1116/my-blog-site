@@ -31,17 +31,11 @@ class ACMS_GET_Api extends ACMS_GET
      */
     function detectCache($hash)
     {
-        if ( !!DEBUG_MODE  || ('on' != config('cache')) ) return false;
-
-        $DB     = DB::singleton(dsn());
-        $expire = date('Y-m-d H:i:s');
-
-        $SQL    = SQL::newSelect('cache');
-        $SQL->setSelect('cache_data');
-        $SQL->addWhereOpr('cache_id', $hash);
-        $SQL->addWhereOpr('cache_expire', $expire, '>', 'AND');
-
-        return gzdecode($DB->query($SQL->get(dsn()), 'one'));
+        $cache = Cache::module();
+        if ($cache->has($hash)) {
+            return gzdecode($cache->get($hash));
+        }
+        return false;
     }
 
     /**
@@ -54,21 +48,9 @@ class ACMS_GET_Api extends ACMS_GET
      */
     function saveCache($hash, $expire, $rawData)
     {
-        if ( !!DEBUG_MODE  || ('on' != config('cache')) ) return false;
-
-        $DB     = DB::singleton(dsn());
-        $expire = date('Y-m-d H:i:s', strtotime('+'.$expire.' seconds'));
-
-        $SQL    = SQL::newDelete('cache');
-        $SQL->addWhereOpr('cache_id', $hash);
-        $DB->query($SQL->get(dsn()), 'exec');
-
-        $SQL = SQL::newInsert('cache');
-        $SQL->addInsert('cache_id', $hash);
-        $SQL->addInsert('cache_data', gzencode($rawData));
-        $SQL->addInsert('cache_expire', $expire);
-
-        return $DB->query($SQL->get(dsn()), 'exec');
+        $cache = Cache::module();
+        $cache->put($hash, gzencode($rawData), $expire);
+        return true;
     }
 
     function getHash($url = null)
@@ -106,11 +88,6 @@ class ACMS_GET_Api extends ACMS_GET
     {
         try {
             switch ($type) {
-                case 'instagram':
-                    if ( !($API = ACMS_Services_Instagram::establish($this->id)) ) {
-                        throw new Exception('establish failed');
-                    }
-                break;
                 case 'twitter':
                 default:
                     if ( !($API = ACMS_Services_Twitter::establish($this->id)) ) {
@@ -145,11 +122,11 @@ class ACMS_GET_Api extends ACMS_GET
      */
     function getAuthSession($auth_type_key, $auth_bid_key, $auth_uid_key)
     {
-        $Session = ACMS_Session::singleton();
-        
-        $this->auth_type    = $Session->get($auth_type_key);
-        $this->auth_bid     = $Session->get($auth_bid_key);
-        $this->auth_uid     = $Session->get($auth_uid_key);
+        $session = Session::handle();
+
+        $this->auth_type = $session->get($auth_type_key);
+        $this->auth_bid = $session->get($auth_bid_key);
+        $this->auth_uid = $session->get($auth_uid_key);
 
         if ( 0
             || empty($this->auth_bid)
@@ -168,9 +145,6 @@ class ACMS_GET_Api extends ACMS_GET
      */
     function loginFailed($query='')
     {
-        $Session = ACMS_Session::singleton();
-        $Session->clear();
-
         if ( !empty($query) ) $query = '?'.$query;
         die(header('Location: '.BASE_URL.LOGIN_SEGMENT.'/'.$query));
     }
@@ -234,7 +208,7 @@ class ACMS_GET_Api extends ACMS_GET
         $SQL->addInsert('user_code', $data['code']);
         $SQL->addInsert('user_status', 'open');
         $SQL->addInsert('user_name', $data['name']);
-        $SQL->addInsert('user_pass', ACMS_POST::genPass(8));
+        $SQL->addInsert('user_pass', Common::genPass(8));
         $SQL->addInsert($data['oauth_type'], $data['oauth_id']);
         $SQL->addInsert('user_mail', $data['email']);
         $SQL->addInsert('user_mail_magazine', 'off');

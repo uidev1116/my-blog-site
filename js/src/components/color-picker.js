@@ -8,7 +8,7 @@ export default class ColorPicker extends Component {
     button: null,
     width: '170px',
     colors: ['#D9E3F0', '#F47373', '#697689', '#37D67A', '#2CCCE4', '#555555', '#dce775', '#ff8a65', '#ba68c8'],
-    handleChangeColor: () => {}
+    handleChangeColor: () => {},
   };
 
   constructor(props) {
@@ -20,12 +20,13 @@ export default class ColorPicker extends Component {
   }
 
   componentDidMount() {
-    if (this.props.button) {
-      this.props.button.addEventListener('click', (e) => {
+    const { button } = this.props;
+    if (button) {
+      button.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-          showPicker: true
+          showPicker: true,
         });
       });
     }
@@ -38,28 +39,25 @@ export default class ColorPicker extends Component {
   }
 
   handleCloseModal() {
-    if (!this.state.showPicker) {
+    const { showPicker } = this.state;
+    if (!showPicker) {
       return;
     }
     this.setState({
-      showPicker: false
+      showPicker: false,
     });
   }
 
   handleChangeComplete(color) {
-    this.props.handleChangeColor(color);
+    const { handleChangeColor } = this.props;
+    handleChangeColor(color);
   }
 
   render() {
-    const {
-      showPicker
-    } = this.state;
+    const { showPicker } = this.state;
 
     const {
-      defaultColor,
-      colors,
-      width,
-      style
+      defaultColor, colors, width, style,
     } = this.props;
 
     const display = showPicker ? 'block' : 'none';
@@ -67,13 +65,15 @@ export default class ColorPicker extends Component {
     return (
       <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
         className="js-acms-color-picker-box"
-        style={Object.assign({}, style, { display })}
+        style={{ ...style, display }}
       >
         <SketchPicker
           color={defaultColor}
           presetColors={colors}
           width={width}
-          onChangeComplete={(color) => { this.handleChangeComplete(color); }}
+          onChangeComplete={(color) => {
+            this.handleChangeComplete(color);
+          }}
         />
       </div>
     );

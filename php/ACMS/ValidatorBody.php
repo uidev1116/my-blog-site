@@ -4,7 +4,7 @@ class ACMS_ValidatorBody
 {
     function required($val)
     {
-        $tmp = preg_replace('/^[\s　]*(.*?)[\s　]*$/u', '\1', $val);
+        $tmp = preg_replace('/^[\s　]*(.*?)[\s　]*$/u', '\1', $val ?? '');
         return !empty($tmp) or ('0' === $tmp);
     }
 

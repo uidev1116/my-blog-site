@@ -1,9 +1,11 @@
 <?php
 
+use Acms\Services\Facades\Preview;
+
 class ACMS_GET_Touch_Unlogin extends ACMS_GET
 {
-    function get()
+    public function get()
     {
-        return !ACMS_SID ? $this->tpl : false;
+        return !ACMS_SID || Preview::isPreviewMode() ? $this->tpl : false;
     }
 }

@@ -29,7 +29,8 @@ export default class ResizeImage {
       [].forEach.call(targetAry, (input) => {
         this.exec(input);
       });
-    } else if (1
+    } else if (
+      1
       && this.elm.classList.contains(this.targetMarkCF.substr(1))
       && !this.elm.classList.contains('resizeImage')
     ) {
@@ -47,7 +48,9 @@ export default class ResizeImage {
     const node = target.querySelector(this.previewMark);
     if (node !== null) {
       this.previewBox = node.cloneNode(true);
-      target.querySelector(this.previewMark).insertAdjacentHTML('afterend', '<div class="js-img_resize_preview_location" />');
+      target
+        .querySelector(this.previewMark)
+        .insertAdjacentHTML('afterend', '<div class="js-img_resize_preview_location" />');
       this.listener(target);
     }
   }
@@ -80,66 +83,83 @@ export default class ResizeImage {
         }, 800);
       }
       // ドロップ時のアクションを設定
-      dropArea.addEventListener('drop', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.dragging = 0;
-        this.dropSelect = true;
-        dropArea.classList.remove('drag-n-drop-hover');
+      dropArea.addEventListener(
+        'drop',
+        (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          this.dragging = 0;
+          this.dropSelect = true;
+          dropArea.classList.remove('drag-n-drop-hover');
 
-        const files = event.dataTransfer.files;
-        let gif = false;
+          const { files } = event.dataTransfer;
+          let gif = false;
 
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          if (file.type === 'image/gif') {
-            gif = true;
-            break;
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type === 'image/gif') {
+              gif = true;
+              break;
+            }
           }
-        }
-        if (gif) {
-          if (!window.confirm(ACMS.i18n('drop_select_gif_image.alert'))) { // eslint-disable-line no-alert, no-console
-            return false;
+          if (gif) {
+            if (!window.confirm(ACMS.i18n('drop_select_gif_image.alert'))) {
+              // eslint-disable-line no-alert, no-console
+              return false;
+            }
           }
-        }
-        this.readFiles(event.dataTransfer.files, target);
-        return false;
-      }, false);
+          this.readFiles(event.dataTransfer.files, target);
+          return false;
+        },
+        false,
+      );
 
       // ドロップエリアにいる間
-      dropArea.addEventListener('dragover', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        dropArea.classList.add('drag-n-drop-hover');
-        return false;
-      }, false);
+      dropArea.addEventListener(
+        'dragover',
+        (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          dropArea.classList.add('drag-n-drop-hover');
+          return false;
+        },
+        false,
+      );
 
       // ドロップエリアに入った時
-      dropArea.addEventListener('dragenter', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.dragging++;
-        dropArea.classList.add('drag-n-drop-hover');
-        return false;
-      }, false);
+      dropArea.addEventListener(
+        'dragenter',
+        (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          this.dragging++;
+          dropArea.classList.add('drag-n-drop-hover');
+          return false;
+        },
+        false,
+      );
 
       // ドロップエリアから出て行った時
-      dropArea.addEventListener('dragleave', (event) => {
-        event.stopPropagation();
-        event.preventDefault();
-        this.dragging--;
-        if (this.dragging === 0) {
-          dropArea.classList.remove('drag-n-drop-hover');
-        }
-        return false;
-      }, false);
+      dropArea.addEventListener(
+        'dragleave',
+        (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          this.dragging--;
+          if (this.dragging === 0) {
+            dropArea.classList.remove('drag-n-drop-hover');
+          }
+          return false;
+        },
+        false,
+      );
     } else {
       // ブラウザが対応していない場合の処理
     }
 
     // フォーム入力よりファイルが選択された
     $(this.inputMark, target).on('change', (event) => {
-      if ((lastTime + interval) <= new Date().getTime()) {
+      if (lastTime + interval <= new Date().getTime()) {
         lastTime = new Date().getTime();
         this.readFiles(event.target.files, target);
       }
@@ -191,8 +211,8 @@ export default class ResizeImage {
       const file = files[i];
       if (!file) continue;
       this.util.getDataUrlFromFile(file, lgImgSide, lgImgSize).then((data) => {
-        const dataUrl = data.dataUrl;
-        let resize = data.resize;
+        const { dataUrl } = data;
+        let { resize } = data;
 
         if (rawSize) {
           resize = false;
@@ -206,7 +226,7 @@ export default class ResizeImage {
         if (this.previewOnly) {
           resize = false;
         }
-        import(/* webpackChunkName: "exif-js" */'exif-js').then(({ default: Exif }) => {
+        import(/* webpackChunkName: "exif-js" */ 'exif-js').then(({ default: Exif }) => {
           Exif.getData(file, () => {
             const exif = Exif.getAllTags(file);
             this.set(target, dataUrl, resize || this.dropSelect, exif, multi);
@@ -245,7 +265,8 @@ export default class ResizeImage {
     const numerator0 = numerator;
     const denominator0 = denominator;
     let c;
-    while (1) { // eslint-disable-line no-constant-condition
+    // eslint-disable-next-line no-constant-condition
+    while (1) {
       c = numerator % denominator;
       if (c === 0) break;
       denominator = numerator;
@@ -276,17 +297,16 @@ export default class ResizeImage {
       }
     });
 
-    if (1
-      && ACMS.Config.exif.captionEnable === 'on'
-      && checkField
-      && ACMS.Config.exif.requireField instanceof Array
-    ) {
+    if (1 && ACMS.Config.exif.captionEnable === 'on' && checkField && ACMS.Config.exif.requireField instanceof Array) {
       if (checkField) {
         if (exif.ExposureTime && exif.ExposureTime.numerator && exif.ExposureTime.denominator) {
           exif.ExposureTime = this.reduce(exif.ExposureTime.numerator, exif.ExposureTime.denominator);
         }
         if (exif.DateTimeOriginal) {
-          exif.DateTimeOriginal = exif.DateTimeOriginal.replace(/(\d{4}):(\d{2}):(\d{2})\s(\d{2}):(\d{2}):(\d{2})/g, '$1-$2-$3 $4:$5:$6');
+          exif.DateTimeOriginal = exif.DateTimeOriginal.replace(
+            /(\d{4}):(\d{2}):(\d{2})\s(\d{2}):(\d{2}):(\d{2})/g,
+            '$1-$2-$3 $4:$5:$6',
+          );
         }
         if (!multi) {
           const tpl = _.template(ACMS.Config.exif.captionFormat);
@@ -307,7 +327,10 @@ export default class ResizeImage {
 
         exifData.classList.add('js-img_exif_data');
         exifData.setAttribute('type', 'hidden');
-        exifData.setAttribute('name', target.querySelector(this.inputMark).getAttribute('name').replace('file', 'exif'));
+        exifData.setAttribute(
+          'name',
+          target.querySelector(this.inputMark).getAttribute('name').replace('file', 'exif'),
+        );
         exifData.value = tpl2(exif);
 
         target.querySelector(this.inputMark).insertAdjacentHTML('afterend', exifData.outerHTML);

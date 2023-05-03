@@ -1,11 +1,11 @@
 import punycode from 'punycode';
 import dayjs from 'dayjs';
-import lozad from 'lozad'
+import lozad from 'lozad';
 import { Loader } from 'google-maps';
 import PrettyScroll from 'pretty-scroll';
 import ResizeImage from './lib/resize-image/resize-image';
 import { setDropArea } from './lib/utility';
-import { getParameterByName, PerfectFormData } from './utils';
+import { getParameterByName, PerfectFormData, encodeUri } from './utils';
 
 export default () => {
   ACMS.Library.PerfectFormData = PerfectFormData;
@@ -45,8 +45,8 @@ export default () => {
       {
         enableHighAccuracy: true,
         timeout: 30000,
-        maximumAge: 10000
-      }
+        maximumAge: 10000,
+      },
     );
   };
 
@@ -79,7 +79,7 @@ export default () => {
       ['lt', '<'],
       ['gt', '>'],
       ['nbsp', ' '],
-      ['quot', '"']
+      ['quot', '"'],
     ];
 
     for (let i = 0, max = entitiesArray.length; i < max; i += 1) {
@@ -102,9 +102,9 @@ export default () => {
     if (typeof domain !== 'string') {
       return punycodeString;
     }
-    matched = domain.match(/^[httpsfile]+:\/{2,3}([^\/]+)/i);
+    matched = domain.match(/^[httpsfile]+:\/{2,3}([^\/]+)/i); // eslint-disable-line no-useless-escape
     if (matched) {
-      domain = matched[1];
+      domain = matched[1]; // eslint-disable-line prefer-destructuring
     }
 
     for (let i = 0; i < domain.length; i++) {
@@ -131,10 +131,10 @@ export default () => {
   //---------
   // locales
   ACMS.Library.lang = function (list, fallback) {
-    let lang = (window.navigator.languages && window.navigator.languages[0]) ||
-      window.navigator.language ||
-      window.navigator.userLanguage ||
-      window.navigator.browserLanguage;
+    let lang = (window.navigator.languages && window.navigator.languages[0])
+      || window.navigator.language
+      || window.navigator.userLanguage
+      || window.navigator.browserLanguage;
 
     lang = lang.replace(/-(.*)$/g, '');
 
@@ -147,7 +147,6 @@ export default () => {
 
     return lang;
   };
-
 
   //----------
   // scrollTo
@@ -176,7 +175,6 @@ export default () => {
     setTimeout(calc, m);
   };
 
-
   //-------------
   // scrollToElm
   ACMS.Library.scrollToElm = function (elm, setting) {
@@ -193,7 +191,7 @@ export default () => {
       m: ACMS.Config.scrollToI,
       k: ACMS.Config.scrollToV,
       offset: 0,
-      callback: null
+      callback: null,
     }, setting);
 
     ACMS.Library.scrollTo(setting.x, setting.y, setting.m, setting.k, setting.offset, setting.callback);
@@ -235,11 +233,11 @@ export default () => {
   ACMS.Library.googleLoadProcessing = false;
   ACMS.Library.googleLoadCompleted = false;
   ACMS.Library.googleLoadProxy = function (api, ver, params) {
-    const callback = params.callback;
+    const { callback } = params;
     const options = params.options || {};
     const _load = () => {
       const loader = new Loader(ACMS.Config.googleApiKey, options);
-      loader.load().then(google => {
+      loader.load().then((google) => {
         window.google = google;
         ACMS.Library.googleLoadProcessing = false;
         ACMS.Library.googleLoadCompleted = true;
@@ -268,53 +266,6 @@ export default () => {
     }
   };
 
-  //-----------------
-  // yahooLoadProxy
-  ACMS.Library.yahooLoadProcessing = false;
-  ACMS.Library.yahooLoadCompleted = false;
-  ACMS.Library.yahooLoadProxy = function (params) {
-    const _load = function () {
-      const callbackOrg = params.callback;
-      params.callback = function () {
-        ACMS.Library.yahooLoadProcessing = false;
-        ACMS.Library.yahooLoadCompleted = true;
-        callbackOrg();
-      };
-      if (ACMS.Config.yahooApiKey) {
-        $.ajax({
-          url: ACMS.Config.yahoo_api_url,
-          dataType: 'script',
-          complete() {
-            params.callback();
-          }
-        });
-      } else {
-        ACMS.Library.yahooLoadProcessing = false;
-        ACMS.Library.yahooLoadCompleted = true;
-        params.error();
-      }
-    };
-    let timer;
-
-    // apiが既に読み込まれていれば即時実行
-    if (!!ACMS.Library.yahooLoadCompleted && $.isFunction(params.callback)) {
-      return params.callback();
-    }
-
-    // 先行してyahoo loadが実行中であれば、完了を待ってから再度自身を呼び出す
-    if (ACMS.Library.yahooLoadProcessing) {
-      timer = setInterval(() => {
-        if (!ACMS.Library.yahooLoadProcessing) {
-          clearInterval(timer);
-          ACMS.Library.yahooLoadProxy(params);
-        }
-      }, 50);
-    } else {
-      ACMS.Library.yahooLoadProcessing = true;
-      _load();
-    }
-  };
-
   //-------------
   // getPostData
   ACMS.Library.getPostData = function (context) {
@@ -324,7 +275,7 @@ export default () => {
     $(':input:not(disabled):not(:radio:not(:checked)):not(:checkbox:not(:checked))', context).each(function () {
       const name = this.name.replace(/\[\]$/, '');
       const isAry = (name !== this.name);
-      let val = $(this).val();
+      const val = $(this).val();
 
       if (isAry && typeof (cnt[name]) === 'undefined') {
         cnt[name] = 0;
@@ -365,7 +316,7 @@ export default () => {
   //----------
   // acmsLink
   ACMS.Library.acmsLink = function (Uri, inherit) {
-    const Config = ACMS.Config;
+    const { Config } = ACMS;
     function empty(value) {
       return (typeof value === 'undefined' || value === null);
     }
@@ -388,45 +339,45 @@ export default () => {
     }
 
     let url = Config.scriptRoot;
-    url += (Uri.bid ? (`bid/${Uri.bid}`) : (`bid/${Config.bid}`));
+    url += (Uri.bid ? (`bid/${encodeUri(Uri.bid)}`) : (`bid/${encodeUri(Config.bid)}`));
     if (Uri.date) {
-      url += (`/${Uri.date}`);
+      url += (`/${encodeUri(Uri.date)}`);
     }
     if (Uri.cid) {
-      url += (`/cid/${Uri.cid}`);
+      url += (`/cid/${encodeUri(Uri.cid)}`);
     }
     if (Uri.eid) {
-      url += (`/eid/${Uri.eid}`);
+      url += (`/eid/${encodeUri(Uri.eid)}`);
     }
     if (Uri.utid) {
-      url += (`/utid/${Uri.utid}`);
+      url += (`/utid/${encodeUri(Uri.utid)}`);
     }
     if (Uri.admin) {
-      url += (`/admin/${Uri.admin}`);
+      url += (`/admin/${encodeUri(Uri.admin)}`);
     }
     if (Uri.order) {
-      url += (`/order/${Uri.order}`);
+      url += (`/order/${encodeUri(Uri.order)}`);
     }
     if (Uri.keyword) {
-      url += (`/keyword/${Uri.keyword}`);
+      url += (`/keyword/${encodeUri(Uri.keyword)}`);
     }
     if (Uri.page) {
-      url += (`/page/${Uri.page}`);
+      url += (`/page/${encodeUri(Uri.page)}`);
     }
     if (Uri.limit) {
-      url += (`/limit/${Uri.limit}`);
+      url += (`/limit/${encodeUri(Uri.limit)}`);
     }
     if (Uri.tag) {
-      url += (`/tag/${Uri.tag}`);
+      url += (`/tag/${Uri.tag.split('/').map(encodeUri).join('/')}`);
     }
     if (Uri.tpl) {
-      url += (`/tpl/${Uri.tpl}`);
+      url += (`/tpl/${Uri.tpl.split('/').map(encodeUri).join('/')}`);
     }
     if (Uri.tpl && /^ajax\//.test(Uri.tpl)) {
       if (Uri.Query) {
         Uri.Query.v = Date.now();
       } else {
-        Uri.Query = {v: Date.now()}
+        Uri.Query = { v: Date.now() };
       }
     }
     url += '/';
@@ -434,9 +385,9 @@ export default () => {
       const query = [];
       $.each(Uri.Query, function (key) {
         let pair = '';
-        pair += key;
+        pair += encodeUri(key);
         if (this !== true) {
-          pair += (`=${this}`);
+          pair += (`=${encodeUri(this)}`);
         }
         query.push(pair);
       });
@@ -460,7 +411,7 @@ export default () => {
 
     for (let i = 0; i < param.length; i++) {
       hash = param[i].split('=');
-      result[hash[0]] = hash[1];
+      result[hash[0]] = hash[1]; // eslint-disable-line prefer-destructuring
     }
     return result;
   };

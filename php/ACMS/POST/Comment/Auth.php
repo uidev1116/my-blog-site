@@ -1,46 +1,46 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-oNGjmJAxj41M20RLGr376nVkNuJueo2Of9GrvZe=
+<?php
+
+class ACMS_POST_Comment_Auth extends ACMS_POST_Comment
+{
+    /**
+     * CSRF対策
+     *
+     * @var bool
+     */
+    protected $isCSRF = true;
+
+    /**
+     * 二重送信対策
+     *
+     * @var bool
+     */
+    protected $checkDoubleSubmit = true;
+
+    /**
+     * @return false|Field
+     */
+    function post()
+    {
+        $Comment = $this->extract('comment');
+        $Comment->setMethod('pass', 'auth');
+        $Comment->validate(new ACMS_Validator_Comment());
+
+        if ( $this->Post->isValidAll() ) {
+            $row    = ACMS_RAM::comment(CMID);
+            $Comment->setField('name', $row['comment_name']);
+            $Comment->setField('mail', $row['comment_mail']);
+            $Comment->setField('url', $row['comment_url']);
+            $Comment->setField('title', $row['comment_title']);
+            $Comment->setField('body', $row['comment_body']);
+            $Comment->setField('pass', $row['comment_pass']);
+            $Comment->setField('old_pass', $Comment->get('pass'));
+            $this->Post->set('action', 'update');
+            $this->Post->set('step', 'reapply');
+        } else {
+            $this->Post->set('action', 'auth');
+            $this->Post->set('step', 'auth');
+        }
+
+        return $this->Post;
+    }
+}

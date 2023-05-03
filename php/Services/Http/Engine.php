@@ -117,6 +117,7 @@ class Engine
         if ($name === false) {
             return $this->responseHeaders;
         }
+        $name = strtolower($name);
         if (isset($this->responseHeaders[$name])) {
             return $this->responseHeaders[$name];
         }
@@ -147,12 +148,12 @@ class Engine
         foreach ( preg_split("/(\r|\n|\r\n)/", $header_string) as $i => $line ) {
             if ( $i === 0 ) {
                 $headers['http_code'] = $line;
-                if ( preg_match('/HTTP\/1\.[0|1|x] ([0-9]{3})/', $line, $matches) ) {
+                if ( preg_match('/HTTP\/[1|2]\.[0|1|x] ([0-9]{3})/', $line, $matches) ) {
                     $headers['status_code'] = $matches[1];
                 }
             } else if ( strpos($line, ':') !== false ) {
                 list ($key, $value) = explode(': ', $line);
-                $headers[$key] = $value;
+                $headers[strtolower($key)] = $value;
             }
         }
         return $headers;

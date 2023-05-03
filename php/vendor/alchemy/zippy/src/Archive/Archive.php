@@ -23,7 +23,7 @@ class Archive implements ArchiveInterface
     /**
      * The path to the archive
      *
-     * @var String
+     * @var string
      */
     protected $path;
 
@@ -37,7 +37,7 @@ class Archive implements ArchiveInterface
     /**
      * An array of archive members
      *
-     * @var Array
+     * @var MemberInterface[]
      */
     protected $members = array();
 
@@ -69,6 +69,7 @@ class Archive implements ArchiveInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->getMembers());
@@ -79,8 +80,9 @@ class Archive implements ArchiveInterface
      *
      * This method implements the IteratorAggregate interface.
      *
-     * @return \ArrayIterator An iterator
+     * @return \ArrayIterator|MemberInterface[] An iterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->getMembers());
@@ -89,6 +91,7 @@ class Archive implements ArchiveInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function getMembers()
     {
         return $this->members = $this->adapter->listMembers($this->resource);
@@ -97,6 +100,7 @@ class Archive implements ArchiveInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function addMembers($sources, $recursive = true)
     {
         $this->adapter->add($this->resource, $sources, $recursive);
@@ -107,6 +111,7 @@ class Archive implements ArchiveInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function removeMembers($sources)
     {
         $this->adapter->remove($this->resource, $sources);
@@ -117,16 +122,18 @@ class Archive implements ArchiveInterface
     /**
      * @inheritdoc
      */
-     public function extract($toDirectory)
-     {
+    #[\ReturnTypeWillChange]
+    public function extract($toDirectory)
+    {
         $this->adapter->extract($this->resource, $toDirectory);
 
         return $this;
-     }
+    }
 
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function extractMembers($members, $toDirectory = null)
     {
         $this->adapter->extractMembers($this->resource, $members, $toDirectory);

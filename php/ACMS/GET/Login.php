@@ -6,7 +6,7 @@ use Acms\Services\Login\Exceptions\NotFoundException;
 
 class ACMS_GET_Login extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (SUID) {
             page404();
@@ -35,7 +35,8 @@ class ACMS_GET_Login extends ACMS_GET
          */
         if ('on' == config('subscribe') && $type === 'subscribe') {
             try {
-                $this->subscriberActivation();
+                $uid = $this->validateAuthUrl();
+                $this->subscriberActivation($uid);
                 $Tpl->add(array('subscribe.enableAccount', $block));
             } catch (BadRequestException $e) {
                 $Tpl->add(array('subscribe.badRequest', $block));
@@ -51,7 +52,14 @@ class ACMS_GET_Login extends ACMS_GET
          */
         if ($type === 'reset' && $Login->get('reset') !== 'success') {
             try {
-                $this->validateResetUrl();
+                $uid = $this->validateResetUrl();
+                // メールアドレスが未認証のユーザーはパスワードリセットメールを送信できないため、
+                // 通常ではメールアドレス未認証のユーザーがリセットメールの認証を通過することはない。
+                // しかし、万が一、メールアドレス未認証のユーザーが
+                // パスワードリセットしてしまうと、本来はログインできないユーザーが
+                // ログインできてしまう他、そのユーザーは一定期間で削除されてしまうという
+                // 意図しない挙動になってしまうため、ユーザーの有効化を行う
+                $this->subscriberActivation($uid);
                 $block = 'reset';
             } catch (BadRequestException $e) {
                 $Tpl->add(array('reset.badRequest', $block));
@@ -60,7 +68,9 @@ class ACMS_GET_Login extends ACMS_GET
             } catch (NotFoundException $e) {
                 $Tpl->add(array('reset.notFound', $block));
             }
-        } else if ($Login->get('reset') === 'success') {
+        } elseif ($Login->get('reset') === 'success') {
+            // 2段階認証が利用可能なユーザーはパスワードリセット時にログインしないため、
+            // パスワードリセットが成功したことを表示するためのブロックを追加する。
             $Tpl->add(array('reset.success', $block));
         }
 
@@ -135,7 +145,7 @@ class ACMS_GET_Login extends ACMS_GET
     }
 
     /**
-     * @return bool
+     * @return int
      * @throws BadRequestException
      * @throws NotFoundException
      */
@@ -158,15 +168,15 @@ class ACMS_GET_Login extends ACMS_GET
         if (empty($uid)) {
             throw new NotFoundException('Not found account.');
         }
-        return true;
+        return $uid;
     }
 
     /**
-     * @return bool
+     * @return int
      * @throws BadRequestException
      * @throws NotFoundException
      */
-    protected function subscriberActivation()
+    protected function validateAuthUrl()
     {
         $key = $this->Get->get('key');
         $salt = $this->Get->get('salt');
@@ -185,11 +195,21 @@ class ACMS_GET_Login extends ACMS_GET
         if (empty($uid)) {
             throw new NotFoundException('Not found account.');
         }
+        return $uid;
+    }
+
+    /**
+     * @param int $uid
+     * @return bool
+     */
+    protected function subscriberActivation($uid)
+    {
         // enable account
         $sql = SQL::newUpdate('user');
         $sql->addUpdate('user_confirmation_token', '');
         $sql->addWhereOpr('user_id', $uid);
         DB::query($sql->get(dsn()), 'exec');
+        ACMS_RAM::user($uid, null);
 
         return true;
     }

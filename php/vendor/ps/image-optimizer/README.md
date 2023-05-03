@@ -1,6 +1,6 @@
-# Image Optimizer
+# Image Optimizer [![Build Status](https://travis-ci.org/psliwa/image-optimizer.svg?branch=master)](https://travis-ci.org/psliwa/image-optimizer)
 
-This library is handy and very easy to use optimizer for image files. It uses [optipng][2], [pngquant][1], [jpegoptim][6] and few more libraries,
+This library is handy and very easy to use optimizer for image files. It uses [optipng][2], [pngquant][1], [jpegoptim][6], [svgo][9] and few more libraries,
 so before use it you should install proper libraries on your server. Project contains Vagrantfile that defines testing
 virtual machine with all libraries installed, so you can check Vagrantfile how to install all those stuff.
 
@@ -38,7 +38,17 @@ automatically.
 Supported options:
 
 * `ignore_errors` (default: true)
-* `execute_only_first_png_optimizer` (default: true) - execute the first successful or all `png` optimizers
+* `single_optimizer_timeout_in_seconds` (default: 60) - useful when you
+  want to have control how long optimizing lasts. For example in some
+  cases optimizing may not be worth when it takes big amount of time.
+  Pass `null` in order to turn off timeout.
+* `output_filepath_pattern` (default: `%basename%/%filename%%ext%`) -
+  destination where optimized file will be stored. By default it
+  overrides original file. There are 3 placehoders: `%basename%`,
+  `%filename%` (without extension and dot) and `%ext%` (extension with
+  dot) which will be replaced by values from original file.
+* `execute_only_first_png_optimizer` (default: true) - execute the first
+  successful or all `png` optimizers
 * `execute_only_first_jpeg_optimizer` (default: true) - execute the first successful or all `jpeg` optimizers
 * `optipng_options` (default: `array('-i0', '-o2', '-quiet')`) - an array of arguments to pass to the library
 * `pngquant_options` (default: `array('--force')`)
@@ -48,6 +58,8 @@ Supported options:
 * `gifsicle_options` (default: `array('-b', '-O5')`)
 * `jpegoptim_options` (default: `array('--strip-all', '--all-progressive')`)
 * `jpegtran_options` (default: `array('-optimize', '-progressive')`)
+* `svgo_options` (default: `array('--disable=cleanupIDs')`)
+* `custom_optimizers` (default `array()`)
 * `optipng_bin` (default: will be guessed) - you can enforce paths to binaries, but by default it will be guessed
 * `pngquant_bin`
 * `pngcrush_bin`
@@ -56,6 +68,7 @@ Supported options:
 * `gifsicle_bin`
 * `jpegoptim_bin`
 * `jpegtran_bin`
+* `svgo_bin`
 
 You can pass array of options as first argument of `ImageOptimizer\OptimizerFactory` constructor. Second argument is
 optionally `Psr\LoggerInterface`.
@@ -78,6 +91,7 @@ $factory = new \ImageOptimizer\OptimizerFactory(array('ignore_errors' => false),
 * `jpegtran` - [homepage][6]
 * `jpegoptim` - [homepage][7]
 * `gifsicle` - [homepage][8]
+* `svgo` - [homepage][9]
 
 You can obtain concrete optimizer by passing his name to `ImageOptimizer\OptimizerFactory`::`get` method:
 
@@ -92,6 +106,48 @@ $pngOptimizer = $factory->get('png');
 $jpgOptimizer = $factory->get('jpegoptim');
 ```
 
+# Custom optimizers
+
+You can easily define custom optimizers:
+
+```php
+$factory = new \ImageOptimizer\OptimizerFactory(array('custom_optimizers' => array(
+    'some_optimizier' => array(
+        'command' => 'some_command',
+        'args' => array('-some-flag')
+    )
+)), $logger);
+```
+
+And then usage:
+
+```php
+$customOptimizer = $factory->get('some_optimizier');
+```
+
+# I got "All optimizers failed to optimize the file"
+
+Probably you don't have required optimazers installed. Let's have a look
+at `Vagrantfile` file in order to see an example how to install those
+commands.
+
+In order to see all intermediate errors, you can use logger (be default
+`NullLogger` is used, so logs are not available):
+
+```php
+class StdoutLogger extends \Psr\Log\AbstractLogger { 
+    public function log($level, $message, array $context = array()) { 
+        echo $message."\n"; 
+    }
+}
+
+$factory = new \ImageOptimizer\OptimizerFactory(array(), new StdoutLogger());
+
+$factory->get()->optimize('yourfile.jpg');
+
+// and have a look at stdout
+```
+
 # License
 
 **MIT**
@@ -104,3 +160,4 @@ $jpgOptimizer = $factory->get('jpegoptim');
 [6]: http://jpegclub.org/jpegtran/
 [7]: http://freecode.com/projects/jpegoptim
 [8]: http://www.lcdf.org/gifsicle/
+[9]: https://github.com/svg/svgo

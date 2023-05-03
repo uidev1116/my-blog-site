@@ -16,13 +16,13 @@
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
 			<a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
-			<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/fix_unit-size/" class="acms-admin-btn-admin"><!--T-->リセット<!--/T--></a>
+			<a href="%{HTTP_ROOT}bid/%{BID}/admin/fix_unit-size/" class="acms-admin-btn-admin"><!--T-->リセット<!--/T--></a>
 		</div>
 	</div>
 
-	<div class="acms-admin-panel acms-admin-panel-info">
+	<div class="acms-admin-panel acms-admin-margin-bottom-medium">
 		<div class="acms-admin-panel-header">
-			<!--T-->概要<!--/T-->
+      <h3 class="acms-admin-panel-title"><!--T-->ユニット修正とは<!--/T--></h3>
 		</div>
 		<div class="acms-admin-panel-body">
 			<!--T-->ユニットのサイズ（画像、マップ、メディア、ビデオ、画像URL）を修正します。サイズはピクセル指定の実際サイズ、表示サイズはクラスや %指定ができます。<!--/T-->
@@ -30,6 +30,7 @@
 	</div>
 
 	<!-- BEGIN step -->
+  <h3 class="acms-admin-admin-title2 acms-admin-margin-top-large"><!--T-->ユニットタイプ<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
 			<th><!--T-->タイプ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユニットのサイズを変更するユニットのタイプを選択します。<!--/T-->"></i></th>
@@ -83,7 +84,7 @@
 	</table>
 	<!-- END step -->
 	<!-- BEGIN step#2 -->
-	<h3 class="acms-admin-admin-title2"><!--T-->ユニットサイズ<!--/T--></h3>
+	<h3 class="acms-admin-admin-title2 acms-admin-margin-top-large"><!--T-->ユニットサイズ<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
 			<th>タイプ<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユニットのサイズを変更するユニットのタイプを選択します。<!--/T-->"></i></th>
@@ -152,7 +153,7 @@
 		<tr>
 			<th></th>
 			<td>
-				<input type="submit" name="ACMS_POST_Fix_UnitSize" value="<!--T-->修正<!--/T-->" onclick="return confirm('<!--T-->ユニットのデータを修正します。この作業は元に戻せません。よろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary">
+				<input type="submit" name="ACMS_POST_Fix_UnitSize" value="<!--T-->修正<!--/T-->" onclick="return confirm('<!--T-->ユニットのデータを修正します。この作業は元に戻せません。よろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save">
 			</td>
 		</tr>
 	</table>

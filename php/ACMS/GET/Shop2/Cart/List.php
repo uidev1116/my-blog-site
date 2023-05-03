@@ -26,7 +26,12 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
     {
         $step   = $this->Post->get('step', null);
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $amount = array();
+        $amount = array(
+            'amount' => 0,
+            'subtotal' => 0,
+            'tax-omit' => 0,
+            'tax-only' => 0,
+        );
 
         // カートが空のときのパターン
         if ( empty($TEMP) ) {
@@ -34,7 +39,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             return $Tpl->get();
         }
 
-       
+
         // 商品を削除するときのパターン
         if ( $this->Get->isExists('delete') ) {
             $delete_target = $this->Get->get('delete');
@@ -50,7 +55,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
         $tax_rate = array();
 
         // 通常の表示をするパターン
-        foreach ( $TEMP as $hash => $row ) { 
+        foreach ( $TEMP as $hash => $row ) {
             if ( 0
                 or !isset($row[$this->item_price])
                 or !isset($row[$this->item_qty])
@@ -63,6 +68,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             $sum    = $row[$this->item_price.'#sum'];
             $rate   = $row[$this->item_price.'#rate'];
 
+            $tax = 0;
             if (isset($row[$this->item_price.'#tax'])) {
                 $tax = $row[$this->item_price.'#tax'];
             }
@@ -74,13 +80,18 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             }else {
 
             }
+            $amount['amount'] += $qty;
 
-            @$amount['amount']   += $qty;
+            if (!isset($amount['tax-omit'.$rate])) {
+                $amount['tax-omit'.$rate] = 0;
+            }
+            if (!isset($amount['tax-only'.$rate])) {
+                $amount['tax-only'.$rate] = 0;
+            }
 
             if ( config('shop_tax_calc_method') == 'pileup') {
 
                 // 商品毎に消費税を計算
-                
                 if ( config('shop_tax_calculate') == 'extax' ) {
 
                     @$amount['subtotal'] += $sum + $tax;
@@ -88,7 +99,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
                     @$amount['tax-only'] += $tax;
 
                     @$amount['tax-omit'.$rate] += $sum;
-                    @$amount['tax-only'.$rate] += $tax; 
+                    @$amount['tax-only'.$rate] += $tax;
 
                 } else {
 
@@ -97,7 +108,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
                     @$amount['tax-only'] += $tax;
 
                     @$amount['tax-omit'.$rate] += $sum -$tax;
-                    @$amount['tax-only'.$rate] += $tax; 
+                    @$amount['tax-only'.$rate] += $tax;
                 }
 
 
@@ -106,9 +117,9 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
                 // 小計毎に消費税を計算
 
                 @$amount['subtotal'] += $sum; // 外税時には再計算
-                
+
                 @$amount['tax-omit'.$rate] += $sum;
-                @$amount['tax-only'.$rate] += $tax; 
+                @$amount['tax-only'.$rate] += $tax;
 
                 array_push ($tax_rate, $rate);
 
@@ -166,7 +177,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
         }
 
         if ( config('shop_tax_calc_method') == 'rebate' ) {
-        
+
             // 小計毎に消費税を計算
 
             $amount['tax-omit'] = 0;
@@ -205,7 +216,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
                 }
 
             } else {
-            
+
                 //外税 extax
                 $amount['subtotal'] = 0;
 

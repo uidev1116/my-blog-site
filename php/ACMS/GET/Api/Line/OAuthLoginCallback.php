@@ -22,10 +22,6 @@ class ACMS_GET_Api_Line_OAuthLoginCallback extends ACMS_GET
             $accessToken = $line->getAccessToken($this->Get->get('code'));
             $line->setMe($accessToken);
 
-            // clear session
-            $session = ACMS_Session::singleton();
-            $session->clear();
-
             switch ($loginType) {
                 case 'login':
                     $line->login();

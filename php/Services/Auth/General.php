@@ -11,7 +11,7 @@ use Acms\Services\Facades\Config;
 class General implements Contracts\Guard
 {
     /**
-     * 指定ユーザーが購読者か
+     * 指定ユーザーが読者か
      *
      * @param int|null $uid
      * @return bool
@@ -59,7 +59,7 @@ class General implements Contracts\Guard
     }
 
     /**
-     * ログイン中のユーザーがそのブログにおいて購読者以上の権限があるか
+     * ログイン中のユーザーがそのブログにおいて読者以上の権限があるか
      *
      * @param int|null $bid
      * @return bool

@@ -33,10 +33,6 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $SQL->addSelect('blog_id');
         $SQL->addSelect('blog_name');
 
-        // [CMS-971] ブログ作成時に管理トピックパスがおかしい → ブログ作成時のキャッシュを解除
-        ACMS_RAM::blog(BID, array());
-        ACMS_RAM::blog(SBID, array());
-
         $fromLeft   = ACMS_RAM::blogLeft(BID);
         $fromRight  = ACMS_RAM::blogRight(BID);
         $toLeft     = ACMS_RAM::blogLeft(SBID);

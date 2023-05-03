@@ -1,58 +1,82 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cP/uQDXTpoufO2jUZD8JWbtS1AfIYi85ZRECdQrLz3jQuTEZlqUENOvbPhcdb2vxzgzDcLo6S
-Rrdo0oFIG9vfFdMisnFyPVfHvC2WGvcA/OEv328Ql6kL+rluNeqWvVjRi3HUeEmUvhGVftmxij5O
-Ex5BpnbhqPmFO17fJLjg6VfjB8VpXjUl0cn6gq/0FavfOYJUwy8HebBXmdsfuMheSLN5QCe+RNYy
-SNu9SHCUroE83zLfm15B3+v1vigDqPTVU1q7rs1rfeuErBSJPK7jk5Ns1mqOh/3PQni2PmMI/Mon
-YN8hCjm37J/FrEjSwa+KCwu+zs8Rg9Cpu7RCqVyR4F6u2EfBkj12+I3dWZBy2nlWiigOhf92zg16
-SIoc3a07464SDI29rZATXcY/70Dc/uiB1feLUSgBRyu9+EYDOVq1VHczX8uDGaRTBXoAagQGqdDj
-wpEu/k6xL4Nhe26SNO6TULkspHnls6yYcn6TP6OkA3It3/zIP8vG7QkguH34YI1w8tR2+0y5VSkC
-S0pwX32cq+5G+J++1mcbfes6ER4br49qJ1dWb9v9GlAttsau8UROTKXL0t/OZuoYLy0SGwB082UK
-HXF7jvY5h4gCC1M3LMeumVS2JnpI6vVJVpCN2pRmOUsYNQLXDlPhAh4Ua5sFjlkwm82liYMwr8Ru
-ChnmKTedC2ZJ2lHkYz5etqW9721tEZK6Gekl7GEe+LYTf0xGMx6c1f2UFmN061wFYrHfjnlT0cjD
-vuN+3fXhtWbQHCtYbw6FW7BrDlsQsu6b/OFWoSvzLEry56E9Gq8pw0LKPhJX1XGo/+Hy1JsctVRO
-leHd1x8FCxUiFdkTn+7/YKkJJTyYvsJpzFiEISaJY39+etkSSvZzEPMeXQHMcHKvR9Ijj4/RbVMq
-I9uxoL8v+53IevUGo0/yvPlQPcs7XKVq3ubir2X0a8ExCsXPBXMR7eqOB6hw2Fcr+6NqFNjAkaSZ
-/MFwxq7vvGBUBtZ1YCpMlq12N0+tvy5BlYgjuHKt5yVDfFfzhdeCbLDmxQpORcbqChSZKujq5JMd
-K0wL4JYtR5Zc4rgi49Tn/K73aZxPqbCdsEwWW5vK1wAYeyPVNkMKzNqN48AKfVxKKKP2oGUMZMWi
-S//9MQU4ES6TE32SLg1Ebaa/nzEZO05W9HEPlh+omx8FR45Vn2QnCAKEYsY0MXXHh1rXSVtd/Q1P
-ieNt9w4TnS56OTARR+4ihpGqz6U28mc3wIqOgDMW8T3lp+rzvHDJUZ5hvZQ3uhGjnzQFHJtteJKJ
-vlmuH7uNeM75LnwV3izB6GKWx2RcXPtSkYUObT2DYbRqZKf3g0EIcosI7aDRNhJNCrjtkfpNUVE3
-WW6MtL7KcwsO/pXjr7nvEWXp4j151wmbo+XCZkuOsYwKWuuC+tcfUagWU5lKh4PrIWei1EhCd/rD
-OF/SWRPcWS0l+DwlvPITliOnjkVp7wulnhN8pBjuRkchA6j5q0X3NGJb/5AVnDet8WGgjZRS+3VS
-IK1v56ySo7g4aSqcttKN1FAktqZotJ64s5+uW26qo04qerp0yUabCPot7C/iznUqyCOHxYH+sq72
-YCW429qMUXnJSkBZyFUI8D0YAMXLDRkKaaDgIYWURbu1cHe8CD+uwQg9sTeYmCHf5H6K0XkVztcS
-X1Hdq0MM9QqJEZu+SSoPOMeBgNB6w3EwtVJ1V+jW/+Fj1DGXb1Gpiar8y2syf9ilcm858R4Jm4e+
-p+c5ttTWdZ6Qr+vSqjA9r97h1sIZElsjxdOehK49FVfHuXD9up9qk3K0eRObDdCFtBPETRk7kSIe
-LIxFieXINmyl+/cgJaVr66SSyTFAq3R6z0+aqwSlugS+JIFmXu55tg3vw2+UFMvgmuQ60Erb07FE
-bPTB29D89YfFgEQD7nGKgMbhNIIeeuiihlmtY8X4OjoJ3eBYUFsM0xLrWcK+lDQwxzJUSZ/xPRQw
-BlwMmwRBTm6lrKwyVgV0PdobMTER8wMvfHWxYAIa8IYBUHlHZxbW3oy9xf6dRuZK2LIkPksnqimP
-XYR/eXmnqG17l41Gg/vclkCtjf2aoCVjyWZ1zq5ZbBsWdLfVM7nkKygsSn9t3tDzltzgv2zF63s1
-SBYGCFx5nYAKq2XvCkCmAMD7HE5HRBT6sIJVd1og9Ux2GqPte1u8YXr+eRTbT2sNVOG7XJRkIGFC
-6Xf6wmlDBZaVMPFi8ZYP/CfprA7UWzuY6/tkPuw56ayj90JyIVi7g6nrZpXeivaV1uUcG5QIo/Dl
-0uzMZr2jzzqeh7mI/m8X4VsTilHNktY5Mk2BQOZFEliUbL5MuV73Ecr6OnV82ecSovqKKITUQDQD
-+9E1PQzey1YjncpWutDFCrLusiLy5Mb3PqyGI/ROFV/RjKVH8TjNsqPb07hAJnj8rnyukpOcTU3/
-XkzDIqQMqGdsVlsSGt0SjntlGR7iXs/rw+IADeZXg0rS9+4B6h6KGV+BOzuDem6rPO3QHGkjxTSj
-d0AJ+HvvodhSY4xdWgv19ERsrLDuV3DxGzFP3VtYx/NZJ9YdXK620Bp/lsagyO42N8tuYhhv5879
-mCIBkgQsMEq619oi5YH1mgZw0I4YHiet9i9EDSeuAHQfr5L7mJu4krG8mXB4Ro8FxnGfmkCUv4bd
-xzJUysQYUerktt6vR8y0kDyNgNAIrhr56d+hmJjWVAaSqQMhUNCTvag2fzopu4gzWNeEHnhWOFKo
-dwW22/su1x5R0yiGcs3/WgH2yu8Cgqm8r3IzLmtxC7st/UMkHYqoWg9ig6Dsx1NiN76yzI+Wgqm3
-i0l3K5SCSJaeikWau7AggUmWDKt3y55Tmdw++/YhFh5Fp+CBgIUWHl0L/jqGYE1IJt0HvDmzGfVU
-5gC3aA9jl5lR44tlU2XvJKHn5A4h+BiVfi5a1uLg+tVnaFskDACxom9z/lPGOGRJM5edr6YR3Ik5
-xZHCOGHFEASKK1J8r9s76RlEFVXKeybu0+VkUIDNvAZjuHekA0w1w03Nb4rTxWhlvH1dPXR2h+Ph
-GG6VDjnh6KitDrNpUrw+jvIpCVjvpt722DurfIYgmiY4iN/F7qEupSAST7Z7vZu1kI/HvTHPc/Yd
-DEKn2eLFChRzBii4DXeQZduQxf6DImUvnKU/xW45u3kFVxLtSGION9DBuiqa205aJh7PkIfWY4Js
-JS4tzSdAu0pkEhMjbS4KtZ1vrtsodGldB8lFhuJGNdfQNUJG9Up28u/p16aPRbHh4Y5Kq8YPQOD8
-ky2HB3YQh1z9xxtzNhy5XKKxodW8f/1DtiEPdPdsTy1UCZiFdcjv/JyEacjEOZLL7alptYA1wHLa
-6Rfulv2d1+oUp5u4gknydqGXBwOgP+GDI6zPw0tiJMibU5Iu+4lXO3u0VofxFtGoJqdJdEc0Ymdc
-jyN5MqXDDTHIKZ1AtiGDEX5NXX6Q1K/J7WdyZiQD6oauvu65VgUVG6dLfUPrTm6QbS/mfMra1Wzo
-x8MIupPRgCrcX6F9QcehBYPgi53WJ608/sRLw4IHRWjg078HMydsT1xTHxLjbKesenroL6p/vopw
-u8vGNJ+bGsCwI+TwMxP8y/DJUdPDnLjGMrUkC/81lJa7HlF+hhgrp9OxItBYCw6OQ9ooIOtLzphT
-1iTYadQqRTGs+OZKA7nm0j6HQqBuxgoWZN5TUGRbOh5eyDoWvF7ykQBECFyCVmy4aum/DQ+6B/Ui
-WfparOTxhqiRJXKFxycziR6vlTIJR0y8K//wFSi81yYoOKG+Jh8SlrPEO4480t83bOYNSET4NEfF
-DBj+oig0VPH0G6if38f5+wsN2yibT2FA9GTZ+0KmHk6hyZ0DOT0BCdytvcB1np5Cc2vU2iEAVCxs
-p/WwIGEpiV7yjZj7JBdgTgmOv/ILIKOsN9i3CQyv9npgPL0b2jlMiq+xmBHk2GebKtXTejbjgH/R
-gREvF/mLvUDv18odBsfUFNOsn4/tDeg5DsyT9Ji5JZA1d+dGMdKEwQBX/zPm3yz7PqyBZfwOUbd1
-AtMorYBIP9BNgbJvIvtz8NIif+Wi0/u4U5WT3XUuaUPKCfUQQ66iEkihQpCOk9GXnwmH+8cCifs/
-8eLjKG==
+<?php
+
+class ACMS_POST_Config_Export extends ACMS_POST
+{
+    /**
+     * @var string $yaml
+     */
+    protected $yaml;
+
+    /**
+     * @var string $destPath
+     */
+    protected $destPath;
+
+    /**
+     * run
+     *
+     * @return Field
+     */
+    public function post()
+    {
+        @set_time_limit(0);
+
+        if ( !$this->checkAuth() ) {
+            return $this->Post;
+        }
+
+        try {
+            $this->export = App::make('config.export');
+            $this->export->exportAll(BID);
+            $this->yaml = $this->export->getYaml();
+            $this->destPath = ARCHIVES_DIR . 'config.yaml';
+
+            Storage::remove($this->destPath);
+            $this->putYaml();
+            $this->download();
+        } catch ( \Exception $e ) {
+            $this->addError($e->getMessage());
+            Storage::remove($this->destPath);
+        }
+
+        return $this->Post;
+    }
+
+    /**
+     * download yaml data
+     *
+     * @return void
+     */
+    protected function download()
+    {
+        if ( !Storage::exists($this->destPath) ) {
+            throw new RuntimeException('Can not read a yaml to a file.');
+        }
+        $file = 'config' . date('_Ymd_Hi') . '.yaml';
+        Common::download($this->destPath, $file, false, true);
+    }
+
+    /**
+     * write a yaml to a file
+     *
+     * @return void
+     *
+     * @throws RuntimeException
+     */
+    protected function putYaml()
+    {
+        if ( !Storage::put($this->destPath, $this->yaml) ) {
+            throw new RuntimeException('Can not write a yaml to a file.');
+        }
+    }
+
+    /**
+     * check auth
+     *
+     * @return bool
+     */
+    protected function checkAuth()
+    {
+        return sessionWithAdministration();
+    }
+}

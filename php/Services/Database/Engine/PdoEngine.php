@@ -42,16 +42,7 @@ class PdoEngine extends Base
 
         $options = array();
 
-        /**
-         * php5.3.6以前と後でのcharset指定
-         */
-        if ( PHP_VERSION_ID < 50306 ) {
-            $options = array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->getCharset($dsn),
-            );
-        } else {
-            $connect_str .= 'charset=' . $this->getCharset($dsn);
-        }
+        $connect_str .= 'charset=' . $this->getCharset($dsn);
 
         try {
             $this->connection = new PDO(
@@ -151,7 +142,13 @@ class PdoEngine extends Base
      */
     public function getVersion()
     {
-        return $this->connection->getAttribute(PDO::ATTR_SERVER_VERSION);
+        static $version = false;
+        if ($version) {
+            return $version;
+        }
+        $db = self::singleton(dsn());
+        $version = $db->query('select version()', 'one');
+        return $version;
     }
 
     /**
@@ -170,44 +167,46 @@ class PdoEngine extends Base
      *
      * @throws \ErrorException
      */
-     public function query($sql, $mode = 'row', $buffered = true)
-     {
-         global $query_result_count;
-         $query_result_count++;
+    public function query($sql, $mode = 'row', $buffered = true)
+    {
+        global $query_result_count;
+        $query_result_count++;
 
-         try {
-             $this->hook($sql);
-             $start_time = microtime(true);
-             if ($buffered === false) {
-                 $this->connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-             }
-             $res = $this->connection->query($sql);
-             $exe_time = sprintf('%0.6f', microtime(true) - $start_time);
-             $this->saveProcessingTime($sql, $exe_time);
-             $this->affectedRows = $res ? $res->rowCount() : 0;
-             $this->columnCount = $res ? $res->columnCount() : 0;
-             $this->statement = $res;
+        try {
+            $this->hook($sql);
+            $start_time = microtime(true);
+            if ($buffered === false) {
+                $this->connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+            }
+            $res = $this->connection->query($sql);
+            $exe_time = sprintf('%0.6f', microtime(true) - $start_time);
+            $this->saveProcessingTime($sql, $exe_time);
+            $this->affectedRows = $res ? $res->rowCount() : 0;
+            $this->columnCount = $res ? $res->columnCount() : 0;
+            $this->statement = $res;
 
-             $method = strtolower($mode) . 'Mode';
-             if ( method_exists($this, $method) ) {
-                 return $this->{$method}($sql, $res);
-             } else {
-                 return $this->etcMode($sql, $res);
-             }
-         } catch ( PDOException $e ) {
-             if ( $this->debug ) {
-                 $code = intval($e->getCode());
-                 $exception = new \ErrorException($e->getMessage(), $code, E_USER_WARNING, $e->getFile(), $e->getLine(), App::getExceptionStack());
-                 if ( $this->throwException ) {
-                     throw $exception;
-                 } else {
-                     App::setExceptionStack($exception);
-                 }
-             } else {
-                 return false;
-             }
-         }
-     }
+            $method = strtolower($mode) . 'Mode';
+            if (method_exists($this, $method)) {
+                $result = $this->{$method}($sql, $res);
+            } else {
+                $result = $this->etcMode($sql, $res);
+            }
+            return $result;
+
+        } catch ( PDOException $e ) {
+            if ( $this->debug ) {
+                $code = intval($e->getCode());
+                $exception = new \ErrorException($e->getMessage(), $code, E_USER_WARNING, $e->getFile(), $e->getLine(), App::getExceptionStack());
+                if ( $this->throwException ) {
+                    throw $exception;
+                } else {
+                    App::setExceptionStack($exception);
+                }
+            } else {
+                return false;
+            }
+        }
+    }
 
     /**
      * sql文を指定して1行ずつfetchされた値を返す
@@ -219,20 +218,20 @@ class PdoEngine extends Base
      * @param string $sql
      * @return array | bool
      */
-     public function fetch($sql = null, $reset = false)
-     {
-         $this->hook($sql);
-         $id = sha1($sql);
-         if (!isset($this->fetch[$id])) {
-             return false;
-         }
-         if (!$row = $this->fetch[$id]->fetch(\PDO::FETCH_ASSOC)) {
-             $this->fetch[$id]->closeCursor();
-             unset($this->fetch[$id]);
-             return false;
-         }
-         return $row;
-     }
+    public function fetch($sql = null, $reset = false)
+    {
+        $this->hook($sql);
+        $id = sha1($sql);
+        if (!isset($this->fetch[$id])) {
+            return false;
+        }
+        if (!$row = $this->fetch[$id]->fetch(\PDO::FETCH_ASSOC)) {
+            $this->fetch[$id]->closeCursor();
+            unset($this->fetch[$id]);
+            return false;
+        }
+        return $row;
+    }
 
     /**
      * query()の結果を返す

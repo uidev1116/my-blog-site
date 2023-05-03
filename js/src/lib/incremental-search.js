@@ -15,9 +15,9 @@ export default class IncrementalSearch {
   constructor(options) {
     const defaults = {
       interval: 200,
-      keyName: 'word'
+      keyName: 'word',
     };
-    const opt = Object.assign({}, defaults, options);
+    const opt = { ...defaults, ...options };
 
     this.timer = null;
     this.cancel = null;
@@ -34,11 +34,11 @@ export default class IncrementalSearch {
   addRequest(selector, endpoint, callback = () => {}) {
     const input = typeof selector === 'string' ? document.querySelector(selector) : selector;
     input.addEventListener('keyup', (e) => {
-      const value = e.target.value;
+      const { value } = e.target;
       e.preventDefault();
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
-        if (typeof (this.source.cancel) === 'function') {
+        if (typeof this.source.cancel === 'function') {
           this.source.cancel();
         }
         this.request(endpoint, value).then((json) => {
@@ -69,14 +69,16 @@ export default class IncrementalSearch {
         url: endpoint,
         responseType: 'json',
         cancelToken: this.source.token,
-        data: params
-      }).then((response) => {
-        resolve(response.data);
-      }).catch((thrown) => {
-        if (!axios.isCancel(thrown)) {
-          reject(thrown.message);
-        }
-      });
+        data: params,
+      })
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((thrown) => {
+          if (!axios.isCancel(thrown)) {
+            reject(thrown.message);
+          }
+        });
     });
   }
 }

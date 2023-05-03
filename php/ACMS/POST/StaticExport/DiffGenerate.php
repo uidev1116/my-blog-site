@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generate
 {
     /**
@@ -43,7 +45,8 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
 
     protected function run()
     {
-        $setting = Config::loadBlogConfig(BID);
+        $setting = Config::loadDefaultField();
+        $setting->overload(Config::loadBlogConfig(BID));
 
         $document_root = $setting->get('static_dest_document_root');
         $offset_dir = $setting->get('static_dest_offset_dir');
@@ -58,6 +61,16 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
         $config->static_page_max = $setting->getArray('static_page_max');
         $config->static_archive_start = $setting->getArray('static_archive_start');
         $config->static_archive_max = $setting->getArray('static_archive_max');
+        $exclusionList = array();
+        $includeList = array();
+        if ($list = $setting->get('static_export_exclusion_list', false)) {
+            $exclusionList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
+        }
+        if ($list = $setting->get('static_export_include_list', false)) {
+            $includeList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
+        }
+        $config->exclusion_list = $exclusionList;
+        $config->include_list = $includeList;
 
         // 書き出し時間を保存するめに現在時刻を取得
         $exportDate = date('Y-m-d', REQUEST_TIME);

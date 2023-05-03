@@ -26,10 +26,10 @@
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
 			<!-- BEGIN footer#update -->
-			<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/form_log/?fmid=%{fmid}" class="acms-admin-btn-admin"><!--T-->投稿データ<!--/T--></a>
+			<a href="%{HTTP_ROOT}bid/%{BID}/admin/form_log/?fmid=%{fmid}" class="acms-admin-btn-admin"><!--T-->投稿データ<!--/T--></a>
 			<!-- END footer#update -->
 
-			<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/form_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+			<a href="%{HTTP_ROOT}bid/%{BID}/admin/form_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
 
 			<!-- BEGIN submit#insert -->
 			<input type="submit" name="ACMS_POST_Form_Insert" value="<!--T-->作成<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"/>
@@ -89,16 +89,6 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->送信<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->メール送信をバックグランドで行います。フォーム送信者にはすぐレスポンスがくるのでパフォマンスが上がります。ただエラーが確認しにくくなりますので、開発中は外すことをおすすめします。<!--/T-->"></i></th>
-			<td>
-				<input type="hidden" name="Background" value="0"/>
-				<label for="input-checkbox-Background" class="acms-admin-form-checkbox">
-					<input type="checkbox" name="Background" value="1" {Background:checked#1} id="input-checkbox-Background"/><i class="acms-admin-ico-checkbox"></i><!--T-->バックグランド送信する<!--/T-->
-				</label>
-				<input type="hidden" name="mail[]" value="Background"/>
-			</td>
-		</tr>
-		<tr>
 			<th><!--T-->複数指定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->テンプレート（お客様入力）でのメールアドレス指定で、カンマ続きの複数指定を無効に設定します。<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="InvalidMultipleAddress" value="0"/>
@@ -106,16 +96,6 @@
 					<input type="checkbox" name="InvalidMultipleAddress" value="1" {InvalidMultipleAddress:checked#1} id="input-checkbox-InvalidMultipleAddress"/><i class="acms-admin-ico-checkbox"></i><!--T-->テンプレートでの複数アドレス指定を無効にする<!--/T-->
 				</label>
 				<input type="hidden" name="mail[]" value="InvalidMultipleAddress"/>
-			</td>
-		</tr>
-		<tr>
-			<th><!--T-->文字コード<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->このフォームから送信されるメールの、文字コードの設定です。<!--/T-->"></i></th>
-			<td>
-				<select name="Charset" class="js-select2">
-					<option value="UTF-8" {Charset:selected#UTF-8}>UTF-8</option>
-					<option value="ISO-2022-JP" {Charset:selected#ISO-2022-JP}>ISO-2022-JP（JIS）</option>
-				</select>
-				<input type="hidden" name="mail[]" value="Charset"/>
 			</td>
 		</tr>
 	</table>

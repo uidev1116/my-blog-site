@@ -1,55 +1,56 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
+{
+    function post()
+    {
+        if ( !sessionWithAdministration() ) return false;
+
+        $Fix = $this->extract('fix', new ACMS_Validator());
+        $Fix->setMethod('unit_size_unit_type', 'required');
+        $Fix->setMethod('unit_size_size_type', 'required');
+        $Fix->setMethod('unit_size_target', 'required');
+        $Fix->setMethod('unit_size_fix', 'required');
+
+        if ( $this->Post->isValidAll() ) {
+            @set_time_limit(0);
+            $DB = DB::singleton(dsn());
+
+            $type       = $Fix->get('unit_size_unit_type');
+            $sizeType   = $Fix->get('unit_size_size_type');
+            $target     = $Fix->get('unit_size_target');
+            $criterion  = $Fix->get('unit_size_fix_criterion');
+            $value      = $Fix->get('unit_size_fix');
+
+            $SQL    = SQL::newUpdate('column');
+
+            $column = 'column_size';
+            if ( $sizeType === 'display' ) {
+                switch ( $type ) {
+                    case 'youtube':
+                    case 'video':
+                        $column = 'column_field_3';
+                        break;
+                    case 'image':
+                    case 'osmap':
+                    case 'map':
+                        $column = 'column_field_5';
+                        break;
+                    case 'eximage':
+                    case 'media':
+                        $column = 'column_field_6';
+                        break;
+                }
+            }
+            $SQL->addUpdate($column, $criterion.$value);
+            $SQL->addWhereOpr($column, $target);
+            $SQL->addWhereOpr('column_type', $type);
+            $SQL->addWhereOpr('column_blog_id', BID);
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            $this->Post->set('message', 'success');
+        }
+
+        return $this->Post;
+    }
+}

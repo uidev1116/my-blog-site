@@ -8,10 +8,10 @@
 	</div>
 </header>
 
-<!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->投稿データがありません。<!--/T--></p><!-- END index#notFound --><!-- BEGIN refresh -->
+<!-- BEGIN refresh -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->投稿データ一覧を更新しました<!--/T--></p><!-- END refresh -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 	<div class="acms-admin-filter">
 		<form action="" method="post" class="acms-admin-form">
 			<div class="acms-admin-filter-body">
@@ -81,7 +81,30 @@
 			</div>
 		</form>
 	</div>
+<!-- END_IF -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1/_and_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当する投稿データがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text">検索内容に一致した投稿データが見つかりませんでした。</p>
+  <div class="acms-admin-announce-action">
+    <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/form_log/?fmid=%{fmid}" class="acms-admin-btn acms-admin-btn-info">投稿データ一覧へ戻る</a>
+  </div>
+</div>
+<!-- ELSE -->
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->投稿データがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text">このフォームIDには投稿データがまだないようです。</p>
+  <div class="acms-admin-announce-action">
+    <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/form_index/" class="acms-admin-btn acms-admin-btn-info">フォームID一覧へ戻る</a>
+  </div>
+</div>
+<!-- END index#notFound -->
+<!-- END_IF -->
+
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 	<div class="acms-admin-form-group acms-admin-margin-sp">
 		<form action="/bid/%{BID}/%{START}/-/%{END}/{formName}.csv?fmid=%{fmid}&amp;serial=%{serial}" method="post" class="acms-admin-form">
 			<strong>{itemsAmount}</strong> <!--T-->件の投稿データをCSV形式で<!--/T-->
@@ -156,4 +179,5 @@
 		</div>
 	</div><!-- /.acms-grid -->
 	<!-- END index -->
+<!-- END_IF -->
 <!-- END_MODULE Admin_Form_Log -->

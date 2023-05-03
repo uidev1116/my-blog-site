@@ -27,24 +27,23 @@ const SplashFrame = styled.div`
   margin: 0 auto;
   border-radius: 10%;
   background: #000;
-  opacity: .8;
+  opacity: 0.8;
   text-align: center;
   padding-top: 30px;
   box-sizing: border-box;
 `;
 
 const SplashMsg = styled.p`
-  color: #FFF;
+  color: #fff;
   font-size: 12px;
 `;
 
-
-export default ({message = ACMS.i18n('splash.loading')}) => (
+export default ({ message = ACMS.i18n('splash.loading') }) => (
   <SplashOuter>
     <SplashInner>
       <Splash>
         <SplashFrame>
-          <div className="js-acms_loader_img js-acms_loader"></div> 
+          <div className="js-acms_loader_img js-acms_loader" />
           <SplashMsg>{message}</SplashMsg>
         </SplashFrame>
       </Splash>

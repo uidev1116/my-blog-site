@@ -73,6 +73,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('user_index', 'user');
             $this->standardMenu('rule_index', 'rule');
             $this->standardMenu('module_index', 'module');
+            $this->standardMenu('webhook_index', 'webhook');
             $this->standardMenu('shortcut_index', 'shortcut');
             $this->standardMenu('publish_index', 'publish');
             $this->standardMenu('backup_index', 'backup');
@@ -145,6 +146,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('trackback_index', 'trackback');
             $this->standardMenu('blog_index');
             $this->standardMenu('blog_edit');
+            $this->standardMenu('webhook_index', 'webhook');
             $this->standardMenu('alias_index', 'alias');
             $this->standardMenu('user_index', 'user');
             $this->standardMenu('shortcut_index', 'shortcut');

@@ -10,13 +10,14 @@ export default (item) => {
       heading = Number.isNaN(heading) ? 0 : heading;
       zoom = Number.isNaN(zoom) ? 0 : zoom;
 
-      new google.maps.StreetViewPanorama(item, { // eslint-disable-line
+      // eslint-disable-next-line no-new
+      new google.maps.StreetViewPanorama(item, {
         position: { lat, lng },
         pov: { heading, pitch, zoom },
       });
     },
     options: {
-      region: ACMS.Config.s2dRegion
-    }
+      region: ACMS.Config.s2dRegion,
+    },
   });
 };

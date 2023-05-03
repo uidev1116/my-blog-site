@@ -5,7 +5,7 @@ namespace Acms\Services\Auth\Contracts;
 interface Guard
 {
     /**
-     * 指定ユーザーが購読者か
+     * 指定ユーザーが読者か
      *
      * @param int|null $uid
      * @return bool
@@ -37,7 +37,7 @@ interface Guard
     public function isAdministrator($uid=SUID);
 
     /**
-     *ログイン中のユーザーがそのブログにおいて購読者以上の権限があるか
+     *ログイン中のユーザーがそのブログにおいて読者以上の権限があるか
      *
      * @param int|null $bid
      * @return bool

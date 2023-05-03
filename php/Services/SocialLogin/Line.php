@@ -2,7 +2,7 @@
 
 namespace Acms\Services\SocialLogin;
 
-use ACMS_Session;
+use Session;
 
 class Line extends Base
 {
@@ -48,7 +48,7 @@ class Line extends Base
         $this->appId = $appId;
         $this->appSecret = $appSecret;
 
-        $session = ACMS_Session::singleton();
+        $session = Session::handle();
         if ($state = $session->get('line_login_state')) {
             $this->state = $state;
         } else {

@@ -339,6 +339,7 @@
     "copy_attention": "By changing the image, its permalink will be also changed.",
     "status": "status",
     "follow_media_status": "Follow to entries's statuses",
+    "secret": "Login only",
     "managed_tag": "tags for identification",
     "link": "Link",
     "link_to": "Link to",

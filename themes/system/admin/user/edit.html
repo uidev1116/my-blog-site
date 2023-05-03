@@ -53,7 +53,7 @@
 <form method="post" action="" enctype="multipart/form-data" class="acms-admin-form js-dialog-body js-twitter-login-parent">
 	<div class="acms-admin-form-group js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index"><!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-			<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/user_index/" class="acms-admin-btn"><!--T-->一覧<!--/T--></a><!-- END_MODULE Touch_SessionWithAdministration -->
+			<a href="%{HTTP_ROOT}bid/%{BID}/admin/user_index/" class="acms-admin-btn"><!--T-->一覧<!--/T--></a><!-- END_MODULE Touch_SessionWithAdministration -->
 
 			<!-- BEGIN submit#insert -->
 			<input type="submit" name="ACMS_POST_User_Insert" value="<!--T-->作成<!--/T-->" class="acms-admin-btn acms-admin-btn-primary acms-admin-btn-save js-saving-splash" />
@@ -114,7 +114,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th><!--T-->ユーザーID<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーがログイン時に入力するID名です。半角英数字で設定します。<!--/T-->"></i></th>
+					<th><!--T-->ユーザーID<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーがログイン時に入力するID名です。半角英数字、ハイフン・アンダーバーが利用できます。<!--/T-->"></i></th>
 					<td>
 						<input type="text" name="code" value="{code}" class="acms-admin-form-width-small" id="input-text-code" /> <!--T--> (英数字)<!--/T-->
 						<input type="hidden" name="user[]" value="code" />
@@ -157,7 +157,7 @@
 						<input type="hidden" name="mail:validator#required" id="validator-mail-required" />
 						<input type="hidden" name="mail:validator#email" id="validator-mail-email" />
 						<input type="hidden" name="mail:validator#doubleMail" value="%{USER_ID}" id="validator-mail-doubleMail" />
-						<!-- BEGIN mail_magazine:checked#off -->
+
 						<input type="hidden" name="mail_magazine" value="off" />
 						<div class="acms-admin-form-checkbox">
 							<input type="checkbox" name="mail_magazine" value="on"{mail_magazine:checked#on} id="input-checkbox-mail-magazine" />
@@ -165,7 +165,7 @@
 								<i class="acms-admin-ico-checkbox"></i><!--T-->メールマガジンを受け取る<!--/T--> ( HTML )
 							</label>
 						</div>
-						<input type="hidden" name="user[]" value="mail_magazine" /><!-- END mail_magazine:checked#off -->
+						<input type="hidden" name="user[]" value="mail_magazine" />
 						<div role="alert" aria-live="assertive">
 							<div data-validator-label="validator-mail-required" class="validator-result-{mail:validator#required}">
 								<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->メールアドレスが入力されていません。<!--/T--></p>
@@ -264,7 +264,7 @@
 				<tr>
 					<th><!--T-->パスワード<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->パスワードを変更します。<!--/T-->"></i></th>
 					<td>
-						<a href="%{SCRIPT_ROOT}bid/%{BID}/uid/%{UID}/admin/user_password/" class="acms-admin-btn acms-admin-btn-info"><!--T-->変更<!--/T--></a>
+						<a href="%{HTTP_ROOT}bid/%{BID}/uid/%{UID}/admin/user_password/" class="acms-admin-btn acms-admin-btn-info"><!--T-->変更<!--/T--></a>
 					</td>
 				</tr>
 				<!-- END_IF -->
@@ -273,10 +273,10 @@
 					<th><!--T-->２段階認証<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->２段階認証を設定します。<!--/T-->"></i></th>
 					<td>
 						<!-- BEGIN_IF [{step}/eq/unregistered] -->
-						<a href="%{SCRIPT_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info"><!--T-->設定する<!--/T--></a>
+						<a href="%{HTTP_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info"><!--T-->設定する<!--/T--></a>
 						<!-- END_IF -->
 						<!-- BEGIN_IF [{step}/eq/registered] -->
-						<a href="%{SCRIPT_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info"><!--T-->編集<!--/T--><!--T-->（設定済み）<!--/T--></a>
+						<a href="%{HTTP_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info"><!--T-->編集<!--/T--><!--T-->（設定済み）<!--/T--></a>
 						<!-- END_IF -->
 					</td>
 				</tr>
@@ -374,7 +374,6 @@
 							</label>
 						</div>
 						<input type="hidden" name="user[]" value="login_anywhere" />
-						<input type="hidden" name="login_anywhere:validator#anywhere" id="validator-login_anywhere-anywhere" />
 						<div role="alert" aria-live="assertive">
 							<div data-validator-label="validator-login_anywhere-anywhere" class="validator-result-{login_anywhere:validator#anywhere}">
 								<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->他のブログのユーザーとユーザーIDまたはメールアドレスが重複しています<!--/T--></p>

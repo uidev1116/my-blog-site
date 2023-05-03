@@ -25,7 +25,7 @@ export default (item) => {
     latInput: '.js-osm-lat',
     zoomInput: '.js-osm-zoom',
     msgInput: '.js-osm-msg',
-    map: '.js-open-street-map-picker'
+    map: '.js-open-street-map-picker',
   }, Leaflet);
   if (geoPicker.map) {
     geoPicker.run();

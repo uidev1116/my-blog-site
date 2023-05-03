@@ -80,20 +80,6 @@ class ACMS_GET_Ajax_Unit extends ACMS_GET
                     ));
                 }
                 break;
-            case 'yolp':
-                foreach ( $Config->getArray('column_map_size') as $j => $size ) {
-                    $Tpl->add(array('size:loop', $type), array(
-                        'value' => $size,
-                        'label' => $Config->get('column_map_size_label', '', $j),
-                    ));
-                }
-                foreach ( $Config->getArray('column_map_layer_type') as $j => $layer ) {
-                    $Tpl->add(array('layer:loop', $type), array(
-                        'value' => $size,
-                        'label' => $Config->get('column_map_layer_type_label', '', $j),
-                    ));
-                }
-                break;
             case 'youtube':
                 foreach ( $Config->getArray('column_youtube_size') as $j => $size ) {
                     $Tpl->add(array('size:loop', $type), array(
@@ -119,7 +105,7 @@ class ACMS_GET_Ajax_Unit extends ACMS_GET
                 }
                 break;
             case 'quote':
-                
+
                 break;
             case 'media':
                 foreach ( $Config->getArray('column_media_size') as $j => $size ) {

@@ -1,31 +1,26 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-3ZGx7M5ydoXnv5yb3Z1JfrMWtjK=
+<?php
+
+class ACMS_POST_Category_Index_Parent extends ACMS_POST_Category
+{
+    function post()
+    {
+        if ( !sessionWithCompilation() ) die();
+        $toPid = idval($this->Post->get('parent'));
+        if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
+            foreach ( $_POST['checks'] as $cid ) {
+
+                if ( 1
+                    and !empty($toPid) 
+                    and ACMS_RAM::categoryScope($toPid) <> ACMS_RAM::categoryScope($cid)
+                ) {
+                    continue;
+                }
+
+                // implment ACMS_POST_Category
+                $this->changeParentCategory($cid, $toPid);
+            }
+        }
+
+        return $this->Post;
+    }
+}

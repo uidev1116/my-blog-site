@@ -1,43 +1,47 @@
 import React, { Component } from 'react';
-import Select, { Creatable, Async } from './react-select-styled';
 import axios from 'axios';
 import styled from 'styled-components';
+import Select, { Creatable, Async } from './react-select-styled';
 import 'react-select/dist/react-select.css';
 
 const CreatableWrap = styled.div`
-  .Select.is-focused:not(.is-open)>.Select-control {
-    box-shadow: 0 0 0 2px rgba(19,122,243,.4), inset 0 1px 1px rgba(0,0,0,.1);
+  .Select.is-focused:not(.is-open) > .Select-control {
+    box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4), inset 0 1px 1px rgba(0, 0, 0, 0.1);
   }
 `;
 
 type RichSelectProp = {
-  isMulti: boolean,
-  isAsync: boolean,
-  name: string,
-  className: string,
-  closeOnSelect: boolean,
-  creatable: boolean,
-  clearable: boolean,
-  placeholder: string,
-  noResultsText: string,
-  promptTextCreator: (label: string) => string,
-  isValidNewOption: boolean
+  isMulti?: boolean;
+  isAsync?: boolean;
+  name?: string;
+  className?: string;
+  closeOnSelect?: boolean;
+  creatable?: boolean;
+  clearable?: boolean;
+  dataUrl?: string;
+  defaultValue?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loadOptions?: (inputValue: string, callback: (options: any) => void) => Promise<any> | void;
+  placeholder?: string;
+  noResultsText?: string;
+  promptTextCreator?: (label: string) => string;
+  isValidNewOption?: boolean;
+  onChange?: (value: string) => void;
 };
 
 type Tag = {
-  label: string,
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 type RichSelectState = {
-  show: 'block' | 'none',
-  value: string,
-  options: Tag[]
+  show: 'block' | 'none';
+  value: string;
+  options: Tag[];
 };
 
 export default class RichSelect extends Component<RichSelectProp, RichSelectState> {
   static defaultProps = {
-    show: 'none',
     creatable: false,
     clearable: false,
     dataUrl: '',
@@ -49,10 +53,10 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
     className: 'acms-admin-rich-select',
     placeholder: '',
     noResultsText: '',
-    promptTextCreator: label => `Create ${label}`,
-    onChange: () => {},
-    loadOptions: () => {},
-    isValidNewOption: ({ label }) => !!label
+    promptTextCreator: (label) => `Create ${label}`,
+    onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+    loadOptions: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+    isValidNewOption: ({ label }) => !!label,
   };
 
   constructor(props) {
@@ -60,7 +64,7 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
     this.state = {
       show: 'none',
       value: props.defaultValue,
-      options: []
+      options: [],
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -71,7 +75,7 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
       axios.get(dataUrl).then((res) => {
         if (res.data) {
           this.setState({
-            options: res.data
+            options: res.data,
           });
         }
       });
@@ -91,10 +95,22 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
 
   render() {
     const {
-      isMulti, isAsync, name, className, closeOnSelect, creatable, clearable,
-      placeholder, noResultsText, promptTextCreator, isValidNewOption, filterOption, loadOption
+      isMulti,
+      isAsync,
+      name,
+      className,
+      closeOnSelect,
+      creatable,
+      clearable,
+      placeholder,
+      noResultsText,
+      promptTextCreator,
+      isValidNewOption,
+      filterOption,
+      loadOptions,
     } = this.props;
     const { options, value, show } = this.state;
+    // eslint-disable-next-line no-nested-ternary
     const SelectComponent = creatable ? Creatable : isAsync ? Async : Select;
 
     return (
@@ -112,8 +128,8 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
           noResultsText={noResultsText}
           promptTextCreator={promptTextCreator}
           isValidNewOption={isValidNewOption}
-          loadOptions={loadOption}
-          { ... (filterOption && { filterOption: filterOption })}
+          loadOptions={loadOptions}
+          {...(filterOption && { filterOption })}
         />
       </CreatableWrap>
     );

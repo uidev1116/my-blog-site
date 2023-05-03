@@ -31,9 +31,9 @@ class ACMS_GET_Admin_Schedule_Labels extends ACMS_GET_Admin
 
                 $Tpl->add('label:loop', array(
                     'sort'  => $sort,
-                    'name'  => $_label[0],
-                    'key'   => $_label[1],
-                    'class' => @$_label[2],
+                    'name'  => isset($_label[0]) ? $_label[0] : '',
+                    'key'   => isset($_label[1]) ? $_label[1] : '',
+                    'class' => isset($_label[2]) ? $_label[2] : '',
                     )
                 );
             }

@@ -1,0 +1,31 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// 管理ボックス
+// ------------------------------
+#js-admin_action_box {
+  display: none;
+}
+
+@media screen and (min-width: global.$breakpoint-md-min) {
+  #js-admin_action_box {
+    display: block;
+  }
+}
+
+
+
+#adminBox > #loginUserStatus {
+  display: none;
+}
+
+#adminBox {
+  margin: 0 0 20px 0;
+  padding: 12px 20px 10px;
+  background-color: #f1f1f1;
+  border: none;
+}
+
+.acms-action-box {
+  margin-bottom: 10px;
+}

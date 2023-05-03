@@ -1,33 +1,37 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-60pN/TT3S3J+CAw/Eq0o4YK1T1rWlLsFh0pbzzW=
+<?php
+
+class ACMS_POST_Login_Tfa_UnRegister extends ACMS_POST_Login
+{
+    /**
+     * CSRF対策
+     *
+     * @var bool
+     */
+    protected $isCSRF = true;
+
+    /**
+     * 二重送信対策
+     *
+     * @var bool
+     */
+    protected $checkDoubleSubmit = true;
+
+    /**
+     * @return false|Field|string
+     */
+    function post()
+    {
+        if (!Tfa::checkAuthority()) {
+            return '';
+        }
+        $sql = SQL::newUpdate('user');
+        $sql->addUpdate('user_tfa_secret', null);
+        $sql->addUpdate('user_tfa_secret_iv', null);
+        $sql->addUpdate('user_tfa_recovery', null);
+        $sql->addWhereOpr('user_id', UID);
+        DB::query($sql->get(dsn()), 'exec');
+        ACMS_RAM::user(UID, null);
+
+        return $this->Post;
+    }
+}

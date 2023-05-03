@@ -101,13 +101,13 @@ class Facebook extends Base
 
     /**
      * insert oauth token
-     * 
+     *
      *
      * @param string $bid
      * @param string $token
      * @param string $secret
      * @param string $type = 'access' | 'request'
-     * @param string $service = 'facebook' | 'instagram'
+     * @param string $service = 'facebook'
      * @return string
      */
 
@@ -167,7 +167,7 @@ class Facebook extends Base
      *
      * @param string $bid
      * @param string $type = 'access' | 'request'
-     * @param string $service = 'facebook' | 'instagram'
+     * @param string $service = 'facebook'
      * @return string
     */
     public function removeAccessToken($bid)
@@ -284,7 +284,7 @@ class Facebook extends Base
         if ($limit) {
             $searchField .= "&limit=$limit";
         }
-        
+
         if ($accountId) {
             $response = $this->sdk->get("/${accountId}/media?fields=${searchField}", $accessToken);
             $items = $response->getGraphEdge();

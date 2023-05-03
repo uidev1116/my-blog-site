@@ -18,10 +18,6 @@ class ACMS_GET_Api_Facebook_OAuthLoginCallback extends ACMS_GET
             }
             $facebook->setMe();
 
-            // clear session
-            $session = ACMS_Session::singleton();
-            $session->clear();
-
             switch ($loginType) {
                 case 'login':
                     $facebook->login();

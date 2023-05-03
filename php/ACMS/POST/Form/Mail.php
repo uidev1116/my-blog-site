@@ -1,88 +1,124 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Form_Mail extends Mail
+{
+    var $_files     = array();
+    
+    function addFile ( $path )
+    {
+        if ( ! Storage::exists($path) ) {
+            return false;
+        }elseif( Storage::isDirectory($path) ){
+            return false;
+        }
+        $this->_files[] = $path;
+        return Storage::mbBasename($path);
+    }
+    
+    function getBody ( )
+    {
+        $data       = '';
+
+        $encoding   = null;
+        $boundary   = null;
+        $charset    = null;
+
+        // encoding
+        if ( isset($this->_headers['Content-Transfer-Encoding']) ) {
+            $encoding   = $this->_headers['Content-Transfer-Encoding']['values']['0'];
+        }
+
+        // boundary, charset
+        if ( isset($this->_headers['Content-Type']) ) {
+            $value  = $this->_headers['Content-Type']['values'][0];
+            $params = $this->_headers['Content-Type']['params'];
+            if ( preg_match('@^multipart/@', $value) and isset($params['boundary']) ) {
+                $boundary   = $params['boundary'];
+            } else if ( preg_match('@^text/@', $value) and isset($params['charset']) ) {
+                $charset    = $params['charset'];
+            }
+        }
+
+        foreach ( $this->_bodys as $body ) {
+            if ( !empty($data) ) {
+                $data   .= $this->_crlf;
+            }
+
+            if ( is_object($body) and method_exists($body, 'get') ) {
+                $body   = $body->get();
+            }
+
+            if ( !empty($boundary) ) {
+                $data   .= '--'.$boundary.$this->_crlf;
+            } else if ( !empty($charset) ) {
+                $body   = $this->covertEncoding($body, $charset, 'UTF-8');
+            }
+
+            if ( 'base64' == $encoding ) {
+                $body   = join($this->_crlf, str_split(base64_encode($body), 76));
+            } else if ( 'quoted-printable' == $encoding ) {
+                
+            }
+            $data   .= $body;
+        }
+        
+        // ファイル添付対応
+       foreach ( $this->_files as $file ) {
+            $str_body = '';
+            $ary = configArray('mail_file_mime');
+            
+            // config.system.yamlで連想配列を使えない対応
+            $ary_mime = array();
+            foreach($ary as $key_ary => $val_ary){
+                $ary_temp = explode('@',$val_ary);
+                $ary_mime[ $ary_temp[0] ] = $ary_temp[1];
+            }
+            $ary = array();
+            
+            $ary[0] = $ary_mime;
+            
+            if( isset( $ary[0] ) ){
+                $mime_content_types = $ary[0];
+            }
+            if ( !empty($file) ) {
+                $data   .= $this->_crlf;
+            }
+            $info    = pathinfo($file);
+            // ファイルではない
+            if( !isset($info['extension']) ){
+                continue;
+            }
+            $extension  = strtolower(mb_convert_kana($info['extension'], 'a'));
+            if ( !isset($mime_content_types[$extension]) ) {
+                continue;
+            }
+            $content    = $mime_content_types[$extension];
+            $filename   = Storage::mbBasename($file);
+            if ( !$content ) {
+                continue;
+            }
+            
+            if ( is_object($file) and method_exists($file, 'get') ) {
+                $str_body = $file->get();
+                //$body   = chunk_split(base64_encode(Storage::get($file)));
+            }else {
+                try {
+                    $str_body = chunk_split(base64_encode(Storage::get($file))) . "\n";
+                } catch ( \Exception $e ) {
+                    $str_body = $e->getMessage() . "\n";
+                }
+            }
+            $data .= '--' . $boundary . $this->_crlf;
+            $data .= 'Content-Type: ' . $content . '; name="' . $filename . '"' . $this->_crlf;
+            $data .= 'Content-Disposition: attachment; filename="' . $filename . '"' . $this->_crlf;
+            $data .= 'Content-Transfer-Encoding: base64' . $this->_crlf;
+            $data .= $this->_crlf;
+            $data .= $str_body;
+            
+        }
+        if( strlen( $boundary ) > 0 ){
+            $data   .= $this->_crlf . '--' . $boundary . '--';
+        }
+        return $data;
+    }
+}

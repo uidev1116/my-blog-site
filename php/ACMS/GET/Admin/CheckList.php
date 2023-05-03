@@ -251,7 +251,8 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
             'bid'               => $bid,
             'rid'               => $rid,
             'cache'             => $this->config('cache', $bid, $rid),
-            'cacheSensitivity'  => $this->config('cache_sensitivity', $bid, $rid),
+            'cacheClearWhenPost' => $this->config('cache_clear_when_post', $bid, $rid),
+            'cacheClearTarget'  => $this->config('cache_clear_target', $bid, $rid),
             'logAccess'         => $this->config('log_access', $bid, $rid),
         );
         $blogConfig['editUrl']  = acmsLink(array(
@@ -264,8 +265,8 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         $Tpl->add(array('cacheCaution', 'blog:loop'), array(
             'caution'   => ( $blogConfig['cache'] == 'off' ) ? 'caution' : '',
         ));
-        $Tpl->add(array('cacheSensitivityCaution', 'blog:loop'), array(
-            'caution'   => ( $blogConfig['cacheSensitivity'] == 'low' ) ? 'caution' : '',
+        $Tpl->add(array('cacheClearTargetCaution', 'blog:loop'), array(
+            'caution'   => ( $blogConfig['cacheClearTarget'] == 'low' ) ? 'caution' : '',
         ));
 
         $Tpl->add('blog:loop', $blogConfig);
@@ -303,7 +304,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         $SQL->addWhereOpr('config_key', $key);
         $SQL->addWhereOpr('config_rule_id', $rid);
 
-        if ( $config = $DB->query($SQL->get(dsn()), 'one') ) {
+        if ($config = $DB->query($SQL->get(dsn()), 'one')) {
             return $config;
         } else {
             $config = loadDefaultConfig();

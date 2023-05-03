@@ -17,7 +17,6 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function register(Container $container)
     {
-        // php5.6以上で、instagramもfacebookも同じ判定
         if (isFacebookLoginAvailable()) {
             $container->singleton('facebook-login', function() {
                 $config = Config::loadBlogConfigSet(BID);
@@ -26,15 +25,6 @@ class SocialLoginServiceProvider extends ServiceProvider
                     $config->get('facebook_app_secret'),
                     'v3.2',
                     'facebook'
-                );
-            });
-            $container->singleton('instagram-login', function() {
-                $config = Config::loadBlogConfigSet(BID);
-                return new Facebook(
-                  $config->get('instagram_graph_client_id'),
-                  $config->get('instagram_graph_client_secret'),
-                  'v7.0',
-                  'instagram'
                 );
             });
         }

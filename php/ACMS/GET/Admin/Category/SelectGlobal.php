@@ -27,19 +27,10 @@ class ACMS_GET_Admin_Category_SelectGlobal extends ACMS_GET_Admin
             $order  = $order2;
         }
         $cid = $this->cid;
-        $defaultCid = intval(config('entry_edit_category_default', 0));
-        if ($defaultCid > 0) {
-            $cid = $defaultCid;
-        }
         $filterCid = 0;
-        if (ADMIN !== 'config_edit') {
-            $filterCid = intval(config('entry_edit_category_filter', 0));
-        }
-
         if (intval($this->eid) > 0) {
             $cid = ACMS_RAM::entryCategory($this->eid);
         }
-
         $Tpl->add(null, $this->buildCategorySelect(
             $Tpl,
             $target_bid,

@@ -7,6 +7,7 @@ use SQL;
 use ACMS_Filter;
 use Acms\Services\Facades\Auth;
 use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Session;
 
 class Download
 {
@@ -57,10 +58,25 @@ class Download
         $status = $this->media['status'] ?: 'entry';
 
         if ($status === 'entry') {
-            return $this->validateCloseType() || $this->validateEntryType();
+            return $this->validateEntryType();
         } else if ($status === 'close') {
             return $this->validateCloseType();
+        } else if ($status === 'secret') {
+            return $this->validateSecretType();
         } else if ($status === 'open') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * メディアステータスがログイン限定の場合のバリデート
+     *
+     * @return bool
+     */
+    protected function validateSecretType()
+    {
+        if (!!SUID) {
             return true;
         }
         return false;
@@ -100,6 +116,11 @@ class Download
      */
     protected function validateCloseType()
     {
+        $session = Session::handle();
+        $inPreviewLimit = $session->get('in-preview', REQUEST_TIME + (60 * 15));
+        if ($inPreviewLimit && intval($inPreviewLimit) > REQUEST_TIME) {
+            return true;
+        }
         if (SUID && (Auth::isEditor(SUID) || Auth::isAdministrator(SUID) || Auth::isContributor(SUID))) {
             return true;
         }

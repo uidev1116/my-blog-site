@@ -22,6 +22,7 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
                 config('entry_headline_order2'),
             ),
             'orderFieldName'   => config('entry_headline_order_field_name'),
+            'noNarrowDownSort' => config('entry_headline_no_narrow_down_sort', 'off'),
             'limit'            => intval(config('entry_headline_limit')),
             'offset'           => intval(config('entry_headline_offset')),
             'indexing'         => config('entry_headline_indexing'),
@@ -46,6 +47,8 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
             'simplePagerOn'    => config('entry_headline_simple_pager_on'),
             'pagerDelta'       => config('entry_headline_pager_delta'),
             'pagerCurAttr'     => config('entry_headline_pager_cur_attr'),
+
+            'mainImageOn'      => 'off',
         );
     }
 }

@@ -1806,7 +1806,7 @@ msgstr "Version"
 msgid "操作ユーザー"
 msgstr "Action User"
 
-msgid "承認却下"
+msgid "差し戻す"
 msgstr "Decline Approval"
 
 msgid "最終承認"
@@ -4954,13 +4954,13 @@ msgstr ""
 "If checked, Initial value of the subscriber's initial value of [Login "
 "Anywhere] will be [ON]."
 
-msgid "購読者を「どこでもログイン」を有効で作成する"
+msgid "読者を「どこでもログイン」を有効で作成する"
 msgstr "Add subscribers with [Login Anywhere] enabled."
 
 msgid "外部申請時の権限"
 msgstr "Role on the external request period."
 
-msgid "外部申請で登録されるユーザーの権限を設定します。"
+msgid "外部申請から登録を行うユーザーの権限を設定します。"
 msgstr "Set the user's role registered by external requests."
 
 msgid "でユーザーを登録する"
@@ -4982,14 +4982,14 @@ msgid "編集、管理ページ以外の表示"
 msgstr "Display except edit/admin pages."
 
 msgid ""
-"チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、購読者"
+"チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、読者"
 "（閲覧者）と同じ条件で表示するようになります。"
 msgstr ""
 "If checked, even when you are more than contributor, pages will be displayed "
 "in the same conditions as subscribers (viewers)."
 
 msgid ""
-"投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条"
+"投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条"
 "件で表示する"
 msgstr ""
 "If users’ role is more than contributor, show pages with same condition as "
@@ -9076,7 +9076,7 @@ msgstr "User name (Japanese allowed)"
 msgid " (日本語可)"
 msgstr " (Japanese allowed)"
 
-msgid "ユーザーがログイン時に入力するID名です。半角英数字で設定します。"
+msgid ユーザーがログイン時に入力するID名です。半角英数字、ハイフン・アンダーバーが利用できます。"
 msgstr ""
 "ID name used when user login to the system.set with half-width alphanumeric."
 
@@ -9622,7 +9622,7 @@ msgstr "Approved"
 msgid "承認中"
 msgstr "Being approved"
 
-msgid "却下"
+msgid "差し戻し"
 msgstr "Decline"
 
 msgid "承認前"
@@ -9655,13 +9655,13 @@ msgstr "All member"
 msgid "承認依頼します。よろしいですか？"
 msgstr "Are you sure you want to send the approval request?"
 
-msgid "却下依頼"
+msgid "差し戻し依頼"
 msgstr "Rejection Request"
 
-msgid "承認を却下依頼します。よろしいですか？"
+msgid "承認の差し戻しを依頼します。よろしいですか？"
 msgstr "Are you sure you want to send a rejection request?"
 
-msgid "承認を却下します。よろしいですか？"
+msgid "承認を差し戻します。よろしいですか？"
 msgstr "Are you sure you want to reject?"
 
 msgid "最終承認をします。記事が公開または削除されます。よろしいですか？"
@@ -9676,7 +9676,7 @@ msgstr "Remaining Approval Point"
 msgid "却下まで"
 msgstr "Remaining Rejection Point"
 
-msgid "承認却下依頼"
+msgid "差し戻し依頼"
 msgstr "Decline Request"
 
 #: themes/system/include/module/edit.html

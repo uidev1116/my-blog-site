@@ -1,112 +1,135 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-HR+cPycRyPjhDChSSbfak7+5+OH83T750o3Adk6GjNQeNvslkpTMakp3EMaTrrogi7zmfnLBWH1B
-xaE2cmu+An5KDMcgpcuRUbk5S48Nq9bJVu3zztpjZ5Dkw89NffYP17txu0QGp1vZ17zEpAvPEPiD
-2pO1BIPraFPkY8ra7FbaGBoFlAlE84Q8cuz0Kc9+tTbN7UdCOSXyk/izO4LjN8iLjE2hnuM90zrO
-0Ha2y1X8riG/pM5gvJGN+15HDdRZoOOCBGlnrQQM3jIt4sL1xRXLzWSD6A/m2sVIdOcJULqa0Ta3
-Ap8o4bU3sIi4dGL8zn3zKFCXZ5UfRiEjhYBcCrsRgaNRaHxlW0UmVVMcBotsdNmcQxRA7bft34+W
-5jerk/IMJVeSTZeby+Ed+HW9sN4PM9h78RN0ABNVt60euVWHWfz5qMflFhzjbaAgGIG5EWuBNHmv
-DoDGxWbXiKTOJw7O0tONfj/QKVPzksQNTrTxiP2gfcOx5YGCJVPCjg/A030sk08Mf5VUlDMyxFph
-bfMCo5EZ3FrrnYoFTmCDNEaV0p1rJMdF7HblhCKKMKVwKu+ZmeL7FImDNGSks9DgGIRriyi8yFEF
-+9r3QBIvLjCa76iWG47lPUOF+bwJ7ksR3j47aTE6Hs2GQ8ab3fFIFP/UtMXq0vYBWIzQDy+BXs/R
-iIuk4kBtzc6BxfUOHNsw9BNa4avUhpVZPUKmd5ORL7b8fnnVUql/29oY+ycAkLkYB2GlDAC5O9w/
-CBtwXo8d34KBt9ZpnTbtcmc9MFZhK7WdoJBkZ3OWA9VTK2CE/7CV+hePHXlaN4tTGwk8wlWbAf1F
-3IyixVWx6q+RueBfmhUEOovh0dug4CSjU8dJFJLtKZ+cnI0hJw4G3lpcs7pdEFagtlA1JvCs9KFW
-+Wu67N8KJGm7HZwc+I+74Pj9jkI8n4sC2cs5lpG7HKa77rtqaOcNoYYT6+vTTUDSfnqHQs3ZLdPT
-L/bWRW2wP9e6t2Tg/mzIAQ2ZQU69YincTFC6yXDkHS1kA89TZFLVRVE3YKWHnGsjAW1OFHqJWLC8
-8EQjtTYlfLQOmELLMZFNTyfspPh0IgJ+OndfDsnyQ7ifcA5KAWCJOQhwoVwiFiYRLruln0uouPVq
-0rN5X6UmxU79YMtdHJTI020S63uakuOmC5RWAkQNuMFyzAGzHsFJrtvwJE8jmdv2as+EnkJJIcq8
-WfKj8Kl4pofhTH16gFHWssmJJE6Ch8hq6hjVZR5N1fXeVh/39AWDFS04Ax2y3heu8SR3J8o0nZTm
-0TdgwZ+0kbOh/CVaRrS+VCK3rSSVQOr5X0/wsf4l7rB9gGAxl8x66bqiKXSwsQpnr26jLgMpZN+H
-5OR6UTh6/byNkwFsqEEaJCxkf6V7Po8z6XUFxSkTMYPyvUcuts4EVC3wV9CkjaCn0Q1+8Z1sE9x+
-BnnRhVtp707Bf7m0SyKLEcXB6XsprEVgKJ49INP0MEkOV/9PSwq0bJuFFoniIRZ69oQuRUx7YOfp
-MtCh9KVqMXmlpRSgDg6A+QUUgyfhqntSKKDGX0NKmM4E04W4TgFskK4Da8OvOHEuZhArDlWqhysp
-ofUV+yl+mqL6WNWMGLBM7BhF4+JCoZf9qqvesycWWdd9PDyQz4/v4KmLL4PLyoXjbyqemKALgJ4+
-+7z6V0bVsfRodr3cd+l7bxVFpk1YG/+bPb3SAPyaKL6k3ZZF/14zTNW2d7tzmNUXvjQBce/kmsQi
-OPSBlhUgMDyq6xhZM8wKu4kLIqTknH8TSfO6COSA9+c4kk61mQNKx1FlJQtA58SRpxdwfF3S/mut
-rB82JdrrDoPz4ShpawbSk0YhE9u6phzE0t1zoqZClYufS6c12kQ0Z855vjJ8pIk8chUOjdqs14s/
-nk4h/m3ulc7pcN/YNoTEqvAtvdDamJ6yElKsAcNA7BZqr5b31K5pdRAv6hMB0AVkVla6G0bcGZ7k
-1prtI7OQEQ11qxfPTiiw7nax7IerLwVyNbQ0z2qwH/kRRV+bwfiZJVYaMGCjmDv63BOdmB39RYk+
-Iy0vX9O9UAhl3gOM+L/Urytk+X3ykbTJfmdmQ7ADY7PzpcxtqawlC1QMZFpbmDe8O6sKSbtRKZku
-OrMEtK6x3fVmMqXyVb6Xt6ovQ6xAz+3yyehCZTwOAemjU9/HQYYgBQewRV+Udh1r8MqFq61l8irE
-ALO50w4j1Kq9Y7Wd+3vDWxLt8LNg5LNh5xX/+Gs3yhiACDck35Ov08Cpy/7yWaqimCU5fu8bEzb/
-8B4INsUiAcdUzXcylB+lSOVuPJuCZlZranyVQC1KCua8abnklAzeKiXXAZ37GWbgM2UVTNdOuokf
-ZGxsWtuf2it+3S7NBn4UjhkI3p1ToLisdtZ/bRqCf4aSPHXD5nGn+4RmAm2ANL/HgwHc/a+wAuel
-dE9354X0sYi618KGZVauC4i/ta+jnzyIi6vX9rI8BKrGkxX4/VoMxoOvh5kEyOVqkY6JIl/Z+8fn
-3sAlmCXN8Tvd9PX37xbwd+YA+3uOaOalaV6owPDBTReZCA15MENZw++KCWzHJ8diwHGao4wEVvud
-o19F7WitjBW040ep/Md6O5QmOUYXWzNIwwhuSiu0a6/frI+meZ2zAU6arV0e6V39z47GoxzTQz0o
-IAGhyVdMKQhJms1dyHwbVzv8cNHbW1b2BV3OSSeQzlUPC53kQ75JOeltETqW0NR6kyRwAan45GPf
-49ETfPQL45BN5aAr1Jxv5Y+imH7RhT38Yvo+SjcyOxwF6S0Yrz7O0LIirJPNAb9TgPyjLaC2RaZM
-93Njs7N5M1zSiIkJqVQ6Y7V5OMoWf6qeOnjLfSa8mwpa8GmHXM24g/CW50lEkpgljcNfNZMXtndi
-aFJF7FJ7EmBvf62P2fWrtaHxWX8C7Wo8SlhZuhffJaSqUgcjxwdbLuiFIIREyQLVtx7Kyt+JAeOC
-sw8hRLkFj9y5s2Jw1nHsHZlpS1cpzoRNHLc47woOxiPezPrGZuy/1m8KSosbBuWrAi8ow/gIqmuW
-cnImMPYV2RnwnMuu/DmwE6RCwnAIZWhOUsgTVZ7thuGN/xC30BbYJcwwXQ6mHojJOVnlkFBi0Opj
-MWWBpp7H7D5T/v/WgSArO1gEeKOvuBCIS2TI57a9J+qkUZLTGMty5kNylgh3bHG0HuoVX3IZgJjK
-BnUiECHWMPTdZkcBYuwZqpuwhmrX9dbw7exjHI9CIFVYW6dJUrm3iL4c8NX/RShDsS9b5lXP/7UK
-VDW1URpWlyQewsXsQB+TXPFA8dpHgFY5+cagtaSmWuHRMBAyAHQPA1iG43745fBVMegnDQQX+scP
-SLC/SXv8xpWSqKrMoCEhUGEd/PdLCXGv3zGktMiB3AEZ9J8FcJviq/Wddy2704i5aCeUqa5jrcf/
-YTNWrqt/ITCYsbfhXgcywg786UJFjI1jVs3GEAzbkbT3oR/ZwJ8NaMBSw9SkFeiZ8HfAz4EoQK1h
-Vz48qSttM95L0M6G20sf19x71k8PVHZl6PSUNK5CrDPXh9FPOAhb/liIQfyuz8B0k1dHDu2E+aK1
-2tNXH2TFtJQLWOAMi+i7m0mprtUlsLNcVq58yWq53JQYLtXD9Om5Uoixg4oe7uP61yJ7+PQkKUTD
-fPnKgy19rpdhN/zeEf3h8Rx6jTsx3Ey8w12pFtqOz2C1FVkePyDongb8iAYrulAFYTpoMyWKcE7g
-h/pV2ePYoW7GlCjeDvIkzQVeeHP9O/qifV4+viG7Up6PUTJhgB2rhqHonNZP0u3eA3tE4+inlffN
-2SSAYUp6opO4PKXVaO6KRUIZO+0zP7BacyVBhGHz1YI9lOm06Tu8HYfh1+kS74exFeNriMY7V8oz
-mnOZK+95016jODQm4mo2vUOxl3yuMnXvB2T2z3LaqrTy8TrP4MvTXyk88bdD3ONC/1SMTMNrstkl
-fzU9XxCtbRiMlEDxN6QH8fymHOtIWi9oB651zx7QeRGpXpwVq4ztqQVt/BxWDX4JplBCTvRL5dLd
-f6hiKGIUIDwNFh/ZjzwaY13M99d7NIhCpFyo45qQ9s++dze03CReXcS1Q/8mPgKfgYBmUu7IJcTL
-S22XCUjfMXfLU5MDjgWkuhT287B9gxjt0kHPjE7iW+KCR2IMKMnb0wJFx9sd8jdwzrJcgWHstsYE
-0W989MrvUJgglb5E0S8vh92hJ8/wZ++5Q7hX1lSwXXAiJhFnp5cdRYMtIfKJop7ty9i0DAoD/Wwi
-KzWMzW5GzvqCjudpoJ2zNPMIPuPeK15w0FSH1S/RHeM8fpVTJoiRcb61E2aZDKihdCq0I6kk7n6O
-ExIauWutiDcJQqqkTDs7jsJQiEKbCK/4WBFfJf/0LpQKBM4h2oU3r0TWSC+DVrOMGUxMda+zY0G2
-5CFa/hZQRr43LnzIOXEvaRJYNseh8iA//04LG+S2kNAdO9cia5Bz/4Za8wuQ+tobSJSu5D4ZyVYh
-lRncbjIti/Jyr1UFzBhgFH7ooio7bYUf8AFRWsHo5alfte+I4Jl5TMf4HxmnFq6W8BG33NTWTDju
-rhtE//mLWCfN7KQs99NOpk+7N/xKyclaGjEF4JBn2TkaEN6TZLXPfYPvdswuk3JfjKwcU7ZKBdMj
-lzsdGtFmoNNvBekV4s+sYQCu5ErS1RGEuADL/hH33YkbxsPXaZLEi1HSP1urBkca9FLuy70Ax0qD
-3m1+51BLbJfLMuTAgEZ84gkOpiMGjdDiIrDYor4UPG0S82XAHyjs3ddkY3yd6k6IGr81MypTgecu
-ojzD7xHYD19saNlmgeNEOl+qLmP0MkNLFma2IPbQ6Vl96ECVbjFlM3+phhjo0ubQWuwIO5EkJKVe
-RtY843r/IvWty9pj5x2BuEJYxU9jcttvZ0vhNCcvMFHf37vzeXCeOZwItEW2gA1ncJbsFgS8vrny
-SQQRJssRmpdBunl8yuaTk05TnKwvwKiBp88LONUxTnwANJwKZXSGkYOpGVCr78WEXJuzc95Idjyj
-lZ0jzsRuc0IEwQYmFguL55s47fkkLQlp2lVTr23NipHKOnc4Px4BMtzMIlBfEDDxr32+82nd/CtI
-jOXnrSMPo54PK84A0q3u+393H1+dEsbMV2kfbbFVK3ItJu93Dmih6Gp8va9E/xjt2VHHQmnv3fU3
-3LDLoZM8NufC/XuQiG/1PKAR/6vPDPIAwuHgdpK9D8USK3VcfPmt1czwvhe/y+26Xj40Dja/IVsh
-6fC34RJLi9QFWXkWvOF3jY30jDBZmmar6mu8vA98MokXfaTaWNkqA8abinmHT2JiabEWGU/AsD7P
-JOq2Ly7npy5XRf3l8QNIKW0M8IyR91bB0yIjR1hdxr6pkk+rhrht2xk+1kKvUQ7q6cop+TfSvySK
-gyByGQyPMRHdT81IGmq+TWtp56UwvxNDZwlhhug4+YJF4itJUIJxaiBzeWnmgmlHupIorYdvPxa9
-a0xciY2BQmHAwH+SQcdfOmd/hziqGHTFz0Bj6TfnwyTbT6UDyJBUYcReaYVIqNk3HEm5vvpjZd1D
-mAK0xd2p8q3H8CCwY2kLBuvKoCufH7X9p8Ndp1DQ+GXcU4fnGPxc1eApD5b4lO5CiFKqTXqYsR/Q
-1Q4leK6ia9Sws2R/cjfeZz/mHWgfGoDjK/5xGZq+IP1S39YADqiE2mD4lq2XSYeN3ixmzstV5onZ
-vC+RBcU5Pwtu2NFOIdKpbRwEmTCWXWAmhqaPGZBTEH2CPQyDsCsAtyhVeObYXbwlPl/bupKa875G
-oVOZDZ4TBk4mFQf2EJcwBkRZighzlexJj2I8YYE9aW8LW4mHeDVdKFlD5eyLD//vR+gMNNH6UmwM
-5rnftfXy7wOp3y+9/Cc76z+nLIFXLy2LPN6Nczs3cSgScZq3wK7MoZiM+IvBbdQwVzOairOilgWi
-v8u++keOHl4Uo+Lryj9V756bgGH7aufrtQVgqmQLxj/SRZX4zioqfrOP3VUNwKx5JRw6OndRQCr1
-qQRJCbQhYNmCzu+ln7OXVemH0oYkLHWoOAu6ehGARAEdfK6Oxs8xUjBTpFBGtCTTHh/SgfdFHabJ
-IeYyRy0jJrXXXOkk9rfR0lhm2Y91qQzYvj2gP0GgQ7JeZ/e6FKzie5a0GKRYWDf0qtaptu5T5kJl
-/H/xh/a/OcnNXyjGVsWRb706/rvaLJvJk42Ht5sJgX42xjgSjyh91nu6vO6uBzgciCR/BtkSXWTT
-uAGEbsFZvuxKWrHRAvRduJYB4mMuQwc4FnhBJ2pGnrmKvtKD9CdW2um2sC43qk+HbivapUnqRGwy
-pBcsgF4s7/ELPmVDuch9QoD8roFkejEroCgTUIAW4sh3Bvv5m99vc1/sDP3/yOzbXcsYJXvuat8I
-/LZ0O85qHkdvOTpAtCeZ9rKx+ji3NWwjarYpCwxdRuqGTY7hUKSgusoiCY1v4S0QYNJE9EmDWA/T
-0nNbPTGVM1kbGHlnLO1xnUnXZTGm0WQV8nAe8Ys5UBq7ZNUgEbO4Bp42HEo1ebiUvkyfkZb57YuB
-QMbRYZUJBzuqKJ05CBvItzCYa5JJcpyzrp6veE/tMN9HnMoSI1FLRei+5hONjEGaQvdvL9ORfhat
-XyzXIKQOfvEQrYobO37eq33K9Jdo1XxIVR5yZ2zYvPMGAZeQ6gzIJw/DwMWCmyp4o2U1QLlPCXji
-6kdhJNBUnS2RJHkW6giW23V/4dHRN3kjyA4ikLBiyPYQFZqYAs48oiZDdtAfDSKBSJcOBPJRshPg
-AdKJ7+pama3jc7gdMQ41YiilPvvabtYB4E6nIgUAywgiVfFFrc3iq8Qx3/RWSmnn7QLuCAbcRiq3
-WGFiVyMEUFyigHeEdULN0rDU3fS6Km4sasv80WXeEZ7AWHanX/KAPWcoezIBR2tBCLHuPxqrB5Im
-u20qEGOFoic5bI+mhYUcgbbHfpqXnJxkcaShpVUKQS81iSzKacdOt3gEZq2Qe8ZIFOLJQiIZhIdO
-dVD1Tngtz+TPeT0h7cdnWo+YIjIO04faxxpgWnDpJl9zWVjlO2/wHgweX0vSvQMWqdZ+Rc6o/nRD
-VmmjSCAfBGz5R+I5ECvSO5mkug/2QuHcdAm0lo6nOcRK8nvEcw2DlPsDAZ9tgYYrvo1JAFJXQLor
-bVt8plbF3O+TY2JF1t8NUD4Q54DLgSoGjngFCEb+1eC/wcAgzwsQTyWaqg8NFaVnKnu1QNq9MJAY
-kOFNE7Wo/pZP3VNg86/nL47FLZSnV6KohImQsc7V8/bmIuJ06sfbZJlO5fe48VyOsd//I4jgoVut
-OiBTTYYh7Hv0eY0wuylFAZQ4DkQFvEei9h1q943Am549UW+cNKekSgWAzkLhXl8akbsMFPK07S66
-6pHxMWS4H5FQ02h4EqvXYAQxOzJ2Jx39b19sqFo97YugukKeLhYLlRInE8ci6Ky919psSfpwiebj
-rt5LvLJyFV/Olx4Br3B5LjiN2Ov1CEaCR3JqJX06lRUQnQG/hSOD2OqI8Gu/8A2w7Lg2tcqpKhPO
-WsH9FdaQOoWtjyN6Ir594ZTcpbZBMQhS9loZ0Cn7cDh26NyG6KvKkURlZAZGTxJuW5TAUPyeQ3tF
-EKsHGQYOswmeT14EZxtE9GZVNioxFx2/n4ZR9w2eAB5gZPIypTJbUz8u5ypC0QZ+V9U/k7RRWPOE
-vIGBYAiVi9wlDUh4XoTWUbSwESR60CmHxnJp0CRp5ZYZ36+0Qo8YUujXtUvMEnzyRavQ1qWYx60P
-CAEZTB3IPEx7hjd0iAgLfhoKqhZYKC0FuzrHRigcXRQ/K36Mouto6MewAkxsC0CYdHEGXMnC7KPr
-Q/j63hOGLT4L3wiPgX9VrdILVZHkorwintBDJGmzv2unZt11YvPVRyd2K6zbIj0itsVP+/WpdeFw
-/q3JYHicl1s6pEV2Q2NNAqi+bBnBeGSHEA/E7N18ZYOA/HR3lR59qAk95rzU3Kq1xiKqY1neWzTP
-mF3JV36+9aDXrVh0HIhvf63RdnK4pZMZsurdbUhR8uqGeetipXGBaaFpGUjMwpuD1na+PMO1/UR8
-Uq8FhmgUcsKiOyIFby6dcCwG83b5pkIs5aMxnm4PJJxtjcDIlDXZIB87AiZmpjj5LMtvqvbb0Ku5
-efZ408t2sdUI5Apflw4jY1aALVAgluKOzi3o7JQFCKN7W71DwTAQ1+mlfNvRldb/txuBCLOrmwO+
-8m5r1Hv3bYDFtm8HhuhDqjw5AblYbqMtsFzmkcQ2CJr6ax4PNX3CkHAjtLzTO75I0vsEsgn4SeBQ
+<?php
+
+use Acms\Services\Facades\Storage;
+
+class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
+{
+    protected $importCid;
+    protected $csvLabels;
+
+    function init()
+    {
+        @set_time_limit(-1);
+        $this->uploadFiledName = 'wordpress_import_file';
+        $this->importCid = intval($this->Post->get('category_id'));
+        if (intval($this->importCid) == 0) {
+            $this->importCid = null;
+        } else {
+            $this->Post->set('categoryName', ACMS_RAM::categoryName($this->importCid) . 'カテゴリー');
+        }
+    }
+
+    function import()
+    {
+        $this->httpFile->validateFormat(array('text/xml', 'application/xml'));
+        $path = $this->httpFile->getPath();
+        $data = Storage::get($path);
+        $data = Storage::removeIllegalCharacters($data); // 不正な文字コードを削除
+        $this->validateXml($data);
+
+        $xml = new XMLReader();
+        $xml->xml($data);
+
+        while ($xml->read()) {
+            if ($xml->name === 'item' and intval($xml->nodeType) === XMLReader::ELEMENT) {
+                $title      = $this->getNodeValue($xml, 'title');
+                $content    = $this->getNodeValue($xml, 'content:encoded');
+                $date       = $this->getNodeValue($xml, 'wp:post_date');
+                $status     = $this->getNodeValue($xml, 'wp:status');
+                $tags       = array();
+                $fields     = array();
+                $status     = $this->convertStatus($status);
+
+                while ($xml->read()) {
+                    if (intval($xml->nodeType) === XMLReader::END_ELEMENT and $xml->name === 'item') {
+                        //insert
+                        if (empty($title)) {
+                            $title = '空のタイトル';
+                        }
+                        if (empty($date)) {
+                            $date = date('Y-m-d H:i:s', REQUEST_TIME);
+                        }
+                        if (empty($status)) {
+                            $status = 'close';
+                        }
+                        $entry = array(
+                            'title'     => $title,
+                            'content'   => $this->buildMoreContent($content),
+                            'date'      => $date,
+                            'status'    => $status,
+                            'tags'      => $tags,
+                            'fields'    => $fields,
+                        );
+                        $this->insertEntry($entry);
+                        break;
+                    }
+
+                    if ($xml->name === 'category' and $xml->getAttribute('domain') === 'post_tag' and intval($xml->nodeType) === XMLReader::ELEMENT) {
+                        $xml->read();
+                        $tags[] = $xml->value;
+                    }
+
+                    if ($xml->name === 'wp:postmeta' and intval($xml->nodeType) === XMLReader::ELEMENT) {
+                        $key    = $this->getNodeValue($xml, 'wp:meta_key');
+                        $value  = $this->getNodeValue($xml, 'wp:meta_value');
+                        if (!preg_match('/^_.*/', $key)) {
+                            $fields[] = array(
+                                'key'   => $key,
+                                'value' => $value,
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        $xml->close();
+    }
+
+    function convertStatus($status)
+    {
+        switch ($status) {
+            case 'publish':
+                $status = 'open';
+                break;
+            case 'draft':
+                $status = 'draft';
+                break;
+            default:
+                $status = 'close';
+        }
+        return $status;
+    }
+
+    function getNodeValue(&$xml, $node)
+    {
+        $nodeValue = '';
+        while ($xml->read()) {
+            if ($xml->name === $node) {
+                $xml->read();
+                $nodeValue = $xml->value;
+                break;
+            }
+            if (intval($xml->nodeType) === XMLReader::END_ELEMENT and $xml->name === $node) {
+                break;
+            }
+        }
+        return $nodeValue;
+    }
+
+    function buildMoreContent($content)
+    {
+        return explode('<!--more-->', $content, 2);
+    }
+
+    function validateXml($data)
+    {
+        $reader = new XMLReader();
+        $reader->xml($data);
+        $reader->setParserProperty(XMLReader::VALIDATE, true);
+        if (!$reader->isValid()) {
+            $reader->close();
+            throw new RuntimeException('XMLファイルが正しくありません。または正しいエクスポートファイルではありません。');
+        }
+        $reader->close();
+    }
+}

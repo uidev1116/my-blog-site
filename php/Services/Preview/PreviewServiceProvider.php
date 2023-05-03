@@ -17,7 +17,7 @@ class PreviewServiceProvider extends ServiceProvider
     public function register(Container $container)
     {
         $container->singleton('preview', function () {
-            $lifetime = 60 * 60 * intval(config('url_preview_expire', 48));
+            $lifetime = 60 * 60 * 48;
             return new Engine($lifetime, BASE_URL . "admin/preview_share/");
         });
     }

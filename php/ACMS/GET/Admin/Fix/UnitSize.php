@@ -28,7 +28,6 @@ class ACMS_GET_Admin_Fix_UnitSize extends ACMS_GET_Admin_Fix
                     case 'map':
                         $column = 'column_field_5';
                         break;
-                    case 'yolp':
                     case 'eximage':
                     case 'media':
                         $column = 'column_field_6';

@@ -37,7 +37,10 @@ class ACMS_GET_Shop2 extends ACMS_GET
     function sanitize(&$data)
     {
         if ( is_array($data) ) {
-            return array_map(array(&$this, 'sanitize'), $data);
+            foreach ($data as & $row) {
+                $this->sanitize($row);
+            }
+            return $data;
         } else {
             $data = htmlentities($data, ENT_QUOTES, 'UTF-8');
             return $data;

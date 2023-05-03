@@ -21,14 +21,14 @@
 		</div>
 	</div>
 
-	<dl class="acms-admin-panel acms-admin-panel-info">
-		<dt class="acms-admin-panel-header">
-			<!--T-->概要<!--/T-->
-		</dt>
-		<dd class="acms-admin-panel-body">
+	<div class="acms-admin-panel acms-admin-margin-bottom-medium">
+		<div class="acms-admin-panel-header">
+      <h3 class="acms-admin-panel-title"><!--T-->マップユニットのタイプ修正とは<!--/T--></h3>
+		</div>
+		<div class="acms-admin-panel-body">
 			<!--T-->このブログの、地図（マップ）ユニットの種類を一括で変更します。<!--/T-->
-		</dd>
-	</dl>
+		</div>
+	</div>
 
 	<!-- BEGIN step -->
 	<table class="adminTable acms-admin-table-admin-edit">
@@ -38,7 +38,6 @@
 				<select name="fix_map_type_target" class="js-select2">
 					<option value="osmap"><!--T-->標準マップ（OpenStreetMap）<!--/T--></option>
 					<option value="map"><!--T-->GoogleMaps<!--/T--></option>
-					<option value="yolp"><!--T-->Yahoo!地図<!--/T--></option>
 				</select><!-- END_IF -->
 				<input type="hidden" name="fix[]" value="fix_map_type_target" />
 			</td>
@@ -49,7 +48,6 @@
 				<select name="fix_map_type_change_value" class="js-select2">
 					<option value="osmap"><!--T-->標準マップ（OpenStreetMap）<!--/T--></option>
 					<option value="map"><!--T-->GoogleMaps<!--/T--></option>
-					<option value="yolp"><!--T-->Yahoo!地図<!--/T--></option>
 				</select><!-- END_IF -->
 				<input type="hidden" name="fix[]" value="fix_map_type_change_value" />
 			</td>
@@ -57,7 +55,7 @@
 		<tr>
 			<th></th>
 			<td>
-				<input type="submit" name="ACMS_POST_Fix_UnitMap" value="<!--T-->修正<!--/T-->" onclick="return confirm('<!--T-->マップタイプを修正します。よろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary">
+				<input type="submit" name="ACMS_POST_Fix_UnitMap" value="<!--T-->修正<!--/T-->" onclick="return confirm('<!--T-->マップタイプを修正します。よろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save">
 			</td>
 		</tr>
 	</table>

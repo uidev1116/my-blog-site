@@ -43,8 +43,8 @@ class ResourceManager
      * Some keys can be associative. In these cases, the key is used the target
      * for the file.
      *
-     * @param String $context
-     * @param Array  $request
+     * @param string $context
+     * @param array  $request
      *
      * @return ResourceCollection
      *
@@ -55,7 +55,8 @@ class ResourceManager
         $collection = $this->mapper->map($context, $request);
 
         if (!$collection->canBeProcessedInPlace()) {
-            $context = sprintf('%s/%s', sys_get_temp_dir(), uniqid('zippy_'));
+            $tempDir = (defined('SCRIPT_DIR') && defined('CACHE_DIR')) ? SCRIPT_DIR . CACHE_DIR : sys_get_temp_dir();
+            $context = sprintf('%s/%s', $tempDir, uniqid('zippy_'));
 
             try {
                 $this->filesystem->mkdir($context);

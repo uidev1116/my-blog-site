@@ -17,6 +17,8 @@ class EntryServiceProvider extends ServiceProvider
     public function register(Container $container)
     {
         $container->singleton('entry', 'Acms\Services\Entry\Helper');
+        $container->singleton('entry.export', 'Acms\Services\Entry\Export');
+        $container->singleton('entry.import', 'Acms\Services\Entry\Import');
     }
 
     /**

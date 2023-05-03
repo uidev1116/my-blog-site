@@ -46,8 +46,10 @@ class ACMS_GET_Approval_History extends ACMS_GET
         foreach ( $all as $row ) {
             //--------------
             // 操作ユーザ情報
-            $reqUserField   = loadUser($row['approval_request_user_id']);
-            $reqUser        = $this->buildField($reqUserField, $Tpl, array('requestUser', 'approval:loop'));
+            $reqUserField = loadUser($row['approval_request_user_id']);
+            $reqUser = $this->buildField($reqUserField, $Tpl, array('requestUser', 'approval:loop'));
+            $userField = loadUserField($row['approval_request_user_id']);
+            $reqUser += $this->buildField($userField, $Tpl, array('requestUser', 'approval:loop'));
 
             $Tpl->add(array('requestUser', 'approval:loop'), $reqUser);
 

@@ -43,6 +43,9 @@ class ACMS_CorrectorBody
             if (is_array($txt)) {
                 $txt = implode($txt);
             }
+            if (is_null($txt)) {
+                $txt = '';
+            }
             return htmlspecialchars($txt, ENT_QUOTES, 'UTF-8');
         }
     }
@@ -234,7 +237,7 @@ class ACMS_CorrectorBody
             }
         }
 
-        return \Michelf\MarkdownExtra::defaultTransform($txt);
+        return Common::parseMarkdown($txt);
     }
 
     public function striptags($txt)
@@ -372,7 +375,7 @@ class ACMS_CorrectorBody
             return $txt;
         }
         $txt = date($args[0], $dt);
-        if ($txt === date($args[0], strtotime(null)) && isset($args[1])) {
+        if ($txt === date($args[0], strtotime(REQUEST_TIME)) && isset($args[1])) {
             $txt = $args[1];
         }
         return $txt;
@@ -385,15 +388,15 @@ class ACMS_CorrectorBody
 
     public function resizeImgFit($src, $args = array())
     {
-        return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FIT);
+        return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FIT, true);
     }
 
     public function resizeImgFill($src, $args = array())
     {
-        return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FILL);
+        return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FILL, true);
     }
 
-    public function resizeImgBase($src, $args, $mode)
+    public function resizeImgBase($src, $args, $mode, $stretch = false)
     {
         if (!isset($args[0])) {
             return $src;
@@ -443,11 +446,13 @@ class ACMS_CorrectorBody
             return $src;
         }
 
-        if ($xy[0] < $width) {
-            $width = $xy[0];
-        }
-        if ($xy[1] < $height) {
-            $height = $xy[1];
+        if (!$stretch) {
+            if ($xy[0] < $width) {
+                $width = $xy[0];
+            }
+            if ($xy[1] < $height) {
+                $height = $xy[1];
+            }
         }
 
         $image = new ImageResize($srcPath);
@@ -622,6 +627,26 @@ class ACMS_CorrectorBody
         return $id;
     }
 
+    public function getWidthFromRatio($ratio, $args = array())
+    {
+        $ratio = floatval($ratio);
+        $height = isset($args[0]) ? intval($args[0]) : 0;
+        if (empty($ratio) || empty($height)) {
+            return '';
+        }
+        return round($height * $ratio);
+    }
+
+    public function getHeightFromRatio($ratio, $args = array())
+    {
+        $ratio = floatval($ratio);
+        $width = isset($args[0]) ? intval($args[0]) : 0;
+        if (empty($ratio) || empty($width)) {
+            return '';
+        }
+        return round($width / $ratio);
+    }
+
     public function imageRatioSizeH($src, $args = array())
     {
         foreach (array('', ARCHIVES_DIR, REVISON_ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
@@ -656,6 +681,17 @@ class ACMS_CorrectorBody
     {
         $escapeTxt = json_encode($txt);
         return mb_substr($escapeTxt, 1, mb_strlen($escapeTxt) - 2);
+    }
+
+    public function substring($txt, $args = array())
+    {
+        $start = isset($args[0]) ? $args[0] : 0;
+        $length = isset($args[1]) ? $args[1] : false;
+
+        if ($length === false) {
+            return mb_substr($txt, $start);
+        }
+        return mb_substr($txt, $start, $length);
     }
 
     public function entryStatusLabel($eid)

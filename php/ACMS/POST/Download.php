@@ -1,56 +1,60 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Download extends ACMS_POST
+{
+    /**
+     * @var bool
+     */
+    var $isCacheDelete  = false;
+
+    /**
+     * @var bool
+     */
+    protected $isCSRF = false;
+
+    function post()
+    {
+        $Q = \Common::getUriObject($this->Post);
+        $headerAry = array(
+            'User-Agent: acms',
+            'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
+        );
+        if (ACMS_SID) {
+            $phpSession = Session::handle();
+            $phpSession->writeClose(); // セッションをクローズ（デッドロック対応）
+            $headerAry[] = 'Cookie: ' . SESSION_NAME . '=' . ACMS_SID;
+        }
+        $url = acmsLink($Q, true, true);
+
+        try {
+            $contents = '';
+            $req = \Http::init($url, 'GET');
+            $req->setRequestHeaders($headerAry);
+            $response = $req->send();
+            $responseHeaders = $response->getResponseHeader();
+            $contents = $response->getResponseBody();
+            $contentType = isset($responseHeaders['Content-Type']) ? $responseHeaders['Content-Type'] : '';
+            $contentType = isset($responseHeaders['content-type']) ? $responseHeaders['content-type'] : '';
+            if ( 1
+                and $contentType
+                and preg_match('@^text/[^;]+; charset=(.*)$@', $contentType, $match)
+            ) {
+                $contents = mb_convert_encoding($contents, 'UTF-8', $match[1]);
+            }
+            if ($toCharset = $this->Post->get('charset')) {
+                $contents = mb_convert_encoding($contents, $toCharset, 'UTF-8');
+            }
+            header('Content-Length: '.strlen($contents));
+            if (strpos(UA, 'MSIE')) {
+                header('Content-Type: text/download');
+            } else {
+                header('Content-Disposition: attachment');
+                header('Content-Type: application/octet-stream');
+            }
+            die($contents);
+
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+}

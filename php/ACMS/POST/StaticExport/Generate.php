@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_StaticExport_Generate extends ACMS_POST
 {
     /**
@@ -43,7 +45,8 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
 
     protected function run()
     {
-        $setting = Config::loadBlogConfig(BID);
+        $setting = Config::loadDefaultField();
+        $setting->overload(Config::loadBlogConfig(BID));
 
         $document_root = $setting->get('static_dest_document_root');
         $offset_dir = $setting->get('static_dest_offset_dir');
@@ -58,11 +61,21 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
         $config->static_page_max = $setting->getArray('static_page_max');
         $config->static_archive_start = $setting->getArray('static_archive_start');
         $config->static_archive_max = $setting->getArray('static_archive_max');
+        $exclusionDeleteList = array();
         $exclusionList = array();
+        $includeList = array();
         if ($list = $setting->get('static_export_delete_exclusion_list', false)) {
-            $exclusionList = preg_split('/(\n|\r|\r\n|\n\r)/', $list);
+            $exclusionDeleteList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
         }
-        $config->delete_exclusion_list = $exclusionList;
+        if ($list = $setting->get('static_export_exclusion_list', false)) {
+            $exclusionList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
+        }
+        if ($list = $setting->get('static_export_include_list', false)) {
+            $includeList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
+        }
+        $config->delete_exclusion_list = $exclusionDeleteList;
+        $config->exclusion_list = $exclusionList;
+        $config->include_list = $includeList;
 
         set_time_limit(0);
         DB::setThrowException(true);
@@ -92,5 +105,29 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
             $logger->error($e->getMessage());
         }
         DB::setThrowException(false);
+    }
+
+    /**
+     * パスのリストを正規表現に変換
+     * 
+     * @param array
+     * @return array
+     */
+    protected function createRegexPathList($list)
+    {
+        $regexList = array();
+        foreach ($list as $path) {
+            if (empty($path)) {
+                continue;
+            }
+            $regex = '/';
+            if (substr($path, 0, 1) === '/') {
+                // 先頭が / だったら 前方一致
+                $regex .= '^';
+            }
+            $regex .= preg_quote(trim($path, '/'), '/') . '/';
+            $regexList[] = $regex;
+        }
+        return $regexList;
     }
 }

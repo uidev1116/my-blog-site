@@ -179,7 +179,7 @@ class Helper
         } else if ('png' == $ext) {
             $resource = $this->editImage(imagecreatefrompng($srcPath), $width, $height, $size, $angle);
             imagepng($resource, $distPath);
-            $this->createWebpWithGd($resource, $distPath . '.webp', $imageQuality);
+            $this->createWebpWithGd($resource, $distPath . '.webp');
         } else if ('bmp' == $ext) {
             imagewbmp($this->editImage(
                 imagecreatefromwbmp($srcPath), $width, $height, $size, $angle
@@ -191,7 +191,7 @@ class Helper
         } else {
             $resource = $this->editImage(imagecreatefromjpeg($srcPath), $width, $height, $size, $angle);
             imagejpeg($resource, $distPath, $imageQuality);
-            $this->createWebpWithGd($resource, $distPath . '.webp', $imageQuality);
+            $this->createWebpWithGd($resource, $distPath . '.webp');
         }
         $this->optimize($distPath);
         Storage::changeMod($distPath);
@@ -255,12 +255,31 @@ class Helper
      * @param $distPath
      * @param int $imageQuality
      */
-    public function createWebpWithGd($resource, $distPath, $imageQuality=100)
+    public function createWebpWithGd($resource, $distPath, $imageQuality=75)
     {
         if (!$this->isAvailableWebpWithGd()) {
             return;
         }
-        imagewebp($resource, $distPath, $imageQuality);
+        if (is_resource($resource) && 'gd' === get_resource_type($resource)
+            || is_object($resource) && $resource instanceof \GdImage
+        ) {
+            imagewebp($resource, $distPath, $imageQuality);
+        } else if ($resource) {
+            $fromFunc = [
+                'gif' => 'imagecreatefromgif',
+                'png' => 'imagecreatefrompng',
+                'bmp' => 'imagecreatefromwbmp',
+                'xbm' => 'imagecreatefromxbm',
+                'jpg' => 'imagecreatefromjpeg',
+            ];
+            if ($imageInfo = Storage::getImageSize($resource)) {
+                $fromExt = $this->exts[$imageInfo['mime']];
+                if (isset($fromFunc[$fromExt])) {
+                    $resource = $fromFunc[$fromExt]($resource);
+                    imagewebp($resource, $distPath, $imageQuality);
+                }
+            }
+        }
     }
 
     /**
@@ -269,7 +288,7 @@ class Helper
      * @param int $imageQuality
      * @throws \ImagickException
      */
-    public function createWebpWithImagick($srcPath, $distPath, $imageQuality=100)
+    public function createWebpWithImagick($srcPath, $distPath, $imageQuality=75)
     {
         if (!$this->isAvailableWebpWithImagick()) {
             return;
@@ -367,9 +386,20 @@ class Helper
         }
         imagecopyresampled($nrsrc, $rsrc, 0, 0, $coordinateX, $coordinateY, $nx, $ny, $x, $y);
 
-        if ( function_exists('imagerotate') and ($angle = intval($angle)) ) {
+        if (function_exists('imagerotate') and ($angle = intval($angle))) {
             $nrsrc = imagerotate($nrsrc, $angle, 0);
         }
+
+        // シャープネス
+        // if (function_exists('imageconvolution')) {
+        //     $filter = array(
+        //         array( 0.0, -1.0, 0.0 ),
+        //         array( -1.0, 5.5, -1.0 ),
+        //         array( 0.0, -1.0, 0.0 )
+        //     );
+        //     $div = array_sum(array_map('array_sum', $filter));
+        //     imageconvolution($nrsrc, $filter, $div, 0);
+        // }
 
         return $nrsrc;
     }
@@ -392,6 +422,7 @@ class Helper
         $imagick    = new Imagick($rsrc);
         $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
         $imagick->setImageCompressionQuality(intval(config('image_jpeg_quality')));
+        // $imagick->sharpenimage(0.8, 0.6); // シャープネス
         $imageprops = $imagick->getImageGeometry();
 
         $x          = $imageprops['width'];

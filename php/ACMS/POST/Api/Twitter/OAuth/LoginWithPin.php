@@ -1,134 +1,158 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-YRTmuNhYrDP96Qs/CTu8Xsna2/IZi0lPv0==
+<?php
+
+class ACMS_POST_Api_Twitter_OAuth_LoginWithPin extends ACMS_POST_Api_Twitter
+{
+    function post()
+    {
+        $this->getAuthSession('tw_request', 'tw_blog_id', 'tw_user_id');
+        $pin = $this->Post->get('oauth_verifier');
+        $API    = ACMS_Services_Twitter::establish(BID, 'none');
+        $session = Session::handle();
+        $token = $session->get('tw_token');
+        $secret = $session->get('tw_secret');
+        ACMS_Services_Twitter::insertReqToken(BID, $token, $secret);
+        // clear session
+        $session->delete('tw_token');
+        $session->delete('tw_secret');
+        // request tokenの保持をチェック
+        if ( count(ACMS_Services_Twitter::loadReqToken(BID)) == 2 ) {
+            // access tokenの取得を試行
+            $this->api = ACMS_Services_Twitter::establish(BID, 'request');
+            $acs    = $this->api->getAcsToken(array('oauth_verifier' => $pin));
+            $this->twid   = $acs['user_id'];
+            if ($this->auth_type === 'login') {
+                $url = $this->login();
+            } else if ($this->auth_type === 'signup') {
+                $url = $this->signup();
+            } else if ($this->auth_type === 'addition') {
+                $url = $this->addition();
+            }
+            redirect($url);
+        }
+    }
+    /**
+     * Twitterアカウントでログイン処理を実行する
+     *
+     */
+    function login()
+    {
+        $user = loginAuthentication($this->twid, 'user_twitter_id');
+        if ( $user === false ) {
+            $this->loginFailed('login=failed');
+            return false;
+        }
+
+        $sid        = generateSession($user);   // generate session id
+        $bid        = intval($user['user_blog_id']);
+        $login_bid  = BID;
+
+        if ( 1
+            and ( 'on' == $user['user_login_anywhere'] || roleAvailableUser() )
+            and !isBlogAncestor(BID, $bid, true)
+        ) {
+            $login_bid   = $bid;
+        }
+
+        return acmsLink(array(
+            'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
+            'bid'           => $login_bid,
+            'sid'           => $sid,
+            'query'         => array(),
+        ));
+    }
+
+    /**
+     * Twitterアカウントでサインアップ処理を行う
+     *
+     */
+    function signup()
+    {
+        // sns auth check
+        if ( Config::loadBlogConfigSet($this->auth_bid)->get('snslogin') !== 'on' ) {
+            $this->loginFailed('auth=failed');
+            return false;
+        }
+
+        // account info
+        $this->api->httpRequest('account/verify_credentials.json', array(), 'GET');
+        $this->user = json_decode($this->api->Response->getResponseBody());
+
+        // duplicate check
+        $all = getUser($this->twid, 'user_twitter_id');
+        if ( 0 < count($all) ) {
+            $this->loginFailed('auth=double');
+            return false;
+        }
+
+        // create account
+        $account = $this->extractAccountData($this->user);
+        if ( $icon_uri = $this->user->profile_image_url ) {
+            $account['icon'] = $this->userIconFromUri(preg_replace('/_normal/', '', $icon_uri));
+        }
+        $this->addUserFromOauth($account);
+
+        // get user data
+        $all = getUser($this->twid, 'user_twitter_id');
+        if ( empty($all) || 1 < count($all) ) {
+            $this->loginFailed('auth=double');
+            return false;
+        }
+
+        // generate session id
+        $sid = generateSession($all[0]);
+
+        return acmsLink(array(
+            'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
+            'bid'           => $this->auth_bid,
+            'sid'           => $sid,
+            'query'         => array(),
+        ), false);
+    }
+
+    /**
+     * 既存のユーザーにTwitterアカウントを結びつける
+     *
+     */
+    function addition()
+    {
+        $DB     = DB::singleton(dsn());
+        $query  = array('edit' => 'update');
+
+        // access restricted
+        if ( !SUID ) {
+            $query['auth'] = 'failed';
+        }
+
+        // sns auth check
+        if ( !snsLoginAuth($this->auth_uid, $this->auth_bid) ) {
+            $this->loginFailed('auth=failed');
+            return false;
+        }
+
+        // authentication
+        $SQL = SQL::newSelect('user');
+        $SQL->addSelect('user_id');
+        $SQL->addWhereOpr('user_twitter_id', $this->twid);
+        $all = $DB->query($SQL->get(dsn()), 'all');
+
+        // double
+        if ( 0 < count($all) ) {
+            $query['auth'] = 'double';
+        }
+
+        if ( !isset($query['auth']) ) {
+            $SQL = SQL::newUpdate('user');
+            $SQL->addUpdate('user_twitter_id', $this->twid);
+            $SQL->addWhereOpr('user_id', $this->auth_uid);
+            $DB->query($SQL->get(dsn()), 'exec');
+            ACMS_RAM::user($this->auth_uid, null);
+        }
+
+        return acmsLink(array(
+            'bid' => $this->auth_bid,
+            'uid' => $this->auth_uid,
+            'admin' => 'user_edit',
+            'query' => $query,
+        ), false);
+    }
+}

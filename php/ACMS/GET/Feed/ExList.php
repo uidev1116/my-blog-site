@@ -19,39 +19,17 @@ class ACMS_GET_Feed_ExList extends ACMS_GET
 
         //----------
         // cache
-        $id        = md5($this->source);
-        $criterion = date('Y-m-d H:i:s', strtotime('-'.$this->feed_exlist_cache_expire.' second'));
-
-        if (!DEBUG_MODE && 'on' == config('cache')) {
-            $SQL = SQL::newSelect('cache');
-            $SQL->setSelect('cache_data');
-            $SQL->addWhereOpr('cache_id', $id);
-            $SQL->addWhereOpr('cache_expire', $criterion, '>', 'AND');
-            $SQL->addWhereOpr('cache_blog_id', 0);
-
-            if ($data = $DB->query($SQL->get(dsn()), 'one')) {
-                $feeds = acmsUnserialize($data);
-            }
+        $id = md5($this->source);
+        $cache = Cache::module();
+        if ($cache->has($id)) {
+            $feeds = acmsUnserialize($cache->get($id));
         }
-
         if (empty($feeds)) {
             $RSS   = new FeedParser($this->source, $this->kind);
             $feeds = $RSS->get();
-
-            $SQL = SQL::newDelete('cache');
-            $SQL->addWhereOpr('cache_id', $id);
-            $SQL->addWhereOpr('cache_blog_id', 0);
-            $DB->query($SQL->get(dsn()), 'exec');
-
-            if ( !empty($this->feed_exlist_cache_expire) ) {
-                $expire = date('Y-m-d H:i:s', strtotime('+'.$this->feed_exlist_cache_expire.' second'));
-
-                $SQL = SQL::newInsert('cache');
-                $SQL->addInsert('cache_id', $id);
-                $SQL->addInsert('cache_data', acmsSerialize($feeds));
-                $SQL->addInsert('cache_expire', $expire);
-                $SQL->addInsert('cache_blog_id', 0);
-                $DB->query($SQL->get(dsn()), 'exec');
+            $cache->forget($id);
+            if (!empty($this->feed_exlist_cache_expire)) {
+                $cache->put($id, acmsSerialize($feeds), $this->feed_exlist_cache_expire);
             }
         }
 

@@ -30,17 +30,17 @@ const twitterPopup = (type: string) => `
   </div>
 `;
 
-const requestWait = () => new Promise((resolve) => {
+const requestWait = () => new Promise<void>((resolve) => {
   requestAnimationFrame(() => {
     resolve();
-  })
-})
+  });
+});
 
-const wait = (time: number) => new Promise((resolve) => {
+const wait = (time: number) => new Promise<void>((resolve) => {
   setTimeout(() => {
     resolve();
   }, time);
-})
+});
 
 export default (btn: HTMLButtonElement, type = '') => {
   btn.addEventListener('click', async () => {
@@ -65,22 +65,28 @@ export default (btn: HTMLButtonElement, type = '') => {
       addClass(modal, 'out');
       await wait(500);
       parent.removeChild(div);
-    }
+    };
+    const onPinClick = () => {
+      setTimeout(() => {
+        if (beforePin) {
+          beforePin.style.display = 'none';
+        }
+        if (afterPin) {
+          afterPin.style.display = 'block';
+        }
+        form.removeAttribute('target');
+      }, 1000);
+    };
+
     const onModalClick = (e) => {
       if (e.target === modal) {
         removeModal();
       }
       modal.removeEventListener('click', onModalClick);
-      pinBtn.removeEventListener('click', onPinClick);
-    }
-    const onPinClick = () => {
-      setTimeout(() => {
-        beforePin.style.display = 'none';
-        afterPin.style.display = 'block';
-        form.removeAttribute('target');
-      }, 1000);
-    }
+      pinBtn?.removeEventListener('click', onPinClick);
+    };
+
     modal.addEventListener('click', onModalClick);
-    pinBtn.addEventListener('click', onPinClick);
+    pinBtn?.addEventListener('click', onPinClick);
   });
 };

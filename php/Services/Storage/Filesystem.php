@@ -5,7 +5,7 @@ namespace Acms\Services\Storage;
 use Acms\Services\Storage\Contracts\Filesystem as FilesystemInterface;
 use Acms\Services\Storage\Contracts\Base;
 use Alchemy\Zippy\Adapter\ZipExtensionAdapter;
-use Alchemy\Zippy\Zippy;
+use Cache;
 
 class Filesystem extends Base implements FilesystemInterface
 {
@@ -124,9 +124,24 @@ class Filesystem extends Base implements FilesystemInterface
      */
     public function getImageSize($path, &$info = array())
     {
-        $path = $this->convertStrToLocal($path);
-
-        return @getimagesize($path, $info);
+        $cache = Cache::temp();
+        $cacheKey = md5($path);
+        if ($cache->has($cacheKey)) {
+            return $cache->get($cacheKey);
+        }
+        if ($this->exists($path) && $this->isFile($path)) {
+            $imageSize = getimagesize($path);
+            $cache->put($cacheKey, $imageSize);
+            return $imageSize;
+        } else if (preg_match('/^https?:\/\//', $path)) {
+            $headers = get_headers($path);
+            if (isset($headers[0]) && strpos($headers[0], '200 OK') !== false) {
+                $imageSize = getimagesize($path);
+                $cache->put($cacheKey, $imageSize);
+                return $imageSize;
+            }
+        }
+        return false;
     }
 
     /**
@@ -331,7 +346,7 @@ class Filesystem extends Base implements FilesystemInterface
         $zippy = ZipExtensionAdapter::newInstance();
 
         if (empty($root)) {
-            $list = array('./' => $source);
+            $list = array(basename($destination, '.zip') => $source);
         } else {
             $list = array($root => $source);
         }
@@ -389,11 +404,6 @@ class Filesystem extends Base implements FilesystemInterface
      */
     public function removeIllegalCharacters($source)
     {
-        return preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]'.
-            '|[\x00-\x7F][\x80-\xBF]+'.
-            '|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.
-            '|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.
-            '|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S',
-            '?', $source);
+        return preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $source);
     }
 }

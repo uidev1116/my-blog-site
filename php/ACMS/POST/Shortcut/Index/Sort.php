@@ -1,64 +1,57 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Shortcut_Index_Sort extends ACMS_POST
+{
+    function post()
+    {
+        if ( !$arySort = $this->Post->getArray('sort') ) {
+            $this->Post->set('sort#null', true);
+            return $this->Post;
+        }
+
+        $DB     = DB::singleton(dsn());
+        $SQL    = SQL::newSelect('dashboard');
+        $SQL->setSelect('dashboard_key');
+        $SQL->addWhereOpr('dashboard_key', 'shortcut_%', 'LIKE');
+        $SQL->addWhereOpr('dashboard_blog_id', BID);
+        $SQL->setOrder('dashboard_sort');
+        if ( !$all = $DB->query($SQL->get(dsn()), 'all') ) {
+            $this->Post->set('sort#shortcut_is_empty', true);
+            return $this->Post;
+        }
+
+        $Data    = array();
+        foreach ( $all as $row ) {
+            if ( !preg_match('@^(.+_)([^_]+)$@', $row['dashboard_key'], $match) ) continue;
+            $Data[$match[1]][]  = $match[2];
+        }
+
+        if ( count($Data) <> count($arySort) ) {
+            $this->Post->set('sort#shortcut_is_invalid', true);
+            return $this->Post;
+        }
+
+        $Key    = array();
+        foreach ( array_keys($Data) as $i => $key ) {
+            $Key[$key]  = $arySort[$i];
+        }
+        asort($Key);
+
+        $i  = 1;
+        foreach ( $Key as $fd => $kipple ) {
+            foreach ( $Data[$fd] as $key ) {
+                $SQL    = SQL::newUpdate('dashboard');
+                $SQL->setUpdate('dashboard_sort', $i);
+                $SQL->addWhereOpr('dashboard_key', $fd.$key);
+                $SQL->addWhereOpr('dashboard_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+                $i++;
+            }
+        }
+
+        $this->Post->set('sort#success', true);
+        $this->Post->set('notice_mess', 'show');
+        
+        return $this->Post;
+    }
+}

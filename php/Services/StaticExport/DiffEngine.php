@@ -5,6 +5,7 @@ namespace Acms\Services\StaticExport;
 use App;
 use DB;
 use SQL;
+use Acms\Services\StaticExport\Generator\RequireThemeGenerator;
 use Acms\Services\StaticExport\Generator\CategoryGenerator;
 use Acms\Services\StaticExport\Generator\EntryGenerator;
 
@@ -13,12 +14,12 @@ class DiffEngine extends Engine
     /**
      * @var array
      */
-    protected $targetEntries;
+    protected $targetEntries = array();
 
     /**
      * @var array
      */
-    protected $targetCategories;
+    protected $targetCategories = array();
 
     /**
      * DiffEngine constructor.
@@ -38,7 +39,15 @@ class DiffEngine extends Engine
         if (!preg_match('/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/', $from)) {
             throw new \RuntimeException("Datetime format is invalid.（{$from}）");
         }
+        $themes = $this->extractTheme($this->config->theme);
+
         $this->setDiffItems($from);
+
+        // テーマの必須アセット書き出し
+        $this->processExportAssets($themes);
+
+        // テーマの必須テンプレート書き出し
+        $this->processExportTheme($themes);
 
         // トップページの書き出し
         $this->processExportTop();
@@ -104,6 +113,36 @@ class DiffEngine extends Engine
         $generator->setTargetEntries($this->targetEntries);
         $generator->setWithArchive(true);
         $generator->run();
+    }
+
+    /**
+     * テーマのアセット書き出し
+     *
+     * @param array $themes
+     */
+    protected function processExportAssets($themes)
+    {
+        $this->copyThemeRequireItems(THEMES_DIR . 'system/');
+        foreach ( $themes as $theme ) {
+            $path = THEMES_DIR . $theme . '/';
+            $this->copyThemeRequireItems($path);
+        }
+    }
+
+    /**
+     *  テーマのテンプレート書き出し
+     *
+     * @param array $themes
+     */
+    protected function processExportTheme($themes)
+    {
+        foreach ($themes as $theme) {
+            $path = THEMES_DIR . $theme . '/';
+            $themeGenerator = new RequireThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
+            $themeGenerator->setSourceTheme($path);
+            $themeGenerator->setIncludeList($this->config->include_list);
+            $themeGenerator->run();
+        }
     }
 }
 

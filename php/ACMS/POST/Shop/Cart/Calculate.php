@@ -1,42 +1,34 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-iB5xmG==
+<?php
+
+class ACMS_POST_Shop_Cart_Calculate extends ACMS_POST_Shop
+{
+    function post()
+    {
+        $this->initVars();
+
+        $Cart = $this->extract('cart');
+        $Cart->validate(new ACMS_Validator());
+        $bid    = $Cart->isNull('cart_bid') ? BID : intval($Cart->get('cart_bid', BID));
+
+        if ( $Cart->isValid() ) {
+            $TEMP = $this->openCart($bid);
+    
+            $fds = $Cart->listFields();
+            foreach ( $fds as $fd ) {
+                $qty = intval($Cart->get($fd));
+                $TEMP[$fd][$this->item_qty] = $qty;
+                if ( empty($TEMP[$fd][$this->item_qty]) ) {
+                    unset($TEMP[$fd]);
+                } else {
+                    $price  = $TEMP[$fd][$this->item_price];
+                    $tax    = $TEMP[$fd][$this->item_price.'#tax'];
+                    $TEMP[$fd][$this->item_price.'#sum'] = ( $price + $tax ) * $qty;
+                }
+            }
+    
+            $this->closeCart($TEMP, $bid);
+        }
+        $this->Post->set('step', null);
+        return $this->Post;
+    }
+}

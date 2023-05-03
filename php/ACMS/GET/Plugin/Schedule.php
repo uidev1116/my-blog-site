@@ -7,12 +7,12 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
     var $month;                 //月
     var $week;                  //週
     var $day;                   //日
-    
+
     //変動制の生成値
     var $days = array();        //日々
     var $cnt_day;               //当月の日数 : buildDays()のみ
     var $_unit = 0;             //temporary
-    
+
     //config に格納する
     var $unit;                  //月表示の折り返し 1 or 7
     var $forwardM;              //前方月数
@@ -37,9 +37,9 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
     {
         $queryDate = $this->Q->getArray('date');
 
-        $this->year   = @$queryDate[0] ? date('Y', mktime(0,0,0,1,1,$queryDate[0])) : date('Y');
-        $this->month  = @$queryDate[1] ? date('m', mktime(0,0,0,$queryDate[1],1,$this->year)) : date('n');
-        $this->day    = @$queryDate[2] ? date('d', mktime(0,0,0,$this->month,$queryDate[2],$this->year)) : 1;
+        $this->year   = isset($queryDate[0]) ? date('Y', mktime(0,0,0,1,1,$queryDate[0])) : date('Y');
+        $this->month  = isset($queryDate[1]) ? date('m', mktime(0,0,0,$queryDate[1],1,$this->year)) : date('n');
+        $this->day    = isset($queryDate[2]) ? date('d', mktime(0,0,0,$this->month,$queryDate[2],$this->year)) : 1;
 
         $this->sep      = config('schedule_label_separator');
         $this->layoutY  = config('schedule_layout_year');
@@ -137,7 +137,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
              * build Day main Logic
              */
             $date = $year.'-'.$month.'-'.$n;
-            
+
             if( isset( $this->week_label[ $this->formatW ] ) ) {
                 $_w = date('w', strtotime($date));
                 $week_label = $this->week_label[ $this->formatW ][$_w];
@@ -171,7 +171,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
     {
         $this->days = array();
     }
-    
+
     function getMonthData($year, $month)
     {
         if ( $this->Post->isExists('reapply') ) {
@@ -191,10 +191,17 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
             $SQL->addWhereOpr('schedule_blog_id', $this->bid);
             $row = $DB->query($SQL->get(dsn()), 'row');
 
-            return array(
-                        'data'  => @unserialize($row['schedule_data']),
-                        'field' => @unserialize($row['schedule_field'])
-                        );
+            $res = array(
+                'data' => false,
+                'field' => false,
+            );
+            if (isset($row['schedule_data'])) {
+                $res['data'] = @unserialize($row['schedule_data']);
+            }
+            if (isset($row['schedule_field'])) {
+                $res['field'] = @unserialize($row['schedule_field']);
+            }
+            return $res;
         }
     }
 
@@ -216,7 +223,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
 
                 $dayBlock = array('day:loop','week:loop','month:loop','unit:loop');
 
-                if ( !empty($DATA['field'][@$day['id']]) ) { //fieldが存在すればadd
+                if (isset($day['id']) && isset($DATA['field'][$day['id']]) && !empty($DATA['field'][$day['id']])) { //fieldが存在すればadd
                     $vars = $this->buildField($field, $Tpl, $dayBlock, null);
                     $day  = array_merge($day, $vars);
                 }
@@ -307,7 +314,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         $dayNum = $day['id'];
         if (isset($Plan['item'.$dayNum]) && is_array($Plan['item'.$dayNum]) ) {
             // first Label on Calendar
-            $labelKey   = @$Plan['label'.$dayNum][0];
+            $labelKey = isset($Plan['label'.$dayNum][0]) ? $Plan['label'.$dayNum][0] : '';
 
             // first Item on Calendar
             if ( !empty($Plan['item'.$dayNum][0]) ) {
@@ -315,23 +322,22 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
             }
         }
 
-        if ( !empty($labelKey) ){
+        if (!empty($labelKey)){
             foreach ( $this->labels as $chunk ) {
                 $chunk   = explode($this->sep, $chunk);
-                $key     = $chunk[1];
-                $label   = $chunk[0];
-                $class   = @$chunk[2];
-
+                $key     = isset($chunk[1]) ? $chunk[1] : '';
+                $label   = isset($chunk[0]) ? $chunk[0] : '';
+                $class   = isset($chunk[2]) ? $chunk[2] : '';
                 $vars = array(
-                        'label' => $label,
-                        'key'   => $key,
-                        'class' => @$class,
-                    );
+                    'label' => $label,
+                    'key'   => $key,
+                    'class' => $class,
+                );
 
-                if ( $key == @$labelKey && !empty($class) ) {
+                if ($key == $labelKey && !empty($class)) {
                     $day['dayClass'] = $class;
                 }
-                if ( $key == @$labelKey && !empty($label) ) {
+                if ($key == $labelKey && !empty($label)) {
                     $day['dayLabel'] = $label;
                 }
             }
@@ -367,29 +373,24 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         if (empty($loop)) $loop = 1;
 
         for ( $i = 0; $i < $loop; $i++ ) {
-
-            $labelKey   = @$Plan['label'.$dayNum][$i];
-            $planName   = @$Plan['item'.$dayNum][$i];
-
-            $planBlock  = array('plan', 'day:loop', 'week:loop', 'month:loop', 'unit:loop');
-
-            $planRow    = array('no' => $dayNum);
+            $labelKey = isset($Plan['label'.$dayNum][$i]) ? $Plan['label'.$dayNum][$i] : '';
+            $planName = isset($Plan['item'.$dayNum][$i]) ? $Plan['item'.$dayNum][$i] : '';
+            $planBlock = array('plan', 'day:loop', 'week:loop', 'month:loop', 'unit:loop');
+            $planRow = array('no' => $dayNum);
             if ( !empty($planName) ) $planRow += array('item' => $planName);
             if ( !empty($labelKey) ) $planRow += array('key' => $labelKey);
-
             if ( !empty($this->labels) ) {
-
                 foreach ( $this->labels as $chunk ) {
                     $chunk  = explode($this->sep, $chunk);
-                    $key    = $chunk[1];
-                    $label  = $chunk[0];
-                    $class  = @$chunk[2];
+                    $key    = isset($chunk[1]) ? $chunk[1] : '';
+                    $label  = isset($chunk[0]) ? $chunk[0] : '';
+                    $class  = isset($chunk[2]) ? $chunk[2] : '';
 
                     $vars   = array(
-                                    'label' => $label,
-                                    'key'   => $key,
-                                    'class' => @$class,
-                                    );
+                        'label' => $label,
+                        'key'   => $key,
+                        'class' => @$class,
+                    );
 
                     $label_inner_vars   = $vars;
                     $label_outer_vars   = $vars;
@@ -433,7 +434,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         $SQL->addWhereOpr('schedule_id', $this->key);
         $SQL->addWhereOpr('schedule_year', '0000', '<>');
         $SQL->addWhereOpr('schedule_blog_id', $this->bid);
-        
+
         $Recently   = clone $SQL;
         $Recently->addOrder('schedule_year', 'DESC');
         $recentryValue = $DB->query($SQL->get(dsn()), 'one');
@@ -463,7 +464,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         $loop   = $this->forwardM + $this->backM + 1;
         $_year  = date('Y', mktime(0,0,0,$this->month - $this->backM, $this->day, $this->year));
         $_month = date('m', mktime(0,0,0,$this->month - $this->backM, $this->day, $this->year));
-        
+
         for ( $i = 0; $i < $loop ; $i++ ) {
             $year   = date('Y', mktime(0,0,0,$_month+$i, $this->day, $_year));
             $month  = date('m', mktime(0,0,0,$_month+$i, $this->day, $_year));
@@ -510,9 +511,21 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
                 $this->destructDays();
             }
 
-            $day    = $DAYS[$year.$month][$dayNum];
-            $plan   = $DATA[$year.$month]['data'][$dayNum];
-            $field  = $DATA[$year.$month]['field'][$dayNum];
+            $day = null;
+            $plan = null;
+            $field = null;
+
+            if (isset($DAYS[$year.$month])) {
+                if (isset($DAYS[$year.$month][$dayNum])) {
+                    $day = $DAYS[$year.$month][$dayNum];
+                }
+                if (isset($DATA[$year.$month]['data']) && isset($DATA[$year.$month]['data'][$dayNum])) {
+                    $plan = $DATA[$year.$month]['data'][$dayNum];
+                }
+                if (isset($DATA[$year.$month]['field']) && isset($DATA[$year.$month]['field'][$dayNum])) {
+                    $field = $DATA[$year.$month]['field'][$dayNum];
+                }
+            }
 
             $this->buildPlan($Tpl, $day, $plan);
             $this->addLabel($Tpl, $day, $plan);
@@ -534,7 +547,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         }
 
         $vars    = array(
-                        
+
                         );
 
         $Tpl->add(array('month:loop','unit:loop'), $vars);

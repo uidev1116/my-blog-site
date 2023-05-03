@@ -2,7 +2,7 @@ import React, { Component, CSSProperties, ReactNode } from 'react';
 import classnames from 'classnames';
 import styled from 'styled-components';
 
-const  NotifyBox = styled.div`
+const NotifyBox = styled.div`
   background: #5690d8;
   border-radius: 0;
   bottom: auto;
@@ -14,7 +14,7 @@ const  NotifyBox = styled.div`
   text-align: center;
   right: 0;
   top: -70px;
-  transition: top .4s ease-in;
+  transition: top 0.4s ease-in;
   transform: translate3d(0px, 0px, 200px);
   width: 100%;
   z-index: 100100;
@@ -28,15 +28,16 @@ const  NotifyBox = styled.div`
 `;
 
 interface NotifyProp {
-  onFinish: Function,
-  style?: CSSProperties,
-  message: ReactNode,
-  show: boolean
+  onFinish: () => void;
+  style?: CSSProperties;
+  message: ReactNode;
+  show: boolean;
 }
 
 interface NotifyState {
-  show: boolean,
-  active: boolean
+  init: boolean;
+  show: boolean;
+  active: boolean;
 }
 
 export default class Notify extends Component<NotifyProp, NotifyState> {
@@ -45,29 +46,29 @@ export default class Notify extends Component<NotifyProp, NotifyState> {
     this.state = {
       init: false,
       show: false,
-      active: false
+      active: false,
     };
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     const { onFinish } = this.props;
     if (props.show === true) {
       this.setState({
-        init: true
+        init: true,
       });
       setTimeout(() => {
         this.setState({
-          active: true
+          active: true,
         });
       }, 10);
       setTimeout(() => {
         this.setState({
-          active: false
+          active: false,
         });
       }, 1500);
       setTimeout(() => {
         this.setState({
-          init: false
+          init: false,
         });
         if (onFinish) {
           onFinish();
@@ -79,6 +80,10 @@ export default class Notify extends Component<NotifyProp, NotifyState> {
   render() {
     const { message, style } = this.props;
     const { active, init } = this.state;
-    return (<NotifyBox style={style} className={classnames({ active, init })} >{message}</NotifyBox>);
+    return (
+      <NotifyBox style={style} className={classnames({ active, init })}>
+        {message}
+      </NotifyBox>
+    );
   }
 }

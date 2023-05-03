@@ -1,79 +1,107 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-vZTmEOaEip6lqn7XZxHW2BT6OV466kUulxBhS7u=
+<?php
+
+interface ACMS_Services_Interface
+{
+    static public function establish($bid);
+}
+
+abstract class ACMS_Services
+{
+    static public function loadOAuthToken($bid, $type = 'all', $service = '')
+    {
+        $DB     = DB::singleton(dsn());
+
+        switch ( $type ) {
+            case 'request'  :
+                $target  = array(
+                    "{$service}_oauth_request_token",
+                    "{$service}_oauth_request_token_secret",
+                );
+                break;
+            case 'access'   :
+                $target  = array(
+                    "{$service}_oauth_access_token",
+                    "{$service}_oauth_access_token_secret",
+                );
+                break;
+            default         :
+                $target  = array(
+                    "{$service}_oauth_request_token",
+                    "{$service}_oauth_request_token_secret",
+                    "{$service}_oauth_access_token",
+                    "{$service}_oauth_access_token_secret",
+                );
+                break;
+        }
+
+        $SQL    = SQL::newSelect('config');
+        $SQL->addSelect('config_key');
+        $SQL->addSelect('config_value');
+        $SQL->addWhereIn('config_key', $target);
+        $SQL->addWhereOpr('config_blog_id', $bid);
+        $all    = $DB->query($SQL->get(dsn()), 'all');
+
+        if ( empty($all) ) return false;
+
+        $tokens = array();
+        foreach ( $all as $row ) {
+            $tokens[str_replace("@$bid", '', $row['config_key'])]    = $row['config_value'];
+        }
+
+        return $tokens;
+    }
+
+    static public function insertOAuthToken($bid, $token, $secret, $type, $service)
+    {
+        $DB     = DB::singleton(dsn());
+
+        $SQL    = SQL::newInsert('config');
+        $SQL->addInsert('config_key', "{$service}_oauth_{$type}_token");
+        $SQL->addInsert('config_value', $token);
+        $SQL->addInsert('config_blog_id', $bid);
+        if ( !$DB->query($SQL->get(dsn()), 'exec') ) return false;
+
+        $SQL    = SQL::newInsert('config');
+        $SQL->addInsert('config_key', "{$service}_oauth_{$type}_token_secret");
+        $SQL->addInsert('config_value', $secret);
+        $SQL->addInsert('config_blog_id', $bid);
+        if ( !$DB->query($SQL->get(dsn()), 'exec') ) return false;
+
+        Config::forgetCache($bid);
+
+        return true;
+    }
+
+    static public function deleteOAuthToken($bid, $type = 'all', $service = '')
+    {
+        $DB     = DB::singleton(dsn());
+
+        switch ( $type ) {
+            case 'request'  :
+                $target  = array(
+                    "{$service}_oauth_request_token",
+                    "{$service}_oauth_request_token_secret",
+                );
+                break;
+            case 'access'   :
+                $target  = array(
+                    "{$service}_oauth_access_token",
+                    "{$service}_oauth_access_token_secret",
+                );
+                break;
+            default         :
+                $target  = array(
+                    "{$service}_oauth_request_token",
+                    "{$service}_oauth_request_token_secret",
+                    "{$service}_oauth_access_token",
+                    "{$service}_oauth_access_token_secret",
+                );
+                break;
+        }
+
+        $SQL    = SQL::newDelete('config');
+        $SQL->addWhereIn('config_key', $target);
+        $SQL->addWhereOpr('config_blog_id', $bid);
+        return $DB->query($SQL->get(dsn()), 'exec');
+    }
+}

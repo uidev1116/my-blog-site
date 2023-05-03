@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import queryString from 'qs';
 import classnames from 'classnames';
 
-import MediaList from '../components/media-list';
-import MediaModal from '../components/media-modal';
-import MediaUploadModal from '../components/media-upload-modal';
+import MediaList from './media-list';
+import MediaModal from './media-modal';
+import MediaUploadModal from './media-upload-modal';
 import { MediaContainerProp } from '../types/media';
 
 export default class MediaBasic extends Component<MediaContainerProp> {
@@ -27,57 +27,82 @@ export default class MediaBasic extends Component<MediaContainerProp> {
     } else {
       this.props.actions.setUpload(false);
     }
-    // this.props.actions.fetchMediaList();
   }
 
   render() {
     const {
-      items, actions, item, largeSize, formToken, archives, extensions,
-      upload, mode, lastPage, config, tags, total, loading, selectedTags
+      items,
+      actions,
+      item,
+      largeSize,
+      formToken,
+      archives,
+      extensions,
+      upload,
+      mode,
+      lastPage,
+      config,
+      tags,
+      total,
+      loading,
+      selectedTags,
     } = this.props;
 
     return (
       <div>
         <div className="acms-admin-tabs">
           <ul className="acms-admin-tabs-inner">
-            <li><a
-              href="#"
-              className={classnames('js-acms_tab', {
-                'acms-admin-tab-active': !upload
-              })}
-              onClick={() => {
-                actions.setUpload(false);
-              }}
-
-            >{ACMS.i18n("media.media_list")}</a></li>
-            <li><a
-              href="#"
-              className={classnames('js-acms_tab', {
-                'acms-admin-tab-active': upload
-              })}
-              onClick={() => {
-                actions.setUpload(true);
-              }}
-            >{ACMS.i18n("media.upload")}</a></li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                href="#"
+                className={classnames('js-acms_tab', {
+                  'acms-admin-tab-active': !upload,
+                })}
+                onClick={() => {
+                  actions.setUpload(false);
+                }}
+              >
+                {ACMS.i18n('media.media_list')}
+              </a>
+            </li>
+            <li>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                href="#"
+                className={classnames('js-acms_tab', {
+                  'acms-admin-tab-active': upload,
+                })}
+                onClick={() => {
+                  actions.setUpload(true);
+                }}
+              >
+                {ACMS.i18n('media.upload')}
+              </a>
+            </li>
           </ul>
-          {!upload && <div className="acms-admin-tabs-panel">
-            <MediaList
-              items={items}
-              actions={actions}
-              mode={mode}
-              lastPage={lastPage}
-              config={config}
-              archives={archives}
-              tags={tags}
-              extensions={extensions}
-              total={total}
-              loading={loading}
-              selectedTags={selectedTags}
-            />
-          </div>}
-          {upload && <div className="acms-admin-tabs-panel">
-            <MediaUploadModal actions={actions} largeSize={largeSize} tags={tags}/>
-          </div>}
+          {!upload && (
+            <div className="acms-admin-tabs-panel">
+              <MediaList
+                items={items}
+                actions={actions}
+                mode={mode}
+                lastPage={lastPage}
+                config={config}
+                archives={archives}
+                tags={tags}
+                extensions={extensions}
+                total={total}
+                loading={loading}
+                selectedTags={selectedTags}
+              />
+            </div>
+          )}
+          {upload && (
+            <div className="acms-admin-tabs-panel">
+              <MediaUploadModal actions={actions} largeSize={largeSize} tags={tags} />
+            </div>
+          )}
           {item && <MediaModal item={item} actions={actions} formToken={formToken} config={config} tags={tags} />}
         </div>
       </div>

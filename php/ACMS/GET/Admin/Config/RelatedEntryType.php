@@ -7,7 +7,9 @@ class ACMS_GET_Admin_Config_RelatedEntryType extends ACMS_GET
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         $sql = SQL::newSelect('config');
         $sql->addWhereIn('config_key', array('related_entry_type', 'related_entry_label'));
-        $sql->setOrder('config_sort', 'ASC');
+        $sql->addOrder('config_set_id', 'ASC');
+        $sql->addOrder('config_blog_id', 'ASC');
+        $sql->addOrder('config_sort', 'ASC');
 
         $types = array();
         $labels = array();

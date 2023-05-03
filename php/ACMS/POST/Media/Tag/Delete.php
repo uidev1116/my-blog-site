@@ -1,37 +1,32 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-+OHBcTMojuR0Hqv0ocVneJf3BCS=
+<?php
+
+use Acms\Services\Facades\Media;
+
+class ACMS_POST_Media_Tag_Delete extends ACMS_POST
+{
+    function post()
+    {
+        if (roleAvailableUser()) {
+            $this->Post->setMethod(
+                'tag',
+                'operable',
+                !!$this->Q->get('tag') and roleAuthorization('tag_edit', BID)
+            );
+        } else {
+            $this->Post->setMethod(
+                'tag',
+                'operable',
+                !!$this->Q->get('tag') and sessionWithCompilation()
+            );
+        }
+        $this->Post->validate();
+
+        if ($this->Post->isValidAll()) {
+            $tagName = $this->Q->get('tag');
+            Media::deleteTag($tagName);
+            $this->Post->set('edit', 'delete');
+        }
+
+        return $this->Post;
+    }
+}

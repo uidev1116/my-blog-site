@@ -6,6 +6,7 @@ use DB;
 use SQL;
 use Storage;
 use Tpl;
+use Common;
 use ACMS_RAM;
 use Field;
 use Field_Validation;
@@ -34,20 +35,23 @@ class Helper
 
                     if ( empty($i) ) {
                         $vars[$key] = $v;
-                        if ( !empty($Tpl) ) {
-                            $Tpl->add(array_merge(array($key), $block), array($key => $v));
+                        if (!empty($Tpl)) {
+                            if (!isApiBuild()) {
+                                $Tpl->add(array_merge(array($key), $block), array($key => $v));
+                            }
                         }
                     }
 
                     $sfx    = '['.$i.']';
                     if ( $v !== '' ) { $vars[$key.$sfx] = $v; }
                     if ( !empty($Tpl) ) {
-                        if ( !empty($i) ) {
-                            $Tpl->add(array_merge(array('glue', $key.':loop'), $block));
-                            $Tpl->add(array_merge(array($key.':glue', $key.':loop'), $block));
+                        if (!isApiBuild()) {
+                            if (!empty($i)) {
+                                $Tpl->add(array_merge(array('glue', $key . ':loop'), $block));
+                                $Tpl->add(array_merge(array($key . ':glue', $key . ':loop'), $block));
+                            }
                         }
-                        $Tpl->add(array_merge(array($key.':loop'), $block)
-                            , !empty($v) ? array($key => $v) : array());
+                        $Tpl->add(array_merge(array($key . ':loop'), $block), !empty($v) ? array($key => $v) : array());
                     }
                 }
             } else {
@@ -276,20 +280,17 @@ class Helper
                     $isExists |= $Field->isExists($fd, $i);
                     $row[$fd] = $Field->get($fd, '', $i);
                     if ($Field->isExists($fd . '@media', $i)) {
-                        foreach (array('name', 'fileSize', 'caption', 'link', 'alt', 'text', 'path', 'thumbnail', 'imageSize', 'type', 'extension') as $exMedia) {
+                        foreach (['name', 'fileSize', 'caption', 'link', 'alt', 'text', 'path', 'thumbnail', 'imageSize', 'type', 'extension', 'width', 'height', 'ratio'] as $exMedia) {
                             $fdMedia = $fd . "@$exMedia";
                             $row[$fdMedia] = $Field->get($fdMedia, '', $i);
                         }
                     }
-
                     if ($Field->isExists($fd. '@html', $i)) {
                         $row[$fd. '@html'] = $Field->get($fd. '@html', '', $i);
                     }
-
                     if ($Field->isExists($fd. '@title', $i)) {
                         $row[$fd. '@title'] = $Field->get($fd. '@title', '', $i);
                     }
-
                     if ( !$hasValidator && method_exists($Field, 'isValid') ) {
                         $validator = $Field->getMethods($fd);
                         $hasValidator |= !empty($validator);
@@ -309,77 +310,94 @@ class Helper
 
                 //-----------
                 // validator
-                if ( method_exists($Field, 'isValid') ) {
-                    foreach ( $row as $fd => $kipple ) {
-                        foreach ( $Field->getMethods($fd) as $method ) {
-                            if ( !$val = intval($Field->isValid($fd, $method, $i)) ) {
-                                foreach ( array('validator', 'v') as $v ) {
-                                    $key    = $fd.':'.$v.'#'.$method;
-                                    $_vars[$key] = $val;
-                                    $Tpl->add(array_merge(array($key), $loopblock), array($key => $val));
+                if (!isApiBuild()) {
+                    if ( method_exists($Field, 'isValid') ) {
+                        foreach ( $row as $fd => $kipple ) {
+                            foreach ( $Field->getMethods($fd) as $method ) {
+                                if ( !$val = intval($Field->isValid($fd, $method, $i)) ) {
+                                    foreach ( array('validator', 'v') as $v ) {
+                                        $key    = $fd.':'.$v.'#'.$method;
+                                        $_vars[$key] = $val;
+                                        $Tpl->add(array_merge(array($key), $loopblock), array($key => $val));
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 //-------
                 // value
                 foreach ( $row as $key => $value ) {
-                    if ( $value !== '' ) {
-                        $_vars[$key]    = $value;
-                        $_vars[$key.':checked#'.$value]     = config('attr_checked');
-                        $_vars[$key.':selected#'.$value]    = config('attr_selected');
+                    if ($value !== '') {
+                        $_vars[$key] = $value;
+                        if (!isApiBuild()) {
+                            $_vars[$key . ':checked#' . $value] = config('attr_checked');
+                            $_vars[$key . ':selected#' . $value] = config('attr_selected');
+                        }
                     }
-                    if ( !empty($i) ) {
+                    if (!isApiBuild() && !empty($i)) {
                         $Tpl->add(array_merge(array($key.':glue'), $loopblock));
                     }
                 }
-
                 //---
                 // n
-                $_vars['i'] = $i;
-
-                if ( !empty($i) ) {
-                    $Tpl->add(array_merge(array('glue'), $loopblock));
-                    $Tpl->add(array_merge(array($groupName.':glue'), $loopblock));
+                if (!isApiBuild()) {
+                    $_vars['i'] = $i;
+                    if (!empty($i)) {
+                        $Tpl->add(array_merge(array('glue'), $loopblock));
+                        $Tpl->add(array_merge(array($groupName . ':glue'), $loopblock));
+                    }
                 }
                 $Tpl->add($loopblock, $_vars);
             }
         }
 
-        $data   = array();
-        foreach ( $fds as $fd ) {
-            if ( !$aryVal = $Field->getArray($fd) ) $Tpl->add(array_merge(array($fd.':null'), $block));
-            $data[$fd]  = $aryVal;
-            if ( $isSearch ) {
-                $data[$fd.'@connector'] = $Field->getConnector($fd, null);
-                $data[$fd.'@operator']  = $Field->getOperator($fd, null);
+        $data = array();
+        foreach ($fds as $fd) {
+            if (!$aryVal = $Field->getArray($fd)) {
+                if (!isApiBuild()) {
+                    $Tpl->add(array_merge(array($fd . ':null'), $block));
+                }
             }
-            if ( !method_exists($Field, 'isValid') ) continue;
-            if ( !$val = intval($Field->isValid($fd)) ) {
-                foreach ( array('validator', 'v') as $v ) {
-                    $key    = $fd.':'.$v;
+            $data[$fd] = $aryVal;
+            if ($isSearch) {
+                if (!isApiBuild()) {
+                    $data[$fd . '@connector'] = $Field->getConnector($fd, null);
+                    $data[$fd . '@operator'] = $Field->getOperator($fd, null);
+                }
+            }
+            if (!method_exists($Field, 'isValid')) {
+                continue;
+            }
+            if (!$val = intval($Field->isValid($fd))) {
+                foreach (array('validator', 'v') as $v) {
+                    $key = $fd . ':' . $v;
                     $vars[$key] = $val;
-                    $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                    if (!isApiBuild()) {
+                        $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                    }
                 }
 
-                $aryMethod  = $Field->getMethods($fd);
-                foreach ( $aryMethod as $method ) {
-                    if ( !$val = intval($Field->isValid($fd, $method)) ) {
-                        foreach ( array('validator', 'v') as $v ) {
-                            $key    = $fd.':'.$v.'#'.$method;
+                $aryMethod = $Field->getMethods($fd);
+                foreach ($aryMethod as $method) {
+                    if (!$val = intval($Field->isValid($fd, $method))) {
+                        foreach (array('validator', 'v') as $v) {
+                            $key = $fd . ':' . $v . '#' . $method;
                             $vars[$key] = $val;
-                            $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                            if (!isApiBuild()) {
+                                $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                            }
                         }
 
-                        $cnt    = count($Field->getArray($fd));
-                        for ( $i=0; $i<$cnt; $i++ ) {
-                            if ( !$val = intval($Field->isValid($fd, $method, $i)) ) {
-                                foreach ( array('validator', 'v') as $v ) {
-                                    $key    = $fd.'['.$i.']'.':'.$v.'#'.$method;
+                        $cnt = count($Field->getArray($fd));
+                        for ($i = 0; $i < $cnt; $i++) {
+                            if (!$val = intval($Field->isValid($fd, $method, $i))) {
+                                foreach (array('validator', 'v') as $v) {
+                                    $key = $fd . '[' . $i . ']' . ':' . $v . '#' . $method;
                                     $vars[$key] = $val;
-                                    $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                                    if (!isApiBuild()) {
+                                        $Tpl->add(array_merge(array($key), $block), array($key => $val));
+                                    }
                                 }
                             } else {
                                 continue;
@@ -393,31 +411,35 @@ class Helper
                 continue;
             }
         }
+
         //-------
         // touch
-        foreach ( $data as $fd => $vals ) {
-            if ( !is_array($vals) ) {
-                $vals   = array($vals);
-            }
-            foreach ( $vals as $i => $val ) {
-                if ( empty($i) ) {
-                    if ( !is_array($val) ) {
-                        $Tpl->add(array_merge(array($fd.':touch#'.$val), $block));
-                    }
+        if (!isApiBuild()) {
+            foreach ($data as $fd => $vals) {
+                if (!is_array($vals)) {
+                    $vals = array($vals);
                 }
-                if ( !is_array($val) ) {
-                    $Tpl->add(array_merge(array($fd.'['.$i.']'.':touch#'.$val), $block));
+                foreach ($vals as $i => $val) {
+                    if (empty($i)) {
+                        if (!is_array($val)) {
+                            $Tpl->add(array_merge(array($fd . ':touch#' . $val), $block));
+                        }
+                    }
+                    if (!is_array($val)) {
+                        $Tpl->add(array_merge(array($fd . '[' . $i . ']' . ':touch#' . $val), $block));
+                    }
                 }
             }
         }
 
-        $vars   += $this->buildInputTextValue($data, $Tpl, $block);
-        $vars   += $this->buildInputCheckboxChecked($data, $Tpl, $block);
-        $vars   += $this->buildSelectSelected($data, $Tpl, $block);
-
-        if ( !is_null($scp) ) $vars[(!empty($scp) ? $scp.':' : '').'takeover'] = acmsSerialize($Field);
-
-
+        $vars += $this->buildInputTextValue($data, $Tpl, $block);
+        if (!isApiBuild()) {
+            $vars += $this->buildInputCheckboxChecked($data, $Tpl, $block);
+            $vars += $this->buildSelectSelected($data, $Tpl, $block);
+            if (!is_null($scp)) {
+                $vars[(!empty($scp) ? $scp.':' : '').'takeover'] = acmsSerialize($Field);
+            }
+        }
         foreach ( $Field->listChildren() as $child ) {
             $vars += $this->buildField($Field->getChild($child), $Tpl, $block, $child);
         }
@@ -443,6 +465,12 @@ class Helper
     {
         $vars   = array();
         $block  = is_array($block) ? $block : array($block);
+        if (!ADMIN) {
+            $Q['query'] = array();
+        }
+        if (KEYWORD) {
+            $Q['keyword'] = KEYWORD;
+        }
 
         $from   = ($page - 1) * $limit;
         $to     = $from + $limit;// - 1;
@@ -454,9 +482,10 @@ class Helper
             'itemsFrom'      => $from + 1,
             'itemsTo'        => $to,
         );
-        $lastPage   = ceil($amount/$limit);
-        $fromPage   = 1 > ($page - $delta) ? 1 : ($page - $delta);
-        $toPage     = $lastPage < ($page + $delta) ? $lastPage : ($page + $delta);
+        $delta = intval($delta);
+        $lastPage = ceil($amount/$limit);
+        $fromPage = 1 > ($page - $delta) ? 1 : ($page - $delta);
+        $toPage = $lastPage < ($page + $delta) ? $lastPage : ($page + $delta);
 
         if ( $lastPage > 1 ) {
             for ( $curPage=$fromPage; $curPage<=$toPage; $curPage++ ) {
@@ -517,6 +546,13 @@ class Helper
             ));
         }
 
+        if ($page - $delta > 2) {
+            $Tpl->add(array_merge(array('omitBeforePage'), $block));
+        }
+        if ($lastPage - $page - $delta > 1) {
+            $Tpl->add(array_merge(array('omitAfterPage'), $block));
+        }
+
         return $vars;
     }
 
@@ -571,7 +607,7 @@ class Helper
                     $corrector = new \ACMS_Corrector();
                     switch ($unit['column_field_2']) {
                         case 'markdown':
-                            $_text = \Michelf\MarkdownExtra::defaultTransform($_text);
+                            $_text = Common::parseMarkdown($_text);
                             break;
                         case 'table':
                             $_text = $corrector->table($_text);
@@ -684,14 +720,15 @@ class Helper
      * @param Acms\Service\View\Engine $tpl
      * @param int $eid
      * @param array $eagerLoadingData
+     * @param array $blocks
      */
-    public function buildTag($tpl, $eid, $eagerLoadingData)
+    public function buildTag($tpl, $eid, $eagerLoadingData, $blocks = array())
     {
         if (isset($eagerLoadingData[$eid]) && is_array($eagerLoadingData[$eid])) {
             $length = count($eagerLoadingData[$eid]);
             foreach ($eagerLoadingData[$eid] as $i => $tag) {
-                if ($length > ($i + 1)) $tpl->add(array('tagGlue', 'tag:loop'));
-                $tpl->add('tag:loop', array(
+                if ($length > ($i + 1)) $tpl->add(array_merge(array('tagGlue', 'tag:loop'), $blocks));
+                $tpl->add(array_merge(array('tag:loop'), $blocks), array(
                     'name'  => $tag['tag_name'],
                     'url'   => acmsLink(array(
                         'bid'   => $tag['tag_blog_id'],
@@ -790,11 +827,10 @@ class Helper
             $align = $unit['column_align'];
             $alt = $unit['alt'];
             $caption = $unit['caption'];
-
         } else {
             $path = null;
         }
-        if (empty($pathAry)) {
+        if (empty($pathAry) || $align === 'hidden') {
             $Tpl->add('noimage', array(
                 'noImgX'  => $config['imageX'],
                 'noImgY'  => $config['imageY'],
@@ -810,12 +846,14 @@ class Helper
 
             $vars['focalX' . $fx] = 0;
             $vars['focalY' . $fx] = 0;
+            $mediaSize = '';
 
             if ($unitType === 'media') {
                 if (isset($eagerLoadingData['media'][$path])) {
                     if ($media = $eagerLoadingData['media'][$path]) {
                         $path = $media['media_path'];
                         $focalPoint = $media['media_field_5'];
+                        $mediaSize = $media['media_image_size'];
                         if (strpos($focalPoint, ',') !== false) {
                             list($focalX, $focalY) = explode(',', $focalPoint);
                             if ($focalX && $focalY) {
@@ -831,48 +869,75 @@ class Helper
             $storageDir = $unitType === 'image' ? ARCHIVES_DIR : MEDIA_LIBRARY_DIR;
             $filename = $path;
             $path = $storageDir . $path;
-            if ( $align === 'hidden' ) $path = null;
 
-            //-------------------
-            // image is readble?
-            if ( Storage::isReadable($path) ) {
-                list($x, $y)    = Storage::getImageSize($path);
-
-                if ( max($config['imageX'], $config['imageY']) > max($x, $y) ) {
-                    $_path  = preg_replace('@(.*?)([^/]+)$@', '$1large-$2',  $path);
-                    if ( $xy = Storage::getImageSize($_path) ) {
-                        $path   = $_path;
-                        $x      = $xy[0];
-                        $y      = $xy[1];
+            $x = 0;
+            $y = 0;
+            if ($mediaSize) {
+                list($tempX, $tempY) = explode('x', $mediaSize);
+                $x = intVal(trim($tempX));
+                $y = intVal(trim($tempY));
+            } else if (Storage::isReadable($path)) {
+                list($x, $y) = Storage::getImageSize($path);
+            }
+            if ($x > 0 && $y > 0) {
+                if (max($config['imageX'], $config['imageY']) > max($x, $y)) {
+                    $_path = preg_replace('@(.*?)([^/]+)$@', '$1large-$2',  $path);
+                    if ($xy = Storage::getImageSize($_path)) {
+                        $path = $_path;
+                        $x = $xy[0];
+                        $y = $xy[1];
                     }
                 }
-
-                $vars   += array(
-                    'path'.$fx  => $path,
+                $vars += array(
+                    'path'.$fx => $path,
                 );
                 if ( 'on' == $config['imageTrim'] ) {
                     if ( $x > $config['imageX'] and $y > $config['imageY'] ) {
                         if ( ($x / $config['imageX']) < ($y / $config['imageY']) ) {
-                            $imgX   = $config['imageX'];
-                            $imgY   = @round($y / ($x / $config['imageX']));
+                            $imgX = $config['imageX'];
+                            if ($config['imageX'] > 0 && ($x / $config['imageX']) > 0) {
+                                $imgY = round($y / ($x / $config['imageX']));
+                            } else {
+                                $imgY = 0;
+                            }
                         } else {
                             $imgY   = $config['imageY'];
-                            $imgX   = @round($x / ($y / $config['imageY']));
+                            if ($config['imageY'] > 0 && ($y / $config['imageY']) > 0) {
+                                $imgX = round($x / ($y / $config['imageY']));
+                            } else {
+                                $imgX = 0;
+                            }
                         }
                     } else {
                         if ( $x < $config['imageX'] ) {
-                            $imgX   = $config['imageX'];
-                            $imgY   = @round($y * ($config['imageX'] / $x));
+                            $imgX = $config['imageX'];
+                            if ($config['imageX'] > 0 && $x > 0) {
+                                $imgY = round($y * ($config['imageX'] / $x));
+                            } else {
+                                $imgY = 0;
+                            }
                         } else if ( $y < $config['imageY'] ) {
-                            $imgY   = $config['imageY'];
-                            $imgX   = @round($x * ($config['imageY'] / $y));
+                            $imgY = $config['imageY'];
+                            if ($config['imageY'] > 0 && $y > 0) {
+                                $imgX = round($x * ($config['imageY'] / $y));
+                            } else {
+                                $imgX = 0;
+                            }
                         } else {
                             if ( ($config['imageX'] - $x) > ($config['imageY'] - $y) ) {
-                                $imgX   = $config['imageX'];
-                                $imgY   = @round($y * ($config['imageX'] / $x));
+                                $imgX = $config['imageX'];
+                                if ($config['imageX'] > 0 && $x > 0) {
+                                    $imgY = round($y * ($config['imageX'] / $x));
+                                } else {
+                                    $imgY = 0;
+                                }
                             } else {
                                 $imgY   = $config['imageY'];
-                                $imgX   = @round($x * ($config['imageY'] / $y));
+                                if ($config['imageY'] > 0 && $y > 0) {
+                                    $imgX = round($x * ($config['imageY'] / $y));
+                                } else {
+                                    $imgX = 0;
+                                }
                             }
                         }
                     }
@@ -882,10 +947,18 @@ class Helper
                         if ( $y > $config['imageY'] ) {
                             if ( ($x - $config['imageX']) < ($y - $config['imageY']) ) {
                                 $imgY   = $config['imageY'];
-                                $imgX   = @round($x / ($y / $config['imageY']));
+                                if ($config['imageY'] > 0 && ($y / $config['imageY']) > 0) {
+                                    $imgX = round($x / ($y / $config['imageY']));
+                                } else {
+                                    $imgX = 0;
+                                }
                             } else {
-                                $imgX   = $config['imageX'];
-                                $imgY   = @round($y / ($x / $config['imageX']));
+                                $imgX = $config['imageX'];
+                                if ($config['imageX'] > 0 && ($x / $config['imageX']) > 0) {
+                                    $imgY = round($y / ($x / $config['imageX']));
+                                } else {
+                                    $imgY = 0;
+                                }
                             }
                         } else {
                             $imgX   = $config['imageX'];
@@ -937,32 +1010,36 @@ class Helper
                 );
                 //------
                 // tiny
-                $tiny   = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
-                if ( $xy = Storage::getImageSize($tiny) ) {
-                    $vars   += array(
-                        'tinyPath'.$fx  => $tiny,
-                        'tinyX'.$fx     => $xy[0],
-                        'tinyY'.$fx     => $xy[1],
+                $tiny = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
+                if ($mediaSize) {
+
+                } else if ($xy = Storage::getImageSize($tiny)) {
+                    $vars += array(
+                        'tinyPath'.$fx => $tiny,
+                        'tinyX'.$fx => $xy[0],
+                        'tinyY'.$fx => $xy[1],
                     );
                 }
                 //--------
                 // square
                 $square = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1square-$2', $filename);
-                if ( Storage::isFile($square) ) {
-                    $vars   += array(
-                        'squarePath'.$fx    => $square,
-                        'squareX'.$fx       => $squareSize,
-                        'squareY'.$fx       => $squareSize,
+                if (Storage::isFile($square)) {
+                    $vars += array(
+                        'squarePath'.$fx => $square,
+                        'squareX'.$fx => $squareSize,
+                        'squareY'.$fx => $squareSize,
                     );
                 }
                 //--------
                 // large
                 $large = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $filename);
-                if ( $xy = Storage::getImageSize($large) ) {
-                    $vars   += array(
-                        'largePath'.$fx    => $large,
-                        'largeX'.$fx       => $xy[0],
-                        'largeY'.$fx       => $xy[1],
+                if ($mediaSize) {
+
+                } else if ($xy = Storage::getImageSize($large)) {
+                    $vars += array(
+                        'largePath'.$fx => $large,
+                        'largeX'.$fx => $xy[0],
+                        'largeY'.$fx => $xy[1],
                     );
                 }
 
@@ -1012,7 +1089,9 @@ class Helper
                     'url' => $entry['url'],
                     'categoryName' => ACMS_RAM::categoryName($entry['cid']),
                 );
-                $vars += $this->buildField($field, $Tpl, $loopBlock);
+                if ($field && method_exists($field, 'listFields')) {
+                    $vars += $this->buildField($field, $Tpl, $loopBlock);
+                }
                 $Tpl->add($loopBlock, $vars);
             }
             $Tpl->add(array_merge(array($typeBlock), $block));
@@ -1089,7 +1168,7 @@ class Helper
             if ( $link != '#' ) {
                 $vars['related.url']  = !empty($link) ? $link : $url;
             }
-            if (isset($field[$eid])) {
+            if (isset($eagerLoadField[$eid])) {
                 $vars += $this->buildField($eagerLoadField[$eid], $Tpl, array_merge(array('relatedAdminField', $relatedBlock), $block));
             }
             $Tpl->add($loopblock, $vars);
@@ -1175,7 +1254,7 @@ class Helper
                 $vars += array(
                     'url' => !empty($link) ? $link : $url,
                 );
-                $Tpl->add('url#rear');
+                $Tpl->add(array('url#rear', 'entry:loop'));
             }
 
             if ( !isset($config['blogInfoOn']) or $config['blogInfoOn'] === 'on' ) {
@@ -1209,16 +1288,14 @@ class Helper
 
             //----------------------
             // attachment vars
-            foreach ( $extraVars as $key => $val ) {
-                if ( !empty($row[$val]) ) {
-                    $vars   += array($key => $row[$val]);
-                }
+            foreach ($extraVars as $key => $val) {
+                $vars += [$key => $row[$val]];
             }
 
             //-----
             // new
             if ( requestTime() <= strtotime($row['entry_datetime']) + intval($config['newtime']) ) {
-                $Tpl->add('new');
+                $Tpl->add(array('new', 'entry:loop'));
             }
 
             //-------
@@ -1263,7 +1340,7 @@ class Helper
             //-------------
             // entry field
             if (isset($eagerLoadingData['entryField'][$eid])) {
-                $vars += $this->buildField($eagerLoadingData['entryField'][$eid], $Tpl);
+                $vars += $this->buildField($eagerLoadingData['entryField'][$eid], $Tpl, array('entry:loop'));
             }
 
             //-------------
@@ -1284,7 +1361,7 @@ class Helper
                 if ( $large = loadUserLargeIcon($uid) ) {
                     $Field->setField('fieldUserLargeIcon', $large);
                 }
-                $Tpl->add('userField', $this->buildField($Field, $Tpl));
+                $Tpl->add(array('userField', 'entry:loop'), $this->buildField($Field, $Tpl, array('userField', 'entry:loop')));
             }
 
             //------------
@@ -1298,7 +1375,7 @@ class Helper
                 $Field->setField('fieldBlogName', $blogName);
                 $Field->setField('fieldBlogCode', $blogCode);
                 $Field->setField('fieldBlogUrl', $blogUrl);
-                $Tpl->add('blogField', $this->buildField($Field, $Tpl));
+                $Tpl->add(array('blogField', 'entry:loop'), $this->buildField($Field, $Tpl, array('blogField', 'entry:loop')));
             }
 
             //----------------
@@ -1323,9 +1400,9 @@ class Helper
                     $subCategories = $eagerLoadingData['subCategory'][$eid];
                     foreach ($subCategories as $i => $category) {
                         if ($i !== count($subCategories) - 1) {
-                            $Tpl->add(array('glue', 'sub_category:loop'));
+                            $Tpl->add(array('glue', 'sub_category:loop', 'entry:loop'));
                         }
-                        $Tpl->add('sub_category:loop', array(
+                        $Tpl->add(array('sub_category:loop', 'entry:loop'), array(
                             'name'  => $category['category_name'],
                             'code'  => $category['category_code'],
                             'url'   => acmsLink(array(
@@ -1339,7 +1416,7 @@ class Helper
             //-----
             // tag
             if (isset($eagerLoadingData['tag']) ) {
-                $this->buildTag($Tpl, $eid, $eagerLoadingData['tag']);
+                $this->buildTag($Tpl, $eid, $eagerLoadingData['tag'], array('entry:loop'));
             }
 
             //------
@@ -1413,14 +1490,6 @@ class Helper
                 'view_pitch' => '',
                 'view_heading' => '',
                 'view_zoom' => '',
-            );
-        } else if ( 'yolp' == $type ) {
-            return array(
-                'msg'   => config($pfx.'field_1', '', $i),
-                'lat'   => config($pfx.'field_2', '35.185574', $i),
-                'lng'   => config($pfx.'field_3', '136.899066', $i),
-                'zoom'  => config($pfx.'field_4', '10', $i),
-                'layer' => config($pfx.'field_5', 'map', $i),
             );
         } else if ( 'youtube' == $type ) {
             return array(
@@ -1599,10 +1668,10 @@ class Helper
                         $largeAry[]     = '';
                     }
 
-                    $nXYAry['x'][] = $nXY[0];
-                    $nXYAry['y'][] = $nXY[1];
-                    $tXYAry['x'][] = $tXY[0];
-                    $tXYAry['y'][] = $tXY[1];
+                    $nXYAry['x'][] = isset($nXY[0]) ? $nXY[0] : '';
+                    $nXYAry['y'][] = isset($nXY[1]) ? $nXY[1] : '';
+                    $tXYAry['x'][] = isset($tXY[0]) ? $tXY[0] : '';
+                    $tXYAry['y'][] = isset($tXY[1]) ? $tXY[1] : '';
 
                     $tinyAry[]  = $tiny;
                 }
@@ -1766,40 +1835,6 @@ class Helper
                 'msg'   => $data['msg'],
                 'id'    => $id,
             ));
-
-        //-------
-        // yolp
-        } else if ( 'yolp' == $type ) {
-            foreach ( configArray('column_map_size_label') as $i => $_label ) {
-                $vars  = array(
-                    'value'   => config('column_map_size', '', $i),
-                    'label'   => config('column_map_size_label', '', $i),
-                    'display' => config('column_map_display_size', '', $i),
-                );
-                if ( $data['size'] == config('column_map_size', '', $i) ) {
-                    $vars['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $vars);
-            }
-            foreach ( configArray('column_map_layer_type') as $j => $layer ) {
-                $vars  = array(
-                    'value' => $layer,
-                    'label' => config('column_map_layer_type_label', '', $j),
-                );
-                if ( $data['layer'] == $layer ) {
-                    $vars['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(array('layer:loop', $type), $rootBlock), $vars);
-            }
-            $Tpl->add(array_merge(array($type), $rootBlock), array(
-                'lat'   => $data['lat'],
-                'lng'   => $data['lng'],
-                'layer' => $data['layer'],
-                'zoom'  => $data['zoom'],
-                'msg'   => $data['msg'],
-                'id'    => $id,
-            ));
-
         //---------
         // youtube
         } else if ( 'youtube' == $type ) {
@@ -2178,7 +2213,8 @@ class Helper
 
         if ( $path = findTemplate($tpl) ) {
             $mTpl   = resolvePath('<!--#include file="'.$tpl.'" vars=""-->', config('theme'), '/');
-            if ( $mTpl = spreadTemplate($mTpl, false) ) {
+            if ($mTpl = spreadTemplate($mTpl, false)) {
+                $mTpl = setGlobalVars($mTpl);
                 $opt = ' id="'.$moduleID.'"';
 
                 if ( 1
@@ -2207,7 +2243,12 @@ class Helper
                         $mTpl   = preg_replace(
                             '/<!--[\t 　]*(BEGIN|END)_MODULE+[\t 　]+([^\t 　]+)([^>]*?)[\t 　]*-->/',
                             '', $mTpl);
-                        $mTpl   = boot($moduleName, $mTpl, $opt, Field_Validation::singleton('post'), Field::singleton('config'));
+                        $sql = SQL::newSelect('module');
+                        $sql->addWhereOpr('module_identifier', $moduleID);
+                        $sql->addWhereOpr('module_name', $moduleName);
+
+                        $eagerLoadModule[$moduleName][$moduleID] = DB::query($sql->get(dsn()), 'row');
+                        $mTpl = boot($moduleName, $mTpl, $opt, Field_Validation::singleton('post'), Field::singleton('config'), $eagerLoadModule);
                     }
                 }
                 if ( DEBUG_MODE ) {

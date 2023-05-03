@@ -1,6 +1,16 @@
 <table class="adminTable acms-admin-table-admin-edit">
 	<tr>
-		<th><!--T-->表示順<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->どのようなルールに従って表示されるかの設定です。フィールド、数値フィールドはカスタムフィールドでの検索結果の表示時に利用します。<!--/T-->"></i></th>
+		<th><!--T-->日付の表示順<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->カレンダーの日付をどのような順序で表示するかの設定です。<!--/T-->"></i></th>
+		<td>
+			<select name="entry_calendar_date_order" class="js-select2">
+				<option value="asc"{entry_calendar_date_order:selected#asc}><!--T-->日時 ( 昇順 )<!--/T--></option>
+				<option value="desc"{entry_calendar_date_order:selected#desc}><!--T-->日時 ( 降順 )<!--/T--></option>
+			</select>
+			<input type="hidden" name="config[]" value="entry_calendar_date_order" />
+		</td>
+	</tr>
+	<tr>
+		<th><!--T-->エントリーの表示順<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->どのようなルールに従って表示されるかの設定です。フィールド、数値フィールドはカスタムフィールドでの検索結果の表示時に利用します。<!--/T-->"></i></th>
 		<td>
 			<select name="entry_calendar_order" class="js-select2">
 				<option value="datetime-asc"{entry_calendar_order:selected#datetime-asc}><!--T-->日時 ( 昇順 )<!--/T--></option>
@@ -74,6 +84,10 @@
 			<div class="acms-admin-form-radio">
 				<input type="radio" name="entry_calendar_mode" value="days" {entry_calendar_mode:checked#days} id="input-radio-entry-calendar-mode-days">
 				<label for="input-radio-entry-calendar-mode-days"><i class="acms-admin-ico-radio"></i> <!--T-->週表示(その日から)<!--/T--></label>
+			</div>&nbsp;
+			<div class="acms-admin-form-radio">
+				<input type="radio" name="entry_calendar_mode" value="until_days" {entry_calendar_mode:checked#until_days} id="input-radio-entry-calendar-mode-until_days">
+				<label for="input-radio-entry-calendar-mode-until_days"><i class="acms-admin-ico-radio"></i> <!--T-->週表示(その日まで)<!--/T--></label>
 			</div>&nbsp;
 			<div class="acms-admin-form-radio">
 				<input type="radio" name="entry_calendar_mode" value="week" {entry_calendar_mode:checked#week} id="input-radio-entry-calendar-mode-week">

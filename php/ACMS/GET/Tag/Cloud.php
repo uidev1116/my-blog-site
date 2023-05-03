@@ -4,6 +4,7 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
 {
     var $_axis  = array(
         'bid'   => 'self',
+        'cid'   => 'self'
     );
 
     function get()
@@ -56,8 +57,8 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
             $tags[$tag] = $amount;
             $amounts[]  = $amount;
         }
-        $min    = min($amounts);
-        $max    = max($amounts);
+        $min = empty($amount) ? 0 : min($amounts);
+        $max = empty($amount) ? 0 : max($amounts);
 
         $c  = ($max <> $min) ? (24 / (sqrt($max) - sqrt($min))) : 1;
         $x  = ceil(sqrt($min) * $c);

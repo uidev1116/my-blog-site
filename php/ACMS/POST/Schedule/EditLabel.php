@@ -1,69 +1,74 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-I5wo8D/kLG==
+<?php
+
+class ACMS_POST_Schedule_EditLabel extends ACMS_POST
+{
+    function post()
+    {
+        $scid   = $this->Get->get('scid');
+        $Config = $this->extract('schedule');
+        $Config->setMethod('schedule', 'operative', sessionWithScheduleAdministration());
+        $Config->validate(new ACMS_Validator());
+
+        if ( !$Config->isValid() ) {
+            return $this->Post;
+        }
+
+        $sort   = $Config->getArray('schedule_label_sort');
+        $name   = $Config->getArray('schedule_label_name');
+        $class  = $Config->getArray('schedule_label_class');
+        $key    = $Config->getArray('schedule_label_key');
+
+        $rows   = count($name);
+        $fds    = array();
+
+        /**
+         * build Labels
+         */
+        for ( $i=0; $i<$rows; $i++ ) {
+            if ( empty($name[$i]) ) continue;
+            if ( empty($key[$i]) )  $key[$i] = uniqueString();
+
+            $_tmp   = array($name[$i], $key[$i]);
+            if ( !empty($class[$i]) ) $_tmp[] = $class[$i];
+
+            $fds[implode(config('schedule_label_separator'), $_tmp)] = $sort[$i];
+
+            unset($_tmp);
+        }
+
+        /**
+         * save config
+         */
+
+        // database
+        $DB     = DB::singleton(dsn());
+
+        // delete
+        $SQL    = SQL::newDelete('config');
+        $SQL->addWhereOpr('config_key', 'schedule_label@'.$scid);
+        $SQL->addWhereOpr('config_blog_id', BID);
+        $DB->query($SQL->get(dsn()), 'exec');
+
+        Config::forgetCache(BID);
+
+        // insert
+        asort($fds);
+        $cnt    = 1;
+        $Config =& Field::singleton('config');
+        $Config->delete('schedule_label@'.$scid);
+
+        foreach ( $fds as $label => $num ) {
+            $SQL    = SQL::newInsert('config');
+            $SQL->addInsert('config_key', 'schedule_label@'.$scid);
+            $SQL->addInsert('config_value', $label);
+            $SQL->addInsert('config_sort', $cnt++);
+            $SQL->addInsert('config_blog_id', BID);
+            $DB->query($SQL->get(dsn()), 'exec');
+            $Config->add('schedule_label@'.$scid, $label);
+        }
+        Config::forgetCache(BID);
+        $this->Post->set('edit', 'update');
+
+        return $this->Post;
+    }
+}

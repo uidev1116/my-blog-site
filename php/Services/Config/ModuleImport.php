@@ -4,6 +4,7 @@ namespace Acms\Services\Config;
 
 use DB;
 use SQL;
+use Common;
 
 class ModuleImport extends Import
 {
@@ -81,11 +82,17 @@ class ModuleImport extends Import
         $SQL->addWhereIn('config_module_id', $midAry);
         DB::query($SQL->get(dsn()), 'exec');
 
+        Config::cacheClear();
+
         // delete module field
         $SQL = SQL::newDelete('field');
         $SQL->addWhereOpr('field_blog_id', $this->bid);
         $SQL->addWhereIn('field_mid', $midAry);
         DB::query($SQL->get(dsn()), 'exec');
+
+        foreach ($midAry as $mid) {
+            Common::deleteFieldCache('mid', $mid);
+        }
     }
 }
 

@@ -67,7 +67,7 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    function getLinkVars($bid=BID, $rid)
+    function getLinkVars($bid, $rid)
     {
         return array(
             'itemUrl'   => acmsLink(array(

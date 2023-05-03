@@ -1,0 +1,11 @@
+// Base
+@forward "global/system-variables";
+@forward "global/variables" with (
+  $admin: false
+);
+@forward "global/variables-fonts";
+@forward "global/functions";
+@forward "global/mixins";
+
+// 基本機能
+@import "table.scss";

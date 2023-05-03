@@ -10,17 +10,33 @@
 <!-- BEGIN_MODULE Admin_Rule_Index -->
 
 <!-- BEGIN refresh -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ルールの一覧を更新しました。<!--/T--></p><!-- END refresh --><!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ルールがありません。<!--/T--></p><!-- END index#notFound -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ルールの一覧を更新しました。<!--/T--></p><!-- END refresh -->
 
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->ルールがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->機能を使用するには新しくルールを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <form action="" method="post">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="rule_edit" />
+      <input type="hidden" name="edit" value="insert" />
+      <input type="hidden" name="query[]" value="edit" />
+      <input type="submit" name="ACMS_POST_2GET" value="<!--T-->ルールを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+    </form>
+  </div>
+</div>
+<!-- END index#notFound -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 <div class="acms-admin-float-right acms-admin-float-none-sp acms-admin-position-right acms-admin-fix-right">
-	<form action="" method="post" class="js-acms_fix_marker">
-		<input type="hidden" name="bid" value="%{BID}" />
-		<input type="hidden" name="admin" value="rule_edit" />
-		<input type="hidden" name="edit" value="insert" />
-		<input type="hidden" name="query[]" value="edit" />
-		<input type="submit" name="ACMS_POST_2GET" value="<!--T-->ルールを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
-	</form>
+  <form action="" method="post" class="js-acms_fix_marker">
+    <input type="hidden" name="bid" value="%{BID}" />
+    <input type="hidden" name="admin" value="rule_edit" />
+    <input type="hidden" name="edit" value="insert" />
+    <input type="hidden" name="query[]" value="edit" />
+    <input type="submit" name="ACMS_POST_2GET" value="<!--T-->ルールを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+  </form>
 </div>
 
 <!-- BEGIN index:veil -->
@@ -103,4 +119,5 @@
 	</div>
 	<!-- END index:veil -->
 </form>
+<!-- END_IF -->
 <!-- END_MODULE Admin_Rule_Index -->

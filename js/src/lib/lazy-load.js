@@ -1,4 +1,4 @@
-import lozad from 'lozad'
+import lozad from 'lozad';
 
 export default (selector, isLazy, run) => {
   const observer = lozad(selector, {
@@ -6,7 +6,7 @@ export default (selector, isLazy, run) => {
       if (isLazy(el)) {
         run(el);
       }
-    }
+    },
   });
   observer.observe();
   [].forEach.call(document.querySelectorAll(selector), (item) => {

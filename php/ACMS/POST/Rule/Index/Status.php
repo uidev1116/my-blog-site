@@ -1,40 +1,25 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-itjBb0==
+<?php
+
+class ACMS_POST_Rule_Index_Status extends ACMS_POST
+{
+    function post()
+    {
+        if ( !sessionWithAdministration() ) die();
+        if ( !(($status = $this->Post->get('status')) and in_array($status, array('open', 'close'))) ) die();
+        if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
+            $DB = DB::singleton(dsn());
+            foreach ( $_POST['checks'] as $rid ) {
+                if ( !$rid = idval($rid) ) continue;
+                $SQL    = SQL::newUpdate('rule');
+                $SQL->addUpdate('rule_status', $status);
+                $SQL->addWhereOpr('rule_id', $rid);
+                $SQL->addWhereOpr('rule_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+
+                ACMS_RAM::rule($rid, null);
+            }
+        }
+
+        return $this->Post;
+    }
+}

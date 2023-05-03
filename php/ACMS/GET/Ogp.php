@@ -25,26 +25,19 @@ class ACMS_GET_Ogp extends ACMS_GET
         $this->glue = config('ogp_title_delimiter', ' | ');
         $vars = array(
             'title' => $this->getTitle(),
-            'image' => $this->getImage(),
             'description' => $this->getDescription(),
             'keywords' => $this->getKeywords(),
             'type' => $this->getType(),
         );
 
-        if ($vars['image']) {
-            if ($size = Storage::getImageSize(MEDIA_LIBRARY_DIR. $vars['image'])) {
-                $vars = array_merge($vars, array (
-                    'image@x' => $size[0],
-                    'image@y' => $size[1],
-                    'image@type' => 'media',
-                ));
-            } else if ($size = Storage::getImageSize(ARCHIVES_DIR. $vars['image'])) {
-                $vars = array_merge($vars, array (
-                    'image@x' => $size[0],
-                    'image@y' => $size[1],
-                    'image@type' => 'image',
-                ));
-            }
+        $imageData = $this->getImage();
+        if ($imageData) {
+            $vars = array_merge($vars, array (
+                'image' => $imageData['path'],
+                'image@x' => $imageData['width'],
+                'image@y' => $imageData['height'],
+                'image@type' => $imageData['type'],
+            ));
         }
 
         return $Tpl->render($vars);
@@ -151,6 +144,18 @@ class ACMS_GET_Ogp extends ACMS_GET
         return false;
     }
 
+    protected function getSize($str, $type = 'width')
+    {
+        if (preg_match('/[^x]+x[^x]+/', $str)) {
+            list($x, $y) = explode('x', $str);
+            if ($type === 'width') {
+                return intVal(trim($x));
+            }
+            return intVal(trim($y));
+        }
+        return '';
+    }
+
     /**
      * @return bool|string
      */
@@ -162,8 +167,26 @@ class ACMS_GET_Ogp extends ACMS_GET
         $field_name = config('ogp_image_entry_field_name', false);
         if (!empty($field_name)) {
             $field = loadEntryField(EID);
+            if ($mediaId = $field->get($field_name . '@media')) {
+                if ($media = Media::getMedia($mediaId)) {
+                    if ($media['type'] === 'image' || $media['type'] === 'svg') {
+                        return [
+                            'type' => 'media',
+                            'width' => $this->getSize($media['size'], 'width'),
+                            'height' => $this->getSize($media['size'], 'height'),
+                            'path' => $media['path'],
+                        ];
+                    }
+                }
+            }
             if ($image = $field->get($field_name . '@path')) {
-                return $image;
+                list($width, $height) = Storage::getImageSize(ARCHIVES_DIR . $image);
+                return [
+                    'type' => 'image',
+                    'width' => $width,
+                    'height' => $height,
+                    'path' => $image,
+                ];
             }
         }
         if (config('ogp_image_unit_image_not_use') === 'true') {
@@ -177,10 +200,23 @@ class ACMS_GET_Ogp extends ACMS_GET
                 $type = detectUnitTypeSpecifier($unit['column_type']);
                 if ($type === 'media') {
                     if ($media = Media::getMedia($unit['column_field_1'])) {
-                        return $media['path'];
+                        if ($media['type'] === 'image' || $media['type'] === 'svg') {
+                            return [
+                                'type' => 'media',
+                                'width' => $this->getSize($media['size'], 'width'),
+                                'height' => $this->getSize($media['size'], 'height'),
+                                'path' => $media['path'],
+                            ];
+                        }
                     }
                 } else {
-                    return $unit['column_field_2'];
+                    list($width, $height) = Storage::getImageSize(ARCHIVES_DIR. $unit['column_field_2']);
+                    return [
+                        'type' => 'image',
+                        'width' => $width,
+                        'height' => $height,
+                        'path' => $unit['column_field_2'],
+                    ];
                 }
             }
         }
@@ -198,8 +234,26 @@ class ACMS_GET_Ogp extends ACMS_GET
         $field_name = config('ogp_image_category_field_name', false);
         if (!empty($field_name)) {
             $field = loadCategoryField(CID);
+            if ($mediaId = $field->get($field_name . '@media')) {
+                if ($media = Media::getMedia($mediaId)) {
+                    if ($media['type'] === 'image' || $media['type'] === 'svg') {
+                        return [
+                            'type' => 'media',
+                            'width' => $this->getSize($media['size'], 'width'),
+                            'height' => $this->getSize($media['size'], 'height'),
+                            'path' => $media['path'],
+                        ];
+                    }
+                }
+            }
             if ($image = $field->get($field_name . '@path')) {
-                return $image;
+                list($width, $height) = Storage::getImageSize(ARCHIVES_DIR . $image);
+                return [
+                    'type' => 'image',
+                    'width' => $width,
+                    'height' => $height,
+                    'path' => $image,
+                ];
             }
         }
         return false;
@@ -217,8 +271,26 @@ class ACMS_GET_Ogp extends ACMS_GET
         $field_name = config('ogp_image_blog_field_name', false);
         if (!empty($field_name)) {
             $field = loadBlogField($bid);
+            if ($mediaId = $field->get($field_name . '@media')) {
+                if ($media = Media::getMedia($mediaId)) {
+                    if ($media['type'] === 'image' || $media['type'] === 'svg') {
+                        return [
+                            'type' => 'media',
+                            'width' => $this->getSize($media['size'], 'width'),
+                            'height' => $this->getSize($media['size'], 'height'),
+                            'path' => $media['path'],
+                        ];
+                    }
+                }
+            }
             if ($image = $field->get($field_name . '@path')) {
-                return $image;
+                list($width, $height) = Storage::getImageSize(ARCHIVES_DIR . $image);
+                return [
+                    'type' => 'image',
+                    'width' => $width,
+                    'height' => $height,
+                    'path' => $image,
+                ];
             }
         }
         return false;
@@ -455,11 +527,11 @@ class ACMS_GET_Ogp extends ACMS_GET
      */
     protected function getRootBlogTitle()
     {
-        $parent = loadAncestorBlog('parent', 'id');
-        if (empty($parent)) {
+        $root = loadAncestorBlog('root', 'id');
+        if (empty($root) || $root == BID) {
             return false;
         }
-        return $this->getBlogTitle(intval($parent));
+        return $this->getBlogTitle(intval($root));
     }
 
     /**

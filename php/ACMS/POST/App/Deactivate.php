@@ -1,59 +1,47 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-FKblW8xtjvkqLdu=
+<?php
+
+class ACMS_POST_App_Deactivate extends ACMS_POST
+{
+    public function post()
+    {
+        $appClassName = $this->Post->get('class_name');
+        if ( !sessionWithAdministration() ) die;
+
+        /**
+         * @var ACMS_App $App
+         */
+        $App = new $appClassName();
+
+        try {
+            $App->deactivate();
+
+            $DB = DB::singleton(dsn());
+            $SQL = SQL::newSelect('app');
+            $SQL->addWhereOpr('app_name', get_class($App));
+            $SQL->addWhereOpr('app_blog_id', BID);
+            
+            if ( $row = $DB->query($SQL->get(dsn()), 'one') ) {
+                $SQL = SQL::newUpdate('app');
+                $SQL->addUpdate('app_status',  'off');
+                $SQL->addupdate('app_activate_datetime', date('Y-m-d H:i:s'));
+                $SQL->addWhereOpr('app_name', get_class($App));
+                $SQL->addWhereOpr('app_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+            } else {
+                $SQL = SQL::newInsert('app');
+                $SQL->addInsert('app_name',    get_class($App));
+                $SQL->addInsert('app_version', $App->version);
+                $SQL->addInsert('app_status',  'off');
+                $SQL->addInsert('app_activate_datetime', date('Y-m-d H:i:s'));
+                $SQL->addInsert('app_blog_id', BID);
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+
+            $this->Post->set('deactivateSucceed', true);
+        } catch(Exception $e) {
+            $this->Post->set('deactivateFailed', true);
+        }
+
+        return $this->Post;
+    }
+}

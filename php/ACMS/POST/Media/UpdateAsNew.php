@@ -1,106 +1,90 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-IjizUgLynH6L
+<?php
+
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Media;
+
+class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
+{
+    public function post()
+    {
+        try {
+            if (!Media::validate()) {
+                throw new \RuntimeException('You are not authorized to upload media.');
+            }
+            $mid = $this->Get->get('_mid', false);
+            $Media = $this->extract('media');
+            if (empty($mid)) {
+                $Media->setMethod('media', 'operable', false);
+            }
+            $Media->validate(new ACMS_Validator_Media());
+            if (!$this->Post->isValidAll()) {
+                throw new \RuntimeException('You are not authorized to upload media.');
+            }
+            $tags = $Media->get('media_label');
+            $oldData = Media::getMedia($mid);
+
+            if (isset($_FILES[$this->uploadFieldName])) {
+                $name = $Media->get('file_name');
+                $info = Media::getBaseInfo($_FILES[$this->uploadFieldName], $tags, $name);
+                $replaced = $Media->get('replaced') === 'true';
+                if (Media::isImageFile($info['type'])) {
+                    $_FILES[$this->uploadFieldName]['name'] = $name;
+                    $data = Media::uploadImage($this->uploadFieldName, $replaced);
+                    if ($replaced) {
+                        $data['original'] = otherSizeImagePath($data['path'],'large');
+                    }
+                } else if (Media::isSvgFile($info['type'])) {
+                    $data = Media::uploadSvg($info['size'], $this->uploadFieldName);
+                } else {
+                    $data = Media::uploadFile($info['size'], $this->uploadFieldName);
+                }
+                $data['upload_date'] = $oldData['upload_date'];
+            } else {
+                if (in_array($oldData['type'], array('file', 'svg'))) {
+                    $data = array_merge($oldData, Media::copyFiles($mid));
+                } else {
+                    $data = array_merge($oldData, Media::copyImages($mid));
+                }
+            }
+            // pdf thumbnail
+            if (isset($_FILES['media_pdf_thumbnail'])) {
+                $res = Media::uploadPdfThumbnail('media_pdf_thumbnail');
+                if (isset($res['path'])) {
+                    $data['thumbnail'] = $res['path'];
+                }
+            }
+            $data['update_date'] = date('Y-m-d H:i:s', REQUEST_TIME);
+            $data['status'] = $Media->get('status');
+            $data['field_1'] = $Media->get('field_1');
+            $data['field_2'] = $Media->get('field_2');
+            $data['field_3'] = $Media->get('field_3');
+            $data['field_4'] = $Media->get('field_4');
+            if ($Media->get('focal_x') && $Media->get('focal_y')) {
+                $data['field_5'] = $Media->get('focal_x') . ',' . $Media->get('focal_y');
+            } else {
+                $data['field_5'] = '';
+            }
+            if ($pdfPage = $Media->get('pdf_page')) {
+                $data['field_6'] = $pdfPage;
+            } else {
+                $data['field_6'] = '';
+            }
+            $mid = DB::query(SQL::nextval('media_id', dsn()), 'seq');
+            Media::insertMedia($mid, $data, BID);
+            Media::saveTags($mid, $tags, BID);
+
+            $data = Media::getMedia($mid);
+            $tags = Media::getMediaLabel($mid);
+            $json = Media::buildJson($mid, $data, $tags, BID);
+            $json['status'] = 'success';
+            Common::responseJson($json);
+
+        } catch (\Exception $e) {
+            Common::responseJson(array(
+                'status' => 'failure',
+                'message' => $e->getMessage(),
+            ));
+        }
+        die();
+    }
+}

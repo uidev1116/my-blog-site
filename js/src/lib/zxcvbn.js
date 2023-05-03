@@ -8,9 +8,9 @@ export default (item) => {
 
   input.addEventListener('input', () => {
     const result = zxcvbn(input.value);
-    meter.className = meter.className.replace(new RegExp('\\bjs-result-\\S+', 'gi'), ' ');
+    meter.className = meter.className.replace(/\bjs-label-\S+/gi, ' ');
     meter.className += ` js-result-${result.score}`;
-    label.className = label.className.replace(new RegExp('\\bjs-label-\\S+', 'gi'), ' ');
+    label.className = label.className.replace(/\bjs-label-\S+/gi, ' ');
 
     if (input.value) {
       label.innerHTML = message[result.score];

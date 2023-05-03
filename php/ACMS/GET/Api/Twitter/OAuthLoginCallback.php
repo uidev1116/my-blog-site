@@ -10,13 +10,13 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
     {
         $this->getAuthSession('tw_request', 'tw_blog_id', 'tw_user_id');
 
-        $Session    = ACMS_Session::singleton();
-        $Config     = Config::loadBlogConfigSet(BID);
-        $code       = $this->Get->get('oauth_verifier');
+        $session = Session::handle();
+        $Config = Config::loadBlogConfigSet(BID);
+        $code = $this->Get->get('oauth_verifier');
 
         // token check
         if ( 0
-            || $Session->get('tw_token') !== $this->Get->get('oauth_token')
+            || $session->get('tw_token') !== $this->Get->get('oauth_token')
             || empty($this->auth_type)
             || !in_array($this->auth_type, array('login', 'signup', 'addition'))
         ) {
@@ -28,13 +28,14 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
         $this->api = new Services_Twitter(
             $Config->get('twitter_sns_login_consumer_key'),
             $Config->get('twitter_sns_login_consumer_secret'),
-            $Session->get('tw_token'),
-            $Session->get('tw_secret'),
+            $session->get('tw_token'),
+            $session->get('tw_secret'),
             'request'
         );
 
         // clear session
-        $Session->clear();
+        $session->delete('tw_token');
+        $session->delete('tw_secret');
 
         $access_token = $this->api->getAcsToken(array('oauth_verifier' => $code));
         $this->twid   = $access_token['user_id'];
@@ -48,7 +49,6 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
         } else if ( $this->auth_type === 'addition' ) {
             $url = $this->addition();
         }
-
         redirect($url);
     }
 
@@ -63,9 +63,8 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
             $this->loginFailed('login=failed');
             return false;
         }
-
-        $sid        = generateSession($user);   // generate session id
-        $bid        = intval($user['user_blog_id']);
+        generateSession($user);   // generate session id
+        $bid = intval($user['user_blog_id']);
         $login_bid  = BID;
 
         if ( 1
@@ -78,7 +77,6 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
         return acmsLink(array(
             'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
             'bid'           => $login_bid,
-            'sid'           => $sid,
             'query'         => array(),
         ));
     }
@@ -121,12 +119,11 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
         }
 
         // generate session id
-        $sid = generateSession($all[0]);
+        generateSession($all[0]);
 
         return acmsLink(array(
             'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
             'bid'           => $this->auth_bid,
-            'sid'           => $sid,
             'query'         => array(),
         ), false);
     }
@@ -167,6 +164,7 @@ class ACMS_GET_Api_Twitter_OAuthLoginCallback extends ACMS_GET_Api_Twitter
             $SQL->addUpdate('user_twitter_id', $this->twid);
             $SQL->addWhereOpr('user_id', $this->auth_uid);
             $DB->query($SQL->get(dsn()), 'exec');
+            ACMS_RAM::user($this->auth_uid, null);
         }
 
         return acmsLink(array(

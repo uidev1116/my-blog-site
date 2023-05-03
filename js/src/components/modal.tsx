@@ -4,29 +4,31 @@ import classnames from 'classnames';
 import { hasClass } from '../lib/dom';
 
 interface ModalProp {
-  onClose: Function,
-  isOpen: boolean,
-  style?: CSSProperties,
-  footer?: ReactNode,
-  title: ReactNode,
-  dialogStyle: CSSProperties,
-  dialogClassName?: string,
-  header?: ReactNode,
-  lastFocus?: boolean,
-  noFocus?: boolean,
-  className: string,
-  tabContentScrollable: boolean
+  onClose: () => void;
+  isOpen: boolean;
+  style?: CSSProperties;
+  footer?: ReactNode;
+  title: ReactNode;
+  dialogStyle: CSSProperties;
+  dialogClassName?: string;
+  header?: ReactNode;
+  lastFocus?: boolean;
+  noFocus?: boolean;
+  className: string;
+  tabContentScrollable?: boolean;
 }
 
 export default class Modal extends Component<ModalProp> {
-  modal: HTMLDivElement;
+  modal: HTMLDivElement | null;
+
   closeBtn: HTMLButtonElement;
+
   root: HTMLElement;
 
   static defaultProps = {
     noFocus: false,
-    dialogClassName: "acms-admin-modal-dialog",
-    tabContentScrollable: false
+    dialogClassName: 'acms-admin-modal-dialog',
+    tabContentScrollable: false,
   };
 
   constructor(props) {
@@ -60,39 +62,59 @@ export default class Modal extends Component<ModalProp> {
 
   render() {
     const {
-      children, isOpen, onClose, style, footer, title, 
-      dialogStyle, header, className, tabContentScrollable, dialogClassName
+      children,
+      isOpen,
+      onClose,
+      style,
+      footer,
+      title,
+      dialogStyle,
+      header,
+      className,
+      tabContentScrollable,
+      dialogClassName,
     } = this.props;
     const display = isOpen ? 'block' : 'none';
 
     return ReactDOM.createPortal(
       <div // eslint-disable-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-        className={classnames("acms-admin-modal display", className)}
-        style={Object.assign({}, style, { display })}
+        className={classnames('acms-admin-modal display', className)}
+        style={{ ...style, display }}
         onClick={this.backdropClicked.bind(this)}
         role="dialog"
-        ref={(modal) => { this.modal = modal; }}
+        ref={(modal) => {
+          this.modal = modal;
+        }}
       >
         <div className={dialogClassName} style={dialogStyle}>
           <div className="acms-admin-modal-content">
-            {!header &&
-            <div className="acms-admin-modal-header">
-              <button type="button"className="acms-admin-modal-hide acms-admin-icon-delete" onClick={onClose} ref={(closeBtn: HTMLButtonElement) => { this.closeBtn = closeBtn; }} />
-              {title}
-            </div>
-            }
+            {!header && (
+              <div className="acms-admin-modal-header">
+                <button
+                  type="button"
+                  className="acms-admin-modal-hide acms-admin-icon-delete"
+                  onClick={onClose}
+                  ref={(closeBtn: HTMLButtonElement) => {
+                    this.closeBtn = closeBtn;
+                  }}
+                  aria-label="閉じる"
+                />
+                {title}
+              </div>
+            )}
             {header}
-            <div className={classnames("acms-admin-modal-body", {
-              "acms-admin-modal-body-tab-scrollable": tabContentScrollable
-            })}>
+            <div
+              className={classnames('acms-admin-modal-body', {
+                'acms-admin-modal-body-tab-scrollable': tabContentScrollable,
+              })}
+            >
               {children}
             </div>
-            {footer && <div className="acms-admin-modal-footer">
-                {footer}
-              </div>}
+            {footer && <div className="acms-admin-modal-footer">{footer}</div>}
           </div>
         </div>
-      </div>, this.root
+      </div>,
+      this.root,
     );
   }
 }

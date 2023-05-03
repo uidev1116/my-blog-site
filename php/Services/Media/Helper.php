@@ -147,7 +147,8 @@ class Helper
         if ($original) {
             $size['large'] = 99999;
         }
-        $data = createImages($size, MEDIA_LIBRARY_DIR, $fieldName, false, null, true);
+        $isRamdomFileName = config('media_image_ramdom_filename', 'off') === 'on';
+        $data = createImages($size, MEDIA_LIBRARY_DIR, $fieldName, $isRamdomFileName, null, true);
         $data['extension'] = $data['type'];
         $data['type'] = 'image';
         $data['name'] = Storage::mbBasename($data['path']);
@@ -193,6 +194,9 @@ class Helper
         $edited = MEDIA_LIBRARY_DIR . $path;
         $original = MEDIA_LIBRARY_DIR . otherSizeImagePath($path, 'large');
         Storage::remove($edited);
+        if (Storage::exists($edited . '.webp')) {
+            Storage::remove($edited . '.webp');
+        }
         if ($dirname = dirname($edited)) {
             $dirname .= '/';
         }
@@ -204,6 +208,9 @@ class Helper
                     continue;
                 }
                 Storage::remove($filename);
+                if (Storage::exists($filename . '.webp')) {
+                    Storage::remove($filename . '.webp');
+                }
                 if (HOOK_ENABLE) {
                     $Hook = ACMS_Hook::singleton();
                     $Hook->call('mediaDelete', $filename);
@@ -696,20 +703,23 @@ class Helper
         $useMediaField = array_unique($useMediaField);
         foreach ($useMediaField as $fd) {
             $sourceField = $Field->getArray($fd . '@media');
-            $nameAry = array();
-            $extensionAry = array();
-            $fileSizeAry = array();
-            $captionAry = array();
-            $linkAry = array();
-            $altAry = array();
-            $textAry = array();
-            $pathAry = array();
-            $thumbnailAry = array();
-            $pageAry = array();
-            $imageSizeAry = array();
-            $focalXAry = array();
-            $focalYAry = array();
-            $typeAry = array();
+            $nameAry = [];
+            $extensionAry = [];
+            $fileSizeAry = [];
+            $captionAry = [];
+            $linkAry = [];
+            $altAry = [];
+            $textAry = [];
+            $pathAry = [];
+            $thumbnailAry = [];
+            $pageAry = [];
+            $imageSizeAry = [];
+            $widthAry = [];
+            $heightAry = [];
+            $ratioAry = [];
+            $focalXAry = [];
+            $focalYAry = [];
+            $typeAry = [];
 
             foreach ($sourceField as $i => $mid) {
                 if (isset($mediaList[$mid])) {
@@ -734,6 +744,20 @@ class Helper
                         $focalPoint = $media['media_field_5'];
                         $tmpFocalX = '';
                         $tmpFocalY = '';
+                        $width = '';
+                        $height = '';
+                        $ratio = '';
+
+                        if ($media['media_image_size']) {
+                            list($w, $h) = explode('x', $media['media_image_size']);
+                            $w = intval(trim($w), 10);
+                            $h = intval(trim($h), 10);
+                            if ($w > 0 && $h > 0) {
+                                $width = $w;
+                                $height = $h;
+                                $ratio = $w / $h;
+                            }
+                        }
                         if (strpos($focalPoint, ',') !== false) {
                             list($focalX, $focalY) = explode(',', $focalPoint);
                             if ($focalX && $focalY) {
@@ -743,12 +767,18 @@ class Helper
                         }
                         $focalXAry[] = $tmpFocalX;
                         $focalYAry[] = $tmpFocalY;
+                        $widthAry[] = $width;
+                        $heightAry[] = $height;
+                        $ratioAry[] = $ratio;
                     } else if ($type === 'svg') {
                         $pathAry[] = $path;
                         $thumbnailAry[] = $this->getSvgThumbnail($path);
                         $imageSizeAry[] = '';
                         $focalXAry[] = '';
                         $focalYAry[] = '';
+                        $widthAry[] = '';
+                        $heightAry[] = '';
+                        $ratioAry[] = '';
                     } else if ($type === 'file') {
                         if (empty($media['media_status'])) {
                             $pathAry[] = $this->getFileOldPermalink($path, false);
@@ -763,6 +793,9 @@ class Helper
                         $imageSizeAry[] = '';
                         $focalXAry[] = '';
                         $focalYAry[] = '';
+                        $widthAry[] = '';
+                        $heightAry[] = '';
+                        $ratioAry[] = '';
                     }
                 } else {
                     $nameAry[] = '';
@@ -778,11 +811,12 @@ class Helper
                     $imageSizeAry[] = '';
                     $focalXAry[] = '';
                     $focalYAry[] = '';
+                    $widthAry[] = '';
+                    $heightAry[] = '';
+                    $ratioAry[] = '';
                     $typeAry[] = '';
                 }
-
             }
-
             $Field->setField($fd . '@name', $nameAry);
             $Field->setField($fd . '@extension', $extensionAry);
             $Field->setField($fd . '@fileSize', $fileSizeAry);
@@ -796,6 +830,9 @@ class Helper
             $Field->setField($fd . '@imageSize', $imageSizeAry);
             $Field->addField($fd . '@focalX', $focalXAry);
             $Field->addField($fd . '@focalY', $focalYAry);
+            $Field->addField($fd . '@width', $widthAry);
+            $Field->addField($fd . '@height', $heightAry);
+            $Field->addField($fd . '@ratio', $ratioAry);
             $Field->addField($fd . '@type', $typeAry);
         }
     }

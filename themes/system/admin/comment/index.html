@@ -8,37 +8,39 @@
 	</div>
 </header>
 
-<!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->コメントが見つかりません<!--/T--></p><!-- END index#notFound --><!-- BEGIN refresh -->
+<!-- BEGIN refresh -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->コメント一覧を更新しました。<!--/T--></p><!-- END refresh -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
 	<form method="post" action="" class="acms-admin-form">
 		<div class="acms-admin-filter-body">
 			<div class="acms-admin-filter-group">
 				<p class="acms-admin-filter-label"><!--T-->検索条件<!--/T--></p>
 
-				<!-- BEGIN axis -->
-				<div class="acms-admin-inline-block acms-admin-margin-bottom-mini">
-					<span class="acms-admin-filter-item-name"><!--T-->階層<!--/T--></span>
-					<input type="hidden" name="axis" value="self" />
-					<div class="acms-admin-form-checkbox">
-						<input type="checkbox" name="axis" value="descendant-or-self"{axis:checked#descendant-or-self} id="input-checkbox-axis-descendant-or-self" />
-						<label for="input-checkbox-axis-descendant-or-self">
-							<i class="acms-admin-ico-checkbox"></i><!--T-->下階層ブログのコメントも表示する<!--/T-->
-						</label>
-					</div>
-				</div>
-				<!-- END axis -->
-				<div class="acms-admin-filter-item">
-					<label for="filter-status" class="acms-admin-filter-item-name"><!--T-->ステータス<!--/T--></label>
-					<select name="status" id="filter-status" class="js-select2">
-						<option value=""><!--T-->全てのステータス<!--/T--></option>
-						<option value="open"{status:selected#open}><!--T-->公開<!--/T--></option>
-						<option value="close"{status:selected#close}><!--T-->非公開<!--/T--></option>
-						<option value="approval"{status:selected#awaiting}><!--T-->承認待ち<!--/T--></option>
-					</select>
-				</div>
+        <div class="acms-admin-filter-content">
+          <!-- BEGIN axis -->
+          <div class="acms-admin-filter-item">
+            <span class="acms-admin-filter-item-name"><!--T-->階層<!--/T--></span>
+            <input type="hidden" name="axis" value="self" />
+            <div class="acms-admin-form-checkbox">
+              <input type="checkbox" name="axis" value="descendant-or-self"{axis:checked#descendant-or-self} id="input-checkbox-axis-descendant-or-self" />
+              <label for="input-checkbox-axis-descendant-or-self">
+                <i class="acms-admin-ico-checkbox"></i><!--T-->下階層ブログのコメントも表示する<!--/T-->
+              </label>
+            </div>
+          </div>
+          <!-- END axis -->
+          <div class="acms-admin-filter-item">
+            <label for="filter-status" class="acms-admin-filter-item-name"><!--T-->ステータス<!--/T--></label>
+            <select name="status" id="filter-status" class="js-select2">
+              <option value=""><!--T-->全てのステータス<!--/T--></option>
+              <option value="open"{status:selected#open}><!--T-->公開<!--/T--></option>
+              <option value="close"{status:selected#close}><!--T-->非公開<!--/T--></option>
+              <option value="approval"{status:selected#awaiting}><!--T-->承認待ち<!--/T--></option>
+            </select>
+          </div>
+        </div>
 			</div>
 			<div id="search-detail" style="display: none;">
 				<div class="acms-admin-filter-inner">
@@ -73,7 +75,23 @@
 		</div>
 	</form>
 </div><!-- /.acms-filter -->
+<!-- END_IF -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1/_and_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当するコメントが見つかりませんでした<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->検索内容に一致したコメントはありませんでした。<!--/T--></p>
+</div>
+<!-- ELSE -->
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->コメントはありません<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->このブログのエントリーにコメントはありません。<!--/T--></p>
+</div>
+<!-- END index#notFound -->
+<!-- END_IF -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 <!-- BEGIN form:veil -->
 <form method="post" action="" class="acms-admin-form">
 
@@ -162,4 +180,5 @@
 </div><!-- /.acms-grid -->
 
 </form><!-- END form:veil -->
+<!-- END_IF -->
 <!-- END_MODULE Admin_Comment_Index -->

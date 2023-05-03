@@ -36,18 +36,11 @@ $('.js-replacement_target').change(function(){
 	<!-- END_IF -->
 
 	<!-- BEGIN step -->
-	<div class="acms-admin-panel acms-admin-panel-info">
-		<div class="acms-admin-panel-header">
-			<!--T-->概要<!--/T-->
-		</div>
-		<div class="acms-admin-panel-body">
-			<!--T-->エントリータイトル、テキストユニット、カスタムフィールドで指定した文字を一括で変更します。<!--/T-->
-		</div>
-	</div>
+	<p><!--T-->エントリータイトル、テキストユニット、カスタムフィールドで指定した文字を一括で変更します。<!--/T--></p>
 
-	<div class="acms-admin-panel acms-admin-panel-danger">
+	<div class="acms-admin-panel acms-admin-margin-bottom-medium">
 		<div class="acms-admin-panel-header">
-			<!--T-->注意事項<!--/T-->
+      <h3 class="acms-admin-panel-title"><!--T-->注意事項<!--/T--></h3>
 		</div>
 		<div class="acms-admin-panel-body">
 			<!--T-->一括置換後は元に戻せませんので注意して実行ください。<!--/T-->
@@ -115,9 +108,9 @@ $('.js-replacement_target').change(function(){
 		<tr>
 			<th></th>
 			<td>
-				<input type="submit" name="ACMS_POST_Fix_Replacement_Confirm" value="<!--T-->チェック<!--/T-->" onclick="return confirm('<!--T-->変更箇所の確認を行います。最大100件表示されます。確認後,置換を実行してください。<!--/T-->');" class="acms-admin-btn-admin">
+				<input type="submit" name="ACMS_POST_Fix_Replacement_Confirm" value="<!--T-->確認してから置換<!--/T-->" onclick="return confirm('<!--T-->変更箇所の確認を行います。最大100件表示されます。確認後,置換を実行してください。<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save">
 
-				<input type="submit" name="ACMS_POST_Fix_Replacement_All" value="<!--T-->確認を行わず置換<!--/T-->" onclick="return confirm('<!--T-->データを置換します。この作業は元に戻せません。本当によろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-danger">
+				<input type="submit" name="ACMS_POST_Fix_Replacement_All" value="<!--T-->そのまま置換<!--/T-->" onclick="return confirm('<!--T-->データを置換します。この作業は元に戻せません。本当によろしいですか？<!--/T-->');" class="acms-admin-btn-admin ">
 			</td>
 		</tr>
 	</table>

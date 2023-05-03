@@ -3,7 +3,7 @@
 namespace Acms\Services\Preview;
 
 use Acms\Services\Preview\Contracts\Base;
-use ACMS_Session;
+use Session;
 use App;
 use DB;
 use SQL;
@@ -13,7 +13,7 @@ class Engine implements Base
     /**
      * PHPセッションラッパー
      *
-     * @var \ACMS_Session
+     * @var \Session
      */
     protected $session;
 
@@ -128,7 +128,13 @@ class Engine implements Base
         if (empty($url)) {
             return false;
         }
-        return $this->shareUrlFormat(REQUEST_URL) === $url || (is_ajax() && $this->shareUrlFormat(htmlspecialchars_decode(REFERER, ENT_QUOTES)) === $url);
+        $isPreview = $this->shareUrlFormat(REQUEST_URL) === $url || (is_ajax() && $this->shareUrlFormat(htmlspecialchars_decode(REFERER, ENT_QUOTES)) === $url);
+        if ($isPreview) {
+            $session = Session::handle();
+            $session->set('in-preview', REQUEST_TIME + (60 * 15));
+            $session->save();
+        }
+        return $isPreview;
     }
 
 
@@ -138,13 +144,15 @@ class Engine implements Base
      * @param string $url
      * @return string
      */
-    public function getShareUrl($url)
+    public function getShareUrl($url, $lifetime = false)
     {
         $token = uniqueString() . uniqueString();
-
+        if (empty($lifetime)) {
+            $lifetime = $this->lifetime;
+        }
         $SQL = SQL::newInsert('preview_share');
         $SQL->addInsert('preview_share_uri', $this->shareUrlFormat($url));
-        $SQL->addInsert('preview_share_expire', date('Y-m-d H:i:s', REQUEST_TIME + $this->lifetime));
+        $SQL->addInsert('preview_share_expire', date('Y-m-d H:i:s', REQUEST_TIME + $lifetime));
         $SQL->addInsert('preview_share_token', $token);
         DB::query($SQL->get(dsn()), 'exec');
 
@@ -245,9 +253,7 @@ class Engine implements Base
             return $this->session;
         }
         if (sessionWithContribution() || ACMS_POST === 'Preview_Mode' || isset($_GET['acms-preview-mode'])) {
-            $this->session = ACMS_Session::singleton(array(
-                'sess_storage' => 'acms_preview',
-            ));
+            $this->session = Session::handle();
             return $this->session;
         }
         return false;

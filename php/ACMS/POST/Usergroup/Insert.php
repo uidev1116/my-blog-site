@@ -1,54 +1,45 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Usergroup_Insert extends ACMS_POST_Usergroup
+{
+    function post()
+    {
+        $Usergroup = $this->extract('usergroup');
+        $Usergroup->setMethod('name', 'required');
+        $Usergroup->setMethod('name', 'double');
+        $Usergroup->setMethod('role_id', 'required');
+        $Usergroup->setMethod('usergroup', 'operable', sessionWithEnterpriseAdministration() and BID === RBID );
+
+        $Usergroup->validate(new ACMS_Validator_Usergroup());
+
+        if ( $this->Post->isValidAll() ) {
+            $DB     = DB::singleton(dsn());
+
+            //------
+            // ugid
+            $ugid   = $DB->query(SQL::nextval('usergroup_id', dsn()), 'seq');
+
+            //-----------
+            // usergroup
+            $SQL    = SQL::newInsert('usergroup');
+            $SQL->addInsert('usergroup_id', $ugid);
+            foreach ( $Usergroup->listFields() as $key ) {
+                if ( $key !== 'user_list' ) {
+                    $SQL->addInsert('usergroup_'.$key, $Usergroup->get($key));
+                }
+            }
+            $DB->query($SQL->get(dsn()), 'exec');
+
+            //-----------
+            // user list
+            foreach ($Usergroup->getArray('user_list') as $uid ) {
+                $SQL    = SQL::newInsert('usergroup_user');
+                $SQL->addInsert('usergroup_id', $ugid);
+                $SQL->addInsert('user_id', $uid);
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+            $this->Post->set('edit', 'insert');
+        }
+        return $this->Post;
+    }
+}

@@ -1,6 +1,6 @@
 import ResizeImage from './lib/resize-image/util';
 
-const parseQuery = (query: string): { [key:string]: string } => {
+const parseQuery = (query: string): { [key: string]: string } => {
   const s = query.split('&');
   const data = {};
   const iz = s.length;
@@ -12,12 +12,12 @@ const parseQuery = (query: string): { [key:string]: string } => {
   for (; i < iz; i++) {
     param = s[i].split('=');
     if (param[0] !== undefined) {
-      key = param[0];
-      value = (param[1] !== undefined) ? param.slice(1).join('=') : key;
+      key = param[0]; // eslint-disable-line prefer-destructuring
+      value = param[1] !== undefined ? param.slice(1).join('=') : key;
       try {
         data[key] = decodeURIComponent(value);
       } catch (e) {
-        console.log(e);
+        console.log(e); // eslint-disable-line no-console
       }
     }
   }
@@ -26,7 +26,7 @@ const parseQuery = (query: string): { [key:string]: string } => {
 
 const getParameterByName = (name: string, query: string): string => {
   const search = query || location.search;
-  name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]'); // eslint-disable-line no-useless-escape
   const regex = new RegExp(`[\\?&]${name}=([^&#]*)`);
   const results = regex.exec(search);
   try {
@@ -36,7 +36,11 @@ const getParameterByName = (name: string, query: string): string => {
   }
 };
 
-const addListener = (name: string, listener: EventListener, dom: HTMLElement | HTMLDocument): void => {
+const addListener = (
+  name: string,
+  listener: EventListener,
+  dom: HTMLElement | HTMLDocument,
+): void => {
   dom = dom || document;
 
   // non-IE
@@ -48,6 +52,7 @@ const addListener = (name: string, listener: EventListener, dom: HTMLElement | H
     dom.documentElement.attachEvent('onpropertychange', function (event) {
       if (event.propertyName === name) {
         listener();
+        // eslint-disable-next-line no-restricted-properties
         dom.documentElement.detachEvent('onpropertychange', arguments.callee);
       }
     });
@@ -126,21 +131,33 @@ const PerfectFormData = (dom: HTMLFormElement, dataUrlClass: string): FormData =
   return formData;
 };
 
-const getScrollTop = () => {
-  return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-}
+const getScrollTop = () => window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-const getScrollLeft = () => {
-  return window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
-}
+const getScrollLeft = () => window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
 
-const getOffset = el => {
+const getOffset = (el) => {
   const rect = el.getBoundingClientRect();
   return {
     top: rect.top + getScrollTop(),
-    left: rect.left + getScrollLeft()
-  }
-}
+    left: rect.left + getScrollLeft(),
+  };
+};
 
-export { parseQuery, getParameterByName, addListener, dispatchEvent, PerfectFormData, getOffset };
+/**
+ * RFC 3986 に基づいてURLエンコードを行う
+ * https://www.rfc-editor.org/rfc/rfc3986
+ */
+const encodeUri = (str: string): string => encodeURIComponent(str).replace(
+  /[!'()*]/g,
+  (match) => `%${match.charCodeAt(0).toString(16)}`,
+);
 
+export {
+  parseQuery,
+  getParameterByName,
+  addListener,
+  dispatchEvent,
+  PerfectFormData,
+  getOffset,
+  encodeUri,
+};

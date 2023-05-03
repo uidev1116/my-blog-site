@@ -1,0 +1,59 @@
+@use "../global/common" as global;
+
+// 文字のトリム
+.acms-text-ellipsis-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.acms-text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// テーブルセルのとき
+.acms-text-ellipsis-table-cell {
+  max-width: 1px;
+}
+
+.acms-module-title-sub {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+}
+
+.acms-module-title-main {
+  display: block;
+  clear: both;
+  margin: 0 0 15px 0;
+
+  .acms-module-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+}
+
+// ソースコード
+pre .linenums {
+  margin: 0;
+  padding-left: 30px;
+  font-family: global.$acms-code-font-family;
+}
+pre .linenums li {
+  line-height: 1.5;
+}
+
+
+// ------------------------------
+// acms-admin-title2
+// ------------------------------
+.acms-admin-title2 {
+  clear: both;
+  padding: 0;
+}
+
+.acms-admin-title2.acms-margin-top-medium {
+  margin-top: 10px;
+}
+

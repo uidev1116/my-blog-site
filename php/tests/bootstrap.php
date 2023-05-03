@@ -1,49 +1,48 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-YW==
+<?php
+
+require __DIR__ . "/../vendor/autoload.php";
+
+spl_autoload_register(function ($name) {
+    // e.g. ACMS_GET
+    $classPath = implode(DIRECTORY_SEPARATOR, explode('_', $name)) . '.php';
+
+    // e.g. Tests\Services\Update\DatabaseInfoTest
+    $classPath2 = str_replace('\\', DIRECTORY_SEPARATOR, $name);
+    $classPath2 = preg_replace('/^(Tests|Acms)(\/|\\\)/', '', $classPath2) . '.php';
+
+    $filePath = __DIR__ . '/' . $classPath;
+    $testPath = __DIR__ . '/' . $classPath2;
+    $acmsPath = __DIR__ . '/../' . $classPath2;
+
+    if ( is_readable($filePath) ) {
+        require_once $filePath;
+    } else if ( is_readable($testPath) ) {
+        require_once $testPath;
+    } else if ( is_readable($acmsPath) ) {
+        require_once $acmsPath;
+    }
+});
+
+/**
+ * App
+ */
+$phpDir = __DIR__ . '/../';
+
+define('REQUEST_TIME', time());
+define('START_TIME', microtime(true));
+
+require_once $phpDir . '../../../config.server.php';
+require_once $phpDir . 'config/app.php';
+require_once $phpDir . 'config/polyfill.php';
+
+$path = substr(__FILE__, 0, strlen(__FILE__) - strlen('php/tests/bootstrap.php')) . 'index.php';
+setPath($path, 'index.php');
+spl_autoload_register('autoload');
+
+/**
+ * application
+ */
+$config = appConfig();
+$acms_application = new Acms\Application();
+$acms_application->init($config['aliases'], $config['providers']);
+

@@ -8,10 +8,10 @@
 	</div>
 </header>
 
-<!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->フォームIDがありません。<!--/T--></p><!-- END index#notFound --><!-- BEGIN refresh -->
+<!-- BEGIN refresh -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->フォームID一覧を更新しました<!--/T--></p><!-- END refresh -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
 	<form action="" method="post" class="acms-admin-form">
 		<div class="acms-admin-filter-body">
@@ -43,17 +43,40 @@
 		</div>
 	</form>
 </div>
+<!-- END_IF -->
 
+
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->フォームIDがありません<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->機能を使用するには新しくフォームIDを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <div class="acms-admin-clear">
+      <div class="acms-admin-form-group">
+        <form action="" method="post" class="acms-admin-float-none-sp">
+          <input type="hidden" name="bid" value="%{BID}" />
+          <input type="hidden" name="admin" value="form_edit" />
+          <input type="hidden" name="edit" value="insert" />
+          <input type="hidden" name="query[]" value="edit" />
+          <input type="submit" name="ACMS_POST_2GET" value="<!--T-->フォームIDを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END index#notFound -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 <div class="acms-admin-clear">
-	<div class="acms-admin-form-group  js-acms_fix_marker acms-admin-position-right acms-admin-fix-right">
-		<form action="" method="post" class="acms-admin-float-right acms-admin-float-none-sp">
-			<input type="hidden" name="bid" value="%{BID}" />
-			<input type="hidden" name="admin" value="form_edit" />
-			<input type="hidden" name="edit" value="insert" />
-			<input type="hidden" name="query[]" value="edit" />
-			<input type="submit" name="ACMS_POST_2GET" value="<!--T-->フォームIDを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
-		</form>
-	</div>
+  <div class="acms-admin-form-group  js-acms_fix_marker acms-admin-position-right acms-admin-fix-right">
+    <form action="" method="post" class="acms-admin-float-right acms-admin-float-none-sp">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="form_edit" />
+      <input type="hidden" name="edit" value="insert" />
+      <input type="hidden" name="query[]" value="edit" />
+      <input type="submit" name="ACMS_POST_2GET" value="<!--T-->フォームIDを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+    </form>
+  </div>
 </div>
 
 <!-- BEGIN index -->
@@ -107,4 +130,5 @@
 	</div>
 </div>
 <!-- END index -->
+<!-- END_IF -->
 <!-- END_MODULE Admin_Form_Index -->

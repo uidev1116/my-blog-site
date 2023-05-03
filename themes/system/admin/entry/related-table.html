@@ -8,21 +8,7 @@
 	<!-- BEGIN relatedAdminField -->
 	<table class="js-fieldgroup-sortable adminTable acms-admin-table-sort acms-admin-margin-bottom-small">
 		<tbody class="js-related_entry_index"><!-- BEGIN {{block_name}} -->
-		<tr class="js-related_entry_item sortable-item" data-id="{related.eid}" data-title="{related.title}" data-category-name="{related.categoryName}" data-url="{related.url}" data-image="%{ROOT_DIR}{related.path}[resizeImg(50)]">
-			<td class="acms-admin-table-nowrap item-handle"><i class="acms-admin-icon-sort"　aria-hidden="true"></i></td>
-			<td><!-- BEGIN_IF [{related.path}/nem/] -->
-				<img src="%{ROOT_DIR}{related.path}[resizeImg(50)]" alt="{related.title}" /><!-- END_IF -->
-			</td>
-			<td>
-				<input type="hidden" name="related[]" value="{related.eid}">
-				{related.title}<!-- BEGIN_IF [{related.categoryName}/nem] --> / <span
-				class="acms-admin-icon-category acms-admin-icon-mute acms-admin-margin-right-mini"></span>{related.categoryName}
-				<!-- END_IF -->
-				<div class="entryFormRelatedActions">
-					<input type="button"　class="js-related_entry_remove acms-admin-btn-admin acms-admin-btn-admin-danger" value="<!--T-->削除<!--/T-->"/>
-					<a href="{related.url}" class="acms-admin-btn-admin" target="_blank"><!--T-->確認<!--/T--></a>
-				</div>
-			</td>
+		<tr class="js-related_entry_item sortable-item" data-id="{related.eid}" data-title="{related.title}" data-category-name="{related.categoryName}" data-url="{related.url}" data-image="<!-- BEGIN_IF [{related.path}/nem] -->%{ROOT_DIR}{related.path}[resizeImg(50)]<!-- ELSE -->/themes/system/images/placeholder/image-16-9.svg<!-- END_IF -->">
 		</tr><!-- END {{block_name}} -->
 		</tbody>
 		<tfoot></tfoot>

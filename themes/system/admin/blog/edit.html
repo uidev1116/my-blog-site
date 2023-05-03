@@ -49,7 +49,7 @@
 		<div class="acms_fix_bg_index">
 			<!-- BEGIN submit#insert -->
 			<div class="acms-admin-inline-block acms-admin-margin-bottom-mini">
-				<a href="%{SCRIPT_ROOT}bid/%{BID}/admin/blog_edit/" class="acms-admin-btn-admin"><!--T-->戻る<!--/T--></a>
+				<a href="%{HTTP_ROOT}bid/%{BID}/admin/blog_edit/" class="acms-admin-btn-admin"><!--T-->戻る<!--/T--></a>
 			</div>
 			<div class="acms-admin-inline-block acms-admin-margin-bottom-mini">
 				<input type="submit" name="ACMS_POST_Blog_Insert" value="<!--T-->作成<!--/T-->"
@@ -306,8 +306,7 @@
 							<input class="js-geo_input acms-admin-btn" type="button" data-type="add"/>
 							<!-- END_IF -->
 						</div>
-						<!-- BEGIN_IF [<!-- BEGIN_MODULE Config -->{geolocation_map_type}<!-- END_MODULE Config -->
-						/eq/gmap] -->
+						<!-- BEGIN_IF [<!-- BEGIN_MODULE Config -->{geolocation_map_type}<!-- END_MODULE Config -->/eq/gmap] -->
 						@include("/admin/map/_google-map-picker.html")
 						<!-- ELSE -->
 						@include("/admin/map/_open-street-map-picker.html")

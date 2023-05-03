@@ -2,27 +2,25 @@
 
 namespace Acms\Services\Mailer;
 
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 use Storage;
 use Common;
-use Swift;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_Attachment;
-use Swift_SmtpTransport;
-use Swift_SendmailTransport;
 use RuntimeException;
 use Acms\Services\Mailer\Contracts\MailerInterface;
-use Acms\Services\Facades\Process;
 
 class Engine implements MailerInterface
 {
     /**
-     * @var \Swift_Mailer
+     * @var \Symfony\Component\Mailer\Mailer
      */
     protected $mailer;
 
     /**
-     * @var \Swift_Message
+     * @var \Symfony\Component\Mime\Email
      */
     protected $message;
 
@@ -62,16 +60,10 @@ class Engine implements MailerInterface
     protected $attachedFiles = array();
 
     /**
-     * @var bool
-     */
-    protected static $isIso2022Jp = false;
-
-    /**
      * Mailer Engine constructor.
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -84,103 +76,38 @@ class Engine implements MailerInterface
         $transport = null;
         $config = Common::mailConfig();
 
-        $this->allowRfcViolation(); // RFC違反メールアドレスの許可
-
-        if ( !empty($config['smtp-host']) ) {
+        if (!empty($config['smtp-host'])) {
             // smtp
             $host = $config['smtp-host'];
             $port = empty($config['smtp-port']) ? '25' : $config['smtp-port'];
-            $user = $config['smtp-user'];
-            $passwd = $config['smtp-pass'];
+            $user = urlencode($config['smtp-user']);
+            $passwd = urlencode($config['smtp-pass']);
 
-            $transport = Swift_SmtpTransport::newInstance($host, $port);
-            switch ( config('mail_smtp-use-ssl') ) {
-                case 'ssl':
-                    $transport->setEncryption('ssl');
-                    break;
-                case 'tls':
-                    $transport->setEncryption('tls');
-                    break;
-                case 'starttls';
-                    $transport->setEncryption('tls');
-                    $transport->setStreamOptions(array(
-                        'ssl' => array(
-                            'allow_self_signed' => true,
-                            'verify_peer' => false
-                        )
-                    ));
-                    break;
-                default:
-                    break;
-            }
-            switch ( config('mail_smtp-auth-mode') ) {
-                case 'plain':
-                    $transport->setAuthMode('plain');
-                    break;
-                case 'login':
-                    $transport->setAuthMode('login');
-                    break;
-                case 'cram-md5':
-                    $transport->setAuthMode('cram-md5');
-                    break;
-                default:
-                    break;
-            }
-            if ( !empty($user) ) {
-                $transport->setUsername($user);
-            }
-            if ( !empty($passwd) ) {
-                $transport->setPassword($passwd);
-            }
-
-        } else if ( !empty($config['sendmail_path']) ) {
+            $transport = Transport::fromDsn("smtp://$user:$passwd@$host:$port");
+        } else if (!empty($config['sendmail_path'])) {
             // sendmail
-            $path = $config['sendmail_path'];
-            $transport = Swift_SendmailTransport::newInstance($path);
-
+            $transport = Transport::fromDsn('native://default');
         }
-        if ( !empty($config['mail_from']) ) {
+        if (!empty($config['mail_from'])) {
             $this->returnPath = $config['mail_from'];
         }
-        if ( !$transport ) {
+        if (!$transport) {
             throw new RuntimeException('Failed to initialize mailer.');
         }
-        $this->setMailer(Swift_Mailer::newInstance($transport));
+        $this->setMailer(new Mailer($transport));
 
         return $this;
     }
 
     /**
-     * @param \Swift_Mailer $mailer
+     * @param \Symfony\Component\Mailer\Mailer $mailer
      *
      * @return void
      */
-    public function setMailer(Swift_Mailer $mailer)
+    public function setMailer(Mailer $mailer)
     {
         $this->mailer = $mailer;
-        $this->message = Swift_Message::newInstance();
-    }
-
-    /**
-     * iso-2022-jpで送信するように設定（デフォルトUTF-8）
-     *
-     * @return self
-     */
-    public function setEncoderIso2022Jp()
-    {
-        Swift::init(
-            function () {
-                // 日本語に関する初期設定 (ISO 2022)
-                // @link http://qiita.com/inouet/items/900a7241ab543f7d6ea7
-                \Swift_DependencyContainer::getInstance()
-                    ->register('mime.qpheaderencoder')
-                    ->asAliasOf('mime.base64headerencoder');
-                \Swift_Preferences::getInstance()->setCharset('iso-2022-jp');
-            }
-        );
-        self::$isIso2022Jp = true;
-
-        return $this;
+        $this->message = new Email();
     }
 
     /**
@@ -200,7 +127,7 @@ class Engine implements MailerInterface
      */
     public function setSubject($subject)
     {
-        $this->message->setSubject($subject);
+        $this->message->subject($subject);
 
         return $this;
     }
@@ -214,26 +141,9 @@ class Engine implements MailerInterface
      */
     public function setBody($body)
     {
-        if ( self::$isIso2022Jp ) {
-            $body = $this->charReplace($body, 'iso-2022-jp');
-        }
-        $this->body = $body;
-        $this->message->setBody($body, 'text/plain');
+        $this->message->text($body);
 
         return $this;
-    }
-
-    public function charReplace($contents, $to)
-    {
-        $charset = strtolower($to);
-        $path = SCRIPT_DIR . config('const_mail_convert_dir') . $charset . '.php';
-
-        if ( Storage::exists($path) ) {
-            $const  = array();
-            include $path;
-            $contents   = str_replace(array_keys($const), array_values($const), $contents);
-        }
-        return $contents;
     }
 
     /**
@@ -246,11 +156,10 @@ class Engine implements MailerInterface
      */
     public function setHtml($html, $plain = null)
     {
-        $this->html = $html;
-        if ( !empty($plain) ) {
+        if (!empty($plain)) {
             $this->setBody($plain);
         }
-        $this->message->addPart($html, 'text/html');
+        $this->message->html($html);
 
         return $this;
     }
@@ -267,16 +176,14 @@ class Engine implements MailerInterface
      */
     public function attach($path, $filename = '')
     {
-        if ( !Storage::exists($path) ) {
+        if (!Storage::exists($path)) {
             throw new RuntimeException('Not found the attach file.');
         }
-        $attachment = Swift_Attachment::fromPath($path);
-
-        if ( !empty($filename) ) {
-            $attachment->setFilename($filename)
-                ->setContentType(mime_content_type($path));
+        if (!empty($filename)) {
+            $this->message->attachFromPath($path, $filename, mime_content_type($path));
+        } else {
+            $this->message->attachFromPath($path);
         }
-        $this->message->attach($attachment);
         $this->attachedFiles[] = $path;
 
         return $this;
@@ -305,7 +212,7 @@ class Engine implements MailerInterface
     {
         $ary = $this->parseAddress($to);
 
-        foreach ( $ary as $email ) {
+        foreach ($ary as $email) {
             $email = is_array($email) ? $email : array($email);
             $this->to = array_merge($this->to, $email);
         }
@@ -336,7 +243,7 @@ class Engine implements MailerInterface
     {
         $ary = $this->parseAddress($cc);
 
-        foreach ( $ary as $email ) {
+        foreach ($ary as $email) {
             $email = is_array($email) ? $email : array($email);
             $this->cc = array_merge($this->cc, $email);
         }
@@ -367,7 +274,7 @@ class Engine implements MailerInterface
     {
         $ary = $this->parseAddress($bcc);
 
-        foreach ( $ary as $email ) {
+        foreach ($ary as $email) {
             $email = is_array($email) ? $email : array($email);
             $this->bcc = array_merge($this->bcc, $email);
         }
@@ -384,10 +291,7 @@ class Engine implements MailerInterface
      */
     public function setFrom($from)
     {
-        $ary = $this->parseAddress($from);
-        if ( isset($ary[0]) && !empty($ary[0]) ) {
-            $this->from = $ary[0];
-        }
+        $this->from = $from;
 
         return $this;
     }
@@ -401,10 +305,7 @@ class Engine implements MailerInterface
      */
     public function setReplyTo($reply_to)
     {
-        $ary = $this->parseAddress($reply_to);
-        if ( isset($ary[0]) && !empty($ary[0]) ) {
-            $this->replyTo = $ary[0];
-        }
+        $this->replyTo = $reply_to;
 
         return $this;
     }
@@ -419,59 +320,32 @@ class Engine implements MailerInterface
      */
     public function send($background = 'default')
     {
-        if ($background === 'default') {
-            $background = config('send_email_asynchronous') === 'on';
-        }
-        if ( empty($this->to) ) {
+        if (empty($this->to)) {
             throw  new RuntimeException('\'to\' fields is empty.');
         }
-        if ( empty($this->from) ) {
+        if (empty($this->from)) {
             throw  new RuntimeException('\'from\' fields is empty.');
         }
         $this->message
-            ->setFrom($this->from)
-            ->setTo($this->to);
+            ->from($this->from)
+            ->to(...$this->to)
+            ->priority(Email::PRIORITY_HIGH);
 
-        if ( !empty($this->cc) ) {
-            $this->message->setCc($this->cc);
+        if (!empty($this->cc)) {
+            $this->message->cc(...$this->cc);
         }
-        if ( !empty($this->bcc) ) {
-            $this->message->setBcc($this->bcc);
+        if (!empty($this->bcc)) {
+            $this->message->bcc(...$this->bcc);
         }
-        if ( !empty($this->replyTo) ) {
-            $this->message->setReplyTo($this->replyTo);
+        if (!empty($this->replyTo)) {
+            $this->message->replyTo($this->replyTo);
         }
-        if ( !empty($this->returnPath) ) {
-            $this->message->setReturnPath($this->returnPath);
+        if (!empty($this->returnPath)) {
+            $this->message->returnPath($this->returnPath);
         }
-        if ( self::$isIso2022Jp ) {
-            $this->message->setCharset('iso-2022-jp')
-                ->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'))
-                ->setMaxLineLength(0);
-        }
-        if ( $background === true ) {
-            $manager = Process::newProcessManager();
-            $mailer = $this->mailer;
-            $message = $this->message;
-            $attachedFiles = $this->attachedFiles;
-            $manager->addTask(function () use ($mailer, $message, $attachedFiles) {
-                $result = $mailer->send($message);
-                foreach ($attachedFiles as $path) {
-                    Storage::remove($path);
-                }
-                if ( $result < 1 ) {
-                    throw new RuntimeException('Failed to send messages.');
-                }
-            });
-            $manager->run();
-        } else {
-            $result = $this->mailer->send($this->message);
-            foreach ($this->attachedFiles as $path) {
-                Storage::remove($path);
-            }
-            if ( $result < 1 ) {
-                throw new RuntimeException('Failed to send messages.');
-            }
+        $this->mailer->send($this->message);
+        foreach ($this->attachedFiles as $path) {
+            Storage::remove($path);
         }
         return $this;
     }
@@ -483,7 +357,7 @@ class Engine implements MailerInterface
      */
     public function getMessage()
     {
-        if ( $this->message ) {
+        if ($this->message) {
             return $this->message->toString();
         }
 
@@ -503,19 +377,19 @@ class Engine implements MailerInterface
             return str_replace(',', ':acms-delimiter:', $matches[0]);
         }, $txt);
 
-        if ( empty($txt) ) {
+        if (empty($txt)) {
             return array();
         }
         $emails = preg_split('/,/', $txt);
 
-        array_walk($emails, function (& $value) {
+        array_walk($emails, function (&$value) {
             $value = trim($value);
             $value = str_replace(':acms-delimiter:', ',', $value);
 
-            if ( preg_match('/^("?[^\"]+"?\s+)?<?([^>]+)>?$/', $value, $matches) ) {
+            if (preg_match('/^("?[^\"]+"?\s+)?<?([^>]+)>?$/', $value, $matches)) {
                 $email = $matches[2];
                 $label = trim($matches[1], " \t\n\r\0\x0B\"");
-                if ( empty($label) ) {
+                if (empty($label)) {
                     $value = array($email);
                 } else {
                     $value = array($email => $label);
@@ -523,25 +397,13 @@ class Engine implements MailerInterface
             }
         });
 
-        $emails = array_filter($emails, function($email) {
-            if ( empty($email) ) {
+        $emails = array_filter($emails, function ($email) {
+            if (empty($email)) {
                 return false;
             }
             return true;
         });
 
         return $emails;
-    }
-
-    /**
-     * RFC違反のメールアドレスの許可
-     *
-     * @return void
-     */
-    protected function allowRfcViolation()
-    {
-        \Swift_DependencyContainer::getInstance()
-            ->register('mime.grammar')
-            ->asSharedInstanceOf('Acms\Services\Mailer\SwiftGrammar');
     }
 }

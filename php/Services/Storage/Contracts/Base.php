@@ -54,7 +54,7 @@ abstract class Base
     {
         $tmp = preg_split('/[\/\\\\]/', $path);
         $res = end($tmp);
-        if ( strlen($suffix) ) {
+        if ($suffix && strlen($suffix)) {
             $suffix = preg_quote($suffix);
             $res = preg_replace("/({$suffix})$/u", "", $res);
         }

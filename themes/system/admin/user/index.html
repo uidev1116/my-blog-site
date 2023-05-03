@@ -11,9 +11,7 @@
 
 <!-- BEGIN refresh -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-	<button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ユーザー一覧を更新しました。<!--/T--></p><!-- END refresh --><!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span>
-	<button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ユーザーがありません。<!--/T--></p><!-- END index#notFound --><!-- BEGIN user:validator#limit -->
+	<button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->ユーザー一覧を更新しました。<!--/T--></p><!-- END refresh --><!-- BEGIN user:validator#limit -->
 <p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
 	<span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
 	<!--T-->ユーザー作成数の上限に達しているため、現在お使いのライセンスでは以下の操作を行えません。<!--/T--><br>
@@ -23,6 +21,7 @@
 	<button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
 </p><!-- END user:validator#limit -->
 
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
 	<form action="" method="post" class="acms-admin-form">
 		<div class="acms-admin-filter-body">
@@ -31,7 +30,7 @@
 
 				<div class="acms-admin-filter-content acms-admin-filter-content-fit">
 					<div class="acms-admin-filter-item">
-						<label for="filter-author" class="acms-admin-filter-item-name"><!--T-->カテゴリー<!--/T--></label>
+						<label for="filter-author" class="acms-admin-filter-item-name"><!--T-->権限<!--/T--></label>
 						<select name="auth" id="filter-author" class="js-select2">
 							<option value=""><!--T-->全ての権限<!--/T--></option>
 							<option value="administrator" {auth:selected#administrator}><!--T-->管理者<!--/T--></option>
@@ -121,6 +120,47 @@
 		</div>
 	</form>
 </div>
+<!-- END_IF -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1/_and_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当するユーザーが見つかりませんでした<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->検索内容に一致したユーザー情報はありませんでした。<br>再検索または新規ユーザーを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <div class="js-fake-form" data-method="post">
+      <input type="hidden" name="bid" value="%{BID}">
+      <input type="hidden" name="admin" value="user_edit">
+      <input type="hidden" name="edit" value="insert">
+      <input type="hidden" name="query[]" value="edit">
+      <input type="hidden" name="step" value="reapply">
+      <input type="hidden" name="query[]" value="step">
+      <input type="hidden" name="ACMS_POST_2GET" value="Create User"/>
+      <button class="js-submit acms-admin-btn acms-admin-btn-success"><!--T-->ユーザー作成<!--/T--></button>
+    </div>
+  </div>
+</div>
+<!-- ELSE -->
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->このブログにはユーザー情報がありません<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->機能を使用するには新しくユーザーを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <div class="js-fake-form" data-method="post">
+      <input type="hidden" name="bid" value="%{BID}">
+      <input type="hidden" name="admin" value="user_edit">
+      <input type="hidden" name="edit" value="insert">
+      <input type="hidden" name="query[]" value="edit">
+      <input type="hidden" name="step" value="reapply">
+      <input type="hidden" name="query[]" value="step">
+      <input type="hidden" name="ACMS_POST_2GET" value="Create User"/>
+      <button class="js-submit acms-admin-btn acms-admin-btn-success"><!--T-->ユーザー作成<!--/T--></button>
+    </div>
+  </div>
+</div>
+<!-- END index#notFound -->
+<!-- END_IF -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 
 <form method="post" action="" id="sortableForm" class="acms-admin-form">
 	<div class="js-acms-tab-select clearfix js-acms_fix_marker">
@@ -178,7 +218,13 @@
 				<th class="acms-admin-table-nowrap">ID</th>
 				<th><!--T-->ユーザー名<!--/T--> / <!--T-->ユーザーID<!--/T--> / <!--T-->メールアドレス<!--/T--></th>
 				<th><!--T-->エントリー数<!--/T--></th>
-				<th class="acms-admin-table-nowrap"><!--T-->権限<!--/T--></th>
+				<th class="acms-admin-table-nowrap">
+					<!--T-->権限<!--/T-->
+					<i
+						class="acms-admin-icon acms-admin-icon-tooltip js-acms-tooltip js-acms-tooltip-hover"
+						data-acms-tooltip="ロールが設定されているユーザーは括弧内にロールを考慮しない場合の権限が表示されます。"
+					></i>
+				</th>
 				<th class="acms-admin-table-nowrap"><!--T-->ステータス<!--/T--></th>
 				<th class="acms-admin-table-nowrap"><!--T-->アクション<!--/T--></th>
 			</tr>
@@ -202,11 +248,18 @@
 					</div>
 				</td>
 				<td><span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->エントリー数：<!--/T--></span>{amount}</td>
-				<td class="acms-admin-table-nowrap"><span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->権限：<!--/T--></span><!-- BEGIN auth#administrator -->
+				<td class="acms-admin-table-nowrap"><span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->権限：<!--/T--></span>
+					<!-- BEGIN auth#administrator -->
 					<!--T-->管理者<!--/T--><!-- END auth#administrator --><!-- BEGIN auth#editor -->
 					<!--T-->編集者<!--/T--><!-- END auth#editor --><!-- BEGIN auth#contributor -->
 					<!--T-->投稿者<!--/T--><!-- END auth#contributor --><!-- BEGIN auth#subscriber -->
 					<!--T-->読者<!--/T--><!-- END auth#subscriber -->
+
+					<!-- BEGIN auth_default#administrator -->
+					<!--T-->（管理者）<!--/T--><!-- END auth_default#administrator --><!-- BEGIN auth_default#editor -->
+					<!--T-->(編集者)<!--/T--><!-- END auth_default#editor --><!-- BEGIN auth_default#contributor -->
+					<!--T-->(投稿者)<!--/T--><!-- END auth_default#contributor --><!-- BEGIN auth_default#subscriber -->
+					<!--T-->(読者)<!--/T--><!-- END auth_default#subscriber -->
 				</td>
 				<td class="acms-admin-text-center">
 					<span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->ステータス：<!--/T--></span><!-- BEGIN status#open -->
@@ -251,4 +304,5 @@
 		</div>
 	</div>
 </form>
+<!-- END_IF -->
 <!-- END_MODULE Admin_User_Index -->

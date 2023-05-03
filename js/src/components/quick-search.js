@@ -16,38 +16,38 @@ const styleValiableTable = Style.registerStyle({
   fontFamily: 'Consolas, Courier New ,Courier, monospace',
   height: '100%',
   h1: {
-    padding: '1em'
+    padding: '1em',
   },
   fieldset: {
     margin: '1em',
     border: '2px solid gold',
-    backgroundColor: 'lightyellow'
+    backgroundColor: 'lightyellow',
   },
   'fieldset.loop': {
     border: '3px solid firebrick',
-    backgroundColor: 'snow'
+    backgroundColor: 'snow',
   },
   'fieldset.veil': {
     border: '2px dashed royalblue',
-    backgroundColor: 'whitesmoke'
+    backgroundColor: 'whitesmoke',
   },
   legend: {
     padding: '0.3em',
     fontWeight: 'bold',
     fontSize: 'x-large',
     border: '2px solid gold',
-    backgroundColor: 'lightyellow'
+    backgroundColor: 'lightyellow',
   },
   'legend.loop': {
     border: '3px solid firebrick',
-    backgroundColor: 'snow'
+    backgroundColor: 'snow',
   },
   'legend.veil': {
     border: '2px dashed royalblue',
-    backgroundColor: 'whitesmoke'
+    backgroundColor: 'whitesmoke',
   },
   'legend vars': {
-    display: 'inline'
+    display: 'inline',
   },
   var: {
     display: 'block',
@@ -57,36 +57,36 @@ const styleValiableTable = Style.registerStyle({
     fontWeight: 'bold',
     fontSize: 'large',
     border: '3px double black',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   'var.deprecated': {
-    color: 'gray'
+    color: 'gray',
   },
   'var.deprecated:after': {
-    content: '　※廃止予定'
+    content: '　※廃止予定',
   },
   'var span': {
     float: 'right',
     fontSize: '14px',
-    color: '#777'
+    color: '#777',
   },
   'legend span': {
     marginLeft: '20px',
     fontSize: '14px',
-    color: '#777'
+    color: '#777',
   },
   '.textLong': {
-    width: '420px'
+    width: '420px',
   },
   '.textTooLong': {
-    width: '520px'
-  }
+    width: '520px',
+  },
 });
 
 const styleQuickSearch = Style.registerStyle({
   '.acms-admin-modal': {
     fontSize: '13px',
-    backgroundColor: 'rgba(0,0,0,.5)'
+    backgroundColor: 'rgba(0,0,0,.5)',
   },
   '.acms-admin-form textarea': {
     width: '100%',
@@ -94,26 +94,26 @@ const styleQuickSearch = Style.registerStyle({
     fontFamily: 'Consolas,Courier New,Courier,monospace',
     margin: '0',
     height: '50%',
-    color: '#333'
+    color: '#333',
   },
   '.acms-admin-admin-title3': {
     margin: '0 0 10px',
     padding: '5px 10px',
     background: '#fff',
     color: '#333',
-    fontSize: '14px'
+    fontSize: '14px',
   },
   '.acms-admin-table-admin': {
     borderCollapse: 'collapse',
     borderSpacing: '0',
-    margin: '-10px 0 20px 0'
+    margin: '-10px 0 20px 0',
   },
   '.acms-admin-label': {
     marginRight: '5px',
     backgroundColor: '#5690d9',
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: '11px'
+    fontSize: '11px',
   },
   '.mainTitle': {
     textDecoration: 'none',
@@ -128,11 +128,11 @@ const styleQuickSearch = Style.registerStyle({
   },
   '.subTitle span': {
     color: '#666',
-    fontSize: '12px'
+    fontSize: '12px',
   },
   '.hover .acms-admin-label': {
     backgroundColor: '#FFF',
-    color: '#5690d9 !important'
+    color: '#5690d9 !important',
   },
   '.hover .mainTitle': {
     color: '#FFF',
@@ -149,12 +149,12 @@ const styleQuickSearch = Style.registerStyle({
     transition: 'auto',
     backgroundColor: '#fff',
     padding: '8px 5px',
-    lineHeight: '1.3'
+    lineHeight: '1.3',
   },
   '.acms-admin-modal-footer': {
     borderTop: '1px solid #CCC',
     margin: '0 -5px',
-    padding: '10px 0 0 0'
+    padding: '10px 0 0 0',
   },
   '.acms-admin-list-inline': {
     color: '#666',
@@ -169,7 +169,7 @@ const styleQuickSearch = Style.registerStyle({
   '.acms-admin-list-inline li strong': {
     background: '#eee',
     padding: '0 5px',
-    borderRadius: '2px'
+    borderRadius: '2px',
   },
   '.initial-mark': {
     width: '30px',
@@ -179,7 +179,7 @@ const styleQuickSearch = Style.registerStyle({
     borderRadius: '50px',
     backgroundColor: '#aaa',
     position: 'relative',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   '.initial-mark:after': {
     display: 'inline-block',
@@ -187,55 +187,55 @@ const styleQuickSearch = Style.registerStyle({
     marginLeft: '1px',
     content: '',
     color: '#FFF',
-    fontSize: '17px'
+    fontSize: '17px',
   },
   '.initial-b': {
-    backgroundColor: '#d2b8b8'
+    backgroundColor: '#d2b8b8',
   },
   '.initial-b:after': {
-    content: '\'B\'',
+    content: "'B'",
   },
   '.initial-c': {
-    backgroundColor: '#b8d2b8'
+    backgroundColor: '#b8d2b8',
   },
   '.initial-c:after': {
-    content: '\'C\''
+    content: "'C'",
   },
   '.initial-e': {
-    backgroundColor: '#b8ccd2'
+    backgroundColor: '#b8ccd2',
   },
   '.initial-e:after': {
-    content: '\'E\'',
+    content: "'E'",
   },
   '.initial-m': {
-    backgroundColor: '#c4b8d2'
+    backgroundColor: '#c4b8d2',
   },
   '.initial-m:after': {
-    content: '\'M\''
+    content: "'M'",
   },
   '.initial-m2': {
-    backgroundColor: '#9fbf91'
+    backgroundColor: '#9fbf91',
   },
   '.initial-m2:after': {
-    content: '\'M\''
+    content: "'M'",
   },
   '.initial-v': {
-    backgroundColor: '#b8d2c9'
+    backgroundColor: '#b8d2c9',
   },
   '.initial-v:after': {
-    content: '\'V\'',
+    content: "'V'",
   },
   '.initial-s': {
-    backgroundColor: '#b6c1da'
+    backgroundColor: '#b6c1da',
   },
   '.initial-s:after': {
-    content: '\'S\'',
+    content: "'S'",
   },
   '.initial-g': {
-    backgroundColor: '#adadad'
+    backgroundColor: '#adadad',
   },
   '.initial-g:after': {
-    content: '\'G\'',
+    content: "'G'",
   },
   '.customFieldCopied': {
     position: 'fixed',
@@ -250,11 +250,11 @@ const styleQuickSearch = Style.registerStyle({
     padding: '10px',
     width: '100%',
     zIndex: 2501,
-    transition: 'top .2s ease-in'
+    transition: 'top .2s ease-in',
   },
   '.customFieldCopied.active': {
-    top: 0
-  }
+    top: 0,
+  },
 });
 
 const styleElement = Style.getStyles();
@@ -274,7 +274,7 @@ export default class QuickSearch extends Component {
       isMacOs: navigator.userAgent.match(/Mac|PPC/),
       showModal: false,
       modalContent: '',
-      copied: false
+      copied: false,
     };
     this.currentItem = null;
     this.box = null;
@@ -300,11 +300,15 @@ export default class QuickSearch extends Component {
   componentDidMount() {
     const is = new IncrementalSearch();
 
-    is.addRequest(this.search, ACMS.Library.acmsLink({
-      bid: ACMS.Config.bid
-    }), (lists) => {
-      this.setState({ lists });
-    });
+    is.addRequest(
+      this.search,
+      ACMS.Library.acmsLink({
+        bid: ACMS.Config.bid,
+      }),
+      (lists) => {
+        this.setState({ lists });
+      },
+    );
 
     this.setDefinedLists();
 
@@ -327,7 +331,7 @@ export default class QuickSearch extends Component {
           display: 'none',
           showModal: false,
           keyword: '',
-          lists: []
+          lists: [],
         });
         this.search.focus();
       }
@@ -358,7 +362,7 @@ export default class QuickSearch extends Component {
 
   setDefinedLists() {
     const endpoint = `${ACMS.Library.acmsLink({
-      tpl: 'acms-code/all.json'
+      tpl: 'acms-code/all.json',
     })}?cache=${new Date().getTime()}`;
 
     const key = `acms_big_${ACMS.Config.bid}_quick_search_data`;
@@ -372,16 +376,19 @@ export default class QuickSearch extends Component {
       });
       this.setGlobalVars();
     } else {
-      axios.get(endpoint).then((res) => {
-        this.setState({
-          menus: res.data.menus,
-          snippets: res.data.snippets,
-          vars: res.data.vars,
+      axios
+        .get(endpoint)
+        .then((res) => {
+          this.setState({
+            menus: res.data.menus,
+            snippets: res.data.snippets,
+            vars: res.data.vars,
+          });
+          storage.save(key, res.data, 1800);
+        })
+        .then(() => {
+          this.setGlobalVars();
         });
-        storage.save(key, res.data, 1800);
-      }).then(() => {
-        this.setGlobalVars();
-      });
     }
   }
 
@@ -393,16 +400,16 @@ export default class QuickSearch extends Component {
       method: 'POST',
       url: window.location.href,
       responseType: 'json',
-      data: params
+      data: params,
     }).then((res) => {
       res.data.items.push({
         bid: ACMS.Config.bid,
         title: '\u0025{ROOT_TPL}',
         subtitle: ACMS.i18n('quick_search.root_tpl'),
-        url: ACMS.Config.rootTpl
+        url: ACMS.Config.rootTpl,
       });
       this.setState({
-        globalVars: res.data
+        globalVars: res.data,
       });
     });
   }
@@ -435,7 +442,7 @@ export default class QuickSearch extends Component {
         html = unescape(html);
         this.setState({
           showModal: true,
-          modalContent: html
+          modalContent: html,
         });
       });
     }
@@ -448,7 +455,7 @@ export default class QuickSearch extends Component {
         const html = parser.parseFromString(res.data, 'text/html');
         this.setState({
           showModal: true,
-          modalContent: html.body.innerHTML
+          modalContent: html.body.innerHTML,
         });
       });
     }
@@ -458,7 +465,7 @@ export default class QuickSearch extends Component {
     if (item) {
       copy(item.title);
       this.setState({
-        copied: true
+        copied: true,
       });
     }
   }
@@ -486,7 +493,10 @@ export default class QuickSearch extends Component {
 
     if (snippets && snippets.items && searchWord) {
       const items = snippets.items.filter((item) => {
-        if (item.title.toLowerCase().indexOf(searchWord) !== -1 || item.subtitle.toLowerCase().indexOf(searchWord) !== -1) {
+        if (
+          item.title.toLowerCase().indexOf(searchWord) !== -1
+          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+        ) {
           return true;
         }
         return false;
@@ -494,7 +504,7 @@ export default class QuickSearch extends Component {
       return {
         title: snippets.title,
         enTitle: snippets.enTitle,
-        items
+        items,
       };
     }
     return snippets;
@@ -506,7 +516,10 @@ export default class QuickSearch extends Component {
 
     if (vars && vars.items && searchWord) {
       const items = vars.items.filter((item) => {
-        if (item.title.toLowerCase().indexOf(searchWord) !== -1 || item.subtitle.toLowerCase().indexOf(searchWord) !== -1) {
+        if (
+          item.title.toLowerCase().indexOf(searchWord) !== -1
+          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+        ) {
           return true;
         }
         return false;
@@ -514,7 +527,7 @@ export default class QuickSearch extends Component {
       return {
         title: vars.title,
         enTitle: vars.enTitle,
-        items
+        items,
       };
     }
     return vars;
@@ -526,7 +539,10 @@ export default class QuickSearch extends Component {
 
     if (globalVars && globalVars.items && searchWord) {
       const items = globalVars.items.filter((item) => {
-        if (item.title.toLowerCase().indexOf(searchWord) !== -1 || item.subtitle.toLowerCase().indexOf(searchWord) !== -1) {
+        if (
+          item.title.toLowerCase().indexOf(searchWord) !== -1
+          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+        ) {
           return true;
         }
         return false;
@@ -534,7 +550,7 @@ export default class QuickSearch extends Component {
       return {
         title: globalVars.title,
         enTitle: globalVars.enTitle,
-        items
+        items,
       };
     }
     return globalVars;
@@ -555,7 +571,7 @@ export default class QuickSearch extends Component {
       return {
         title: menus.title,
         enTitle: menus.enTitle,
-        items
+        items,
       };
     }
     return menus;
@@ -583,7 +599,7 @@ export default class QuickSearch extends Component {
   setKeyword(keyword) {
     this.setState({
       keyword,
-      number: 0
+      number: 0,
     });
   }
 
@@ -593,7 +609,7 @@ export default class QuickSearch extends Component {
     this.setState({
       display: nextStyle,
       keyword: '',
-      lists: []
+      lists: [],
     });
     if (nextStyle === 'block') {
       this.search.focus();
@@ -609,7 +625,7 @@ export default class QuickSearch extends Component {
     }
     const nextNumber = number + 1 > maxNumber ? 0 : number + 1;
     this.setState({
-      number: nextNumber
+      number: nextNumber,
     });
   }
 
@@ -622,7 +638,7 @@ export default class QuickSearch extends Component {
     }
     const nextNumber = number - 1 < 0 ? maxNumber : number - 1;
     this.setState({
-      number: nextNumber
+      number: nextNumber,
     });
   }
 
@@ -665,7 +681,7 @@ export default class QuickSearch extends Component {
     const { keyword } = this.state;
     this.setState({
       showModal: false,
-      keyword: keyword.replace(/^(:|;)(.*)/g, '$1')
+      keyword: keyword.replace(/^(:|;)(.*)/g, '$1'),
     });
     this.search.focus();
   }
@@ -674,7 +690,7 @@ export default class QuickSearch extends Component {
     const { modalContent } = this.state;
     copy(modalContent);
     this.setState({
-      copied: true
+      copied: true,
     });
   }
 
@@ -703,7 +719,7 @@ export default class QuickSearch extends Component {
 
   render() {
     const {
-      display, number, isMacOs, showModal, modalContent, copied
+      display, number, isMacOs, showModal, modalContent, copied,
     } = this.state;
     const lists = this.getCombindLists();
     const mode = this.getMode();
@@ -724,23 +740,35 @@ export default class QuickSearch extends Component {
           <ACMSModal
             isOpen={showModal}
             onClose={this.handleCloseModal}
-            title={mode === 'snippets' ? <h3>{ACMS.i18n('quick_search.snippets')}</h3> : <h3>{ACMS.i18n('quick_search.vars')}</h3>}
-            lastFocus={mode === 'snippets'}
-            footer={
-              <div style={{ marginRight: '20px' }}>
-                <button onClick={this.handleCloseModal} className="acms-admin-btn">{ACMS.i18n('quick_search.close')}</button>
-                {mode === 'snippets' &&
-                  <button onClick={this.handleCopySnippet} className="acms-admin-btn">{ACMS.i18n('quick_search.copy')}</button>}
-              </div>
+            title={
+              mode === 'snippets' ? (
+                <h3>{ACMS.i18n('quick_search.snippets')}</h3>
+              ) : (
+                <h3>{ACMS.i18n('quick_search.vars')}</h3>
+              )
             }
+            lastFocus={mode === 'snippets'}
+            footer={(
+              <div style={{ marginRight: '20px' }}>
+                <button type="button" onClick={this.handleCloseModal} className="acms-admin-btn">
+                  {ACMS.i18n('quick_search.close')}
+                </button>
+                {mode === 'snippets' && (
+                  <button type="button" onClick={this.handleCopySnippet} className="acms-admin-btn">
+                    {ACMS.i18n('quick_search.copy')}
+                  </button>
+                )}
+              </div>
+            )}
           >
             <div className="acms-admin-form">
               <div style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-                {mode === 'snippets' ?
+                {mode === 'snippets' ? (
                   <textarea rows="10" value={modalContent} readOnly style={{ width: '100%', fontSize: '16px' }} />
-                  :
+                ) : (
+                  // eslint-disable-next-line react/no-danger
                   <div className={styleValiableTable} dangerouslySetInnerHTML={{ __html: modalContent }} />
-                }
+                )}
               </div>
             </div>
           </ACMSModal>
@@ -750,80 +778,144 @@ export default class QuickSearch extends Component {
                 <div className="acms-admin-form" style={{ paddingTop: '15px', paddingBottom: '15px' }}>
                   <input
                     type="text"
-                    ref={(ref) => { this.search = ref; }}
+                    ref={(ref) => {
+                      this.search = ref;
+                    }}
                     style={{ fontSize: '24px', fontWeight: 'bold' }}
                     placeholder={ACMS.i18n('quick_search.input_placeholder')}
                     className="acms-admin-form-width-full acms-admin-form-large acms-admin-margin-bottom-small"
-                    onInput={(e) => { this.setKeyword(e.target.value); }}
+                    onInput={(e) => {
+                      this.setKeyword(e.target.value);
+                    }}
                   />
                 </div>
-                <div ref={(element) => { this.box = element; }} className="acms-admin-modal-middle-scroll">
-                  {lists.map((list, listIndex) => (<div key={`label-${list.enTitle}`}>
-                    {list && list.items.length > 0 && <div>
-                      <h2 className="acms-admin-admin-title3" style={{ background: '#FFF' }}>{list.title}</h2>
-                      <table className="acms-admin-table-admin acms-admin-form acms-admin-table-hover">
-                        <tbody key={`body-${list.enTitle}`}>
-                          {list.items.map((item, index) => (
-                            <tr
-                              key={this.getNumber(listIndex, index)}
-                              ref={(element) => { if (this.getNumber(listIndex, index) === number) this.currentItem = element; }}
-                              onClick={this.handleClickEvent.bind(this, item)}
-                              onMouseMove={this.setNumber.bind(this, listIndex, index)}
-                              className={classnames({ hover: this.getNumber(listIndex, index) === number })}
-                            >
-                              <td style={{ width: '1px', wordBreak: 'break-all' }}>
-                                <div className={classnames('initial-mark', this.getInitialClassByName(list.enTitle))} />
-                              </td>
-                              <td>
-                                <a className="mainTitle" href={item.url}>{item.title}</a>
-                                <div className="subTitle">{item.subtitle} <span>&nbsp;&nbsp;{item.blogName}</span></div>
-                              </td>
-                              {mode !== 'normal' ? <td style={{ textAlign: 'right', wordBreak: 'break-all' }}>
-                                {mode === 'global-vars' && <span style={{ paddingRight: '10px' }}>{item.url}</span>}
-                              </td> :
-                                <td style={{ width: '1px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                                  {item.bid &&
-                                    <span className="acms-admin-label">bid: {item.bid}</span>}
-                                  {item.cid &&
-                                    <span className="acms-admin-label">cid: {item.cid}</span>}
-                                  {item.eid &&
-                                    <span className="acms-admin-label">eid: {item.eid}</span>}
-                                  {item.mid &&
-                                    <span className="acms-admin-label">mid: {item.mid}</span>}
-                                </td>}
-                            </tr>))}
-                        </tbody>
-                      </table>
+                <div
+                  ref={(element) => {
+                    this.box = element;
+                  }}
+                  className="acms-admin-modal-middle-scroll"
+                >
+                  {lists.map((list, listIndex) => (
+                    <div key={`label-${list.enTitle}`}>
+                      {list && list.items.length > 0 && (
+                        <div>
+                          <h2 className="acms-admin-admin-title3" style={{ background: '#FFF' }}>
+                            {list.title}
+                          </h2>
+                          <table className="acms-admin-table-admin acms-admin-form acms-admin-table-hover">
+                            <tbody key={`body-${list.enTitle}`}>
+                              {list.items.map((item, index) => (
+                                <tr
+                                  key={this.getNumber(listIndex, index)}
+                                  ref={(element) => {
+                                    if (this.getNumber(listIndex, index) === number) this.currentItem = element;
+                                  }}
+                                  onClick={this.handleClickEvent.bind(this, item)}
+                                  onMouseMove={this.setNumber.bind(this, listIndex, index)}
+                                  className={classnames({ hover: this.getNumber(listIndex, index) === number })}
+                                >
+                                  <td style={{ width: '1px', wordBreak: 'break-all' }}>
+                                    <div
+                                      className={classnames('initial-mark', this.getInitialClassByName(list.enTitle))}
+                                    />
+                                  </td>
+                                  <td>
+                                    <a className="mainTitle" href={item.url}>
+                                      {item.title}
+                                    </a>
+                                    <div className="subTitle">
+                                      {item.subtitle}
+                                      {' '}
+                                      <span>{item.blogName}</span>
+                                    </div>
+                                  </td>
+                                  {mode !== 'normal' ? (
+                                    <td style={{ textAlign: 'right', wordBreak: 'break-all' }}>
+                                      {mode === 'global-vars' && (
+                                        <span style={{ paddingRight: '10px' }}>{item.url}</span>
+                                      )}
+                                    </td>
+                                  ) : (
+                                    <td style={{ width: '1px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                                      {item.bid && (
+                                        <span className="acms-admin-label">
+                                          bid:
+                                          {item.bid}
+                                        </span>
+                                      )}
+                                      {item.cid && (
+                                        <span className="acms-admin-label">
+                                          cid:
+                                          {item.cid}
+                                        </span>
+                                      )}
+                                      {item.eid && (
+                                        <span className="acms-admin-label">
+                                          eid:
+                                          {item.eid}
+                                        </span>
+                                      )}
+                                      {item.mid && (
+                                        <span className="acms-admin-label">
+                                          mid:
+                                          {item.mid}
+                                        </span>
+                                      )}
+                                    </td>
+                                  )}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
                     </div>
-                    }
-                  </div>))}
+                  ))}
                 </div>
                 <div className="acms-admin-modal-footer">
                   <ul className="acms-admin-list-inline">
                     <li>
-                      <strong>tab</strong> or <strong>⇅</strong> {ACMS.i18n('quick_search.choice')}
+                      <strong>tab</strong>
+                      {' '}
+                      or
+                      <strong>⇅</strong>
+                      {' '}
+                      {ACMS.i18n('quick_search.choice')}
                     </li>
                     <li>
-                      <strong>↵</strong> {ACMS.i18n('quick_search.move')}
+                      <strong>↵</strong>
+                      {' '}
+                      {ACMS.i18n('quick_search.move')}
                     </li>
                     <li>
-                      <strong>esc</strong> {ACMS.i18n('quick_search.close')}
+                      <strong>esc</strong>
+                      {' '}
+                      {ACMS.i18n('quick_search.close')}
                     </li>
-                    {ACMS.Config.auth === 'administrator' && <Fragment>
-                      <li>
-                        <strong>{isMacOs ? <span>⌘K</span> :
-                          <span>ctl+k</span>}</strong> {ACMS.i18n('quick_search.open')}
-                      </li>
-                      <li>
-                        <strong>;</strong> {ACMS.i18n('quick_search.snippets')}
-                      </li>
-                      <li>
-                        <strong>:</strong> {ACMS.i18n('quick_search.vars')}
-                      </li>
-                      <li>
-                        <strong>%</strong> {ACMS.i18n('quick_search.g_vars')}
-                      </li>
-                    </Fragment>}
+                    {ACMS.Config.auth === 'administrator' && (
+                      <>
+                        <li>
+                          <strong>{isMacOs ? <span>⌘K</span> : <span>ctl+k</span>}</strong>
+                          {' '}
+                          {ACMS.i18n('quick_search.open')}
+                        </li>
+                        <li>
+                          <strong>;</strong>
+                          {' '}
+                          {ACMS.i18n('quick_search.snippets')}
+                        </li>
+                        <li>
+                          <strong>:</strong>
+                          {' '}
+                          {ACMS.i18n('quick_search.vars')}
+                        </li>
+                        <li>
+                          <strong>%</strong>
+                          {' '}
+                          {ACMS.i18n('quick_search.g_vars')}
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -836,7 +928,7 @@ export default class QuickSearch extends Component {
           show={copied}
           onFinish={() => {
             this.setState({
-              copied: false
+              copied: false,
             });
           }}
         />

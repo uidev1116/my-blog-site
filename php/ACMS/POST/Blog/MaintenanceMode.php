@@ -1,42 +1,28 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Blog_MaintenanceMode extends ACMS_POST_Blog
+{
+    function post()
+    {
+        $blog = $this->extract('blog');
+        $blog->setMethod('maintenance_mode', 'required');
+        $blog->setMethod('maintenance_mode', 'in', array('on', 'off'));
+        $blog->setMethod('blog', 'operable', sessionWithAdministration());
+        $blog->validate(new ACMS_Validator());
+
+        if ($this->Post->isValidAll()) {
+            if ($blog->get('maintenance_mode') === 'on') {
+                $mode = $blog->get('maintenance_http_status');
+            } else {
+                $mode = '';
+            }
+            $sql = SQL::newUpdate('blog');
+            $sql->setUpdate('blog_maintenance_mode', $mode);
+            $sql->addWhereOpr('blog_id', BID);
+            DB::query($sql->get(dsn()), 'exec');
+            ACMS_RAM::blog(BID, null);
+            ACMS_RAM::setBlogMaintenanceMode(BID, $mode);
+        }
+        return $this->Post;
+    }
+}

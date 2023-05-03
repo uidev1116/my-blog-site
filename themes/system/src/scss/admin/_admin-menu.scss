@@ -1,0 +1,84 @@
+@use "../global/common" as global;
+
+/* ------------------------------
+ メニュー管理
+------------------------------- */
+#js-admin-menu-edit {
+
+  // 列
+  .react-trello-lane {
+    background: #f0f1f5;
+  }
+
+  .react-trello-board .smooth-dnd-container {
+    margin-top: 0;
+  }
+
+  // ヘッダー
+  .react-trello-lane-sort {
+    margin: 0 5px 0 0;
+    @include global.font-size(10);
+  }
+  .react-trello-lane-title-inner {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    min-width: 100px;
+    min-height: 10px;
+  }
+  .react-trello-lane-title-edit {
+    display: none;
+  }
+  .react-trello-lane-title-inner:hover .react-trello-lane-title-edit {
+    display: inline;
+    margin: 0 0 0 10px;
+  }
+  .react-trello-lane-done-btn {
+    margin: 0 0 0 5px;
+  }
+
+  // 各カード
+  .react-trello-card {
+    margin: 1px 2px 7px 2px;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(0,0,0,.2);
+  }
+  .react-trello-card-item {
+    display: flex;
+  }
+  .react-trello-card-sort {
+    margin-top: 5px;
+    margin-right: 5px;
+    color: #666;
+    @include global.font-size(16);
+  }
+  .react-trello-card-edit-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+  .react-trello-card-icon {
+    margin-right: 5px;
+  }
+  .react-trello-card-title {
+    font-weight: bold;
+    @include global.font-size(13);
+    line-height: 2;
+  }
+  .react-trello-card-item-name {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: bold;
+    @include global.font-size(12);
+  }
+  .react-trello-card-add-btn {
+    float: right;
+  }
+  .react-trello-card-cancel-btn {
+    float: right;
+    margin-right: 5px;
+    text-decoration: none;
+  }
+}
+

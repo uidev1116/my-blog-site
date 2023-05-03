@@ -1,0 +1,31 @@
+@use "global/common" as global;
+
+/* ------------------------------
+ アナウンス
+------------------------------- */
+.acms-announce {
+  padding: 30px 15px 20px;
+  text-align: center;
+  background: global.$base-bg-light-gray;
+  border-radius: 10px;
+}
+
+.acms-announce-title {
+  margin: 0 0 15px 0;
+  @include global.font-size(18);
+}
+
+.acms-announce-text {
+  margin: 0 0 15px 0;
+}
+
+.acms-announce-action {
+  margin: 20px 0 0 0;
+}
+
+
+@media (min-width: global.$breakpoint-md-min) {
+  .acms-announce {
+    padding: 70px 15px 50px;
+  }
+}

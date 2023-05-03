@@ -17,18 +17,10 @@ class ACMS_GET_Touch_SwitchingUser extends ACMS_GET
      */
     protected function getOriginalUserId()
     {
-        DB::setThrowException(true);
-        try {
-            $SQL = SQL::newSelect('session');
-            $SQL->setSelect('session_original_user_id');
-            $SQL->addWhereOpr('session_id', ACMS_SID);
-            if ($uid = DB::query($SQL->get(dsn()), 'one')) {
-                return $uid;
-            }
-        } catch (\Exception $e) {
-
+        $session = Session::handle();
+        if ($uid = $session->get(ACMS_LOGIN_SESSION_ORGINAL_UIR)) {
+            return $uid;
         }
-        DB::setThrowException(false);
         return false;
     }
 }

@@ -8,14 +8,14 @@ export default (elm, hover) => {
     let $pos = {
       of: $of,
       at: 'center top',
-      my: 'center bottom-10'
+      my: 'center bottom-10',
     };
     switch ($position) {
       case 'right':
         $pos = {
           of: $of,
           at: 'right center',
-          my: 'left+10 center'
+          my: 'left+10 center',
         };
         $tooltip.addClass('right');
         break;
@@ -23,7 +23,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'left center',
-          my: 'right-10 center'
+          my: 'right-10 center',
         };
         $tooltip.addClass('left');
         break;
@@ -31,7 +31,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'center bottom',
-          my: 'center top+10'
+          my: 'center top+10',
         };
         $tooltip.addClass('bottom');
         break;
@@ -42,7 +42,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'right top',
-          my: 'right+8 bottom-10'
+          my: 'right+8 bottom-10',
         };
         $tooltip.addClass('top-left');
         break;
@@ -50,7 +50,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'left top',
-          my: 'left-8 bottom-10'
+          my: 'left-8 bottom-10',
         };
         $tooltip.addClass('top-right');
         break;
@@ -58,7 +58,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'right bottom',
-          my: 'right+8 top+10'
+          my: 'right+8 top+10',
         };
         $tooltip.addClass('bottom-left');
         break;
@@ -66,7 +66,7 @@ export default (elm, hover) => {
         $pos = {
           of: $of,
           at: 'left bottom',
-          my: 'left-8 top+10'
+          my: 'left-8 top+10',
         };
         $tooltip.addClass('bottom-right');
         break;
@@ -81,7 +81,6 @@ export default (elm, hover) => {
   } else if (hover === false) {
     $('.js-tooltip').remove();
   }
-
 
   if (hover === undefined) {
     $(document).unbind('click.tooltip');

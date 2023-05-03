@@ -1,25 +1,25 @@
 import * as React from 'react';
 import Board from '@appleple/react-trello';
+import { setIn } from 'immutable';
+import { createGlobalStyle } from 'styled-components';
 import AdminNewCard from './admin-new-card';
 import AdminCard from './admin-card';
 import AdminLaneHeader from './admin-lane-header';
 import { AdminCardLane, AdminCardProps } from '../types/admin-menu';
 import { random } from '../lib/utility';
-import { setIn } from 'immutable';
-import { createGlobalStyle } from 'styled-components';
 
 interface AdminMenuProps {
   data: {
-    lanes: AdminCardLane[]
-  }
+    lanes: AdminCardLane[];
+  };
 }
 
 interface AdminMenuState {
   data: {
-    lanes: AdminCardLane[]
-  },
-  showNotify: boolean,
-  firstEdit: boolean
+    lanes: AdminCardLane[];
+  };
+  showNotify: boolean;
+  firstEdit: boolean;
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -39,8 +39,8 @@ export default class AdminMenu extends React.Component<AdminMenuProps, AdminMenu
       data: props.data,
       showNotify: false,
       firstEdit: true,
-      didMount: false
-    }
+      didMount: false,
+    };
   }
 
   doneEdit = (item: AdminCardProps) => {
@@ -48,29 +48,31 @@ export default class AdminMenu extends React.Component<AdminMenuProps, AdminMenu
     const laneIndex = data.lanes.findIndex((lane) => lane.id === item.laneId);
     const newData = setIn(data, ['lanes', laneIndex, 'cards', item.index], item);
     this.onDataChange(newData);
-  }
+  };
 
   doneLaneEdit = (item: AdminCardLane) => {
     const { data } = this.state;
     const newData = setIn(data, ['lanes', item.index], item);
     this.onDataChange(newData);
-  }
+  };
 
   addLane = () => {
     const { data } = this.state;
     const { lanes } = data;
 
     this.onDataChange({
-      lanes: [lanes[0], {
-        id: random(),
-        draggable: true,
-        title: '新規',
-        cards: []
-      },
-      ...lanes.slice(1)
-      ]
+      lanes: [
+        lanes[0],
+        {
+          id: random(),
+          draggable: true,
+          title: '新規',
+          cards: [],
+        },
+        ...lanes.slice(1),
+      ],
     });
-  }
+  };
 
   removeLane = (id: string) => {
     const { data } = this.state;
@@ -79,15 +81,15 @@ export default class AdminMenu extends React.Component<AdminMenuProps, AdminMenu
     const lane = lanes[laneIndex];
     const { cards } = lane;
     if (cards.length) {
-      alert(ACMS.i18n("admin_menu.lane_alert"));
+      alert(ACMS.i18n('admin_menu.lane_alert'));
       return;
     }
-    if (confirm(ACMS.i18n("admin_menu.menu_remove_confirm"))) {
+    if (confirm(ACMS.i18n('admin_menu.menu_remove_confirm'))) {
       this.onDataChange({
-        lanes: [...lanes.slice(0, laneIndex), ...lanes.slice(laneIndex + 1)]
-      })
+        lanes: [...lanes.slice(0, laneIndex), ...lanes.slice(laneIndex + 1)],
+      });
     }
-  }
+  };
 
   onDataChange(data) {
     const { firstEdit, didMount } = this.state;
@@ -95,7 +97,7 @@ export default class AdminMenu extends React.Component<AdminMenuProps, AdminMenu
       this.setState({ data, didMount: true });
       return;
     }
-    const showNotify = firstEdit ? true : false;
+    const showNotify = !!firstEdit;
     if (showNotify) {
       $('.js-config-not-saved').addClass('active');
       this.setState({ data, firstEdit: false, showNotify });
@@ -105,68 +107,67 @@ export default class AdminMenu extends React.Component<AdminMenuProps, AdminMenu
   }
 
   render() {
-    const { data, showNotify } = this.state;
+    const { data } = this.state;
 
-    return (<>
-      <GlobalStyle />
-      <Board data={data}
-        draggable
-        editable
-        style={{border: '1px solid #F1F1F1', backgroundColor: '#FFF'}}
-        canAddLanes
-        addLaneTitle={ACMS.i18n("admin_menu.add_lane")}
-        addCardTitle={ACMS.i18n("admin_menu.add_title")}
-        hideCardDeleteIcon
-        newCardTemplate={<AdminNewCard />}
-        customLaneHeader={<AdminLaneHeader
-          doneEdit={this.doneLaneEdit}
-          addLane={this.addLane}
-          removeLane={this.removeLane}
-        />}
-        customCardLayout={true}
-        handleLaneDragStart={(laneId) => {
-          return false;
-        }}
-        onDataChange={(data) => {
-          this.onDataChange(data);
-        }}
-      >
-        <AdminCard doneEdit={this.doneEdit} />
-      </Board>
-      {data.lanes.map((lane) => {
-        return (<>
-          <input type="hidden" name="admin_menu_lane_title[]" value={lane.title} />
-          <input type="hidden" name="admin_menu_lane_id[]" value={lane.id} />
-          {lane.cards.map((card) => {
-            return(<>
-              <input type="hidden" name="admin_menu_card_title[]" value={card.title} />
-              <input type="hidden" name="admin_menu_card_url[]" value={card.url} />
-              <input type="hidden" name="admin_menu_card_laneid[]" value={lane.id} />
-              <input type="hidden" name="admin_menu_card_id[]" value={card.id} />
-              <input type="hidden" name="admin_menu_card_icon[]" value={card.icon} />
-              <input type="hidden" name="admin_menu_card_admin[]" value={`${card.admin}`} />
-            </>)
-          })}
-        </>)
-      })}
-      <input type="hidden" name="@admin_menu_lane_group[]" value="admin_menu_lane_title" />
-      <input type="hidden" name="config[]" value="admin_menu_lane_title" />
-      <input type="hidden" name="@admin_menu_lane_group[]" value="admin_menu_lane_id" />
-      <input type="hidden" name="config[]" value="admin_menu_lane_id" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_title" />
-      <input type="hidden" name="config[]" value="admin_menu_card_title" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_url" />
-      <input type="hidden" name="config[]" value="admin_menu_card_url" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_laneid" />
-      <input type="hidden" name="config[]" value="admin_menu_card_laneid" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_id" />
-      <input type="hidden" name="config[]" value="admin_menu_card_id" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_icon" />
-      <input type="hidden" name="config[]" value="admin_menu_card_icon" />
-      <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_admin" />
-      <input type="hidden" name="config[]" value="admin_menu_card_admin" />
-      <input type="hidden" name="config[]" value="@admin_menu_lane_group" />
-      <input type="hidden" name="config[]" value="@admin_menu_card_group" />
-    </>);
+    return (
+      <>
+        <GlobalStyle />
+        <Board
+          data={data}
+          draggable
+          editable
+          style={{ border: '1px solid #F1F1F1', backgroundColor: '#FFF' }}
+          canAddLanes
+          addLaneTitle={ACMS.i18n('admin_menu.add_lane')}
+          addCardTitle={ACMS.i18n('admin_menu.add_title')}
+          hideCardDeleteIcon
+          newCardTemplate={<AdminNewCard />}
+          customLaneHeader={
+            <AdminLaneHeader doneEdit={this.doneLaneEdit} addLane={this.addLane} removeLane={this.removeLane} />
+          }
+          customCardLayout
+          handleLaneDragStart={() => false}
+          onDataChange={(currentData) => {
+            this.onDataChange(currentData);
+          }}
+        >
+          <AdminCard doneEdit={this.doneEdit} />
+        </Board>
+        {data.lanes.map((lane) => (
+          <>
+            <input type="hidden" name="admin_menu_lane_title[]" value={lane.title} />
+            <input type="hidden" name="admin_menu_lane_id[]" value={lane.id} />
+            {lane.cards.map((card) => (
+              <>
+                <input type="hidden" name="admin_menu_card_title[]" value={card.title} />
+                <input type="hidden" name="admin_menu_card_url[]" value={card.url} />
+                <input type="hidden" name="admin_menu_card_laneid[]" value={lane.id} />
+                <input type="hidden" name="admin_menu_card_id[]" value={card.id} />
+                <input type="hidden" name="admin_menu_card_icon[]" value={card.icon} />
+                <input type="hidden" name="admin_menu_card_admin[]" value={`${card.admin}`} />
+              </>
+            ))}
+          </>
+        ))}
+        <input type="hidden" name="@admin_menu_lane_group[]" value="admin_menu_lane_title" />
+        <input type="hidden" name="config[]" value="admin_menu_lane_title" />
+        <input type="hidden" name="@admin_menu_lane_group[]" value="admin_menu_lane_id" />
+        <input type="hidden" name="config[]" value="admin_menu_lane_id" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_title" />
+        <input type="hidden" name="config[]" value="admin_menu_card_title" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_url" />
+        <input type="hidden" name="config[]" value="admin_menu_card_url" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_laneid" />
+        <input type="hidden" name="config[]" value="admin_menu_card_laneid" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_id" />
+        <input type="hidden" name="config[]" value="admin_menu_card_id" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_icon" />
+        <input type="hidden" name="config[]" value="admin_menu_card_icon" />
+        <input type="hidden" name="@admin_menu_card_group[]" value="admin_menu_card_admin" />
+        <input type="hidden" name="config[]" value="admin_menu_card_admin" />
+        <input type="hidden" name="config[]" value="@admin_menu_lane_group" />
+        <input type="hidden" name="config[]" value="@admin_menu_card_group" />
+      </>
+    );
   }
 }

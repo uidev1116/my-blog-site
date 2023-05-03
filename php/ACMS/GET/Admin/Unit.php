@@ -178,14 +178,6 @@ class ACMS_Model_Unit extends ACMS_Model
                     'lng'   => $this->get('column_field_3'),
                     'zoom'  => $this->get('column_field_4'),
                 );
-            case 'yolp'      :
-                return array(
-                    'msg'   => $this->get('column_field_1'),
-                    'lat'   => $this->get('column_field_2'),
-                    'lng'   => $this->get('column_field_3'),
-                    'zoom'  => $this->get('column_field_4'),
-                    'layer' => $this->get('column_field_5'),
-                );
             case 'youtube'  :
                 return array(
                     'youtube_id'    => $this->get('column_field_2'),

@@ -4,6 +4,7 @@ namespace Acms\Services\StaticExport\Compiler;
 
 use Acms\Services\StaticExport\Contracts\Resolver;
 use ACMS_RAM;
+use Media;
 
 class LinkResolver extends Resolver
 {
@@ -43,7 +44,12 @@ class LinkResolver extends Resolver
                     continue; // ファイルリンクだった場合は書き換えない
                 }
             }
-
+            $mediaDownloadRegex = '/\/' . MEDIA_FILE_SEGMENT . '\/(\d+)\//';
+            if (preg_match($mediaDownloadRegex, $path, $mediaMatchs)) {
+                $mid = $mediaMatchs[1];
+                $media = Media::getMedia($mid);
+                $path = '/' . MEDIA_STORAGE_DIR . $media['path'];
+            }
             $path = substr($path, 1);
             $path = '/' . $offset_dir . $path;
             $path = preg_replace('/page\/([\d]+)\/?/', 'page$1.html', $path);

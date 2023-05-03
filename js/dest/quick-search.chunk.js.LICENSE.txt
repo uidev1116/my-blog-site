@@ -1,15 +1,8 @@
 /*!
-  Copyright (c) 2017 Jed Watson.
+  Copyright (c) 2018 Jed Watson.
   Licensed under the MIT License (MIT), see
   http://jedwatson.github.io/classnames
 */
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
 
 /*!
  * is-extendable <https://github.com/jonschlinkert/is-extendable>
@@ -18,7 +11,7 @@
  * Licensed under the MIT License.
  */
 
-/** @license React v16.6.1
+/** @license React v16.13.1
  * react-is.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.

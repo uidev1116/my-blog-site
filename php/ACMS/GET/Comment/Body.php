@@ -47,7 +47,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
 
     }
 
-    function buildComment(& $Tpl, $vars=array(), $row)
+    function buildComment(& $Tpl, $vars, $row)
     {
         $cmid   = $row['comment_id'];
         $status = $row['comment_status'];
@@ -99,9 +99,9 @@ class ACMS_GET_Comment_Body extends ACMS_GET
                 and !!SUID
                 and sessionWithContribution()
                 and ( 0
-                    or sessionWithCompilation() 
-                    or ACMS_RAM::entryUser(EID) == SUID 
-                    or ACMS_RAM::commentUser($cmid) == SUID 
+                    or sessionWithCompilation()
+                    or ACMS_RAM::entryUser(EID) == SUID
+                    or ACMS_RAM::commentUser($cmid) == SUID
                 )
             ) {
                 $pstatus    = 'open';

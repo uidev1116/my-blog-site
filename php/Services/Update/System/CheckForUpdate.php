@@ -3,9 +3,6 @@
 namespace Acms\Services\Update\System;
 
 use Acms\Services\Facades\Storage;
-use Webmozart\Json\JsonDecoder;
-use Webmozart\Json\JsonValidator;
-
 
 class CheckForUpdate
 {
@@ -38,16 +35,6 @@ class CheckForUpdate
      * @var string
      */
     protected $schema_path;
-
-    /**
-     * @var Webmozart\Json\JsonDecoder
-     */
-    protected $decoder;
-
-    /**
-     * @var Webmozart\Json\JsonValidator
-     */
-    protected $validator;
 
     /**
      * @var string
@@ -114,8 +101,6 @@ class CheckForUpdate
         $this->endpoint = $endpoint;
         $this->schema_path = $schema_path;
         $this->cache_path = $cache_path;
-        $this->decoder = new JsonDecoder();
-        $this->validator = new JsonValidator();
 
         try {
             $this->finalCheckTime = Storage::lastModified($this->cache_path);
@@ -525,13 +510,9 @@ class CheckForUpdate
      */
     protected function decode($string)
     {
-        $data = $this->decoder->decode($string);
-        $errors = $this->validator->validate($data, $this->schema_path);
-
-        if ( count($errors) > 0 ) {
-            foreach ( $errors as $error ) {
-                \App::exception($error); // stack exception
-            }
+        $data = json_decode($string);
+        if (!property_exists($data, 'versions') || !property_exists($data, 'releaseNote')) {
+            \App::exception('不正なデータです'); // stack exception
         }
         \App::checkException(); // throw exception
 
@@ -555,17 +536,16 @@ class CheckForUpdate
         curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPPROXYTUNNEL, 1);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 0   );
+        curl_setopt($curl, CURLOPT_TIMEOUT, 5);
 
         $string = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        if ( empty($string) || $status !== 200  ) {
-            throw new \RuntimeException($status . ' : To get the json failed.');
+        if (empty($string) || $status !== 200) {
+            throw new \RuntimeException($status . ' : Failed to get the json');
         }
-
-        if ( $charset = mb_detect_encoding($string, 'UTF-8, EUC-JP, SJIS') and 'UTF-8' <> $charset ) {
+        if ($charset = mb_detect_encoding($string, 'UTF-8, EUC-JP, SJIS') and 'UTF-8' <> $charset) {
             $string = mb_convert_encoding($string, 'UTF-8', $charset);
         }
         $this->jsonString = $string;

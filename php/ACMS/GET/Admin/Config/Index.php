@@ -12,7 +12,7 @@ class ACMS_GET_Admin_Config_Index extends ACMS_GET_Admin
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
         $aryAdmin   = array(
-            'config_function', 'config_login', 'config_output', 'config_property',
+            'config_function', 'config_cache', 'config_login', 'config_api', 'config_output', 'config_property',
             'config_mail', 'config_access',
             'config_theme',
             'config_edit', 'config_unit', 'config_bulk-change', 'config_authorize',
@@ -73,9 +73,6 @@ class ACMS_GET_Admin_Config_Index extends ACMS_GET_Admin
             'Api_Twitter_Search',
             'Api_Twitter_List_Statuses',
             'Api_Twitter_List_Members',
-            'Api_Instagram_Users_Media_Recent',
-            'Api_Instagram_Users_Media_Liked',
-            'Api_Instagram_Users_Media_Recent2',
             'Api_Bing_WebSearch',
             'Api_Bing_ImageSearch',
         );

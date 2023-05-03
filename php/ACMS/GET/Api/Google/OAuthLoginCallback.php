@@ -8,22 +8,22 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
     {
         $this->getAuthSession('google_request', 'google_blog_id', 'google_user_id');
 
-        $Session    = ACMS_Session::singleton();
-        $Client     = $this->getGoogleClient();
-        $code       = $this->Get->get('code');
+        $session = Session::handle();
+        $Client = $this->getGoogleClient();
+        $code = $this->Get->get('code');
 
         // get access token
         if ( !!$code ) {
             $Client->authenticate($code);
-            $Session->set('access_token', $Client->getAccessToken());
-            $Session->save();
+            $session->set('access_token', $Client->getAccessToken());
+            $session->save();
             header('Location: ' . filter_var($this->redirect_uri, FILTER_SANITIZE_URL));
             die();
         }
 
         // access_token continue
-        if ( $Session->get('access_token') ) {
-            $Client->setAccessToken($Session->get('access_token'));
+        if ( $session->get('access_token') ) {
+            $Client->setAccessToken($session->get('access_token'));
         } else {
             return false;
         }
@@ -33,7 +33,7 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
         $this->user = $Service->userinfo->get();
 
         // clear session
-        $Session->clear();
+        $session->delete('access_token');
 
         if ( $this->auth_type === 'login' ) {
             $url = $this->login();
@@ -60,9 +60,9 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
             return false;
         }
 
-        $sid        = generateSession($user);  // generate session id
-        $bid        = intval($user['user_blog_id']);
-        $login_bid  = BID;
+        generateSession($user);  // generate session id
+        $bid = intval($user['user_blog_id']);
+        $login_bid = BID;
 
         if ( 1
             and ( 'on' == $user['user_login_anywhere'] || roleAvailableUser() )
@@ -74,7 +74,6 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
         return acmsLink(array(
             'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
             'bid'           => $login_bid,
-            'sid'           => $sid,
             'query'         => array(),
         ));
     }
@@ -111,12 +110,11 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
         }
 
         // generate session id
-        $sid = generateSession($all[0]);
+        generateSession($all[0]);
 
         return acmsLink(array(
             'protocol'      => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
             'bid'           => $this->auth_bid,
-            'sid'           => $sid,
             'query'         => array(),
         ), false);
     }
@@ -153,10 +151,11 @@ class ACMS_GET_Api_Google_OAuthLoginCallback extends ACMS_GET_Api_Google
         }
 
         if ( !isset($query['auth']) ) {
-            $SQL    = SQL::newUpdate('user');
+            $SQL = SQL::newUpdate('user');
             $SQL->addUpdate('user_google_id', $this->user->id);
             $SQL->addWhereOpr('user_id', $this->auth_uid);
             $DB->query($SQL->get(dsn()), 'exec');
+            ACMS_RAM::user($this->auth_uid, null);
         }
 
         return acmsLink(array(

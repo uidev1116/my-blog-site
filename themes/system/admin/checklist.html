@@ -119,15 +119,13 @@
 			<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
 			<tr>
 				<td>
-						<span class="acms-admin-text-danger">
-							<!--T-->ライセンスを有効化するには以下のエンドポイントに通信できる必要があります。<!--/T-->
-						</span>
-					<p>
-						%{ACTIVATION_ENDPOINT}
-					</p>
-					<form method="post" class="acms-admin-form">
+					<form method="post" class="acms-admin-form acms-admin-margin-bottom-small">
 						<input type="submit" name="ACMS_POST_License_Activation" value="<!--T-->アクティベーションを開始<!--/T-->" class="acms-admin-btn">
 					</form>
+          <p class="acms-admin-margin-none">
+            <!--T-->※ライセンスを有効化するには以下のエンドポイントに通信できる必要があります。<!--/T-->
+          </p>
+          <p class="acms-admin-margin-none acms-admin-margin-bottom-small"><strong>%{ACTIVATION_ENDPOINT}</strong></p>
 				</td>
 			</tr>
 			<!-- END_MODULE Touch_SessionWithAdministration -->
@@ -341,7 +339,8 @@
 			<th class="acms-admin-table-nowrap"><!--T-->ブログID<!--/T--></th>
 			<th class="acms-admin-table-nowrap"><!--T-->ルールID<!--/T--></th>
 			<th><!--T-->キャッシュ<!--/T--></th>
-			<th><!--T-->キャッシュ感度<!--/T--></th>
+			<th><!--T-->POST時のキャッシュクリア<!--/T--></th>
+			<th><!--T-->クリアの対象ブログ<!--/T--></th>
 			<th><!--T-->アクセスログ<!--/T--></th>
 			<th class="acms-admin-admin-mini-table-action acms-admin-table-nowrap"><!--T-->編集<!--/T--></th>
 		</thead>
@@ -350,8 +349,9 @@
 			<tr>
 				<td class="acms-admin-table-nowrap acms-admin-text-center"><span class="acms-admin-label label-default">{bid}</span></td>
 				<td class="acms-admin-table-nowrap acms-admin-text-center">{rid}</td><!-- BEGIN cacheCaution -->
-				<td class="{caution}"><!-- END cacheCaution -->{cache}</td><!-- BEGIN cacheSensitivityCaution -->
-				<td class="{caution}"><!-- END cacheSensitivityCaution -->{cacheSensitivity}</td>
+				<td class="{caution}"><!-- END cacheCaution -->{cache}</td>
+				<td>{cacheClearWhenPost}</td><!-- BEGIN cacheClearTargetCaution -->
+				<td class="{caution}"><!-- END cacheClearTargetCaution -->{cacheClearTarget}</td>
 				<td>{logAccess}</td>
 				<td class="acms-admin-admin-mini-table-action">
 					<a href="{editUrl}" class="acms-admin-btn-admin acms-admin-text-nowrap"><!--T-->編集<!--/T--></a>

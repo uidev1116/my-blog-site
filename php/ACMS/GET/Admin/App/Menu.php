@@ -40,25 +40,20 @@ class ACMS_GET_Admin_App_Menu extends ACMS_GET_Admin_App_Index
             // DBになければインストール前として扱う
             $status = 'init';
 
-            if ( !!($all = $DB->query($SQL->get(dsn()), 'all')) ) {
+            if (!!($all = $DB->query($SQL->get(dsn()), 'all'))) {
                 $existsOnThisBlog = false;
-                $installedVersion = null;
-                foreach ( $all as $row ) {
-                    if ( intval($row['app_blog_id']) === BID ) {
+                foreach ($all as $row) {
+                    if (intval($row['app_blog_id']) === BID) {
                         $existsOnThisBlog = $row;
                     }
-                    $installedVersion = $row['app_version'];
                 }
-                if ( $existsOnThisBlog ) {
+                if ($existsOnThisBlog) {
                     $status = $existsOnThisBlog['app_status'];
                 } else {
                     $status = 'off';
                 }
-                if ( version_compare($installedVersion, $app->version)   ) {
-                    $status = 'update';
-                }
             }
-            if ( !in_array($status, array('on', 'update')) ) {
+            if ($status !== 'on') {
                 continue;
             }
             if (!$app->menu) {

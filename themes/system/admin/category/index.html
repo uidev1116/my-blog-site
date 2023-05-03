@@ -9,64 +9,107 @@
 
 <!-- BEGIN_MODULE Admin_Category_Index -->
 
-<!-- BEGIN refresh -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->カテゴリー一覧を更新しました。<!--/T--></p><!-- END refresh --><!-- BEGIN index#notFound -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->カテゴリーがありません。<!--/T--></p><!-- END index#notFound -->
-
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
-	<form action="" method="post" class="acms-admin-form">
-		<div class="acms-admin-filter-body">
-			<div class="acms-admin-filter-group">
-				<p class="acms-admin-filter-label"><!--T-->検索条件<!--/T--></p>
+  <form action="" method="post" class="acms-admin-form">
+    <div class="acms-admin-filter-body">
+      <div class="acms-admin-filter-group">
+        <p class="acms-admin-filter-label"><!--T-->検索条件<!--/T--></p>
 
-				<div class="acms-admin-filter-content acms-admin-filter-content-fit">
-					<div class="acms-admin-filter-item acms-admin-filter-item-full">
-						<label for="filter-keyword" class="acms-admin-filter-item-name"><!--T-->キーワード<!--/T--></label>
-						<div class="acms-admin-filter-item-content">
-							<input type="text" name="keyword" value="%{KEYWORD}" class="acms-admin-form-width-large" id="filter-keyword" placeholder="<!--T-->タイトル・本文・カスタムフィールドから検索（複数指定可）<!--/T-->"/>
-						</div>
-					</div>
-				</div>
-			</div>
+        <div class="acms-admin-filter-content acms-admin-filter-content-fit">
+          <div class="acms-admin-filter-item acms-admin-filter-item-full">
+            <label for="filter-keyword" class="acms-admin-filter-item-name"><!--T-->キーワード<!--/T--></label>
+            <div class="acms-admin-filter-item-content">
+              <input type="text" name="keyword" value="%{KEYWORD}" class="acms-admin-form-width-large" id="filter-keyword" placeholder="<!--T-->タイトル・本文・カスタムフィールドから検索（複数指定可）<!--/T-->"/>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<div id="search-detail">
-				<div class="acms-admin-filter-inner">
-					<div class="acms-admin-filter-group">
-						<p class="acms-admin-filter-label"><!--T-->絞り込み<!--/T--></p>
-						<div class="acms-admin-filter-content">
-							<div class="acms-admin-filter-item">
-								<label for="filter-sort" class="acms-admin-filter-item-name"><!--T-->ソート<!--/T--></label>
-								<select name="order" id="filter-sort" class="js-select2 acms-admin-margin-right-small">
-									<option value="sort-asc"{order:selected#sort-asc}><!--T-->表示順<!--/T-->（<!--T-->昇順<!--/T-->）</option>
-									<option value="sort-desc"{order:selected#sort-desc}><!--T-->表示順<!--/T-->（<!--T-->降順<!--/T-->）</option>
-									<option value="code-asc"{order:selected#code-asc}><!--T-->コードネーム<!--/T-->（<!--T-->昇順<!--/T-->）</option>
-									<option value="code-desc"{order:selected#code-desc}><!--T-->コードネーム<!--/T-->（<!--T-->降順<!--/T-->）</option>
-									<!--<option value="amount-asc"{order:selected#amount-asc}>エントリー数（昇順）</option>-->
-									<!--<option value="amount-desc"{order:selected#amount-desc}>エントリー数（降順）</option>-->
-									<option value="id-asc"{order:selected#id-asc}>ID（<!--T-->昇順<!--/T-->）</option>
-									<option value="id-desc"{order:selected#id-desc}>ID（<!--T-->降順<!--/T-->）</option>
-								</select>
-							</div>
-							<div class="acms-admin-filter-item">
-								<label for="filter-limit" class="acms-admin-filter-item-name acms-admin-show-sp"><!--T-->表示数<!--/T--></label>
-								<div class="acms-admin-filter-item-content">
-									<select name="limit" id="filter-limit" class="js-select2 "><!-- BEGIN limit:loop -->
-										<option value="{limit}"{selected}>{limit}</option><!-- END limit:loop -->
-									</select>
-								</div>
-							</div>
-							<div class="acms-admin-filter-item">
-								<input type="submit" name="ACMS_POST_2GET" value="<!--T-->表示<!--/T-->" class="acms-admin-btn acms-admin-btn-info acms-admin-btn-search acms-admin-width-sp" />
-								<input type="hidden" name="pid" value="{pid}" />
-								<input type="hidden" name="admin" value="category_index" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</form>
+      <div id="search-detail">
+        <div class="acms-admin-filter-inner">
+          <div class="acms-admin-filter-group">
+            <p class="acms-admin-filter-label"><!--T-->絞り込み<!--/T--></p>
+            <div class="acms-admin-filter-content">
+              <div class="acms-admin-filter-item">
+                <label for="filter-sort" class="acms-admin-filter-item-name"><!--T-->ソート<!--/T--></label>
+                <select name="order" id="filter-sort" class="js-select2 acms-admin-margin-right-small">
+                  <option value="sort-asc"{order:selected#sort-asc}><!--T-->表示順<!--/T-->（<!--T-->昇順<!--/T-->）</option>
+                  <option value="sort-desc"{order:selected#sort-desc}><!--T-->表示順<!--/T-->（<!--T-->降順<!--/T-->）</option>
+                  <option value="code-asc"{order:selected#code-asc}><!--T-->コードネーム<!--/T-->（<!--T-->昇順<!--/T-->）</option>
+                  <option value="code-desc"{order:selected#code-desc}><!--T-->コードネーム<!--/T-->（<!--T-->降順<!--/T-->）</option>
+                  <!--<option value="amount-asc"{order:selected#amount-asc}>エントリー数（昇順）</option>-->
+                  <!--<option value="amount-desc"{order:selected#amount-desc}>エントリー数（降順）</option>-->
+                  <option value="id-asc"{order:selected#id-asc}>ID（<!--T-->昇順<!--/T-->）</option>
+                  <option value="id-desc"{order:selected#id-desc}>ID（<!--T-->降順<!--/T-->）</option>
+                </select>
+              </div>
+              <div class="acms-admin-filter-item">
+                <label for="filter-limit" class="acms-admin-filter-item-name acms-admin-show-sp"><!--T-->表示数<!--/T--></label>
+                <div class="acms-admin-filter-item-content">
+                  <select name="limit" id="filter-limit" class="js-select2 "><!-- BEGIN limit:loop -->
+                    <option value="{limit}"{selected}>{limit}</option><!-- END limit:loop -->
+                  </select>
+                </div>
+              </div>
+              <div class="acms-admin-filter-item">
+                <input type="submit" name="ACMS_POST_2GET" value="<!--T-->表示<!--/T-->" class="acms-admin-btn acms-admin-btn-info acms-admin-btn-search acms-admin-width-sp" />
+                <input type="hidden" name="pid" value="{pid}" />
+                <input type="hidden" name="admin" value="category_index" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div><!-- /.acms-filter -->
+<!-- END_IF -->
+
+<!-- BEGIN refresh -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->カテゴリー一覧を更新しました。<!--/T--></p><!-- END refresh -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1/_and_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当するカテゴリーが見つかりませんでした<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->検索内容に一致したカテゴリーはありませんでした。<br>再検索または新規作成してください。<!--/T--></p>
+  <!-- BEGIN action#categoryInsert -->
+  <div class="acms-admin-announce-action">
+    <form action="" method="post">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="category_edit" />
+      <input type="hidden" name="edit" value="insert" />
+      <input type="hidden" name="pcid" value="%{_cid}" />
+      <input type="hidden" name="query[]" value="pcid" />
+      <input type="hidden" name="query[]" value="edit" />
+      <input type="submit" name="ACMS_POST_2GET" value="<!--T-->新規カテゴリー作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success">
+    </form>
+  </div>
+  <!-- END action#categoryInsert -->
+</div>
+<!-- ELSE_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1] -->
+<!-- BEGIN index#notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->カテゴリーがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text">新しくカテゴリーを作成してください。</p>
+
+  <!-- BEGIN action#categoryInsert -->
+  <div class="acms-admin-announce-action">
+    <form action="" method="post">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="category_edit" />
+      <input type="hidden" name="edit" value="insert" />
+      <input type="hidden" name="pcid" value="%{_cid}" />
+      <input type="hidden" name="query[]" value="pcid" />
+      <input type="hidden" name="query[]" value="edit" />
+      <input type="submit" name="ACMS_POST_2GET" value="<!--T-->新規カテゴリー作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success">
+    </form>
+  </div>
+  <!-- END action#categoryInsert -->
+</div><!-- END index#notFound -->
+<!-- END_IF -->
+
+<!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 
 <!-- BEGIN action#categoryInsert -->
 <div class="acms-admin-float-right acms-admin-position-right acms-admin-fix-right" style="width:300px">
@@ -82,7 +125,10 @@
 </div>
 <!-- END action#categoryInsert -->
 
+
 <!-- BEGIN index -->
+
+
 <form method="post" action="" id="sortableForm" class="acms-admin-form acms-admin-clear-sp">
 	<div class="js-acms-tab-select clearfix js-acms_fix_marker acms-admin-form-group"><!-- BEGIN_IF [%{_cid}/nem] -->
 		<div class="acms-admin-margin-bottom-small acms-admin-float-left">
@@ -213,4 +259,5 @@
 	</div>
 
 </form><!-- END index -->
+<!-- END_IF -->
 <!-- END_MODULE Admin_Category_Index -->

@@ -37,10 +37,8 @@
 			@section("direct-on")
 			<!-- BEGIN_MODULE Touch_NotEditInplace -->
 			<!-- BEGIN_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
-			<form action="" method="post" class="acms-admin-inline-btn">
-				<input type="hidden" name="acms_config_entry_edit_inplace_enable" value="on" />
-				<input type="hidden" name="cookie[]" value="acms_config_entry_edit_inplace_enable" />
-				<input type="submit" name="ACMS_POST_Cookie" value="<!--T-->ダイレクト編集ONにする<!--/T-->" class="acms-admin-btn" />
+			<form action="" method="post" id="action-direct-on" class="acms-admin-inline-btn">
+				<input type="submit" name="ACMS_POST_Entry_DirectEdit_Enable" value="<!--T-->ダイレクト編集ONにする<!--/T-->" class="acms-admin-btn" />
 			</form>
 			<!-- END_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
 			<!-- END_MODULE Touch_NotEditInplace -->
@@ -48,10 +46,8 @@
 
 			@section("direct-off")
 			<!-- BEGIN_MODULE Touch_EditInplace -->
-			<form action="" method="post" class="acms-admin-inline-btn">
-				<input type="hidden" name="acms_config_entry_edit_inplace_enable" value="off" />
-				<input type="hidden" name="cookie[]" value="acms_config_entry_edit_inplace_enable" />
-				<input type="submit" name="ACMS_POST_Cookie" value="<!--T-->ダイレクト編集OFFにする<!--/T-->" class="acms-admin-btn" />
+			<form action="" method="post" id="action-direct-off" class="acms-admin-inline-btn">
+				<input type="submit" name="ACMS_POST_Entry_DirectEdit_Disable" value="<!--T-->ダイレクト編集OFFにする<!--/T-->" class="acms-admin-btn" />
 			</form>
 			<!-- END_MODULE Touch_EditInplace -->
 			@endsection
@@ -62,7 +58,7 @@
 
 		@section("entry-insert")
 		<!-- BEGIN insert -->
-		<form action="" method="post" class="acms-admin-inline-btn">
+		<form action="" method="post" id="action-entry-insert" class="acms-admin-inline-btn">
 			<input type="submit" name="ACMS_POST_2GET" value="<!--T-->エントリー作成<!--/T-->"  class="acms-admin-btn acms-admin-btn-success"/>
 			<input type="hidden" name="admin" value="entry-edit" />
 			<input type="hidden" name="bid" value="%{BID}" />
@@ -73,14 +69,14 @@
 
 		@section("goto-admin")
 		<!-- BEGIN_MODULE Touch_NotAdmin -->
-		<form action="" method="post" class="acms-admin-inline-btn">
+		<form action="" method="post" id="action-goto-admin-not-admin" class="acms-admin-inline-btn">
 			<input type="submit" name="ACMS_POST_2GET" value="<!--T-->管理ページ<!--/T-->" class="acms-admin-btn" />
 			<input type="hidden" name="admin" value="top" />
 			<input type="hidden" name="bid" value="%{BID}" />
 		</form>
 		<!-- END_MODULE Touch_NotAdmin -->
 		<!-- BEGIN_MODULE Touch_Edit -->
-		<form action="" method="post" class="acms-admin-inline-btn">
+		<form action="" method="post" id="action-goto-admin-edit" class="acms-admin-inline-btn">
 			<input type="submit" name="ACMS_POST_2GET" value="<!--T-->管理ページ<!--/T-->" class="acms-admin-btn" />
 			<input type="hidden" name="admin" value="top" />
 			<input type="hidden" name="bid" value="%{BID}" />
@@ -92,7 +88,7 @@
 		<!-- BEGIN_MODULE Touch_HigherLicense -->
 		<!-- BEGIN_MODULE Touch_SessionWithCompilation -->
 		<!-- BEGIN_MODULE Touch_NotTimemachineMode -->
-		<div class="acms-admin-inline-btn">
+		<div class="acms-admin-inline-btn" id="action-timemachine-mode">
 			<button class="js-acms-timemachine acms-admin-btn"><!--T-->タイムマシーンモード<!--/T--></button>
 		</div>
 		<!-- END_MODULE Touch_NotTimemachineMode -->
@@ -102,7 +98,7 @@
 
 		@section("preview-mode")
 		<!-- BEGIN_MODULE Touch_SessionWithContribution -->
-		<div class="acms-admin-inline-btn">
+		<div class="acms-admin-inline-btn" id="action-preview-mode">
 			<button class="js-acms-preview-button acms-admin-btn" data-url="%{CURRENT_URL}" data-default-device="%{PREVIEW_DEFAULT_DEVICE}"><!--T-->プレビュー<!--/T--></button>
 		</div>
 		<!-- END_MODULE Touch_SessionWithContribution -->
@@ -110,7 +106,7 @@
 		<!-- END_MODULE Touch_NotAdmin -->
 
 		@section("logout")
-		<form action="" method="post" class="acms-admin-inline-btn">
+		<form action="" method="post" id="action-logout" class="acms-admin-inline-btn">
 			<input type="submit" name="ACMS_POST_Logout" value="<!--T-->ログアウト<!--/T-->" class="acms-admin-btn" />
 		</form>
 		@endsection
@@ -118,7 +114,7 @@
 		@section("entry-mail")
 		<!-- BEGIN_MODULE Touch_Entry --><!-- BEGIN_MODULE Touch_SessionWithAdministration --><!-- BEGIN_MODULE Touch_MailMagazineEnable -->
 		<hr class="clearHidden" style="margin:0;" />
-		<form action="" method="post" class="acms-admin-inline-btn selectLink acms-admin-form">
+		<form action="" method="post" id="action-entry-mail" class="acms-admin-inline-btn selectLink acms-admin-form">
 			<input type="hidden" name="bid" value="%{BID}" />
 			<input type="hidden" name="eid" value="%{EID}" />
 			<input type="submit" name="ACMS_POST_Entry_Mail" value="<!--T-->このエントリーをメールで送信<!--/T-->" class="acms-admin-btn" />

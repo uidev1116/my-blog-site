@@ -1,43 +1,35 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Api_Twitter_OAuth_Login extends ACMS_POST_Api_Twitter
+{
+    function post()
+    {
+        $type       = $this->Post->get('type');
+        if ( empty($type) ) return false;
+
+        $session = Session::handle();
+        $Config = Config::loadBlogConfigSet(BID);
+
+        // twitter
+        $Tw = new Services_Twitter(
+            $Config->get('twitter_sns_login_consumer_key'),
+            $Config->get('twitter_sns_login_consumer_secret')
+        );
+        $token_secret_callback = array_chunk($Tw->getReqToken(array(
+            'oauth_callback' => 'oob'
+        )), 3);
+        list($token, $secret, $callback) = $token_secret_callback[0];
+
+        $session->set('tw_token', $token);
+        $session->set('tw_secret', $secret);
+        $session->set('tw_blog_id', BID);
+        $session->set('tw_request', $type);
+
+        if ( $type === 'addition' ) {
+            $session->set('tw_user_id', UID);
+        }
+        $session->save();
+
+        $this->redirect($Tw->getAuthUrl());
+    }
+}

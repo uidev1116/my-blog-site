@@ -32,9 +32,9 @@
 <!-- テーブル -->
 <hr class="clearHidden">
 <div class="column-table-{align}">
-	<div class="entry-container">
-	{table}[raw]
-	</div>
+  <div class="entry-container">
+  {table}[raw]
+  </div>
 </div>
 @endsection
 <!-- END unit#table -->
@@ -43,15 +43,15 @@
 @section(image-unit)
 <!-- 画像 -->
 <div class="column-image-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN link#front --><!-- BEGIN_IF [{url}/nem/] -->
-	<a href="{url}"{viewer}[raw] data-caption="{caption}[nl2br|delnl]"><!-- END_IF --><!-- END link#front -->
-		<img class="js-lazy-load columnImage"
-			 src="/images/placeholder/image.svg"
-			 data-src="%{HTTP_ROOT}{path}"
-			 alt="{alt}[delnl]"
-			 width="{x}"
-			 height="{y}"><!-- BEGIN link#rear -->
-	</a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
-	<p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
+  <a href="{url}" {viewer}[raw] data-group="{link_eid}" data-caption="{caption}[nl2br|delnl]"><!-- END_IF --><!-- END link#front -->
+    <img
+      class="js-lazy-load columnImage"
+      data-src="%{HTTP_ROOT}{path}"
+      alt="{alt}[delnl]"
+      width="{x}"
+      height="{y}"><!-- BEGIN link#rear -->
+  </a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
+  <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 </div>
 @endsection
 <!-- END unit#image -->
@@ -60,8 +60,10 @@
 @section(file-unit)
 <!-- ファイル -->
 <div class="column-file-{align} js_notStyle">
-	<a href="%{HTTP_ROOT}{path}"><img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="ファイルを開く" width="{x}" height="{y}"></a>
-	<!-- BEGIN_IF [{caption}[delnl]/nem] --><p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
+  <a href="%{HTTP_ROOT}{path}">
+    <img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="ファイルを開く" width="{x}" height="{y}">
+  </a>
+  <!-- BEGIN_IF [{caption}[delnl]/nem] --><p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 </div>
 @endsection
 <!-- END unit#file -->
@@ -70,7 +72,7 @@
 @section(osmap-unit)
 <!-- Open Street Map -->
 <div class="column-map-{align}{display_size_class}"{display_size}[raw]>
-	<div class="js-open-street-map" data-lazy="true" data-lat="{lat}" data-lng="{lng}" data-zoom="{zoom}" data-msg="{msgRaw}" style="width: {x}px; height: {y}px;"></div>
+  <div class="js-open-street-map" data-lazy="true" data-lat="{lat}" data-lng="{lng}" data-zoom="{zoom}" data-msg="{msgRaw}" style="width: {x}px; height: {y}px;"></div>
 </div>
 @endsection
 <!-- END unit#osmap -->
@@ -81,37 +83,31 @@
 
 <!-- BEGIN_IF [{view_activate}/nem] -->
 <div class="column-street-view-{align}{display_size_class}"{display_size}[raw]>
-	<div class="js-street-view column-inner-street-view" data-lazy="true" data-lat="{lat}" data-lng="{lng}" data-pitch="{view_pitch}" data-zoom="{view_zoom}" data-heading="{view_heading}"></div>
+  <div class="js-street-view column-inner-street-view" data-lazy="true" data-lat="{lat}" data-lng="{lng}" data-pitch="{view_pitch}" data-zoom="{view_zoom}" data-heading="{view_heading}"></div>
 </div>
 <!-- ELSE -->
 <div class="column-map-{align}{display_size_class}"{display_size}[raw]>
-	@include("/include/gmaps-error.html")
-	<img data-lazy="true" src="https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={zoom}&size={x}x{y}&maptype=roadmap&markers={lat},{lng}&key=%{GOOGLE_API_KEY}" alt="{msg}" width="{x}" height="{y}" title="クリックで地図が動かせるようになります。">
+  @include("/include/gmaps-error.html")
+  <img
+    data-lazy="true"
+    src="https://maps.googleapis.com/maps/api/staticmap?center={lat},{lng}&zoom={zoom}&size={x}x{y}&maptype=roadmap&markers={lat},{lng}&key=%{GOOGLE_API_KEY}"
+    alt="{msg}"
+    width="{x}"
+    height="{y}"
+    title="クリックで地図が動かせるようになります。"
+  >
 </div>
 <!-- END_IF -->
 @endsection
 <!-- END unit#map -->
 
-<!-- BEGIN unit#yolp -->
-@section(yolp-unit)
-<!-- yahoo地図 -->
-<div class="column-yolp-{align}{display_size_class}"{display_size}[raw]>
-	<!-- BEGIN_IF [%{PROTOCOL}/eq/https] -->
-	<img class="js-s2d-yolp-ready" src="https://map.yahooapis.jp/map/V1/static?appid=%{YAHOO_API_KEY}&lat={lat}&lon={lng}&z={zoom}&width={x}&height={y}&pin={lat},{lng},,red&mode={mode}&style={style}" alt="yahoo map" width="{x}" height="{y}" title="クリックで地図が動かせるようになります。">
-	<!-- ELSE -->
-	<img class="js-s2d-yolp-ready" src="https://map.olp.yahooapis.jp/OpenLocalPlatform/V1/static?appid=%{YAHOO_API_KEY}&lat={lat}&lon={lng}&z={zoom}&width={x}&height={y}&pin={lat},{lng},,red&mode={mode}&style={style}" alt="yahoo map" width="{x}" height="{y}" title="クリックで地図が動かせるようになります。">
-	<!-- END_IF -->
-</div>
-@endsection
-<!-- END unit#yolp -->
-
 <!-- BEGIN unit#youtube -->
 @section(youtube-unit)
 <!-- YouTube -->
 <div class="column-youtube-{align}{display_size_class}"{display_size}[raw]>
-	<div class="column-iframe">
-		<iframe width="{x}" height="{y}" src="https://www.youtube.com/embed/{youtubeId}?wmode=transparent&rel=0" frameborder="0" allowfullscreen></iframe>
-	</div>
+  <div class="column-iframe">
+    <iframe width="{x}" height="{y}" src="https://www.youtube.com/embed/{youtubeId}?wmode=transparent&rel=0" frameborder="0" allowfullscreen></iframe>
+  </div>
 </div>
 @endsection
 <!-- END unit#youtube -->
@@ -120,9 +116,9 @@
 @section(video-unit)
 <!-- Video -->
 <div class="column-video-{align}{display_size_class}"{display_size}[raw]>
-	<div class="column-iframe acms-placeholder-movie">
-		<iframe class="js-lazy-load" width="{x}" height="{y}" data-src="https://www.youtube.com/embed/{videoId}?wmode=transparent&rel=0" frameborder="0" allowfullscreen></iframe>
-	</div>
+  <div class="column-iframe">
+    <iframe class="js-lazy-load is-movie" width="{x}" height="{y}" data-src="https://www.youtube.com/embed/{videoId}?wmode=transparent&rel=0" frameborder="0" allowfullscreen></iframe>
+  </div>
 </div>
 @endsection
 <!-- END unit#video -->
@@ -131,15 +127,16 @@
 @section(eximage-unit)
 <!-- 画像URL -->
 <div class="column-eximage-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN link#front -->
-	<a href="{url}"{viewer}[raw]><!-- END link#front -->
-		<img class="js-lazy-load columnImage"
-			 src="/images/placeholder/image.svg"
-			 data-src="{normal}"
-			 alt="{alt}"
-			 width="{x}"
-			 height="{y}"><!-- BEGIN link#rear -->
-	</a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
-	<p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
+  <a href="{url}" {viewer}[raw] data-group="{link_eid}"><!-- END link#front -->
+    <img
+      class="js-lazy-load columnImage"
+      data-src="{normal}"
+      alt="{alt}"
+      width="{x}"
+      height="{y}"
+    ><!-- BEGIN link#rear -->
+  </a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
+  <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 </div>
 @endsection
 <!-- END unit#eximage -->
@@ -147,41 +144,38 @@
 <!-- BEGIN unit#media -->
 @section(media-unit)
 <!-- media -->
-<div class="column-media-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN type#image -->
-	<!-- BEGIN link#front -->
-	<a href="{url}"{viewer}[raw]><!-- END link#front -->
-		<img class="js-lazy-load columnImage"
-			 src="/images/placeholder/image.svg"
-			 data-src="%{HTTP_ROOT}{path}[resizeImg({x})]"
-			 width="{x}"
-			 height="{y}"
-			 alt="{alt}"><!-- BEGIN link#rear -->
-	</a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
-	<p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
+<div class="column-media-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN type#image --><!-- BEGIN link#front -->
+  <a href="{url}" {viewer}[raw] data-group="{link_eid}"><!-- END link#front -->
+    <img
+      class="js-lazy-load columnImage"
+      data-src="%{HTTP_ROOT}{path}[resizeImg({x})]"
+      width="{x}"
+      height="{y}"
+      alt="{alt}"
+    ><!-- BEGIN link#rear -->
+  </a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
+  <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 
-	<!-- END type#image --><!-- BEGIN type#svg -->
+  <!-- END type#image --><!-- BEGIN type#svg --><!-- BEGIN link#front -->
+  <a href="{url}" {viewer}[raw] data-group="{link_eid}"><!-- END link#front -->
+    <img
+      class="js-lazy-load columnImage"
+      data-src="%{HTTP_ROOT}{path}"
+      alt="{alt}"
+      width="{x}"
+      height="{y}"
+    ><!-- BEGIN link#rear -->
+  </a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
+  <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 
-	<!-- BEGIN link#front -->
-	<a href="{url}"{viewer}[raw]><!-- END link#front -->
-		<img class="js-lazy-load columnImage"
-			 src="/images/placeholder/image.svg"
-			 data-src="%{HTTP_ROOT}{path}"
-			 alt="{alt}"
-			 width="{x}" height="{y}"><!-- BEGIN link#rear -->
-	</a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
-	<p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
-
-	<!-- END type#svg --><!-- BEGIN type#file -->
-	<a href="{url}" target="_blank" class="js-link_no_rewrite"><!-- BEGIN_IF [{thumbnail}/nem/_and_/{use_icon}/neq/yes] -->
-		<img class="column-pdf-image" src="%{MEDIA_ARCHIVES_DIR}{thumbnail}" alt="{alt}">
-		<!-- ELSE -->
-		<img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="{alt}" width="{x}" height="{y}">
-		<!-- END_IF -->
-	</a>
-	<!-- BEGIN_IF [{caption}[delnl]/nem] -->
-	<p class="caption">{caption}[raw|nl2br]</p>
-	<!-- END_IF -->
-	<!-- END type#file -->
+  <!-- END type#svg --><!-- BEGIN type#file -->
+  <a href="{url}" target="_blank" class="js-link_no_rewrite"><!-- BEGIN_IF [{thumbnail}/nem/_and_/{use_icon}/neq/yes] -->
+    <img class="column-pdf-image" src="%{MEDIA_ARCHIVES_DIR}{thumbnail}" alt="{alt}">
+    <!-- ELSE -->
+    <img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="{alt}" width="{x}" height="{y}">
+    <!-- END_IF -->
+  </a> <!-- BEGIN_IF [{caption}[delnl]/nem] -->
+  <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF --><!-- END type#file -->
 </div>
 @endsection
 <!-- END unit#media -->
@@ -196,18 +190,18 @@
 @section(quote-unit)
 <!-- 引用 -->
 <div class="column-quote-{align}"{display_size}[raw]><!-- BEGIN html:veil -->
-	{quote_html}[raw]<!-- END html:veil --><!-- BEGIN_IF [{quote_title}/nem/] -->
-	<blockquote class="js-biggerlink"><!-- BEGIN image:veil -->
-		<div class="quoteImageContainer">
-			<img src="{quote_image}" class="quoteImage" width="{x}" height="{y}"  alt="">
-		</div><!-- END image:veil -->
-		<div>
-			<p class="quoteTitle"><a href="{quote_url}" class="quoteTitleLink">{quote_title}</a></p><!-- BEGIN description:veil --><!-- BEGIN site_name:veil -->
-			<p class="quoteSiteName">{quote_site_name}</p><!-- END site_name:veil -->
-			<p class="quoteDescription">{quote_description}[raw|trim(180, '...')]</p><!-- END description:veil -->
-		</div>
-		<hr class="clearHidden">
-	</blockquote><!-- END_IF -->
+  {quote_html}[raw]<!-- END html:veil --><!-- BEGIN_IF [{quote_title}/nem/] -->
+  <blockquote class="js-biggerlink"><!-- BEGIN image:veil -->
+    <div class="quoteImageContainer">
+      <img src="{quote_image}" class="quoteImage" width="{x}" height="{y}"  alt="">
+    </div><!-- END image:veil -->
+    <div>
+      <p class="quoteTitle"><a href="{quote_url}" class="quoteTitleLink">{quote_title}</a></p><!-- BEGIN description:veil --><!-- BEGIN site_name:veil -->
+      <p class="quoteSiteName">{quote_site_name}</p><!-- END site_name:veil -->
+      <p class="quoteDescription">{quote_description}[raw|trim(180, '...')]</p><!-- END description:veil -->
+    </div>
+    <hr class="clearHidden">
+  </blockquote><!-- END_IF -->
 </div>
 @endsection
 <!-- END unit#quote -->
@@ -216,7 +210,7 @@
 @section(module-unit)
 <!-- モジュール -->
 <div class="column-module">
-	{view}[raw]
+  {view}[raw]
 </div>
 @endsection
 <!-- END unit#module -->

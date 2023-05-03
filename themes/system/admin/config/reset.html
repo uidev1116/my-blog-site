@@ -20,9 +20,6 @@
 		<div class="acms_fix_bg_index">
 			<a href="{indexUrl}" class="acms-admin-btn-admin">一覧</a>
 
-			<input class="acms-admin-btn-admin acms-admin-btn-admin-danger js-hide-on-modal" type="submit" name="ACMS_POST_Config_Delete"
-				   value="<!--T-->リセット<!--/T-->" onclick="return confirm('<!--T-->リセットを実行します。よろしいですか？<!--/T-->');"/>
-
 			<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
 			<a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i
 				class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a>
@@ -30,26 +27,37 @@
 		</div>
 	</div>
 
-	<!-- BEGIN_MODULE Admin_Rule_Name -->
-	<input type="hidden" name="rid" value="{rid}"/>
-	<input type="hidden" name="rule_name" value="{name}"/>
-	<!-- END_MODULE Admin_Rule_Name -->
 
-	<!-- BEGIN_MODULE Admin_Config_Set_Name -->
-	<input type="hidden" name="setid" value="{setid}"/>
-	<input type="hidden" name="config_set_name" value="{name}"/>
-	<!-- END_MODULE Admin_Config_Set_Name -->
+
+<h3 class="acms-admin-admin-title2"><!--T-->コンフィグのリセット<!--/T--></h3>
+<table class="adminTable acms-admin-table-admin-edit acms-admin-margin-bottom-medium">
+  <tbody>
+  <tr>
+    <th><!--T-->リセットの実行<!--/T--></th>
+    <td>
+      <p class="acms-admin-margin-bottom-small"><!--T-->現在のコンフィグを破棄して、コンフィグをリセットします。<!--/T--></p>
+      <ul class="acms-admin-margin-bottom-small">
+        <li><!--T-->リセット後は、システムデフォルトのコンフィグ（private/config.system.yamlの設定値）を適用されます。<!--/T--></li>
+        <li><!--T-->ルール適用時のコンフィグがリセットされると、ブログの元々のコンフィグが適用されます。<!--/T--></li>
+      </ul>
+
+      <input class="acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-btn-admin-save js-hide-on-modal" type="submit" name="ACMS_POST_Config_Delete"
+             value="<!--T-->リセット<!--/T-->" onclick="return confirm('<!--T-->リセットを実行します。よろしいですか？<!--/T-->');"/>
+
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+  <!-- BEGIN_MODULE Admin_Rule_Name -->
+  <input type="hidden" name="rid" value="{rid}"/>
+  <input type="hidden" name="rule_name" value="{name}"/>
+  <!-- END_MODULE Admin_Rule_Name -->
+
+  <!-- BEGIN_MODULE Admin_Config_Set_Name -->
+  <input type="hidden" name="setid" value="{setid}"/>
+  <input type="hidden" name="config_set_name" value="{name}"/>
+  <!-- END_MODULE Admin_Config_Set_Name -->
 </form>
-<!-- END_MODULE Admin_Config -->
 
-<div class="acms-admin-panel acms-admin-panel-danger">
-	<div class="acms-admin-panel-header">
-		<!--T-->現在のコンフィグを破棄して、コンフィグをリセットします。<!--/T-->
-	</div>
-	<div class="acms-admin-panel-body">
-		<ul>
-			<li><!--T-->リセット後は、システムデフォルトのコンフィグ（private/config.system.yamlの設定値）を適用されます。<!--/T--></li>
-			<li><!--T-->ルール適用時のコンフィグがリセットされると、ブログの元々のコンフィグが適用されます。<!--/T--></li>
-		</ul>
-	</div>
-</div>
+<!-- END_MODULE Admin_Config -->

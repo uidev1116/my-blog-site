@@ -7,22 +7,40 @@
 	</div>
 </header>
 
-<div class="acms-admin-form-group">
-	<div class="acms-admin-float-right acms-admin-float-none-sp acms-admin-position-right acms-admin-fix-right">
-		<form action="" method="post" class="js-acms_fix_marker">
-			<input type="hidden" name="bid" value="%{BID}" />
-			<input type="hidden" name="admin" value="schedule_edit" />
-			<input type="hidden" name="edit" value="insert" />
-			<input type="hidden" name="query[]" value="edit" />
-			<input type="submit" name="ACMS_POST_2GET" value="<!--T-->スケジュールセットを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
-		</form>
-	</div>
-</div>
-
 <!-- BEGIN_MODULE Admin_Schedule_Index -->
 
 <!-- BEGIN notFound -->
-<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon"><span class="acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><!--T-->スケジュールセットがありません。<!--/T--><button class="js-acms-alert-close acms-admin-alert-icon-after"><span aria-hidden="true">×</span><span class="acms-admin-hide-visually">閉じる</span></button></p><!-- END notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->スケジュールセットがありません。<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->機能を使用するには新しくスケジュールを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <div class="acms-admin-form-group">
+      <div>
+        <form action="" method="post">
+          <input type="hidden" name="bid" value="%{BID}" />
+          <input type="hidden" name="admin" value="schedule_edit" />
+          <input type="hidden" name="edit" value="insert" />
+          <input type="hidden" name="query[]" value="edit" />
+          <input type="submit" name="ACMS_POST_2GET" value="<!--T-->スケジュールセットを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END notFound -->
+
+<!-- BEGIN_IF [<!-- BEGIN notFound -->1<!-- END notFound -->/neq/1] -->
+<div class="acms-admin-form-group">
+  <div class="acms-admin-float-right acms-admin-float-none-sp acms-admin-position-right acms-admin-fix-right">
+    <form action="" method="post" class="js-acms_fix_marker">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="schedule_edit" />
+      <input type="hidden" name="edit" value="insert" />
+      <input type="hidden" name="query[]" value="edit" />
+      <input type="submit" name="ACMS_POST_2GET" value="<!--T-->スケジュールセットを作成<!--/T-->" class="acms-admin-btn acms-admin-btn-success" />
+    </form>
+  </div>
+</div>
 
 <!-- BEGIN index:touch#result -->
 <div class="acms-admin-table-responsive">
@@ -50,4 +68,5 @@
 		</tbody>
 	</table>
 </div><!-- END index:touch#result -->
+<!-- END_IF -->
 <!-- END_MODULE Admin_Schedule_Index -->

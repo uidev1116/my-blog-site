@@ -184,69 +184,77 @@
 		@endsection
 
 		@section("dashboard-clear-cache")
-		<!-- BEGIN_MODULE Admin_Dashboard_ClearCache -->
-		<h2 class="acms-admin-admin-title2"><!--T-->キャッシュファイル管理<!--/T--></h2>
-		<table class="acms-admin-admin-mini-table acms-admin-margin-bottom-small">
-			<thead>
-				<tr>
-					<th><!--T-->項目<!--/T--></th>
-					<th><!--T-->状態<!--/T--></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><!--T-->キャッシュ生成の状態<!--/T--></td>
-					<td>
-						<!-- BEGIN cache_enable -->
-						<!--T-->有効<!--/T-->
-						<!-- END cache_enable -->
-						<!-- BEGIN cache_disable -->
-						<!--T-->無効<!--/T-->
-						<!-- END cache_disable -->
-					</td>
-				</tr>
-				<tr>
-					<td><!--T-->全体の件数<!--/T--></td>
-					<td>{totalBins}</td>
-				</tr>
-				<tr>
-					<td><!--T-->全体の総サイズ<!--/T--></td>
-					<td>{totalBytes}<!--T-->バイト<!--/T--></td>
-				</tr>
-				<tr>
-					<td><!--T-->最大同時キャッシュ生成数<!--/T--></td>
-					<td>%{MAX_PUBLISHES}</td>
-				</tr>
-			</tbody>
-		</table>
+		<!-- BEGIN_MODULE Touch_SessionWithCompilation -->
+		<h2 class="acms-admin-admin-title2"><!--T-->キャッシュクリア<!--/T--></h2>
 		<form action="" method="post">
-		<div class="acms-admin-form-checkbox">
-			<input type="checkbox"  id="input-checkbox-cashe-axis" name="axis" value="descendant-or-self" />
-			<label for="input-checkbox-cashe-axis">
-				<i class="acms-admin-ico-checkbox"></i><!--T-->子ブログのキャッシュも含める<!--/T-->
-			</label>
-		</div>
-		<div class="acms-admin-form-checkbox">
-			<input type="hidden" name="delete" value="false" />
-			<input type="checkbox" id="input-checkbox-cashe-delete" name="delete" value="true" />
-			<label for="input-checkbox-cashe-delete"><i class="acms-admin-ico-checkbox"></i><!--T-->完全消去<!--/T-->
-			</label>
-		</div>
-		<p>
-			<input type="submit" name="ACMS_POST_Cache" value="<!--T-->リフレッシュ<!--/T-->" class="acms-admin-btn-admin" />
-			<input type="hidden" name="forcing" value="true" />
+			<table class="acms-admin-admin-mini-table acms-admin-margin-bottom-small">
+				<thead>
+					<tr>
+						<th><!--T-->クリア対象<!--/T--></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
+								<input type="checkbox" id="input-checkbox-cashe-page" name="target[]" value="page" checked />
+								<label for="input-checkbox-cashe-page"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->ページ キャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+					<!-- BEGIN_MODULE Touch_RootBlog -->
+					<tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
+								<input type="checkbox" id="input-checkbox-cashe-template" name="target[]" value="template" checked />
+								<label for="input-checkbox-cashe-template"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->テンプレート キャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
+								<input type="checkbox" id="input-checkbox-cashe-config" name="target[]" value="config" />
+								<label for="input-checkbox-cashe-config"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->コンフィグ キャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
+								<input type="checkbox" id="input-checkbox-cashe-field" name="target[]" value="field" />
+								<label for="input-checkbox-cashe-field"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->カスタムフィールド キャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+          <tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
+								<input type="checkbox" id="input-checkbox-cashe-module" name="target[]" value="module" />
+								<label for="input-checkbox-cashe-module"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->モジュール キャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="acms-admin-form-checkbox">
 
-			<!-- BEGIN_MODULE Touch_RootBlog -->
-			<!-- BEGIN cache_enable -->
-			<input type="submit" name="ACMS_POST_Cache_Apply" value="<!-- T -->キャッシュ生成<!-- /T -->" class="acms-admin-btn-admin"/>
-			<!-- END cache_enable -->
-			<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!-- T -->config.server.phpのMAX_PUBLISHESの値が低いとキャッシュが一度に作られない場合があります。<!-- /T --><br>
-			<!-- T -->その場合は、MAX_PUBLISHESを大きくするか、キャッシュの生成を何回か行ってください。<!-- /T -->"></i>
-			<a href="%{SCRIPT_ROOT}bid/1/admin/config_cache-list/"><!-- T -->キャッシュ生成リスト<!-- /T --></a>
-			<!-- END_MODULE Touch_RootBlog -->
-		</p>
+								<input type="checkbox" id="input-checkbox-cashe-temp" name="target[]" value="temp" />
+								<label for="input-checkbox-cashe-temp"><i class="acms-admin-ico-checkbox"></i>&nbsp;&nbsp;<!--T-->一時的なキャッシュ<!--/T--></label>
+							</div>
+						</td>
+					</tr>
+					<!-- END_MODULE Touch_RootBlog -->
+				</tbody>
+			</table>
+			<div>
+				<input type="hidden" name="field[]" value="target" />
+				<input type="submit" name="ACMS_POST_Cache" value="<!--T-->キャッシュをクリア<!--/T-->" class="acms-admin-btn-admin"/>
+				<input type="hidden" name="forcing" value="true" />
+			</div>
 		</form>
 
+		<!-- BEGIN_MODULE Admin_Dashboard_ClearCache -->
 		<!-- BEGIN cache_reserve:veil -->
 		<h2 class="acms-admin-admin-title2"><!--T-->公開 / 掲載終了 予定の記事<!--/T--></h2>
 		<div class="acms-admin-admin-table-scroll">
@@ -263,6 +271,7 @@
 		</div>
 		<!-- END cache_reserve:veil -->
 		<!-- END_MODULE Admin_Dashboard_ClearCache -->
+		<!-- END_MODULE Touch_SessionWithCompilation -->
 		@endsection
 
 		@section("dashboard-draft-list")

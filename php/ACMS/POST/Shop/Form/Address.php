@@ -1,185 +1,170 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-Pr3+
+<?php
+
+class ACMS_POST_Shop_Form_Address extends ACMS_POST_Shop
+{   
+    function post()
+    {
+        $this->initVars();
+
+        $Order = $this->extract('order');
+        $Order->setMethod('sendto', 'required', true);
+        $Order->validate(new ACMS_Validator());
+
+        if ( $this->alreadySubmit() ) {
+            $this->screenTrans();
+        }
+
+        // プライマリアドレスのバリデーションメソッドを追加
+        $Primary = $this->extract('primary');
+        $Primary->setMethod('name', 'required');
+        $Primary->setMethod('ruby', 'required');
+        $Primary->setMethod('zip', 'required');
+        $Primary->setMethod('prefecture', 'required');
+        $Primary->setMethod('city', 'required');
+        $Primary->setMethod('field_1', 'required');
+        $Primary->setMethod('telephone', 'required');
+        $Primary->validate(new ACMS_Validator());
+
+        // 送り先がセカンダリで指定されていれば，バリデーションメソッドを追加
+        $Secondary = $this->extract('secondary');
+        if ( $Order->get('sendto') == 'secondary' ) {
+            $Secondary->setMethod('name#2', 'required');
+            $Secondary->setMethod('ruby#2', 'required');
+            $Secondary->setMethod('zip#2', 'required');
+            $Secondary->setMethod('prefecture#2', 'required');
+            $Secondary->setMethod('city#2', 'required');
+            $Secondary->setMethod('field_1#2', 'required');
+            $Secondary->setMethod('telephone#2', 'required');
+        }
+        $Secondary->validate(new ACMS_Validator());
+
+        if ( $this->Post->isValidAll() ) {
+            $DB = DB::singleton(dsn());
+
+            /**
+             * プライマリアドレスをINSERTまたはUPDATEする
+             */
+            if ( !is_null(SUID) ) {
+                $SQL = SQL::newSelect('shop_address');
+                $SQL->addWhereOpr('address_user_id', SUID);
+                $SQL->addWhereOpr('address_primary', 'on');
+                $row = $DB->query($SQL->get(dsn()), 'row');
+
+                if ( empty($row) ) {
+                    $aid    = $DB->query(SQL::nextval('shop_address_id', dsn()), 'seq');
+                    $SQL    = SQL::newInsert('shop_address');
+                    $SQL->addInsert('address_id', $aid);
+                    $SQL->addInsert('address_name', $Primary->get('name'));
+                    $SQL->addInsert('address_ruby', $Primary->get('ruby'));
+                    $SQL->addInsert('address_country', $Primary->get('country'));
+                    $SQL->addInsert('address_zip', $Primary->get('zip'));
+                    $SQL->addInsert('address_prefecture', $Primary->get('prefecture'));
+                    $SQL->addInsert('address_city', $Primary->get('city'));
+                    $SQL->addInsert('address_field_1', $Primary->get('field_1'));
+                    $SQL->addInsert('address_field_2', $Primary->get('field_2'));
+                    $SQL->addInsert('address_telephone', $Primary->get('telephone'));
+                    $SQL->addInsert('address_user_id', SUID);
+                    $SQL->addInsert('address_blog_id', BID);
+                    $SQL->addInsert('address_primary', 'on');
+                    $DB->query($SQL->get(dsn()), 'exec');
+                } else {
+                    $SQL    = SQL::newUpdate('shop_address');
+                    $SQL->addUpdate('address_name', $Primary->get('name'));
+                    $SQL->addUpdate('address_ruby', $Primary->get('ruby'));
+                    $SQL->addUpdate('address_country', $Primary->get('country'));
+                    $SQL->addUpdate('address_zip', $Primary->get('zip'));
+                    $SQL->addUpdate('address_prefecture', $Primary->get('prefecture'));
+                    $SQL->addUpdate('address_city', $Primary->get('city'));
+                    $SQL->addUpdate('address_field_1', $Primary->get('field_1'));
+                    $SQL->addUpdate('address_field_2', $Primary->get('field_2'));
+                    $SQL->addUpdate('address_telephone', $Primary->get('telephone'));
+                    $SQL->addWhereOpr('address_user_id', SUID);
+                    $SQL->addWhereOpr('address_primary', 'on');
+                    $DB->query($SQL->get(dsn()), 'exec');
+                }
+            }
+            
+            /**
+             * セカンダリアドレスの指定があり，かつ登録フラグが立っていればINSERTを発行
+             */
+            if ( 1 
+                and !$Secondary->isNull()
+                and $Secondary->get('regist') == 'on'
+                and $Order->get('sendto') == 'secondary'
+                and !is_null(SUID)
+            ) {
+                $aid    = $DB->query(SQL::nextval('shop_address_id', dsn()), 'seq');
+                $SQL    = SQL::newInsert('shop_address');
+                $SQL->addInsert('address_id', $aid);
+                $SQL->addInsert('address_name', $Secondary->get('name#2'));
+                $SQL->addInsert('address_ruby', $Secondary->get('ruby#2'));
+                $SQL->addInsert('address_country', $Secondary->get('country#2'));
+                $SQL->addInsert('address_zip', $Secondary->get('zip#2'));
+                $SQL->addInsert('address_prefecture', $Secondary->get('prefecture#2'));
+                $SQL->addInsert('address_city', $Secondary->get('city#2'));
+                $SQL->addInsert('address_field_1', $Secondary->get('field_1#2'));
+                $SQL->addInsert('address_field_2', $Secondary->get('field_2#2'));
+                $SQL->addInsert('address_telephone', $Secondary->get('telephone#2'));
+                $SQL->addInsert('address_user_id', SUID);
+                $SQL->addInsert('address_blog_id', BID);
+                $SQL->addInsert('address_primary', 'off');
+                $DB->query($SQL->get(dsn()), 'exec');
+            }
+            $Secondary->delete('regist');
+
+            /**
+             * セッションに保存する送り先のアドレスを決める
+             */
+            $Address = new Field;
+            
+            if ( $Order->get('sendto') == 'primary' ) {
+
+                $Address = $Primary;
+
+            } elseif ( $Order->get('sendto') == 'secondary' ) {
+                $list = $Secondary->listFields();
+                foreach ( $list as $fd ) {
+                    $fix = str_replace('#2', '', $fd);
+                    $Address->set($fix, $Secondary->get($fd));
+                }
+            } elseif ( is_numeric($Order->get('sendto')) ) {
+                $SQL = SQL::newSelect('shop_address');
+                $SQL->addWhereOpr('address_user_id', SUID);
+                $SQL->addWhereOpr('address_id', $Order->get('sendto'));
+                
+                if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
+                    foreach ( $row as $key => $val ) {
+                        if ( $key == 'address_primary' ) continue;
+                        if ( $key == 'address_user_id' ) continue;
+                        $Address->set(substr($key, strlen('address_')), $val);
+                    }
+                }
+            }
+
+            //$SESSION =& Field::singleton('session');
+            $SESSION =& $this->openSession();
+
+            if ( is_null(SUID) ) {
+                $mail = $Primary->get('mail');
+                $Primary->delete('mail');
+                $SESSION->set('mail', $mail);
+                $Address->set('mail', $mail);
+            }
+
+            $SESSION->addChild('primary', $Primary);
+            $SESSION->addChild('address', $Address);
+            $SESSION->set('sendto', $Order->get('sendto'));
+
+            $this->closeSession($SESSION);
+
+            $step = 'deliver';
+
+        } else {
+            $step = 'address';
+
+        }
+
+        $this->Post->set('step', $step);
+        return $this->Post;
+    }
+}

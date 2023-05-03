@@ -252,11 +252,7 @@ class Engine
         $SQL->addUpdate('sequence_system_version', $this->systemVersion);
         $DB->query($SQL->get(dsn()), 'exec');
 
-        /**
-         * Empty Old Cache
-         */
-        $DB->query('TRUNCATE `' . DB_PREFIX . 'cache`', 'exec');
-        if ( Storage::exists(CACHE_DIR) ) {
+        if (Storage::exists(CACHE_DIR)) {
             $path = CACHE_DIR . '*.php';
             $config_files = glob($path);
             if ( is_array($config_files) ) {

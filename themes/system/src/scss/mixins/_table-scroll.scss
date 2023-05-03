@@ -1,0 +1,13 @@
+// ------------------------------
+// スクロールテーブル
+// ------------------------------
+@mixin table-scroll(){
+  margin-bottom: 15px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  th:not([style*="max-width"]),
+  td:not([style*="max-width"]) {
+    white-space: nowrap;
+  }
+}

@@ -20,7 +20,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         $DB     = DB::singleton(dsn());
 
         if ( 1
-            && !$this->Post->isNull() 
+            && !$this->Post->isNull()
             && $this->Post->get('refreshed') === 'refreshed'
         ) {
             $Tpl->add('refreshed');
@@ -108,7 +108,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                 or ( roleAvailableUser() && roleAuthorization('module_edit', $mbid) )
                 or sessionWithAdministration($mbid)
             ) {
-                $Tpl->add('notMinePermit', $this->getLinkVars($mbid, $row)); 
+                $Tpl->add('notMinePermit', $this->getLinkVars($mbid, $row));
             } else {
                 $Tpl->add('notMine');
             }
@@ -190,7 +190,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         return $Tpl->get();
     }
 
-    function getLinkVars($bid=BID, $module)
+    function getLinkVars($bid, $module)
     {
         $mid    = intval($module['module_id']);
         $rid    = intval($this->Get->get('rid'));

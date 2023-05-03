@@ -1,36 +1,34 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
+<?php
+
+class ACMS_POST_Config_DefaultExport extends ACMS_POST_Config_Export
+{
+    /**
+     * run
+     *
+     * @return Field
+     */
+    public function post()
+    {
+        @set_time_limit(0);
+
+        if ( !$this->checkAuth() ) {
+            return $this->Post;
+        }
+
+        try {
+            $export = App::make('config.export');
+            $export->exportDefaultConfig(BID);
+            $this->yaml = $export->getYaml();
+            $this->destPath = ARCHIVES_DIR . 'config.yaml';
+
+            Storage::remove($this->destPath);
+            $this->putYaml();
+            $this->download();
+        } catch ( \Exception $e ) {
+            $this->addError($e->getMessage());
+            Storage::remove($this->destPath);
+        }
+
+        return $this->Post;
+    }
+}

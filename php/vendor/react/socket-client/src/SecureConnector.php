@@ -20,8 +20,6 @@ class SecureConnector implements ConnectorInterface
     {
         $context = array(
             'SNI_enabled' => true,
-            'verify_peer' => false,
-            'verify_peer_name' => false,
             'peer_name' => $host
         );
 

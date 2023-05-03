@@ -1,57 +1,36 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-RTYJJWSkR+oxb4mTP0==
+<?php
+
+class ACMS_POST_Comment_Edit extends ACMS_POST_Comment
+{
+    function post()
+    {
+        $Comment    =& $this->Post->getChild('comment');
+        $Comment->setMethod('comment', 'cmidIsNull', !!CMID);
+
+        if ( $this->Post->isValidAll() ) {
+            if (
+                $suid   = intval(SUID)
+                and ( 0
+                    or sessionWithCompilation()
+                    or ACMS_RAM::entryUser(EID) == $suid
+                    or ACMS_RAM::commentUser(CMID) == $suid 
+                )
+            ) {
+                $Comment->setField('name', ACMS_RAM::commentName(CMID));
+                $Comment->setField('mail', ACMS_RAM::commentMail(CMID));
+                $Comment->setField('url', ACMS_RAM::commentUrl(CMID));
+                $Comment->setField('title', ACMS_RAM::commentTitle(CMID));
+                $Comment->setField('body', ACMS_RAM::commentBody(CMID));
+                $Comment->setField('pass', ACMS_RAM::commentPass(CMID));
+
+                $this->Post->set('action', 'update');
+                $this->Post->set('step', 'reapply');
+            } else {
+                $this->Post->set('action', 'auth');
+                $this->Post->set('step', 'auth');
+            }
+        }
+
+        return $this->Post;
+    }
+}

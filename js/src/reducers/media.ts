@@ -1,4 +1,5 @@
 import * as types from '../constants/media';
+import { MediaItem } from '../types/media';
 
 const initialState = {
   items: [],
@@ -16,63 +17,57 @@ const initialState = {
     order: 'upload_date-desc',
     keyword: '',
     tag: '',
-    date: ''
+    date: '',
   },
   formToken: '',
   label: '',
   upload: false,
-  loading: false
+  loading: false,
 };
 
+// eslint-disable-next-line default-param-last
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.SETMEDIALIST:
       const { items } = action;
-      return Object.assign({}, state, { items });
+      return { ...state, items };
     case types.SETMEDIALASTPAGE:
-      return Object.assign({}, state, { lastPage: action.page });
+      return { ...state, lastPage: action.page };
     case types.SETMEDIACONFIG:
-      return Object.assign({}, state, {
-        config: Object.assign({}, state.config, action.config)
-      });
+      return { ...state, config: { ...state.config, ...action.config } };
     case types.SETMEDIATAGS:
-      return Object.assign({}, state, { tags: action.tags });
+      return { ...state, tags: action.tags };
     case types.SETMEDIAARCHIVES:
-      return Object.assign({}, state, { archives: action.archives });
+      return { ...state, archives: action.archives };
     case types.SETITEM:
-      return Object.assign({}, state, { item: action.item });
+      return { ...state, item: action.item };
     case types.UPDATEMEDIALIST:
-      const index = state.items.findIndex((item) => {
+      const index = state.items.findIndex((item: MediaItem) => {
         if (item.media_id === action.item.media_id) {
           return true;
         }
         return false;
       });
-      return Object.assign({}, state, {
-        items: [
-          ...state.items.slice(0, index),
-          action.item,
-          ...state.items.slice(index + 1)
-        ]
-      });
+      return {
+        ...state,
+        items: [...state.items.slice(0, index), action.item, ...state.items.slice(index + 1)],
+      };
     case types.SETMEDIALARGESIZE:
-      return Object.assign({}, state, {
-        largeSize: action.largeSize
-      });
+      return { ...state, largeSize: action.largeSize };
     case types.SETFORMTOKEN:
-      return Object.assign({}, state, {}, { formToken: action.formToken });
+      return { ...state, formToken: action.formToken };
     case types.SETUPLOAD:
-      return Object.assign({}, state, { upload: action.upload });
+      return { ...state, upload: action.upload };
     case types.SETLABEL:
-      return Object.assign({}, state, { label: action.label });
+      return { ...state, label: action.label };
     case types.SETMEDIATOTAL:
-      return Object.assign({}, state, { total: action.total });
+      return { ...state, total: action.total };
     case types.SETLOADING:
-      return Object.assign({}, state, { loading: action.loading });
+      return { ...state, loading: action.loading };
     case types.SETSELECTEDTAGS:
-      return Object.assign({}, state, { selectedTags: action.tags });
+      return { ...state, selectedTags: action.tags };
     case types.SETMEDIAEXTENSIONS:
-      return Object.assign({}, state, { extensions: action.extensions });
+      return { ...state, extensions: action.extensions };
     default:
       return state;
   }

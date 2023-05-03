@@ -7,6 +7,8 @@ use DB;
 use SQL;
 use Field;
 use Auth;
+use Cache;
+use Config;
 use ACMS_RAM;
 use Symfony\Component\Yaml\Exception\DumpException;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -20,95 +22,17 @@ class Helper
     protected $config;
 
     /**
-     * @var array
+     * @var Cache
      */
-    private static $configCache = array();
+    protected $cache;
 
+    /**
+     * Construct
+     */
     public function __construct()
     {
-        $this->config =& Field::singleton('config');
-    }
-
-    /**
-     * タイプ指定によるデータベーススキーマの取得
-     *
-     * @param string $type
-     * @return array|mixed
-     */
-    public function getDataBaseSchemaInfo($type)
-    {
-        $defaultYaml = Storage::get(SCRIPT_DIR . PHP_DIR . "config/schema/db.${type}.yaml");
-        $config = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $defaultYaml));
-
-        if (Storage::exists(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
-            if ($extendYaml = Storage::get(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
-                if ($extendConfig = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $extendYaml))) {
-                    $config = array_merge($config, $extendConfig);
-                }
-            }
-        }
-        return $config;
-    }
-
-    /**
-     * yamlファイルのパース
-     *
-     * @param string $path
-     *
-     * @return mixed
-     * @throws ParseException
-     */
-    public function yamlLoad($path)
-    {
-        $data = null;
-        try {
-            if ( \Storage::exists($path) ) {
-                $data = @$this->yamlParse(\Storage::get($path));
-            }
-        } catch ( ParseException $e ) {
-            throw $e;
-        }
-
-        return $data;
-    }
-
-    /**
-     * データをyamlに変換してファイルに書き出し
-     *
-     * @param mixed $data
-     * @param string $path
-     *
-     * @return string
-     */
-    public function yamlDump($data, $path = '')
-    {
-        try {
-            $yaml = Yaml::dump($data, 2, 4);
-            if ( empty($path) ) {
-                return $yaml;
-            } else {
-                Storage::put($path, $yaml);
-            }
-        } catch ( DumpException $e ) {
-            throw $e;
-        }
-        return '';
-    }
-
-    /**
-     * yamlデータのパース
-     *
-     * @param string $yaml
-     *
-     * @return mixed
-     */
-    public function yamlParse($yaml)
-    {
-        // 古いyaml対策
-        if ( substr($yaml, 0, 3) === '---' ) {
-            $yaml = preg_replace('/([^-\'\s]+):\s*\'\'\s*-/', "$1: \n  - ", $yaml);
-        }
-        return Yaml::parse($yaml);
+        $this->config = &Field::singleton('config');
+        $this->cache = Cache::config();
     }
 
     /**
@@ -123,10 +47,10 @@ class Helper
      */
     public function load($bid = null, $rid = null, $mid = null, $setid = null)
     {
-        $args = func_get_args();
-        $id = md5('cache_' . serialize($args));
-        if ( isset(self::$configCache[$id]) ) return self::$configCache[$id];
-
+        $cacheKey = "cache-config-$bid-$rid-$mid-$setid";
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
         if ($mid) {
             $setid = null;
         }
@@ -139,31 +63,112 @@ class Helper
         $SQL->addWhereOpr('config_rule_id', $rid);
         $SQL->addWhereOpr('config_module_id', $mid);
         $SQL->addWhereOpr('config_set_id', $setid);
-        if ( !empty($bid) ) $SQL->addWhereOpr('config_blog_id', $bid);
+        if (!empty($bid)) $SQL->addWhereOpr('config_blog_id', $bid);
         $SQL->setOrder('config_sort');
         $q = $SQL->get(dsn());
 
         $all = $DB->query($q, 'all');
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $config->addField($row['config_key'], $row['config_value']);
         }
-
-        self::$configCache[$id] = $config;
+        $this->cache->put($cacheKey, $config, 0, $this->getCacheTags($bid, $rid, $mid, $setid));
 
         return $config;
     }
 
-    public function cacheClear()
+    /**
+     * コンフィグの保存
+     *
+     * @param Field $Config
+     * @param int $bid
+     * @param int $rid
+     * @param int $mid
+     * @param int $setid
+     *
+     * @return bool
+     */
+    public function saveConfig($Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
-        foreach (array('blog', 'config_set') as $type) {
-            $path = CACHE_DIR . $type . '_*_config.php';
-            $config_files = glob($path);
-            if ( is_array($config_files) ) {
-                foreach ( glob($path) as $val ) {
-                    Storage::remove($val);
-                }
+        if ($mid) {
+            $setid = null;
+        }
+        $this->resetConfig($Config, $bid, $rid, $mid, $setid);
+
+        $DB = DB::singleton(dsn());
+        $fds = $Config->listFields();
+        $sort = 1;
+
+        foreach ($fds as $fd) {
+            $vals = $Config->getArray($fd, true);
+            if (!count($vals)) $vals[0] = null;
+
+            foreach ($vals as $val) {
+                $SQL = SQL::newInsert('config');
+                $SQL->addInsert('config_key', $fd);
+                $SQL->addInsert('config_value', strval($val));
+                $SQL->addInsert('config_sort', $sort++);
+                $SQL->addInsert('config_rule_id', $rid);
+                $SQL->addInsert('config_module_id', $mid);
+                $SQL->addInsert('config_set_id', $setid);
+                $SQL->addInsert('config_blog_id', $bid);
+                $DB->query($SQL->get(dsn()), 'exec');
             }
         }
+        return true;
+    }
+
+    /**
+     * コンフィグのリセット
+     *
+     * @param Field $Config
+     * @param int $bid
+     * @param int $rid
+     * @param int $mid
+     * @param int $setid
+     *
+     * @return void
+     */
+    public function resetConfig($Config, $bid = BID, $rid = null, $mid = null, $setid = null)
+    {
+        $DB = DB::singleton(dsn());
+        $fds = $Config->listFields();
+
+        foreach ($fds as $fd) {
+            $SQL = SQL::newDelete('config');
+            if (preg_match('/^banner-(.*)@(.*)$/', $fd, $match)) {
+                $fd = 'banner-%@' . $match[2];
+                $SQL->addWhere('config_key LIKE \'' . $fd . '\'');
+            } else {
+                $SQL->addWhereOpr('config_key', $fd);
+            }
+            $SQL->addWhereOpr('config_rule_id', $rid);
+            $SQL->addWhereOpr('config_module_id', $mid);
+            $SQL->addWhereOpr('config_set_id', $setid);
+            $SQL->addWhereOpr('config_blog_id', $bid);
+            $DB->query($SQL->get(dsn()), 'exec');
+        }
+        $this->forgetCache($bid, $rid, $mid, $setid);
+    }
+
+    /**
+     * キャッシュクリア
+     *
+     * @param int $bid
+     * @param int $rid
+     * @param int $mid
+     * @param int $setid
+     */
+    public function forgetCache($bid = null, $rid = null, $mid = null, $setid = null)
+    {
+        $this->cache->invalidateTags($this->getCacheTags($bid, $rid, $mid, $setid));
+    }
+
+    /**
+     * キャッシュの全クリア
+     */
+    public function cacheClear()
+    {
+        $this->cache->flush();
     }
 
     /**
@@ -173,40 +178,15 @@ class Helper
      */
     public function loadDefault()
     {
-        static $cache = null;
-        if ( $cache !== null ) return $cache;
-
-        $cur = getcwd();
-        Storage::changeDir(SCRIPT_DIR);
-
-        $config = array();
-        $cache_file = CACHE_DIR . 'config_yaml.php';
-        $expire = date('Y-m-d H:i:s', Storage::lastModified(CONFIG_FILE));
-
-        if ( Storage::exists($cache_file) ) {
-            $cache_expire = date('Y-m-d H:i:s', Storage::lastModified($cache_file));
-        } else {
-            $cache_expire = '1000-01-01 00:00:00';
+        $cacheKey = 'cache-default-config';
+        if ($this->cache->has($cacheKey) && !$this->needToLoadDefaultConfig()) {
+            return $this->cache->get($cacheKey);
         }
-
-        if ( $expire > $cache_expire ) {
-            if ( !($config = $this->yamlLoad(CONFIG_DEFAULT_FILE)) ) die('config is broken');
-            if ( ($config_user = $this->yamlLoad(CONFIG_FILE)) ) {
-                $config = array_merge($config, $config_user);
-            }
-            if ( defined('CACHE_DIR') ) {
-                try {
-                    Storage::makeDirectory(CACHE_DIR);
-                    $file = "<?php" . PHP_EOL . '$config = ' . var_export($config, true) . ";";
-                    Storage::put($cache_file, $file);
-                } catch ( \Exception $e ) {}
-            }
-        } else {
-            require $cache_file;
+        if (!($config = $this->yamlLoad(CONFIG_DEFAULT_FILE))) die('config is broken');
+        if ($configUser = $this->yamlLoad(CONFIG_FILE)) {
+            $config = array_merge($config, $configUser);
         }
-        Storage::changeDir($cur);
-        $cache = $config;
-
+        $this->cache->put($cacheKey, $config);
         return $config;
     }
 
@@ -217,37 +197,17 @@ class Helper
      */
     public function loadDefaultField()
     {
-        $cur = getcwd();
-        Storage::changeDir(SCRIPT_DIR);
+        $cacheKey = 'cache-default-config-field';
 
-        $config = array();
-        $cache_file = CACHE_DIR . 'default_config.php';
-        $expire = date('Y-m-d H:i:s', Storage::lastModified(CONFIG_FILE));
-        $Config = new Field();
-
-        if ( Storage::exists($cache_file) ) {
-            $cache_expire = date('Y-m-d H:i:s', Storage::lastModified($cache_file));
-        } else {
-            $cache_expire = '1000-01-01 00:00:00';
+        if ($this->cache->has($cacheKey) && !$this->needToLoadDefaultConfig()) {
+            return $this->cache->get($cacheKey);
         }
-        if ( $expire > $cache_expire ) {
-            $config = $this->loadDefault();
-            foreach ( $config as $key => $val ) $Config->setField($key, $val);
-
-            if ( defined('CACHE_DIR') ) {
-                try {
-                    Storage::makeDirectory(CACHE_DIR);
-                    $file = "<?php" . PHP_EOL . '$config = ' . var_export($Config->_aryField, true) . ";";
-                    Storage::put($cache_file, $file);
-                } catch ( \Exception $e ) {}
-            }
-        } else {
-            require $cache_file;
-            $Config->_aryField = $config;
+        $config = new Field();
+        foreach ($this->loadDefault() as $key => $val) {
+            $config->setField($key, $val);
         }
-        Storage::changeDir($cur);
-
-        return $Config;
+        $this->cache->put($cacheKey, $config);
+        return $config;
     }
 
     /**
@@ -255,33 +215,7 @@ class Helper
      */
     public function loadBlogField($bid)
     {
-        $cur = getcwd();
-        Storage::changeDir(SCRIPT_DIR);
-
-        $config = null;
-        $cache_file = CACHE_DIR . 'blog_' . $bid . '_config.php';
-
-        $Field = null;
-
-        if ( Storage::exists($cache_file) ) {
-            require $cache_file;
-
-            $Field = new Field();
-            $Field->_aryField = $config;
-        } else {
-            $Field = $this->loadBlogConfig($bid);
-
-            if ( defined('CACHE_DIR') ) {
-                try {
-                    Storage::makeDirectory(CACHE_DIR);
-                    $file = "<?php" . PHP_EOL . '$config = ' . var_export($Field->_aryField, true) . ";";
-                    Storage::put($cache_file, $file);
-                } catch ( \Exception $e ) {}
-            }
-        }
-        Storage::changeDir($cur);
-
-        return $Field;
+        return $this->loadBlogConfig($bid);
     }
 
     /**
@@ -289,33 +223,7 @@ class Helper
      */
     public function loadConfigSetField($id)
     {
-        $cur = getcwd();
-        Storage::changeDir(SCRIPT_DIR);
-
-        $config = null;
-        $cache_file = CACHE_DIR . 'config_set_' . $id . '_config.php';
-
-        $Field = null;
-
-        if ( Storage::exists($cache_file) ) {
-            require $cache_file;
-
-            $Field = new Field();
-            $Field->_aryField = $config;
-        } else {
-            $Field = $this->loadConfigSet($id);
-
-            if ( defined('CACHE_DIR') ) {
-                try {
-                    Storage::makeDirectory(CACHE_DIR);
-                    $file = "<?php" . PHP_EOL . '$config = ' . var_export($Field->_aryField, true) . ";";
-                    Storage::put($cache_file, $file);
-                } catch ( \Exception $e ) {}
-            }
-        }
-        Storage::changeDir($cur);
-
-        return $Field;
+        return $this->loadConfigSet($id);
     }
 
     /**
@@ -336,13 +244,6 @@ class Helper
     public function loadBlogConfigSet($bid)
     {
         $configSetId = ACMS_RAM::blogConfigSetId($bid);
-
-        if (DEBUG_MODE) {
-            if ($configSetId) {
-                return $this->loadConfigSet($configSetId);
-            }
-            return $this->loadBlogConfig($bid);
-        }
         if ($configSetId) {
             return $this->loadConfigSetField($configSetId);
         }
@@ -360,9 +261,6 @@ class Helper
         $configSetId = ACMS_RAM::categoryConfigSetId($cid);
         if (empty($configSetId)) {
             return false;
-        }
-        if (DEBUG_MODE) {
-            return $this->loadConfigSet($configSetId);
         }
         return $this->loadConfigSetField($configSetId);
     }
@@ -389,11 +287,17 @@ class Helper
         if (empty($id)) {
             return '';
         }
+        $cacheKey = "cache-config-set-name-$id";
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
         $sql = SQL::newSelect('config_set');
         $sql->setSelect('config_set_name');
         $sql->addWhereOpr('config_set_id', $id);
+        $name = DB::query($sql->get(dsn()), 'one');
 
-        return DB::query($sql->get(dsn()), 'one');
+        $this->cache->put($cacheKey, $name);
+        return $name;
     }
 
     /**
@@ -432,7 +336,7 @@ class Helper
      */
     public function loadRuleConfig($rid, $setid = null)
     {
-        if ( $this->get('global_rule_config_load') === 'global' ) {
+        if ($this->get('global_rule_config_load') === 'global') {
             return $this->load(null, $rid);
         }
         $bid = BID;
@@ -475,17 +379,17 @@ class Helper
     {
         $Get = new Field(Field::singleton('get'));
 
-        if ( !($rid = intval($Get->get('rid'))) ) {
+        if (!($rid = intval($Get->get('rid')))) {
             $rid = null;
         }
-        if ( !($mid = intval($Get->get('mid'))) ) {
+        if (!($mid = intval($Get->get('mid')))) {
             $mid = null;
         }
 
-        if ( $rid > 0 && $mid > 0 ) {
+        if ($rid > 0 && $mid > 0) {
             $Rconfig = $this->load(null, $rid, $mid);
             $Rconfig = $Rconfig->listFields();
-            if ( empty($Rconfig) ) {
+            if (empty($Rconfig)) {
                 return false;
             }
         }
@@ -536,81 +440,6 @@ class Helper
     }
 
     /**
-     * コンフィグの保存
-     *
-     * @param Field $Config
-     * @param int $bid
-     * @param int $rid
-     * @param int $mid
-     * @param int $setid
-     *
-     * @return bool
-     */
-    public function saveConfig($Config, $bid = BID, $rid = null, $mid = null, $setid = null)
-    {
-        if ($mid) {
-            $setid = null;
-        }
-        $this->resetConfig($Config, BID, $rid, $mid, $setid);
-        self::$configCache = array();
-
-        $DB = DB::singleton(dsn());
-        $fds = $Config->listFields();
-        $sort = 1;
-
-
-        foreach ( $fds as $fd ) {
-            $vals = $Config->getArray($fd, true);
-            if ( !count($vals) ) $vals[0] = null;
-
-            foreach ( $vals as $val ) {
-                $SQL = SQL::newInsert('config');
-                $SQL->addInsert('config_key', $fd);
-                $SQL->addInsert('config_value', strval($val));
-                $SQL->addInsert('config_sort', $sort++);
-                $SQL->addInsert('config_rule_id', $rid);
-                $SQL->addInsert('config_module_id', $mid);
-                $SQL->addInsert('config_set_id', $setid);
-                $SQL->addInsert('config_blog_id', $bid);
-                $DB->query($SQL->get(dsn()), 'exec');
-            }
-        }
-        return true;
-    }
-
-    /**
-     * コンフィグのリセット
-     *
-     * @param Field $Config
-     * @param int $bid
-     * @param int $rid
-     * @param int $mid
-     * @param int $setid
-     *
-     * @return void
-     */
-    public function resetConfig($Config, $bid = BID, $rid = null, $mid = null, $setid = null)
-    {
-        $DB = DB::singleton(dsn());
-        $fds = $Config->listFields();
-
-        foreach ( $fds as $fd ) {
-            $SQL = SQL::newDelete('config');
-            if ( preg_match('/^banner-(.*)@(.*)$/', $fd, $match) ) {
-                $fd = 'banner-%@' . $match[2];
-                $SQL->addWhere('config_key LIKE \'' . $fd . '\'');
-            } else {
-                $SQL->addWhereOpr('config_key', $fd);
-            }
-            $SQL->addWhereOpr('config_rule_id', $rid);
-            $SQL->addWhereOpr('config_module_id', $mid);
-            $SQL->addWhereOpr('config_set_id', $setid);
-            $SQL->addWhereOpr('config_blog_id', $bid);
-            $DB->query($SQL->get(dsn()), 'exec');
-        }
-    }
-
-    /**
      * コンフィグへのアクセス権限チェック
      *
      * @param Field $Config
@@ -627,17 +456,17 @@ class Helper
         $id = null;
 
         // action
-        if ( $mid ) {
+        if ($mid) {
             $action = 'module_edit';
-        } else if ( ADMIN === 'publish_index' ) {
+        } else if (ADMIN === 'publish_index') {
             $action = 'publish_edit';
         }
 
         // id
-        if ( $mid && $rid ) {
+        if ($mid && $rid) {
             $key = 'rid_' . $rid;
             $id = 'mid_' . $mid;
-        } else if ( $mid ) {
+        } else if ($mid) {
             $key = 'mid';
             $id = $mid;
         } else if ($setid && $rid) {
@@ -646,25 +475,112 @@ class Helper
         } else if ($setid) {
             $key = 'setid';
             $id = $setid;
-        } else if ( $rid ) {
+        } else if ($rid) {
             $key = 'rid';
             $id = $rid;
         }
 
         // check
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             // ロールで権限管理
-            $Config->setMethod('config', 'operative', roleAuthorization($action, BID) ?
-                true : Auth::checkShortcut('Config', ADMIN, $key, $id)
+            $Config->setMethod(
+                'config',
+                'operative',
+                roleAuthorization($action, BID) ?
+                    true : Auth::checkShortcut('Config', ADMIN, $key, $id)
             );
         } else {
             // 通常権限
-            $Config->setMethod('config', 'operative', sessionWithAdministration() ?
-                true : Auth::checkShortcut('Config', ADMIN, $key, $id)
+            $Config->setMethod(
+                'config',
+                'operative',
+                sessionWithAdministration() ?
+                    true : Auth::checkShortcut('Config', ADMIN, $key, $id)
             );
         }
 
         return $Config;
+    }
+
+    /**
+     * タイプ指定によるデータベーススキーマの取得
+     *
+     * @param string $type
+     * @return array|mixed
+     */
+    public function getDataBaseSchemaInfo($type)
+    {
+        $defaultYaml = Storage::get(SCRIPT_DIR . PHP_DIR . "config/schema/db.${type}.yaml");
+        $config = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $defaultYaml));
+
+        if (Storage::exists(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
+            if ($extendYaml = Storage::get(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
+                if ($extendConfig = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $extendYaml))) {
+                    $config = array_merge($config, $extendConfig);
+                }
+            }
+        }
+        return $config;
+    }
+
+    /**
+     * yamlファイルのパース
+     *
+     * @param string $path
+     *
+     * @return mixed
+     * @throws ParseException
+     */
+    public function yamlLoad($path)
+    {
+        $data = null;
+        try {
+            if (Storage::exists($path)) {
+                $data = @$this->yamlParse(Storage::get($path));
+            }
+        } catch (ParseException $e) {
+            throw $e;
+        }
+        return $data;
+    }
+
+    /**
+     * データをyamlに変換してファイルに書き出し
+     *
+     * @param mixed $data
+     * @param string $path
+     *
+     * @return string
+     */
+    public function yamlDump($data, $path = '')
+    {
+        try {
+            $yaml = Yaml::dump($data, 2, 4);
+            if (empty($path)) {
+                return $yaml;
+            } else {
+                Storage::put($path, $yaml);
+            }
+        } catch (DumpException $e) {
+            throw $e;
+        }
+        return '';
+    }
+
+    /**
+     * yamlデータのパース
+     *
+     * @param string $yaml
+     *
+     * @return mixed
+     */
+    public function yamlParse($yaml)
+    {
+        // 古いyaml対策
+        if (substr($yaml, 0, 3) === '---') {
+            $yaml = preg_replace('/([^-\'\s]+):\s*\'\'\s*-/', "$1: \n  - ", $yaml);
+        }
+        return Yaml::parse($yaml);
     }
 
     /**
@@ -678,18 +594,18 @@ class Helper
     {
         //-----------------
         // image unit size
-        if ( $criterions = $Config->getArray('column_image_size_criterion') ) {
+        if ($criterions = $Config->getArray('column_image_size_criterion')) {
             $sizes = $Config->getArray('column_image_size');
-            foreach ( $criterions as $i => $criterion ) {
-                if ( empty($criterion) || empty($sizes[$i]) ) continue;
+            foreach ($criterions as $i => $criterion) {
+                if (empty($criterion) || empty($sizes[$i])) continue;
                 $sizes[$i] = $criterion . $sizes[$i];
             }
             $Config->set('column_image_size', $sizes);
         }
-        if ( $large_criterion = $Config->get('image_size_large_criterion') ) {
+        if ($large_criterion = $Config->get('image_size_large_criterion')) {
             $Config->set('image_size_large', $large_criterion . $Config->get('image_size_large'));
         }
-        if ( $tiny_criterion = $Config->get('image_size_tiny_criterion') ) {
+        if ($tiny_criterion = $Config->get('image_size_tiny_criterion')) {
             $Config->set('image_size_tiny', $tiny_criterion . $Config->get('image_size_tiny'));
         }
 
@@ -700,8 +616,8 @@ class Helper
 
         //------------
         // theme
-        if ( $theme = $Config->get('theme') ) {
-            $_Config =& Field::singleton('config');
+        if ($theme = $Config->get('theme')) {
+            $_Config = &Field::singleton('config');
             $_Config->set('theme', $theme);
         }
 
@@ -713,17 +629,17 @@ class Helper
             'file_extension_movie',
             'file_extension_audio',
         );
-        foreach ( $listNameAry as $listName ) {
+        foreach ($listNameAry as $listName) {
             // リストがなければ処理しない
-            if ( !$Config->isExists($listName . '@list') ) {
+            if (!$Config->isExists($listName . '@list')) {
                 continue;
             }
 
             // リストを拡張子に分解してセット
-            if ( $list = $Config->get($listName . '@list') ) {
+            if ($list = $Config->get($listName . '@list')) {
                 $Config->setField($listName);
                 $exts = array_unique(preg_split(REGEXP_SEPARATER, $list, -1, PREG_SPLIT_NO_EMPTY));
-                foreach ( $exts as $ext ) {
+                foreach ($exts as $ext) {
                     $Config->addField($listName, $ext);
                 }
             } else {
@@ -736,15 +652,15 @@ class Helper
 
         //------------
         // navigation
-        if ( $Config->getArray('navigation@sort', true) ) {
+        if ($Config->getArray('navigation@sort', true)) {
             $all = array();
             $Sort = array();
-            foreach ( $Config->getArray('navigation@sort', true) as $i => $sort ) {
-                if ( !$label = $Config->get('navigation_label', 0, $i) ) continue;
+            foreach ($Config->getArray('navigation@sort', true) as $i => $sort) {
+                if (!$label = $Config->get('navigation_label', 0, $i)) continue;
                 $pid = intval($Config->get('navigation_parent', 0, $i));
                 $id = intval($i + 1);
                 // 自分自身を親として参照されたときは，親の設定を解除する
-                if ( $pid === $id ) {
+                if ($pid === $id) {
                     $pid = 0;
                 }
 
@@ -766,7 +682,7 @@ class Helper
                 $Config->deleteField('navigation_a_attr-' . $i);
             }
 
-            if ( count($all) ) {
+            if (count($all)) {
                 $Config->setField('navigation_label');
                 $Config->setField('navigation_parent');
                 $Config->setField('navigation_uri');
@@ -776,7 +692,7 @@ class Helper
                 $Config->setField('navigation_a_attr');
 
                 $Parent = array();
-                foreach ( $Sort as $pid => $ids ) {
+                foreach ($Sort as $pid => $ids) {
                     asort($ids);
                     $Parent[$pid] = array_keys($ids);
                 }
@@ -784,9 +700,9 @@ class Helper
                 $i = 1;
                 $map = array(0 => 0);
                 $pidStack = array(0);
-                while ( count($pidStack) ) {
+                while (count($pidStack)) {
                     $pid = array_pop($pidStack);
-                    while ( $id = array_shift($Parent[$pid]) ) {
+                    while ($id = array_shift($Parent[$pid])) {
                         $map[$id] = $i;
 
                         $Config->addField('navigation_label', $all[$id]['label']);
@@ -798,7 +714,7 @@ class Helper
                         $Config->addField('navigation_parent', isset($all[$pid]) ? $map[$pid] : 0);
                         $i++;
 
-                        if ( isset($Parent[$id]) ) {
+                        if (isset($Parent[$id])) {
                             $pidStack[] = $pid;
                             $pidStack[] = $id;
                             break;
@@ -812,7 +728,7 @@ class Helper
 
         //--------
         // banner
-        if ( $aryId = $Config->getArray('banner@id') ) {
+        if ($aryId = $Config->getArray('banner@id')) {
             $Config->setField('banner_status');
             $Config->setField('banner_src');
             $Config->setField('banner_img');
@@ -828,7 +744,7 @@ class Helper
 
             $aryBanner = array();
             $arySort = array();
-            foreach ( $aryId as $id ) {
+            foreach ($aryId as $id) {
                 $sort = $Config->get('banner-' . $id . '@sort');
                 $status = $Config->get('banner-' . $id . '@status');
                 $target = $Config->get('banner-' . $id . '@target');
@@ -863,7 +779,7 @@ class Helper
                 $Config->deleteField('banner-' . $id . '@dateend');
                 $Config->deleteField('banner-' . $id . '@timeend');
 
-                if ( empty($src) and empty($img) ) continue;
+                if (empty($src) and empty($img)) continue;
 
                 $aryBanner[$id] = array(
                     'banner_status' => $status,
@@ -884,8 +800,8 @@ class Helper
 
             $Config->deleteField('banner@id');
             asort($arySort);
-            foreach ( array_keys($arySort) as $id ) {
-                foreach ( $aryBanner[$id] as $key => $val ) {
+            foreach (array_keys($arySort) as $id) {
+                foreach ($aryBanner[$id] as $key => $val) {
                     $Config->addField($key, $val);
                 }
             }
@@ -893,18 +809,74 @@ class Helper
         return $Config;
     }
 
-    protected function fixSize(& $Config, $key)
+    /**
+     * デフォルトのコンフィグをYAMLからロードする必要があるか判定
+     *
+     * @return boolean
+     */
+    protected function needToLoadDefaultConfig()
+    {
+        static $need = null;
+        if ($need !== null) {
+            return $need;
+        }
+        $cur = getcwd();
+        Storage::changeDir(SCRIPT_DIR);
+        $cacheFile = CACHE_DIR . 'cache_default_config';
+        $expire = date('Y-m-d H:i:s', Storage::lastModified(CONFIG_FILE));
+        if (Storage::exists($cacheFile)) {
+            $cacheExpire = date('Y-m-d H:i:s', Storage::lastModified($cacheFile) + 10);
+        } else {
+            $cacheExpire = '1000-01-01 00:00:00';
+        }
+        if ($expire > $cacheExpire) {
+            if (defined('CACHE_DIR')) {
+                try {
+                    Storage::makeDirectory(CACHE_DIR);
+                    Storage::put($cacheFile, 'cache');
+                } catch (\Exception $e) {
+                }
+            }
+            $need = true;
+            return true;
+        }
+        Storage::changeDir($cur);
+
+        $need = false;
+        return false;
+    }
+
+    protected function fixSize(&$Config, $key)
     {
         $map_sizes = $Config->getArray($key);
-        if ( empty($map_sizes) ) {
+        if (empty($map_sizes)) {
             return;
         }
 
-        foreach ( $map_sizes as $i => $size ) {
+        foreach ($map_sizes as $i => $size) {
             $size = preg_replace('/\s/u', '', $size);
             $size = preg_replace('/[^\d]/u', 'x', $size);
             $map_sizes[$i] = $size;
         }
         $Config->set($key, $map_sizes);
+    }
+
+    /**
+     * キャッシュのためのタグを取得
+     *
+     * @param int $bid
+     * @param int $rid
+     * @param int $mid
+     * @param int $setid
+     */
+    protected function getCacheTags($bid, $rid, $mid, $setid)
+    {
+        $cacheTags = [];
+        if (!empty($bid)) $cacheTags[] = "config-bid-$bid";
+        if (!empty($rid)) $cacheTags[] = "config-rid-$rid";
+        if (!empty($mid)) $cacheTags[] = "config-mid-$mid";
+        if (!empty($setid)) $cacheTags[] = "config-setid-$setid";
+
+        return $cacheTags;
     }
 }

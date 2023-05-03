@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { call, put, takeEvery, select } from 'redux-saga/effects';
+import {
+  call, put, takeEvery, select,
+} from 'redux-saga/effects';
 
 import * as types from '../constants/media';
 import {
@@ -11,7 +13,7 @@ import {
   setMediaTags,
   setMediaTotal,
   setLoading,
-  setMediaExtensions
+  setMediaExtensions,
 } from '../actions/media';
 
 function fetchJSON(url) {
@@ -23,35 +25,41 @@ function fetchJSON(url) {
 }
 
 function* fetchTagList() {
-  const url = ACMS.Library.acmsLink({
-    bid: ACMS.Config.bid,
-    tpl: 'ajax/edit/media-tag.json',
-  }, false);
+  const url = ACMS.Library.acmsLink(
+    {
+      bid: ACMS.Config.bid,
+      tpl: 'ajax/edit/media-tag.json',
+    },
+    false,
+  );
   const data = yield call(fetchJSON, url);
   yield put(setMediaTags(data));
 }
 
 function* fetchMediaList({ config = {} }) {
   const state = yield select();
-  const setting = Object.assign({}, state.config, config);
-  const url = ACMS.Library.acmsLink({
-    tpl: 'ajax/edit/media.json',
-    bid: ACMS.Config.bid,
-    page: setting.page,
-    tag: setting.tag,
-    keyword: setting.keyword,
-    order: setting.order,
-    limit: setting.limit,
-    date: setting.date,
-    Query: {
-      type: setting.filetype,
-      ext: setting.fileext,
-      year: setting.year,
-      month: setting.month,
-      owner: setting.owner,
-      cache: new Date().getTime()
-    }
-  }, false);
+  const setting = { ...state.config, ...config };
+  const url = ACMS.Library.acmsLink(
+    {
+      tpl: 'ajax/edit/media.json',
+      bid: ACMS.Config.bid,
+      page: setting.page,
+      tag: setting.tag,
+      keyword: setting.keyword,
+      order: setting.order,
+      limit: setting.limit,
+      date: setting.date,
+      Query: {
+        type: setting.filetype,
+        ext: setting.fileext,
+        year: setting.year,
+        month: setting.month,
+        owner: setting.owner,
+        cache: new Date().getTime(),
+      },
+    },
+    false,
+  );
   yield put(setLoading(true));
   yield put(setLoading(false));
   const data = yield call(fetchJSON, url);
@@ -62,11 +70,9 @@ function* fetchMediaList({ config = {} }) {
         return true;
       }
       return false;
-    })
+    });
     if (find) {
-      return Object.assign({}, item, {
-        checked: find.checked
-      });
+      return { ...item, checked: find.checked };
     }
     return item;
   });

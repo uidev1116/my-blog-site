@@ -1,7 +1,6 @@
 <?php
 
 use Acms\Services\Update\System\CheckForUpdate;
-use Acms\Services\Facades\Process;
 
 class ACMS_GET_Admin_Top extends ACMS_GET_Admin
 {
@@ -27,16 +26,13 @@ class ACMS_GET_Admin_Top extends ACMS_GET_Admin
 
         if (1
             && sessionWithAdministration()
+            && config('system_update_range') !== 'none'
             && RBID === BID
             && SBID === BID
             && ($checkUpdateService->getFinalCheckTime() + 60 * 60) < REQUEST_TIME
         ) {
             try {
-                $manager = Process::newProcessManager();
-                $manager->addTask(function () use ($checkUpdateService) {
-                    $checkUpdateService->check(phpversion(), CheckForUpdate::PATCH_VERSION);
-                });
-                $manager->run();
+                $checkUpdateService->check(phpversion(), CheckForUpdate::PATCH_VERSION);
             } catch (\Exception $e) {}
         }
 

@@ -13,7 +13,10 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
         if (!sessionWithContribution()) {
             die('{}');
         }
-        $filterCid = intval(config('entry_edit_category_filter', 0));
+        $filterCid = 0;
+        if ($this->Get->get('narrowDown') === 'true') {
+            $filterCid = intval(config('entry_edit_category_filter', 0));
+        }
         $order = 'sort-asc';
         $order2 = config('category_select_global_order');
         if (!empty($order2)) {

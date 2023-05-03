@@ -18,8 +18,11 @@ class ACMS_GET_Admin_InjectTemplate extends ACMS_GET
         foreach ($all as $item) {
             $template .= "<!--#include file=\"$item\" vars=\"\"-->\n";
         }
-        if ( !$txt = spreadTemplate(resolvePath(setGlobalVars($template), config('theme'), '/')) ) {
+        if (!$txt = spreadTemplate(resolvePath(setGlobalVars($template), config('theme'), '/'))) {
             return '';
+        }
+        if (isTemplateCacheEnabled()) {
+            $txt = setGlobalVars($txt);
         }
         return $txt;
     }

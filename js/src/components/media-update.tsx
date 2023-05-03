@@ -8,22 +8,17 @@ import reducer from '../reducers/media';
 import rootSaga from '../sagas/media';
 
 const sagaMiddleware = createSagaMiddleware();
-const store = createStore(
-  reducer,
-  applyMiddleware(sagaMiddleware)
-);
+const store = createStore(reducer, applyMiddleware(sagaMiddleware));
 
 sagaMiddleware.run(rootSaga);
 
-type MediaUpdate = {
-  mid: string,
-  onClose: Function,
-  onUpdate: Function
-}
+type MediaUpdateStore = {
+  mid: string;
+  onClose: () => void;
+  onUpdate: (item: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
+};
 
-export default ({
-  mid, onClose, onUpdate
-}: MediaUpdate) => (
+export default ({ mid, onClose, onUpdate }: MediaUpdateStore) => (
   <Provider store={store}>
     <MediaUpdate mid={mid} onClose={onClose} onUpdate={onUpdate} />
   </Provider>

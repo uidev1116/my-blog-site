@@ -42,7 +42,7 @@ class Queue
      * @param int $size
      * @param React\EventLoop\LibEventLoop|React\EventLoop\StreamSelectLoop $loop
      */
-    public function __construct($size = 10, $loop)
+    public function __construct($size, $loop)
     {
         $this->workingTableSize = $size;
         $this->queue = array();

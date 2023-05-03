@@ -1,53 +1,46 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-FRwX0/l44m==
+<?php
+
+class ACMS_POST_Entry_Index_Trash extends ACMS_POST_Trash
+{
+    function post()
+    {
+        $this->Post->reset(true);
+        $this->Post->setMethod('checks', 'required');
+
+        if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
+            $this->Post->setMethod('entry', 'operative', sessionWithApprovalAdministrator(BID, CID));
+        } else if ( roleAvailableUser() ) {
+            $this->Post->setMethod('entry', 'operative', roleAuthorization('entry_delete', BID));
+        } else {
+            $this->Post->setMethod('entry', 'operative', sessionWithContribution());
+        }
+        $this->Post->validate(new ACMS_Validator());
+
+        if ( $this->Post->isValidAll() ) {
+            @set_time_limit(0);
+            $count = count($this->Post->getArray('checks'));
+
+            foreach ($this->Post->getArray('checks') as $eid) {
+                $id     = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
+                $bid    = $id[0];
+                $eid    = $id[1];
+
+                if ( 0
+                    || !roleAvailableUser()
+                    || ( roleAvailableUser() && roleAuthorization('entry_delete', $bid, $eid) )
+                ) {
+                    if (HOOK_ENABLE && $count === 1) {
+                        Webhook::call($bid, 'entry', 'entry:deleted', array($eid, null));
+                    }
+                    $this->trash($eid);
+                }
+
+                // $this->redirect(acmsLink(array(
+                //     'bid'   => $bid,
+                //     'eid'   => $eid,
+                // )));
+            }
+        }
+        return $this->Post;
+    }
+}

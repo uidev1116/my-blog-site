@@ -21,10 +21,10 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
             if ($workflow->get('workflow_type') === 'parallel') {
                 return '';
             }
-            //-------------------------------------------
+            //-----------------------------------------
             // ワークフローの逆承認順序でユーザグループを列挙
             $lastGroup = $workflow->getArray('workflow_last_group');
-            foreach ($workflow->getArray('workflow_route_group') as $groupId) {
+            foreach (array_reverse($workflow->getArray('workflow_route_group')) as $groupId) {
                 $userGroup[] = $groupId;
             }
             $nextGroup = array();
@@ -87,6 +87,8 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
                 foreach ($all as $user) {
                     $user['icon'] = loadUserIcon($user['user_id']);
                     $user['nextGroup'] = $user['usergroup_id'];
+                    $userField = loadUserField($user['user_id']);
+                    $user += $this->buildField($userField, $Tpl, 'user:loop');
                     $Tpl->add('user:loop', $user);
                 }
             }
@@ -115,6 +117,8 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
                 foreach ($all as $user) {
                     $user['icon'] = loadUserIcon($user['user_id']);
                     $user['nextGroup'] = 0;
+                    $userField = loadUserField($user['user_id']);
+                    $user += $this->buildField($userField, $Tpl, 'user:loop');
                     $Tpl->add('user:loop', $user);
                 }
                 $Tpl->add(null, $vars);

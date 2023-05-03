@@ -2,7 +2,7 @@ import { ExtendedFile } from '../types/media';
 
 export default (files: FileList): Promise<ExtendedFile[]> => {
   const promiseArr = [];
-  [].forEach.call(files, ((f: File) => {
+  [].forEach.call(files, (f: File) => {
     const promise = new Promise((resolve) => {
       const objFileReader = new FileReader();
       if (f.type.match('image.*')) {
@@ -10,7 +10,7 @@ export default (files: FileList): Promise<ExtendedFile[]> => {
           resolve({
             file: f,
             filetype: 'image',
-            preview: objFileReader.result
+            preview: objFileReader.result,
           });
         };
         objFileReader.readAsDataURL(f);
@@ -18,7 +18,7 @@ export default (files: FileList): Promise<ExtendedFile[]> => {
         objFileReader.onload = () => {
           resolve({
             file: f,
-            filetype: 'file'
+            filetype: 'file',
           });
         };
         objFileReader.readAsDataURL(f);
@@ -28,6 +28,6 @@ export default (files: FileList): Promise<ExtendedFile[]> => {
       };
     });
     promiseArr.push(promise);
-  }));
+  });
   return Promise.all(promiseArr);
 };

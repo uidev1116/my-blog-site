@@ -19,6 +19,11 @@ class ThemeGenerator extends Generator
     protected $numberOfTasks;
 
     /**
+     * @var array
+     */
+    protected $exclusionList = array();
+
+    /**
      * @param mixed $sourceTheme
      */
     public function setSourceTheme($sourceTheme)
@@ -36,6 +41,11 @@ class ThemeGenerator extends Generator
         return $this->numberOfTasks;
     }
 
+    public function setExclusionList($list)
+    {
+        $this->exclusionList = $list;
+    }
+
     /**
      * @return void
      */
@@ -49,14 +59,18 @@ class ThemeGenerator extends Generator
             ->in($this->sourceTheme)
             ->notPath('include')
             ->notPath('admin')
-            ->name('/\.(html|htm)$/')
-            ->files();
+            ->name('/\.(html|htm|json)$/');
 
         if (config('forbid_direct_access_tpl') !== 'off') {
             $iterator->notPath(config('forbid_direct_access_tpl'));
             $iterator->notName(config('forbid_direct_access_tpl'));
         }
-
+        foreach ($this->exclusionList as $path) {
+            if (!empty($path)) {
+                $iterator->notPath($path);
+            }
+        }
+        $iterator->files();
         $this->numberOfTasks = iterator_count($iterator);
         $this->logger->start($this->getName(), $this->getTasks());
 

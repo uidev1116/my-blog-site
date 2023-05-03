@@ -27,7 +27,7 @@ class ACMS_Filter
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
      * @param int $bid
      * @param string $axis self|descendant|ancestor
-     * @param null $scope
+     * @param null $scope
      * @return void
      */
     public static function blogTree(& $SQL, $bid, $axis='self', $scope=null)
@@ -471,7 +471,7 @@ class ACMS_Filter
             $SQL->addWhere($SQLWhereSession);
         } else if ( 1
             && !sessionWithCompilation()
-            && !approvalAvailableUser(SUID)
+            && (config('approval_contributor_edit_auth') === 'on' || !approvalAvailableUser(SUID))
         ) {
             if ( 1
                 && roleAvailableUser()
@@ -485,7 +485,7 @@ class ACMS_Filter
             } else if ( sessionWithContribution() ) {
                 $SQLWhereStatus = SQL::newWhere();
                 if ( 1
-                    && !approvalAvailableUser(SUID)
+                    && (config('approval_contributor_edit_auth') === 'on' || !approvalAvailableUser(SUID))
                     && ( 'on' == config('session_contributor_only_own_entry') )
                 ) {
                     $connector  = 'AND';
@@ -824,9 +824,11 @@ class ACMS_Filter
             switch ( $operator ) {
                 case 'eq':
                     $operator   = '=';
+                    $value      = strval($value);
                     break;
                 case 'neq':
                     $operator   = '<>';
+                    $value      = strval($value);
                     break;
                 case 'lt':
                     $operator   = '<';
@@ -846,9 +848,11 @@ class ACMS_Filter
                     break;
                 case 'lk':
                     $operator   = 'LIKE';
+                    $value      = strval($value);
                     break;
                 case 'nlk':
                     $operator   = 'NOT LIKE';
+                    $value      = strval($value);
                     break;
                 case 're':
                     $operator   = 'REGEXP';
@@ -868,14 +872,12 @@ class ACMS_Filter
                 default:    // exception
                     continue 2;
             }
-
-            $value = preg_replace('/\\\(.)/u', '${1}', $value); // エスケープを考慮
-            $value = is_numeric($value) ? ( ( $value == intval($value) ) ? intval($value) : floatval($value) ) : $value;
-
-            if ( $operator === 'LIKE' and !preg_match('@^%|%$@', $value) ) {
+            if (!is_numeric($value)) {
+                $value = preg_replace('/\\\(.)/u', '${1}', $value); // エスケープを考慮
+            }
+            if ($operator === 'LIKE' and !preg_match('@^%|%$@', $value)) {
                 $value = '%'.$value.'%';
             }
-
             $Where->addWhereOpr('field_value', $value, $operator,
                 ('OR' == strtoupper($Field->getConnector($fd, $i))) ?
                 'OR' : 'AND');

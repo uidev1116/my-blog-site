@@ -14,6 +14,8 @@ class ACMS_GET_User_Profile extends ACMS_GET
         $SQL->addSelect('user_name');
         $SQL->addSelect('user_mail');
         $SQL->addSelect('user_mail_mobile');
+        $SQL->addSelect('user_mail_magazine');
+        $SQL->addSelect('user_mail_mobile_magazine');
         $SQL->addSelect('user_url');
         $SQL->addSelect('user_auth');
         $SQL->addWhereOpr('user_blog_id', $this->bid);
@@ -59,7 +61,10 @@ class ACMS_GET_User_Profile extends ACMS_GET
         foreach ( $all as $row ) {
             $vars           = $this->buildField(loadUserField(intval($row['user_id'])), $Tpl);
             foreach ( $row as $key => $val ) {
-                $vars[substr($key, strlen('user_'))]    = $val;
+                if ($key === 'user_mail_magazine' || $key === 'user_mail_mobile_magazine') {
+                    $val = $val === 'on' ? 'on' : 'off';
+                }
+                $vars[substr($key, strlen('user_'))] = $val;
             }
             $uid = intval($row['user_id']);
             $vars['icon']       = loadUserIcon($uid);

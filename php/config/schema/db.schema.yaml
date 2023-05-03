@@ -346,63 +346,6 @@
     Key:
     Default:
     Extra:
-%{PREFIX}cache:
-  cache_id:
-    Field: cache_id
-    Type: char(32)
-    'Null': NO
-    Key: PRI
-    Default:
-    Extra:
-  cache_mime:
-    Field: cache_mime
-    Type: varchar(128)
-    'Null': NO
-    Key:
-    Default: text/html
-    Extra:
-  cache_charset:
-    Field: cache_charset
-    Type: varchar(64)
-    'Null': NO
-    Key:
-    Default: UTF-8
-    Extra:
-  cache_http_status_code:
-    Field: cache_http_status_code
-    Type: varchar(255)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  cache_data:
-    Field: cache_data
-    Type: longblob
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  cache_expire:
-    Field: cache_expire
-    Type: datetime
-    'Null': NO
-    Key:
-    Default: '1000-01-01 00:00:00'
-    Extra:
-  cache_status:
-    Field: cache_status
-    Type: varchar(16)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  cache_blog_id:
-    Field: cache_blog_id
-    Type: int(11)
-    'Null': NO
-    Key: MUL
-    Default:
-    Extra:
 %{PREFIX}cache_reserve:
   cache_reserve_datetime:
     Field: cache_reserve_datetime
@@ -1182,6 +1125,13 @@
     Key: MUL
     Default:
     Extra:
+  entry_delete_uid:
+    Field: entry_delete_uid
+    Type: int(11)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
 %{PREFIX}entry_rev:
   entry_id:
     Field: entry_id
@@ -1390,6 +1340,13 @@
     Field: entry_blog_id
     Type: int(11)
     'Null': NO
+    Key:
+    Default:
+    Extra:
+  entry_delete_uid:
+    Field: entry_delete_uid
+    Type: int(11)
+    'Null': YES
     Key:
     Default:
     Extra:
@@ -2578,6 +2535,13 @@
     Key:
     Default: 0
     Extra:
+  module_api_use:
+    Field: module_api_use
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: off
+    Extra:
   module_blog_id:
     Field: module_blog_id
     Type: int(11)
@@ -3228,6 +3192,13 @@
     Key:
     Default:
     Extra:
+  sequence_webhook_id:
+    Field: sequence_webhook_id
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
   sequence_trial_hash:
     Field: sequence_trial_hash
     Type: varchar(255)
@@ -3245,91 +3216,6 @@
   sequence_system_version:
     Field: sequence_system_version
     Type: varchar(32)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-%{PREFIX}session:
-  session_id:
-    Field: session_id
-    Type: char(32)
-    'Null': NO
-    Key: PRI
-    Default:
-    Extra:
-  session_next_id:
-    Field: session_next_id
-    Type: char(32)
-    'Null': NO
-    Key: UNI
-    Default:
-    Extra:
-  session_updated:
-      Field: session_updated
-      Type: datetime
-      'Null': YES
-      Key:
-      Default:
-      Extra:
-  session_expire:
-    Field: session_expire
-    Type: datetime
-    'Null': YES
-    Key:
-    Default:
-    Extra:
-  session_data:
-    Field: session_data
-    Type: longtext
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_unique_ua:
-    Field: session_unique_ua
-    Type: char(32)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_cookie:
-    Field: session_cookie
-    Type: varchar(8)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_left:
-    Field: session_left
-    Type: int(11)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_right:
-    Field: session_right
-    Type: int(11)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_user_id:
-    Field: session_user_id
-    Type: int(11)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_original_user_id:
-    Field: session_original_user_id
-    Type: int(11)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  session_blog_id:
-    Field: session_blog_id
-    Type: int(11)
     'Null': NO
     Key:
     Default:
@@ -4047,10 +3933,46 @@
     Key:
     Default: '1000-01-01 00:00:00'
     Extra:
+  user_session_data:
+    Field: user_session_data
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
   user_blog_id:
     Field: user_blog_id
     Type: int(11)
     'Null': NO
+    Key:
+    Default:
+    Extra:
+%{PREFIX}user_session:
+  user_session_uid:
+    Field: user_session_uid
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  user_session_host:
+    Field: user_session_host
+    Type: varchar(128)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  user_session_address:
+    Field: user_session_address
+    Type: varchar(64)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  user_session_id:
+    Field: user_session_id
+    Type: varchar(255)
+    'Null': YES
     Key:
     Default:
     Extra:
@@ -4310,6 +4232,162 @@
   lock_source_address:
     Field: lock_source_address
     Type: varchar(64)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+%{PREFIX}webhook:
+  webhook_id:
+    Field: webhook_id
+    Type: int(11)
+    'Null': NO
+    Key: PRI
+    Default:
+    Extra:
+  webhook_status:
+    Field: webhook_status
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_name:
+    Field: webhook_name
+    Type: varchar(255)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_type:
+    Field: webhook_type
+    Type: varchar(32)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_events:
+    Field: webhook_events
+    Type: varchar(128)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_url:
+    Field: webhook_url
+    Type: longtext
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_history:
+    Field: webhook_history
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: off
+    Extra:
+  webhook_scope:
+    Field: webhook_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_payload:
+    Field: webhook_payload
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: off
+    Extra:
+  webhook_payload_tpl:
+    Field: webhook_payload_tpl
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  webhook_secret:
+    Field: webhook_secret
+    Type: varchar(128)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  webhook_blog_id:
+    Field: webhook_blog_id
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+%{PREFIX}log_webhook:
+  log_webhook_datetime:
+    Field: log_webhook_datetime
+    Type: datetime
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  log_webhook_endpoint:
+    Field: log_webhook_endpoint
+    Type: varchar(512)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  log_webhook_status_code:
+    Field: log_webhook_status_code
+    Type: varchar(32)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  log_webhook_event:
+    Field: log_webhook_event
+    Type: varchar(32)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  log_webhook_id:
+    Field: log_webhook_id
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  log_webhook_request_header:
+    Field: log_webhook_request_header
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  log_webhook_request_body:
+    Field: log_webhook_request_body
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  log_webhook_response_header:
+    Field: log_webhook_response_header
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  log_webhook_response_body:
+    Field: log_webhook_response_body
+    Type: longtext
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  log_webhook_response_time:
+    Field: log_webhook_response_time
+    Type: double
     'Null': NO
     Key:
     Default:

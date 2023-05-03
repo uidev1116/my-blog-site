@@ -1,0 +1,505 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// ログイン画面
+// ------------------------------
+// 背景色
+#loginBg {
+  background-color: #e5e5e9;
+}
+
+// コンテンツ
+.acms-loginBox-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.acms-titleBox {
+  max-height: 140px;
+  margin: 100px auto 0;
+  overflow: hidden;
+}
+
+.acms-login-text {
+  color: #333;
+  @include global.font-size(13);
+  line-height: 1.7;
+}
+
+// ログイン囲い
+.acms-loginBox {
+  max-width: 480px;
+  margin: 0 auto 0;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+// サイトサムネイル
+.acms-siteImage {
+  float: left;
+  margin: 0 20px 0 0;
+  border: 1px solid #cccccc;
+}
+
+// サイト名
+.acms-siteImageText {
+  display: block;
+  margin-bottom: 15px;
+  text-align: center;
+
+  & span {
+    margin-right: 5px;
+  }
+}
+
+.acms-titleBox {
+  text-align: center;
+}
+
+.acms-loginHeaderImage {
+  width: 480px;
+  height: auto;
+  vertical-align: top;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.acms-loginLogo {
+  border: none;
+}
+
+// 入力フォーム
+.acms-loginBox .acms-form {
+  margin-top: 25px;
+
+  input {
+    margin-bottom: 10px;
+  }
+}
+
+// ラベル
+.acms-loginBox .acms-form label {
+  @include global.font-size($size:13,$important:true);
+  margin-top: 10px;
+}
+
+.acms-loginBox .acms-form-block {
+  width: 100%;
+}
+
+label.acms-form-block a {
+  margin-left: 15px;
+}
+
+//　読者リンク
+.acms-loginBox-bottom {
+  margin-top: -10px;
+  padding: 20px;
+  background: #ffffff;
+  border-top: 1px solid #e5e5e9;
+  @include global.round-bottom(5px);
+}
+
+.acms-loginBox-bottom p {
+  margin: 0;
+}
+
+// エラー
+.acms-loginBox input.validator-result- {
+  display: block;
+}
+
+.acms-loginBox input.validator-result-0,
+.acms-loginBox input.validator-result-0:focus {
+  background: #fff;
+  border: 1px solid #bd3f5e;
+  box-shadow: none;
+}
+
+// ロゴ
+.loginLogo {
+  float: right;
+  margin-top: 10px;
+}
+
+//ソーシャルログイン
+.acms-border {
+  position: relative;
+  width: 100%;
+  margin: 20px 0 18px 0;
+  text-align: center;
+}
+
+.acms-border:before {
+  position: absolute;
+  left: 0;
+  margin: 10px 0 0 0;
+  padding: 0 0 0 100%;
+  border-top: 1px solid #e5e5e9;
+  content: "";
+}
+
+.acms-borderText {
+  position: relative;
+  padding: 0 10px;
+  background: #fff;
+}
+
+.acms-btn-snslogin-container {
+  margin: 0 -10px;
+  padding: 0;
+}
+
+.acms-btn-snslogin-col {
+  position: relative;
+  display: block;
+  float: left;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 20px 0;
+  padding: 0 10px;
+}
+
+@media screen and (min-width: global.$breakpoint-sm-min){
+  .acms-btn-snslogin-col {
+    width: 50%;
+
+    &:only-child {
+      width: 100%;
+    }
+
+    &:nth-last-child(n+3),
+    &:nth-last-child(n+3) ~ .acms-btn-snslogin-col {
+      width: 33%;
+    }
+  }
+}
+
+.acms-btn-snsimage {
+  position: absolute;
+  left: 10px;
+  width: 44px;
+  height: 100%;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+  border-right: 1px solid #ccc;
+  border-radius: 6px 0 0 6px;
+  @include global.font-size(22);
+}
+
+.acms-btn-snsimage-facebook {
+  background-color: #1877f2;
+}
+
+.acms-btn-snsimage-twitter {
+  background-color: #55acee;
+}
+
+.acms-btn-snsimage-google {
+  box-sizing: border-box;
+  background-color: #FFF;
+  border: 1px solid #CECED2;
+}
+.acms-btn-snsimage-line {
+  background-color: #00b901;
+}
+
+.acms-btn-snsimage {
+  .acms-icon-facebook-circle {
+    position: static;
+    padding: 0;
+    @include global.font-size(28);
+
+    &:before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -14px 0 0 -14px;
+    }
+  }
+
+  .acms-icon-twitter {
+    position: static;
+    padding: 0;
+
+    &:before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -11px 0 0 -11px;
+    }
+  }
+
+  .acms-icon-google-login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -11px 0 0 -11px;
+    padding: 0;
+  }
+
+  .acms-icon-line-login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -16px 0 0 -16px;
+    padding: 0;
+  }
+}
+
+.acms-btn-snslogin {
+  padding: 12px 15px;
+  @include global.font-size(14);
+  border-radius: 6px;
+}
+
+@media screen and (min-width: global.$breakpoint-sm-min){
+  .acms-btn-snslogin {
+    padding: 12px 15px 12px 44px;
+  }
+}
+
+//Facebook ログイン
+.acms-login-facebook {
+  padding: 0 10px 0 0;
+}
+
+.acms-btn-facebooklogin {
+  box-sizing: border-box;
+  color:  #FFF;
+  background: #1877f2;
+  border: 1px solid #1877f2;
+
+  // hover
+  &:hover {
+    color:  #FFF;
+    text-decoration: none;
+    background: #0163e2;
+    border: 1px solid #192752;
+  }
+
+  // 色
+  &:link,
+  &:hover,
+  &:active,
+  &:visited {
+    color: #ffffff;
+  }
+
+  // active
+  &:active {
+    text-decoration: none;
+    border: 1px solid #192752;
+    @include global.btn-color-active($background-color: #2D4694, $color: #FFFFFF, $inset-color: #192752);
+  }
+
+  &:focus {
+    border-color: #192752;
+    outline: none;
+  }
+}
+
+.acms-btn-linelogin {
+  box-sizing: border-box;
+  color:  #FFF;
+  background: #00b901;
+  border: 1px solid #00b901;
+
+  // hover
+  &:hover {
+    color:  #FFF;
+    text-decoration: none;
+    background: #0a9a0a;
+    border: 1px solid #192752;
+  }
+
+  // 色
+  &:link,
+  &:hover,
+  &:active,
+  &:visited {
+    color: #ffffff;
+  }
+
+  // active
+  &:active {
+    text-decoration: none;
+    border: 1px solid #192752;
+    @include global.btn-color-active($background-color: #00b901, $color: #FFFFFF, $inset-color: #192752);
+  }
+
+  &:focus {
+    border-color: #192752;
+    outline: none;
+  }
+}
+
+//Twitter ログイン
+.acms-btn-twitterlogin {
+  border: 1px solid #299af1;
+  @include global.btn-color($start-color: #55AFF4, $end-color: #299AF1, $color: #FFFFFF);
+
+  // hover
+  &:hover {
+    text-decoration: none;
+    border: 1px solid #005896;
+    @include global.btn-color($start-color: #6CB9F5, $end-color: #4BAAF4, $color: #FFFFFF);
+  }
+
+  // 色
+  &:link,
+  &:hover,
+  &:active,
+  &:visited {
+    color: #ffffff;
+  }
+
+  // active
+  &:active {
+    text-decoration: none;
+    border: 1px solid #005896;
+    @include global.btn-color-active($background-color: #299AF1, $color: #FFFFFF, $inset-color: #005896);
+  }
+
+  &:focus {
+    border-color: #005896;
+    outline: none;
+  }
+}
+
+.acms-login-twitter {
+  padding: 0 0 0 10px;
+}
+
+//Google ログイン
+.acms-btn-googlelogin {
+  color: #333;
+  background: #FFF;
+  border: 1px solid #CECED2;
+  // 色
+  &:link,
+  &:hover,
+  &:active,
+  &:visited {
+    color: #FFF;
+  }
+
+  // hover,active
+  &:hover,
+  &:active {
+    color: #333;
+    text-decoration: none;
+    background: #EEE;
+    border: 1px solid #C9C9CA;
+  }
+
+  &:focus {
+    border-color: #005896;
+    outline: none;
+  }
+}
+
+// スマートフォンのとき
+@media (max-width: global.$breakpoint-sm-max) {
+  .acms-titleBox {
+    margin: 0 auto;
+  }
+
+  .acms-loginLogo {
+    width: 133px;
+    height: 23px;
+    border: none;
+  }
+
+  .acms-loginHeaderImage {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+  }
+
+  #loginBg {
+    background-color: #fff;
+  }
+
+  .acms-loginBox {
+    margin: 0;
+    padding: 10px;
+  }
+
+  .acms-loginBox .acms-form {
+    margin-top: 18px;
+  }
+
+  .acms-loginTitle {
+    margin: 0 auto;
+  }
+
+  // スマートフォン時のみボタンになるスタイル
+  .acms-sp-btn-admin {
+    display: inline-block;
+    margin: 0 5px 5px 0;
+    text-align: center;
+    text-decoration: none;
+    transition: all .2s linear;
+    @include global.button-shape();
+    @include global.button-decoration(
+      $border: 1px solid rgba(0,0,0,.2),
+      $hover-bg-color: #F1F1F1,
+      $hover-border-color: rgba(0,0,0,.3),
+      $text-color: global.$acms-btn-text-default-color,
+      $active-border-color: global.$acms-btn-active-border-color,
+      $active-bg-color: #E1E1E1,
+      $active-box-shadow: inset 0 1px 2px rgba(0,0,0,.3),
+      $active-text-color: #333,
+      $focus-border-color: global.$acms-btn-focus-border-color
+    );
+    @include global.box-sizing(border-box);
+
+    &:hover {
+      text-decoration: none;
+      background-color: darken(global.$acms-btn-admin-background, 5%);
+      border-top: 1px solid rgba(0, 0, 0, 0.3);
+    }
+
+    &:link,
+    &:hover,
+    &:active,
+    &:visited {
+      color: #0085cc;
+    }
+
+    &:active {
+      text-decoration: none;
+      background-color: darken(global.$acms-btn-admin-background, 10%);
+      border-top: 1px solid rgba(0, 0, 0, 0.3) !important;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .acms-loginBox,
+  .acms-loginBox-bottom {
+    background: transparent;
+    border: none;
+  }
+
+  // 新規の読者登録ボタン
+  .acms-loginBox-bottom {
+    margin: 0 0 20px 0;
+    padding: 0 10px;
+  }
+
+  // ログインページンのロゴ
+  .loginLogo {
+    float: none;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  //SNSログインのボタン
+  .acms-btn-snsimage {
+    padding: 0;
+  }
+}

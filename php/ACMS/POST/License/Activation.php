@@ -1,40 +1,34 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-Hi/v7vJXDG0zNklehm2/4MKAdcQgnfrC/G==
+<?php
+
+class ACMS_POST_License_Activation extends ACMS_POST
+{
+    /**
+     * @return bool|Field
+     */
+    function post()
+    {
+        if (!sessionWithAdministration()) {
+            die('Permission denied.');
+        }
+        try {
+            $licenseFilePath = CACHE_DIR . 'license.php';
+            Storage::remove($licenseFilePath);
+
+            $json = \App::licenseActivation($licenseFilePath);
+            if (empty($json)) {
+                throw new \RuntimeException(i18n('不明なエラーが発生しました'));
+            }
+            if ($json && $json->status === 'failed') {
+                throw new \RuntimeException($json->message);
+            }
+            $this->addMessage(i18n('サブスクリプションライセンスの有効化に成功しました。'));
+        } catch (\Exception $e) {
+            $this->addError($e->getMessage());
+        }
+
+        $this->redirect(acmsLink(array(
+            'bid' => BID,
+            'admin' => 'checklist',
+        )));
+    }
+}

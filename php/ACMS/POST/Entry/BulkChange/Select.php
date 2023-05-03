@@ -1,36 +1,44 @@
-<?php //004fb
-if(!extension_loaded('ionCube Loader')){$__oc=strtolower(substr(php_uname(),0,3));$__ln='ioncube_loader_'.$__oc.'_'.substr(phpversion(),0,3).(($__oc=='win')?'.dll':'.so');if(function_exists('dl')){@dl($__ln);}if(function_exists('_il_exec')){return _il_exec();}$__ln='/ioncube/'.$__ln;$__oid=$__id=realpath(ini_get('extension_dir'));$__here=dirname(__FILE__);if(strlen($__id)>1&&$__id[1]==':'){$__id=str_replace('\\','/',substr($__id,2));$__here=str_replace('\\','/',substr($__here,2));}$__rd=str_repeat('/..',substr_count($__id,'/')).$__here.'/';$__i=strlen($__rd);while($__i--){if($__rd[$__i]=='/'){$__lp=substr($__rd,0,$__i).$__ln;if(file_exists($__oid.$__lp)){$__ln=$__lp;break;}}}if(function_exists('dl')){@dl($__ln);}}else{die('The file '.__FILE__." is corrupted.\n");}if(function_exists('_il_exec')){return _il_exec();}echo("Site error: the ".(php_sapi_name()=='cli'?'ionCube':'<a href="http://www.ioncube.com">ionCube</a>')." PHP Loader needs to be installed. This is a widely used PHP extension for running ionCube protected PHP code, website security and malware blocking.\n\nPlease visit ".(php_sapi_name()=='cli'?'get-loader.ioncube.com':'<a href="http://get-loader.ioncube.com">get-loader.ioncube.com</a>')." for install assistance.\n\n");exit(199);
-?>
-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
-eSvb0lrUg2zU1qIABw+i5mhZ
+<?php
+
+class ACMS_POST_Entry_BulkChange_Select extends ACMS_POST_Entry_BulkChange
+{
+    /**
+     * @var array
+     */
+    protected $eids = array();
+
+    /**
+     * Run
+     *
+     * @return \Field
+     */
+    function post()
+    {
+        $this->eids = $this->Post->getArray('checks');
+        try {
+            $this->validate();
+            $this->Post->set('step', '2');
+        } catch (ACMS_POST_Entry_BulkChange_Exceptions_PermissionDenied $e) {
+            die('Permission denied.');
+        } catch (ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty $e) {
+            $this->Post->set('step', '1');
+            $this->Post->set('error', 'targetEmpty');
+        }
+        return $this->Post;
+    }
+
+    /**
+     * Validator
+     *
+     * @throws ACMS_POST_Entry_BulkChange_Exceptions_PermissionDenied
+     * @throws ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty
+     */
+    protected function validate()
+    {
+        parent::validate();
+
+        if (count($this->eids) < 1) {
+            throw new ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty;
+        }
+    }
+}

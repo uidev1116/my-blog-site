@@ -82,16 +82,9 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
     protected function getJsonCache($uri)
     {
         $id = $this->getCacheId($uri);
-
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('cache');
-        $SQL->setSelect('cache_data');
-        $SQL->addWhereOpr('cache_id', $id);
-        $SQL->addWhereOpr('cache_expire', date('Y-m-d H:i:s', REQUEST_TIME), '>');
-        $SQL->addWhereOpr('cache_blog_id', 0);
-
-        if ( $cache = $DB->query($SQL->get(dsn()), 'one') ) {
-            return $cache;
+        $cache = Cache::module();
+        if ($cache->has($id)) {
+            return $cache->get($id);
         }
         return false;
     }
@@ -105,19 +98,8 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
     protected function saveCache($uri, $contents)
     {
         $id = $this->getCacheId($uri);
-
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newDelete('cache');
-        $SQL->addWhereOpr('cache_id', $id, '=', 'OR');
-        $SQL->addWhereOpr('cache_expire', date('Y-m-d H:i:s', REQUEST_TIME), '<', 'OR');
-        $DB->query($SQL->get(dsn()), 'exec');
-
-        $SQL = SQL::newInsert('cache');
-        $SQL->addInsert('cache_id', $id);
-        $SQL->addInsert('cache_data', $contents);
-        $SQL->addInsert('cache_expire', date('Y-m-d H:i:s', REQUEST_TIME + config('json_2tpl_cache_expire', 0)));
-        $SQL->addInsert('cache_blog_id', 0);
-        $DB->query($SQL->get(dsn()), 'exec');
+        $cache = Cache::module();
+        $cache->put($id, $contents, config('json_2tpl_cache_expire', 0));
     }
 
     /**

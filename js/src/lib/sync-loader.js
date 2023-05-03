@@ -16,7 +16,7 @@ export default class SyncLoader {
       loaded: [],
       add(src) {
         this.srcAry.push(src);
-      }
+      },
     };
   }
 
@@ -127,11 +127,7 @@ export default class SyncLoader {
 
     // for IE
     tag.onreadystatechange = () => {
-      if (0
-        || !tag.readyState
-        || tag.readyState === 'loaded'
-        || tag.readyState === 'complete'
-      ) {
+      if (0 || !tag.readyState || tag.readyState === 'loaded' || tag.readyState === 'complete') {
         tag.onreadystatechange = null;
         tag.onload();
       }
