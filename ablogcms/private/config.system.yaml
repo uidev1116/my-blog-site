@@ -1,0 +1,95 @@
+---
+#-----------------------------------------------
+# config.system.yaml user setting
+#
+# config.system.default.yamlの値をこのファイルで
+# 上書きすることが出来ます。
+#-----------------------------------------------
+
+### 例 jQueryのバージョンを切り替える
+# jquery_version: 3.4.1 # (3.4.1|2.1.1|2.0.3|1.11.1|1.10.1|1.9.1|1.8.3|1.7.2) 2.xはIE9〜
+# jquery_migrate: migrate-3.0.1
+# webp_support: on # on | off webp画像を生成するかどうかを設定
+
+forbid_direct_access_tpl: /^_/ # off | /^_/  パスのディレクトリまたはファイルがこの正規表現に一致したものは直接表示させない
+forbid_tpl_inheritance_when_path_unresolved: on # on | off パス解決に失敗した時、テンプレートを継承しないようにする
+forbid_tpl_url_context: on # on | off 読者以下のURLコンテキストのtplを許可しない。（例: https://example.com/news/tpl/custom.html）
+allow_tpl_path: [include/summary.html] # forbid_tpl_inheritance_when_path_unresolved や forbid_tpl_url_context が on の場合、除外するパスを設定します。例: [news.html,hoge/custom.html] カンマ区切りで指定
+
+image_magick: off
+
+## V2_Entry_Body
+v2_entry_body_limit: 5
+v2_entry_body_order: datetime-desc
+v2_entry_body_order2: id-desc
+v2_entry_body_offset: 0
+v2_entry_body_indexing: on
+v2_entry_body_sub_category: on
+v2_entry_body_image_viewer: 'data-rel="SmartPhoto"'
+v2_entry_body_newtime: 259200
+v2_entry_body_tag: on
+v2_entry_body_fulltext_on: on
+v2_entry_body_fulltext_width: 300
+v2_entry_body_fulltext_marker: ...
+v2_entry_body_show_all_index: off
+v2_entry_body_detail_date_on: on
+v2_entry_body_pager_on: on
+v2_entry_body_pager_delta: 3
+v2_entry_body_pager_cur_attr: ' class="cur"'
+v2_entry_body_micropager_on: on
+v2_entry_body_micropager_delta: 1
+v2_entry_body_micropager_cur_attr: ' class="cur"'
+v2_entry_body_serial_entry_on: on
+v2_entry_body_serial_entry_ignore_category: off
+v2_entry_body_simple_pager_on: off
+v2_entry_body_category_on: on
+v2_entry_body_user_on: off
+v2_entry_body_blog_on: off
+v2_entry_body_entry_field_on: on
+v2_entry_body_category_field_on: off
+v2_entry_body_user_field_on: off
+v2_entry_body_blog_field_on: off
+v2_entry_body_fix_summary_range:
+v2_entry_body_notfound_status_404: off
+v2_entry_body_hidden_current_entry: 'off'
+v2_entry_body_image_on: on
+v2_entry_body_noimage: on
+v2_entry_body_image_x: 100
+v2_entry_body_image_y: 100
+v2_entry_body_image_trim: on
+v2_entry_body_image_zoom: off
+v2_entry_body_image_center: off
+
+## V2_Entry_Summary
+v2_entry_summary_limit: 5
+v2_entry_summary_order: datetime-desc
+v2_entry_summary_order2: id-desc
+v2_entry_summary_offset: 0
+v2_entry_summary_indexing: on
+v2_entry_summary_sub_category: on
+v2_entry_summary_newtime: 259200
+v2_entry_summary_tag: on
+v2_entry_summary_fulltext_on: on
+v2_entry_summary_fulltext_width: 300
+v2_entry_summary_fulltext_marker: ...
+v2_entry_summary_show_all_index: off
+v2_entry_summary_detail_date_on: on
+v2_entry_summary_pager_on: on
+v2_entry_summary_pager_delta: 3
+v2_entry_summary_pager_cur_attr: ' class="cur"'
+v2_entry_summary_category_on: on
+v2_entry_summary_user_on: off
+v2_entry_summary_blog_on: off
+v2_entry_summary_entry_field_on: on
+v2_entry_summary_category_field_on: off
+v2_entry_summary_user_field_on: off
+v2_entry_summary_blog_field_on: off
+v2_entry_summary_notfound_status_404: off
+v2_entry_summary_hidden_current_entry: 'off'
+v2_entry_summary_image_on: on
+v2_entry_summary_noimage: on
+v2_entry_summary_image_x: 100
+v2_entry_summary_image_y: 100
+v2_entry_summary_image_trim: on
+v2_entry_summary_image_zoom: off
+v2_entry_summary_image_center: off

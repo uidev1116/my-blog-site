@@ -1,0 +1,20 @@
+{
+  "name": "my-blog-site",
+  "version": "0.0.0",
+  "main": "deploy.js",
+  "scripts": {
+    "setup": "node ./tools/setup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:uidev1116/my-blog-site.git"
+  },
+  "author": "uidev1116",
+  "license": "MIT",
+  "devDependencies": {
+    "archiver": "^5.3.1",
+    "co": "^4.6.0",
+    "fs-extra": "^11.1.1",
+    "node-cmd": "^5.0.0"
+  }
+}

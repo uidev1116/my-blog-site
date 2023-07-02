@@ -1,25 +1,25 @@
 ## CMS
 config.server.php
 license.php
-/.htaccess
-/.htpasswd
-/archives/*
-!/archives/.htaccess
-/archives_rev/*
-!/archives_rev/.htaccess
-/media/*
-!/media/.htaccess
-/storage/*
-!/storage/.htaccess
-/cache/*
-!/cache/.htaccess
-/private/backup*
-/_setup*
-/setup*
+/ablogcms/.htaccess
+/ablogcms/.htpasswd
+/ablogcms/archives/*
+!/ablogcms/archives/.htaccess
+/ablogcms/archives_rev/*
+!/ablogcms/archives_rev/.htaccess
+/ablogcms/media/*
+!/ablogcms/media/.htaccess
+/ablogcms/storage/*
+!/ablogcms/storage/.htaccess
+/ablogcms/cache/*
+!/ablogcms/cache/.htaccess
+/ablogcms/private/backup*
+/ablogcms/_setup*
+/ablogcms/setup*
 # /themes/*/dest/*
 
 ## Backup
-/backup_*
+/ablogcms/backup_*
 
 ## Editor
 .idea
