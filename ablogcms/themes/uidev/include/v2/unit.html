@@ -1,8 +1,5 @@
 <!-- BEGIN unit:loop -->
 
-<!-- BEGIN_IF [<!-- BEGIN unitGroup -->{close}<!-- END unitGroup -->/eq/1] -->
-</div>
-<!-- END_IF -->
 <!-- BEGIN_IF [<!-- BEGIN unitGroup -->{open}<!-- END unitGroup -->/eq/1] -->
 <div class="js-unit_group-align acms-entry-unit-full {group}">
 <!-- END_IF -->
@@ -55,7 +52,7 @@
 @include("/include/v2/unit/custom.html")
 <!-- END_IF -->
 
-<!-- BEGIN_IF [<!-- BEGIN unitGroup -->{last}<!-- END unitGroup -->/eq/1] -->
+<!-- BEGIN_IF [<!-- BEGIN unitGroup -->{close}<!-- END unitGroup -->/eq/1] -->
 </div>
 <!-- END_IF -->
 <!-- END unit:loop -->

@@ -29,7 +29,7 @@
 <!-- END notFound -->
 
 <!-- BEGIN entry:loop -->
-<article class="p-entry" data-entry-id="{id}">
+<article class="p-entry">
   <div class="l-entry">
     <header class="l-entry__header p-entry-header">
       <!-- BEGIN title:veil -->
@@ -43,10 +43,16 @@
 
     <div class="l-entry__main-column entry-column entry-style js-toc-content js-auto-link-container">
     <!-- BEGIN unit:veil -->
+    @include("/include/v2/unit.html")
     <hr class="clearHidden">
     <!-- END unit:veil -->
+    <!-- BEGIN_IF [{isFormEnable}/eq/1] -->
+		@include("/include/form/unit.html")
+		<hr class="clearHidden">
+    <!-- END_IF -->
     <!-- GET_Rendered id="pager" -->
     </div>
+
 
     <!-- BEGIN_MODULE Touch_NotEdit -->
     <aside class="l-entry__sub-column p-sub-column js-container">
