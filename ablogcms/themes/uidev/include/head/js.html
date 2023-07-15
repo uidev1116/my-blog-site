@@ -5,8 +5,20 @@
 @include("/admin/lib/edit-include/js.html")
 <!-- END_MODULE Touch_SessionWithContribution -->
 
-<script src="/dest/vendor.js" async></script>
-<script src="/dest/bundle.js" async></script>
+
+<!-- BEGIN_MODULE Vite -->
+<!-- BEGIN_IF [{useDevServer}/eq/1] -->
+<script type="module" src="{devServerUrl}@vite/client"></script>
+<script type="module" src="{devServerUrl}src/js/index.js"></script>
+<!-- ELSE -->
+<!-- BEGIN manifest -->
+<!-- BEGIN src/js/index.js -->
+<script type="module" src="/dest/{file}"></script>
+<!-- END src/js/index.js -->
+<!-- END manifest -->
+<!-- END_IF -->
+<!-- END_MODULE Vite -->
+
 <!--BEGIN_MODULE Touch_Unlogin --><!-- BEGIN_MODULE Blog_Field id="BF_root" -->{google_analytics}[raw]<!-- END_MODULE Blog_Field --><!-- END_MODULE Touch_Unlogin -->
 
 <!-- ブログ別scriptタグ -->

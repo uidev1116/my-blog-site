@@ -1,9 +1,10 @@
 {
   "name": "my-blog-site",
   "version": "0.0.0",
-  "main": "deploy.js",
+  "main": "index.js",
   "scripts": {
-    "setup": "node ./tools/setup.js"
+    "setup": "node ./tools/setup.js",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -15,10 +16,16 @@
     "archiver": "^5.3.1",
     "co": "^4.6.0",
     "fs-extra": "^11.1.1",
-    "node-cmd": "^5.0.0"
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "node-cmd": "^5.0.0",
+    "prettier": "^3.0.0"
   },
   "volta": {
     "node": "18.16.1",
     "npm": "9.5.1"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": "prettier --write"
   }
 }

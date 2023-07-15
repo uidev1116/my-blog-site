@@ -1,8 +1,9 @@
-import domContentLoaded from 'dom-content-loaded';
-import Dispatcher from 'a-dispatcher';
-import './lib/polyfill';
-import Prism from 'prismjs';
-import fonts from './fonts';
+import 'vite/modulepreload-polyfill' // eslint-disable-line import/no-unresolved
+import domContentLoaded from 'dom-content-loaded'
+import Dispatcher from 'a-dispatcher'
+// import './lib/polyfill';
+import Prism from 'prismjs'
+import fonts from './fonts'
 import {
   validator,
   externalLinks,
@@ -15,23 +16,23 @@ import {
   postInclude,
   // pdfPreview,
   unitGroupAlign,
-} from './lib/build-in'; // ToDo: いらないものは削除する
+} from './lib/build-in' // ToDo: いらないものは削除する
 
 /**
  * スタイルの読み込み
  */
-import 'normalize.css/normalize.css';
-import '../scss/site.scss';
+// import 'normalize.css/normalize.css';
+import '../scss/index.scss'
 
 /**
  * FontAwesome 5
  */
-fonts();
+fonts()
 
 /**
  * Root
  */
-window.root = '/';
+window.root = '/'
 
 /**
  * BuildInJs
@@ -39,29 +40,29 @@ window.root = '/';
  */
 if (window.ACMS === undefined) {
   window.dispatch = (context) => {
-    validator(context);
+    validator(context)
     // linkMatchLocation(context);
-    externalLinks(context);
+    externalLinks(context)
     // scrollTo(context);
     // alertUnload(context);
-    smartPhoto(context);
-    lazyLoad(context);
+    smartPhoto(context)
+    lazyLoad(context)
     // inView(context);
     // modalVideo(context);
-    scrollHint(context);
+    scrollHint(context)
     // googleMap(context);
-    openStreetMap(context);
+    openStreetMap(context)
     // datePicker(context);
-    postInclude(context);
+    postInclude(context)
     // pdfPreview(context);
     // focusedImage(context);
-    unitGroupAlign(context);
-  };
-  window.dispatch(document);
+    unitGroupAlign(context)
+  }
+  window.dispatch(document)
 } else {
   ACMS.Ready(() => {
     // eslint-disable-next-line no-undef
-    ACMS.Config.googleCodePrettifyClass = 'no-highlight';
+    ACMS.Config.googleCodePrettifyClass = 'no-highlight'
 
     /**
      * LiteEditor
@@ -70,32 +71,34 @@ if (window.ACMS === undefined) {
     ACMS.Config.LiteEditorConf.btnOptions.push({
       label: 'コード',
       tag: 'code',
-    });
-  });
+    })
+  })
 }
 
 /**
  * Dispatcher
  */
-const dispatcher = new Dispatcher();
+const dispatcher = new Dispatcher()
 
 // ダイナミックインポート
 dispatcher.addRoute('^/(?!.*search).*html$', async () => {
-  const { default: entryPage } = await import(/* webpackChunkName: "entry" */ './entry');
-  entryPage();
-});
+  const { default: entryPage } = await import(
+    /* webpackChunkName: "entry" */ './entry'
+  )
+  entryPage()
+})
 
 // 通常のバンドル
 // dispatcher.addRoute('^/example/$', examplePage);
 
-dispatcher.run(window.location.pathname);
+dispatcher.run(window.location.pathname)
 
 /**
  * Content Ready
  */
 domContentLoaded(() => {
-  Prism.manual = true;
-  Prism.highlightAll();
+  Prism.manual = true
+  Prism.highlightAll()
   // $(() => {
   // 郵便番号の「-」の挿入
   // $('.js-insert-hyphen').blur(function(){
@@ -109,4 +112,4 @@ domContentLoaded(() => {
   //     }
   // });
   // });
-});
+})
