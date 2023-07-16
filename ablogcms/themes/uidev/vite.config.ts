@@ -1,10 +1,5 @@
 import { resolve, basename } from 'path'
-import {
-  defineConfig,
-  mergeConfig,
-  splitVendorChunkPlugin,
-  loadEnv,
-} from 'vite'
+import { defineConfig, mergeConfig, splitVendorChunkPlugin } from 'vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 import react from '@vitejs/plugin-react'
 import eslint from 'vite-plugin-eslint'
@@ -51,7 +46,7 @@ export default defineConfig(({ command, mode }) => {
         rollupOptions: {
           input: {
             index: resolve(__dirname, 'src/js/index.js'),
-            admin: resolve(__dirname, 'src/js/admin.js'),
+            admin: resolve(__dirname, 'src/js/admin.ts'),
           },
         },
       },

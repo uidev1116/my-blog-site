@@ -1,0 +1,44 @@
+@extends("/admin/_layouts/admin-unit.html")
+
+@section(admin-table-unit)
+<div class="entryFormColumnTable {diff}">
+  <div class="acms-admin-table-unit-container">
+    <div class="acms-admin-table-unit-wrap">
+      <div class="acms-admin-table-unit-inner">
+        <div
+          class="js-editable-table-{id}"
+          data-input='[name="table_source_{id}[]"]'
+        >
+        </div>
+        <input
+          type="hidden"
+          name="table_source_{id}[]"
+          value="
+          <!-- BEGIN_IF [{table}[delnl]/em] -->
+            <table>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+          <!-- ELSE -->
+            {table}
+          <!-- END_IF -->
+          "
+        />
+      </div>
+    </div>
+  </div>
+</div>
+@endsection

@@ -57,6 +57,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "a-dispatcher": "^1.0.1",
     "axios": "^1.4.0",
+    "deepmerge": "^4.3.1",
     "dom-content-loaded": "^1.0.2",
     "flatpickr": "^4.6.13",
     "google-maps": "^4.3.3",
@@ -74,12 +75,16 @@
     "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-table-editor": "^1.0.16",
     "scroll-hint": "^1.2.5",
     "scroll-to-element": "^2.0.3",
     "slick-carousel": "^1.8.1",
     "smartphoto": "^1.6.5",
     "throttle-debounce": "^5.0.0",
     "tocbot": "^4.21.0"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.6"
   },
   "volta": {
     "node": "18.16.1",
