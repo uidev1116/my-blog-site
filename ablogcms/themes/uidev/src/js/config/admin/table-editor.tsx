@@ -1,5 +1,5 @@
 export default {
-  mark: '[class^=js-editable-table]',
+  mark: '[class^=js-editable-table2]',
   props: {
     mark: {
       align: {
