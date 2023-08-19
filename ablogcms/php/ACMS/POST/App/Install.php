@@ -2,8 +2,11 @@
 
 class ACMS_POST_App_Install extends ACMS_POST
 {
+    /**
+     * @var bool
+     */
     protected $checkDoubleSubmit = true;
-    
+
     public function post()
     {
         $appClassName = $this->Post->get('class_name');

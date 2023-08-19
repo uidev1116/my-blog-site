@@ -218,7 +218,19 @@ class ACMS_GET_User_Search extends ACMS_GET
         }
         // status 2013/02/08
         if ($this->config['status']) {
-            $SQL->addWhereIn('user_status', $this->config['status']);
+            if (count($this->config['status']) === 1) {
+                if ($this->config['status'][0] === 'open') {
+                    $SQL->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=');
+                    $SQL->addWhereOpr('user_status', 'open');
+                } else {
+                    $WHERE = SQL::newWhere();
+                    $WHERE->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '<', 'OR');
+                    $WHERE->addWhereOpr('user_status', 'close', '=', 'OR');
+                    $SQL->addWhere($WHERE);
+                }
+            } else {
+                $SQL->addWhereIn('user_status', $this->config['status']);
+            }
         }
         // mail_magazine 2013/02/08
         if ($ary_mailmagazine = $this->config['mail_magazine']) {

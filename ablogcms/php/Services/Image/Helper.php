@@ -20,12 +20,14 @@ class Helper
     /**
      * @var \ImageOptimizer\SmartOptimizer
      */
-    protected $optimizer;
+    protected $optimizer = null;
 
     public function __construct()
     {
-        $factory = new OptimizerFactory(array('ignore_errors' => false));
-        $this->optimizer = $factory->get();
+        if (config('img_optimizer') !== 'off') {
+            $factory = new OptimizerFactory(array('ignore_errors' => false));
+            $this->optimizer = $factory->get();
+        }
     }
 
     /**
@@ -35,7 +37,7 @@ class Helper
      */
     public function optimize($path)
     {
-        if ( config('img_optimizer') === 'off' ) {
+        if ($this->optimizer === null) {
             return;
         }
         try {
@@ -53,6 +55,9 @@ class Helper
      */
     public function optimizeTest($path)
     {
+        if ($this->optimizer === null) {
+            return false;
+        }
         try {
             if (Storage::isWritable($path)) {
                 $ext = pathinfo($path, PATHINFO_EXTENSION);

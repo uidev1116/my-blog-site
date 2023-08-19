@@ -60,7 +60,7 @@ class DatabaseHandler
         $SQL->addSelect('session_id');
         $SQL->addWhereOpr('session_id', $id);
 
-        if ($DB->query($SQL->get(dsn()), 'one')) {
+        if (DB::query($SQL->get(dsn()), 'one')) {
             $SQL = SQL::newUpdate('session_php');
             $SQL->addUpdate('session_expire', REQUEST_TIME);
             $SQL->addUpdate('session_data', $data);

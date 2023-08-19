@@ -63,10 +63,19 @@
 			<input type="submit" name="ACMS_POST_User_Update" value="<!--T-->保存<!--/T-->" class="acms-admin-btn acms-admin-btn-primary acms-admin-btn-save js-saving-splash" />
 
 			<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-			<input type="submit" name="ACMS_POST_User_Delete" value="<!--T-->削除<!--/T-->" onclick="return confirm('<!--T-->ユーザーを削除します。\nこの操作は取り消せません、よろしいですか？<!--/T-->');" / class="acms-admin-btn acms-admin-btn-danger js-hide-on-modal">
-			<input type="hidden" name="takeover" value="{takeover}" />
+      <!-- BEGIN_IF [%{UID}/neq/%{SUID}] -->
+      <button
+        type="submit"
+        name="ACMS_POST_User_Delete"
+        onclick="return confirm('<!--T-->ユーザーを削除します。\nこの操作は取り消せません、よろしいですか？<!--/T-->');"
+        class="acms-admin-btn acms-admin-btn-danger js-hide-on-modal"
+      >
+        <!--T-->削除<!--/T-->
+      </button>
+      <!-- END_IF -->
 			<!-- END_MODULE Touch_SessionWithAdministration -->
 			<!-- END submit#update -->
+			<input type="hidden" name="takeover" value="{takeover}" />
 		</div>
 	</div>
 
@@ -91,6 +100,9 @@
 						<label for="input-login_expire"><!--T-->有効期限：<!--/T--></label>
 						<input type="hidden" name="user[]" value="status" />
 						<input type="text" name="login_expire" id="input-login_expire" value="{login_expire}" class="js-datepicker2">
+            <!-- BEGIN_IF [{login_expire}[date('Y-m-d')]/lte/%{NOW_DATE}] -->
+            <span class="acms-admin-label acms-admin-label-danger">期限切れ</span>
+            <!-- END_IF -->
 						<input type="hidden" name="user[]" value="login_expire" />
 						<input type="hidden" name="login_expire:validator#regex" value="@\d\d\d\d-\d\d-\d\d@" id="validator-login_expire-regex" />
 						<div role="alert" aria-live="assertive">

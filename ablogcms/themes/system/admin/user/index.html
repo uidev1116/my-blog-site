@@ -262,9 +262,10 @@
 					<!--T-->(読者)<!--/T--><!-- END auth_default#subscriber -->
 				</td>
 				<td class="acms-admin-text-center">
-					<span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->ステータス：<!--/T--></span><!-- BEGIN status#open -->
+					<span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->ステータス：<!--/T--></span><!-- BEGIN_IF [{expiry}/eq/expired] -->
+          <span class="acms-admin-label acms-admin-label-danger">期限切れ</span><!-- ELSE --><!-- BEGIN status#open -->
 					<span class="acms-admin-label acms-admin-label-info"><!--T-->有効<!--/T--></span><!-- END status#open --><!-- BEGIN status#close -->
-					<span class="acms-admin-label"><!--T-->無効<!--/T--></span><!-- END status#close -->
+					<span class="acms-admin-label"><!--T-->無効<!--/T--></span><!-- END status#close --><!-- END_IF -->
 				</td>
 				<td class="acms-admin-table-nowrap">
 					<a href="{itemUrl}?edit=update" class="acms-admin-btn"><!--T-->変更<!--/T--></a>

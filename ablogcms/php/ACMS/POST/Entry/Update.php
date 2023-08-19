@@ -358,7 +358,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 
             //---------------
             // related entry
-            Entry::saveRelatedEntries(EID, $Entry->getArray('related'), null, $Entry->getArray('related_type'));
+            Entry::saveRelatedEntries(EID, $Entry->getArray('related'), null, $Entry->getArray('related_type'), $Entry->getArray('loaded_realted_entries'));
 
             //--------------
             // sub category
@@ -443,7 +443,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 
             //---------------
             // related entry
-            Entry::saveRelatedEntries(EID, $Entry->getArray('related'), $rvid, $Entry->getArray('related_type'));
+            Entry::saveRelatedEntries(EID, $Entry->getArray('related'), $rvid, $Entry->getArray('related_type'), $Entry->getArray('loaded_realted_entries'));
 
             //--------------
             // sub category
@@ -520,6 +520,10 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 
     function post()
     {
+        if (!Entry::validateMediaUnit()) {
+            httpStatusCode('500 Internal Server Error');
+            return;
+        }
         $updatedResponse = $this->update();
 
         // nextstep周りの実装は、プレビューが会った頃の古いコード

@@ -16,13 +16,12 @@ class Factory extends BaseFactory
      */
     public function createInstance()
     {
-        if ( $this->isRoleAvailableUser() ) {
+        if ($this->isRoleAvailableUser()) {
             return App::make('auth.role');
-        } else if ( SUID && config('subscriber_view_mode') === 'on' ) {
+        } else if (SUID && config('subscriber_view_mode') === 'on') {
             $app = App::getInstance();
             $Q =& $app->getQueryParameter();
-            $admin = $Q->get('admin');
-            if ( empty($admin) ) {
+            if (empty($Q->get('admin')) && empty($Q->get('bid')) && !preg_match('/ajax\//', $Q->get('tpl'))) {
                 return new SimulateSubscriber;
             }
         }

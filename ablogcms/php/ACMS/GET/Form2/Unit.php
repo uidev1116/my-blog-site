@@ -44,7 +44,7 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
             // radio, select, checkbox
             } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
                 if ( 1
-                    && isset($data['values']) 
+                    && isset($data['values'])
                     && $values = acmsUnserialize($data['values'])
                 ) {
                     if ( is_array($values) ) {
@@ -67,7 +67,7 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
             // validator
             $validatorSet   = acmsUnserialize($data['validatorSet']);
 
-            if ( is_array($validatorSet) ) {
+            if (is_array($validatorSet) && isset($validatorSet['validator'])) {
                 $valid          = $validatorSet['validator'];
                 $validValue     = $validatorSet['validator-value'];
                 $validMess      = $validatorSet['validator-message'];
@@ -90,7 +90,7 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
                         'val'   => $val,
                     ));
                 } else {
-                    if ( $key === 'required' ) $required = true; 
+                    if ( $key === 'required' ) $required = true;
                     $Tpl->add(array('validator:loop', $type, 'column:loop'), array(
                         'vutid' => $utid,
                         'valid' => $key,

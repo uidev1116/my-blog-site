@@ -2,17 +2,48 @@
 
 class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
 {
-    var $target;
-    var $pattern;
-    var $replacement;
-    var $updated;
+    /**
+     * 対象フィールド
+     * @var string
+     */
+    protected $target;
+
+    /**
+     * 置換対象文字
+     * @var string
+     */
+    protected $pattern;
+
+    /**
+     * 置換文字
+     * @var string
+     */
+    protected $replacement;
+
+    /**
+     * 置換数
+     * @var int
+     */
+    protected $updated;
+
+    /**
+     * フィールド名
+     * @var string
+     */
+    protected $filter;
+
+    /**
+     * 置換対象ブログID
+     * @var array
+     */
+    protected $blogIds = [];
 
     function post()
     {
         if ( !sessionWithAdministration() ) return false;
 
         $this->Post->setMethod('checks', 'required');
-        
+
         $Fix = $this->extract('fix');
         $Fix->setMethod('fix_replacement_target', 'required');
         $Fix->setMethod('fix_replacement_pattern', 'required');
@@ -20,13 +51,22 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
 
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $this->target       = $Fix->get('fix_replacement_target');
-            $this->pattern      = preg_quote($Fix->get('fix_replacement_pattern'), '@');
-            $this->replacement  = $Fix->get('fix_replacement_replacement');
-            $this->filter       = $Fix->get('fix_replacement_target_cf_filter');
+        if ($this->Post->isValidAll()) {
+            $this->target = $Fix->get('fix_replacement_target');
+            $this->pattern = preg_quote($Fix->get('fix_replacement_pattern'), '@');
+            $this->replacement = $Fix->get('fix_replacement_replacement');
+            $this->filter = $Fix->get('fix_replacement_target_cf_filter');
 
-            foreach ( $this->Post->getArray('checks') as $id ) {
+            if ($Fix->get('fix_replacement_target_blog') === 'descendant') {
+                $blog = SQL::newSelect('blog');
+                $blog->setSelect('blog_id');
+                ACMS_Filter::blogTree($blog, BID, 'descendant-or-self');
+                $this->blogIds = DB::query($blog->get(dsn()), 'list');
+            } else {
+                $this->blogIds = [BID];
+            }
+
+            foreach ($this->Post->getArray('checks') as $id) {
                 $this->replace($id);
                 Common::deleteFieldCache('eid', $id);
             }
@@ -47,21 +87,21 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
 
         switch ( $this->target ) {
             case 'title':
-                $title  = ACMS_RAM::entryTitle($id);
-                $title  = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $title);
-
-                $SQL    = SQL::newUpdate('entry');
+                $title = ACMS_RAM::entryTitle($id);
+                $title = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $title);
+                $SQL = SQL::newUpdate('entry');
                 $SQL->addUpdate('entry_title', $title);
                 $SQL->addWhereOpr('entry_id', $id);
+                $SQL->addWhereIn('entry_blog_id', $this->blogIds);
                 $eid = $id;
                 break;
             case 'unit':
-                $unit   = ACMS_RAM::unitField1($id);
-                $unit  = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $unit);
-
-                $SQL    = SQL::newUpdate('column');
+                $unit = ACMS_RAM::unitField1($id);
+                $unit = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $unit);
+                $SQL = SQL::newUpdate('column');
                 $SQL->addUpdate('column_field_1', $unit);
                 $SQL->addWhereOpr('column_id', $id);
+                $SQL->addWhereIn('column_blog_id', $this->blogIds);
                 $eid = $id;
                 break;
             case 'field':
@@ -95,6 +135,7 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
                 if ( $this->filter ) {
                     $SQL->addWhereOpr('field_key', $this->filter);
                 }
+                $SQL->addWhereIn('field_blog_id', $this->blogIds);
                 break;
             default:
                 return false;

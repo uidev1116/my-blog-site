@@ -105,6 +105,18 @@ $('.js-replacement_target').change(function(){
 				<!-- END fix_replacement_replacement:v#required -->
 			</td>
 		</tr>
+    <tr>
+			<th><!--T-->対象ブログ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをつけると、子ブログも置換の対象にします<!--/T-->"></i></th>
+			<td>
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="fix_replacement_target_blog" value="descendant"{fix_replacement_target_blog:checked#descendant} id="input-checkbox-fix-replacement-target-blog">
+					<label for="input-checkbox-fix-replacement-target-blog">
+						<i class="acms-admin-ico-checkbox"></i>&nbsp;<!--T-->子ブログも対象にする<!--/T-->
+					</label>
+          <input type="hidden" name="fix[]" value="fix_replacement_target_blog" />
+				</div>
+      </td>
+    </tr>
 		<tr>
 			<th></th>
 			<td>
@@ -168,6 +180,9 @@ $('.js-replacement_target').change(function(){
 
 	<input type="hidden" name="fix_replacement_replacement" value="{fix_replacement_replacement}">
 	<input type="hidden" name="fix[]" value="fix_replacement_replacement">
+
+	<input type="hidden" name="fix_replacement_target_blog" value="{fix_replacement_target_blog}">
+	<input type="hidden" name="fix[]" value="fix_replacement_target_blog">
 
 	<!-- END step#confirm -->
 

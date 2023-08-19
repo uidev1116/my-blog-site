@@ -1,68 +1,71 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Creatable } from './react-select-styled';
-import ResizeImage from '../lib/resize-image/util';
-import { formatBytes, setTooltips, dataURItoBlob } from '../lib/utility';
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Creatable } from './react-select-styled'
+import ResizeImage from '../lib/resize-image/util'
+import { formatBytes, setTooltips, dataURItoBlob } from '../lib/utility'
 
-import Splash from './splash';
-import Notify from './notify';
-import MediaEditModal from './media-edit-modal';
-import { setItem, updateMediaList } from '../actions/media';
-import { MediaItem } from '../types/media';
-
-/* eslint jsx-a11y/click-events-have-key-events: 0 */
-/* eslint jsx-a11y/no-static-element-interactions: 0 */
+import Splash from './splash'
+import Notify from './notify'
+import MediaEditModal from './media-edit-modal'
+import { setItem, updateMediaList } from '../actions/media'
+import { MediaItem } from '../types/media'
 
 /* eslint jsx-a11y/click-events-have-key-events: 0 */
 /* eslint jsx-a11y/no-static-element-interactions: 0 */
 
-const delimiter = ',';
-const resizeImage = new ResizeImage();
+/* eslint jsx-a11y/click-events-have-key-events: 0 */
+/* eslint jsx-a11y/no-static-element-interactions: 0 */
+
+const delimiter = ','
+const resizeImage = new ResizeImage()
 
 type MediaModalState = {
-  loading: boolean;
-  open: boolean;
-  copied: boolean;
-  blob: Blob | null;
-  file: File | null;
-  preview: string | null;
-  previewWidth?: number;
-  previewHeight?: number;
-  pdfPreviewed: boolean;
-  pdfHasPrevPage: boolean;
-  pdfHasNextPage: boolean;
-  focalPoint?: [number, number] | [];
-  replaced: boolean; // check if the image is updated via input type="file"
-};
+  loading: boolean
+  open: boolean
+  copied: boolean
+  blob: Blob | null
+  file: File | null
+  preview: string | null
+  previewWidth?: number
+  previewHeight?: number
+  pdfPreviewed: boolean
+  pdfHasPrevPage: boolean
+  pdfHasNextPage: boolean
+  focalPoint?: [number, number] | []
+  replaced: boolean // check if the image is updated via input type="file"
+}
 
 type MediaModalProp = {
-  formToken: string;
-  item: MediaItem;
-  tags?: string[];
-  onClose?: () => void;
-  onUpdate?: () => void;
+  formToken: string
+  item: MediaItem
+  tags?: string[]
+  onClose?: () => void
+  onUpdate?: () => void
   actions: {
-    setItem: typeof setItem;
-    updateMediaList: typeof updateMediaList;
-  };
-};
+    setItem: typeof setItem
+    updateMediaList: typeof updateMediaList
+  }
+}
 
-export default class MediaModal extends Component<MediaModalProp, MediaModalState> {
-  form: HTMLFormElement;
+export default class MediaModal extends Component<
+  MediaModalProp,
+  MediaModalState
+> {
+  form: HTMLFormElement
 
-  modal: HTMLElement | null;
+  modal: HTMLElement | null
 
-  root: HTMLElement;
+  root: HTMLElement
 
-  pdf2Image: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  pdf2Image: any // eslint-disable-line @typescript-eslint/no-explicit-any
 
   static defaultProps = {
     tags: [],
-  };
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       loading: false,
       open: false,
@@ -75,137 +78,142 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
       pdfHasPrevPage: false,
       pdfHasNextPage: false,
       focalPoint: [],
-    };
-    this.root = document.createElement('div');
-    this.pdf2Image = null;
-    document.body.appendChild(this.root);
+    }
+    this.root = document.createElement('div')
+    this.pdf2Image = null
+    document.body.appendChild(this.root)
   }
 
   async componentDidMount() {
-    const { item } = this.props;
+    const { item } = this.props
     if (item.media_ext.toLowerCase() === 'pdf') {
-      this.pdfPreview(parseInt(item.media_pdf_page, 10) || 1);
+      this.pdfPreview(parseInt(item.media_pdf_page, 10) || 1)
     } else {
-      this.getPreviewSize(item.media_thumbnail);
-      setTooltips(this.modal);
+      this.getPreviewSize(item.media_thumbnail)
+      setTooltips(this.modal)
     }
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this.root);
+    document.body.removeChild(this.root)
   }
 
   async setPdfPreview(image) {
-    const { item } = this.props;
-    item.media_thumbnail = image;
-    const hasPrevPage = await this.pdf2Image.hasPrevPage();
-    const hasNextPage = await this.pdf2Image.hasNextPage();
+    const { item } = this.props
+    item.media_thumbnail = image
+    const hasPrevPage = await this.pdf2Image.hasPrevPage()
+    const hasNextPage = await this.pdf2Image.hasNextPage()
     this.setState({
       pdfHasPrevPage: hasPrevPage,
       pdfHasNextPage: hasNextPage,
       pdfPreviewed: true,
-    });
+    })
   }
 
   pdfPreview(page) {
-    const { item } = this.props;
-    import(/* webpackChunkName: "pdf2image" */ '../lib/pdf2image').then(async ({ default: Pdf2Image }) => {
-      this.pdf2Image = new Pdf2Image(item.media_permalink);
-      const image = await this.pdf2Image.getPageImage(page);
-      await this.setPdfPreview(image);
-      this.getPreviewSize(item.media_thumbnail);
-      setTooltips(this.modal);
-    });
+    const { item } = this.props
+    import(/* webpackChunkName: "pdf2image" */ '../lib/pdf2image').then(
+      async ({ default: Pdf2Image }) => {
+        this.pdf2Image = new Pdf2Image(item.media_permalink)
+        const image = await this.pdf2Image.getPageImage(page)
+        await this.setPdfPreview(image)
+        this.getPreviewSize(item.media_thumbnail)
+        setTooltips(this.modal)
+      },
+    )
   }
 
   pdfPrevPage(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.pdf2Image.getPrevImage().then(async (image) => {
-      this.setPdfPreview(image);
-    });
+      this.setPdfPreview(image)
+    })
   }
 
   pdfNextPage(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.pdf2Image.getNextImage().then(async (image) => {
-      this.setPdfPreview(image);
-    });
+      this.setPdfPreview(image)
+    })
   }
 
   getPreviewSize(preview: string) {
-    const img = new Image();
+    const img = new Image()
     img.onload = () => {
       this.setState({
         previewWidth: img.width,
         previewHeight: img.height,
-      });
-    };
-    img.src = preview;
+      })
+    }
+    img.src = preview
   }
 
   hideModal() {
-    this.props.actions.setItem(null);
+    this.props.actions.setItem(null)
     // 再度開いたときにメディアが開かないようにモーダルのURLを削除
     if ('history' in window) {
-      history.replaceState(null, null, '#');
+      history.replaceState(null, null, '#')
     }
     if (this.props.onClose) {
-      this.props.onClose();
+      this.props.onClose()
     }
   }
 
   buildFormData(postName: string) {
-    const {
-      blob, file, focalPoint, replaced, pdfPreviewed,
-    } = this.state;
-    const { item } = this.props;
-    const formData = new FormData(this.form);
+    const { blob, file, focalPoint, replaced, pdfPreviewed } = this.state
+    const { item } = this.props
+    const formData = new FormData(this.form)
     if (blob) {
-      formData.append('media_file', blob);
+      formData.append('media_file', blob)
     } else if (file) {
-      formData.append('media_file', file);
+      formData.append('media_file', file)
     }
     if (focalPoint.length) {
-      formData.append('media[]', 'focal_x');
-      formData.append('media[]', 'focal_y');
-      formData.append('focal_x', `${focalPoint[0]}`);
-      formData.append('focal_y', `${focalPoint[1]}`);
+      formData.append('media[]', 'focal_x')
+      formData.append('media[]', 'focal_y')
+      formData.append('focal_x', `${focalPoint[0]}`)
+      formData.append('focal_y', `${focalPoint[1]}`)
     }
     if (replaced) {
-      formData.append('media[]', 'replaced');
-      formData.append('replaced', 'true');
+      formData.append('media[]', 'replaced')
+      formData.append('replaced', 'true')
     }
     if (item.media_ext.toLowerCase() === 'pdf' && pdfPreviewed) {
-      formData.append('media_pdf_thumbnail', dataURItoBlob(item.media_thumbnail));
+      formData.append(
+        'media_pdf_thumbnail',
+        dataURItoBlob(item.media_thumbnail),
+      )
 
-      formData.append('media[]', 'pdf_page');
-      formData.append('pdf_page', this.pdf2Image.currentPage);
+      formData.append('media[]', 'pdf_page')
+      formData.append('pdf_page', this.pdf2Image.currentPage)
     }
-    formData.append(postName, 'true');
-    formData.append('formToken', window.csrfToken);
-    return formData;
+    formData.append(postName, 'true')
+    formData.append('formToken', window.csrfToken)
+    return formData
   }
 
   upload() {
-    const { actions, item } = this.props;
-    const { file, blob } = this.state;
-    const formData = this.buildFormData('ACMS_POST_Media_Update');
+    const { actions, item } = this.props
+    const { file, blob } = this.state
+    const formData = this.buildFormData('ACMS_POST_Media_Update')
     if (file || blob) {
-      const msg = file ? ACMS.i18n('media.file_changed') : ACMS.i18n('media.img_changed');
+      const msg = file
+        ? ACMS.i18n('media.file_changed')
+        : ACMS.i18n('media.img_changed')
       if (!confirm(msg)) {
-        return;
+        return
       }
     }
     this.setState({
       loading: true,
       file: null,
       blob: null,
-    });
+    })
     const url = ACMS.Library.acmsLink({
       Query: {
         _mid: item.media_id,
       },
-    });
+    })
     $.ajax({
       url,
       type: 'POST',
@@ -215,32 +223,32 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
     }).then((res) => {
       this.setState({
         loading: false,
-      });
+      })
       if (res.status === 'failure') {
-        alert(ACMS.i18n('media.cannot_edit'));
-        return;
+        alert(ACMS.i18n('media.cannot_edit'))
+        return
       }
-      actions.updateMediaList(res);
-      actions.setItem(null);
+      actions.updateMediaList(res)
+      actions.setItem(null)
       if (this.props.onUpdate) {
-        this.props.onUpdate(res);
+        this.props.onUpdate(res)
       }
-    });
+    })
   }
 
   uploadAsNew() {
-    const { actions, item } = this.props;
-    const formData = this.buildFormData('ACMS_POST_Media_UpdateAsNew');
+    const { actions, item } = this.props
+    const formData = this.buildFormData('ACMS_POST_Media_UpdateAsNew')
     this.setState({
       loading: true,
       file: null,
       blob: null,
-    });
+    })
     const url = ACMS.Library.acmsLink({
       Query: {
         _mid: item.media_id,
       },
-    });
+    })
     $.ajax({
       url,
       type: 'POST',
@@ -250,61 +258,61 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
     }).then((res) => {
       this.setState({
         loading: false,
-      });
+      })
       if (res.status === 'failure') {
-        alert(ACMS.i18n('media.cannot_edit'));
-        return;
+        alert(ACMS.i18n('media.cannot_edit'))
+        return
       }
-      actions.fetchMediaList();
-      actions.setItem(null);
+      actions.fetchMediaList()
+      actions.setItem(null)
       if (this.props.onUpdate) {
-        this.props.onUpdate(res);
+        this.props.onUpdate(res)
       }
-    });
+    })
   }
 
   onInput(e, prop) {
-    const { actions, item } = this.props;
-    actions.setItem({ ...item, [prop]: e.target.value });
+    const { actions, item } = this.props
+    actions.setItem({ ...item, [prop]: e.target.value })
   }
 
   makeTags(label) {
     if (!label) {
-      return null;
+      return null
     }
-    const labels = label.split(delimiter);
+    const labels = label.split(delimiter)
     return labels.map((label) => ({
       value: label,
       label,
-    }));
+    }))
   }
 
   addTags(tags) {
-    const { actions, item } = this.props;
+    const { actions, item } = this.props
     const label = tags.reduce((val, tag, idx) => {
       if (idx === 0) {
-        return tag.value;
+        return tag.value
       }
-      return `${val}${delimiter}${tag.value}`;
-    }, '');
+      return `${val}${delimiter}${tag.value}`
+    }, '')
 
-    actions.setItem({ ...item, media_label: label });
+    actions.setItem({ ...item, media_label: label })
   }
 
   openEditDialog() {
     this.setState({
       open: true,
-    });
+    })
   }
 
   blobToDataURL(blob: Blob): Promise<string> {
     return new Promise((resolve) => {
-      const fr = new FileReader();
+      const fr = new FileReader()
       fr.onload = (e) => {
-        resolve(e.target.result);
-      };
-      fr.readAsDataURL(blob);
-    });
+        resolve(e.target.result)
+      }
+      fr.readAsDataURL(blob)
+    })
   }
 
   onCloseEditDialog(blob: Blob, focalPoint: [number, number]) {
@@ -315,102 +323,116 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
             preview,
             blob,
             focalPoint,
-          });
+          })
         } else {
           this.setState({
             preview,
             blob,
-          });
+          })
         }
-      });
+      })
     }
     this.setState({
       open: false,
-    });
+    })
   }
 
   createPdfThumbnail(file) {
     return new Promise((resolve) => {
       if (!file) {
-        resolve();
+        resolve()
       }
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (event) => {
-        import(/* webpackChunkName: "pdf2image" */ '../lib/pdf2image').then(async ({ default: Pdf2Image }) => {
-          this.pdf2Image = new Pdf2Image(new Uint8Array(event.target.result));
-          this.pdf2Image.currentPage = 1;
-          this.pdf2Image.getPageImage(1).then((image) => {
-            resolve(image);
-          });
-        });
-      };
-      reader.readAsArrayBuffer(file);
-    });
+        import(/* webpackChunkName: "pdf2image" */ '../lib/pdf2image').then(
+          async ({ default: Pdf2Image }) => {
+            this.pdf2Image = new Pdf2Image(new Uint8Array(event.target.result))
+            this.pdf2Image.currentPage = 1
+            this.pdf2Image.getPageImage(1).then((image) => {
+              resolve(image)
+            })
+          },
+        )
+      }
+      reader.readAsArrayBuffer(file)
+    })
   }
 
   async changeImage(e) {
-    const { item } = this.props;
-    const file: File = e.target.files[0];
+    const { item } = this.props
+    const file: File = e.target.files[0]
     // eslint-disable-next-line no-nested-ternary
-    const type = file.type.match(/svg/) ? 'svg' : file.type.match(/image/) ? 'image' : 'file';
+    const type = file.type.match(/svg/)
+      ? 'svg'
+      : file.type.match(/image/)
+      ? 'image'
+      : 'file'
     if (item.media_type !== type) {
-      alert(ACMS.i18n('media.cannnot_change_type'));
+      alert(ACMS.i18n('media.cannnot_change_type'))
     }
     const nextState = {
       replaced: true,
-    };
+    }
     if (type === 'image') {
-      const [resizeType, largeSize] = ACMS.Config.lgImg.split(':');
-      const { blob, resize } = await resizeImage.getBlobFromFile(file, resizeType, parseInt(largeSize, 10));
-      const preview = await this.blobToDataURL(blob);
-      this.getPreviewSize(preview);
-      nextState.preview = preview;
+      const [resizeType, largeSize] = ACMS.Config.lgImg.split(':')
+      const { blob, resize } = await resizeImage.getBlobFromFile(
+        file,
+        resizeType,
+        parseInt(largeSize, 10),
+      )
+      const preview = await this.blobToDataURL(blob)
+      this.getPreviewSize(preview)
+      nextState.preview = preview
       if (resize === false || ACMS.Config.mediaClientResize !== 'on') {
-        nextState.blob = file;
+        nextState.blob = file
       } else {
-        nextState.blob = blob;
+        nextState.blob = blob
       }
     } else {
-      nextState.file = file;
+      nextState.file = file
       this.createPdfThumbnail(file).then((image) => {
-        item.media_thumbnail = image;
-      });
+        item.media_thumbnail = image
+      })
     }
-    item.media_title = file.name;
-    this.setState(nextState);
+    item.media_title = file.name
+    this.setState(nextState)
   }
 
   getImgWidth(size: string) {
-    const [width] = size.split(' x ');
-    return `${width}px`;
+    const [width] = size.split(' x ')
+    return `${width}px`
   }
 
   render() {
-    const { item, formToken, tags } = this.props;
-    const {
-      loading, open, preview, copied, pdfHasPrevPage, pdfHasNextPage,
-    } = this.state;
+    const { item, formToken, tags } = this.props
+    const { loading, open, preview, copied, pdfHasPrevPage, pdfHasNextPage } =
+      this.state
     return ReactDOM.createPortal(
       <>
         <div
           className="acms-admin-modal in"
           style={{ display: 'block', backgroundColor: 'rgba(0,0,0,.5)' }}
           ref={(modal) => {
-            this.modal = modal;
+            this.modal = modal
           }}
         >
           <div className="acms-admin-modal-dialog medium">
             <div className="acms-admin-modal-content">
               <div className="acms-admin-modal-header">
-                <i className="acms-admin-modal-hide acms-admin-icon-delete" onClick={this.hideModal.bind(this)} />
-                <h3 className="acms-admin-modal-heading">{ACMS.i18n('media.media_edit')}</h3>
+                <i
+                  className="acms-admin-modal-hide acms-admin-icon-delete"
+                  onClick={this.hideModal.bind(this)}
+                />
+                <h3 className="acms-admin-modal-heading">
+                  {ACMS.i18n('media.media_edit')}
+                </h3>
               </div>
               <div className="acms-admin-modal-body">
                 <div className="acms-admin-padding-small">
                   <form
                     className="acms-admin-form"
                     ref={(form: HTMLFormElement) => {
-                      this.form = form;
+                      this.form = form
                     }}
                   >
                     <div className="acms-admin-grid">
@@ -445,26 +467,45 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                         )}
                         {item.media_type === 'svg' && (
                           <div className="acms-admin-media-thumb-container acms-admin-margin-bottom-small acms-admin-media-thumb-container-assets">
-                            <div className="acms-admin-media-thumb-wrap" style={{ width: 'auto' }}>
+                            <div
+                              className="acms-admin-media-thumb-wrap"
+                              style={{ width: 'auto' }}
+                            >
                               <img
                                 src={item.media_thumbnail}
-                                style={{ margin: 'auto', display: 'block', width: '80%' }}
+                                style={{
+                                  margin: 'auto',
+                                  display: 'block',
+                                  width: '80%',
+                                }}
                                 alt=""
                               />
                             </div>
-                            <p className="acms-admin-media-thumb-ext">{item.media_title}</p>
+                            <p className="acms-admin-media-thumb-ext">
+                              {item.media_title}
+                            </p>
                           </div>
                         )}
                         {item.media_ext.toLowerCase() === 'pdf' && (
                           <div className="acms-admin-media-thumb-container acms-admin-margin-bottom-small acms-admin-media-thumb-container-assets">
-                            <div className="acms-admin-media-thumb-wrap" style={{ width: 'auto' }}>
+                            <div
+                              className="acms-admin-media-thumb-wrap"
+                              style={{ width: 'auto' }}
+                            >
                               <img
                                 src={item.media_thumbnail}
-                                style={{ margin: 'auto', display: 'block', width: '70%' }}
+                                style={{
+                                  margin: 'auto',
+                                  display: 'block',
+                                  width: '70%',
+                                }}
                                 alt=""
                               />
                             </div>
-                            <div style={{ marginTop: '5px' }} className="acms-admin-media-thumb-pager">
+                            <div
+                              style={{ marginTop: '5px' }}
+                              className="acms-admin-media-thumb-pager"
+                            >
                               {pdfHasPrevPage && (
                                 <button
                                   type="button"
@@ -472,7 +513,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   onClick={this.pdfPrevPage.bind(this)}
                                 >
                                   <span className="acms-admin-icon-arrow-small-left" />
-                                  <span className="acms-admin-hide-visually">前ページ</span>
+                                  <span className="acms-admin-hide-visually">
+                                    前ページ
+                                  </span>
                                 </button>
                               )}
                               {pdfHasNextPage && (
@@ -482,25 +525,36 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   onClick={this.pdfNextPage.bind(this)}
                                 >
                                   <span className="acms-admin-icon-arrow-small-right" />
-                                  <span className="acms-admin-hide-visually">次ページ</span>
+                                  <span className="acms-admin-hide-visually">
+                                    次ページ
+                                  </span>
                                 </button>
                               )}
                             </div>
-                            <p className="acms-admin-media-thumb-ext">{item.media_title}</p>
+                            <p className="acms-admin-media-thumb-ext">
+                              {item.media_title}
+                            </p>
                           </div>
                         )}
-                        {item.media_type === 'file' && item.media_ext.toLowerCase() !== 'pdf' && (
-                          <div className="acms-admin-media-thumb-container acms-admin-margin-bottom-small acms-admin-media-thumb-container-assets">
-                            <div className="acms-admin-media-thumb-wrap">
-                              <img
-                                src={item.media_thumbnail}
-                                style={{ margin: 'auto', display: 'block', width: '70px' }}
-                                alt=""
-                              />
+                        {item.media_type === 'file' &&
+                          item.media_ext.toLowerCase() !== 'pdf' && (
+                            <div className="acms-admin-media-thumb-container acms-admin-margin-bottom-small acms-admin-media-thumb-container-assets">
+                              <div className="acms-admin-media-thumb-wrap">
+                                <img
+                                  src={item.media_thumbnail}
+                                  style={{
+                                    margin: 'auto',
+                                    display: 'block',
+                                    width: '70px',
+                                  }}
+                                  alt=""
+                                />
+                              </div>
+                              <p className="acms-admin-media-thumb-ext">
+                                {item.media_title}
+                              </p>
                             </div>
-                            <p className="acms-admin-media-thumb-ext">{item.media_title}</p>
-                          </div>
-                        )}
+                          )}
                         <div className="acms-admin-table-admin-media-edit-wrap">
                           <table className="acms-admin-table-admin-media-edit">
                             <tbody>
@@ -526,34 +580,48 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                 </td>
                               </tr>
                               <tr>
-                                <th className="acms-admin-table-nowrap">{ACMS.i18n('media.upload_date')}</th>
+                                <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.upload_date')}
+                                </th>
                                 <td>
-                                  {item.media_last_modified}
-                                  <input type="hidden" name="upload_date" value={item.media_last_modified} />
-                                  <input type="hidden" name="media[]" value="upload_date" />
+                                  {item.media_datetime}
+                                  <input
+                                    type="hidden"
+                                    name="upload_date"
+                                    value={item.media_datetime}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="upload_date"
+                                  />
                                 </td>
                               </tr>
                               {item.media_type === 'image' && (
                                 <tr>
-                                  <th className="acms-admin-table-nowrap">{ACMS.i18n('media.image_size')}</th>
-                                  <td>
-                                    {item.media_size}
-                                    {' '}
-                                    px
-                                  </td>
+                                  <th className="acms-admin-table-nowrap">
+                                    {ACMS.i18n('media.image_size')}
+                                  </th>
+                                  <td>{item.media_size} px</td>
                                 </tr>
                               )}
                               <tr>
-                                <th className="acms-admin-table-nowrap">{ACMS.i18n('media.file_size')}</th>
+                                <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.file_size')}
+                                </th>
                                 <td>{formatBytes(item.media_filesize)}</td>
                               </tr>
                               <tr>
-                                <th className="acms-admin-table-nowrap">{ACMS.i18n('media.file_name')}</th>
+                                <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.file_name')}
+                                </th>
                                 <td>{item.media_title}</td>
                               </tr>
                               {item.media_type === 'file' && (
                                 <tr>
-                                  <th className="acms-admin-table-nowrap">{ACMS.i18n('media.intrinsic_link')}</th>
+                                  <th className="acms-admin-table-nowrap">
+                                    {ACMS.i18n('media.intrinsic_link')}
+                                  </th>
                                   <td>
                                     <div className="acms-admin-form-action">
                                       <input
@@ -567,27 +635,37 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                         onCopy={() => {
                                           this.setState({
                                             copied: true,
-                                          });
+                                          })
                                         }}
                                       >
                                         <span className="acms-admin-form-side-btn">
-                                          <button type="button" className="acms-admin-btn">
+                                          <button
+                                            type="button"
+                                            className="acms-admin-btn"
+                                          >
                                             {ACMS.i18n('media.copy')}
                                           </button>
                                         </span>
                                       </CopyToClipboard>
                                     </div>
                                     <p
-                                      style={{ fontSize: '12px', marginTop: '5px' }}
+                                      style={{
+                                        fontSize: '12px',
+                                        marginTop: '5px',
+                                      }}
                                       className="acms-admin-text-primary"
                                     >
-                                      {ACMS.i18n('media.intrinsic_link_attention')}
+                                      {ACMS.i18n(
+                                        'media.intrinsic_link_attention',
+                                      )}
                                     </p>
                                   </td>
                                 </tr>
                               )}
                               <tr>
-                                <th className="acms-admin-table-nowrap">{ACMS.i18n('media.permalink')}</th>
+                                <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.permalink')}
+                                </th>
                                 <td>
                                   <div className="acms-admin-form-action">
                                     <input
@@ -601,11 +679,14 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                       onCopy={() => {
                                         this.setState({
                                           copied: true,
-                                        });
+                                        })
                                       }}
                                     >
                                       <span className="acms-admin-form-side-btn">
-                                        <button type="button" className="acms-admin-btn">
+                                        <button
+                                          type="button"
+                                          className="acms-admin-btn"
+                                        >
                                           {ACMS.i18n('media.copy')}
                                         </button>
                                       </span>
@@ -613,7 +694,10 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   </div>
                                   {item.media_type !== 'file' && (
                                     <p
-                                      style={{ fontSize: '12px', marginTop: '5px' }}
+                                      style={{
+                                        fontSize: '12px',
+                                        marginTop: '5px',
+                                      }}
                                       className="acms-admin-text-danger"
                                     >
                                       {ACMS.i18n('media.copy_attention')}
@@ -630,21 +714,43 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                           <table className="acms-admin-table-admin-media-edit">
                             <tbody>
                               {item.media_type === 'file' && (
-                              <tr>
-                                <th className="acms-admin-table-nowrap">
-                                  {ACMS.i18n('media.status')}
-                                  <i className="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-position="top" data-acms-tooltip="管理用のラベルです。" />
-                                </th>
-                                <td>
-                                  <select name="status" value={item.media_status} onChange={(e) => { this.onInput(e, 'media_status'); }}>
-                                    <option value="entry">{ACMS.i18n('media.follow_media_status')}</option>
-                                    <option value="open">{ACMS.i18n('media.open')}</option>
-                                    <option value="close">{ACMS.i18n('media.close')}</option>
-                                    <option value="secret">{ACMS.i18n('media.secret')}</option>
-                                  </select>
-                                  <input type="hidden" name="media[]" value="status" />
-                                </td>
-                              </tr>
+                                <tr>
+                                  <th className="acms-admin-table-nowrap">
+                                    {ACMS.i18n('media.status')}
+                                    <i
+                                      className="acms-admin-icon-tooltip js-acms-tooltip-hover"
+                                      data-acms-position="top"
+                                      data-acms-tooltip="管理用のラベルです。"
+                                    />
+                                  </th>
+                                  <td>
+                                    <select
+                                      name="status"
+                                      value={item.media_status}
+                                      onChange={(e) => {
+                                        this.onInput(e, 'media_status')
+                                      }}
+                                    >
+                                      <option value="entry">
+                                        {ACMS.i18n('media.follow_media_status')}
+                                      </option>
+                                      <option value="open">
+                                        {ACMS.i18n('media.open')}
+                                      </option>
+                                      <option value="close">
+                                        {ACMS.i18n('media.close')}
+                                      </option>
+                                      <option value="secret">
+                                        {ACMS.i18n('media.secret')}
+                                      </option>
+                                    </select>
+                                    <input
+                                      type="hidden"
+                                      name="media[]"
+                                      value="status"
+                                    />
+                                  </td>
+                                </tr>
                               )}
                               <tr>
                                 <th className="acms-admin-table-nowrap">
@@ -652,7 +758,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   <i
                                     className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
                                     data-acms-position="top"
-                                    data-acms-tooltip={ACMS.i18n('media.managed_tag')}
+                                    data-acms-tooltip={ACMS.i18n(
+                                      'media.managed_tag',
+                                    )}
                                   />
                                 </th>
                                 <td>
@@ -666,16 +774,24 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                       value: tag,
                                     }))}
                                   />
-                                  <input type="hidden" value={item.media_label} name="media_label" />
-                                  <input type="hidden" name="media[]" value="media_label" />
+                                  <input
+                                    type="hidden"
+                                    value={item.media_label}
+                                    name="media_label"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="media_label"
+                                  />
                                 </td>
                               </tr>
                               <tr
                                 style={{
                                   display:
-                                    typeof ACMS !== 'undefined'
-                                    && ACMS.Config
-                                    && ACMS.Config.mediaShowAltAndCaptionOnModal
+                                    typeof ACMS !== 'undefined' &&
+                                    ACMS.Config &&
+                                    ACMS.Config.mediaShowAltAndCaptionOnModal
                                       ? 'table-row'
                                       : 'none',
                                 }}
@@ -685,7 +801,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   <i
                                     className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
                                     data-acms-position="top"
-                                    data-acms-tooltip={ACMS.i18n('media.caption_settings')}
+                                    data-acms-tooltip={ACMS.i18n(
+                                      'media.caption_settings',
+                                    )}
                                   />
                                 </th>
                                 <td>
@@ -695,18 +813,22 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                     name="field_1"
                                     className="acms-admin-form-width-full"
                                     onInput={(e) => {
-                                      this.onInput(e, 'media_caption');
+                                      this.onInput(e, 'media_caption')
                                     }}
                                   />
-                                  <input type="hidden" name="media[]" value="field_1" />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="field_1"
+                                  />
                                 </td>
                               </tr>
                               <tr
                                 style={{
                                   display:
-                                    typeof ACMS !== 'undefined'
-                                    && ACMS.Config
-                                    && ACMS.Config.mediaShowAltAndCaptionOnModal
+                                    typeof ACMS !== 'undefined' &&
+                                    ACMS.Config &&
+                                    ACMS.Config.mediaShowAltAndCaptionOnModal
                                       ? 'table-row'
                                       : 'none',
                                 }}
@@ -716,7 +838,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   <i
                                     className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
                                     data-acms-position="top"
-                                    data-acms-tooltip={ACMS.i18n('media.alt_settings')}
+                                    data-acms-tooltip={ACMS.i18n(
+                                      'media.alt_settings',
+                                    )}
                                   />
                                 </th>
                                 <td>
@@ -726,10 +850,14 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                     name="field_3"
                                     className="acms-admin-form-width-full"
                                     onInput={(e) => {
-                                      this.onInput(e, 'media_alt');
+                                      this.onInput(e, 'media_alt')
                                     }}
                                   />
-                                  <input type="hidden" name="media[]" value="field_3" />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="field_3"
+                                  />
                                 </td>
                               </tr>
                               {item.media_type !== 'file' && (
@@ -739,7 +867,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                     <i
                                       className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
                                       data-acms-position="top"
-                                      data-acms-tooltip={ACMS.i18n('media.link_settings')}
+                                      data-acms-tooltip={ACMS.i18n(
+                                        'media.link_settings',
+                                      )}
                                     />
                                   </th>
                                   <td>
@@ -749,10 +879,14 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                       name="field_2"
                                       className="acms-admin-form-width-full"
                                       onInput={(e) => {
-                                        this.onInput(e, 'media_link');
+                                        this.onInput(e, 'media_link')
                                       }}
                                     />
-                                    <input type="hidden" name="media[]" value="field_2" />
+                                    <input
+                                      type="hidden"
+                                      name="media[]"
+                                      value="field_2"
+                                    />
                                   </td>
                                 </tr>
                               )}
@@ -762,7 +896,9 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                   <i
                                     className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
                                     data-acms-position="top"
-                                    data-acms-tooltip={ACMS.i18n('media.details_settings')}
+                                    data-acms-tooltip={ACMS.i18n(
+                                      'media.details_settings',
+                                    )}
                                   />
                                 </th>
                                 <td>
@@ -771,10 +907,14 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                                     name="field_4"
                                     className="acms-admin-form-width-full"
                                     onInput={(e) => {
-                                      this.onInput(e, 'media_text');
+                                      this.onInput(e, 'media_text')
                                     }}
                                   />
-                                  <input type="hidden" name="media[]" value="field_4" />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="field_4"
+                                  />
                                 </td>
                               </tr>
                             </tbody>
@@ -783,17 +923,35 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
                       </div>
                     </div>
                     <input type="hidden" name="formToken" value={formToken} />
-                    {item.media_ext && <input type="hidden" name="extension" value={item.media_ext.toUpperCase()} />}
-                    <input type="hidden" name="media_old" value={item.media_path} />
+                    {item.media_ext && (
+                      <input
+                        type="hidden"
+                        name="extension"
+                        value={item.media_ext.toUpperCase()}
+                      />
+                    )}
+                    <input
+                      type="hidden"
+                      name="media_old"
+                      value={item.media_path}
+                    />
                     <input type="hidden" name="type" value={item.media_type} />
                     <input type="hidden" name="media[]" value="extension" />
                     <input type="hidden" name="media[]" value="media_old" />
                     <input type="hidden" name="media[]" value="type" />
-                    <input type="hidden" name="file_size" value={item.media_size} />
+                    <input
+                      type="hidden"
+                      name="file_size"
+                      value={item.media_size}
+                    />
                     <input type="hidden" name="media[]" value="file_size" />
                     <input type="hidden" name="path" value={item.media_path} />
                     <input type="hidden" name="media[]" value="path" />
-                    <input type="hidden" name="file_name" value={item.media_title} />
+                    <input
+                      type="hidden"
+                      name="file_name"
+                      value={item.media_title}
+                    />
                     <input type="hidden" name="media[]" value="file_name" />
                   </form>
                 </div>
@@ -841,11 +999,11 @@ export default class MediaModal extends Component<MediaModalProp, MediaModalStat
           onFinish={() => {
             this.setState({
               copied: false,
-            });
+            })
           }}
         />
       </>,
       this.root,
-    );
+    )
   }
 }

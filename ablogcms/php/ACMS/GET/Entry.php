@@ -617,8 +617,9 @@ class ACMS_GET_Entry extends ACMS_GET
                     }
 
                     $media = $mediaDataList[$mid];
-                    $path = $media['media_path'];
+                    $path = Media::urlencode($media['media_path']);
                     $type = $media['media_type'];
+
                     $vars['caption' . $fx] = (isset($mediaCaptions[$i]) && $mediaCaptions[$i])
                                             ? $mediaCaptions[$i]
                                             : $media['media_field_1'];

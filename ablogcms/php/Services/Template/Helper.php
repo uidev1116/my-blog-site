@@ -889,7 +889,7 @@ class Helper
                     }
                 }
                 $vars += array(
-                    'path'.$fx => $path,
+                    'path'.$fx => Media::urlencode($path),
                 );
                 if ( 'on' == $config['imageTrim'] ) {
                     if ( $x > $config['imageX'] and $y > $config['imageY'] ) {
@@ -1978,7 +1978,7 @@ class Helper
                 } else if ($media) {
                     $vars['type'.$fx] = 'file';
                 }
-                $path = $media['media_path'];
+                $path = Media::urlencode($media['media_path']);
                 $ext = ite(pathinfo($path), 'extension');
                 $size = $media['media_image_size'];
                 $sizes = explode(' x ', $size);

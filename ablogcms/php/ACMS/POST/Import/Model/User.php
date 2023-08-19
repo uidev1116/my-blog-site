@@ -256,7 +256,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $field = $this->fieldBase();
 
         foreach ( $this->data as $key => $value ) {
-            if ( $key === 'user_id' && !!$this->csvId ) {
+            if ($key === 'user_id' && $this->isUpdate) {
                 $this->user['user_id'] = $this->csvId;
                 $field['field_uid'] = $this->csvId;
             }
@@ -332,6 +332,8 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
                     $this->user['user_pass_generation'] = PASSWORD_ALGORITHM_GENERATION;
                 }
                 break;
+            case 'user_id':
+            case 'user_blog_id':
             case 'user_path_reset':
             case 'user_sort':
                 break;

@@ -116,9 +116,11 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         $cnt_week = null;
 
         $_n = 0;
+        $_maxN = 6;
         $_w = 'w';
         if ( $this->weekStart == 1  ) {
             $_n = 1;
+            $_maxN = 7;
             $_w = 'N';
         }
 
@@ -138,11 +140,9 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
              */
             $date = $year.'-'.$month.'-'.$n;
 
-            if( isset( $this->week_label[ $this->formatW ] ) ) {
-                $_w = date('w', strtotime($date));
-                $week_label = $this->week_label[ $this->formatW ][$_w];
-            }
-            else {
+            if (isset( $this->week_label[ $this->formatW ])) {
+                $week_label = $this->week_label[ $this->formatW ][date('w', strtotime($date))];
+            } else {
                 $week_label = date($this->formatW, strtotime($date));
             }
 
@@ -157,9 +157,9 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
             );
 
             // IF not listmode add Surfix Days
-            if ( $n == $this->cnt_day && empty($this->listmode) ) {
-                $w = date('w', mktime(0,0,0,$month,$n,$year));
-                for ( $_n = 0; $_n < intval(6-$w); $_n++ ) {
+            if ($n == $this->cnt_day && empty($this->listmode)) {
+                $w = date($_w, mktime(0, 0, 0, $month, $n, $year));
+                for ($_n = 0; $_n < intval($_maxN - $w); $_n++) {
                     $cnt_week ++;
                     $this->days[$this->getWeekNum($cnt_week)][] = array(); //future: 次月の数値情報?
                 }

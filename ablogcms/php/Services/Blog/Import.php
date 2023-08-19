@@ -118,7 +118,7 @@ class Import
             $SQL = SQL::newInsert($table);
             foreach ( $record as $field => $value ) {
                 $value = $this->fix($table, $field, $value);
-                if ( is_callable(array($this, $table . 'Fix')) ) {
+                if (is_callable(array($this, $table . 'Fix'))) {
                     $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value, $record));
                 }
 
@@ -147,14 +147,18 @@ class Import
     }
 
     /**
-     * @param $table
-     * @param $field
-     * @param $value
+     * @param string $table
+     * @param string $field
+     * @param string|null $value
      *
-     * @return int
+     * @return int|null
      */
     private function fix($table, $field, $value)
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         $key = substr($field, strlen($table . '_'));
         if ( $key === 'id' ) {
             $value = $this->getNewID($table, $value);
@@ -175,26 +179,20 @@ class Import
         } else if ( $key === 'blog_id' ) {
             $value = $this->bid;
         }
-        if ( in_array($key, array(
-                'id', 'category_id', 'user_id', 'entry_id',
-                'rule_id', 'module_id', 'blog_id'
-            )) && empty($value) && $value !== '0'
-        ) {
-            $value = null;
-        }
+
         return $value;
     }
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function configFix($field, $value, $record)
     {
-        if ($record['config_key'] === 'media_banner_mid' && $field === 'config_value') {
+        if (!is_null($value) && $record['config_key'] === 'media_banner_mid' && $field === 'config_value') {
             return $this->getNewID('media', $value);
         }
         return $value;
@@ -202,7 +200,7 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
@@ -221,7 +219,7 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
@@ -263,9 +261,17 @@ class Import
                 }
                 return acmsSerialize($data);
             }
-        } else if (strncmp($record['column_type'], 'media', 5) === 0 && $field === 'column_field_1') {
+        } else if (1 &&
+            !is_null($value) &&
+            strncmp($record['column_type'], 'media', 5) === 0 &&
+            $field === 'column_field_1'
+        ) {
             $value = $this->getNewID('media', $value);
-        } else if (strncmp($record['column_type'], 'module', 5) === 0 && $field === 'column_field_1') {
+        } else if (1 &&
+            !is_null($value) &
+            strncmp($record['column_type'], 'module', 5) === 0 &&
+            $field === 'column_field_1'
+        ) {
             $value = $this->getNewID('module', $value);
         }
         return $value;
@@ -273,14 +279,14 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function categoryFix($field, $value, $record)
     {
-        if ( $field === 'category_parent' ) {
+        if (!is_null($value) && $field === 'category_parent') {
             $value = $this->getNewID('category', $value);
         }
         return $value;
@@ -288,47 +294,42 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function fulltextFix($field, $value, $record)
     {
-        if ( $field === 'fulltext_eid' ) {
+        if (!is_null($value) && $field === 'fulltext_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if ( $field === 'fulltext_cid' ) {
+        } elseif (!is_null($value) && $field === 'fulltext_cid') {
             $value = $this->getNewID('category', $value);
-        } else if ( $field === 'fulltext_uid' ) {
+        } elseif (!is_null($value) && $field === 'fulltext_uid') {
             $value = $this->getNewID('user', $value);
+        } elseif (!empty($value) && $field === 'fulltext_bid') {
+            $value = false;
+        } elseif (empty($value) && $field === 'fulltext_ngram') {
+            $value = '';
         }
-        if ( empty($value) ) {
-            if ( $field === 'fulltext_ngram' ) {
-                $value = '';
-            } else {
-                $value = null;
-            }
-        }
-        if ( $field === 'fulltext_bid' && !empty($value) ) {
-            return false;
-        }
+
         return $value;
     }
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function moduleFix($field, $value, $record)
     {
-        if ( $field === 'module_eid' ) {
+        if (!is_null($value) && $field === 'module_eid' ) {
             $value = $this->getNewID('entry', $value);
-        } else if ( $field === 'module_cid' ) {
+        } else if (!is_null($value) && $field === 'module_cid' ) {
             $value = $this->getNewID('category', $value);
-        } else if ( $field === 'module_uid' ) {
+        } else if (!is_null($value) && $field === 'module_uid' ) {
             $value = $this->getNewID('user', $value);
         } else if ( $field === 'module_bid' ) {
             $value = empty($value) ? null : $value;
@@ -338,14 +339,14 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function layout_gridFix($field, $value, $record)
     {
-        if ( $field === 'layout_grid_mid' ) {
+        if (!is_null($value) && $field === 'layout_grid_mid') {
             $value = $this->getNewID('module', $value);
         }
         return $value;
@@ -354,20 +355,20 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function ruleFix($field, $value, $record)
     {
-        if ( $field === 'rule_eid' ) {
+        if (!is_null($value) && $field === 'rule_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if ( $field === 'rule_cid' ) {
+        } else if (!is_null($value) && $field === 'rule_cid') {
             $value = $this->getNewID('category', $value);
-        } else if ( $field === 'rule_uid' ) {
+        } else if (!is_null($value) && $field === 'rule_uid') {
             $value = $this->getNewID('user', $value);
-        } else if ( $field === 'rule_aid' ) {
+        } else if (!is_null($value) && $field === 'rule_aid' ) {
             $value = $this->getNewID('alias', $value);
         }
         return $value;
@@ -375,34 +376,38 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function fieldFix($field, $value, $record)
     {
-        if ( $field === 'field_eid' ) {
+        if (!is_null($value) && $field === 'field_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if ( $field === 'field_cid' ) {
+        } else if (!is_null($value) && $field === 'field_cid') {
             $value = $this->getNewID('category', $value);
-        } else if ( $field === 'field_uid' ) {
+        } else if (!is_null($value) && $field === 'field_uid') {
             $value = $this->getNewID('user', $value);
-        } else if ( $field === 'field_mid' ) {
+        } else if (!is_null($value) && $field === 'field_mid') {
             $value = $this->getNewID('module', $value);
         } else if ( $field === 'field_bid' && !empty($value)) {
             $value = $this->bid;
-        } else if ($field === 'field_value' && preg_match('/@media$/', $record['field_key'])) {
+        } else if (1 &&
+            !is_null($value) &&
+            $field === 'field_value' &&
+            preg_match('/@media$/', $record['field_key'])
+        ) {
             $value = $this->getNewID('media', $value);
             $this->mediaFieldFix[] = array(
                 'name' => substr($record['field_key'], 0, -6),
                 'value' => $value,
                 'sort' => $record['field_sort'],
-                'eid' => $this->getNewID('entry', $record['field_eid']),
-                'cid' => $this->getNewID('category', $record['field_cid']),
-                'uid' => $this->getNewID('user', $record['field_uid']),
+                'eid' => empty($record['field_eid']) ? null : $this->getNewID('entry', $record['field_eid']),
+                'cid' => empty($record['field_cid']) ? null : $this->getNewID('category', $record['field_cid']),
+                'uid' => empty($record['field_uid']) ? null : $this->getNewID('user', $record['field_uid']),
                 'bid' => empty($record['field_bid']) ? null : $this->bid,
-                'mid' => $this->getNewID('module', $record['field_mid']),
+                'mid' => empty($record['field_mid']) ? null : $this->getNewID('module', $record['field_mid']),
             );
         }
         return $value;
@@ -410,9 +415,9 @@ class Import
 
     /**
      * @param string $table
-     * @param int $id
+     * @param int|string $id
      *
-     * @return int
+     * @return int|string
      */
     private function getNewID($table, $id)
     {

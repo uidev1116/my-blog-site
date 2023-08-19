@@ -485,11 +485,12 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $vars   += array(
             'status'    => $row['entry_status'],
             'titleUrl'  => !empty($link) ? $link : $permalink,
-            'title'     => addPrefixEntryTitle($row['entry_title']
-                , $row['entry_status']
-                , $row['entry_start_datetime']
-                , $row['entry_end_datetime']
-                , $row['entry_approval']
+            'title'     => addPrefixEntryTitle(
+                $row['entry_title'],
+                $row['entry_status'],
+                $row['entry_start_datetime'],
+                $row['entry_end_datetime'],
+                $row['entry_approval']
             ),
             'inheritUrl'        => $inheritUrl,
             'permalink'         => $permalink,
@@ -503,6 +504,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             'entry:loop.ccd'    => ACMS_RAM::categoryCode($cid),
             'entry:loop.ecd'    => ACMS_RAM::entryCode($eid),
             'entry:loop.class'  => $this->loop_class,
+            'sort'              => $row['entry_sort'],
+            'usort'             => $row['entry_user_sort'],
+            'csort'             => $row['entry_category_sort']
         );
         if ( !empty($link) ) {
             $vars   += array(

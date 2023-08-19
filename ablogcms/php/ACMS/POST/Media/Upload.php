@@ -20,9 +20,10 @@ class ACMS_POST_Media_Upload extends ACMS_POST
             if ($info === false) {
                 throw new \RuntimeException('Uploaded files are invalid.');
             }
-            if (Media::isImageFile($info['type'])) {
+            $type = mime_content_type($_FILES['file']['tmp_name']);
+            if (Media::isImageFile($type)) {
                 $data = Media::uploadImage('file');
-            } else if (Media::isSvgFile($info['type'])) {
+            } else if (Media::isSvgFile($type)) {
                 $data = Media::uploadSvg($info['size'], 'file');
             } else {
                 $data = Media::uploadFile($info['size'], 'file');

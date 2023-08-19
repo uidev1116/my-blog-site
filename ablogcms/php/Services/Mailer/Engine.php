@@ -326,16 +326,23 @@ class Engine implements MailerInterface
         if (empty($this->from)) {
             throw  new RuntimeException('\'from\' fields is empty.');
         }
-        $this->message
-            ->from($this->from)
-            ->to(...$this->to)
-            ->priority(Email::PRIORITY_HIGH);
+        $this->message->from($this->from);
 
-        if (!empty($this->cc)) {
-            $this->message->cc(...$this->cc);
+        $this->message->to(array_shift($this->to));
+        while ($to = array_shift($this->to)) {
+            $this->message->addTo($to);
         }
-        if (!empty($this->bcc)) {
-            $this->message->bcc(...$this->bcc);
+        if (!empty($this->cc) && count($this->cc) > 0) {
+            $this->message->cc(array_shift($this->cc));
+            while ($cc = array_shift($this->cc)) {
+                $this->message->addCc($cc);
+            }
+        }
+        if (!empty($this->bcc) && count($this->bcc) > 0) {
+            $this->message->bcc(array_shift($this->bcc));
+            while ($bcc = array_shift($this->bcc)) {
+                $this->message->addBcc($bcc);
+            }
         }
         if (!empty($this->replyTo)) {
             $this->message->replyTo($this->replyTo);
@@ -373,37 +380,9 @@ class Engine implements MailerInterface
      */
     public function parseAddress($txt)
     {
-        $txt = preg_replace_callback('/"[^"]*"/', function ($matches) {
-            return str_replace(',', ':acms-delimiter:', $matches[0]);
-        }, $txt);
-
         if (empty($txt)) {
             return array();
         }
-        $emails = preg_split('/,/', $txt);
-
-        array_walk($emails, function (&$value) {
-            $value = trim($value);
-            $value = str_replace(':acms-delimiter:', ',', $value);
-
-            if (preg_match('/^("?[^\"]+"?\s+)?<?([^>]+)>?$/', $value, $matches)) {
-                $email = $matches[2];
-                $label = trim($matches[1], " \t\n\r\0\x0B\"");
-                if (empty($label)) {
-                    $value = array($email);
-                } else {
-                    $value = array($email => $label);
-                }
-            }
-        });
-
-        $emails = array_filter($emails, function ($email) {
-            if (empty($email)) {
-                return false;
-            }
-            return true;
-        });
-
-        return $emails;
+        return preg_split('/,/', $txt);
     }
 }

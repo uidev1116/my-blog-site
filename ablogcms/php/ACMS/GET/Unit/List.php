@@ -107,11 +107,11 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                         $media = $mediaEagerLoading[$mediaId];
                         $mediaType = $media['media_type'];
                         if ($mediaType === 'image') {
-                            $row['normal'] = $media['media_path'];
-                            $row['large'] = $media['media_original'];
+                            $row['normal'] = Media::urlencode($media['media_path']);
+                            $row['large'] = Media::urlencode($media['media_original']);
                         } else if ($mediaType === 'file') {
                             if (empty($media['media_status'])) {
-                                $row['download'] = '/' . Media::getFileOldPermalink($media['media_path'], false);
+                                $row['download'] = '/' . Media::getFileOldPermalink(Media::urlencode($media['media_path']), false);
                             } else {
                                 $row['download'] = '/' . Media::getFilePermalink($media['media_id'], false);
                             }

@@ -132,7 +132,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry
 
         //---------------
         // related entry
-        Entry::saveRelatedEntries($eid, $Entry->getArray('related'), RVID, $Entry->getArray('related_type'));
+        Entry::saveRelatedEntries($eid, $Entry->getArray('related'), RVID, $Entry->getArray('related_type'), $Entry->getArray('loaded_realted_entries'));
 
         //--------------
         // sub category
@@ -213,7 +213,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry
 
          //---------------
         // related entry
-        Entry::saveRelatedEntries($eid, $Entry->getArray('related'), null, $Entry->getArray('related_type'));
+        Entry::saveRelatedEntries($eid, $Entry->getArray('related'), null, $Entry->getArray('related_type'), $Entry->getArray('loaded_realted_entries'));
 
         //------
         // field
@@ -257,7 +257,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry
 
             //---------------
             // related entry
-            Entry::saveRelatedEntries($eid, $Entry->getArray('related'), $rvid, $Entry->getArray('related_type'));
+            Entry::saveRelatedEntries($eid, $Entry->getArray('related'), $rvid, $Entry->getArray('related_type'), $Entry->getArray('loaded_realted_entries'));
 
             //--------------
             // sub category

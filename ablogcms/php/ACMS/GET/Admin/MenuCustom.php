@@ -37,15 +37,16 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
      */
     protected function normalAuthMenus()
     {
-        // プロフェッショナル版以上
-        if (editionWithProfessional()) {
-            $this->standardMenu('approval_notification');
-            if ($badge = Approval::notificationCount()) {
-                $this->defaultMenus['approval_notification']['badge'] = $badge;
-            }
-        }
         // 投稿者以上
         if (sessionWithContribution()) {
+            // プロフェッショナル版以上
+            if (editionWithProfessional()) {
+                $this->standardMenu('approval_notification');
+                if ($badge = Approval::notificationCount()) {
+                    $this->defaultMenus['approval_notification']['badge'] = $badge;
+                }
+            }
+
             $this->standardMenu('entry_index');
             $this->standardMenu('entry_trash');
             if (config('media_library') === 'on') {
@@ -100,13 +101,13 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
      */
     protected function roleAuthMenus()
     {
-        if (editionWithProfessional()) {
-            $this->standardMenu('approval_notification');
-            if ($badge = Approval::notificationCount()) {
-                $this->defaultMenus['approval_notification']['badge'] = $badge;
-            }
-        }
         if (roleAuthorization('entry_edit', BID, EID)) {
+            if (editionWithProfessional()) {
+                $this->standardMenu('approval_notification');
+                if ($badge = Approval::notificationCount()) {
+                    $this->defaultMenus['approval_notification']['badge'] = $badge;
+                }
+            }
             $this->standardMenu('entry_index');
             $this->standardMenu('entry_trash');
         }

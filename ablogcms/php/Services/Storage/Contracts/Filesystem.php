@@ -30,6 +30,13 @@ interface Filesystem
      *
      * @return bool
      */
+    public function isExecutable($path);
+
+    /**
+     * @param $path
+     *
+     * @return bool
+     */
     public function isWritable($path);
 
     /**

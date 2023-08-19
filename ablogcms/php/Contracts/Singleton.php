@@ -22,7 +22,7 @@ class Singleton
         return self::$instance[$called];
     }
 
-    final private function __clone()
+    private function __clone()
     {
         throw new \RuntimeException('Can not create clone.');
     }

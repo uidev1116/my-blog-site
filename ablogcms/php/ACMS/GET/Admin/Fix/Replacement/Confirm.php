@@ -4,7 +4,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
 {
     private $limit;
 
-    function select_title($word)
+    function select_title($word, $includeDescendant = false)
     {
         $DB = DB::singleton(dsn());
 
@@ -15,20 +15,26 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         $SQL->addSelect('entry_id');
         $SQL->addSelect('entry_title');
         $SQL->addWhereOpr('entry_title', '%'.$word.'%', 'LIKE');
+        if ($includeDescendant) {
+            $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
+            ACMS_Filter::blogTree($SQL, BID, 'descendant-or-self');
+        } else {
+            $SQL->addWhereOpr('entry_blog_id', BID);
+        }
 
-        $all    = $DB->query($SQL->get(dsn()), 'all');
-        $list   = array();
+        $all = $DB->query($SQL->get(dsn()), 'all');
+        $list = array();
         foreach ( $all as $row ) {
             $list[] = array(
-                'id'    => $row['entry_id'],
-                'text'  => $row['entry_title'],
-                'eid'   => $row['entry_id'],
+                'id' => $row['entry_id'],
+                'text' => $row['entry_title'],
+                'eid' => $row['entry_id'],
             );
         }
         return $list;
     }
 
-    function select_text_unit($word)
+    function select_text_unit($word, $includeDescendant = false)
     {
         $DB = DB::singleton(dsn());
 
@@ -37,6 +43,12 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         }
         $SQL = SQL::newSelect('column');
         $SQL->addWhereOpr('column_field_1', '%'.$word.'%', 'LIKE');
+        if ($includeDescendant) {
+            $SQL->addLeftJoin('blog', 'blog_id', 'column_blog_id');
+            ACMS_Filter::blogTree($SQL, BID, 'descendant-or-self');
+        } else {
+            $SQL->addWhereOpr('column_blog_id', BID);
+        }
 
         $all    = $DB->query($SQL->get(dsn()), 'all');
         $list   = array();
@@ -50,7 +62,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         return $list;
     }
 
-    function select_customfield($word, $filter)
+    function select_customfield($word, $filter, $includeDescendant = false)
     {
         $DB = DB::singleton(dsn());
 
@@ -67,9 +79,15 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         if ( !empty($filter) ) {
             $SQL->addWhereOpr('field_key', $filter);
         }
+        if ($includeDescendant) {
+            $SQL->addLeftJoin('blog', 'blog_id', 'field_blog_id');
+            ACMS_Filter::blogTree($SQL, BID, 'descendant-or-self');
+        } else {
+            $SQL->addWhereOpr('field_blog_id', BID);
+        }
 
-        $all    = $DB->query($SQL->get(dsn()), 'all');
-        $list   = array();
+        $all = $DB->query($SQL->get(dsn()), 'all');
+        $list = array();
         foreach ( $all as $row ) {
             $list[] = array(
                 'id'    => $row['field_eid'].':'.$row['field_sort'].':'.$row['field_key'],
@@ -83,34 +101,35 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
 
     function get()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) return false;
 
         @set_time_limit(0);
 
-        $Tpl            = new Template($this->tpl, new ACMS_Corrector());
-        $step           = $this->Post->get('step');
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
+        $step = $this->Post->get('step');
 
-        $Fix            = $this->Post->getChild('fix');
-        $target         = $Fix->get('fix_replacement_target');
-        $pattern        = $Fix->get('fix_replacement_pattern');
-        $filter         = $Fix->get('fix_replacement_target_cf_filter');
-        $this->limit    = $Fix->get('fix_replacement_limit', 100);
+        $Fix = $this->Post->getChild('fix');
+        $target = $Fix->get('fix_replacement_target');
+        $pattern = $Fix->get('fix_replacement_pattern');
+        $filter = $Fix->get('fix_replacement_target_cf_filter');
+        $includeDescendant = $Fix->get('fix_replacement_target_blog') === 'descendant';
+        $this->limit = $Fix->get('fix_replacement_limit', 100);
 
-        if ( $step !== 'confirm' ) {
+        if ($step !== 'confirm') {
             return false;
         }
 
         $list = array();
 
-        switch ( $target ) {
+        switch ($target) {
             case 'title':
-                $list   = $this->select_title($pattern);
+                $list = $this->select_title($pattern, $includeDescendant);
                 break;
             case 'unit':
-                $list   = $this->select_text_unit($pattern);
+                $list = $this->select_text_unit($pattern, $includeDescendant);
                 break;
             case 'field':
-                $list   = $this->select_customfield($pattern, $filter);
+                $list = $this->select_customfield($pattern, $filter, $includeDescendant);
                 $Tpl->add('field_name');
                 break;
             default:

@@ -648,7 +648,6 @@
   [class*=acms-col-][class*=-right] {
     float: left;
   }
-
   [class*=acms-col-][class*=-right] + * {
     clear: both;
   }

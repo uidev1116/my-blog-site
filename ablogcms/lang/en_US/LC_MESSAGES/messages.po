@@ -8183,7 +8183,7 @@ msgstr "Role ID. The id is unique."
 msgid "ロール名"
 msgstr "Role name"
 
-msgid "ロール名を指定します（日本語化）"
+msgid "ロール名を指定します（日本語可）"
 msgstr "Set the role name (Japanese allowed)."
 
 msgid "このロールがどのような動作をするかなどのメモです。"
@@ -9340,7 +9340,7 @@ msgstr "User Group ID. The ID must be unique."
 msgid "ユーザーグループ名"
 msgstr "User Group Name"
 
-msgid "ユーザーグループ名を設定します（日本語化）"
+msgid "ユーザーグループ名を設定します（日本語可）"
 msgstr "Set the user group name. (Japanese allowed)"
 
 msgid "すでに同じ名前のユーザーグループが存在します。"
@@ -9394,13 +9394,13 @@ msgstr "Number of registered user"
 msgid "ワークフローを保存しました"
 msgstr "Workflow saved."
 
-msgid "グループが重複しています。"
-msgstr "The group name is overlapped."
+msgid "ユーザーグループが重複しています。"
+msgstr "The usergroup name is overlapped."
 
 msgid "ワークフロー名"
 msgstr "Workflow Name"
 
-msgid "ワークフロー名を設定します（日本語化）"
+msgid "ワークフロー名を設定します（日本語可）"
 msgstr "Set the workflow name. (Japanese allowed)"
 
 msgid "このワークフローがどのような動作をするかなどのメモです。"

@@ -32,18 +32,18 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             'stay'  => $this->linkCheck('top'),
         ));
 
-        if (editionWithProfessional()) {
-            $approval = array(
-                'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
-                'stay'  => $this->linkCheck('approval_notification'),
-            );
-            if ( $badge = Approval::notificationCount() ) {
-                $approval['badge'] = $badge;
-            }
-            $Tpl->add('approval#notification', $approval);
-        }
-
         if ( roleAuthorization('entry_edit', BID, EID) ) {
+            if (editionWithProfessional()) {
+                $approval = array(
+                    'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
+                    'stay'  => $this->linkCheck('approval_notification'),
+                );
+                if ( $badge = Approval::notificationCount() ) {
+                    $approval['badge'] = $badge;
+                }
+                $Tpl->add('approval#notification', $approval);
+            }
+
             $Tpl->add('entry#index', array(
                 'url'   => acmsLink(array('admin' => 'entry_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('entry_index'),
@@ -221,20 +221,20 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             'stay'  => $this->linkCheck('top'),
         ));
 
-        if (editionWithProfessional()) {
-            $approval = array(
-                'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
-                'stay'  => $this->linkCheck('approval_notification'),
-            );
-            if ( $badge = Approval::notificationCount() ) {
-                $approval['badge'] = $badge;
-            }
-            $Tpl->add('approval#notification', $approval);
-        }
-
         //--------------
         // contribution
         if ( sessionWithContribution() ) {
+            if (editionWithProfessional()) {
+                $approval = array(
+                    'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
+                    'stay'  => $this->linkCheck('approval_notification'),
+                );
+                if ( $badge = Approval::notificationCount() ) {
+                    $approval['badge'] = $badge;
+                }
+                $Tpl->add('approval#notification', $approval);
+            }
+
             $Tpl->add('entry#index', array(
                 'url'   => acmsLink(array('admin' => 'entry_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('entry_index'),

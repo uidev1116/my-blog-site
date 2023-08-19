@@ -233,18 +233,13 @@ class Helper
             && 'secret' !== ACMS_RAM::blogStatus(BID)
             && !(defined('IS_OTHER_LOGIN') && IS_OTHER_LOGIN)
         ) {
-            // 有効期限がきれたCSRFセッションを削除
-            $cookie = App::getCookieParameter();
-            if ($sid = $cookie->get(SESSION_NAME)) {
-                $session = Session::handle();
-                if ($session->get('formTokenExpireAt') < REQUEST_TIME) {
-                    $session->destroy();
-                }
-            }
             $token = uniqueString();
 
         } else {
             $session = Session::handle();
+            if ($session->get('formTokenExpireAt') && $session->get('formTokenExpireAt') < REQUEST_TIME) {
+                $session->delete('formToken'); // 更新期限がきれたCSRFトークンを削除
+            }
             $token = $session->get('formToken');
             if (empty($token)) {
                 $token = uniqueString();
@@ -253,7 +248,7 @@ class Helper
                 }
                 $session->set('formToken', $token);
             }
-            $session->set('formTokenExpireAt', (REQUEST_TIME + (60 * 5)));
+            $session->set('formTokenExpireAt', (REQUEST_TIME + (60 * 60 * 2))); // CSRFトークンを更新間隔を2時間に設定
             $session->save();
         }
 

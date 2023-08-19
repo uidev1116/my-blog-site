@@ -2,28 +2,58 @@
 
 class ACMS_POST_Role_Delete extends ACMS_POST
 {
-    function post()
+    public function post()
     {
-        $this->Post->setMethod('role', 'operable', 
-            ($rid = intval($this->Get->get('rid'))) and sessionWithEnterpriseAdministration() and BID === RBID
-        );
-        $this->Post->validate();
+        $rid = intval($this->Get->get('rid'));
 
-        if ( $this->Post->isValidAll() ) {
-            $DB = DB::singleton(dsn());
+        $this->validate($rid);
 
-            //--------
-            // delete
-            $SQL    = SQL::newDelete('role');
-            $SQL->addWhereOpr('role_id', $rid);
-            $DB->query($SQL->get(dsn()), 'exec');
-            $this->Post->set('edit', 'delete');
-
-            $SQL    = SQL::newDelete('role_blog');
-            $SQL->addWhereOpr('role_id', $rid);
-            $DB->query($SQL->get(dsn()), 'exec');
+        if (!$this->Post->isValidAll() ) {
+            return $this->Post;
         }
 
+        $this->delete($rid);
+        $this->Post->set('edit', 'delete');
+
         return $this->Post;
+    }
+
+    protected function validate(int $rid): void
+    {
+        $this->Post->setMethod(
+            'role',
+            'operable',
+            (
+                $rid > 0 &&
+                sessionWithEnterpriseAdministration() &&
+                BID === RBID
+            )
+        );
+        $this->Post->setMethod(
+            'role',
+            'userGroupExists',
+            !$this->userGroupExists($rid)
+        );
+
+        $this->Post->validate(new ACMS_Validator());
+    }
+
+    protected function delete(int $rid): void
+    {
+        $roleSql = SQL::newDelete('role');
+        $roleSql->addWhereOpr('role_id', $rid);
+        DB::query($roleSql->get(dsn()), 'exec');
+
+        $roleBlogSql = SQL::newDelete('role_blog');
+        $roleBlogSql->addWhereOpr('role_id', $rid);
+        DB::query($roleBlogSql->get(dsn()), 'exec');
+    }
+
+    protected function userGroupExists(int $rid): bool
+    {
+        $sql = SQL::newSelect('usergroup');
+        $sql->addWhereOpr('usergroup_role_id', $rid);
+        $sql->setLimit(1);
+        return !!DB::query($sql->get(dsn()), 'one');
     }
 }

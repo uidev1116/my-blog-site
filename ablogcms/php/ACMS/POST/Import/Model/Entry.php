@@ -19,7 +19,8 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $this->importCid = $cid;
     }
 
-    function setTargetBid($bid) {
+    function setTargetBid($bid)
+    {
         $this->importBid = $bid;
     }
 
@@ -393,6 +394,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     {
         switch ( $key ) {
             case 'entry_id':
+            case 'entry_blog_id':
                 break;
             case 'entry_datetime':
             case 'entry_updated_datetime':

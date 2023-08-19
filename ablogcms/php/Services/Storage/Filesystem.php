@@ -49,6 +49,18 @@ class Filesystem extends Base implements FilesystemInterface
      *
      * @return bool
      */
+    public function isExecutable($path)
+    {
+        $path = $this->convertStrToLocal($path);
+
+        return is_executable($path);
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public function isWritable($path)
     {
         $path = $this->convertStrToLocal($path);
@@ -186,8 +198,8 @@ class Filesystem extends Base implements FilesystemInterface
     public function put($path, $contents)
     {
         $path = $this->convertStrToLocal($path);
-        $byte = @file_put_contents($path, $contents);
-        if ($byte) {
+        $byte = file_put_contents($path, $contents);
+        if (is_int($byte)) {
             $this->changeMod($path);
             return $byte;
         }

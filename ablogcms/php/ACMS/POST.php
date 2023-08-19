@@ -13,12 +13,14 @@ class ACMS_POST
      * @var Field
      */
     var $Q;
+
     /**
      * @var Field
      */
     var $Get;
+    
     /**
-     * @var Field
+     * @var \Field_Validation
      */
     var $Post;
 
@@ -446,6 +448,10 @@ class ACMS_POST
             $SQL->addWhereOpr('geo_rev_id', $rvid);
         }
         $DB->query($SQL->get(dsn()), 'exec');
+
+        if (is_null($Field)) {
+            return;
+        }
 
         if (!$Field->get('geo_lat') || !$Field->get('geo_lng')) {
             return false;

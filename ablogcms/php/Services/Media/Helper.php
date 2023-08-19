@@ -232,6 +232,12 @@ class Helper
         }
     }
 
+    public function urlencode($path)
+    {
+        $name = Storage::mbBasename($path);
+        return substr($path, 0, strlen($path) - strlen($name)) . urlencode($name);
+    }
+
     public function isImageFile($type)
     {
         return preg_match('/^image/', $type) && !preg_match('/svg/', $type);
@@ -466,7 +472,7 @@ class Helper
 
     public function buildJson($mid, $data, $tags, $bid = BID)
     {
-        $path = $data['path'];
+        $path = $this->urlencode($data['path']);
         $type = $data['type'];
         $extension = $data['extension'];
         $original = '';
@@ -485,7 +491,7 @@ class Helper
         } else {
             $edited = $this->getEdited($path);
             $permalink = $this->getImagePermalink($path);
-            $original = $this->getOriginal($data['original']);
+            $original = $this->urlencode($this->getOriginal($data['original']));
             if ($type === 'svg') {
                 $thumbnail = $this->getSvgThumbnail($path);
             } else {
@@ -724,7 +730,7 @@ class Helper
             foreach ($sourceField as $i => $mid) {
                 if (isset($mediaList[$mid])) {
                     $media = $mediaList[$mid];
-                    $path = $media['media_path'];
+                    $path = $this->urlencode($media['media_path']);
                     $type = $media['media_type'];
 
                     $nameAry[] = $media['media_file_name'];

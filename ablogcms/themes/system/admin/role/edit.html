@@ -12,42 +12,70 @@
 <!-- BEGIN msg#insert -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
   <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button type="button" class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
   <!--T-->ロールを作成しました<!--/T-->
 </p>
-<!-- END msg#insert --><!-- BEGIN msg#update -->
+<!-- END msg#insert -->
+<!-- BEGIN msg#update -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
   <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button type="button" class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
   <!--T-->ロールを保存しました<!--/T-->
 </p>
-<!-- END msg#update --><!-- BEGIN msg#delete -->
+<!-- END msg#update -->
+<!-- BEGIN msg#delete -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
   <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button type="button" class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
   <!--T-->ロールを削除しました<!--/T-->
 </p>
-<!-- END msg#delete --><!-- BEGIN role:validator#operable -->
+<!-- END msg#delete -->
+<!-- BEGIN role:validator#operable -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
   <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button type="button" class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
   <!--T-->この操作は許可されていません。<!--/T-->
 </p>
 <!-- END role:validator#operable -->
+<!-- BEGIN role:validator#userGroupExists -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+  <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+  <!--T-->ユーザーグループに登録されているロールは削除できません。<!--/T-->
+</p>
+<!-- END role:validator#userGroupExists -->
 
 <form action="" method="post" enctype="multipart/form-data" class="acms-admin-form">
-  <!-- BEGIN role:validator#operable -->
-  <p class="transaction-notice-error acms-admin-alert acms-admin-alert-danger">
-    <!--T-->この操作は許可されていません。<!--/T-->
-  </p>
-  <!-- END role:validator#operable -->
-  <p class="transaction-notice-{insert:validator} acms-admin-alert acms-admin-alert-danger">
-    <!--T-->ロールを作成できませんでした。<!--/T-->
-  </p>
-  <p class="transaction-notice-{update:validator} acms-admin-alert acms-admin-alert-danger">
-    <!--T-->ロールを保存できませんでした。<!--/T-->
-  </p>
-
   <div class="acms-admin-form-group js-acms_fix_marker acms_fix_bg">
     <a href="%{HTTP_ROOT}bid/%{BID}/admin/role_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
 
@@ -98,7 +126,7 @@
       <th>
         <!--T-->ロール名<!--/T-->
         <i
-          data-acms-tooltip="<!--T-->ロール名を指定します（日本語化）<!--/T-->"
+          data-acms-tooltip="<!--T-->ロール名を指定します（日本語可）<!--/T-->"
           class="acms-admin-icon-tooltip js-acms-tooltip-hover"
         ></i>
       </th>

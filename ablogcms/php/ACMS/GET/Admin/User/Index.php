@@ -131,6 +131,7 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
         $SQL->addSelect('user_code');
         $SQL->addSelect('user_auth');
         $SQL->addSelect('user_status');
+        $SQL->addSelect('user_login_expire');
         $SQL->addSelect('user_blog_id');
         $SQL->addSelect('entry_user_id', 'entry_amount', null, 'COUNT');
 
@@ -153,16 +154,17 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
 
             $_vars  = array(
 //                'bid'   => $bid,
-                'uid'   => $uid,
-                'name'  => $row['user_name'],
-                'icon'  => loadUserIcon($uid),
-                'mail'  => $row['user_mail'],
-                'code'  => $row['user_code'],
-                'amount'=> $row['entry_amount'],
-                'itemUrl'   => acmsLink(array(
+                'uid' => $uid,
+                'name' => $row['user_name'],
+                'icon' => loadUserIcon($uid),
+                'mail' => $row['user_mail'],
+                'code' => $row['user_code'],
+                'amount' => $row['entry_amount'],
+                'expiry' => strtotime($row['user_login_expire'] . ' 00:00:00') <= REQUEST_TIME ? 'expired' : '',
+                'itemUrl' => acmsLink(array(
                     'admin' => 'user_edit',
-                    'bid'   => $bid,
-                    'uid'   => $uid,
+                    'bid' => $bid,
+                    'uid' => $uid,
                 )),
             );
 

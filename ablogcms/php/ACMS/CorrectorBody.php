@@ -401,6 +401,7 @@ class ACMS_CorrectorBody
         if (!isset($args[0])) {
             return $src;
         }
+        $src = urldecode($src);
 
         $width = empty($args[0]) ? 0 : intval($args[0]);
         $height = (isset($args[1]) && !empty($args[1])) ? intval($args[1]) : 0;
@@ -428,7 +429,7 @@ class ACMS_CorrectorBody
             $largePath = otherSizeImagePath($tmpPath, 'large'); // large path
 
             if (Storage::isReadable($destPath)) {
-                return $destPathVars;
+                return Media::urlencode($destPathVars);
             }
             if (Storage::isReadable($largePath)) {
                 $srcPath = $largePath;
@@ -440,10 +441,10 @@ class ACMS_CorrectorBody
             }
         }
         if (empty($srcPath)) {
-            return $src;
+            return Media::urlencode($src);
         }
         if (!$xy = Storage::getImageSize($srcPath)) {
-            return $src;
+            return Media::urlencode($src);
         }
 
         if (!$stretch) {
@@ -470,7 +471,7 @@ class ACMS_CorrectorBody
         }
         $image->save($destPath);
 
-        return $destPathVars;
+        return Media::urlencode($destPathVars);
     }
 
     public function fixChars($txt)

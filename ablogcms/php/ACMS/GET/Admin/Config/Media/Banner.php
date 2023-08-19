@@ -117,7 +117,7 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
             foreach ($row as $media) {
                 if (intval($items[$i]['media_banner_mid']) === intval($media['media_id'])) {
                     if ($items[$i]['media_banner_type'] === 'image') {
-                        $items[$i]['media_banner_preview'] = '/'.DIR_OFFSET.MEDIA_LIBRARY_DIR.$media['media_path'];
+                        $items[$i]['media_banner_preview'] = '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . Media::urlencode($media['media_path']);
                         if (isset($media['media_image_size'])) {
                             $sizes = explode(' x ', $media['media_image_size']);
                             $landscape = true;

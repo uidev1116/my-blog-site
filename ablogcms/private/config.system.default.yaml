@@ -16,6 +16,7 @@ html_format_validate      : on # on | off htmlフォーマットでない場合�
 session_remote_addr_check : off # on | off ログイン中に接続元IPアドレスが変更された場合にログインセッションを切るかの設定
 forbidden_blog_http_status: 404 # 404 | 403
 referrer_policy           : strict-origin-when-cross-origin # no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin | strict-origin-when-cross-origin | unsafe-url
+subscriber_access_admin_page: [top, user_edit, user_password, user_tfa] # 読者権限でアクセスできる管理ページを設定
 
 ## ログイン・セッション
 login_white_hosts         : # CIDR記法(例：a.b.c.d/32)で指定されたIPアドレスからのアクセスに限りログインできるようになります。
@@ -47,10 +48,11 @@ system_update_ignore_config : [] # ここで指定した項目は、CMS更新で
 
 ## パフォーマンス
 img_optimizer: on # on | off ロスレス圧縮をするかどうかを設定
-cache: on
-cache_expire: 86400
-cache_expire_entry: 86400
-cache_clear_when_post: on # on | off
+cache: on # on | off キャッシュ機能のON・OFFを設定
+cache_expire: 86400 # キャッシュ有効時間を設定
+cache_expire_entry: 86400 # エントリー詳細のキャッシュ有効時間を設定
+cache_clear_when_post: on  # on | off エントリー保存や設定変更時にキャッシュをクリアするか設定
+
 cache_clear_target: all
 zip_http: on
 mysql_optimize_table: off # on | off
@@ -182,6 +184,7 @@ tpl_index : index.html
 tpl_detail  : entry.html
 tpl_404   : 404.html
 tpl_403   : 403.html
+tpl_500   : 500.html
 tpl_503   : 503.html
 tpl_admin : admin.html
 tpl_entry_edit  : entry.html
@@ -329,7 +332,7 @@ mail_sendmail_path  :
 #ngram  : 2 #「my.cnf」ft_min_word_lenの値と合わせる
 
 ## カテゴリーセレクト
-category_select_global_order    : sort-asc
+category_select_global_order: sort-desc
 
 #############
 # モジュール

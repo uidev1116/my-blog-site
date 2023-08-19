@@ -32,14 +32,16 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                 $old = $Media->get('media_old');
                 $info = Media::getBaseInfo($_FILES[$this->uploadFieldName], $tags, $name);
                 $replaced = $Media->get('replaced') === 'true';
-                if (Media::isImageFile($info['type'])) {
+                $type = mime_content_type($_FILES[$this->uploadFieldName]['tmp_name']);
+
+                if (Media::isImageFile($type)) {
                     $_FILES[$this->uploadFieldName]['name'] = $name;
                     $data = Media::uploadImage($this->uploadFieldName, $replaced);
                     if ($replaced) {
                         $data['original'] = otherSizeImagePath($data['path'], 'large');
                     }
                     Media::deleteImageFile($old, $replaced);
-                } else if (Media::isSvgFile($info['type'])) {
+                } else if (Media::isSvgFile($type)) {
                     $data = Media::uploadSvg($info['size'], $this->uploadFieldName);
                     Media::deleteFile($mid);
                 } else {

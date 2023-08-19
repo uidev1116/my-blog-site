@@ -86,6 +86,25 @@ class Helper
     }
 
     /**
+     * メディアユニットの情報が欠落していないかバリデート
+     *
+     * @return bool
+     */
+    public function validateMediaUnit()
+    {
+        foreach ($_POST['type'] as $i => $type) {
+            $id = $_POST['id'][$i];
+            $type = detectUnitTypeSpecifier($type);
+            if ($type === 'media') {
+                if (!isset($_POST['media_id_' . $id])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * PING送信
      *
      * @param string $endpoint
@@ -1916,7 +1935,7 @@ class Helper
      *
      * @return void
      */
-    public function saveRelatedEntries($eid, $entryAry=array(), $rvid=null, $typeAry=array())
+    public function saveRelatedEntries($eid, $entryAry=array(), $rvid=null, $typeAry=array(), $loadedTypes=array())
     {
         $DB = DB::singleton(dsn());
         $table = 'relationship';
@@ -1925,17 +1944,22 @@ class Helper
         }
         $SQL = SQL::newDelete($table);
         $SQL->addWhereOpr('relation_id', $eid);
-        if ( !empty($rvid) ) {
+        $SQL->addWhereIn('relation_type', $loadedTypes);
+        if (!empty($rvid)) {
             $SQL->addWhereOpr('relation_rev_id', $rvid);
         }
         $DB->query($SQL->get(dsn()), 'exec');
 
         $exists = array();
-        foreach ( $entryAry as $i => $reid ) {
+        foreach ($entryAry as $i => $reid) {
             try {
                 $type = $typeAry[$i] ?? '';
-                $exists[$type] = [];
-                if (isset($exists[$type]) && in_array($reid, $exists[$type])) continue;
+                if (!isset($exists[$type])) {
+                    $exists[$type] = [];
+                }
+                if (in_array($reid, $exists[$type])) {
+                    continue;
+                }
                 $SQL = SQL::newInsert($table);
                 $SQL->addInsert('relation_id', $eid);
                 $SQL->addInsert('relation_eid', $reid);

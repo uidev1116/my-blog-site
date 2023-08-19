@@ -165,48 +165,37 @@ class Import
     }
 
     /**
-     * @param $table
-     * @param $field
-     * @param $value
+     * @param string $table
+     * @param string $field
+     * @param string|null $value
      *
-     * @return int
+     * @return int|null
      */
     private function fix($table, $field, $value)
     {
         $key = substr($field, strlen($table . '_'));
-        if ($key === 'id' && $table !== 'entry_sub_category') {
+        if (!is_null($value) && $key === 'id' && $table !== 'entry_sub_category') {
             $value = $this->getNewID($table, $value);
-        } elseif ($key === 'category_id') {
+        } elseif (!is_null($value) && $key === 'category_id') {
             $value = $this->getNewID('category', $value);
-        } elseif ($key === 'user_id') {
+        } elseif (!is_null($value) && $key === 'user_id') {
             $value = $this->uid;
-        } elseif ($key === 'entry_id') {
+        } elseif (!is_null($value) && $key === 'entry_id') {
             $value = $this->getNewID('entry', $value);
-        } elseif ($key === 'module_id') {
+        } elseif (!is_null($value) && $key === 'module_id') {
             $value = $this->getNewID('module', $value);
-        } elseif ($key === 'media_id') {
+        } elseif (!is_null($value) && $key === 'media_id') {
             $value = $this->getNewID('media', $value);
-        } elseif ($key === 'blog_id') {
+        } elseif (!is_null($value) && $key === 'blog_id') {
             $value = $this->bid;
         }
-        if (in_array($key, array(
-                'id',
-                'category_id',
-                'user_id',
-                'entry_id',
-                'rule_id',
-                'module_id',
-                'blog_id'
-            )) && empty($value) && $value !== '0'
-        ) {
-            $value = null;
-        }
+
         return $value;
     }
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
@@ -262,7 +251,7 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
@@ -328,16 +317,16 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function entry_sub_categoryFix($field, $value, $record)
     {
-        if ($field === 'entry_sub_category_eid') {
+        if (!is_null($value) && $field === 'entry_sub_category_eid') {
             $value = $this->getNewID('entry', $value);
-        } elseif ($field === 'entry_sub_category_id') {
+        } elseif (!is_null($value) && $field === 'entry_sub_category_id') {
             $value = $this->getNewID('category', $value);
         }
         return $value;
@@ -345,14 +334,14 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function fieldFix($field, $value, $record)
     {
-        if ($field === 'field_eid') {
+        if (!is_null($value) && $field === 'field_eid') {
             $value = $this->getNewID('entry', $value);
         } elseif ($field === 'field_value' && !empty($value)) {
             if (preg_match('/@media$/', $record['field_key'])) {
@@ -364,11 +353,11 @@ class Import
                         'sort' => $record['field_sort'],
                     );
                 }
-            } elseif ( 0
-                or preg_match('/@path$/', $record['field_key'])
-                or preg_match('/@tinyPath$/', $record['field_key'])
-                or preg_match('/@largePath$/', $record['field_key'])
-                or preg_match('/@squarePath$/', $record['field_key'])
+            } elseif (0
+                || preg_match('/@path$/', $record['field_key'])
+                || preg_match('/@tinyPath$/', $record['field_key'])
+                || preg_match('/@largePath$/', $record['field_key'])
+                || preg_match('/@squarePath$/', $record['field_key'])
             ) {
                 $value = $this->distPath . $value;
             }
@@ -378,16 +367,13 @@ class Import
 
     /**
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $record
      *
      * @return mixed
      */
     private function mediaFix($field, $value, $record)
     {
-        if (empty($value)) {
-            return $value;
-        }
         if ($field === 'media_path') {
             $value =  $this->distPath . $value;
         } elseif ($field === 'media_thumbnail') {
@@ -400,9 +386,9 @@ class Import
 
     /**
      * @param string $table
-     * @param int $id
+     * @param int|string $id
      *
-     * @return int|bool
+     * @return int|bool|string
      */
     private function getNewID($table, $id)
     {
