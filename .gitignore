@@ -16,7 +16,7 @@ license.php
 /ablogcms/private/backup*
 /ablogcms/_setup*
 /ablogcms/setup*
-/ablogcms/themes/*/dest/*
+# /ablogcms/themes/*/dest/*
 
 ## Backup
 /ablogcms/backup_*
