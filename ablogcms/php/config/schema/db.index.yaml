@@ -12,6 +12,11 @@
   - PRIMARY KEY  (blog_id,blog_left,blog_right,blog_status,blog_indexing)
   - KEY blog_domain (blog_domain)
   - KEY blog_id (blog_id,blog_status)
+%{PREFIX}cache_data:
+  - PRIMARY KEY (cache_data_key)
+  - KEY cache_key (cache_data_key,cache_data_lifetime)
+%{PREFIX}cache_tag:
+  - PRIMARY KEY (cache_tag_name,cache_tag_key)
 %{PREFIX}cache_reserve:
   - PRIMARY KEY  (cache_reserve_datetime,cache_reserve_entry_id,cache_reserve_blog_id)
   - KEY cache_reserve_datetime (cache_reserve_datetime,cache_reserve_blog_id)
@@ -108,7 +113,6 @@
 %{PREFIX}layout_grid:
   - KEY layout_grid_id (layout_grid_identifier)
   - KEY layout_grid (layout_grid_parent,layout_grid_col,layout_grid_row)
-%{PREFIX}log_access:
 %{PREFIX}media_tag:
   - PRIMARY KEY  (media_tag_media_id,media_tag_sort)
   - KEY media_tag_name_media (media_tag_name,media_tag_media_id)
@@ -118,6 +122,9 @@
 %{PREFIX}log_form:
   - KEY log_form_datetime (log_form_datetime)
   - KEY log_form_serial (log_form_serial)
+%{PREFIX}audit_log:
+  - PRIMARY KEY (audit_log_id)
+  - KEY audit_log_index (audit_log_datetime,audit_log_level_name,audit_log_session_uid)
 %{PREFIX}module:
   - PRIMARY KEY  (module_identifier,module_name,module_blog_id,module_scope)
 %{PREFIX}role:
@@ -136,14 +143,14 @@
   - PRIMARY KEY (address_id)
   - KEY address_user_id (address_primary, address_user_id)
 %{PREFIX}shop_cart:
-  - UNIQUE KEY (cart_session_id, cart_blog_id)
+  - UNIQUE KEY shop_cart (cart_session_id, cart_blog_id)
 %{PREFIX}shop_receipt:
   - PRIMARY KEY (receipt_code)
   - KEY receipt_user_id (receipt_user_id)
   - KEY receipt_blog_id (receipt_blog_id)
 %{PREFIX}shop_receipt_detail:
   - PRIMARY KEY (receipt_detail_id)
-  - KEY (receipt_detail_parent_code)
+  - KEY receipt_detail_parent_code (receipt_detail_parent_code)
 %{PREFIX}session_php:
   - PRIMARY KEY  (session_id)
   - KEY session_expire (session_expire)
@@ -160,7 +167,7 @@
 %{PREFIX}user:
   - PRIMARY KEY  (user_id)
 %{PREFIX}user_session:
-  - KEY (user_session_uid,user_session_host,user_session_address)
+  - KEY user_session (user_session_uid,user_session_host,user_session_address)
 %{PREFIX}usergroup:
   - PRIMARY KEY  (usergroup_id)
   - KEY usergroup_role_id (usergroup_role_id)
@@ -168,9 +175,9 @@
 %{PREFIX}usergroup_user:
   - PRIMARY KEY  (usergroup_id,user_id)
 %{PREFIX}workflow:
-  - KEY  (workflow_blog_id,workflow_category_id)
+  - KEY workflow (workflow_blog_id,workflow_category_id)
 %{PREFIX}workflow_usergroup:
-  - KEY  (workflow_blog_id,workflow_category_id,workflow_sort)
+  - KEY workflow_usergroup (workflow_blog_id,workflow_category_id,workflow_sort)
 %{PREFIX}preview_share:
   - KEY preview_share_token (preview_share_token, preview_share_expire)
 %{PREFIX}entry_sub_category:
@@ -187,3 +194,5 @@
 %{PREFIX}log_webhook:
   - KEY log_webhook_id (log_webhook_id)
   - KEY log_webhook_id_datetime (log_webhook_id, log_webhook_datetime)
+%{PREFIX}token:
+  - KEY token_index (token_key, token_type, token_expire)

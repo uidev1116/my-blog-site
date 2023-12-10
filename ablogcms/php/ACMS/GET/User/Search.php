@@ -123,6 +123,9 @@ class ACMS_GET_User_Search extends ACMS_GET
             if ($large = loadUserLargeIcon($id)) {
                 $vars['largeIcon'] = $large;
             }
+            if ($orig = loadUserOriginalIcon($id)) {
+                $vars['origIcon'] = $orig;
+            }
             if ($entry_list_enable) {
                 $this->loadUserEntry($Tpl, $id, array('user:loop'));
             }
@@ -218,19 +221,25 @@ class ACMS_GET_User_Search extends ACMS_GET
         }
         // status 2013/02/08
         if ($this->config['status']) {
-            if (count($this->config['status']) === 1) {
-                if ($this->config['status'][0] === 'open') {
-                    $SQL->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=');
-                    $SQL->addWhereOpr('user_status', 'open');
+            $statusWhere = SQL::newWhere();
+            foreach ($this->config['status'] as $status) {
+                if ($status === 'open') {
+                    $openStatusWhere = SQL::newWhere();
+                    $openStatusWhere->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=', 'AND');
+                    $openStatusWhere->addWhereOpr('user_status', 'open', '=', 'AND');
+                    $statusWhere->addWhere($openStatusWhere, 'OR');
+                } else if ($status === 'close') {
+                    $closeStatusWhere = SQL::newWhere();
+                    $closeStatusWhere->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '<', 'OR');
+                    $closeStatusWhere->addWhereOpr('user_status', 'close', '=', 'OR');
+                    $statusWhere->addWhere($closeStatusWhere, 'OR');
                 } else {
-                    $WHERE = SQL::newWhere();
-                    $WHERE->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '<', 'OR');
-                    $WHERE->addWhereOpr('user_status', 'close', '=', 'OR');
-                    $SQL->addWhere($WHERE);
+                    $otherStatusWhere = SQL::newWhere();
+                    $otherStatusWhere->addWhereOpr('user_status', $status, '=', 'OR');
+                    $statusWhere->addWhere($otherStatusWhere, 'OR');
                 }
-            } else {
-                $SQL->addWhereIn('user_status', $this->config['status']);
             }
+            $SQL->addWhere($statusWhere, 'AND');
         }
         // mail_magazine 2013/02/08
         if ($ary_mailmagazine = $this->config['mail_magazine']) {

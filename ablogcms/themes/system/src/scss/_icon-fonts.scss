@@ -1,27 +1,31 @@
 @use "global/common" as global;
 
 @font-face {
-	font-weight: normal;
-	font-family: 'acms-fonts';
-	font-style: normal;
-	src: url(#{global.$acms-font + 'acms-fonts.eot'});
-	src: url(#{global.$acms-font + 'acms-fonts.eot'}) format('embedded-opentype'), url(#{global.$acms-font + 'acms-fonts.ttf'}) format('truetype'), url(#{global.$acms-font + 'acms-fonts.woff'}) format('woff'), url(#{global.$acms-font + 'acms-fonts.svg'}) format('svg');
+  font-weight: normal;
+  font-family: 'acms-fonts';
+  font-style: normal;
+  src: url(#{global.$acms-font + 'acms-fonts.eot'});
+  src: url(#{global.$acms-font + 'acms-fonts.eot'}) format('embedded-opentype'), url(#{global.$acms-font + 'acms-fonts.ttf'}) format('truetype'), url(#{global.$acms-font + 'acms-fonts.woff'}) format('woff'), url(#{global.$acms-font + 'acms-fonts.svg'}) format('svg');
 }
 
 .acms-icon,
 [class*="acms-icon-"] {
-	display: inline-block;
-	font-weight: normal;
-	font-family: "acms-fonts";
-	font-style: normal;
-	line-height: 1;
-	text-transform: none;
-	text-decoration: inherit;
-	speak: none;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  font-weight: normal;
+  font-family: "acms-fonts";
+  font-style: normal;
+  line-height: 1;
+  text-transform: none;
+  text-decoration: inherit;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+.acms-icon-large {
+  color: #999999;
+  font-size: 16px;
+}
 
 .acms-icon-contract-arrow {
   &:before {
@@ -998,4 +1002,18 @@
     content: global.$icon-undo;
   }
 }
-
+.acms-icon-x {
+  &:before {
+    content: global.$icon-x;
+  }
+}
+.acms-icon-x-square {
+  &:before {
+    content: global.$icon-x-square;
+  }
+}
+.acms-icon-x-circle {
+  &:before {
+    content: global.$icon-x-circle;
+  }
+}

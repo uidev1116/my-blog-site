@@ -12,8 +12,9 @@ class ACMS_POST_Alias_Index_Status extends ACMS_POST
         $this->Post->validate(new ACMS_Validator());
 
         if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            foreach ( $this->Post->getArray('checks') as $aid ) {
+            $DB = DB::singleton(dsn());
+            $aids = $this->Post->getArray('checks');
+            foreach ($aids as $aid) {
                 if ( !($aid = intval($aid)) ) { $aid = null; }
                 if ( $aid !== ACMS_RAM::blogAliasPrimary(BID) ) { // except primary
                     if ( $aid ) {
@@ -36,6 +37,11 @@ class ACMS_POST_Alias_Index_Status extends ACMS_POST
                     }
                 }
             }
+            AcmsLogger::info('エイリアスのステータスを一括変更しました', [
+                'aid' => implode(',', $aids),
+                'bid' => BID,
+                'status' => $this->Post->get('status'),
+            ]);
         }
 
         return $this->Post;

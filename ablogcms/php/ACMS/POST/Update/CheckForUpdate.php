@@ -17,8 +17,9 @@ class ACMS_POST_Update_CheckForUpdate extends ACMS_POST
             if ( !$check->check(phpversion(), CheckForUpdate::PATCH_VERSION) ) {
                 return $this->Post;
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::notice($e->getMessage(), Common::exceptionArray($e));
         }
         $DB->setThrowException(false);
 

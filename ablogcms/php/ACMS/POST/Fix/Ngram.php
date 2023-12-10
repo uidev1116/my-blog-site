@@ -60,12 +60,12 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
 
                 $SQL    = SQL::newInsert('fulltext');
-                $SQL->addInsert('fulltext_value', 
+                $SQL->addInsert('fulltext_value',
                     preg_replace('@\s+@', ' ', strip_tags($text)).
                     "\r\n\r\n".preg_replace('@\s+@', ' ', strip_tags($meta))
                 );
                 if ( $ngram ) {
-                    $SQL->addInsert('fulltext_ngram', 
+                    $SQL->addInsert('fulltext_ngram',
                         preg_replace('@(　|\s)+@', ' ', join(' ', ngram(strip_tags($text.' '.$meta), $ngram)))
                     );
                 }
@@ -74,6 +74,8 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
             }
             $this->Post->set('message', 'success');
+
+            AcmsLogger::info('データ修正ツールで、N-gram インデックスを付与');
         }
         return $this->Post;
     }

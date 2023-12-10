@@ -194,7 +194,7 @@ class Helper
 
     public function injectMediaField($Field, $force = false)
     {
-        if (!$force && !ACMS_POST) {
+        if (!$force && (!defined('ACMS_POST') || !ACMS_POST)) {
             return;
         }
         $mediaIds = array();
@@ -1298,6 +1298,12 @@ class Helper
                 $Tpl->add(array('new', 'entry:loop'));
             }
 
+            //--------------
+            // members only
+            if (isset($row['entry_members_only']) && $row['entry_members_only'] === 'on') {
+                $Tpl->add(['membersOnly', 'entry:loop']);
+            }
+
             //-------
             // image
             if (isset($eagerLoadingData['mainImage'])) {
@@ -1358,8 +1364,11 @@ class Helper
                 $Field->setField('fieldUserMailMobile', ACMS_RAM::userMailMobile($uid));
                 $Field->setField('fieldUserUrl', ACMS_RAM::userUrl($uid));
                 $Field->setField('fieldUserIcon', loadUserIcon($uid));
-                if ( $large = loadUserLargeIcon($uid) ) {
+                if ($large = loadUserLargeIcon($uid)) {
                     $Field->setField('fieldUserLargeIcon', $large);
+                }
+                if ($orig = loadUserOriginalIcon($uid)) {
+                    $Field->setField('fieldUserOrigIcon', $orig);
                 }
                 $Tpl->add(array('userField', 'entry:loop'), $this->buildField($Field, $Tpl, array('userField', 'entry:loop')));
             }
@@ -1661,11 +1670,9 @@ class Helper
                     if ( $lXY = Storage::getImageSize(ARCHIVES_DIR.$large) ) {
                         $lXYAry['x'][]  = $lXY[0];
                         $lXYAry['y'][]  = $lXY[1];
-                        $largeAry[]     = $large;
                     } else {
                         $lXYAry['x'][]  = '';
                         $lXYAry['y'][]  = '';
-                        $largeAry[]     = '';
                     }
 
                     $nXYAry['x'][] = isset($nXY[0]) ? $nXY[0] : '';
@@ -2251,7 +2258,7 @@ class Helper
                         $mTpl = boot($moduleName, $mTpl, $opt, Field_Validation::singleton('post'), Field::singleton('config'), $eagerLoadModule);
                     }
                 }
-                if ( DEBUG_MODE ) {
+                if (isDebugMode()) {
                     $mTpl = includeCommentBegin($path).$mTpl.includeCommentEnd($path);
                 }
                 return $mTpl;

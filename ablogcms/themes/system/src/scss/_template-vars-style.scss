@@ -8,9 +8,9 @@ html {
 }
 body {
   padding: 0 0 40px 0;
-  color: #333;
+  color: global.$acms-color-black;
   font-family: 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3',Meiryo,'メイリオ','ＭＳ Ｐゴシック','MS PGothic',Verdana,sans-serif;
-  background: #FFF;
+  background: global.$acms-color-white;
   @include global.font-size(14);
 }
 
@@ -37,7 +37,7 @@ body {
 .tv-page-title {
   margin: 0;
   padding: 10px 0;
-  color: #FFF;
+  color: global.$acms-color-white;
   @include global.font-size(13);
 }
 
@@ -47,7 +47,7 @@ body {
  ------------------------------ */
 .tv-main {
   padding: 0 20px 0 236px;
-  background: #FFF;
+  background: global.$acms-color-white;
 }
 
 // メインコンテンツ
@@ -93,20 +93,20 @@ body {
   padding: 7px 0;
   border-bottom: 2px solid transparent;
   &:hover {
-    color: #333;
+    color: global.$acms-color-black;
     text-decoration: none;
-    border-bottom: 2px solid #9898A2;
+    border-bottom: 2px solid global.$acms-color-system-gray70;
   }
   &.js-acms_tab-active {
-    color: #333;
+    color: global.$acms-color-black;
     font-weight: bold;
-    border-bottom: 2px solid #9898A2;
+    border-bottom: 2px solid global.$acms-color-system-gray70;
   }
 }
 
 .tv-tab-area {
   margin: 0 0 20px 0;
-  border: 1px solid #ccc;
+  border: 1px solid global.$acms-color-gray60;
 }
 .tv-tab-item {
   display: none;
@@ -116,7 +116,7 @@ body {
 .acms-admin-admin-mini-table {
   margin: 0;
   th {
-    background: #E0E0E3;
+    background: global.$acms-color-system-gray20;
   }
 }
 
@@ -127,12 +127,12 @@ body {
 // プレビュー
 .tv-preview {
   padding: 10px;
-  background-color: #f2f2f4;
+  background-color: global.$acms-color-system-gray10;
 }
 .tv-preview-area {
   padding: 10px;
   overflow: scroll;
-  background: #FFF;
+  background: global.$acms-color-white;
 }
 
 // コメント
@@ -141,7 +141,7 @@ body {
   margin: 0 0 10px 0;
   padding: 20px 15px 15px 15px;
   line-height: 1.5;
-  border: 1px solid #CCC;
+  border: 1px solid global.$acms-color-gray60;
 }
 .tv-comment-text {
   position: absolute;
@@ -177,7 +177,7 @@ body {
   width: 216px;
   height: 100%;
   padding: 12px 0;
-  background: #F7F7F8;
+  background: global.$acms-color-system-gray10;
   &.fixed {
     position: fixed;
     top: 0;
@@ -197,18 +197,18 @@ body {
   list-style: none;
   /* リンクの設定 */
   a {
-    color: #006DD9;
+    color: global.$acms-color-link-text;
     text-decoration: none;
     border: none;
   }
   a:visited,
   a:active {
-    color: #006DD9;
+    color: global.$acms-color-link-text;
     text-decoration: none;
   }
 
   a:hover {
-    color: #006DD9;
+    color: global.$acms-color-link-text;
     text-decoration: underline;
   }
 }
@@ -221,7 +221,7 @@ body {
   &.current,
   &:hover {
     text-decoration: none;
-    background: #DDE8F4;
+    background: global.$acms-color-info10;
   }
 }
 

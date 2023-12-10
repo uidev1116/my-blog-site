@@ -34,6 +34,8 @@ class ACMS_POST_Entry_Open extends ACMS_POST_Entry
 
             ACMS_RAM::entry($eid, null);
 
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーを公開しました');
+
             //-------------------
             // キャッシュクリア予約
             Entry::updateCacheControl(ACMS_RAM::entryStartDatetime($eid), ACMS_RAM::entryEndDatetime($eid), ACMS_RAM::entryBlog($eid), $eid);

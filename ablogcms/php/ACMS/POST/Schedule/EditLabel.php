@@ -9,7 +9,8 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
         $Config->setMethod('schedule', 'operative', sessionWithScheduleAdministration());
         $Config->validate(new ACMS_Validator());
 
-        if ( !$Config->isValid() ) {
+        if (!$Config->isValid()) {
+            AcmsLogger::info('スケジュールのラベル設定に失敗しました');
             return $this->Post;
         }
 
@@ -57,6 +58,7 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
         $Config =& Field::singleton('config');
         $Config->delete('schedule_label@'.$scid);
 
+        $results = [];
         foreach ( $fds as $label => $num ) {
             $SQL    = SQL::newInsert('config');
             $SQL->addInsert('config_key', 'schedule_label@'.$scid);
@@ -65,9 +67,13 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
             $SQL->addInsert('config_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
             $Config->add('schedule_label@'.$scid, $label);
+
+            $results[] = $label;
         }
         Config::forgetCache(BID);
         $this->Post->set('edit', 'update');
+
+        AcmsLogger::info('スケジュールのラベルを設定しました', $results);
 
         return $this->Post;
     }

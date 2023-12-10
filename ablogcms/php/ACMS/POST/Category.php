@@ -2,60 +2,69 @@
 
 class ACMS_Validator_Category extends ACMS_Validator
 {
+    /**
+     * カテゴリーコード重複チェック
+     *
+     * @param mixed $ccd
+     * @param mixed $arg
+     * @return bool
+     */
     function double($ccd, $arg)
     {
-        if ( empty($ccd) ) return true;
+        if (empty($ccd)) return true;
 
-        $scope  = isset($arg[0]) ? $arg[0] : 'local';
-        $cid    = isset($arg[1]) ? $arg[1] : null;
-
+        $scope = isset($arg[0]) ? $arg[0] : 'local';
+        $pcid = isset($arg[1]) ? intval($arg[1]) : 0;
+        $cid = isset($arg[2]) ? intval($arg[2]) : null;
         $DB = DB::singleton(dsn());
 
-        //------
-        // blog
-        if ( !ACMS_RAM::blogCode(BID) ) {
+        //-------
+        // ブログ
+        if (!ACMS_RAM::blogCode(BID)) {
             $domain = ACMS_RAM::blogDomain(BID);
-            $SQL    = SQL::newSelect('blog');
+            $SQL = SQL::newSelect('blog');
             $SQL->setSelect('blog_id');
             $SQL->addWhereOpr('blog_domain', $domain);
             $SQL->addWhereOpr('blog_code', $ccd);
             $SQL->setSelect(1);
-            if ( $DB->query($SQL->get(dsn()), 'one') ) return false;
+            if ($DB->query($SQL->get(dsn()), 'one')) return false;
         }
 
-        //---------
-        // sibling
-        $SQL    = SQL::newSelect('category');
+        //-------------
+        // 兄弟カテゴリー
+        $SQL = SQL::newSelect('category');
         $SQL->setSelect('category_id');
         $SQL->addWhereOpr('category_code', $ccd);
         $SQL->addWhereOpr('category_blog_id', BID);
-        if ( !!($cid = intval($cid)) ) {
-            $SQL->addWhereOpr('category_id', $cid, '<>');
+        if (config('category_order_strict_mode') === 'on') {
+            $SQL->addWhereOpr('category_parent', $pcid);
         }
-        if ( !!$DB->query($SQL->get(dsn()), 'one') ) {
+        if (!!($cid = intval($cid))) {
+            $SQL->addWhereOpr('category_id', $cid, '<>'); // 自分自身を除く
+        }
+        if (!!$DB->query($SQL->get(dsn()), 'one')) {
             return false;
         }
 
-        //----------
-        // ancestor
-        $SQL    = SQL::newSelect('category');
+
+        //-----------------------------
+        // 先祖ブログのグローバルカテゴリー
+        $SQL = SQL::newSelect('category');
         $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
         ACMS_Filter::blogTree($SQL, BID, 'ancestor');
         $SQL->addSelect('category_id');
         $SQL->addWhereOpr('category_code', $ccd);
         $SQL->addWhereOpr('category_scope', 'global');
-
-        if ( !!$DB->query($SQL->get(dsn()), 'one') ) {
+        if (!!$DB->query($SQL->get(dsn()), 'one')) {
             return false;
         }
-
-        if ( 'local' == $scope ) {
+        if ('local' == $scope) {
             return true;
         }
 
-        //------------
-        // descendant
-        $SQL    = SQL::newSelect('category');
+        //----------------------------------------
+        // 自身がグローバルの場合の子孫ブログのカテゴリー
+        $SQL = SQL::newSelect('category');
         $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
         ACMS_Filter::blogTree($SQL, BID, 'descendant');
         $SQL->addSelect('category_id');
@@ -157,7 +166,7 @@ class ACMS_POST_Category extends ACMS_POST
             $toLeft     = $row['category_left'];
             $toRight    = $row['category_right'];
 
-            if ( $toLeft > $fromLeft and $toRight < $fromRight ) return false; 
+            if ( $toLeft > $fromLeft and $toRight < $fromRight ) return false;
 
             //-------
             // toSort

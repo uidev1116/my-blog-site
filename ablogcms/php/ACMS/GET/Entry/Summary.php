@@ -34,6 +34,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
             'limit'                 => intval(config('entry_summary_limit')),
             'offset'                => intval(config('entry_summary_offset')),
             'indexing'              => config('entry_summary_indexing'),
+            'membersOnly'           => config('entry_summary_members_only'),
             'subCategory'           => config('entry_summary_sub_category'),
             'secret'                => config('entry_summary_secret'),
             'notfound'              => config('mo_entry_summary_notfound'),
@@ -161,9 +162,9 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     {
         $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
             'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
-            'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id', 'blog_id', 'blog_code',
-            'blog_status', 'blog_parent', 'blog_name', 'blog_domain', 'blog_indexing', 'blog_alias_status', 'blog_alias_sort', 'blog_alias_primary', 'category_id', 'category_code',
-            'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id', 'geo_geometry', 'geo_zoom');
+            'entry_members_only', 'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id',
+            'blog_id', 'blog_code', 'blog_status', 'blog_parent', 'blog_name', 'blog_domain', 'blog_indexing', 'blog_alias_status', 'blog_alias_sort', 'blog_alias_primary',
+            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id', 'geo_geometry', 'geo_zoom');
 
         foreach ($list as $name) {
             $SQL->addSelect($name);
@@ -298,9 +299,17 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
                 $this->categorySubQuery->addWhereIn('category_id', explode(',', $this->cid));
                 $multi = true;
             }
-            ACMS_Filter::categoryStatus($this->categorySubQuery);
+            if ($this->config['secret'] === 'on') {
+                ACMS_Filter::categoryDisclosureSecretStatus($this->categorySubQuery);
+            } else {
+                ACMS_Filter::categoryStatus($this->categorySubQuery);
+            }
         } else {
-            ACMS_Filter::categoryStatus($SQL);
+            if ('on' === $this->config['secret']) {
+                ACMS_Filter::categoryDisclosureSecretStatus($SQL);
+            } else {
+                ACMS_Filter::categoryStatus($SQL);
+            }
         }
         return $multi;
     }
@@ -449,13 +458,16 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
      */
     function otherFilterQuery(& $SQL)
     {
-        if ( 'on' === $this->config['indexing'] ) {
+        if ('on' === $this->config['indexing']) {
             $SQL->addWhereOpr('entry_indexing', 'on');
         }
-        if ( 'on' <> $this->config['noimage'] ) {
+        if (isset($this->config['membersOnly']) && 'on' === $this->config['membersOnly']) {
+            $SQL->addWhereOpr('entry_members_only', 'on');
+        }
+        if ('on' <> $this->config['noimage']) {
             $SQL->addWhereOpr('entry_primary_image', null, '<>');
         }
-        if ( EID && 'on' === $this->config['hiddenCurrentEntry'] ) {
+        if (EID && 'on' === $this->config['hiddenCurrentEntry']) {
             $SQL->addWhereOpr('entry_id', EID, '<>');
         }
     }

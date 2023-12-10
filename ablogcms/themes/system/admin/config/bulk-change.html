@@ -3,7 +3,7 @@
 		@include("/admin/topicpath.html")
 	</div>
 	<div>
-		@include("/admin/config/parts/header.html", {"title": "<!--T-->一括変更フィールド設定<!--/T-->"})
+		@include("/admin/config/parts/header-editor.html", {"title": "<!--T-->一括変更フィールド設定<!--/T-->"})
 	</div>
 </header>
 
@@ -17,7 +17,20 @@
 <form action="" method="post" class="acms-admin-form">
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index acms-admin-form-group">
-			<a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+      <div class="js-fake-form" data-method="post">
+        <input type="hidden" name="bid" value="%{BID}" />
+        <input type="hidden" name="admin" value="config_editor" />
+        <!-- BEGIN_IF [%{setid}/nem/] -->
+        <input type="hidden" name="setid" value="%{setid}" />
+        <input type="hidden" name="query[]" value="setid" />
+        <!-- END_IF -->
+        <!-- BEGIN_IF [%{rid}/nem/] -->
+        <input type="hidden" name="rid" value="%{rid}" />
+        <input type="hidden" name="query[]" value="rid" />
+        <!-- END_IF -->
+        <input type="hidden" name="ACMS_POST_2GET" value="on"/>
+        <button type="button" class="js-submit acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></button>
+      </div>
 
 			<input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->"
 				   class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"/>

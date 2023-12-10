@@ -7,16 +7,15 @@ class ACMS_POST_Entry_Update_Sort extends ACMS_POST_Entry_Update
         $this->Post->setMethod('utid', 'required');
         $this->Post->setMethod('entry', 'operable', $this->isOperable());
         $this->Post->validate(new ACMS_Validator());
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newUpdate('column');
             $SQL->addWhereOpr('column_blog_id', BID);
 
             $utidList = $this->Post->getArray('utid');
 
-            foreach ( $utidList as $sort => $utid ) {
+            foreach ($utidList as $sort => $utid) {
                 $Q = clone $SQL;
-
                 $Q->addUpdate('column_sort', $sort+1);
                 $Q->addWhereOpr('column_id', $utid);
                 $DB->query($Q->get(dsn()), 'exec');
@@ -29,6 +28,8 @@ class ACMS_POST_Entry_Update_Sort extends ACMS_POST_Entry_Update
             $SQL->addWhereOpr('entry_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
             ACMS_RAM::entry(EID, null);
+
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのユニットの順番を変更しました');
 
             httpStatusCode('200 OK');
         } else {

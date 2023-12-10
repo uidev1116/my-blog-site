@@ -4,7 +4,7 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
 {
     function post()
     {
-        $validator = new ACMS_Validator_User;
+        $validator = new ACMS_Validator_User();
 
         $User = $this->extract('user');
         $User->setMethod('status', 'required');
@@ -26,6 +26,7 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
         $User->setMethod('auth', 'in', array('administrator', 'editor', 'contributor', 'subscriber'));
         $User->setMethod('indexing', 'required');
         $User->setMethod('indexing', 'in', array('on', 'off'));
+        $User->setMethod('mode', 'in', array('debug', 'benchmark'));
         $User->setMethod('user', 'limit', ('subscriber' == $User->get('auth')) ? true : $this->isLimit());
         $User->setMethod('login_expire', 'regex', '@\d\d\d\d-\d\d-\d\d@');
         $User->setMethod('login_anywhere', 'in', array('on', 'off'));
@@ -69,17 +70,17 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
             $SQL->addInsert('user_mail_mobile_magazine', $User->get('mail_mobile_magazine'));
             $SQL->addInsert('user_url', strval($User->get('url')));
             $SQL->addInsert('user_auth', $User->get('auth'));
+            $SQL->addInsert('user_mode', $User->get('mode'));
             $SQL->addInsert('user_locale', $User->get('locale'));
             $SQL->addInsert('user_indexing', $User->get('indexing'));
             $SQL->addInsert('user_login_anywhere', (SBID == RBID) ? $User->get('login_anywhere', 'off') : 'off');
             $SQL->addInsert('user_login_expire', $User->get('login_expire'));
             $SQL->addInsert('user_updated_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
-
-            $str_path = $User->get('icon@squarePath');
-            $this->Post->set('icon', $str_path );
-            //------
-            // icon
-            $SQL->addInsert('user_icon', $str_path);
+            if ($iconPath = Login::resizeUserIcon($User->get('icon@squarePath'))) {
+                $SQL->addInsert('user_icon', $iconPath);
+                $User->set('icon', $iconPath);
+                $this->Post->set('icon', $iconPath);
+            }
             $this->Post->getChild('user')->delete('icon');
 
             $DB->query($SQL->get(dsn()), 'exec');
@@ -102,6 +103,17 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
             }
             Common::saveFulltext('uid', $uid, Common::loadUserFulltext($uid));
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('ユーザー「' . $User->get('name') . '」を作成しました', [
+                'uid' => $uid,
+                'user' => $User->_aryField,
+            ]);
+
+            Webhook::call(BID, 'user', ['user:created'], $uid);
+        } else {
+            AcmsLogger::info('ユーザー作成に失敗しました', [
+                'user' => $User->_aryV,
+            ]);
         }
 
         return $this->Post;

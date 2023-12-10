@@ -31,8 +31,7 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
         $Fix->setMethod('source', 'required', $source);
         $Fix->validate();
 
-        if ( $this->Post->isValidAll() ) {
-
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
 
             $this->init();
@@ -91,7 +90,7 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
 
                 $SQL->addGroup('entry_id');
                 $q  = $SQL->get(dsn());
-                
+
                 $DB->query($q, 'fetch');
 
                 while ( $e = $DB->fetch($q) ) {

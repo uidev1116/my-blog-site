@@ -2,37 +2,22 @@
 
 class ACMS_POST_Rule_Update extends ACMS_POST_Rule
 {
-    function post()
+    public function post()
     {
         $Rule = $this->extract('rule');
-        if ( 'global' !== $Rule->get('scope') ) {
-            $Rule->set('scope', 'local');
-        }
-        $Rule->setMethod('name', 'required');
-        $Rule->setMethod('status', 'in', array('open', 'close'));
-        $Rule->setMethod('rule', 'ridIsNull', ($rid = idval($this->Get->get('rid'))));
-        $Rule->setMethod('rule', 'invalidLicence', IS_LICENSED);
+        $this->validate($Rule);
 
-        if ( roleAvailableUser() ) {
-            $Rule->setMethod('rule', 'operative', roleAuthorization('rule_edit', BID) ?
-                true : Auth::checkShortcut('Rule_Update', ADMIN, 'rid', $rid)
-            );
-        } else {
-            $Rule->setMethod('rule', 'operative', sessionWithAdministration() ?
-                true : Auth::checkShortcut('Rule_Update', ADMIN, 'rid', $rid)
-            );
-        }
+        $ruleId = intval($this->Get->get('rid'));
 
-        $Rule->validate(new ACMS_Validator());
         $this->fix($Rule);
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            $SQL    = SQL::newUpdate('rule');
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $SQL = SQL::newUpdate('rule');
             $SQL->addUpdate('rule_name', $Rule->get('name'));
             $SQL->addUpdate('rule_status', $Rule->get('status'));
             $SQL->addUpdate('rule_description', strval($Rule->get('description')));
-            $SQL->addUpdate('rule_scope', $Rule->get('scope'));
+            $SQL->addUpdate('rule_scope', $Rule->get('scope') ?: 'local');
             $SQL->addUpdate('rule_bid', $Rule->isNull('bid') ? null : $Rule->get('bid'));
             $SQL->addUpdate('rule_bid_case', $Rule->isNull('bid_case') ? null : $Rule->get('bid_case'));
             $SQL->addupdate('rule_aid', $Rule->isNull('aid') ? null : $Rule->get('aid'));
@@ -60,37 +45,90 @@ class ACMS_POST_Rule_Update extends ACMS_POST_Rule
             $SQL->addUpdate('rule_cookie_val', $Rule->isNull('cookie_val') ? null : $Rule->get('cookie_val'));
             $SQL->addUpdate('rule_custom', $Rule->isNull('custom') ? null : $Rule->get('custom'));
             $SQL->addUpdate('rule_custom_case', $Rule->isNull('custom_case') ? null : $Rule->get('custom_case'));
-            $start  = null;
-            $end    = null;
+            $start = null;
+            $end = null;
             $SQL->addUpdate('rule_term_case', $Rule->isNull('term_case') ? null : $Rule->get('term_case'));
 
-            if ( !$Rule->isNull('term_case') ) {
+            if (!$Rule->isNull('term_case')) {
                 $typeAry = array_filter($Rule->getArray('term_type'));
                 $type = array_shift($typeAry);
                 $SQL->addUpdate('rule_term_type', empty($type) ? null : $type);
 
-                $start  = '1000-01-01';
-                $time   = $Rule->isNull('term_start_time') ? '00:00:00' : $Rule->get('term_start_time');
-                if ( !$Rule->isNull('term_start_date') ) $start = $Rule->get('term_start_date');
-                $start  = $start.' '.$time;
+                $start = '1000-01-01';
+                $time = $Rule->isNull('term_start_time') ? '00:00:00' : $Rule->get('term_start_time');
+                if (!$Rule->isNull('term_start_date')) {
+                    $start = $Rule->get('term_start_date');
+                }
+                $start = $start . ' ' . $time;
                 $SQL->addUpdate('rule_term_start', $start);
 
-                $end    = '9999-12-31';
-                $time   = $Rule->isNull('term_end_time') ? '23:59:59' : $Rule->get('term_end_time');
-                if ( !$Rule->isNull('term_end_date') ) $end    = $Rule->get('term_end_date');
-                $end    = $end.' '.$time;
+                $end = '9999-12-31';
+                $time = $Rule->isNull('term_end_time') ? '23:59:59' : $Rule->get('term_end_time');
+                if (!$Rule->isNull('term_end_date')) {
+                    $end  = $Rule->get('term_end_date');
+                }
+                $end = $end . ' ' . $time;
                 $SQL->addUpdate('rule_term_end', $end);
             }
 
-            $SQL->addWhereOpr('rule_id', $rid);
+            $SQL->addWhereOpr('rule_id', $ruleId);
             $SQL->addWhereOpr('rule_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            ACMS_RAM::rule($rid, null);
+            ACMS_RAM::rule($ruleId, null);
 
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('「' . $Rule->get('name') . '」ルールを更新しました', [
+                'ruleID' => $ruleId,
+                'data' => $Rule->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ルールの更新に失敗しました', [
+                'ruleID' => $ruleId,
+                'data' => $Rule,
+            ]);
         }
 
         return $this->Post;
+    }
+
+
+    /**
+     * バリデート
+     *
+     * @param \Field_Validation $Rule
+     */
+    protected function validate(\Field_Validation $Rule)
+    {
+        $Rule->setMethod('name', 'required');
+        $Rule->setMethod('status', 'in', ['open', 'close']);
+        $Rule->setMethod('rule', 'ridIsNull', idval($this->Get->get('rid')) > 0);
+        $Rule->setMethod('rule', 'invalidLicence', IS_LICENSED);
+        $Rule->setMethod('rule', 'operative', $this->isOperable());
+
+        $Rule->validate(new ACMS_Validator());
+    }
+
+    /**
+     * ルールの更新権限があるかどうか
+     *
+     * @return bool
+     **/
+    protected function isOperable(): bool
+    {
+        if (roleAvailableUser()) {
+            if (roleAuthorization('rule_edit', BID)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        if (sessionWithAdministration()) {
+            return true;
+        }
+
+        return false;
     }
 }

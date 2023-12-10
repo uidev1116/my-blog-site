@@ -311,6 +311,41 @@
     Key:
     Default:
     Extra:
+  blog_config_set_scope:
+    Field: blog_config_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
+    Extra:
+  blog_theme_set_id:
+    Field: blog_theme_set_id
+    Type: int(11)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  blog_theme_set_scope:
+    Field: blog_theme_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
+    Extra:
+  blog_editor_set_id:
+    Field: blog_editor_set_id
+    Type: int(11)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  blog_editor_set_scope:
+    Field: blog_editor_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
+    Extra:
   blog_generated_datetime:
     Field: blog_generated_datetime
     Type: datetime
@@ -344,6 +379,50 @@
     Type: int(11)
     'Null': YES
     Key:
+    Default:
+    Extra:
+%{PREFIX}cache_data:
+  cache_data_key:
+    Field: cache_data_key
+    Type: VARBINARY(255)
+    'Null': NO
+    Key: PRI
+    Default:
+    Extra:
+  cache_data_value:
+    Field: cache_data_value
+    Type: MEDIUMBLOB
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  cache_data_lifetime:
+    Field: cache_data_lifetime
+    Type: INTEGER UNSIGNED
+    'Null':
+    Key:
+    Default:
+    Extra:
+  cache_data_time:
+    Field: cache_data_time
+    Type: INTEGER UNSIGNED
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+%{PREFIX}cache_tag:
+  cache_tag_name:
+    Field: cache_tag_name
+    Type: VARBINARY(255)
+    'Null': NO
+    Key: PRI
+    Default:
+    Extra:
+  cache_tag_key:
+    Field: cache_tag_key
+    Type: VARBINARY(255)
+    'Null': NO
+    Key: PRI
     Default:
     Extra:
 %{PREFIX}cache_reserve:
@@ -452,6 +531,41 @@
     'Null': YES
     Key:
     Default:
+    Extra:
+  category_config_set_scope:
+    Field: category_config_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
+    Extra:
+  category_theme_set_id:
+    Field: category_theme_set_id
+    Type: int(11)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  category_theme_set_scope:
+    Field: category_theme_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
+    Extra:
+  category_editor_set_id:
+    Field: category_editor_set_id
+    Type: int(11)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  category_editor_set_scope:
+    Field: category_editor_set_scope
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: local
     Extra:
   category_blog_id:
     Field: category_blog_id
@@ -885,6 +999,13 @@
     Key: PRI
     Default:
     Extra:
+  config_set_type:
+    Field: config_set_type
+    Type: varchar(16)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
   config_set_sort:
     Field: config_set_sort
     Type: int(11)
@@ -1069,6 +1190,13 @@
     Key:
     Default: on
     Extra:
+  entry_members_only:
+    Field: entry_members_only
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: off
+    Extra:
   entry_primary_image:
     Field: entry_primary_image
     Type: int(11)
@@ -1078,6 +1206,13 @@
     Extra:
   entry_current_rev_id:
     Field: entry_current_rev_id
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  entry_reserve_rev_id:
+    Field: entry_reserve_rev_id
     Type: int(11)
     'Null': NO
     Key:
@@ -1129,6 +1264,20 @@
     Field: entry_delete_uid
     Type: int(11)
     'Null': YES
+    Key:
+    Default:
+    Extra:
+  entry_lock_datetime:
+    Field: entry_lock_datetime
+    Type: datetime
+    'Null': NO
+    Key:
+    Default: '1000-01-01 23:59:59'
+    Extra:
+  entry_lock_uid:
+    Field: entry_lock_uid
+    Type: int(11)
+    'Null': NO
     Key:
     Default:
     Extra:
@@ -1301,6 +1450,13 @@
     Key:
     Default: on
     Extra:
+  entry_members_only:
+    Field: entry_members_only
+    Type: varchar(8)
+    'Null': NO
+    Key:
+    Default: off
+    Extra:
   entry_primary_image:
     Field: entry_primary_image
     Type: int(11)
@@ -1347,6 +1503,20 @@
     Field: entry_delete_uid
     Type: int(11)
     'Null': YES
+    Key:
+    Default:
+    Extra:
+  entry_lock_datetime:
+    Field: entry_lock_datetime
+    Type: datetime
+    'Null': NO
+    Key:
+    Default: '1000-01-01 23:59:59'
+    Extra:
+  entry_lock_uid:
+    Field: entry_lock_uid
+    Type: int(11)
+    'Null': NO
     Key:
     Default:
     Extra:
@@ -1900,137 +2070,172 @@
     Key:
     Default:
     Extra:
-%{PREFIX}log_access:
-  log_access_datetime:
-    Field: log_access_datetime
+%{PREFIX}audit_log:
+  audit_log_id:
+    Field: audit_log_id
+    Type: int(11)
+    'Null': NO
+    Key: PRI
+    Default:
+    Extra:
+  audit_log_datetime:
+    Field: audit_log_datetime
     Type: datetime
     'Null': NO
-    Key:
+    Key: MUL
     Default:
     Extra:
-  log_access_url:
-    Field: log_access_url
-    Type: varchar(255)
+  audit_log_level:
+    Field: audit_log_level
+    Type: int(4)
     'Null': NO
     Key:
     Default:
     Extra:
-  log_access_ua:
-    Field: log_access_ua
-    Type: varchar(255)
+  audit_log_level_name:
+    Field: audit_log_level_name
+    Type: varchar(16)
     'Null': NO
+    Key: MUL
+    Default:
+    Extra:
+  audit_log_url:
+    Field: audit_log_url
+    Type: varchar(512)
+    'Null': YES
     Key:
     Default:
     Extra:
-  log_access_addr:
-    Field: log_access_addr
+  audit_log_ua:
+    Field: audit_log_ua
+    Type: varchar(255)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_addr:
+    Field: audit_log_addr
     Type: varchar(40)
-    'Null': NO
+    'Null': YES
     Key:
     Default:
     Extra:
-  log_access_referer:
-    Field: log_access_referer
-    Type: varchar(255)
-    'Null': NO
+  audit_log_referer:
+    Field: audit_log_referer
+    Type: varchar(512)
+    'Null': YES
     Key:
     Default:
     Extra:
-  log_access_method:
-    Field: log_access_method
-    Type: varchar(4)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_lang:
-    Field: log_access_lang
-    Type: varchar(16)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_http_status_code:
-    Field: log_access_http_status_code
-    Type: varchar(255)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_publishing:
-    Field: log_access_publishing
-    Type: varchar(16)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_res_time:
-    Field: log_access_res_time
-    Type: double
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_sql_time:
-    Field: log_access_sql_time
-    Type: double
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_acms_post:
-    Field: log_access_acms_post
-    Type: varchar(255)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  log_access_acms_post_valid:
-    Field: log_access_acms_post_valid
+  audit_log_method:
+    Field: audit_log_method
     Type: varchar(8)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_status:
+    Field: audit_log_status
+    Type: varchar(32)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_response_time:
+    Field: audit_log_response_time
+    Type: double
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_acms_post:
+    Field: audit_log_acms_post
+    Type: varchar(255)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_message:
+    Field: audit_log_message
+    Type: text
     'Null': NO
     Key:
     Default:
     Extra:
-  log_access_session_uid:
-    Field: log_access_session_uid
+  audit_log_session_uid:
+    Field: audit_log_session_uid
     Type: int(11)
     'Null': NO
-    Key:
+    Key: MUL
     Default:
     Extra:
-  log_access_entry_id:
-    Field: log_access_entry_id
+  audit_log_session_alt_uid:
+    Field: audit_log_session_alt_uid
     Type: int(11)
     'Null': YES
     Key:
     Default:
     Extra:
-  log_access_category_id:
-    Field: log_access_category_id
+  audit_log_eid:
+    Field: audit_log_eid
     Type: int(11)
     'Null': YES
     Key:
     Default:
     Extra:
-  log_access_user_id:
-    Field: log_access_user_id
+  audit_log_cid:
+    Field: audit_log_cid
     Type: int(11)
     'Null': YES
     Key:
     Default:
     Extra:
-  log_access_rule_id:
-    Field: log_access_rule_id
+  audit_log_uid:
+    Field: audit_log_uid
     Type: int(11)
     'Null': YES
     Key:
     Default:
     Extra:
-  log_access_blog_id:
-    Field: log_access_blog_id
+  audit_log_rid:
+    Field: audit_log_rid
     Type: int(11)
     'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_req_header:
+    Field: audit_log_req_header
+    Type: text
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_req_body:
+    Field: audit_log_req_body
+    Type: text
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_context:
+    Field: audit_log_context
+    Type: text
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_extra:
+    Field: audit_log_extra
+    Type: text
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  audit_log_blog_id:
+    Field: audit_log_blog_id
+    Type: int(11)
+    'Null': NO
     Key:
     Default:
     Extra:
@@ -3199,6 +3404,13 @@
     Key:
     Default:
     Extra:
+  sequence_audit_log_Id:
+    Field: sequence_audit_log_Id
+    Type: int(11)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
   sequence_trial_hash:
     Field: sequence_trial_hash
     Type: varchar(255)
@@ -3779,20 +3991,6 @@
     Field: user_tfa_recovery
     Type: varchar(128)
     'Null': YES
-  user_confirmation_token:
-    Field: user_confirmation_token
-    Type: varchar(255)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
-  user_reset_password_token:
-    Field: user_reset_password_token
-    Type: varchar(255)
-    'Null': NO
-    Key:
-    Default:
-    Extra:
   user_twitter_id:
     Field: user_twitter_id
     Type: varchar(64)
@@ -3870,6 +4068,13 @@
     Key:
     Default: contributor
     Extra:
+  user_mode:
+    Field: user_mode
+    Type: varchar(32)
+    'Null': NO
+    key:
+    Default:
+    Extra:
   user_locale:
     Field: user_locale
     Type: varchar(16)
@@ -3932,6 +4137,13 @@
     'Null': NO
     Key:
     Default: '1000-01-01 00:00:00'
+    Extra:
+  user_withdrawal_datetime:
+    Field: user_withdrawal_datetime
+    Type: datetime
+    'Null': YES
+    Key:
+    Default:
     Extra:
   user_session_data:
     Field: user_session_data
@@ -4391,4 +4603,33 @@
     'Null': NO
     Key:
     Default:
+    Extra:
+%{PREFIX}token:
+  token_key:
+    Field: token_key
+    Type: varchar(255)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  token_type:
+    Field: token_type
+    Type: varchar(32)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  token_value:
+    Field: token_value
+    Type: varchar(255)
+    'Null': NO
+    Key:
+    Default:
+    Extra:
+  token_expire:
+    Field: token_expire
+    Type: datetime
+    'Null': NO
+    Key:
+    Default: '9999-12-31 23:59:59'
     Extra:

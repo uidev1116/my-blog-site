@@ -4,7 +4,7 @@ class ACMS_POST_Alias_Delete extends ACMS_POST_Alias
 {
     function post()
     {
-        $this->Post->setMethod('alias', 'operable', 
+        $this->Post->setMethod('alias', 'operable',
             ($aid = intval($this->Get->get('aid'))) and sessionWithAdministration()
         );
         $this->Post->setMethod('alias', 'primary', ACMS_RAM::blogAliasPrimary(BID) <> $aid);
@@ -12,6 +12,7 @@ class ACMS_POST_Alias_Delete extends ACMS_POST_Alias
 
         if ( $this->Post->isValidAll() and $sort = ACMS_RAM::aliasSort($aid) ) {
             $DB = DB::singleton(dsn());
+            $name = ACMS_RAM::aliasName($aid);
 
             //------------
             // alias sort
@@ -40,6 +41,11 @@ class ACMS_POST_Alias_Delete extends ACMS_POST_Alias
             ACMS_RAM::alias($aid, null);
 
             $this->Post->set('edit', 'delete');
+
+            AcmsLogger::info('エイリアス「' . $name . '」を削除しました', [
+                'aid' => $aid,
+                'name' => $name,
+            ]);
         }
 
         return $this->Post;

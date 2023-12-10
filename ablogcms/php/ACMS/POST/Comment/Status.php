@@ -34,6 +34,10 @@ class ACMS_POST_Comment_Status extends ACMS_POST_Comment
                 'cmid'      => CMID,
                 'fragment'  => 'comment-'.CMID,
             )));
+            if ($status === 'awaiting') $statusName = '承認待ち';
+            if ($status === 'close') $statusName = '非公開';
+            if ($status === 'open') $statusName = '公開';
+            AcmsLogger::info('コメントのステータスを「' . $statusName . '」に変更しました');
         }
 
         return $this->Post;

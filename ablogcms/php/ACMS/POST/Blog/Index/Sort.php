@@ -132,7 +132,12 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 
                 Cache::flush('temp');
                 $this->Post->set('success', 'sort');
+
+                $aryBid[] = $bid;
             }
+            AcmsLogger::info('指定されたブログの並び順を変更', [
+                'targetBIDs' => implode(',', $aryBid),
+            ]);
         } else {
             $this->Post->set('error', 'sort_1');
         }

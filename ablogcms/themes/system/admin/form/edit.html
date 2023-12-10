@@ -25,10 +25,6 @@
 
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
-			<!-- BEGIN footer#update -->
-			<a href="%{HTTP_ROOT}bid/%{BID}/admin/form_log/?fmid=%{fmid}" class="acms-admin-btn-admin"><!--T-->投稿データ<!--/T--></a>
-			<!-- END footer#update -->
-
 			<a href="%{HTTP_ROOT}bid/%{BID}/admin/form_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
 
 			<!-- BEGIN submit#insert -->
@@ -41,6 +37,18 @@
 			<input type="submit" name="ACMS_POST_Form_Delete" value="<!--T-->削除<!--/T-->" onclick="return confirm('<!--T-->フォームIDに関連づけられたログも一緒に削除されます。\nこの操作は元に戻せません。よろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-danger js-hide-on-modal"/>
 			<input type="hidden" name="takeover" value="{takeover}"/>
 			<!-- END submit#update -->
+
+      <!-- BEGIN footer#update -->
+      <div class="acms-admin-float-right" data-method="post">
+        <div class="js-fake-form acms-admin-inline-btn" data-method="post">
+          <input type="hidden" name="ACMS_POST_Form_Duplicate" value="on" />
+          <input type="hidden" name="takeover" value="{takeover}" />
+          <button class="js-submit acms-admin-btn-admin"><!--T-->複製<!--/T--></button>
+        </div>
+
+        <a href="%{HTTP_ROOT}bid/%{BID}/admin/form_log/?fmid=%{fmid}" class="acms-admin-btn-admin"><!--T-->投稿データ<!--/T--></a>
+      </div>
+      <!-- END footer#update -->
 		</div>
 	</div>
 
@@ -303,6 +311,18 @@
 				</div>
 			</td>
 		</tr>
+    <tr>
+			<th><!--T-->送信しない<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると一般宛に自動返信メールを送信しなくなります<!--/T-->"></i></th>
+			<td>
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="FormSend[]" value="no" id="input-FormSend-no" {FormSend:checked#no}/>
+					<label for="input-FormSend-no">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->チェックをすると一般宛に自動返信メールを送信しなくなります<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="mail[]" value="FormSend"/>
+			</td>
+		</tr>
 	</table>
 	<p>※<!--T-->カンマ区切りで複数指定出来ます。<!--/T--></p>
 
@@ -418,6 +438,18 @@
 					</label>
 				</div>
 				<input type="hidden" name="mail[]" value="AdminAttachment"/>
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->送信しない<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると管理者宛にメールを送信しなくなります<!--/T-->"></i></th>
+			<td>
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="AdminFormSend[]" value="no" id="input-AdminFormSend-no" {AdminFormSend:checked#no}/>
+					<label for="input-AdminFormSend-no">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->チェックをすると管理者宛にメールを送信しなくなります<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="mail[]" value="AdminFormSend"/>
 			</td>
 		</tr>
 	</table>

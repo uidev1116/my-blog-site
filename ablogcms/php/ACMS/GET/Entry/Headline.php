@@ -26,6 +26,7 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
             'limit'            => intval(config('entry_headline_limit')),
             'offset'           => intval(config('entry_headline_offset')),
             'indexing'         => config('entry_headline_indexing'),
+            'membersOnly'      => config('entry_headline_members_only'),
             'subCategory'      => config('entry_headline_sub_category'),
             'secret'           => config('entry_headline_secret'),
             'newtime'          => config('entry_headline_newtime'),

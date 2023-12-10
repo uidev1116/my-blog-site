@@ -4,6 +4,7 @@ namespace Acms\Services\Database\Engine;
 
 use App;
 use PDO;
+use AcmsLogger;
 use PDOException;
 
 /**
@@ -163,11 +164,12 @@ class PdoEngine extends Base
      * @param string $sql
      * @param string $mode
      * @param boolean $buffered
-     * @return array|bool|resource|int
+     * @param boolean $auditLog
+     * @return array|bool|resource|int|null
      *
      * @throws \ErrorException
      */
-    public function query($sql, $mode = 'row', $buffered = true)
+    public function query($sql, $mode = 'row', $buffered = true, $auditLog = true)
     {
         global $query_result_count;
         $query_result_count++;
@@ -193,15 +195,26 @@ class PdoEngine extends Base
             }
             return $result;
 
-        } catch ( PDOException $e ) {
-            if ( $this->debug ) {
+        } catch (PDOException $e) {
+            if ($auditLog) {
+                AcmsLogger::debug($e->getMessage(), [
+                    'code' => $e->getCode(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'sql' => $sql,
+                ]);
+            }
+            if ($this->debug) {
                 $code = intval($e->getCode());
                 $exception = new \ErrorException($e->getMessage(), $code, E_USER_WARNING, $e->getFile(), $e->getLine(), App::getExceptionStack());
-                if ( $this->throwException ) {
+                if ($this->throwException) {
                     throw $exception;
                 } else {
                     App::setExceptionStack($exception);
                 }
+            }
+            if ($mode === 'all') {
+                return [];
             } else {
                 return false;
             }

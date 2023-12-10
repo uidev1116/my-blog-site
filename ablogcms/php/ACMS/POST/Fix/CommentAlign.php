@@ -80,6 +80,8 @@ class ACMS_POST_Fix_CommentAlign extends ACMS_POST
             } }
         } }
 
+        AcmsLogger::info('コメントの親子構造を修復しました');
+
         die('finish');
     }
 }

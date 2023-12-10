@@ -2,6 +2,8 @@
 
 namespace Acms\Services\Http;
 
+use AcmsLogger;
+
 class Engine
 {
     /**
@@ -15,7 +17,7 @@ class Engine
     protected $responseBody;
 
     /**
-     * @var resource
+     * @var \CurlHandle
      */
     protected $curl;
 
@@ -41,7 +43,7 @@ class Engine
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_URL, $uri);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
-        if (DEBUG_MODE) {
+        if (isDebugMode()) {
             curl_setopt($this->curl, CURLOPT_VERBOSE, true);
         }
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true); // Locationを辿る
@@ -92,16 +94,15 @@ class Engine
         $error = curl_error($this->curl);
         curl_close($this->curl);
 
-        if ( CURLE_OK !== $errno ) {
+        if (CURLE_OK !== $errno) {
+            AcmsLogger::debug($error, [
+                'errno' => $errno,
+            ]);
             throw new \RuntimeException($error, $errno);
         }
-
         $this->responseHeaders = $this->getHeadersFromCurlResponse(substr($response, 0, $header_size));
         $this->responseBody = substr($response, $header_size);
 
-        if (strpos($this->getResponseHeader('http_code'), '200') === false) {
-            throw new \RuntimeException($this->getResponseHeader('http_code'));
-        }
         return $this;
     }
 

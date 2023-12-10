@@ -3,6 +3,8 @@
 namespace Acms\Services\Update\System;
 
 use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Logger;
 
 class CheckForUpdate
 {
@@ -268,27 +270,32 @@ class CheckForUpdate
      * @param int $type
      * @return bool|self
      */
-    protected function checkForUpdate($string, $php_version, $type=self::PATCH_VERSION)
+    protected function checkForUpdate($string, $php_version, $type = self::PATCH_VERSION)
     {
-        $php_version = strtolower($php_version);
-        $this->decode($string);
+        try {
+            $php_version = strtolower($php_version);
+            $this->decode($string);
 
-        $update_version = $this->checkAcmsVersion($type);
-        if ( empty($update_version) ) {
-            return false;
-        }
-        $this->releaseNote = $this->createReleaseNote($update_version->version);
-        $this->updateVersion = $update_version->version;
-        $this->changelogUrl = $update_version->changelog->link;
-        $this->changelogArray = $update_version->changelog->logs;
-        $package = $this->checkPhpVersion($update_version->packages, $php_version);
-        if ( empty($package) ) {
-            return false;
-        }
-        $this->packageUrl = $package->download;
-        $this->rootDir = $package->root_dir;
+            $update_version = $this->checkAcmsVersion($type);
+            if ( empty($update_version) ) {
+                return false;
+            }
+            $this->releaseNote = $this->createReleaseNote($update_version->version);
+            $this->updateVersion = $update_version->version;
+            $this->changelogUrl = $update_version->changelog->link;
+            $this->changelogArray = $update_version->changelog->logs;
+            $package = $this->checkPhpVersion($update_version->packages, $php_version);
+            if ( empty($package) ) {
+                return false;
+            }
+            $this->packageUrl = $package->download;
+            $this->rootDir = $package->root_dir;
 
-        return true;
+            return true;
+        } catch (\Exception $e) {
+            Logger::notice($e->getMessage(), Common::exceptionArray($e));
+        }
+        return false;
     }
 
     /**
@@ -300,22 +307,27 @@ class CheckForUpdate
      */
     protected function checkForDownGrade($string, $php_version)
     {
-        $php_version = strtolower($php_version);
-        $this->decode($string);
+        try {
+            $php_version = strtolower($php_version);
+            $this->decode($string);
 
-        $down_grade_version = $this->checkAcmsDownGradeVersion();
-        if (empty($down_grade_version)) {
-            return false;
-        }
-        $this->downGradeVersion = $down_grade_version->version;
-        $package = $this->checkPhpVersion($down_grade_version->packages, $php_version);
-        if (empty($package)) {
-            return false;
-        }
-        $this->downGradePackageUrl = $package->download;
-        $this->rootDir = $package->root_dir;
+            $down_grade_version = $this->checkAcmsDownGradeVersion();
+            if (empty($down_grade_version)) {
+                return false;
+            }
+            $this->downGradeVersion = $down_grade_version->version;
+            $package = $this->checkPhpVersion($down_grade_version->packages, $php_version);
+            if (empty($package)) {
+                return false;
+            }
+            $this->downGradePackageUrl = $package->download;
+            $this->rootDir = $package->root_dir;
 
-        return true;
+            return true;
+        } catch (\Exception $e) {
+            Logger::notice($e->getMessage(), Common::exceptionArray($e));
+        }
+        return false;
     }
 
     /**
@@ -512,10 +524,8 @@ class CheckForUpdate
     {
         $data = json_decode($string);
         if (!property_exists($data, 'versions') || !property_exists($data, 'releaseNote')) {
-            \App::exception('不正なデータです'); // stack exception
+            throw new \RuntimeException('取得したアップデートバージョンが記載されたJSONが不正な形式です。');
         }
-        \App::checkException(); // throw exception
-
         $this->data = $data;
     }
 

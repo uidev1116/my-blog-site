@@ -31,6 +31,9 @@ class ACMS_POST_Download extends ACMS_POST
             $req = \Http::init($url, 'GET');
             $req->setRequestHeaders($headerAry);
             $response = $req->send();
+            if (strpos(\Http::getResponseHeader('http_code'), '200') === false) {
+                throw new \RuntimeException(\Http::getResponseHeader('http_code'));
+            }
             $responseHeaders = $response->getResponseHeader();
             $contents = $response->getResponseBody();
             $contentType = isset($responseHeaders['Content-Type']) ? $responseHeaders['Content-Type'] : '';
@@ -54,6 +57,7 @@ class ACMS_POST_Download extends ACMS_POST
             die($contents);
 
         } catch (\Exception $e) {
+            AcmsLogger::warning('ダウンロードに失敗しました', Common::exceptionArray($e, ['url' => $url]));
             echo $e->getMessage();
         }
     }

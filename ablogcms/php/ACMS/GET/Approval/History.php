@@ -56,7 +56,7 @@ class ACMS_GET_Approval_History extends ACMS_GET
             //------------------
             // 担当者 承認依頼のみ
             if ( $row['approval_type'] === 'request' ) {
-                $receive['deadline']    = $row['approval_deadline_datetime'];
+                $receive = array();
                 if ( !!$row['approval_receive_user_id'] ) {
                     $receive['userOrGroupp'] = ACMS_RAM::userName($row['approval_receive_user_id']);
                 } else if ( !!$row['approval_receive_usergroup_id'] ) {

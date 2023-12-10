@@ -1,86 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
+use Acms\Services\Facades\Application;
+use Acms\Services\Shortcut\Repository;
+use Acms\Services\Shortcut\Helper;
+
 class ACMS_GET_Admin_Shortcut_Edit extends ACMS_GET_Admin_Edit
 {
     /**
+     * @var Repository
+     */
+    protected $ShortcutRepository;
+
+    /**
+     * @var Helper
+     */
+    protected $ShortcutService;
+
+    /**
      * @return bool
      */
-    function validate()
+    protected function validate()
     {
-        if ( 'shortcut_edit' <> ADMIN ) { return false; }
-        if ( !$this->Get->get('admin') ) { return false; }
-        if ( !$this->Get->get('action') ) { return false; }
+        if ('shortcut_edit' !== ADMIN) {
+            return false;
+        }
+        if (empty($this->Get->get('admin'))) {
+            return false;
+        }
 
         return true;
     }
 
-    /**
-     * @param string $admin
-     * @param array $ids
-     *
-     * @return string
-     */
-    function getShortcutKey($admin, $ids)
+    public function edit(&$Tpl)
     {
-        $str = 'shortcut_';
+        /** @var Repository $ShortcutRepository */
+        $this->ShortcutRepository = Application::make('shortcut.repository');
+        /** @var Helper $ShortcutService */
+        $this->ShortcutService = Application::make('shortcut.helper');
 
-        foreach ( $ids as $key => $id ) {
-            $str .= ($key . '_' . $id .'_');
-        }
-        $str .= ($admin . '_');
-
-        return $str;
-    }
-
-    function edit(& $Tpl)
-    {
-        if ( !$this->validate() ) {
+        if (!$this->validate()) {
             return false;
         }
+
         $admin  = $this->Get->get('admin');
-        $ids = array();
 
-        foreach ( array('bid', 'uid', 'cid', 'eid', 'rid', 'mid', 'fmid', 'mbid', 'scid') as $idKey ) {
-            $id = $this->Get->get($idKey);
-            if ( empty($id) or is_bool($id) ) continue;
-            $ids[$idKey] = intval($id);
-        }
-        $id_str = $this->getShortcutKey($admin, $ids);
-        $Shortcut =& $this->Post->getChild('shortcut');
+        $ids = $this->ShortcutService->createIdsFromGetParameter($this->Get);
 
-        if ( 'add' == $this->edit ) {
-            $DB     = DB::singleton(dsn());
-            $SQL    = SQL::newSelect('dashboard');
-            $SQL->setSelect('dashboard_key');
-            $SQL->addWhereOpr('dashboard_key', $id_str . '%', 'LIKE');
-            $SQL->addWhereOpr('dashboard_blog_id', BID);
-            $SQL->setLimit(1);
-            if ( !!$DB->query($SQL->get(dsn()), 'one') ) {
-                foreach ( array('action', 'auth', 'name') as $key ) {
-                    $SQL    = SQL::newSelect('dashboard');
-                    $SQL->setSelect('dashboard_value');
-                    $SQL->addWhereOpr('dashboard_key', $id_str . $key);
-                    $SQL->addWhereOpr('dashboard_blog_id', BID);
-                    $Shortcut->set($key, $DB->query($SQL->get(dsn()), 'one'));
-                }
-                if ( $Shortcut->isNull() ) return false;
-                $this->edit = 'update';
-            } else {
-                $this->edit = 'insert';
-            }
-        } else if ( $this->edit !== 'delete' ) {
-            $DB     = DB::singleton(dsn());
-            foreach ( array('action', 'auth', 'name') as $key ) {
-                $SQL    = SQL::newSelect('dashboard');
-                $SQL->setSelect('dashboard_value');
-                $SQL->addWhereOpr('dashboard_key', $id_str . $key);
-                $SQL->addWhereOpr('dashboard_blog_id', BID);
-                $Shortcut->set($key, $DB->query($SQL->get(dsn()), 'one'));
-            }
-            if ( $Shortcut->isNull() ) return false;
+        $shortcutKey = $this->ShortcutService->createShortcutKey($admin, $ids);
+        $shortcut = $this->Post->getChild('shortcut');
+        $Shortcut = $this->ShortcutRepository->findOneByKey($shortcutKey);
+
+        $shortcut->set('url', $this->ShortcutService->createUrl($admin, $ids));
+
+        if (is_null($Shortcut)) {
+            // データがない場合は新規追加 or 削除後
+            $this->edit = ACMS_POST ? $this->edit : 'insert';
+            return true;
         }
 
-        $Shortcut->set('url', $this->createUrl($admin, $ids));
+        $this->edit = 'update';
+        $shortcut->set('name', $Shortcut->getName());
+        $shortcut->set('auth', $Shortcut->getAuth());
 
         return true;
     }

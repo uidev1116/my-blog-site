@@ -40,6 +40,7 @@ $admin: true;
 @import "navbar.scss";
 @import "offcanvas.scss";
 @import "pager.scss";
+@import "password-strength-meter";
 @import "progress-bar.scss";
 @import "sidebar.scss";
 @import "summary.scss";
@@ -62,6 +63,7 @@ $admin: true;
 @import "admin/jquery_ui.scss";
 @import "admin/select2.scss";
 @import "admin/editor.scss";
+@import "admin/logger.scss";
 
 // Build In JS
 @import "buildin-js.scss";

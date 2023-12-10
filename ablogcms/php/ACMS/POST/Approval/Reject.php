@@ -87,19 +87,16 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 and $subjectTpl = findTemplate(config('mail_approval_tpl_subject'))
                 and $bodyTpl    = findTemplate(config('mail_approval_tpl_body'))
             ) {
-                $SQL = SQL::newSelect('entry_rev');
-                $SQL->addWhereOpr('entry_id', EID);
-                $SQL->addWhereOpr('entry_rev_id', $rvid);
-                $rev = $DB->query($SQL->get(dsn()), 'row');
+                $revision = Entry::getRevision(EID, $rvid);
 
                 $Approval->setField('request_user', ACMS_RAM::userName(SUID));
                 $Approval->setField('approval', 'reject');
                 $Approval->setField('approval2', 'reject');
                 $Approval->setField('approval3', 'reject');
                 $Approval->setField('approval4', 'reject');
-                $Approval->setField('entryTitle', $rev['entry_title']);
+                $Approval->setField('entryTitle', $revision['entry_title']);
                 $Approval->setField('entryStatus', ACMS_RAM::entryStatus(EID));
-                $Approval->setField('version', $rev['entry_rev_memo']);
+                $Approval->setField('version', $revision['entry_rev_memo']);
                 $Approval->setField('revisionUrl', acmsLink(array(
                     'protocol'  => SSL_ENABLE ? 'https' : 'http',
                     'bid'   => BID,
@@ -144,7 +141,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                         }
                         $mailer->send();
                     } catch ( Exception $e  ) {
-                        throw $e;
+                        AcmsLogger::warning('最終却下の通知メールの送信に失敗しました', Common::exceptionArray($e));
                     }
                 }
 
@@ -213,6 +210,14 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 $SQL->addInsert('notification_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
                 $DB->query($SQL->get(dsn()), 'exec');
             }
+
+            $revision = Entry::getRevision(EID, $rvid);
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '（' . $revision['entry_rev_memo'] . '）」の承認を却下しました', [
+                'apid' => $apid,
+                'eid' => EID,
+                'rvid' => $rvid,
+                'comment' => $comment,
+            ]);
         }
         return $this->Post;
     }

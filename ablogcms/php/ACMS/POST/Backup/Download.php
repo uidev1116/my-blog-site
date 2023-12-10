@@ -20,8 +20,15 @@ class ACMS_POST_Backup_Download extends ACMS_POST_Backup_Base
             if (!in_array($type, array('database', 'archives'))) {
                 throw new \RuntimeException('Wrong type.');
             }
+
+            AcmsLogger::info('バックアップファイルをダウンロードしました', [
+                'fileName' => $fileName,
+                'type' => $type,
+            ]);
+
             Common::download($this->getPath($type, $fileName), $fileName);
         } catch (\Exception $e) {
+            AcmsLogger::warning('バックアップファイルのダウンロードに失敗しました', Common::exceptionArray($e));
             $this->addError($e->getMessage());
         }
         return $this->Post;

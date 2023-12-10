@@ -17,7 +17,7 @@
 @media screen and (max-width: global.$breakpoint-md-max) {
   // テーブル全体に色
   .acms-table-heading {
-    background-color: #FFF;
+    background-color: global.$acms-color-white;
 
     .acms-td-status,
     .acms-td-edit {
@@ -55,7 +55,7 @@
   }
 
   .acms-table-heading .acms-td-edit {
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid global.$acms-color-gray60;
   }
 
   // チェックボックス
@@ -72,7 +72,7 @@
   }
 
   .acms-table-hover tr:hover td {
-    background-color: #FFF;
+    background-color: global.$acms-color-white;
   }
 }
 
@@ -88,7 +88,7 @@
 }
 
 .acms-admin-mini-table td.caution {
-  background-color: #f9bfb4 !important;
+  background-color: global.$acms-color-caution-bg !important;
 }
 
 // テーブル内でスクロール

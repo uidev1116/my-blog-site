@@ -1,6 +1,6 @@
 <?php
 
-class ACMS_POST_Config_Set_Delete extends ACMS_POST
+class ACMS_POST_Config_Set_Delete extends ACMS_POST_Config_Set_Insert
 {
     protected function validate($setid)
     {
@@ -10,7 +10,11 @@ class ACMS_POST_Config_Set_Delete extends ACMS_POST
             // blogに指定されていないかチェック
             $sql = SQL::newSelect('blog');
             $sql->addSelect('blog_config_set_id');
-            $sql->addWhereOpr('blog_config_set_id', $setid);
+            $where = SQL::newWhere();
+            $where->addWhereOpr('blog_config_set_id', $setid, '=', 'OR');
+            $where->addWhereOpr('blog_theme_set_id', $setid, '=', 'OR');
+            $where->addWhereOpr('blog_editor_set_id', $setid, '=', 'OR');
+            $sql->addWhere($where);
             if (DB::query($sql->get(dsn()), 'one')) {
                 $this->Post->setMethod('config_set', 'used', false);
             }
@@ -18,7 +22,11 @@ class ACMS_POST_Config_Set_Delete extends ACMS_POST
             // categoryに指定されていないかチェック
             $sql = SQL::newSelect('category');
             $sql->addSelect('category_config_set_id');
-            $sql->addWhereOpr('category_config_set_id', $setid);
+            $where = SQL::newWhere();
+            $where->addWhereOpr('category_config_set_id', $setid, '=', 'OR');
+            $where->addWhereOpr('category_theme_set_id', $setid, '=', 'OR');
+            $where->addWhereOpr('category_editor_set_id', $setid, '=', 'OR');
+            $sql->addWhere($where);
             if (DB::query($sql->get(dsn()), 'one')) {
                 $this->Post->setMethod('config_set', 'used', false);
             }
@@ -32,8 +40,14 @@ class ACMS_POST_Config_Set_Delete extends ACMS_POST
     function post()
     {
         $setid = intval($this->Get->get('setid'));
+        $type = $this->Post->get('type', null);
+        $configSetName = ACMS_RAM::configSetName($setid);
 
         if (!$this->validate($setid)) {
+            $label = $this->getLogName($type);
+            AcmsLogger::info('「' . $configSetName . '」' . $label . 'の削除に失敗しました', [
+                'Post' => $this->Post->_aryV,
+            ]);
             return $this->Post;
         }
 
@@ -69,6 +83,9 @@ class ACMS_POST_Config_Set_Delete extends ACMS_POST
         Config::forgetCache(BID, null, null, $setid);
 
         $this->Post->set('edit', 'delete');
+
+        $label = $this->getLogName($type);
+        AcmsLogger::info('「' . $configSetName . '」' . $label . 'の削除をしました');
 
         return $this->Post;
     }

@@ -19,6 +19,7 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
         // init SQL
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('approval');
+        $SQL->addWhereOpr('approval_type', 'comment', '<>');
 
         //-------
         // order

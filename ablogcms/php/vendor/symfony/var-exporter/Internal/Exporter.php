@@ -73,20 +73,29 @@ class Exporter
 
             $class = \get_class($value);
             $reflector = Registry::$reflectors[$class] ?? Registry::getClassReflector($class);
+            $properties = [];
 
             if ($reflector->hasMethod('__serialize')) {
                 if (!$reflector->getMethod('__serialize')->isPublic()) {
                     throw new \Error(sprintf('Call to %s method "%s::__serialize()".', $reflector->getMethod('__serialize')->isProtected() ? 'protected' : 'private', $class));
                 }
 
-                if (!\is_array($properties = $value->__serialize())) {
+                if (!\is_array($serializeProperties = $value->__serialize())) {
                     throw new \TypeError($class.'::__serialize() must return an array');
+                }
+
+                if ($reflector->hasMethod('__unserialize')) {
+                    $properties = $serializeProperties;
+                } else {
+                    foreach ($serializeProperties as $n => $v) {
+                        $c = \PHP_VERSION_ID >= 80100 && $reflector->hasProperty($n) && ($p = $reflector->getProperty($n))->isReadOnly() ? $p->class : 'stdClass';
+                        $properties[$c][$n] = $v;
+                    }
                 }
 
                 goto prepare_value;
             }
 
-            $properties = [];
             $sleep = null;
             $proto = Registry::$prototypes[$class];
 
@@ -106,7 +115,10 @@ class Exporter
                 }
                 $properties = ['SplObjectStorage' => ["\0" => $properties]];
                 $arrayValue = (array) $value;
-            } elseif ($value instanceof \Serializable || $value instanceof \__PHP_Incomplete_Class) {
+            } elseif ($value instanceof \Serializable
+                || $value instanceof \__PHP_Incomplete_Class
+                || \PHP_VERSION_ID < 80200 && $value instanceof \DatePeriod
+            ) {
                 ++$objectsCount;
                 $objectsPool[$value] = [$id = \count($objectsPool), serialize($value), [], 0];
                 $value = new Reference($id);
@@ -130,7 +142,7 @@ class Exporter
                 $i = 0;
                 $n = (string) $name;
                 if ('' === $n || "\0" !== $n[0]) {
-                    $c = 'stdClass';
+                    $c = \PHP_VERSION_ID >= 80100 && $reflector->hasProperty($n) && ($p = $reflector->getProperty($n))->isReadOnly() ? $p->class : 'stdClass';
                 } elseif ('*' === $n[1]) {
                     $n = substr($n, 3);
                     $c = $reflector->getProperty($n)->class;
@@ -146,6 +158,7 @@ class Exporter
                 }
                 if (null !== $sleep) {
                     if (!isset($sleep[$n]) || ($i && $c !== $class)) {
+                        unset($arrayValue[$name]);
                         continue;
                     }
                     $sleep[$n] = false;
@@ -160,6 +173,9 @@ class Exporter
                         trigger_error(sprintf('serialize(): "%s" returned as member variable from __sleep() but does not exist', $n), \E_USER_NOTICE);
                     }
                 }
+            }
+            if (method_exists($class, '__unserialize')) {
+                $properties = $arrayValue;
             }
 
             prepare_value:
@@ -185,12 +201,13 @@ class Exporter
     public static function export($value, string $indent = '')
     {
         switch (true) {
-            case \is_int($value) || \is_float($value) || $value instanceof \UnitEnum: return var_export($value, true);
+            case \is_int($value) || \is_float($value): return var_export($value, true);
             case [] === $value: return '[]';
             case false === $value: return 'false';
             case true === $value: return 'true';
             case null === $value: return 'null';
             case '' === $value: return "''";
+            case $value instanceof \UnitEnum: return '\\'.ltrim(var_export($value, true), '\\');
         }
 
         if ($value instanceof Reference) {

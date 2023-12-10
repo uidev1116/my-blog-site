@@ -9,10 +9,9 @@ class ACMS_POST_Module_Import extends ACMS_POST
     {
         @set_time_limit(0);
 
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
             return $this->Post;
         }
-
         try {
             $import = App::make('config.import.module');
             $yaml = Config::yamlLoad($_FILES['file']['tmp_name']);
@@ -20,10 +19,16 @@ class ACMS_POST_Module_Import extends ACMS_POST
             $import->run(BID, $yaml);
             $this->Post->set('notice', $import->getFailedContents());
             $this->Post->set('import', 'success');
-        } catch ( \Exception $e ) {
-            $this->addError($e->getMessage());
-        }
 
+            AcmsLogger::info('モジュールをインポートしました', [
+                'data' => $yaml,
+            ]);
+
+        } catch (\Exception $e) {
+            $this->addError($e->getMessage());
+
+            AcmsLogger::notice('モジュールのインポートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
+        }
         return $this->Post;
     }
 

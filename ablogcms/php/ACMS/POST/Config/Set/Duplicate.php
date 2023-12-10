@@ -1,26 +1,39 @@
 <?php
 
-class ACMS_POST_Config_Set_Duplicate extends ACMS_POST
+class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
 {
     function post()
     {
         try {
             $this->validate();
             $db = DB::singleton(dsn());
-            $configSetId = $this->Post->get('config_set_id');
-            $name = gettext('このブログの初期コンフィグ')  . config('entry_title_duplicate_suffix');
+            $configSetId = intval($this->Post->get('config_set_id'));
+            $configSetType = $this->Post->get('config_set_type', null);
+            $configSetTypeName = $this->getLogName($configSetType);
+
+            $name = 'このブログの初期コンフィグ';
+            if ($configSetType === 'theme') {
+                $name = 'このブログの初期テーマ';
+            }
+            if ($configSetType === 'editor') {
+                $name = 'このブログの初期編集画面';
+            }
             $scope = 'local';
 
             if ($configSetId) {
                 $configSet = $this->getConfigSet($configSetId);
-                $name = $configSet['config_set_name'] . config('entry_title_duplicate_suffix');
+                $name = $configSet['config_set_name'];
                 $scope = $configSet['config_set_scope'];
             }
+            $name = $name . config('entry_title_duplicate_suffix');
 
-            $newSetId = $db->query(SQL::nextval('config_set_id', dsn()), 'seq');
+            $newSetId = intval($db->query(SQL::nextval('config_set_id', dsn()), 'seq'));
             $sql = SQL::newInsert('config_set');
             $sql->addInsert('config_set_id', $newSetId);
             $sql->addInsert('config_set_sort', $this->getConfigSetSort());
+            if ($configSetType) {
+                $sql->addInsert('config_set_type', $configSetType);
+            }
             $sql->addInsert('config_set_name', $name);
             $sql->addInsert('config_set_description', '');
             $sql->addInsert('config_set_scope',$scope);
@@ -29,25 +42,34 @@ class ACMS_POST_Config_Set_Duplicate extends ACMS_POST
 
             $this->copyConfig($configSetId, $newSetId);
 
-            $this->addMessage(gettext('コンフィグセットを複製しました。'));
+            $this->addMessage($configSetTypeName . 'を複製しました');
+
+            AcmsLogger::info('「' . $name . '」' . $configSetTypeName . 'を複製しました');
 
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+
+            AcmsLogger::info('「' . ACMS_RAM::configSetName($configSetId) . '」' . $configSetTypeName . 'の複製に失敗しました');
         }
         return $this->Post;
     }
 
-    protected function copyConfig($id, $newId)
+    /**
+     * コンフィグを複製
+     *
+     * @param int $id
+     * @param int $newId
+     * @return void
+     */
+    protected function copyConfig(int $id, int $newId): void
     {
+        if (empty($id)) {
+            throw new RuntimeException('不正な操作です');
+        }
+
         $db = DB::singleton(dsn());
         $sql = SQL::newSelect('config');
-        if (empty($id)) {
-            $sql->addWhereOpr('config_set_id', null);
-            $sql->addWhereOpr('config_blog_id', BID);
-
-        } else {
-            $sql->addWhereOpr('config_set_id', $id);
-        }
+        $sql->addWhereOpr('config_set_id', $id);
         $q = $sql->get(dsn());
         $db->query($q, 'fetch');
 

@@ -8,22 +8,20 @@
 // ------------------------------
 //  基本設定
 // ------------------------------
-$base-bg-black: #101013;
-$base-bg-gray: #404040;
+$base-bg-gray: #4B4B4B;
 $base-bg-light-gray: #F1F1F1;
 $base-bg-light-white: #FFF;
-$base-bg-link-color: #404040;
+$base-bg-link-color: #4B4B4B;
 
-$base-bg-primary: #3E404D;
+$base-bg-primary: #35353A;
 
 $edit-entry-bg-color-white: #FFFFFF;
 $edit-entry-bg-color-lightest: #F7F7F7;
-$edit-entry-bg-color-lighter: #F9F9F9;
-$edit-entry-bg-color-light: #f0f1f5;
-$edit-entry-bg-color-base: #E4E5EA;
-$edit-entry-bg-color-dark: #D8D8DE;
-$edit-entry-bg-color-darker: #a2a2b3;
-$edit-entry-bg-color-darkest: #4a4954;
+$edit-entry-bg-color-light: #F2F2F5;
+$edit-entry-bg-color-base: #E2E2E8;
+$edit-entry-bg-color-dark: #D2D2DB;
+$edit-entry-bg-color-darker: #A2A2B3;
+$edit-entry-bg-color-darkest: #595963;
 
 
 // ------------------------------
@@ -41,35 +39,35 @@ $update-panel-border-radius: 6px;
 // ------------------------------
 //  パスワード 強度メーター
 // ------------------------------
-$password-strength-default-color       : #7A7676;
-$password-strength-danger-color        : #C30B31;
+$password-strength-default-color       : #999999;
+$password-strength-danger-color        : #C5001D;
 $password-strength-anxiety-color       : #FFA342;
 $password-strength-warning-color       : #FFED60;
-$password-strength-reasonable-color    : #A0D31B;
-$password-strength-secure-color        : #0963D2;
+$password-strength-reasonable-color    : #009812;
+$password-strength-secure-color        : #005CEE;
 
 
 // ------------------------------
 //  レイアウトモジュール
 // ------------------------------
 $layout-placeholder-bg: #EECED6;
-$layout-placeholder-border: #CD7086;
-$layout-placeholder-color: #CD7086;
+$layout-placeholder-border: #D1263D;
+$layout-placeholder-color: #D1263D;
 
 $module-placeholder-bg: #CEDBEE;
-$module-placeholder-border: #7096CD;
-$module-placeholder-color: #7096CD;
+$module-placeholder-border: #73A4FC;
+$module-placeholder-color: #73A4FC;
 
 $layout-unit-color: #CEDBEE;
 $layout-unit-bg: #EFEFEF;
-$layout-unit-border: #CCC;
-$layout-contents-border: #999;
+$layout-unit-border: #CCCCCC;
+$layout-contents-border: #999999;
 
-$layout-module-unit-color: #FFF;
+$layout-module-unit-color: #FFFFFF;
 $layout-module-unit-bg: #7096CC;
 $layout-module-unit-border: #CCCCCC;
 
-$layout-edit-border: #CCC;
+$layout-edit-border: #CCCCCC;
 
 
 

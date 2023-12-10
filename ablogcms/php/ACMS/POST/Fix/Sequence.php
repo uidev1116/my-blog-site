@@ -10,6 +10,7 @@ class ACMS_POST_Fix_Sequence extends ACMS_POST_Fix
         $seq = array(
             'blog_id'                   => '1',
             'alias_id'                  => '0',
+            'config_set_id'             => '0',
             'user_id'                   => '0',
             'category_id'               => '0',
             'entry_id'                  => '0',
@@ -26,6 +27,8 @@ class ACMS_POST_Fix_Sequence extends ACMS_POST_Fix
             'schedule_id'               => '0',
             'shop_address_id'           => '0',
             'shop_receipt_detail_id'    => '0',
+            'webhook_id'                => '0',
+            'audit_log_id'              => '0',
             'system_version'            => VERSION,
         );
 
@@ -47,6 +50,8 @@ class ACMS_POST_Fix_Sequence extends ACMS_POST_Fix
         }
         $DB->query($SQL->get(dsn()), 'exec');
         $this->Post->set('message', 'success');
+
+        AcmsLogger::info('データ修正ツールで、シーケンスを修正しました');
 
         return $this->Post;
     }

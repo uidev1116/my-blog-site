@@ -1,111 +1,118 @@
-import React, { Component, ReactNode } from 'react';
-import classNames from 'classnames';
-import { ExtendedFile } from '../types/media';
-import readFiles from '../lib/read-files';
+import React, { Component, ReactNode } from 'react'
+import classNames from 'classnames'
+import { ExtendedFile } from '../types/media'
+import readFiles from '../lib/read-files'
 
 interface DropZoneProp {
-  children?: ReactNode;
-  onComplete: (files: ExtendedFile[]) => void;
+  children?: ReactNode
+  onComplete: (files: ExtendedFile[]) => void
 }
 
 interface DropZoneState {
-  files: File[];
-  modifier: string;
-  dragging: number;
-  reading: boolean;
+  files: File[]
+  modifier: string
+  dragging: number
+  reading: boolean
 }
 
 export default class DropZone extends Component<DropZoneProp, DropZoneState> {
-  constructor(props) {
-    super(props);
+  constructor(props: DropZoneProp) {
+    super(props)
     this.state = {
       files: [],
       modifier: 'drag-n-drop-hover',
       dragging: 0,
       reading: false,
-    };
+    }
   }
 
   componentDidMount() {
     setTimeout(() => {
       this.setState({
         modifier: 'drag-n-drop-hover drag-n-drop-fadeout',
-      });
-    }, 800);
+      })
+    }, 800)
     setTimeout(() => {
       this.setState({
         modifier: '',
-      });
-    }, 1100);
+      })
+    }, 1100)
   }
 
-  onChange(e) {
+  onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!(e.target.files instanceof FileList)) {
+      return
+    }
     this.setState({
       reading: true,
-    });
+    })
     readFiles(e.target.files).then((files) => {
-      const { onComplete } = this.props;
-      onComplete(files);
-    });
+      const { onComplete } = this.props
+      onComplete(files)
+      this.setState({
+        reading: false,
+      })
+    })
   }
 
-  onDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  onDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    e.stopPropagation()
 
     this.setState({
       modifier: '',
       dragging: 0,
-    });
+      reading: true,
+    })
     readFiles(e.dataTransfer.files).then((files) => {
-      const { onComplete } = this.props;
-      onComplete(files);
+      const { onComplete } = this.props
+      onComplete(files)
       this.setState({
         reading: false,
-      });
-    });
-    return false;
+      })
+    })
+    return false
   }
 
-  onDragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  onDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    e.stopPropagation()
     this.setState({
       modifier: 'drag-n-drop-hover',
-    });
-    return false;
+    })
+    return false
   }
 
-  onDragEnter(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const { dragging } = this.state;
+  onDragEnter(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    const { dragging } = this.state
     this.setState({
       modifier: 'drag-n-drop-hover',
       dragging: dragging + 1,
-    });
-    return false;
+    })
+    return false
   }
 
-  onDragLeave(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    let { dragging } = this.state;
-    dragging--;
+  onDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    let { dragging } = this.state
+    dragging--
     if (dragging === 0) {
       this.setState({
         modifier: '',
-      });
+      })
     }
     this.setState({
       dragging,
-    });
-    return false;
+    })
+    return false
   }
 
   render() {
-    const { children } = this.props;
-    const { modifier, reading } = this.state;
+    const { children } = this.props
+    const { modifier, reading } = this.state
     return (
       <div
         className={classNames('acms-admin-media-drop-box-wrap', modifier)}
@@ -114,29 +121,40 @@ export default class DropZone extends Component<DropZoneProp, DropZoneState> {
         onDragLeave={this.onDragLeave.bind(this)}
         onDrop={this.onDrop.bind(this)}
       >
-        {children}
-        {!children && (
-          <div className={classNames('acms-admin-media', 'acms-admin-media-drop-box', modifier)}>
+        {children || (
+          <div
+            className={classNames(
+              'acms-admin-media',
+              'acms-admin-media-drop-box',
+              modifier,
+            )}
+          >
             <div className="acms-admin-media-drop-inside">
-              <p className="acms-admin-media-drop-text">{ACMS.i18n('media.add_new_media')}</p>
+              <p className="acms-admin-media-drop-text">
+                {ACMS.i18n('media.add_new_media')}
+              </p>
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label className="acms-admin-media-unit-droparea-btn" style={{ cursor: 'pointer' }}>
-                {!reading && (
-                  <input
-                    type="file"
-                    multiple
-                    name="files[]"
-                    onChange={this.onChange.bind(this)}
-                    style={{ display: 'none' }}
-                  />
-                )}
+              <label
+                className="acms-admin-media-unit-droparea-btn"
+                style={{ cursor: 'pointer' }}
+              >
+                <input
+                  type="file"
+                  multiple
+                  name="files[]"
+                  onChange={this.onChange.bind(this)}
+                  style={{ display: 'none' }}
+                  disabled={reading === true}
+                />
                 {ACMS.i18n('media.upload')}
               </label>
-              <p className="acms-admin-media-drop-text">{ACMS.i18n('media.drop_file')}</p>
+              <p className="acms-admin-media-drop-text">
+                {ACMS.i18n('media.drop_file')}
+              </p>
             </div>
           </div>
         )}
       </div>
-    );
+    )
   }
 }

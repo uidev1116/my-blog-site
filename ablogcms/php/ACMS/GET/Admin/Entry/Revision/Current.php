@@ -1,40 +1,48 @@
 <?php
 
-class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry
+class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry_Revision
 {
-    function get()
+    public function get()
     {
-        if ( !sessionWithContribution(BID, false) ) return 'Bad Access.';
-        if ( !defined('EID') ) return '';
+        if (!sessionWithContribution(BID, false)) {
+            return 'Bad Access.';
+        }
+        if (!defined('EID')) {
+            return '';
+        }
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
+        $vars = [];
 
-        $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $currentRvid = $this->getCurrentRevisionId(EID);
+        $currentVersion = $this->getRevision(EID, RVID);
+        $count = $this->countRevisions(EID);
 
-        $DB     = DB::singleton(dsn());
-
-        $SQL    = SQL::newSelect('entry');
-        $SQL->addSelect('entry_current_rev_id');
-        $SQL->addWhereOpr('entry_id', EID);
-        $SQL->addWhereOpr('entry_blog_id', BID);
-        $currentRvid = $DB->query($SQL->get(dsn()), 'one');
-        $currentRvid = intval($currentRvid);
-        if ( $currentRvid > 0 ) {
+        if ($currentRvid > 0) {
             $vars['currentVersion'] = $currentRvid;
+            if (isset($currentVersion['entry_rev_memo'])) {
+                $vars['currentVersionName'] = $currentVersion['entry_rev_memo'];
+            }
         } else {
             $Tpl->add('notExistCurrentVersion');
         }
-       
-        $SQL    = SQL::newSelect('entry_rev');
-        $SQL->addSelect('entry_id', 'revision_amount', null, 'COUNT');
-        $SQL->addWhereOpr('entry_id', EID);
-        $SQL->addWhereOpr('entry_blog_id', BID);
-        $count  = $DB->query($SQL->get(dsn()), 'one');
-        if ( $count > 0 ) {
+        if (isset($currentVersion['entry_rev_status'])) {
+            $vars['rev_status'] = $currentVersion['entry_rev_status'];
+        }
+        $vars['confirmUrl'] = acmsLink([
+            'bid' => BID,
+            'eid' => EID,
+            'cid' => CID,
+            'aid' => $this->Get->get('aid'),
+            'query' => array(
+                'rvid' => RVID,
+                'aid' => $this->Get->get('aid'),
+            ),
+        ]);
+        if ($count > 0) {
             $vars['amount'] = $count;
         } else {
             $Tpl->add('notFound');
         }
-
         $Tpl->add(null, $vars);
 
         return $Tpl->get();

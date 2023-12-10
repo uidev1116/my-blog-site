@@ -37,6 +37,7 @@ class Export extends ExportBase
             'tag',
             'schedule',
             'layout_grid',
+            'blog',
         ));
         $dsn = dsn();
         $this->prefix = $dsn['prefix'];
@@ -50,7 +51,7 @@ class Export extends ExportBase
             $sql->addWhereOpr($table . '_blog_id', $bid);
             $method = 'fixQuery' . ucfirst($table);
             if (is_callable(array($this, $method))) {
-                $sql = call_user_func_array(array($this, $method), array($sql));
+                $sql = call_user_func_array(array($this, $method), array($sql, $bid));
             }
             $q = $sql->get(dsn());
             $queryList[$table] = $q;
@@ -114,10 +115,11 @@ class Export extends ExportBase
     /**
      * ユニットデータからゴミ箱のデータを除外
      *
-     * @param $SQL
+     * @param \SQL_Select $SQL
+     * @param int $bid
      * @return mixed
      */
-    private function fixQueryColumn($SQL)
+    private function fixQueryColumn($SQL, $bid = 0)
     {
         $columns = DB::query('SHOW COLUMNS FROM ' . $this->prefix . 'column', 'all');
         foreach ($columns as $column) {
@@ -132,10 +134,11 @@ class Export extends ExportBase
     /**
      * コメントデータからゴミ箱のデータを除外
      *
-     * @param $SQL
+     * @param \SQL_Select $SQL
+     * @param int $bid
      * @return mixed
      */
-    private function fixQueryComment($SQL)
+    private function fixQueryComment($SQL, $bid = 0)
     {
         $columns = DB::query('SHOW COLUMNS FROM ' . $this->prefix . 'comment', 'all');
         foreach ($columns as $column) {
@@ -150,10 +153,11 @@ class Export extends ExportBase
     /**
      * エントリーデータからゴミ箱のデータを除外
      *
-     * @param $SQL
+     * @param \SQL_Select $SQL
+     * @param int $bid
      * @return mixed
      */
-    private function fixQueryEntry($SQL)
+    private function fixQueryEntry($SQL, $bid = 0)
     {
         $SQL->addWhereOpr('entry_status', 'trash', '<>');
 
@@ -163,10 +167,11 @@ class Export extends ExportBase
     /**
      * フィールドデータからゴミ箱のデータを除外
      *
-     * @param $SQL
+     * @param \SQL_Select $SQL
+     * @param int $bid
      * @return mixed
      */
-    private function fixQueryField($SQL)
+    private function fixQueryField($SQL, $bid = 0)
     {
         $columns = DB::query('SHOW COLUMNS FROM ' . $this->prefix . 'field', 'all');
         foreach ($columns as $column) {
@@ -185,10 +190,11 @@ class Export extends ExportBase
     /**
      * フルテキストデータからゴミ箱のデータを除外
      *
-     * @param $SQL
+     * @param \SQL_Select $SQL
+     * @param int $bid
      * @return mixed
      */
-    private function fixQueryFulltext($SQL)
+    private function fixQueryFulltext($SQL, $bid = 0)
     {
         $columns = DB::query('SHOW COLUMNS FROM ' . $this->prefix . 'fulltext', 'all');
         foreach ($columns as $column) {
@@ -196,6 +202,27 @@ class Export extends ExportBase
         }
         $SQL->addLeftJoin('entry', 'fulltext_eid', 'entry_id');
         $SQL->addWhereOpr('entry_status', 'trash', '<>');
+
+        return $SQL;
+    }
+
+    /**
+     * ブログデータを部分的エクスポートに修正
+     *
+     * @param \SQL_Select $SQL
+     * @param int $bid
+     * @return mixed
+     */
+    private function fixQueryBlog($SQL, $bid = 0)
+    {
+        $SQL = SQL::newSelect('blog');
+        $SQL->addSelect('blog_config_set_id');
+        $SQL->addSelect('blog_config_set_scope');
+        $SQL->addSelect('blog_theme_set_id');
+        $SQL->addSelect('blog_theme_set_scope');
+        $SQL->addSelect('blog_editor_set_id');
+        $SQL->addSelect('blog_editor_set_scope');
+        $SQL->addWhereOpr('blog_id', $bid);
 
         return $SQL;
     }

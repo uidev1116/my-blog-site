@@ -2,10 +2,10 @@
 
 namespace Acms\Services\Update;
 
-use App;
 use DB;
 use SQL;
-use Storage;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Cache;
 use RuntimeException;
 
 class Engine
@@ -49,6 +49,12 @@ class Engine
      * @var \Acms\Services\Update\Logger
      */
     protected $logger;
+
+    /**
+     * 新規追加されたテーブル
+     * @var array
+     */
+    protected $createdTables = [];
 
     /**
      * Constructor
@@ -148,6 +154,12 @@ class Engine
             $this->updateSepecificRule(); // Sepecific Update Process
             $this->updateSequenceSystemVersion(); // Update Sequence System Version
 
+            Cache::flush('page');
+            Cache::flush('template');
+            Cache::flush('config');
+            Cache::flush('field');
+            Cache::flush('module');
+
             $this->databaseVersion = $this->systemVersion;
 
         } catch ( \Exception $e ) {
@@ -181,7 +193,10 @@ class Engine
     protected function createTables()
     {
         $diff = $this->schema->compareTables();
-        if ( !empty($diff) ) $this->schema->createTables($diff);
+        if (!empty($diff)) {
+            $this->schema->createTables($diff, $this->schema->indexDefine);
+            $this->createdTables = $diff;
+        }
     }
 
     /**
@@ -206,7 +221,10 @@ class Engine
     protected function updateColumns()
     {
         $tables = $this->schema->listUp($this->schema->schema);
-        foreach ( $tables as $tb ) {
+        foreach ($tables as $tb) {
+            if (in_array($tb, $this->createdTables)) {
+                continue;
+            }
             $res = $this->schema->compareColumns($tb);
             $this->schema->resolveColumns($tb, $res['add'], $res['change']);
         }
@@ -219,6 +237,9 @@ class Engine
     {
         $tables = $this->schema->listUp($this->schema->define);
         foreach ($tables as $tb) {
+            if (in_array($tb, $this->createdTables)) {
+                continue;
+            }
             $res = $this->schema->compareIndex($tb);
             $this->schema->makeIndex($tb, $res);
         }

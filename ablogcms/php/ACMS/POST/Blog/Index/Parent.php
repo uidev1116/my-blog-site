@@ -5,11 +5,12 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
     function post()
     {
         $DB = DB::singleton(dsn());
-        
+
         if ( !sessionWithAdministration() ) die();
         if ( !$toPid = idval($this->Post->get('parent')) ) die();
         if ( !isBlogAncestor($toPid, SBID, true) ) die('operation is not permitted.');
         if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
+            $aryBid = [];
             foreach ( $_POST['checks'] as $bid ) {
                 if ( !$bid = idval($bid) ) continue;
                 if ( isBlogAncestor($toPid, $bid, true) ) continue;
@@ -137,7 +138,12 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
 
                 Cache::flush('temp');
                 $this->Post->set('success', 'parent');
+
+                $aryBid[] = $bid;
             }
+            AcmsLogger::info('指定されたブログの親ブログIDを「' . $toPid . '」に変更', [
+                'targetBIDs' => implode(',', $aryBid),
+            ]);
         } else {
             $this->Post->set('error', 'parent_1');
         }

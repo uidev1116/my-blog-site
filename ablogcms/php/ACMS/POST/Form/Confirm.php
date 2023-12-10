@@ -9,7 +9,7 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
         // フォーム情報のロード
         $info = $this->loadForm($id);
         if ( empty($info) ) {
-            userErrorLog('Not Found Form ID.');
+            AcmsLogger::critical('フォームID「' . $id . '」が存在しないため、フォームの処理を中断しました');
             $this->Post->set('step', 'forbidden');
             return $this->Post;
         }
@@ -49,7 +49,7 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
         foreach ( $Field->listFields() as $fd ) {
             $pathInfo = $this->getAttachedFilePath($Field, $fd);
 
-            if ( $pathInfo === false ) {
+            if ($pathInfo === false) {
                 continue;
             }
 

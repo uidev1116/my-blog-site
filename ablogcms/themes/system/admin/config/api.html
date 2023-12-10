@@ -9,30 +9,64 @@
 
 <!-- BEGIN_MODULE Admin_Config -->
 <!-- BEGIN_IF [{notice_mess}/nem/] -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span
-  class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->API設定を保存しました<!--/T-->
-</p><!-- END_IF -->
+<div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+  <span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+  <!--T-->API設定を保存しました<!--/T-->
+</div>
+<!-- END_IF -->
+<!-- BEGIN msg#error -->
+<div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+  <span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+  <!--T-->コンフィグを保存出来ませんでした。<!--/T-->
+</div>
+<!-- END msg#error -->
 
 <form action="" method="post" class="acms-admin-form">
-  <p class="transaction-notice-{config:validator} acms-admin-alert acms-admin-alert-danger"><!--T-->コンフィグを保存出来ませんでした。
-    <!--/T--></p>
-
   <div class="js-acms_fix_marker acms_fix_bg">
     <div class="acms_fix_bg_index">
       <a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
 
-      <input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"/>
+      <button
+        type="submit"
+        name="ACMS_POST_Config"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"
+      >
+        <!--T-->保存<!--/T-->
+      </button>
 
       <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
       <div class="acms-admin-float-right">
-        <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_import-part/?setid=%{setid}&rid=%{rid}"
-           class="acms-admin-btn-admin"><!--T-->インポート<!--/T--></a>
-        <input type="submit" name="ACMS_POST_Config_PartExport" class="acms-admin-btn-admin"
-               value="<!--T-->エクスポート<!--/T-->"/>
-        <a href="{shortcutUrl}" class="acms-admin-btn-admin"><i class="acms-admin-icon acms-admin-icon-shortcut"></i>
-          <!--T-->ショートカットに追加<!--/T--></a>
+        <a
+          href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_import-part/?setid=%{setid}&rid=%{rid}"
+          class="acms-admin-btn-admin"
+        >
+          <!--T-->インポート<!--/T-->
+        </a>
+        <button
+          type="submit"
+          name="ACMS_POST_Config_PartExport"
+          class="acms-admin-btn-admin"
+        >
+          <!--T-->エクスポート<!--/T-->
+        </button>
+        <a href="{shortcutUrl}" class="acms-admin-btn-admin">
+          <i class="acms-admin-icon acms-admin-icon-shortcut"></i>
+          <!--T-->ショートカットに追加<!--/T-->
+        </a>
       </div>
       <!-- END_MODULE Touch_SessionWithAdministration -->
     </div>
@@ -62,7 +96,7 @@
         </p>
         <input type="text" size="20" name="x_api_key" value="{x_api_key}" class="js-key-input acms-admin-form-width-half" readonly/>
         <input type="hidden" name="config[]" value="x_api_key"/>
-        <button class="js-update-key acms-admin-btn-admin">
+        <button type="button" class="js-update-key acms-admin-btn-admin">
           APIキーを再生成 <i class="acms-admin-icon-publish"></i>
         </button>
       </td>

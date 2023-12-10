@@ -15,26 +15,14 @@ class ACMS_GET_Admin_ActionMenu extends ACMS_GET
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $vars   = array();
 
-        $expire = null;
-        if ( IS_LICENSED ) {
-            if ( 0
-                || is_int(strpos(DOMAIN, LICENSE_DOMAIN))
-                || is_private_ip(DOMAIN)
-            ) {
-                $status = 'licensed';
-            } else if ( !is_null(LICENSE_EXPIRE) ) {
-                $status = 'limited';
-                $expire = LICENSE_EXPIRE;
-            } else {
-                $status = 'trial';
-            }
+        if (IS_DEVELOPMENT && defined('UNLICENSED_REASON')) {
+            $Tpl->add('status#' . UNLICENSED_REASON);
         }
-        $Tpl->add('status#'.$status, array('expire' => $expire));
 
-        $vars   += array(
-            'name'      => ACMS_RAM::userName(SUID),
-            'icon'      => loadUserIcon(SUID),
-            'logout'    => acmsLink(array('_inherit' => true)),
+        $vars += array(
+            'name' => ACMS_RAM::userName(SUID),
+            'icon' => loadUserIcon(SUID),
+            'logout' => acmsLink(array('_inherit' => true)),
         );
 
         if ( sessionWithContribution() ) {

@@ -26,8 +26,14 @@ class ACMS_POST_App_Uninstall extends ACMS_POST
             Cache::flush('temp');
 
             $this->Post->set('uninstallSucceed', true);
+
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」をアンインストールしました', [
+                'version' => $App->version,
+            ]);
         } catch(Exception $e) {
             $this->Post->set('uninstallFailed', true);
+
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」のアンインストールに失敗しました', Common::exceptionArray($e, ['version' => $App->version]));
         }
         return $this->Post;
     }

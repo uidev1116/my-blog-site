@@ -72,7 +72,9 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('category', 'master');
         $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
-        $SQL->addLeftJoin('config_set', 'config_set_id', 'category_config_set_id');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'category_config_set_id', 'configSet');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'category_theme_set_id', 'themeSet');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'category_editor_set_id', 'editorSet');
         ACMS_Filter::blogTree($SQL, $target_bid, 'ancestor-or-self');
 
         $SQL->addSelect('category_id', null, 'master');
@@ -84,7 +86,12 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         $SQL->addSelect('category_status', null, 'master');
         $SQL->addSelect('category_scope', null, 'master');
         $SQL->addSelect('category_blog_id', null, 'master');
-        $SQL->addSelect('config_set_name');
+        $SQL->addSelect('category_config_set_scope', null, 'master');
+        $SQL->addSelect('category_theme_set_scope', null, 'master');
+        $SQL->addSelect('category_editor_set_scope', null, 'master');
+        $SQL->addSelect('config_set_name', 'configSetName', 'configSet');
+        $SQL->addSelect('config_set_name', 'themeSetName', 'themeSet');
+        $SQL->addSelect('config_set_name', 'editorSetName', 'editorSet');
 
         $Where = SQL::newWhere();
         $Where->addWhereOpr('category_blog_id', $target_bid, '=', 'OR', 'master');
@@ -143,6 +150,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         ACMS_Filter::categoryOrder($SQL, $order);
 
         $q = $SQL->get(dsn());
+
         $DB->query($q, 'fetch');
         $row = $DB->fetch($q);
 
@@ -238,7 +246,12 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 'code' => $row['category_code'],
                 'scope' => $row['category_scope'],
                 'amount' => empty($total[$cid]) ? 0 : $total[$cid],//$row['category_entry_amount'],
-                'configSet' => $row['config_set_name'],
+                'configSet' => $row['configSetName'],
+                'configSetScope' => $row['category_config_set_scope'],
+                'themeSet' => $row['themeSetName'],
+                'themeSetScope' => $row['category_theme_set_scope'],
+                'editorSet' => $row['editorSetName'],
+                'editorSetScope' => $row['category_editor_set_scope'],
                 'disabled' => $disabled,
                 'level' => $level,
             );

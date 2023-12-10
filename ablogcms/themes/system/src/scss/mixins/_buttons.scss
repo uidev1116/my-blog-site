@@ -84,7 +84,7 @@
 	}
 }
 
-@mixin button-gradation($start-color:#F9F9F9, $end-color:#E1E1E1) {
+@mixin button-gradation($start-color:#F7F7F7, $end-color:#E1E1E1) {
 	background-image: -moz-linear-gradient(top, $start-color, $end-color);
 	background-image: -ms-linear-gradient(top, $start-color, $end-color);
 	background-image: -o-linear-gradient(top, $start-color, $end-color);
@@ -99,13 +99,13 @@
 //===============================
 
 // 色
-@mixin btn-color($start-color:#F9F9F9, $end-color:#E1E1E1, $base-color: $end-color, $color: #333){
+@mixin btn-color($start-color:#F7F7F7, $end-color:#E1E1E1, $base-color: $end-color, $color: #333333){
 	color: $color;
 	background-color: $base-color;
 }
 
 // active
-@mixin btn-color-active($background-color:#E1E1E1, $color: #333, $inset-color:#B2B2B2){
+@mixin btn-color-active($background-color:#E1E1E1, $color: #333333, $inset-color:#B2B2B2){
 	color: $color;
 	background-color: $background-color;
 	box-shadow: inset 0 1px 2px $inset-color;

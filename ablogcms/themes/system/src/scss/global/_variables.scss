@@ -39,11 +39,88 @@ $acms-code-font-family: "Menlo","Monaco","Courier New",monospace !default;
 
 
 // ------------------------------
-//  管理画面デフォルトのブログカラー
+//  カラー
 // ------------------------------
 
 // この色は管理画面のブログの設定からブログごとに変えることができます。
-$acms-red: #dc4040 !default;
+$acms-red                : #dc4040 !default;
+
+// グレースケール
+$acms-color-white        : #FFF;
+$acms-color-gray10       : #F9F9F9;
+$acms-color-gray20       : #F1F1F1;
+$acms-color-gray30       : #EFEFEF;
+$acms-color-gray40       : #E5E5E5;
+$acms-color-gray50       : #DDDDDD;
+$acms-color-gray60       : #CCCCCC;
+$acms-color-gray70       : #AAAAAA;
+$acms-color-gray80       : #999999;
+$acms-color-gray90       : #4B4B4B;
+$acms-color-black        : #333333;
+$acms-color-black-dark   : #000000;
+
+// システムグレー
+$acms-color-system-gray10: #F2F2F5;
+$acms-color-system-gray20: #E2E2E8;
+$acms-color-system-gray30: #D2D2DB;
+$acms-color-system-gray40: #C2C2CE;
+$acms-color-system-gray50: #B2B2C0;
+$acms-color-system-gray60: #A2A2B3;
+$acms-color-system-gray70: #7E7E8B;
+$acms-color-system-gray80: #595963;
+$acms-color-system-gray90: #35353A;
+
+// Info
+$acms-color-info10       : #E8EFFB;
+$acms-color-info20       : #C5D8F5;
+$acms-color-info30       : #A3C0EF;
+$acms-color-info40       : #80A8EA;
+$acms-color-info50       : #5D90E4;
+$acms-color-info60       : #3B79DE;
+$acms-color-info70       : #1861D8;
+$acms-color-info80       : #1452B8;
+$acms-color-info90       : #114497;
+
+// Success
+$acms-color-success10    : #E6F5E8;
+$acms-color-success20    : #C0E4C5;
+$acms-color-success30    : #9CD4A3;
+$acms-color-success40    : #78C281;
+$acms-color-success50    : #54B05F;
+$acms-color-success60    : #319D3E;
+$acms-color-success70    : #0F8A1E;
+$acms-color-success80    : #0D7319;
+$acms-color-success90    : #0A5B14;
+
+// Warning
+$acms-color-warning10    : #FFEFCC;
+$acms-color-warning20    : #FFDF99;
+$acms-color-warning30    : #FFCE66;
+$acms-color-warning40    : #FFBC37;
+$acms-color-warning50    : #FFA90B;
+$acms-color-warning60    : #D99009;
+$acms-color-warning70    : #B37608;
+$acms-color-warning80    : #8C5D06;
+$acms-color-warning90    : #664404;
+
+// Danger
+$acms-color-danger10     : #F9E6E9;
+$acms-color-danger20     : #EFC1C8;
+$acms-color-danger30     : #E59DA8;
+$acms-color-danger40     : #DA7988;
+$acms-color-danger50     : #CE5769;
+$acms-color-danger60     : #C1354A;
+$acms-color-danger70     : #B3142C;
+$acms-color-danger80     : #951125;
+$acms-color-danger90     : #760D1D;
+
+
+// 注意
+$acms-color-caution-text: $acms-color-danger60;
+$acms-color-caution-bg  : $acms-color-danger20;
+
+// リンク
+$acms-color-link-text   : #006DD9;
 
 
 // ------------------------------
@@ -114,12 +191,6 @@ $mobile-grid-space    : 0 !default; //10px空いていたのを0にする
 //  Media Queries
 // ------------------------------
 
-//各種ブレイクポイント
-// $xl-width : 1224px !default;
-// $lg-width : 1024px !default;
-// $md-width : 768px !default;
-// $sm-width : 480px !default;
-
 // max-widthの値も用意していますが、基本的にはmin-widthの値を使っています。
 // よりコードの記述がシンプルになる場合はmax-widthを使います。
 
@@ -130,10 +201,10 @@ $breakpoint-lg-min    : 1024px !default;
 $breakpoint-xl-min    : 1440px !default;
 
 //max-width指定
-$breakpoint-sm-max    : ($breakpoint-sm-min - 1) !default; //479px
-$breakpoint-md-max    : ($breakpoint-md-min - 1) !default; //767px
-$breakpoint-lg-max    : ($breakpoint-lg-min - 1) !default; //1023px
-$breakpoint-xl-max    : ($breakpoint-xl-min - 1) !default; //1439px
+$breakpoint-sm-max    : ($breakpoint-sm-min - 0.02) !default; //479.98px
+$breakpoint-md-max    : ($breakpoint-md-min - 0.02) !default; //767.98px
+$breakpoint-lg-max    : ($breakpoint-lg-min - 0.02) !default; //1023.98px
+$breakpoint-xl-max    : ($breakpoint-xl-min - 0.02) !default; //1439.98px
 
 
 
@@ -142,8 +213,8 @@ $breakpoint-xl-max    : ($breakpoint-xl-min - 1) !default; //1439px
 // ------------------------------
 //  ユニットグループ
 //===============================
-$entry-class                      : acms-entry !default;
-$grid-column-name                 : "acms-col-" !default;
+$entry-class                  : acms-entry !default;
+$grid-column-name             : "acms-col-" !default;
 
 $text-unit-tags               : 'h2','h3','h4','h5','h6','dl','p' !default;
 $unit-type                    : 'image','file','map','yolp','street-view','youtube','video','eximage','media','quote','module' !default;
@@ -160,29 +231,29 @@ $hightlight-colors            : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000 
 //  ボタン
 // ------------------------------
 //基本カラー
-$acms-btn-background                    : #EFEFEF !default;
-$acms-btn-border-color                  : rgba(0,0,0,.1) !default;
-$acms-btn-hover-border-color            : rgba(0,0,0,.2) !default;
-$acms-btn-active-border-color           : rgba(0,0,0,.3) !default;
+$acms-btn-background                    : $acms-color-gray30 !default;
+$acms-btn-border-color                  : rgba(0,0,0,.2) !default;
+$acms-btn-hover-border-color            : rgba(0,0,0,.4) !default;
+$acms-btn-active-border-color           : rgba(0,0,0,.4) !default;
 $acms-btn-focus-border-color            : #137AF3 !default;
 $acms-btn-focus-box-shadow              : 0 0 0 2px rgba(19,122,243,.4) !default;
 
-$acms-btn-admin-background              : #FFF !default;
+$acms-btn-admin-background              : $acms-color-white !default;
 
 // 文字カラー
-$acms-btn-text-default-color            : #333 !default;
-$acms-btn-text-color                    : #FFF !default;
+$acms-btn-text-default-color            : $acms-color-black !default;
+$acms-btn-text-color                    : $acms-color-white !default;
 
 // 基準カラー
-$acms-btn-primary                       : #005cee !default;
-$acms-btn-info                          : #4b4b4b !default;
-$acms-btn-success                       : #009812 !default;
-$acms-btn-warning                       : #f9b433 !default;
-$acms-btn-danger                        : #C5001D !default;
+$acms-btn-primary                       : $acms-color-info70 !default;
+$acms-btn-info                          : $acms-color-gray90 !default;
+$acms-btn-success                       : $acms-color-success70 !default;
+$acms-btn-warning                       : $acms-color-warning50 !default;
+$acms-btn-danger                        : $acms-color-danger60 !default;
 
-$acms-btn-admin-primary                 : #0052B1 !default;
-$acms-btn-admin-info                    : #545454 !default;
-$acms-btn-admin-danger                  : #da364e !default;
+$acms-btn-admin-primary                 : $acms-color-info70 !default;
+$acms-btn-admin-info                    : $acms-color-gray90 !default;
+$acms-btn-admin-danger                  : $acms-color-danger60 !default;
 
 // デフォルトのボタン
 //===============================
@@ -317,7 +388,7 @@ $acms-btn-flat-border-radius           : 4px !default;
 $acms-btn-flat-font-size               : 16 !default;
 $acms-btn-flat-font-size-desktop       : 13 !default;
 $acms-btn-flat-text-default-color      : #666 !default; //デフォルトのボタンの文字カラー
-$acms-btn-flat-text-color              : #FFF !default; //カラーボタンのボタンの文字カラー
+$acms-btn-flat-text-color              : $acms-color-white !default; //カラーボタンのボタンの文字カラー
 
 // ** primary
 // デフォルト
@@ -392,31 +463,31 @@ $acms-btn-disabled-opacity-ie           : ($acms-btn-disabled-opacity * 100) !de
 // ------------------------------
 
 // デフォルト
-$acms-label-text-color            : #333333 !default;
+$acms-label-text-color            : $acms-color-black  !default;
 // success
-$acms-label-text-success-color    : #0c6b26 !default;
+$acms-label-text-success-color    : $acms-color-success90 !default;
 // info
-$acms-label-text-info-color       : #044bb1 !default;
+$acms-label-text-info-color       : $acms-color-info90 !default;
 // warning
-$acms-label-text-warning-color    : #715e1a !default;
+$acms-label-text-warning-color    : $acms-color-warning90 !default;
 // danger
-$acms-label-text-danger-color     : #9c0808 !default;
+$acms-label-text-danger-color     : $acms-color-danger90 !default;
 
 
 // 背景カラー
 //===============================
 // ** 基準カラー
-$acms-label-black            : #333333 !default;
+$acms-label-black            : $acms-color-black !default;
 // デフォルト
-$acms-label-default          : #CACACA !default;
+$acms-label-default          : $acms-color-gray60 !default;
 // success
-$acms-label-success-color    : #b7f7a5 !default;
+$acms-label-success-color    : $acms-color-success20 !default;
 // info
-$acms-label-info-color       : #bfd7f9 !default;
+$acms-label-info-color       : $acms-color-info20 !default;
 // warning
-$acms-label-warning-color    : #ffda6c !default;
+$acms-label-warning-color    : $acms-color-warning20 !default;
 // danger
-$acms-label-danger-color     : #f9c6c6 !default;
+$acms-label-danger-color     : $acms-color-danger20 !default;
 
 
 
@@ -426,33 +497,33 @@ $acms-label-danger-color     : #f9c6c6 !default;
 // ------------------------------
 
 // デフォルト
-$acms-badge-text-color            : #333333 !default;
-// success
-$acms-badge-text-success-color    : #0c6b26 !default;
+$acms-badge-text-color            : $acms-color-black !default;
 // info
-$acms-badge-text-info-color       : #044bb1 !default;
+$acms-badge-text-info-color       : $acms-color-info90 !default;
+// success
+$acms-badge-text-success-color    : $acms-color-success90 !default;
 // warning
-$acms-badge-text-warning-color    : #715e1a !default;
+$acms-badge-text-warning-color    : $acms-color-warning90 !default;
 // danger
-$acms-badge-text-danger-color     : #9c0808 !default;
+$acms-badge-text-danger-color     : $acms-color-danger90 !default;
 
 // 背景カラー
 //===============================
 
 // デフォルト
-$acms-badge-default          : #CACACA !default;
+$acms-badge-default            : $acms-color-gray60 !default;
 // success
-$acms-badge-success-color    : #b7f7a5 !default;
+$acms-badge-success-color      : $acms-color-success20 !default;
 // info
-$acms-badge-info-color       : #bfd7f9 !default;
+$acms-badge-info-color         : $acms-color-info20 !default;
 // warning
-$acms-badge-warning-color    : #ffda6c !default;
+$acms-badge-warning-color      : $acms-color-warning20 !default;
 // danger
-$acms-badge-danger-color     : #f9c6c6 !default;
+$acms-badge-danger-color       : $acms-color-danger20 !default;
 
 // 承認バッジの設定
-$acms-badge-approval-text-color       : #FFF !default;
-$acms-badge-approval-color       : #E20020 !default;
+$acms-badge-approval-text-color: $acms-color-white !default;
+$acms-badge-approval-color     : $acms-color-danger60 !default;
 
 
 // ------------------------------
@@ -460,31 +531,31 @@ $acms-badge-approval-color       : #E20020 !default;
 // ------------------------------
 
 // デフォルト
-$acms-toast-text-color            : #FFFFFF !default;
+$acms-toast-text-color            : $acms-color-white !default;
 // success
-$acms-toast-text-success-color    : #0c6b26 !default;
+$acms-toast-text-success-color    : $acms-color-success90 !default;
 // info
-$acms-toast-text-info-color       : #044bb1 !default;
+$acms-toast-text-info-color       : $acms-color-info90 !default;
 // warning
-$acms-toast-text-warning-color    : #715e1a !default;
+$acms-toast-text-warning-color    : $acms-color-warning90 !default;
 // danger
-$acms-toast-text-danger-color     : #9c0808 !default;
+$acms-toast-text-danger-color     : $acms-color-danger90 !default;
 
 
 // 背景カラー
 //===============================
 // ** 基準カラー
-$acms-toast-black            : #333333 !default;
+$acms-toast-black            : $acms-color-black !default;
 // デフォルト
-$acms-toast-default          : #333333 !default;
+$acms-toast-default          : $acms-color-black !default;
 // success
-$acms-toast-success-color    : #b7f7a5 !default;
+$acms-toast-success-color    : $acms-color-success20 !default;
 // info
-$acms-toast-info-color       : #bfd7f9 !default;
+$acms-toast-info-color       : $acms-color-info20 !default;
 // warning
-$acms-toast-warning-color    : #ffda6c !default;
+$acms-toast-warning-color    : $acms-color-warning20 !default;
 // danger
-$acms-toast-danger-color     : #f9c6c6 !default;
+$acms-toast-danger-color     : $acms-color-danger20 !default;
 
 
 
@@ -493,29 +564,29 @@ $acms-toast-danger-color     : #f9c6c6 !default;
 // ------------------------------
 
 // ** デフォルト
-$acms-panel-black-text-color     : #FFFFFF !default;
+$acms-panel-black-text-color     : $acms-color-black !default;
 // ボーダー
-$acms-panel-black-border         : #9898A2 !default;
+$acms-panel-black-border         : $acms-color-gray50 !default;
 // 背景色
-$acms-panel-black-bg             : #9898A2 !default;
+$acms-panel-black-bg             : $acms-color-gray20 !default;
 
 
 // ** カラー
 // ** info
-$acms-panel-info-text-color      : #FFFFFF !default;
-$acms-panel-info-bg              : #009BE6 !default;
-$acms-panel-info-border          : #009BE6 !default;
+$acms-panel-info-text-color      : $acms-color-info90 !default;
+$acms-panel-info-bg              : $acms-color-info10 !default;
+$acms-panel-info-border          : $acms-color-info20 !default;
 
 // ** danger
-$acms-panel-danger-text-color    : #FFFFFF !default;
-$acms-panel-danger-bg            : #FF5A3C !default;
-$acms-panel-danger-border        : #FF5A3C !default;
+$acms-panel-danger-text-color    : $acms-color-danger90 !default;
+$acms-panel-danger-bg            : $acms-color-danger10 !default;
+$acms-panel-danger-border        : $acms-color-danger20 !default;
 
 
 // ------------------------------
 // リスト
 // ------------------------------
-$acms-list-group-border-color: #E5E5E5 !default;
+$acms-list-group-border-color: $acms-color-gray40 !default;
 
 
 
@@ -523,7 +594,7 @@ $acms-list-group-border-color: #E5E5E5 !default;
 // ------------------------------
 // タイムライン
 // ------------------------------
-$timeline-line-color              : #DDD !default;
+$timeline-line-color              : $acms-color-gray50 !default;
 $timeline-line-width              : 4px !default;
 
 $timeline-label-font-size         : 14 !default; //日付ラベルのフォントサイズ
@@ -532,7 +603,7 @@ $timeline-itemgroup-margin-top    : 30px !default;
 
 $timeline-panel-margin            : 5px 0 20px !default; //要素間の感覚
 $timeline-panel-padding           : 10px !default; //内側の感覚
-$timeline-panel-border            : 1px solid #DDD !default;
+$timeline-panel-border            : 1px solid $acms-color-gray50 !default;
 
 
 
@@ -541,23 +612,23 @@ $timeline-panel-border            : 1px solid #DDD !default;
 // ------------------------------
 
 // 文字カラー
-$acms-icon-text-color       : #FFF !default;
+$acms-icon-text-color       : $acms-color-white !default;
 
 // 背景カラー
 //===============================
 // ** 基準カラー
-$acms-icon-black            : #333333 !default;
+$acms-icon-black            : $acms-color-black !default;
 // デフォルト
-$acms-icon-default          : lighten($acms-icon-black, 40%) !default;
+$acms-icon-default          : $acms-color-gray80 !default;
 
 // 基準カラー・success
-$acms-icon-color            : #4AC0A4 !default;
+$acms-icon-color            : $acms-color-success70 !default;
 // info
-$acms-icon-info-color       : adjust-hue(lighten($acms-icon-color, 10%), 50) !default;
+$acms-icon-info-color       : $acms-color-info70 !default;
 // warning
-$acms-icon-warning-color    : adjust-hue(lighten($acms-icon-color, 10%), -120) !default;
+$acms-icon-warning-color    : $acms-color-warning70 !default;
 // danger
-$acms-icon-danger-color     : adjust-hue(lighten($acms-icon-color, 10%), -180) !default;
+$acms-icon-danger-color     : $acms-color-danger70 !default;
 
 
 
@@ -569,71 +640,64 @@ $acms-icon-danger-color     : adjust-hue(lighten($acms-icon-color, 10%), -180) !
 // デフォルト
 //===============================
 // .acms-table
-$acms-table-border                   : 1px solid #DDD !default;
+$acms-table-border                   : 1px solid $acms-color-gray50 !default;
 $acms-table-cell-padding             : 10px !default;
 
 // ** 見出しありテーブル
 // .acms-table-heading
-$acms-table-heading-border           : 1px solid #CCCCCC !default;
+$acms-table-heading-border           : 1px solid $acms-color-gray60 !default;
 // .acms-table-heading th
-$acms-table-heading-th-padding       : 5px 10px !default;
-$acms-table-heading-th-border        : solid 1px #25242C !default;
-$acms-table-heading-th-bg            : #f5f5f5 !default;
-$acms-table-heading-th-text-color    : #404040 !default;
+$acms-table-heading-th-bg            : $acms-color-gray30 !default;
+$acms-table-heading-th-text-color    : $acms-color-gray90 !default;
 
 // ** ボーダーテーブル
 //.acms-table-bordered
-$acms-table-bordered-border          : 1px solid #DDD !default;
+$acms-table-bordered-border          : 1px solid $acms-color-gray50 !default;
 
 // ** ストライプテーブル
 // .acms-table-striped
-$acms-table-border-odd               : #FFF !default;
-$acms-table-border-even              : #f5f5f5 !default;
+$acms-table-border-odd               : $acms-color-white !default;
+$acms-table-border-even              : $acms-color-gray10 !default;
 
 // ** ホバーしたときのテーブル
 // .acms-table-hover,.acms-table-hover-line
-$acms-table-hover-bg                 : #e8f2ff !default;
-$acms-table-hover-line-bg            : #e8f2ff !default;
+$acms-table-hover-bg                 : $acms-color-info10 !default;
+$acms-table-hover-line-bg            : $acms-color-info10 !default;
 
 // ** 入れ替え用テーブル
 // .acms-table-sortable-active
-$acms-table-sortable-bg              : #FFFFFF !default;
+$acms-table-sortable-bg              : $acms-color-white !default;
 
 
 // 管理画面のテーブル
 //===============================
 // ** デフォルト
 // .acms-table-admin
-$acms-table-admin-border:                 1px solid #DDD !default;
+$acms-table-admin-border:                 1px solid $acms-color-gray50 !default;
 $acms-table-admin-cell:                   8px 5px !default; //th,tdのpaddingの感覚
-$acms-table-admin-td-bg:                  #FFF !default;
+$acms-table-admin-td-bg:                  $acms-color-white !default;
 
 // ** ストライプテーブル
 // .acms-table-admin-striped
-$acms-table-admin-border-odd:             #FFF !default;
-$acms-table-admin-border-even:            #F2F2F4 !default;
+$acms-table-admin-border-odd:             $acms-color-white !default;
+$acms-table-admin-border-even:            $acms-color-system-gray10 !default;
 
 // ** ミニテーブル
 // .acms-admin-mini-table
-$acms-admin-mini-table-thead-bg:          #f5f5f5 !default;
-
 $acms-admin-mini-table-thead-border:      0 !default;
 $acms-admin-mini-table-border :           $acms-table-admin-border !default;
-
-$acms-admin-mini-table-odd :              #FFFFFF !default; //奇数
-$acms-admin-mini-table-even :             #FFFFFF !default; //偶数
 
 // ** 編集画面用テーブル
 // .acms-table-admin-edit
 $acms-table-admin-edit-border :           $acms-table-admin-border !default;
-$acms-table-admin-edit-bg :               #FFF !default;
+$acms-table-admin-edit-bg :               $acms-color-white !default;
 
 $acms-table-admin-edit-th-width:           250px !default;
 
 // ** 編集画面用 ボーダーありテーブル
 // .acms-table-admin-edit-bordered
 $acms-table-admin-edit-bordered-border :   $acms-table-admin-border !default;
-$acms-table-admin-edit-bordered-bg:        #FFF !default;
+$acms-table-admin-edit-bordered-bg:        $acms-color-white !default;
 
 $acms-table-admin-edit-bordered-th-width : $acms-table-admin-edit-th-width !default;
 
@@ -641,13 +705,13 @@ $acms-table-admin-edit-bordered-th-width : $acms-table-admin-edit-th-width !defa
 // カラー
 //===============================
 // info
-$acms-table-info-bg:    #BCCCE2 !default;
+$acms-table-info-bg:    $acms-color-info10 !default;
 // success
-$acms-table-success-bg: #AAD9CD !default;
+$acms-table-success-bg: $acms-color-success10 !default;
 // warning
-$acms-table-warning-bg: #E1D7BB !default;
+$acms-table-warning-bg: $acms-color-warning10 !default;
 // danger
-$acms-table-danger-bg:  #E1BCC4 !default;
+$acms-table-danger-bg:  $acms-color-danger10 !default;
 
 
 
@@ -677,19 +741,19 @@ $acms-form-padding-x-sp             : 8px !default;
 
 
 // select
-$acms-form-select-border            : 1px solid #CCC !default;
-$acms-form-select-border-color-hover: 1px solid #AAA !default;
+$acms-form-select-border            : 1px solid rgba(0, 0, 0, .2) !default;
+$acms-form-select-border-color-hover: 1px solid rgba(0, 0, 0, .4) !default;
 $acms-form-select-padding           : 6px 30px 6px 10px !default;
 $acms-form-select-font-size         : 16 !default;
 $acms-form-select-border-hover      : 1px solid $acms-form-hover-border-color !default;
-$acms-form-select-bg-color          : #f7f7f7 !default;
+$acms-form-select-bg-color          : $acms-color-gray10 !default;
 // multiple
-$acms-form-multiple-bg-color        : #FFF !default;
+$acms-form-multiple-bg-color        : $acms-color-white !default;
 
 // disabled
-$acms-form-disabled-border-color    : #DDD !default;
-$acms-form-disabled-bg-color        : #F5F5F5 !default;
-$acms-form-disabled-text-color      : #999 !default;
+$acms-form-disabled-border-color    : $acms-color-gray50 !default;
+$acms-form-disabled-bg-color        : $acms-color-gray20 !default;
+$acms-form-disabled-text-color      : $acms-color-gray80 !default;
 $acms-form-disabled-opacity         : .6 !default;
 
 // 各種 幅
@@ -699,12 +763,12 @@ $acms-form-width-small-width        : 220px !default;
 $acms-form-width-mini-width         : 140px !default;
 
 // エラーテキスト
-$acms-form-error-border-color       : #DC8D99 !default;
-$acms-form-error-bg-color           : #FFF8F8 !default;
-$acms-form-error-text-color         : #C91032 !default;
+$acms-form-error-border-color       : $acms-color-danger50 !default;
+$acms-form-error-bg-color           : $acms-color-danger10 !default;
+$acms-form-error-text-color         : $acms-color-danger70 !default;
 
-$acms-text-error-color              : #C91032 !default;
-$acms-text-helper-color             : #707070 !default;
+$acms-text-error-color              : $acms-color-danger70 !default;
+$acms-text-helper-color             : $acms-color-gray90 !default;
 
 $acms-input-images-path             : '#{$acms-path-marker}ico_input.png' !default;
 
@@ -728,65 +792,65 @@ $acms-alert-icon-padding     : 20px 40px 20px 50px !default;
 
 // ** デフォルト
 // ボーダー
-$acms-alert-black-border           : #9898A2 !default;
+$acms-alert-black-border           : $acms-color-system-gray70 !default;
 // 背景色
-$acms-alert-black-bg               : #FFFFFF !default;
+$acms-alert-black-bg               : $acms-color-white !default;
 // 文字カラー
-$acms-alert-black-text-color       : #404040 !default;
+$acms-alert-black-text-color       : $acms-color-system-gray90 !default;
 // 閉じるボタン
-$acms-alert-black-close-color      : #9898A2 !default;
+$acms-alert-black-close-color      : $acms-color-system-gray70 !default;
 // アイコンカラー
-$acms-alert-black-icon-color       : #9898A2 !default;
+$acms-alert-black-icon-color       : $acms-color-system-gray70 !default;
 
 // ** カラー
 
 // ** success
 // ボーダー
-$acms-alert-success-border         : #00AA64 !default;
+$acms-alert-success-border         : $acms-color-success70 !default;
 // 背景色
-$acms-alert-success-bg             : #FFFFFF !default;
+$acms-alert-success-bg             : $acms-color-white !default;
 // 文字カラー
-$acms-alert-success-text-color     : #404040 !default;
+$acms-alert-success-text-color     : $acms-color-gray90 !default;
 // 閉じるボタン
-$acms-alert-success-close-color    : #00AA64 !default;
+$acms-alert-success-close-color    : $acms-color-success70 !default;
 // アイコンカラー
-$acms-alert-success-icon-color     : #00AA64 !default;
+$acms-alert-success-icon-color     : $acms-color-success70 !default;
 
 // ** info
 // ボーダー
-$acms-alert-info-border            : #009BE6 !default;
+$acms-alert-info-border            : $acms-color-info70 !default;
 // 背景色
-$acms-alert-info-bg                : #FFFFFF !default;
+$acms-alert-info-bg                : $acms-color-white !default;
 // 文字カラー
-$acms-alert-info-text-color        : #404040 !default;
+$acms-alert-info-text-color        : $acms-color-gray90 !default;
 // 閉じるボタン
-$acms-alert-info-close-color       : #009BE6 !default;
+$acms-alert-info-close-color       : $acms-color-info70 !default;
 // アイコンカラー
-$acms-alert-info-icon-color        : #009BE6 !default;
+$acms-alert-info-icon-color        : $acms-color-info70 !default;
 
 // ** danger
 // ボーダー
-$acms-alert-danger-border          : #FF5A3C !default;
+$acms-alert-danger-border          : $acms-color-danger50 !default;
 // 背景色
-$acms-alert-danger-bg              : #FFFFFF !default;
+$acms-alert-danger-bg              : $acms-color-white !default;
 // 文字カラー
-$acms-alert-danger-text-color      : #404040 !default;
+$acms-alert-danger-text-color      : $acms-color-gray90 !default;
 // 閉じるボタン
-$acms-alert-danger-close-color     : #FF5A3C !default;
+$acms-alert-danger-close-color     : $acms-color-danger60 !default;
 // アイコンカラー
-$acms-alert-danger-icon-color      : #FF5A3C !default;
+$acms-alert-danger-icon-color      : $acms-color-danger60 !default;
 
 // ** warning
 // ボーダー
-$acms-alert-warning-border         : #FAB44B !default;
+$acms-alert-warning-border         : $acms-color-warning50 !default;
 // 背景色
-$acms-alert-warning-bg             : #FFFFFF !default;
+$acms-alert-warning-bg             : $acms-color-white !default;
 // 文字カラー
-$acms-alert-warning-text-color     : #404040 !default;
+$acms-alert-warning-text-color     : $acms-color-gray90 !default;
 // 閉じるボタン
-$acms-alert-warning-close-color    : #FAB44B !default;
+$acms-alert-warning-close-color    : $acms-color-warning70 !default;
 // アイコンカラー
-$acms-alert-warning-icon-color     : #FAB44B !default;
+$acms-alert-warning-icon-color     : $acms-color-warning60 !default;
 
 
 
@@ -798,11 +862,11 @@ $acms-alert-warning-icon-color     : #FAB44B !default;
 // ** プログレスバー全体
 
 // 背景色
-$acms-progress-bg               : #FFF !default;
+$acms-progress-bg               : $acms-color-white !default;
 // 高さ
 $acms-progress-height           : 28px !default;
 // ボーダー
-$acms-progress-border           : 1px solid #CCCCCC !default;
+$acms-progress-border           : 1px solid $acms-color-gray60 !default;
 // 上下左右の角丸
 $acms-progress-border-radius    : 4px !default;
 
@@ -810,17 +874,17 @@ $acms-progress-border-radius    : 4px !default;
 // プログレスバー
 // ===============================
 // 文字の色
-$acms-progress-bar-text            : #FFF !default;
+$acms-progress-bar-text            : $acms-color-black !default;
 // ストライプの幅
 $acms-progress-bar-stripe-width    : 40px !default;
 
 // ** プログレスバーのカラー
 // デフォルト
-$acms-progress-bar-color           : #4AC0A4 !default;
+$acms-progress-bar-color           : $acms-color-success30 !default;
 // info
-$acms-progress-bar-color-info      : adjust-hue(lighten($acms-progress-bar-color, 20), 50) !default;
+$acms-progress-bar-color-info      : $acms-color-info30 !default;
 // danger
-$acms-progress-bar-color-danger    : adjust-hue(lighten($acms-progress-bar-color, 20), -180) !default;
+$acms-progress-bar-color-danger    : $acms-color-danger30 !default;
 
 
 
@@ -828,7 +892,7 @@ $acms-progress-bar-color-danger    : adjust-hue(lighten($acms-progress-bar-color
 // ------------------------------
 // Lazy Load
 // ------------------------------
-$acms-lazy-load-bg: #f8f8f8 !default;
+$acms-lazy-load-bg: $acms-color-gray10 !default;
 
 
 
@@ -912,7 +976,7 @@ $acms-animation-delay-reverse-first     : 0.45s !default;
 //  編集ページ
 // ------------------------------
 
-$acms-admin-title-textcolor     : #404040 !default;
-$acms-admin-title2-textcolor    : #404040 !default;
+$acms-admin-title-textcolor     : $acms-color-gray90 !default;
+$acms-admin-title2-textcolor    : $acms-color-gray90 !default;
 
 

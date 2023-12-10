@@ -191,9 +191,17 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
 
     protected function buildQuery($cid, &$Tpl)
     {
+        $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
+            'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
+            'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id',
+            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id');
+
         $subCategory = isset($this->_config['subCategory']) && $this->_config['subCategory'] === 'on';
 
         $SQL1 = SQL::newSelect('entry', 'union1');
+        foreach ($list as $name) {
+            $SQL1->addSelect($name);
+        }
         $SQL1->addLeftJoin('category', 'entry_category_id', 'category_id');
         if ($subCategory) {
             $SQL1->addLeftJoin('entry_sub_category', 'entry_id', 'entry_sub_category_eid');
@@ -204,6 +212,9 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
 
         if ($subCategory) {
             $SQL2 = SQL::newSelect('entry', 'union2');
+            foreach ($list as $name) {
+                $SQL2->addSelect($name);
+            }
             $SQL2->addLeftJoin('entry_sub_category', 'entry_id', 'entry_sub_category_eid');
             $SQL2->addLeftJoin('category', 'entry_sub_category_id', 'category_id');
             $SQL2->addWhereOpr('entry_sub_category_id', $cid);
@@ -255,6 +266,9 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
             'entryId'       => $eid,
             'entry:loop.class'  => $this->_config['entryLoopClass'],
         );
+        if (isset($eRow['entry_members_only']) && $eRow['entry_members_only'] === 'on') {
+            $Tpl->add(['membersOnly', 'entry:loop']);
+        }
         if (!empty($cid)) {
             $categoryName = $eRow['category_name'];
             $categoryCode = $eRow['category_code'];

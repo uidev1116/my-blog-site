@@ -1,31 +1,86 @@
-<!-- BEGIN_MODULE Admin_Module_Edit -->
 <div id="js-module_management" class="acms-admin-modal out js-visible-on-ui-expanding">
   <div class="acms-admin-modal-dialog large">
     <div class="acms-admin-modal-content">
+      <!-- BEGIN_MODULE Admin_Module_Edit -->
       <div class="acms-admin-modal-header">
         <div class="acms-admin-title-wrapper">
           <button type="button" class="acms-admin-modal-hide"><i class="acms-admin-modal-hide acms-admin-icon-delete"></i><span class="acms-admin-hide-visually">閉じる</span></button>
           <!-- BEGIN_IF [{name}/nem/] -->
-          <h1 class="acms-admin-modal-heading">{identifier}（{label}）<span class="acms-admin-module-en">{name}</span></h1><!-- ELSE -->
-          <h1 class="acms-admin-modal-heading">新規モジュールID</h1><!-- END_IF -->
-
+          <h1 class="acms-admin-modal-heading">{identifier}（{label}）<span class="acms-admin-module-en">{name}</span></h1>
+          <!-- ELSE -->
+          <h1 class="acms-admin-modal-heading">新規モジュールID</h1>
+          <!-- END_IF -->
         </div>
       </div>
       <div class="acms-admin-modal-body">
-        <!-- BEGIN_SetRendered id='module-update-url' -->%{HTTP_ROOT}bid/{mbid}/tpl/ajax/module/edit.html?mid=%{mid}<!-- END_SetRendered -->
+        <!-- BEGIN_SetRendered id='module-update-url' -->%{HTTP_ROOT}bid/{blog_id}/tpl/ajax/module/edit.html?mid=%{mid}<!-- END_SetRendered -->
 
-        <!-- BEGIN error#auth -->
-        <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>編集権限がありません。</p><!-- END error#auth -->
-
-        <!-- BEGIN_IF [<!-- BEGIN error#auth -->1<!-- END error#auth -->/neq/1] -->
         <div class="acms-admin-padding-small">
 
           <!-- BEGIN msg#insert -->
-          <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>モジュールIDを作成しました</p><!-- END msg#insert --><!-- BEGIN msg#update -->
-          <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>モジュールIDを保存しました</p><!-- END msg#update --><!-- BEGIN msg#delete -->
-          <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>モジュールIDを削除しました</p><!-- END msg#delete --><!-- BEGIN msg#duplicate -->
-          <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>モジュールIDを複製しました</p><!-- END msg#duplicate --><!-- BEGIN msg#error -->
-          <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>入力内容に誤りがあります。</p><!-- END msg#error -->
+          <div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+            <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="js-acms-alert-close acms-admin-alert-icon-after"
+              aria-label="アラートを閉じる"
+            >
+              ×
+            </button>
+            モジュールIDを作成しました
+          </div>
+          <!-- END msg#insert -->
+          <!-- BEGIN msg#update -->
+          <div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+            <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="js-acms-alert-close acms-admin-alert-icon-after"
+              aria-label="アラートを閉じる"
+            >
+              ×
+            </button>
+            モジュールIDを保存しました
+          </div>
+          <!-- END msg#update -->
+          <!-- BEGIN msg#delete -->
+          <div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+            <span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="js-acms-alert-close acms-admin-alert-icon-after"
+              aria-label="アラートを閉じる"
+            >
+              ×
+            </button>
+            モジュールIDを削除しました
+          </div>
+          <!-- END msg#delete -->
+          <!-- BEGIN msg#duplicate -->
+          <div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+            <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="js-acms-alert-close acms-admin-alert-icon-after"
+              aria-label="アラートを閉じる"
+            >
+              ×
+            </button>
+            モジュールIDを複製しました
+          </div>
+          <!-- END msg#duplicate -->
+          <!-- BEGIN msg#error -->
+          <div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+            <span class="acms-admin-icon acms-admin-icon-attention acms-admin-alert-icon-before" aria-hidden="true"></span>
+            <button
+              type="button"
+              class="js-acms-alert-close acms-admin-alert-icon-after"
+            >
+              ×
+            </button>
+            入力内容に誤りがあります。
+          </div>
+          <!-- END msg#error -->
 
           <!-- BEGIN submit#insert -->
           <form id="js-module_form" class="acms-admin-form" action="/tpl/ajax/module/edit.html?edit=insert" method="post" enctype="multipart/form-data" target="js-ajaxPostData">
@@ -78,7 +133,6 @@
               </div>
 
               <!-- BEGIN_IF [{editStatus}/eq/update] -->
-
               <!-- END_MODULE Admin_Module_Edit -->
               <div id="acms_box2" class="acms-admin-tabs-panel anchorFix">
                 <div class="acms-admin-padding-small">
@@ -97,7 +151,6 @@
             </div>
           </form>
           <iframe name="js-ajaxPostData" width="0" height="0" frameborder="0"></iframe>
-          <!-- END_IF -->
         </div>
       </div>
     </div>

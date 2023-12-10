@@ -28,7 +28,7 @@
 		<td>
 			<input type="text" name="user_search_limit" value="{user_search_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="user_search_limit" />
-			<input type="hidden" name="user_search_limit:convert" value="a" />
+			<input type="hidden" name="user_search_limit:c" value="a" />
 			<input type="hidden" name="user_search_limit:validator#digits" id="validator-user_search_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-user_search_limit-digits" class="validator-result-{user_search_limit:validator#digits}">
@@ -98,6 +98,22 @@
 				<label for="input-checkbox-status-close">
 					<i class="acms-admin-ico-checkbox"></i>
 					<!--T-->無効<!--/T-->
+				</label>
+			</div>
+
+      <div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="user_search_status[]" value="pseudo"{user_search_status:checked#pseudo} id="input-checkbox-status-pseudo" />
+				<label for="input-checkbox-status-pseudo">
+					<i class="acms-admin-ico-checkbox"></i>
+					<!--T-->仮登録<!--/T-->
+				</label>
+			</div>
+
+      <div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="user_search_status[]" value="withdrawal"{user_search_status:checked#withdrawal} id="input-checkbox-status-withdrawal" />
+				<label for="input-checkbox-status-withdrawal">
+					<i class="acms-admin-ico-checkbox"></i>
+					<!--T-->退会<!--/T-->
 				</label>
 			</div>
 			<input type="hidden" name="config[]" value="user_search_status" />
@@ -202,7 +218,7 @@
 		<td>
 			<input type="text" name="user_search_entry_list_limit" value="{user_search_entry_list_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="user_search_entry_list_limit" />
-			<input type="hidden" name="user_search_entry_list_limit:convert" value="a" />
+			<input type="hidden" name="user_search_entry_list_limit:c" value="a" />
 			<input type="hidden" name="user_search_entry_list_limit:validator#digits" id="validator-user_search_entry_list_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-user_search_entry_list_limit-digits" class="validator-result-{user_search_entry_list_limit:validator#digits}">

@@ -6,6 +6,7 @@ use DB;
 use SQL;
 use ACMS_Filter;
 use ACMS_RAM;
+use Acms\Services\Facades\Application;
 use Acms\Services\Facades\Config;
 
 class General implements Contracts\Guard
@@ -165,40 +166,13 @@ class General implements Contracts\Guard
     }
 
     /**
-     * ログインしているユーザーが特定の管理ページで権限があるかチェック
-     *
-     * @param string $action
-     * @param string $admin
-     * @param string $idKey
-     * @param string $id
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function checkShortcut($action, $admin, $idKey, $id)
+    public function checkShortcut(array $ids): bool
     {
-        $admin = str_replace('/', '_', $admin);
-
-        $aryAuth = array();
-        if ( sessionWithContribution() ) $aryAuth[] = 'contribution';
-        if ( sessionWithCompilation() ) $aryAuth[] = 'compilation';
-        if ( sessionWithAdministration() ) $aryAuth[] = 'administration';
-
-        $key = '';
-        if ( $idKey ) {
-            $key .= ('_' . $idKey);
-        }
-        if ( $id ) {
-            $key .= ('_' . $id);
-        }
-
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('dashboard');
-        $SQL->setSelect('dashboard_key');
-        $SQL->addWhereOpr('dashboard_key', 'shortcut' . $key . '_' . $admin . '_auth');
-        $SQL->addWhereIn('dashboard_value', $aryAuth);
-        $SQL->addWhereOpr('dashboard_blog_id', BID);
-
-        return !!$DB->query($SQL->get(dsn()), 'one');
+        /** @var \Acms\Services\Shortcut\Helper $ShortcutService */
+        $ShortcutService = Application::make('shortcut.helper');
+        return $ShortcutService->authorization(ADMIN, $ids, BID);
     }
 
     /**

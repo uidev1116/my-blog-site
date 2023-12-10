@@ -59,7 +59,7 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
                 $POINT->addWhereOpr('entry_rev_id', $rvid);
                 $currentPoint = $DB->query($POINT->get(dsn()), 'one');
                 $point        = approvalUserPoint(BID);
-                
+
                 $SQL->addUpdate('entry_approval_reject_point', $currentPoint + $point);
             }
             $SQL->addWhereOpr('entry_id', EID);
@@ -87,6 +87,14 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
             $SQL->addWhereOpr('notification_entry_id', EID);
             $SQL->addWhereOpr('notification_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
+
+            $revision = Entry::getRevision(EID, $rvid);
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '（' . $revision['entry_rev_memo'] . '）」の承認却下依頼をしました', [
+                'apid' => $apid,
+                'eid' => EID,
+                'rvid' => $rvid,
+                'comment' => $comment,
+            ]);
         }
         return $this->Post;
     }

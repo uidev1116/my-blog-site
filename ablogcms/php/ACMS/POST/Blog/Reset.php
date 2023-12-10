@@ -16,6 +16,8 @@ class ACMS_POST_Blog_Reset extends ACMS_POST_Blog
             Config::forgetCache(BID);
 
             $this->Post->set('msg', 'reset');
+
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログのコンフィグを削除しました');
         }
 
         return $this->Post;

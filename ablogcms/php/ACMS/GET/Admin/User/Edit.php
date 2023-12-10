@@ -6,10 +6,13 @@ class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
     {
         if ( UID <> SUID and !sessionWithAdministration() ) { return true; }
 
-        $User   = loadUser(UID);
+        $User = loadUser(UID);
         $User->delete('pass');
-        $User_  = $this->Post->getChild('user');
-        $User->overload($User_);
+        $inputUser = $this->Post->getChild('user');
+        if (!$inputUser->get('icon')) {
+            $inputUser->delete('icon');
+        }
+        $User->overload($inputUser);
         $Geo =& $this->Post->getChild('geometry');
 
         if ($User->isNull()) {
@@ -65,6 +68,7 @@ class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
             $User->delete('status');
             $User->delete('auth');
             $User->delete('indexing');
+            $User->delete('mode');
             $User->delete('login_anywhere');
             $User->delete('global_auth');
             $User->delete('login_expire');

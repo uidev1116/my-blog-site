@@ -74,6 +74,7 @@ class Import
         foreach ( $tables as $table ) {
             $this->insertData($table);
         }
+        $this->updateBlogConfigSet();
 
         Common::flushCache();
         $this->generateFulltext();
@@ -106,23 +107,21 @@ class Import
 
     /**
      * @param string $table
-     *
      * @return void
      */
     private function insertData($table)
     {
-        if ( !$this->existsYaml($table) ) {
+        if (!$this->existsYaml($table)) {
             return;
         }
-        foreach ( $this->yaml[$table] as $record ) {
+        foreach ($this->yaml[$table] as $record) {
             $SQL = SQL::newInsert($table);
             foreach ( $record as $field => $value ) {
                 $value = $this->fix($table, $field, $value);
                 if (is_callable(array($this, $table . 'Fix'))) {
                     $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value, $record));
                 }
-
-                if ( $value !== false ) {
+                if ($value !== false) {
                     $SQL->addInsert($field, $value);
                 }
             }
@@ -144,6 +143,42 @@ class Import
             $SQL->addWhereOpr('field_mid', $data['mid']);
             DB::query($SQL->get(dsn()), 'exec');
         }
+    }
+
+    /**
+     * @return void
+     */
+    private function updateBlogConfigSet()
+    {
+        if (!$this->existsYaml('blog')) {
+            return;
+        }
+        if (!isset($this->yaml['blog'][0])) {
+            return;
+        }
+        $blog = $this->yaml['blog'][0];
+
+        $sql = SQL::newUpdate('blog');
+        if (isset($blog['blog_config_set_id'])) {
+            $sql->addUpdate('blog_config_set_id', $this->getNewID('config_set', $blog['blog_config_set_id']));
+        }
+        if (isset($blog['blog_config_set_scope'])) {
+            $sql->addUpdate('blog_config_set_scope', $blog['blog_config_set_scope']);
+        }
+        if (isset($blog['blog_theme_set_id'])) {
+            $sql->addUpdate('blog_theme_set_id', $this->getNewID('config_set', $blog['blog_theme_set_id']));
+        }
+        if (isset($blog['blog_theme_set_scope'])) {
+            $sql->addUpdate('blog_theme_set_scope', $blog['blog_theme_set_scope']);
+        }
+        if (isset($blog['blog_editor_set_id'])) {
+            $sql->addUpdate('blog_editor_set_id', $this->getNewID('config_set', $blog['blog_editor_set_id']));
+        }
+        if (isset($blog['blog_editor_set_scope'])) {
+            $sql->addUpdate('blog_editor_set_scope', $blog['blog_editor_set_scope']);
+        }
+        $sql->addWhereOpr('blog_id', $this->bid);
+        DB::query($sql->get(dsn()), 'exec');
     }
 
     /**
@@ -174,7 +209,7 @@ class Import
             $value = $this->getNewID('module', $value);
         } else if ( $key === 'media_id') {
             $value = $this->getNewID('media', $value);
-        } else if ( $key === 'set_id' || $key === 'config_set_id' ) {
+        } else if ( $key === 'set_id' || $key === 'config_set_id' || $key === 'theme_set_id' || $key === 'editor_set_id' ) {
             $value = $this->getNewID('config_set', $value);
         } else if ( $key === 'blog_id' ) {
             $value = $this->bid;

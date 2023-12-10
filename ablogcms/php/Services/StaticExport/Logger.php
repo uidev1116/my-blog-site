@@ -111,6 +111,8 @@ class Logger
 
         $data = $this->build();
 
+        AcmsLogger::debug('静的書き出しログ', $data);
+
         $json = json_encode($data);
         Storage::put($this->destinationPath , $json);
     }

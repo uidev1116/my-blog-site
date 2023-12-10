@@ -19,7 +19,7 @@ class ACMS_POST_App_Deactivate extends ACMS_POST
             $SQL = SQL::newSelect('app');
             $SQL->addWhereOpr('app_name', get_class($App));
             $SQL->addWhereOpr('app_blog_id', BID);
-            
+
             if ( $row = $DB->query($SQL->get(dsn()), 'one') ) {
                 $SQL = SQL::newUpdate('app');
                 $SQL->addUpdate('app_status',  'off');
@@ -36,10 +36,15 @@ class ACMS_POST_App_Deactivate extends ACMS_POST
                 $SQL->addInsert('app_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
             }
-
             $this->Post->set('deactivateSucceed', true);
+
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」を無効化しました', [
+                'version' => $App->version,
+            ]);
         } catch(Exception $e) {
             $this->Post->set('deactivateFailed', true);
+
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」の無効化に失敗しました', Common::exceptionArray($e, ['version' => $App->version]));
         }
 
         return $this->Post;

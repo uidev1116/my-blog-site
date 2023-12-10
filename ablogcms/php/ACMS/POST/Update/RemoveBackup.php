@@ -21,9 +21,14 @@ class ACMS_POST_Update_RemoveBackup extends ACMS_POST_Update_Base
         foreach ($lists as $item) {
             try {
                 Storage::removeDirectory('private/' . $item);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
+            }
         }
         $this->addMessage(gettext('バックアップを削除しました。'));
+        if (!empty($lists)) {
+            AcmsLogger::info('システム更新時に取られたバックアップを削除しました', $lists);
+        }
         return $this->Post;
     }
 }

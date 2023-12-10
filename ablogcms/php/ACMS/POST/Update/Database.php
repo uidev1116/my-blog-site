@@ -21,10 +21,11 @@ class ACMS_POST_Update_Database extends ACMS_POST
             $updateService->dbUpdate();
 
             $this->addMessage(gettext('データベースのアップデートに成功しました。'));
-        } catch ( \Exception $e ) {
+            AcmsLogger::info('データベースのアップデートしました');
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('データベースのアップデートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
-
         $DB->setThrowException(false);
 
         return $this->Post;

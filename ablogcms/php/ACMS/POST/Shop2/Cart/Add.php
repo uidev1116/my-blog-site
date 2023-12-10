@@ -12,10 +12,10 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
         $Cart->setMethod($this->item_qty, 'required');
         $Cart->setMethod($this->item_qty, 'digits');
         $Cart->setMethod('cart_bid', 'digits');
-        
+
         $Cart->validate(new ACMS_Validator());
 
-        $bid    = $Cart->isNull('cart_bid') ? BID : intval($Cart->get('cart_bid', BID));
+        $bid = $Cart->isNull('cart_bid') ? BID : intval($Cart->get('cart_bid', BID));
 
         if ( $this->Post->isValidAll() ) {
 
@@ -112,12 +112,11 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
                         // 切り捨て
                         $item[$this->item_price.'#tax'] = intval(floor($tax));
                     }
-                } 
+                }
 
                 // ハッシュを配列キーにあたえる（ユーザー内だから単一時間軸内でユニークであればOK）
                 $TEMP[md5(time())] = $item;
             }
-
             $this->closeCart($TEMP, $bid);
 
             // redirect to target location
@@ -126,7 +125,6 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
             } else {
                 $this->screenTrans($this->addedTpl);
             }
-
         } else {
             return $this->Post;
         }

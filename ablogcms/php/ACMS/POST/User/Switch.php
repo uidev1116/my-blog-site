@@ -16,10 +16,22 @@ class ACMS_POST_User_Switch extends ACMS_POST_User
             die('Invalid operation.');
         }
         $this->switchUser(SUID, $targetUid);
-        $this->redirect(acmsLink(array(
+
+        AcmsLogger::info('「' . ACMS_RAM::userName(SUID) . '」が「' . ACMS_RAM::userName($targetUid) . '」にユーザーを切り替えました', [
+            'from' => ACMS_RAM::user(SUID),
+            'to' => ACMS_RAM::user($targetUid),
+        ]);
+
+        if (ACMS_RAM::userAuth($targetUid) === 'subscriber') {
+            $this->redirect(acmsLink([
+                'bid' => BID,
+            ], false));
+        }
+
+        $this->redirect(acmsLink([
             'bid' => BID,
             'admin' => 'top',
-        ), false));
+        ], false));
     }
 
     /**
@@ -32,7 +44,7 @@ class ACMS_POST_User_Switch extends ACMS_POST_User
     {
         $session = Session::handle();
         $session->set(ACMS_LOGIN_SESSION_UID, $toUid);
-        $session->set(ACMS_LOGIN_SESSION_ORGINAL_UIR, $fromUid);
+        $session->set(ACMS_LOGIN_SESSION_ORGINAL_UID, $fromUid);
         $session->save();
 
         $sql = SQL::newDelete('user_session');
@@ -52,7 +64,7 @@ class ACMS_POST_User_Switch extends ACMS_POST_User
     {
         $session = Session::handle();
         $session->set(ACMS_LOGIN_SESSION_UID, $originalUid);
-        $session->delete(ACMS_LOGIN_SESSION_ORGINAL_UIR);
+        $session->delete(ACMS_LOGIN_SESSION_ORGINAL_UID);
         $session->save();
     }
 
@@ -64,7 +76,7 @@ class ACMS_POST_User_Switch extends ACMS_POST_User
     protected function getOriginalUid()
     {
         $session = Session::handle();
-        return $session->get(ACMS_LOGIN_SESSION_ORGINAL_UIR);
+        return $session->get(ACMS_LOGIN_SESSION_ORGINAL_UID);
     }
 
     /**

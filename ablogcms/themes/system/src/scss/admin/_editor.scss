@@ -13,7 +13,7 @@
 	cursor: pointer;
 }
 .acms-editor-media-placeholder [class*=acms-admin-icon] {
-	color: #989FAC;
+	color: global.$acms-color-system-gray60;
 	font-size: 60px;
 }
 .acms-editor-save-btn {
@@ -23,7 +23,7 @@
 .acms-editor-media-btn {
   display: inline-block;
 	padding: 4px 10px;
-  color: #333;
+  color: global.$acms-color-black;
 	font-size: 13px;
 	background-color: transparent;
   border: 1px solid rgba(0, 0, 0, .2);
@@ -44,7 +44,7 @@
   justify-content: center;
 	padding: 30px 15px;
   text-align: center;
-  background-color: #f2f2f4;
+  background-color: global.$acms-color-system-gray10;
   border-radius: 5px;
 }
 
@@ -52,17 +52,17 @@
 	margin-right: 20px;
 }
 .acms-editor-media-box .icon{
-	color: #989FAC;
+	color: global.$acms-color-system-gray60;
 	font-size: 55px;
 }
 .acms-editor-media-box-gray {
 	position: static;
-	background-color: #F4F4F4;
+	background-color: global.$acms-color-gray20;
 	border: none;
 }
 .acms-editor-media-icon-wrap {
   margin-bottom: 10px;
-  color: #989FAC;
+  color: global.$acms-color-system-gray60;
 	font-size: 60px;
 	text-align: center;
 }

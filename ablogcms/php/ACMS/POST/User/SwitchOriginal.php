@@ -14,6 +14,12 @@ class ACMS_POST_User_SwitchOriginal extends ACMS_POST_User_Switch
             return $this->Post;
         }
         $this->switchOriginalUser($originalUid);
+
+        AcmsLogger::info('「' . ACMS_RAM::userName(SUID) . '」から元のユーザー「' . ACMS_RAM::userName($originalUid) . '」戻りました', [
+            'from' => ACMS_RAM::user(SUID),
+            'to' => ACMS_RAM::user($originalUid),
+        ]);
+
         $this->redirect(acmsLink(array(
             'bid' => BID,
             'admin' => 'top',

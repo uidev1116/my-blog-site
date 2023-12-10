@@ -225,7 +225,11 @@ export default class MediaModal extends Component<
         loading: false,
       })
       if (res.status === 'failure') {
-        alert(ACMS.i18n('media.cannot_edit'))
+        if (res.message) {
+          alert(res.message)
+        } else {
+          alert(ACMS.i18n('media.cannot_edit'))
+        }
         return
       }
       actions.updateMediaList(res)
@@ -260,7 +264,11 @@ export default class MediaModal extends Component<
         loading: false,
       })
       if (res.status === 'failure') {
-        alert(ACMS.i18n('media.cannot_edit'))
+        if (res.message) {
+          alert(res.message)
+        } else {
+          alert(ACMS.i18n('media.cannot_edit'))
+        }
         return
       }
       actions.fetchMediaList()
@@ -783,6 +791,43 @@ export default class MediaModal extends Component<
                                     type="hidden"
                                     name="media[]"
                                     value="media_label"
+                                  />
+                                </td>
+                              </tr>
+                              <tr
+                                style={{
+                                  display:
+                                    typeof ACMS !== 'undefined' &&
+                                    ACMS.Config &&
+                                    ACMS.Config.mediaShowAltAndCaptionOnModal
+                                      ? 'table-row'
+                                      : 'none',
+                                }}
+                              >
+                                <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.filename')}
+                                  <i
+                                    className="acms-admin-icon-tooltip acms-admin-margin-left-mini js-acms-tooltip-hover"
+                                    data-acms-position="top"
+                                    data-acms-tooltip={ACMS.i18n(
+                                      'media.filename_settings',
+                                    )}
+                                  />
+                                </th>
+                                <td>
+                                  <input
+                                    type="text"
+                                    value={item.media_title}
+                                    name="rename"
+                                    className="acms-admin-form-width-full"
+                                    onInput={(e) => {
+                                      this.onInput(e, 'media_title')
+                                    }}
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="media[]"
+                                    value="rename"
                                   />
                                 </td>
                               </tr>

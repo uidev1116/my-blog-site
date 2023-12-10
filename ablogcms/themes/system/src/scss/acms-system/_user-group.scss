@@ -32,7 +32,7 @@
 }
 
 .argRefLeft .js-acms_tab-active {
-  background-color: #fff;
+  background-color: global.$acms-color-white;
 }
 
 .argRefCenter {
@@ -53,7 +53,7 @@
   height: 90%;
   padding: 0;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: global.$acms-color-white;
   border: 1px solid silver;
   border-left: none;
 }
@@ -78,7 +78,7 @@
 .argRefCenter ul li a:hover,
 .argRefRight ul li a:hover {
   color: white;
-  background-color: #ffffff;
+  background-color: global.$acms-color-white;
 }
 
 .argRefRight:not(:target) {

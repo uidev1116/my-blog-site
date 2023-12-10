@@ -21,7 +21,6 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
         $vars   = array();
 
         $SQL    = $this->buildSql();
-        $SQL->setOrder('approval_deadline_datetime', 'DESC');
 
         if ( !($all = $DB->query($SQL->get(dsn()), 'all')) ) {
             $Tpl->add('approval#notFound');
@@ -64,7 +63,6 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             // 担当者 承認依頼のみ
             $receive = array();
             if ( $row['approval_type'] === 'request' ) {
-                $receive['deadline']    = $row['approval_deadline_datetime'];
                 if ( !!$row['approval_receive_user_id'] ) {
                     $receive['userOrGroup'] = ACMS_RAM::userName($row['approval_receive_user_id']);
                 } else if ( !!$row['approval_receive_usergroup_id'] ) {
@@ -98,18 +96,11 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
 
             $approval   = $this->buildField($approvalField, $Tpl, array('approval:loop'));
             $approval   += $receive;
-
-            if ( 1
-                && isset($approval['deadline'])
-                && strtotime(date('Y-m-d')) >= strtotime($approval['deadline'])
-            ) {
-                $approval['expired'] = ' class="acms-table-danger"';
-            }
-
             $approval['rev_id']         = $row['notification_rev_id'];
             $approval['entry_id']       = $row['notification_entry_id'];
             $approval['blog_id']        = $row['notification_blog_id'];
             $approval['approval_id']    = $row['notification_approval_id'];
+            $approval['datetime']       = $row['notification_datetime'];
 
             $approval['url'] = acmsLink(array(
                 'bid'           => $row['approval_blog_id'],

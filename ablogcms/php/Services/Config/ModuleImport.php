@@ -5,6 +5,7 @@ namespace Acms\Services\Config;
 use DB;
 use SQL;
 use Common;
+use Config;
 
 class ModuleImport extends Import
 {

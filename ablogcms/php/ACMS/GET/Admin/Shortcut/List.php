@@ -1,56 +1,78 @@
 <?php
 
+declare(strict_types=1);
+
+use Acms\Services\Facades\Application;
+use Acms\Services\Shortcut\Repository;
+use Acms\Services\Shortcut\Helper;
+use Acms\Services\Shortcut\Entities\Shortcut;
+
 class ACMS_GET_Admin_Shortcut_List extends ACMS_GET_Admin
 {
-    function get()
+    /**
+     * @var Repository
+     */
+    protected $ShortcutRepository;
+
+    /**
+     * @var Helper
+     */
+    protected $ShortcutService;
+
+    public function get()
     {
-        if ( !sessionWithContribution() ) return '';
+        /** @var Repository $ShortcutRepository */
+        $this->ShortcutRepository = Application::make('shortcut.repository');
+        /** @var Helper $ShortcutService */
+        $this->ShortcutService = Application::make('shortcut.helper');
 
-        $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newSelect('dashboard');
-        $SQL->addWhereOpr('dashboard_key', 'shortcut_%', 'LIKE');
-        $SQL->addWhereOpr('dashboard_blog_id', BID);
-        $SQL->setOrder('dashboard_sort');
-        if ( !$all = $DB->query($SQL->get(dsn()), 'all') ) return '';
-
-        $Tmp    = array();
-        foreach ( $all as $row ) {
-            if ( !preg_match('@^shortcut_((?:(?:bid|uid|cid|eid|rid|mid|fmid|mbid|scid|null)_(?:\d+|null)_)*)(.+)_([^_]+)$@', $row['dashboard_key'], $match) ) continue;
-            $key = $match[1].$match[2];
-            $action = $match[3];
-            $Tmp[$key]['query'] = $match[1];
-            $Tmp[$key]['admin'] = $match[2];
-            $Tmp[$key][$action] = $row['dashboard_value'];
+        if (!sessionWithContribution()) {
+            return '';
         }
 
-        // auth
-        $aryAuth    = array();
-        if ( sessionWithContribution() ) $aryAuth[] = 'contribution';
-        if ( sessionWithCompilation() ) $aryAuth[]  = 'compilation';
-        if ( sessionWithAdministration() ) $aryAuth[]   = 'administration';
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $_Tmp   = $Tmp;
-        $Tmp    = array();
-        foreach ( $_Tmp as $hash => $data ) {
-            if ( !in_array($data['auth'], $aryAuth) ) continue;
-            $Tmp[$hash] = $data;
+        $Shortcuts = $this->ShortcutRepository->findByAuthorities($this->ShortcutService->getAuthorities(), BID);
+        if (empty($Shortcuts)) {
+            $this->buildNotFround($Tpl);
+            return $Tpl->get();
         }
-        if ( empty($Tmp) ) return '';
 
-        foreach ( $Tmp as $hash => $data ) {
-            $query = $data['query'];
-            $admin = $data['admin'];
+        return $Tpl->render([
+            'shortcut' => $this->buildShortcuts($Shortcuts)
+        ]);
+    }
 
-            $ids = $this->extractQuery($query);
+    /**
+     * ショートカットの組み立て
+     *
+     * @param Shortcut[] $Shortcuts
+     * @return array
+     */
+    protected function buildShortcuts(array $Shortcuts)
+    {
+        return array_map(
+            function (Shortcut $Shortcut) {
+                return [
+                    'admin' => $Shortcut->getAdmin(),
+                    'name' => $Shortcut->getName(),
+                    'url' => $this->ShortcutService->createUrl(
+                        $Shortcut->getAdmin(),
+                        $Shortcut->getIds()
+                    )
+                ];
+            },
+            $Shortcuts
+        );
+    }
 
-            $Tpl->add('shortcut:loop', array(
-                'admin' => $admin,
-                'name'  => $data['name'],
-                'url'   => $this->createUrl($admin, $ids),
-            ));
-        }
-        return $Tpl->get();
-
+    /**
+     * NotFoundテンプレートの組み立て
+     *
+     * @return array
+     */
+    protected function buildNotFround(Template $Tpl)
+    {
+        $Tpl->add('notFound');
     }
 }

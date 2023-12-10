@@ -133,8 +133,13 @@ class ACMS_GET_Navigation extends ACMS_GET
                             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
                         ));
                         $response = $req->send();
+                        if (strpos(\Http::getResponseHeader('http_code'), '200') === false) {
+                            throw new \RuntimeException(\Http::getResponseHeader('http_code'));
+                        }
                         $label = $response->getResponseBody();
-                    } catch (\Exception $e) {}
+                    } catch (\Exception $e) {
+                        \AcmsLogger::warning('ナビゲーションモジュール: HTTPインクルードできませんでした', \Common::exceptionArray($e, ['url' => $location]));
+                    }
                 } else {
                     $label  = '';
                 }

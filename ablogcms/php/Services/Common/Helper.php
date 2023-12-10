@@ -7,6 +7,7 @@ use DB;
 use SQL;
 use Tpl;
 use Storage;
+use Entry;
 use Image;
 use Field;
 use Cache;
@@ -20,10 +21,13 @@ use ACMS_POST_Image;
 use ACMS_RAM;
 use ACMS_Hook;
 use Session;
+use AcmsLogger;
 use Acms\Services\Facades\RichEditor;
 use phpseclib\Crypt\AES;
 use phpseclib\Crypt\Random;
 use cebe\markdown\MarkdownExtra;
+use Exception;
+use RuntimeException;
 
 class Helper
 {
@@ -224,14 +228,14 @@ class Helper
         if (1
             && !ACMS_SID
             && !ACMS_POST
-            && !LOGIN
-            && !defined('IS_LOGIN_PAGE')
+            && !IS_AUTH_SYSTEM_PAGE
+            && !defined('IS_OTHER_LOGIN')
             && strpos($tpl,'ACMS_POST_Form_') === false
             && strpos($tpl,'ACMS_POST_Comment_') === false
             && strpos($tpl,'ACMS_POST_Shop') === false
             && strpos($tpl,'check-csrf-token') === false
-            && 'secret' !== ACMS_RAM::blogStatus(BID)
-            && !(defined('IS_OTHER_LOGIN') && IS_OTHER_LOGIN)
+            && ACMS_RAM::blogStatus(BID) !== 'secret'
+            && (!CID || ACMS_RAM::categoryStatus(CID) !== 'secret')
         ) {
             $token = uniqueString();
 
@@ -263,6 +267,32 @@ class Helper
     }
 
     /**
+     * 管理画面でテンプレート直で書かれているパスを、エイリアスを含んだURLに修正
+     *
+     * @param string $txt
+     * @return string
+     */
+    public function fixAliasPath($txt)
+    {
+        $regex  = '@'.
+            '<\s*a(?:"[^"]*"|\'[^\']*\'|[^\'">])*href\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>|'.
+            '<\s*form(?:"[^"]*"|\'[^\']*\'|[^\'">])*action\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>'.
+            '@';
+        $offset = 0;
+        while (preg_match($regex, $txt, $match, PREG_OFFSET_CAPTURE, $offset)) {
+            $offset = $match[0][1] + strlen($match[0][0]);
+            for ($mpt=1; $mpt <= 2; $mpt++) if (!empty($match[$mpt][0])) break;
+
+            $path = trim($match[$mpt][0], '\'"');
+            if (preg_match('/^(?=.*bid\/\d+\/)(?!.*aid\/\d+\/).*$/', $path, $pathMatch)) {
+                $path = preg_replace('/bid\/(\d+)\//', 'bid/$1/aid/' . AID . '/', $path);
+                $txt = substr_replace($txt, '"'.$path.'"', $match[$mpt][1], strlen($match[$mpt][0]));
+            }
+        }
+        return $txt;
+    }
+
+    /**
      * extract()後の削除フィールドを取得
      *
      * @return \Field
@@ -289,6 +319,10 @@ class Helper
             $tpl = mb_convert_encoding($tpl, 'UTF-8', $charset);
             return $this->getMailTxtFromTxt($tpl, $field);
         } catch ( \Exception $e ) {
+            AcmsLogger::warning('メールテンプレートを取得できませんでした', [
+                'detaile' => $e->getMessage(),
+                'path' => $path,
+            ]);
             return '';
         }
     }
@@ -316,6 +350,10 @@ class Helper
             $Tpl->add(null, $vars);
             return buildVarBlocks(buildIF($Tpl->get()));
         } catch (\Exception $e) {
+            AcmsLogger::warning('メールテンプレートを組み立てできませんでした', [
+                'detaile' => $e->getMessage(),
+                'text' => $txt,
+            ]);
             return '';
         }
     }
@@ -341,8 +379,15 @@ class Helper
         ) as $cmsConfigKey => $mailConfigKey ) {
             $config[$mailConfigKey] = config($cmsConfigKey, '');
         }
-        if (empty($config['sendmail_path'])) {
-            $config['sendmail_path'] = ini_get('sendmail_path');
+        if (defined('LICENSE_OPTION_OEM') && LICENSE_OPTION_OEM) {
+            $config['additional_headers'] = 'X-Mailer: ' . LICENSE_OPTION_OEM;
+        } else {
+            $config['additional_headers'] = 'X-Mailer: a-blog cms';
+        }
+        $config['sendmail_path'] = ini_get('sendmail_path');
+
+        if ( config('mail_additional_headers') ) {
+            $config['additional_headers']   .= "\x0D\x0A".config('mail_additional_headers');
         }
         return $argConfig + $config;
     }
@@ -847,16 +892,6 @@ class Helper
         while ($row = $DB->fetch($q)) {
             $fixPaht    = '';
             $fd         = $row['field_key'];
-            if ( 0
-                or strpos($fd, '@path')
-                or strpos($fd, '@tinyPath')
-                or strpos($fd, '@largePath')
-                or strpos($fd, '@squarePath')
-            ) {
-                if ($rvid && $eid && $rewrite && $row['field_value']) {
-                    $fixPaht = '../'.REVISON_ARCHIVES_DIR;
-                }
-            }
             if (strpos($fd, '@media') !== false) {
                 $fdSource = substr($fd, 0, -6);
                 $mediaIds[] = intval($row['field_value']);
@@ -891,71 +926,37 @@ class Helper
      * @param Field $Field
      * @param Field $deleteField
      * @param int $rvid
-     * @param string $moveFieldArchive
      * @param int $targetBid
      *
      * @return bool
      */
-    public function saveField($type, $id, $Field=null, $deleteField=null, $rvid=null, $moveFieldArchive='', $targetBid=BID)
+    public function saveField($type, $id, $Field=null, $deleteField=null, $rvid=null, $targetBid=BID)
     {
-        if (empty($id)) return false;
+        if (empty($id)) {
+            AcmsLogger::warning('idが空で、フィールドを保存できませんでした', [
+                'type' => $type,
+                'bid' => $targetBid,
+            ]);
+            return false;
+        }
 
         $this->deleteFieldCache($type, $id, $rvid);
 
-        $DB                 = DB::singleton(dsn());
-        $ARCHIVES_DIR_TO    = REVISON_ARCHIVES_DIR;
-        $tableName          = 'field';
-        $revision           = false;
+        $DB = DB::singleton(dsn());
+        $ARCHIVES_DIR_TO = ARCHIVES_DIR;
+        $tableName = 'field';
+        $revision = false;
+        $asNewVersion = false;
 
         if ( 1
             && enableRevision(false)
             && $rvid
             && $type == 'eid'
         ) {
-            if ( $moveFieldArchive === 'ARCHIVES_DIR' ) {
-                $ARCHIVES_DIR_TO = ARCHIVES_DIR;
-                $FieldOld = loadEntryField($id);
-                foreach ( $FieldOld->listFields() as $fd ) {
-                    if ( 1
-                        and !strpos($fd, '@path')
-                        and !strpos($fd, '@tinyPath')
-                        and !strpos($fd, '@largePath')
-                        and !strpos($fd, '@squarePath')
-                    ) {
-                        continue;
-                    }
-                    foreach ( $FieldOld->getArray($fd, true) as $i => $val ) {
-                        $path = $val;
-                        if ( !Storage::isFile($ARCHIVES_DIR_TO.$path) ) continue;
-                        Storage::remove($ARCHIVES_DIR_TO.$path);
-                    }
-                }
-            } else {
-                $tableName = 'field_rev';
-            }
+            $tableName = 'field_rev';
             $revision = true;
-        }
-
-        if ( 1
-            && $revision
-            && intval($rvid) === 1
-            && empty($moveFieldArchive)
-        ) {
-            $FieldOld = loadEntryField($id, 1);
-            foreach ( $FieldOld->listFields() as $fd ) {
-                if ( 1
-                    and !strpos($fd, '@path')
-                    and !strpos($fd, '@tinyPath')
-                    and !strpos($fd, '@largePath')
-                    and !strpos($fd, '@squarePath')
-                ) {
-                    continue;
-                }
-                foreach ( $FieldOld->getArray($fd, true) as $i => $val ) {
-                    $path = $val;
-                    if ( !Storage::isFile(REVISON_ARCHIVES_DIR.$path) ) continue;
-                    Storage::remove(REVISON_ARCHIVES_DIR.$path);
-                }
+            if (Entry::isNewVersion()) {
+                $asNewVersion = true;
             }
         }
 
@@ -974,21 +975,19 @@ class Helper
         }
         $DB->query($SQL->get(dsn()), 'exec');
 
-        $temp   = '';
-        if ( !empty($moveFieldArchive) ) {
-            $temp   = 'TEMP/';
-        }
-
-        if ( !empty($Field) ) {
+        if (!empty($Field)) {
             foreach ( $Field->listFields() as $fd ) {
                 // copy revision
-                if ( $revision ) {
+                if ($asNewVersion) {
                     if ( strpos($fd, '@path') ) {
                         $list   = $Field->getArray($fd, true);
                         $base   = substr($fd, 0, (-1 * strlen('@path')));
                         $set    = false;
                         foreach ($list as $i => $val) {
                             $path = $val;
+                            if (in_array($path, Entry::getUploadedFiles())) {
+                                continue;
+                            }
                             if (!$set) {
                                 $Field->delete($fd);
                                 $Field->delete($base.'@largePath');
@@ -996,14 +995,14 @@ class Helper
                                 $Field->delete($base.'@squarePath');
                                 $set = true;
                             }
-                            if (Storage::isFile(ARCHIVES_DIR.$temp.$path)) {
+                            if (Storage::isFile(ARCHIVES_DIR . $path)) {
                                 $info       = pathinfo($path);
                                 $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
                                 Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
                                 $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
                                 $newPath    = $dirname.uniqueString().$ext;
 
-                                $path       = ARCHIVES_DIR.$temp.$path;
+                                $path       = ARCHIVES_DIR . $path;
                                 $largePath  = otherSizeImagePath($path, 'large');
                                 $tinyPath   = otherSizeImagePath($path, 'tiny');
                                 $squarePath = otherSizeImagePath($path, 'square');
@@ -1134,19 +1133,14 @@ class Helper
      * @param string $scp
      * @param \Field $V
      * @param \Field $deleteField
-     * @param bool $moveArchive
-     *
      * @return \Field
      */
-    public function extract($scp='field', $V=null, $deleteField=null, $moveArchive=false)
+    public function extract($scp='field', $V=null, $deleteField=null)
     {
         $Field = new Field_Validation();
         $this->deleteField = $deleteField;
 
         $ARCHIVES_DIR = ARCHIVES_DIR;
-        if ( $moveArchive ) {
-            $ARCHIVES_DIR = ARCHIVES_DIR.'TEMP/';
-        }
 
         if ( !$this->deleteField ) $this->deleteField = new Field();
 
@@ -1320,8 +1314,6 @@ class Helper
                     for ( $i=0; $i<$cnt; $i++ ) {
                         $c          = $aryC[$i];
                         $data       =& $aryData[$i];
-                        $pattern    = '@'.REVISON_ARCHIVES_DIR.'@';
-                        $c['old']   = preg_replace($pattern, '', $c['old'], 1);
 
                         //-------------
                         // rawfilename
@@ -1349,7 +1341,6 @@ class Helper
                         // リクエストされた削除ファイル名が怪しい場合に削除と上書きをスキップ
                         // このチェックに引っかかった場合にもフィールドの情報は保持する(continueしない)
                         // 削除キーがDBに保存されていなかった場合などファイルが消せなくなるため
-                        // 救済措置としてDEBUG_MODEがONの時にはこのチェックを行わない
                         // 投稿者以上の権限を持っている場合にもチェックを行わない
                         // 暗号化は「フィールド名@パス」をmd5したもの
                         // 暗号化文字列の照合にDBは使えない
@@ -1358,11 +1349,9 @@ class Helper
                         // 他のエラーチェックで引っかかった時は
                         // DB上にデータは保存されないため比較できない
                         $secretCheck = ( 1
-                            and !DEBUG_MODE
-                            and !$moveArchive
-                            and !sessionWithContribution()
-                            and !empty($c['old'])
-                            and ( 0
+                            && !sessionWithSubscription()
+                            && !empty($c['old'])
+                            && ( 0
                                 or 'delete' == $c['edit']
                                 or !empty($c['_tmp_name'])
                             )
@@ -1371,13 +1360,15 @@ class Helper
                         //----------------------------
                         // delete ( 指定削除 continue )
                         if ( 1
-                            and 'delete' == $c['edit']
-                            and !empty($c['old'])
-                            and $secretCheck
-                            and empty($tmpMedia)
-                            and isExistsRuleModuleConfig()
+                            && 'delete' == $c['edit']
+                            && !empty($c['old'])
+                            && $secretCheck
+                            && empty($tmpMedia)
+                            && isExistsRuleModuleConfig()
                         ) {
-                            Image::deleteImageAllSize($ARCHIVES_DIR.normalSizeImagePath($c['old']));
+                            if (!Entry::isNewVersion()) {
+                                Image::deleteImageAllSize($ARCHIVES_DIR.normalSizeImagePath($c['old']));
+                            }
                             continue;
                         }
 
@@ -1402,7 +1393,9 @@ class Helper
                                 and empty($tmpMedia)
                                 and isExistsRuleModuleConfig()
                             ) {
-                                Image::deleteImageAllSize($ARCHIVES_DIR.normalSizeImagePath($c['old']));
+                                if (!Entry::isNewVersion()) {
+                                    Image::deleteImageAllSize($ARCHIVES_DIR.normalSizeImagePath($c['old']));
+                                }
                             }
 
                             //------------------------------
@@ -1420,9 +1413,8 @@ class Helper
                                                                 : uniqueString().'.'.$extension;
 
                             } else {
-
-                                $extension  = !empty($c['extension']) ? $c['extension']
-                                                                      : Image::detectImageExtenstion($xy['mime']);
+                                $extension = !empty($c['extension'])
+                                    ? $c['extension'] : Image::detectImageExtenstion($xy['mime']);
                                 $dirname    = Storage::archivesDir();
                                 $basename   = uniqueString().'.'.$extension;
                             }
@@ -1451,6 +1443,7 @@ class Helper
                                 $tmpMedia[] = array(
                                     'path'  => $normalPath,
                                 );
+                                Entry::addUploadedFiles($normal); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
                             }
 
                             //-------
@@ -1698,10 +1691,6 @@ class Helper
                         $_size  =& $arySize[$i];
                         $_secret=& $arySecret[$i];
 
-
-                        $pattern    = '@'.REVISON_ARCHIVES_DIR.'@';
-                        $c['old']   = preg_replace($pattern, '', $c['old'], 1);
-
                         //-------------
                         // rawfilename
                         if ( preg_match('/^@(.*)$/', $c['filename'], $match) ) {
@@ -1727,10 +1716,9 @@ class Helper
                         //---------------------
                         // シークレットチェック
                         $secretCheck = ( 1
-                            and !DEBUG_MODE
-                            and !sessionWithContribution()
-                            and !empty($c['old'])
-                            and ( 0
+                            && !sessionWithContribution()
+                            && !empty($c['old'])
+                            && ( 0
                                 or 'delete' == $c['edit']
                                 or !empty($c['_tmp_name'])
                             )
@@ -1738,11 +1726,13 @@ class Helper
 
                         //----------------------------
                         // delete ( 指定削除 continue )
-                        if ( 'delete' == $c['edit'] and !empty($c['old']) and $secretCheck and empty($tmpMedia) ) {
-                            Storage::remove($ARCHIVES_DIR.$c['old']);
-                            if ( HOOK_ENABLE ) {
-                                $Hook = ACMS_Hook::singleton();
-                                $Hook->call('mediaDelete', $ARCHIVES_DIR.$c['old']);
+                        if ('delete' === $c['edit'] && !empty($c['old']) && $secretCheck and empty($tmpMedia)) {
+                            if (!Entry::isNewVersion()) {
+                                Storage::remove($ARCHIVES_DIR.$c['old']);
+                                if ( HOOK_ENABLE ) {
+                                    $Hook = ACMS_Hook::singleton();
+                                    $Hook->call('mediaDelete', $ARCHIVES_DIR.$c['old']);
+                                }
                             }
                             continue;
                         }
@@ -1840,7 +1830,7 @@ class Helper
                             ) {
                                 //---------------------------
                                 // delete ( 古いファイルの削除 )
-                                if ( !empty($c['old']) && empty($tmpMedia) ) {
+                                if (!empty($c['old']) && empty($tmpMedia) && !Entry::isNewVersion()) {
                                     Storage::remove($ARCHIVES_DIR.$c['old']);
                                     if ( HOOK_ENABLE ) {
                                         $Hook = ACMS_Hook::singleton();
@@ -1852,6 +1842,7 @@ class Helper
                                 // copy
                                 $path     = $dirname.$basename;
                                 $realpath = $ARCHIVES_DIR.$path;
+                                Entry::addUploadedFiles($path); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
 
                                 // 重複対応
                                 $realpath = Storage::uniqueFilePath($realpath);
@@ -1959,6 +1950,7 @@ class Helper
         jsModule('uid', UID);
         jsModule('cid', CID);
         jsModule('eid', EID);
+        jsModule('rvid', RVID);
         jsModule('bcd', htmlspecialchars(ACMS_RAM::blogCode(BID), ENT_QUOTES));
         jsModule('rid', $this->Get->get('rid', null));
         jsModule('mid', $this->Get->get('mid', null));
@@ -2152,6 +2144,13 @@ class Helper
         $trialCount = DB::query($sql->get(dsn()), 'one');
         if ($trialCount >= $trialNumber) {
             // 試行回数を超えたのでロック
+            AcmsLogger::notice('試行回数を超えたのでロックしました', [
+                'lockKey' => $lockKey,
+                'trialTime' => $trialTime,
+                'trialNumber' => $trialNumber,
+                'lockTime' => $lockTime,
+            ]);
+
             $sql = SQL::newInsert('lock');
             $sql->addInsert('lock_key', $lockKey);
             $sql->addInsert('lock_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
@@ -2164,9 +2163,6 @@ class Helper
                 $sql->addWhereOpr('lock_source_address', REMOTE_ADDR);
             }
             DB::query($sql->get(dsn()), 'exec');
-
-            userErrorLog('ACMS Warning: Account Lock: ' . REMOTE_ADDR . ':' . $_SERVER['HTTP_USER_AGENT'] . ':' . $_SERVER['HTTP_REFERER']);
-
             return false;
         }
         $sql = SQL::newDelete('lock');
@@ -2200,7 +2196,6 @@ class Helper
     {
         $cacheExpireClient = intval(config('cache_expire_client'));
         if ( 1
-            && !DEBUG_MODE
             && !ACMS_POST
             && ('200' == substr(httpStatusCode(), 0, 3))
             && !ACMS_SID
@@ -2211,7 +2206,6 @@ class Helper
             header('Last-Modified: ' . getRFC2068Time(REQUEST_TIME));
             header('Expires: ' . getRFC2068Time(REQUEST_TIME + $cacheExpireClient));
         } else if (0
-            || DEBUG_MODE
             || ACMS_POST
             || ('200' !== substr(httpStatusCode(), 0, 3))
             || ACMS_SID
@@ -2235,7 +2229,6 @@ class Helper
 
         if (0
             || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE)
-            || (defined('IS_LOGIN_PAGE') && IS_LOGIN_PAGE)
             || strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET'
         ) {
             $no_cache_page = true;
@@ -2252,6 +2245,59 @@ class Helper
                 'charset' => config('charset'),
                 'data' => $contents,
             ], intval(config('cache_expire')), [$tagBid, $tagEid]);
+        }
+    }
+
+    /**
+     * 例外情報を連想配列に変換
+     *
+     * @param Exception $e
+     * @param array $add
+     * @return (string|int)[]
+     */
+    public function exceptionArray(\Exception $e, array $add = []): array
+    {
+        $exception = [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => getExceptionTraceAsString($e),
+        ];
+        return array_merge($exception, $add);
+    }
+
+    /**
+     * ファイルアップロードを検証
+     * @param string $name
+     * @return void
+     * @throws RuntimeException
+     */
+    public function validateFileUpload($name)
+    {
+        if (isset($_FILES[$name]['error'])) {
+            switch ($_FILES[$name]['error']) {
+                case UPLOAD_ERR_OK:
+                    break;
+                case UPLOAD_ERR_INI_SIZE:
+                    throw new \RuntimeException('アップロードされたファイルが大きすぎます');
+                case UPLOAD_ERR_FORM_SIZE:
+                    throw new \RuntimeException('アップロードされたファイルが大きすぎます');
+                case UPLOAD_ERR_PARTIAL:
+                    throw new \RuntimeException('通信エラーにより、正常にアップロードできませんでした');
+                case UPLOAD_ERR_NO_FILE:
+                    throw new \RuntimeException('ファイルがアップロードされませんでした');
+                case UPLOAD_ERR_NO_TMP_DIR:
+                    throw new \RuntimeException('一時ディレクトリがないためアップロードできませんでした');
+                case UPLOAD_ERR_CANT_WRITE:
+                    throw new \RuntimeException('ファイルの書き込みに失敗しました');
+                case UPLOAD_ERR_EXTENSION:
+                    throw new \RuntimeException('アップロードが拡張モジュールによって停止されました');
+                default:
+                    throw new \RuntimeException('不明なエラー');
+            }
+        }
+        if (!is_uploaded_file($_FILES[$name]['tmp_name'])) {
+            throw new \RuntimeException('アップロードされたファイルがありません');
         }
     }
 

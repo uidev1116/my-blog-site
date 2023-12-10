@@ -96,7 +96,7 @@
 		<td>
 			<input type="text" name="category_entry_summary_limit" value="{category_entry_summary_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="category_entry_summary_limit" />
-			<input type="hidden" name="category_entry_summary_limit:convert" value="a" />
+			<input type="hidden" name="category_entry_summary_limit:c" value="a" />
 			<input type="hidden" name="category_entry_summary_limit:validator#digits" id="validator-category_entry_summary_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-category_entry_summary_limit-digits" class="validator-result-{category_entry_summary_limit:validator#digits}">
@@ -110,7 +110,7 @@
 		<td>
 			<input type="text" name="category_entry_summary_offset" value="{category_entry_summary_offset}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="category_entry_summary_offset" />
-			<input type="hidden" name="category_entry_summary_offset:convert" value="a" />
+			<input type="hidden" name="category_entry_summary_offset:c" value="a" />
 			<input type="hidden" name="category_entry_summary_offset:validator#digits" id="validator-category_entry_summary_offset-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-category_entry_summary_offset-digits" class="validator-result-{category_entry_summary_offset:validator#digits}">
@@ -131,7 +131,7 @@
 		<td>
 			<input type="text" name="category_entry_summary_newtime" value="{category_entry_summary_newtime}" size="8" class="acms-admin-form-width-mini" /> <!--T-->秒<!--/T-->
 			<input type="hidden" name="config[]" value="category_entry_summary_newtime" />
-			<input type="hidden" name="category_entry_summary_newtime:convert" value="a" />
+			<input type="hidden" name="category_entry_summary_newtime:c" value="a" />
 			<input type="hidden" name="category_entry_summary_newtime:validator#digits" id="validator-category_entry_summary_newtime-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-category_entry_summary_newtime-digits" class="validator-result-{category_entry_summary_newtime:validator#digits}">
@@ -163,12 +163,12 @@
 		</td>
 	</tr>
 	<tr>
-		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログのエントリーが表示されます。<!--/T-->"></i></th>
+		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログ・カテゴリーのエントリーが表示されます。<!--/T-->"></i></th>
 		<td>
 			<input type="hidden" name="category_entry_summary_secret" value="off" />
 			<div class="acms-admin-form-checkbox">
 				<input type="checkbox" name="category_entry_summary_secret" value="on"{category_entry_summary_secret:checked#on} id="input-checkbox-category_entry_summary_secret" />
-				<label for="input-checkbox-category_entry_summary_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログのエントリーを表示する<!--/T--></label>
+				<label for="input-checkbox-category_entry_summary_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログ・カテゴリーのエントリーを表示する<!--/T--></label>
 			</div>
 			<input type="hidden" name="config[]" value="category_entry_summary_secret" />
 		</td>
@@ -288,9 +288,9 @@
 			<!--T-->横<!--/T-->&nbsp;<input type="text" name="category_entry_summary_image_x" value="{category_entry_summary_image_x}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル x 縦<!--/T-->&nbsp;<input type="text" name="category_entry_summary_image_y" value="{category_entry_summary_image_y}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル<!--/T-->
 			<input type="hidden" name="config[]" value="category_entry_summary_image_x" />
 			<input type="hidden" name="config[]" value="category_entry_summary_image_y" />
-			<input type="hidden" name="category_entry_summary_image_x:convert" value="a" />
+			<input type="hidden" name="category_entry_summary_image_x:c" value="a" />
 			<input type="hidden" name="category_entry_summary_image_x:validator#digits" id="validator-category_entry_summary_image_x-digits" />
-			<input type="hidden" name="category_entry_summary_image_y:convert" value="a" />
+			<input type="hidden" name="category_entry_summary_image_y:c" value="a" />
 			<input type="hidden" name="category_entry_summary_image_y:validator#digits" id="validator-category_entry_summary_image_y-digits" />
 
 			<div role="alert" aria-live="assertive">

@@ -17,22 +17,37 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function register(Container $container)
     {
-        if (isFacebookLoginAvailable()) {
-            $container->singleton('facebook-login', function() {
-                $config = Config::loadBlogConfigSet(BID);
-                return new Facebook(
-                    $config->get('facebook_app_id'),
-                    $config->get('facebook_app_secret'),
-                    'v3.2',
-                    'facebook'
-                );
-            });
-        }
+        $container->bind('google-login', function () {
+            $config = Config::loadBlogConfigSet(BID);
+            return new Google(
+                $config->get('google_login_client_id'),
+                $config->get('google_login_secret')
+            );
+        });
+
         $container->singleton('line-login', function() {
             $config = Config::loadBlogConfigSet(BID);
             return new Line(
                 $config->get('line_app_id'),
                 $config->get('line_app_secret')
+            );
+        });
+
+        $container->singleton('twitter-login', function() {
+            $config = Config::loadBlogConfigSet(BID);
+            return new Twitter(
+                $config->get('twitter_sns_login_consumer_key'),
+                $config->get('twitter_sns_login_consumer_secret')
+            );
+        });
+
+        $container->singleton('facebook-login', function() {
+            $config = Config::loadBlogConfigSet(BID);
+            return new Facebook(
+                $config->get('facebook_app_id'),
+                $config->get('facebook_app_secret'),
+                'v3.2',
+                'facebook'
             );
         });
     }

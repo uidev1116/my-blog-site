@@ -2,68 +2,91 @@
 
 class ACMS_GET_Admin_Module_Edit extends ACMS_GET_Admin_Edit
 {
-    function auth()
+    /**
+     * モジュールID
+     *
+     * @var int|null
+     */
+    protected $moduleId = null;
+
+    /**
+     * ルールID
+     *
+     * @var int|null
+     */
+    protected $ruleId = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function init()
     {
-        if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('module_edit', BID) ) return false;
-        } else {
-            $mid = $this->Get->get('mid', null);
-            if ( !sessionWithAdministration() && !Auth::checkShortcut('Module_Update', ADMIN, 'mid', $mid) ) {
-                return true;
-            }
+        if (!$this->ruleId = idval($this->Get->get('rid'))) {
+            $this->ruleId = null;
         }
-        return true;
+        if (!$this->moduleId = idval($this->Get->get('mid'))) {
+            $this->moduleId = null;
+        }
     }
 
-    function edit(& $Tpl)
+    public function auth()
     {
-        $mid    = $this->Get->get('mid');
-        $Module = $this->Post->getChild('module');
-
-        if ( !sessionWithAdministration() && Auth::checkShortcut('Module_Update', ADMIN, 'mid', $mid) ) {
-            $this->Post->set('shortcut', 'yes');
-        }
-
-        if ($rules = $this->getRule()) {
-            $topicVars['rule'] = 1;
-            foreach ($rules as $rule) {
-                $Tpl->add(array('rule:loop'), array(
-                    'name' => $rule['name'],
-                    'rid' => $rule['id'],
-                ));
+        if (roleAvailableUser()) {
+            if (roleAuthorization('module_edit', BID)) {
+                return true;
             }
+
+            if ($this->shortcutAuthorization()) {
+                return true;
+            }
+
+            return false;
         }
 
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newSelect('module');
-        $SQL->addSelect('module_blog_id');
-        $SQL->addWhereOpr('module_id', $mid);
-        $mbid   = $DB->query($SQL->get(dsn()), 'one');
-
-        if (!empty($mbid) && !(0
-                || sessionWithAdministration($mbid)
-                || (roleAvailableUser() && roleAuthorization('module_edit', $mbid))
-                || Auth::checkShortcut('Module_Update', ADMIN, 'mid', $mid)
-            )
-        ) {
-            $Tpl->add('error#auth');
+        if (sessionWithAdministration()) {
             return true;
         }
-        if ( $Module->isNull() && (empty($this->edit) or ( $this->edit !== 'insert' && $this->edit !== 'delete')) ) {
-            $_Module    = loadModule($mid);
-            $_Module->setField('field_', $_Module->get('field'));
 
-            if ( !!($start = $_Module->get('start')) ) {
+        if (!is_null($this->moduleId) && $this->shortcutAuthorization()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *  ショートカットによる認可チェック
+     *
+     * @return bool
+     */
+    protected function shortcutAuthorization(): bool
+    {
+        return Auth::checkShortcut([
+            'mid' => $this->moduleId,
+            'rid' => $this->ruleId
+        ]);
+    }
+
+    public function edit(&$Tpl)
+    {
+        $Module = $this->Post->getChild('module');
+
+        if ($Module->isNull() && (empty($this->edit) || ($this->edit !== 'insert' && $this->edit !== 'delete'))) {
+            $_Module = loadModule($this->moduleId);
+            $_Module->setField('field_', $_Module->get('field'));
+            $start = $_Module->get('start');
+            $end = $_Module->get('end');
+            if (!empty($start)) {
                 $date_time = explode(' ', $start);
-                $date      = $date_time[0];
-                $time      = $date_time[1];
+                $date = $date_time[0];
+                $time = $date_time[1];
                 $_Module->setField('start_date', $date);
                 $_Module->setField('start_time', $time);
             }
-            if ( !!($end = $_Module->get('end')) ) {
+            if (!empty($end)) {
                 $date_time = explode(' ', $end);
-                $date      = $date_time[0];
-                $time      = $date_time[1];
+                $date = $date_time[0];
+                $time = $date_time[1];
                 $_Module->setField('end_date', $date);
                 $_Module->setField('end_time', $time);
             }
@@ -71,54 +94,30 @@ class ACMS_GET_Admin_Module_Edit extends ACMS_GET_Admin_Edit
         }
 
         $this->buildArgLabels($Module);
-        $Module->set('mbid', $mbid);
 
-        if ( in_array($Module->get('name'), array('Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field')) ) {
+        if (in_array($Module->get('name'), ['Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field'])) {
             $Module->delete('id');
         }
-/*
-        if ( !isBlogGlobal(BID) ) {
-            $Module->delete('scope');
-        } else if ( !$Module->get('scope') ) {
-            $Module->set('scope', 'local');
-        }
-*/
-        //--------
-        // field
-        $Field  =& $this->Post->getChild('field');
-        if ($this->Post->isNull() and !!$mid) {
-            $Field->overload(loadModuleField($mid));
+
+        $Field = $this->Post->getChild('field');
+        if ($this->Post->isNull() && !empty($this->moduleId)) {
+            $Field->overload(loadModuleField($this->moduleId));
         }
 
         return true;
     }
 
-    protected function getRule() {
-        $SQL = SQL::newSelect('rule');
-        $SQL->addLeftJoin('blog', 'blog_id', 'rule_blog_id');
-        ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
-
-        $Where = SQL::newWhere();
-        $Where->addWhereOpr('rule_blog_id', BID, '=', 'OR');
-        $Where->addWhereOpr('rule_scope', 'global', '=', 'OR');
-        $SQL->addWhere($Where);
-        $SQL->addWhereOpr('rule_status', 'open');
-        $SQL->setOrder('rule_sort');
-
-        $result = array();
-        $result[] = array(
-            'id' => null,
-            'bid' => BID,
-            'name' => gettext('ルールなし'),
-        );
-        $all = DB::query($SQL->get(dsn()), 'all');
-        foreach ($all as $item) {
-            $result[] = array(
-                'id' => $item['rule_id'],
-                'bid' => BID,
-                'name' => $item['rule_name'],
-            );
-        }
-        return $result;
+    /**
+     * モジュールが所属するブログIDを取得
+     *
+     * @param int $moduleId
+     * @return int
+     */
+    protected function getModuleBlogId(int $moduleId)
+    {
+        $sql = SQL::newSelect('module');
+        $sql->addSelect('module_blog_id');
+        $sql->addWhereOpr('module_id', $moduleId);
+        return DB::query($sql->get(dsn()), 'one');
     }
 }

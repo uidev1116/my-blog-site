@@ -28,7 +28,7 @@ class ACMS_POST_Approval_NotificationDelete extends ACMS_POST_Approval
             if ( !array_search(SUID, $exceptAry) ) {
                 array_push($exceptAry, SUID);
                 $exceptAry = array_filter($exceptAry);
-            
+
                 $SQL = SQL::newUpdate('approval_notification');
                 $SQL->addUpdate('notification_except_user_ids', implode(',', $exceptAry));
                 $SQL->addWhereOpr('notification_rev_id', $rvid);
@@ -36,6 +36,13 @@ class ACMS_POST_Approval_NotificationDelete extends ACMS_POST_Approval
                 $SQL->addWhereOpr('notification_blog_id', $bid);
                 $SQL->addWhereOpr('notification_approval_id', $apid);
                 $DB->query($SQL->get(dsn()), 'exec');
+
+                $revision = Entry::getRevision($eid, $rvid);
+                AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '（' . $revision['entry_rev_memo'] . '）」の承認通知を削除しました', [
+                    'apid' => $apid,
+                    'eid' => $eid,
+                    'rvid' => $rvid,
+                ]);
             }
         }
 

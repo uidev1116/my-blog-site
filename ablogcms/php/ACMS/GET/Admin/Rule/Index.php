@@ -91,7 +91,7 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    function getLinkVars($bid, $rid)
+    protected function getLinkVars($bid, $rid)
     {
         return array(
             'itemUrl'   => acmsLink(array(
@@ -101,9 +101,23 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
                     'rid'   => $rid,
                 )),
             )),
-            'configUrl' => acmsLink(array(
+            'configSetBaseUrl' => acmsLink(array(
                 'bid'   => BID,
-                'admin' => 'config_set_index',
+                'admin' => 'config_set_base_index',
+                'query' => new Field(array(
+                    'rid'   => $rid,
+                )),
+            )),
+            'configSetThemeUrl' => acmsLink(array(
+                'bid'   => BID,
+                'admin' => 'config_set_theme_index',
+                'query' => new Field(array(
+                    'rid'   => $rid,
+                )),
+            )),
+            'configSetEditorUrl' => acmsLink(array(
+                'bid'   => BID,
+                'admin' => 'config_set_editor_index',
                 'query' => new Field(array(
                     'rid'   => $rid,
                 )),

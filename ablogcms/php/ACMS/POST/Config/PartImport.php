@@ -1,5 +1,8 @@
 <?php
 
+use Acms\Services\Facades\Config;
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
 {
     /**
@@ -12,11 +15,8 @@ class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
         if ( !$this->checkAuth() ) {
             return $this->Post;
         }
-
-        $rid = $this->Post->get('rid', null);
-        if ( !($setid = intval($this->Get->get('setid'))) ) { $setid = null; }
-        if (empty($rid)) {$rid = null;}
-
+        $rid = $this->Get->get('rid') ?: null;
+        $setid = $this->Get->get('setid') ?: null;
         try {
             $yaml = Config::yamlLoad($_FILES['file']['tmp_name']);
             $config = new Field();
@@ -27,8 +27,11 @@ class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
             Config::saveConfig($config, BID, $rid, null, $setid);
 
             $this->Post->set('import', 'success');
+
+            AcmsLogger::info('コンフィグの部分インポートをしました');
         } catch ( \Exception $e ) {
             $this->addError($e->getMessage());
+            AcmsLogger::info('コンフィグの部分エクスポートが失敗しました', Common::exceptionArray($e));
         }
 
         return $this->Post;

@@ -91,7 +91,7 @@ a:active {
 #adminBox {
   margin: 0 0 20px 0;
   padding: 12px 20px 10px;
-  background-color: #f1f1f1;
+  background-color: #F1F1F1;
   border: none;
 }
 
@@ -143,7 +143,7 @@ a:active {
   -webkit-transition: background-color 0.2s, border-color 0.2s;
   transition: background-color 0.2s, border-color 0.2s;
   font-size: 14px;
-  color: #333;
+  color: #333333;
   background-color: #F7F7F7;
   border: 1px solid rgba(0, 0, 0, 0.2);
   -webkit-transition: background-color 0.2s;
@@ -155,7 +155,7 @@ a:active {
   }
 }
 #tagList li a:link, #tagList li a:hover, #tagList li a:active, #tagList li a:visited {
-  color: #333;
+  color: #333333;
 }
 #tagList li a:hover {
   text-decoration: none;
@@ -163,10 +163,10 @@ a:active {
   border-color: rgba(0, 0, 0, 0.3);
 }
 #tagList li a:active, #tagList li a-active {
-  color: #333;
+  color: #333333;
   text-decoration: none;
   background-color: #E1E1E1;
-  border-color: rgba(0, 0, 0, 0.3);
+  border-color: rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
           box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -260,12 +260,12 @@ a:active {
 }
 
 .acms-admin-bg-light-gray {
-  background: #f0f1f5;
+  background: #F2F2F5;
 }
 
 .acms-admin-update-panel {
   padding: 15px 25px;
-  background: #f0f1f5;
+  background: #F2F2F5;
   border-radius: 6px;
 }
 
@@ -281,7 +281,7 @@ a:active {
   height: 30px;
   margin: 0 5px;
   background-image: none;
-  border: 1px solid #CCC;
+  border: 1px solid #CCCCCC;
 }
 
 .acms-admin-config-name {
@@ -343,7 +343,7 @@ a:active {
   }
 }
 .acms-admin-btn-group-entry {
-  min-width: 90px;
+  min-width: 70px;
 }
 
 .acms-admin-dropdown-menu > li > a {
@@ -414,9 +414,9 @@ a:active {
   height: 32px;
   margin-right: 0;
   padding: 10px 0;
-  background-color: #ffffff;
-  -webkit-box-shadow: 0 0 0 #ffffff;
-          box-shadow: 0 0 0 #ffffff;
+  background-color: #FFF;
+  -webkit-box-shadow: 0 0 0 #FFF;
+          box-shadow: 0 0 0 #FFF;
 }
 
 @media screen and (min-width: 768px) {
@@ -459,7 +459,7 @@ a:active {
   padding-right: calc(5px + constant(safe-area-inset-right));
   padding-left: calc(5px + constant(safe-area-inset-left));
   text-align: center;
-  background: #3E404D;
+  background: #35353A;
 }
 .acms-admin-navbar-admin .logo {
   float: left;
@@ -545,7 +545,7 @@ a:active {
 .acms-admin-title-rule a {
   display: block;
   padding: 20px 10px 20px 20px;
-  color: #333;
+  color: #333333;
 }
 
 .acms-admin-navbar-admin-nav > li > a:hover,
@@ -594,7 +594,7 @@ a:active {
   width: auto;
   margin: 0;
   font-size: 30px;
-  color: #ffffff;
+  color: #FFF;
 }
 @media print {
   .acms-admin-navbar-system .acms-admin-list-blog-sp {
@@ -619,7 +619,7 @@ a:active {
 
 .acms-admin-icon-logo.acms-admin-blog-color {
   display: block;
-  color: #fff;
+  color: #FFF;
 }
 
 .js-acms-color-picker-target {
@@ -638,7 +638,7 @@ a:active {
   width: auto;
   margin: 0;
   font-size: 30px;
-  color: #ffffff;
+  color: #FFF;
 }
 @media print {
   .acms-admin-navbar-system .acms-admin-list-blog-sp {
@@ -646,7 +646,7 @@ a:active {
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767.98px) {
   .js .js-offcanvas {
     display: none;
   }
@@ -698,7 +698,7 @@ a:active {
   z-index: 100001;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767.98px) {
   #main .ui-tabs {
     margin-bottom: 20px;
   }
@@ -707,8 +707,38 @@ a:active {
   }
 }
 .is-admin-page .smartphoto {
-  z-index: 100049;
+  z-index: 100048;
   background-color: rgba(0, 0, 0, 0.9);
+}
+
+:root {
+  --tbw-cell-vertical-padding: 4px;
+  --tbw-cell-horizontal-padding: 8px;
+  --tbw-cell-line-height: 1.5em;
+  --tbw-box-min-height: 100px;
+  --tbw-box-max-height: 500px;
+}
+
+.trumbowyg-box {
+  min-height: var(--tbw-box-min-height) !important;
+}
+.trumbowyg-box:not(.trumbowyg-fullscreen) {
+  max-height: var(--tbw-box-max-height) !important;
+}
+
+.trumbowyg-fullscreen {
+  z-index: 100049 !important;
+}
+
+.trumbowyg-editor-box table {
+  margin-bottom: var(--tbw-cell-line-height);
+}
+.trumbowyg-editor-box th,
+.trumbowyg-editor-box td {
+  min-width: calc(var(--tbw-cell-horizontal-padding) * 8);
+  height: calc(var(--tbw-cell-vertical-padding) * 2 + var(--tbw-cell-line-height));
+  padding: var(--tbw-cell-vertical-padding) var(--tbw-cell-horizontal-padding);
+  border: 1px solid #e7eaec;
 }
 
 .acms-admin-label-min-width {
@@ -718,501 +748,334 @@ a:active {
   text-align: center;
 }
 
-#loginBg {
-  background-color: #e5e5e9;
+/* ------------------------------
+ 管理者ログイン ベース
+------------------------------- */
+@media (min-width: 480px) {
+  .login-bg {
+    background-color: #e5e5e9;
+  }
 }
-
-.acms-admin-loginBox-container {
+/* ------------------------------
+ 管理者ログイン レイアウト
+------------------------------- */
+/* コンテナー */
+.acms-admin-login-container {
   max-width: 480px;
-  margin: 0 auto;
-}
-
-.acms-admin-titleBox {
-  max-height: 140px;
-  margin: 100px auto 0;
+  margin: 0 auto 80px;
+  background-color: #FFF;
   overflow: hidden;
 }
 
-.acms-admin-login-text {
-  color: #333;
+@media (min-width: 480px) {
+  .acms-admin-login-container {
+    margin-top: 100px;
+    margin-bottom: 60px;
+    border-radius: var(--login-radius-container);
+  }
+}
+/* メインコンテンツボックス */
+.acms-admin-login-main-box {
+  padding-right: var(--login-space-container-x);
+  padding-left: var(--login-space-container-x);
+  margin-bottom: var(--login-space-section-y);
+}
+
+/* ネガティブアクションボタンボックス */
+.acms-admin-login-main-box-bottom {
+  margin-top: var(--login-space-section-y);
+  padding-right: var(--login-space-container-x);
+  padding-left: var(--login-space-container-x);
+}
+
+@media (min-width: 480px) {
+  .acms-admin-login-main-box-bottom {
+    border-bottom-right-radius: var(--login-radius-container);
+    border-bottom-left-radius: var(--login-radius-container);
+    padding-top: var(--login-space-section-y);
+    padding-bottom: var(--login-space-section-y);
+    border-top: 1px solid var(--login-color-border-section);
+  }
+}
+/* ------------------------------
+ 管理者ログイン パーツ
+------------------------------- */
+/* ヘッダー画像 */
+.acms-admin-login-header-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 140px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  -o-object-position: center;
+     object-position: center;
+  margin-bottom: var(--login-space-section-y);
+}
+
+/* アクションボタンラップ */
+.acms-admin-login-action {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* 見出し */
+.acms-admin-login-page-title {
+  margin-bottom: var(--login-space-section-y);
+  margin-top: 0;
+  font-weight: normal;
+  text-align: center;
+}
+.acms-admin-login-page-title .acms-admin-admin-label {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+/* 左右ボーダー付きテキスト */
+.acms-admin-login-border-text-outer {
+  position: relative;
+  width: 100%;
+  margin: var(--login-space-section-y) 0;
+  text-align: center;
+}
+.acms-admin-login-border-text-outer:before {
+  position: absolute;
+  left: 0;
+  margin: 10px 0 0;
+  padding: 0 0 0 100%;
+  border-top: 1px solid var(--login-color-border-section);
+  content: "";
+}
+
+.acms-admin-login-border-text {
   font-size: 13px;
-  line-height: 1.7;
+  color: #333333;
+  line-height: 1.4;
+  position: relative;
+  padding: 0 10px;
+  background: #FFF;
 }
 @media print {
-  .acms-admin-login-text {
+  .acms-admin-login-border-text {
     font-size: 13px;
   }
 }
 
-.acms-admin-loginBox {
-  max-width: 480px;
-  margin: 0 auto 0;
-  padding: 20px;
-  background-color: #fff;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.acms-admin-siteImage {
-  float: left;
-  margin: 0 20px 0 0;
-  border: 1px solid #cccccc;
-}
-
-.acms-admin-siteImageText {
-  display: block;
-  margin-bottom: 15px;
-  text-align: center;
-}
-.acms-admin-siteImageText span {
-  margin-right: 5px;
-}
-
-.acms-admin-titleBox {
-  text-align: center;
-}
-
-.acms-admin-loginHeaderImage {
-  width: 480px;
-  height: auto;
-  vertical-align: top;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-
-.acms-admin-loginLogo {
-  border: none;
-}
-
-.acms-admin-loginBox .acms-admin-form {
-  margin-top: 25px;
-}
-.acms-admin-loginBox .acms-admin-form input {
-  margin-bottom: 10px;
-}
-
-.acms-admin-loginBox .acms-admin-form label {
-  font-size: 13px !important;
-  margin-top: 10px;
+/* 説明テキスト */
+.acms-admin-login-notice-text {
+  font-size: 13px;
+  margin: 20px 0;
+  color: #333333;
+  line-height: 1.4;
+  font-weight: bold;
 }
 @media print {
-  .acms-admin-loginBox .acms-admin-form label {
-    font-size: 13px !important;
+  .acms-admin-login-notice-text {
+    font-size: 13px;
   }
 }
 
-.acms-admin-loginBox .acms-admin-form-block {
-  width: 100%;
-}
-
-label.acms-admin-form-block a {
-  margin-left: 15px;
-}
-
-.acms-admin-loginBox-bottom {
-  margin-top: -10px;
-  padding: 20px;
-  background: #ffffff;
-  border-top: 1px solid #e5e5e9;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.acms-admin-loginBox-bottom p {
-  margin: 0;
-}
-
-.acms-admin-loginBox input.validator-result- {
-  display: block;
-}
-
-.acms-admin-loginBox input.validator-result-0,
-.acms-admin-loginBox input.validator-result-0:focus {
-  background: #fff;
-  border: 1px solid #bd3f5e;
-  -webkit-box-shadow: none;
-          box-shadow: none;
-}
-
-.loginLogo {
-  float: right;
-  margin-top: 10px;
-}
-
-.acms-admin-border {
-  position: relative;
-  width: 100%;
-  margin: 20px 0 18px 0;
-  text-align: center;
-}
-
-.acms-admin-border:before {
-  position: absolute;
-  left: 0;
-  margin: 10px 0 0 0;
-  padding: 0 0 0 100%;
-  border-top: 1px solid #e5e5e9;
-  content: "";
-}
-
-.acms-admin-borderText {
-  position: relative;
-  padding: 0 10px;
-  background: #fff;
-}
-
-.acms-admin-btn-snslogin-container {
-  margin: 0 -10px;
-  padding: 0;
-}
-
-.acms-admin-btn-snslogin-col {
-  position: relative;
-  display: block;
-  float: left;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  width: 100%;
-  margin: 0 0 20px 0;
-  padding: 0 10px;
-}
-
-@media screen and (min-width: 480px) {
-  .acms-admin-btn-snslogin-col {
-    width: 50%;
-  }
-  .acms-admin-btn-snslogin-col:only-child {
-    width: 100%;
-  }
-  .acms-admin-btn-snslogin-col:nth-last-child(n+3), .acms-admin-btn-snslogin-col:nth-last-child(n+3) ~ .acms-admin-btn-snslogin-col {
-    width: 33%;
-  }
-}
-.acms-admin-btn-snsimage {
-  position: absolute;
-  left: 10px;
-  width: 44px;
-  height: 100%;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-  border-right: 1px solid #ccc;
-  border-radius: 6px 0 0 6px;
-  font-size: 22px;
-}
-@media print {
-  .acms-admin-btn-snsimage {
-    font-size: 22px;
-  }
-}
-
-.acms-admin-btn-snsimage-facebook {
-  background-color: #1877f2;
-}
-
-.acms-admin-btn-snsimage-twitter {
-  background-color: #55acee;
-}
-
-.acms-admin-btn-snsimage-google {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  background-color: #FFF;
-  border: 1px solid #CECED2;
-}
-
-.acms-admin-btn-snsimage-line {
-  background-color: #00b901;
-}
-
-.acms-admin-btn-snsimage .acms-admin-icon-facebook-circle {
-  position: static;
-  padding: 0;
-  font-size: 28px;
-}
-@media print {
-  .acms-admin-btn-snsimage .acms-admin-icon-facebook-circle {
-    font-size: 28px;
-  }
-}
-.acms-admin-btn-snsimage .acms-admin-icon-facebook-circle:before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -14px 0 0 -14px;
-}
-.acms-admin-btn-snsimage .acms-admin-icon-twitter {
-  position: static;
-  padding: 0;
-}
-.acms-admin-btn-snsimage .acms-admin-icon-twitter:before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -11px 0 0 -11px;
-}
-.acms-admin-btn-snsimage .acms-admin-icon-google-login {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -11px 0 0 -11px;
-  padding: 0;
-}
-.acms-admin-btn-snsimage .acms-admin-icon-line-login {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -16px 0 0 -16px;
-  padding: 0;
-}
-
-.acms-admin-btn-snslogin {
-  padding: 12px 15px;
+/* リンクテキスト */
+.acms-admin-login-text-link {
   font-size: 14px;
-  border-radius: 6px;
+  line-height: 1.5;
+  text-decoration: none;
 }
 @media print {
-  .acms-admin-btn-snslogin {
+  .acms-admin-login-text-link {
+    font-size: 14px;
+  }
+}
+.acms-admin-login-text-link:link, .acms-admin-login-text-link:visited, .acms-admin-login-text-link:focus, .acms-admin-login-text-link:active {
+  color: #006DEC;
+}
+.acms-admin-login-text-link:hover {
+  color: #8ebef7;
+}
+
+/* ------------------------------
+ 管理者ログイン フォームパーツ
+------------------------------- */
+/* フォームラベル */
+.acms-admin-login-form-label {
+  font-size: 14px;
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 3px;
+  line-height: 1.4;
+  /* legendタグスタイルリセット */
+  padding: 0;
+  border: 0;
+}
+@media print {
+  .acms-admin-login-form-label {
     font-size: 14px;
   }
 }
 
-@media screen and (min-width: 480px) {
-  .acms-admin-btn-snslogin {
-    padding: 12px 15px 12px 44px;
+/* 注意文 */
+.acms-admin-login-input-caution {
+  font-size: 13px;
+  margin: 6px 0 0;
+  color: var(--login-color-error);
+  line-height: 1.4;
+  font-weight: bold;
+}
+@media print {
+  .acms-admin-login-input-caution {
+    font-size: 13px;
   }
 }
-.acms-admin-login-facebook {
-  padding: 0 10px 0 0;
+
+/* validatorスタイルで入力欄が非表示にならないよう上書き */
+.acms-admin-login-main-box input.validator-result- {
+  display: block;
 }
 
-.acms-admin-btn-facebooklogin {
+/* エラー時の入力欄スタイル */
+.acms-admin-login-main-box input.validator-result-0 {
+  border-color: var(--login-color-error);
+}
+
+/* ------------------------------
+ 管理者ページ ソーシャルログイン
+------------------------------- */
+/* ソーシャルログインリスト */
+.acms-admin-login-sns-btn-list {
+  margin-bottom: 20px;
+}
+
+.acms-admin-login-sns-btn-item + .acms-admin-login-sns-btn-item {
+  margin-top: 20px;
+}
+
+/* ソーシャルログインボタン */
+.acms-admin-login-sns-btn-item .acms-admin-btn {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  color: #FFF;
-  background: #1877f2;
-  border: 1px solid #1877f2;
+  height: var(--login-height-sns-btn);
+  padding: 0;
+  border-radius: 4px;
+  overflow: hidden;
 }
-.acms-admin-btn-facebooklogin:hover {
-  color: #FFF;
-  text-decoration: none;
-  background: #0163e2;
-  border: 1px solid #192752;
+.acms-admin-login-sns-btn-item .acms-admin-btn::before {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  content: "";
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
 }
-.acms-admin-btn-facebooklogin:link, .acms-admin-btn-facebooklogin:hover, .acms-admin-btn-facebooklogin:active, .acms-admin-btn-facebooklogin:visited {
-  color: #ffffff;
+.acms-admin-login-sns-btn-item .acms-admin-btn:hover::before {
+  background-color: rgba(0, 0, 0, 0.1);
 }
-.acms-admin-btn-facebooklogin:active {
-  text-decoration: none;
-  border: 1px solid #192752;
-  color: #FFFFFF;
-  background-color: #2D4694;
-  -webkit-box-shadow: inset 0 1px 2px #192752;
-          box-shadow: inset 0 1px 2px #192752;
-}
-.acms-admin-btn-facebooklogin:focus {
-  border-color: #192752;
-  outline: none;
+.acms-admin-login-sns-btn-item .acms-admin-btn:active::before {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-.acms-admin-btn-linelogin {
+/* ソーシャルログインボタンアイコン */
+.acms-admin-login-sns-btn-icon-outer {
+  position: relative;
+  z-index: 2;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  color: #FFF;
-  background: #00b901;
-  border: 1px solid #00b901;
-}
-.acms-admin-btn-linelogin:hover {
-  color: #FFF;
-  text-decoration: none;
-  background: #0a9a0a;
-  border: 1px solid #192752;
-}
-.acms-admin-btn-linelogin:link, .acms-admin-btn-linelogin:hover, .acms-admin-btn-linelogin:active, .acms-admin-btn-linelogin:visited {
-  color: #ffffff;
-}
-.acms-admin-btn-linelogin:active {
-  text-decoration: none;
-  border: 1px solid #192752;
-  color: #FFFFFF;
-  background-color: #00b901;
-  -webkit-box-shadow: inset 0 1px 2px #192752;
-          box-shadow: inset 0 1px 2px #192752;
-}
-.acms-admin-btn-linelogin:focus {
-  border-color: #192752;
-  outline: none;
+  width: calc(var(--login-height-sns-btn) - var(--login-border-width-btn-sns) * 2);
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
 }
 
-.acms-admin-btn-twitterlogin {
-  border: 1px solid #299af1;
-  color: #FFFFFF;
-  background-color: #299AF1;
-}
-.acms-admin-btn-twitterlogin:hover {
-  text-decoration: none;
-  border: 1px solid #005896;
-  color: #FFFFFF;
-  background-color: #4BAAF4;
-}
-.acms-admin-btn-twitterlogin:link, .acms-admin-btn-twitterlogin:hover, .acms-admin-btn-twitterlogin:active, .acms-admin-btn-twitterlogin:visited {
-  color: #ffffff;
-}
-.acms-admin-btn-twitterlogin:active {
-  text-decoration: none;
-  border: 1px solid #005896;
-  color: #FFFFFF;
-  background-color: #299AF1;
-  -webkit-box-shadow: inset 0 1px 2px #005896;
-          box-shadow: inset 0 1px 2px #005896;
-}
-.acms-admin-btn-twitterlogin:focus {
-  border-color: #005896;
-  outline: none;
+.acms-admin-login-sns-btn-icon {
+  display: inline-block;
+  height: auto;
 }
 
-.acms-admin-login-twitter {
-  padding: 0 0 0 10px;
+/* ソーシャルログインボタンテキスト */
+.acms-admin-login-sns-btn-text {
+  position: relative;
+  z-index: 2;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-left-width: var(--login-border-width-btn-sns);
+  border-left-style: solid;
 }
 
-.acms-admin-btn-googlelogin {
+/* ソーシャルログインボタンのカラー変化
+------------------------------ */
+/* Googleログインボタン */
+.acms-admin-login-sns-btn-google, .acms-admin-login-sns-btn-google:hover, .acms-admin-login-sns-btn-google:focus, .acms-admin-login-sns-btn-google:active {
   color: #333;
-  background: #FFF;
-  border: 1px solid #CECED2;
+  background-color: #FFF;
+  border-color: #CECECE;
 }
-.acms-admin-btn-googlelogin:link, .acms-admin-btn-googlelogin:hover, .acms-admin-btn-googlelogin:active, .acms-admin-btn-googlelogin:visited {
-  color: #FFF;
-}
-.acms-admin-btn-googlelogin:hover, .acms-admin-btn-googlelogin:active {
-  color: #333;
-  text-decoration: none;
-  background: #EEE;
-  border: 1px solid #C9C9CA;
-}
-.acms-admin-btn-googlelogin:focus {
-  border-color: #005896;
-  outline: none;
+.acms-admin-login-sns-btn-google .acms-admin-login-sns-btn-text {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
-@media (max-width: 479px) {
-  .acms-admin-titleBox {
-    margin: 0 auto;
-  }
-  .acms-admin-loginLogo {
-    width: 133px;
-    height: 23px;
-    border: none;
-  }
-  .acms-admin-loginHeaderImage {
-    width: 100%;
-    height: auto;
-    border-radius: 0;
-  }
-  #loginBg {
-    background-color: #fff;
-  }
-  .acms-admin-loginBox {
-    margin: 0;
-    padding: 10px;
-  }
-  .acms-admin-loginBox .acms-admin-form {
-    margin-top: 18px;
-  }
-  .acms-admin-loginTitle {
-    margin: 0 auto;
-  }
-  .acms-admin-sp-btn-admin {
-    display: inline-block;
-    margin: 0 5px 5px 0;
-    text-align: center;
-    text-decoration: none;
-    -webkit-transition: all 0.2s linear;
-    transition: all 0.2s linear;
-    display: inline-block;
-    padding: 8px 8px;
-    line-height: 1;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    border-radius: 3px;
-    -webkit-transition: background-color 0.2s, border-color 0.2s;
-    transition: background-color 0.2s, border-color 0.2s;
-    font-size: 14px;
-    color: #333;
-    background-color: #F7F7F7;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    -webkit-transition: background-color 0.2s;
-    transition: background-color 0.2s;
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-  }
+/* LINEログインボタン */
+.acms-admin-login-sns-btn-line, .acms-admin-login-sns-btn-line:hover, .acms-admin-login-sns-btn-line:focus, .acms-admin-login-sns-btn-line:active {
+  color: #FFF;
+  background-color: #06C755;
+  border-color: #06C755;
 }
-@media print and (max-width: 479px) {
-  .acms-admin-sp-btn-admin {
-    font-size: 14px;
-  }
+.acms-admin-login-sns-btn-line .acms-admin-login-sns-btn-text {
+  border-color: rgba(0, 0, 0, 0.08);
 }
-@media (max-width: 479px) {
-  .acms-admin-sp-btn-admin:link, .acms-admin-sp-btn-admin:hover, .acms-admin-sp-btn-admin:active, .acms-admin-sp-btn-admin:visited {
-    color: #333;
-  }
-  .acms-admin-sp-btn-admin:hover {
-    text-decoration: none;
-    background-color: #F1F1F1;
-    border-color: rgba(0, 0, 0, 0.3);
-  }
-  .acms-admin-sp-btn-admin:active, .acms-admin-sp-btn-admin-active {
-    color: #333;
-    text-decoration: none;
-    background-color: #E1E1E1;
-    border-color: rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-  .acms-admin-sp-btn-admin:active[disabled], .acms-admin-sp-btn-admin-active[disabled] {
-    opacity: 1;
-    filter: alpha(opacity=1);
-  }
-  .acms-admin-sp-btn-admin:focus {
-    background-color: #F7F7F7;
-    border-color: #137AF3;
-    outline: none;
-    -webkit-box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4);
-            box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4);
-  }
-  .acms-admin-sp-btn-admin:hover {
-    text-decoration: none;
-    background-color: #f2f2f2;
-    border-top: 1px solid rgba(0, 0, 0, 0.3);
-  }
-  .acms-admin-sp-btn-admin:link, .acms-admin-sp-btn-admin:hover, .acms-admin-sp-btn-admin:active, .acms-admin-sp-btn-admin:visited {
-    color: #0085cc;
-  }
-  .acms-admin-sp-btn-admin:active {
-    text-decoration: none;
-    background-color: #e6e6e6;
-    border-top: 1px solid rgba(0, 0, 0, 0.3) !important;
-    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  .acms-admin-loginBox,
-  .acms-admin-loginBox-bottom {
-    background: transparent;
-    border: none;
-  }
-  .acms-admin-loginBox-bottom {
-    margin: 0 0 20px 0;
-    padding: 0 10px;
-  }
-  .loginLogo {
-    float: none;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .acms-admin-btn-snsimage {
-    padding: 0;
-  }
+
+/* Xログインボタン */
+.acms-admin-login-sns-btn-x {
+  /* Xのみダーク系のためhoverカラーを反転 */
 }
+.acms-admin-login-sns-btn-x, .acms-admin-login-sns-btn-x:hover, .acms-admin-login-sns-btn-x:focus, .acms-admin-login-sns-btn-x:active {
+  color: #FFF;
+  background-color: #000;
+  border-color: #000;
+}
+.acms-admin-login-sns-btn-x .acms-admin-login-sns-btn-text {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.acms-admin-login-sns-btn-x.acms-admin-btn:hover::before {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+.acms-admin-login-sns-btn-x.acms-admin-btn:active::before {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+/* Facebookログインボタン */
+/* Facebookによるログイン機能は、将来廃止予定になります。 */
+.acms-admin-login-sns-btn-facebook, .acms-admin-login-sns-btn-facebook:hover, .acms-admin-login-sns-btn-facebook:focus, .acms-admin-login-sns-btn-facebook:active {
+  color: #FFF;
+  background-color: #1877F2;
+  border-color: #1877F2;
+}
+.acms-admin-login-sns-btn-facebook .acms-admin-login-sns-btn-text {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
 #acms-admin-main {
   z-index: 100007;
   height: 100%;
@@ -1236,54 +1099,6 @@ label.acms-admin-form-block a {
   max-width: 150px;
 }
 
-.acms-admin-password-strength-meter {
-  width: 100%;
-  height: 6px;
-  margin: 0 0 5px;
-  background-color: #7A7676;
-}
-.acms-admin-password-strength-meter.js-result-0 {
-  background: #C30B31;
-}
-.acms-admin-password-strength-meter.js-result-1 {
-  background: #FFA342;
-}
-.acms-admin-password-strength-meter.js-result-2 {
-  background: #FFED60;
-}
-.acms-admin-password-strength-meter.js-result-3 {
-  background: #A0D31B;
-}
-.acms-admin-password-strength-meter.js-result-4 {
-  background: #0963D2;
-}
-
-.acms-admin-password-strength-label:before {
-  margin: 0 5px 0 0;
-  font-family: "acms-admin-fonts";
-}
-.acms-admin-password-strength-label.js-label-0 {
-  color: #C30B31;
-}
-.acms-admin-password-strength-label.js-label-4 {
-  color: #0963D2;
-}
-.acms-admin-password-strength-label.js-label-0:before {
-  content: "\e999";
-}
-.acms-admin-password-strength-label.js-label-1:before {
-  content: "\e999";
-}
-.acms-admin-password-strength-label.js-label-2:before {
-  content: "\e904";
-}
-.acms-admin-password-strength-label.js-label-3:before {
-  content: "\e90c";
-}
-.acms-admin-password-strength-label.js-label-4:before {
-  content: "\e90c";
-}
-
 #sidebar {
   height: 100%;
   background: #FFF;
@@ -1294,7 +1109,7 @@ label.acms-admin-form-block a {
 }
 #sidebar .ps__rail-y .ps__thumb-y {
   width: 8px;
-  background: #b1b3c0;
+  background: #a6a6ae;
 }
 #sidebar.js-mobile {
   height: auto;
@@ -1340,9 +1155,9 @@ label.acms-admin-form-block a {
   position: relative;
   margin: 0;
   padding: 10px 10px 10px 15px;
-  color: #fff;
+  color: #FFF;
   font-weight: bold;
-  background: #FF5A3C;
+  background: #CE5769;
   font-size: 11px;
 }
 @media print {
@@ -1386,24 +1201,35 @@ label.acms-admin-form-block a {
   width: 33.3333333333%;
   text-align: center;
   vertical-align: middle;
-  border-right: 1px solid #CCC;
+  border-right: 1px solid #CCCCCC;
+  color: #333333;
+  font-weight: bold;
+  font-size: 20px;
+}
+@media print {
+  .acms-admin-sidebar-sp-list-item {
+    font-size: 20px;
+  }
 }
 .acms-admin-sidebar-sp-list-item:last-child {
   border: 0;
 }
-.acms-admin-sidebar-sp-list-item a {
-  display: block;
+.acms-admin-sidebar-sp-list-item a,
+.acms-admin-sidebar-sp-list-item button {
   padding: 10px 2px;
-  color: #333;
-  font-size: 20px;
-  font-weight: bold;
+  display: block;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
 }
-@media print {
-  .acms-admin-sidebar-sp-list-item a {
-    font-size: 20px;
-  }
-}
-.acms-admin-sidebar-sp-list-item a:hover {
+.acms-admin-sidebar-sp-list-item a:hover,
+.acms-admin-sidebar-sp-list-item button:hover {
   text-decoration: none;
 }
 .acms-admin-sidebar-sp-list-item .acms-admin-icon {
@@ -1429,7 +1255,7 @@ label.acms-admin-form-block a {
 .acms-admin-sidebar-link a {
   padding: 20px 10px 20px 40px;
   padding-left: calc(10px + constant(safe-area-inset-left));
-  color: #333;
+  color: #333333;
   font-weight: bold;
   text-indent: -12px;
   word-break: break-all;
@@ -1450,7 +1276,7 @@ label.acms-admin-form-block a {
   font-size: 14px;
   font-weight: bold;
   line-height: 1.2;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #CCCCCC;
 }
 @media print {
   .acms-admin-sidebar-item {
@@ -1520,7 +1346,7 @@ label.acms-admin-form-block a {
     padding: 15px 12px;
     color: #0085cc;
     background-color: #eeeeee;
-    border: solid 1px #cccccc;
+    border: solid 1px #CCCCCC;
     font-size: 15px;
   }
 }
@@ -1556,7 +1382,7 @@ label.acms-admin-form-block a {
     padding-bottom: 40px;
   }
 }
-@media only screen and (min-device-width: 767px) and (max-device-width: 1023px) and (orientation: portrait) {
+@media only screen and (min-device-width: 767.98px) and (max-device-width: 1023.98px) and (orientation: portrait) {
   #sidebar .acms-admin-btn-login {
     width: 75%;
   }
@@ -1580,7 +1406,7 @@ label.acms-admin-form-block a {
   margin: 0;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767.98px) {
   .acms-admin-table-heading {
     background-color: #FFF;
   }
@@ -1611,7 +1437,7 @@ label.acms-admin-form-block a {
     border-bottom: none;
   }
   .acms-admin-table-heading .acms-admin-td-edit {
-    border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #CCCCCC;
   }
   .acms-admin-table-admin .acms-admin-th-checkbox {
     text-align: left;
@@ -1639,7 +1465,7 @@ label.acms-admin-form-block a {
 }
 
 .acms-admin-admin-mini-table td.caution {
-  background-color: #f9bfb4 !important;
+  background-color: #EFC1C8 !important;
 }
 
 .acms-admin-admin-table-scroll {
@@ -1684,14 +1510,14 @@ label.acms-admin-form-block a {
   width: 100px;
 }
 
-@media only screen and (min-device-width: 767px) and (max-device-width: 1023px) and (orientation: portrait) {
+@media only screen and (min-device-width: 767.98px) and (max-device-width: 1023.98px) and (orientation: portrait) {
   .acms-admin-table-admin-edit th,
   .acms-admin-table-admin-edit td {
     display: block;
     text-align: left;
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767.98px) {
   .acms-admin-table-admin-edit img {
     width: auto;
     max-width: 200px !important;
@@ -1720,7 +1546,7 @@ label.acms-admin-form-block a {
 }
 .acms-admin-system-topicpath > li {
   display: inline-block;
-  color: #999;
+  color: #999999;
   vertical-align: middle;
 }
 .acms-admin-system-topicpath > li:not(.site-image) + li:before {
@@ -1736,7 +1562,7 @@ label.acms-admin-form-block a {
 .acms-admin-system-topicpath .link {
   display: inline-block;
   padding: 10px 5px;
-  color: #333;
+  color: #333333;
   line-height: 1;
   font-size: 14px;
 }
@@ -1749,9 +1575,9 @@ label.acms-admin-form-block a {
   text-decoration: none;
 }
 .acms-admin-system-topicpath .link:hover {
-  color: #333;
+  color: #333333;
   text-decoration: none;
-  background: #fff;
+  background: #FFF;
   border-radius: 3px;
 }
 
@@ -1766,7 +1592,7 @@ label.acms-admin-form-block a {
           align-items: center;
   margin: 0 0 20px 0;
   padding: 5px 15px;
-  background: #f1f1f1;
+  background: #F1F1F1;
   border-radius: 3px;
 }
 
@@ -1795,7 +1621,7 @@ label.acms-admin-form-block a {
     display: inline-block;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .acms-admin-topicpath.acms-admin-float-right {
     float: none;
   }
@@ -1854,13 +1680,13 @@ pre .linenums li {
   margin: 0 0 20px 0;
   padding: 10px;
   background: #FFF;
-  border: 1px solid #D8D8DE;
+  border: 1px solid #D2D2DB;
 }
 
 .acms-admin-table-container {
   margin: 0 0 10px 0;
-  background: #f0f1f5;
-  border: 1px solid #D8D8DE;
+  background: #F2F2F5;
+  border: 1px solid #D2D2DB;
 }
 .acms-admin-table-container .acms-admin-table {
   border: none;
@@ -1878,12 +1704,12 @@ pre .linenums li {
   border: 1px dashed #a7a7aa;
 }
 .acms-admin-unitbox .a-table td {
-  border: 1px solid #cccccc;
+  border: 1px solid #CCCCCC;
 }
 .acms-admin-unitbox i.acms-admin-icon-sort {
   margin-right: 4px;
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 767.98px) {
   .acms-admin-unitbox th,
   .acms-admin-unitbox td {
     display: block;
@@ -1923,7 +1749,7 @@ pre .linenums li {
 }
 
 .argRefLeft .js-acms_tab-active {
-  background-color: #fff;
+  background-color: #FFF;
 }
 
 .argRefCenter {
@@ -1944,7 +1770,7 @@ pre .linenums li {
   height: 90%;
   padding: 0;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: #FFF;
   border: 1px solid silver;
   border-left: none;
 }
@@ -1969,7 +1795,7 @@ pre .linenums li {
 .argRefCenter ul li a:hover,
 .argRefRight ul li a:hover {
   color: white;
-  background-color: #ffffff;
+  background-color: #FFF;
 }
 
 .argRefRight:not(:target) {

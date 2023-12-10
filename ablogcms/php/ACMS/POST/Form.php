@@ -37,6 +37,9 @@ class ACMS_POST_Form extends ACMS_POST
             $mtime = Storage::lastModified($path);
             if ( REQUEST_TIME - $lifetime > $mtime){
                 Storage::remove($path);
+                AcmsLogger::debug('添付ファイルの一時ファイルを削除しました', [
+                    'path' => $path,
+                ]);
                 if ( HOOK_ENABLE ) {
                     $Hook = ACMS_Hook::singleton();
                     $Hook->call('mediaDelete', $path);

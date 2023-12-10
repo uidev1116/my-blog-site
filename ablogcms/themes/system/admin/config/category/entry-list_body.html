@@ -85,7 +85,7 @@
 		<td>
 			<input type="text" name="category_entry_list_entry_limit" value="{category_entry_list_entry_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="category_entry_list_entry_limit" />
-			<input type="hidden" name="category_entry_list_entry_limit:convert" value="a" />
+			<input type="hidden" name="category_entry_list_entry_limit:c" value="a" />
 			<input type="hidden" name="category_entry_list_entry_limit:validator#digits" id="validator-category_entry_list_entry_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-category_entry_list_entry_limit-digits" class="validator-result-{category_entry_list_entry_limit:validator#digits}">
@@ -121,6 +121,17 @@
 				<label for="input-checkbox-category_entry_list_entry_indexing"><i class="acms-admin-ico-checkbox"></i><!--T-->インデキシングされているエントリーのみ表示する<!--/T--></label>
 			</div>
 			<input type="hidden" name="config[]" value="category_entry_list_entry_indexing" />
+		</td>
+	</tr>
+  <tr>
+		<th><!--T-->会員限定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、会員限定にチェックが入ったエントリーのみ表示されます。<!--/T-->"></i></th>
+		<td>
+			<input type="hidden" name="entry_list_members_only" value="off" />
+			<div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="entry_list_members_only" value="on"{entry_list_members_only:checked#on} id="input-checkbox-entry_list_members_only" />
+				<label for="input-checkbox-entry_list_members_only"><i class="acms-admin-ico-checkbox"></i><!--T-->会員限定のエントリーのみ表示する<!--/T--></label>
+			</div>
+			<input type="hidden" name="config[]" value="entry_list_members_only" />
 		</td>
 	</tr>
 	<tr>

@@ -143,6 +143,8 @@ class ACMS_POST_Unit_Duplicate extends ACMS_POST_Unit
 
         $this->fixEntry(EID);
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの指定ユニットを複製しました', $unit);
+
         $this->redirect(acmsLink(array(
             'tpl'   => 'include/unit-fetch.html',
             'utid'  => $nclid,

@@ -3,15 +3,26 @@
 		@include("/admin/topicpath.html")
 	</div>
 	<div>
-		<h1 class="acms-admin-admin-title js-dialog-title"><!--T-->コンフィグの部分インポート<!--/T-->
-		</h1>
+    @include("/admin/config/parts/header.html", {"title": "<!--T-->コンフィグの部分インポート<!--/T-->"})
 	</div>
 </header>
 
 <!-- BEGIN_MODULE Admin_Config_Import -->
 <div class="js-acms_fix_marker acms_fix_bg">
 	<div class="acms_fix_bg_index">
-		<a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+    <form method="post" action="">
+      <input type="hidden" name="bid" value="%{BID}" />
+      <input type="hidden" name="admin" value="config_index" />
+      <!-- BEGIN_IF [%{setid}/nem/] -->
+      <input type="hidden" name="setid" value="%{setid}" />
+      <input type="hidden" name="query[]" value="setid" />
+      <!-- END_IF -->
+      <!-- BEGIN_IF [%{rid}/nem/] -->
+      <input type="hidden" name="rid" value="%{rid}" />
+      <input type="hidden" name="query[]" value="rid" />
+      <!-- END_IF -->
+      <button type="submit" name="ACMS_POST_2GET" class="js-submit acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></button>
+    </form>
 
 		<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
 		<a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i
@@ -40,19 +51,28 @@
           <input type="file" name="file"/>
         </div>
 
-        <div class="acms-admin-margin-bottom-small">
-          <span><!--T-->ルール：<!--/T--></span>
-          <!-- BEGIN_MODULE Admin_Rule_SelectGlobal -->
-          <select name="rid">
-            <option value=""><!--T-->指定なし<!--/T--></option><!-- BEGIN rule:loop -->
-            <option value="{rid}"<!-- BEGIN_IF [%{rid}/eq/{rid}] --> selected<!-- END_IF -->>{label}</option><!-- END rule:loop -->
-          </select>
-          <!-- END_MODULE Admin_Rule_SelectGlobal -->
+        <div class="acms-admin-title-info-wrap acms-admin-margin-bottom-large">
+          <ul class="acms-admin-title-info">
+            <!-- BEGIN_IF [{{ isConfigSet }}/neq/1] -->
+            <!-- BEGIN_MODULE Admin_Config_Set_Name -->
+            <li class="acms-admin-title-info-item"><span class="acms-admin-title-info-item-name"><!--T-->セット<!--/T--></span><span class="acms-admin-label"><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->初期コンフィグ<!--/T--><!-- END_IF --></span></li>
+            <!-- END_MODULE Admin_Config_Set_Name -->
+            <!-- END_IF -->
+
+            <!-- BEGIN_MODULE Admin_Rule_Name -->
+            <li class="acms-admin-title-info-item"><!-- BEGIN_IF [{name}/nem/] --><span class="acms-admin-title-info-item-name"><!--T-->ルール<!--/T--></span><span class="acms-admin-label acms-admin-label-info">{name}</span></li>
+            <!-- END_IF -->
+            <!-- END_MODULE Admin_Rule_Name -->
+          </ul>
         </div>
+
         <div>
-        <input type="submit" name="ACMS_POST_Config_PartImport" value="<!--T-->インポート<!--/T-->"
-               class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"
-               onclick="return confirm('<!--T-->インポートを実行します。よろしいですか？<!--/T-->');"/>
+          <input
+            type="submit"
+            name="ACMS_POST_Config_PartImport"
+            value="<!--T-->インポート<!--/T-->"
+            class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"
+            onclick="return confirm('<!--T-->インポートを実行します。よろしいですか？<!--/T-->');"/>
         </div>
       </form>
     </td>

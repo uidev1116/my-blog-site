@@ -15,8 +15,16 @@ class ACMS_POST_Module_Delete extends ACMS_POST_Module
         }
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $this->delete($mid);
+
+            AcmsLogger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを削除しました', [
+                'mid' => $mid,
+            ]);
+        } else {
+            AcmsLogger::info('モジュールの削除に失敗しました', [
+                'mid' => $mid,
+            ]);
         }
 
         return $this->Post;

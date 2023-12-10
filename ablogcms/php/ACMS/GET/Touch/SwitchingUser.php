@@ -18,7 +18,7 @@ class ACMS_GET_Touch_SwitchingUser extends ACMS_GET
     protected function getOriginalUserId()
     {
         $session = Session::handle();
-        if ($uid = $session->get(ACMS_LOGIN_SESSION_ORGINAL_UIR)) {
+        if ($uid = $session->get(ACMS_LOGIN_SESSION_ORGINAL_UID)) {
             return $uid;
         }
         return false;

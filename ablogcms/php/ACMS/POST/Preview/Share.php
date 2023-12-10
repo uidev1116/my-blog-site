@@ -19,11 +19,19 @@ class ACMS_POST_Preview_Share extends ACMS_POST
             $lifetime = 60 * 60 * intval(config('url_preview_expire', 48));
             $shareUrl = Preview::getShareUrl($url, $lifetime);
 
+            AcmsLogger::info('プレビュー共有URLを発行しました', [
+                'url' => $url,
+            ]);
+
             die (json_encode(array(
                 'status' => true,
                 'uri' => $shareUrl,
             )));
         } catch (\Exception $e) {
+            AcmsLogger::notice('プレビュー共有URLの発行に失敗しました', [
+                'url' => $url,
+            ]);
+
             die (json_encode(array(
                 'status' => false,
                 'message' => $e->getMessage(),

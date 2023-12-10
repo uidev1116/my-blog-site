@@ -69,7 +69,7 @@ msgstr "Editor"
 msgid "投稿者権限"
 msgstr "Contributor"
 
-msgid "読者権限"
+msgid "会員権限"
 msgstr "Subscriber"
 
 msgid "プロフィール変更"
@@ -430,11 +430,11 @@ msgstr "Output character code set by config."
 msgid "コンフィグで指定したブログのテーマカラー"
 msgstr "Theme color of the blog."
 
-msgid "コンフィグで指定した管理者宛読者登録通知メールの送信元メールアドレス"
+msgid "コンフィグで指定した管理者宛会員登録通知メールの送信元メールアドレス"
 msgstr ""
 "Subscriber notification mail sender address for admin users set with config."
 
-msgid "コンフィグで指定した読者登録通知メールの送信元メールアドレス"
+msgid "コンフィグで指定した会員登録通知メールの送信元メールアドレス"
 msgstr "Subscriber notification mail sender address set with config."
 
 msgid "コンフィグで指定したパスワード再発行通知メールの送信元メールアドレス"
@@ -4919,7 +4919,7 @@ msgid "ユーザー登録の外部申請"
 msgstr "External user registration request"
 
 msgid ""
-"チェックをすると読者登録の受付ができるようになります。ログインページ内に読者"
+"チェックをすると会員登録の受付ができるようになります。ログインページ内に会員"
 "登録ページへのリンクが表示されます。"
 msgstr ""
 "If checked, you can accept subscribers.The link to the subscriber- "
@@ -4932,7 +4932,7 @@ msgid "外部申請時のアクティベーション"
 msgstr "Activation on the external request period"
 
 msgid ""
-"チェックをすると、読者登録フォームに入力された内容で、即座に有効なユーザーが"
+"チェックをすると、会員登録フォームに入力された内容で、即座に有効なユーザーが"
 "作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに"
 "記載されているパスワードを使って最初にログインした時点で有効なユーザーとして"
 "登録されます。"
@@ -4948,13 +4948,13 @@ msgid "外部申請「どこでもログイン」"
 msgstr "External Request [Login Anywhere]"
 
 msgid ""
-"チェックをすると読者登録ユーザの「どこでもログイン」の初期値が「ON」に設定さ"
+"チェックをすると会員登録ユーザの「どこでもログイン」の初期値が「ON」に設定さ"
 "れます。"
 msgstr ""
 "If checked, Initial value of the subscriber's initial value of [Login "
 "Anywhere] will be [ON]."
 
-msgid "読者を「どこでもログイン」を有効で作成する"
+msgid "会員を「どこでもログイン」を有効で作成する"
 msgstr "Add subscribers with [Login Anywhere] enabled."
 
 msgid "外部申請時の権限"
@@ -5270,7 +5270,7 @@ msgstr "Choose SMTP authentication method."
 msgid "自動選択"
 msgstr "Auto Selection."
 
-msgid "読者登録"
+msgid "会員登録"
 msgstr "Subscribers registration"
 
 msgid "登録者宛に送信されるメールの差出人を指定します。"
@@ -5279,7 +5279,7 @@ msgstr "Designate the mail sender for the subscribers."
 msgid "登録者宛に送信されるメールの宛先を指定します。"
 msgstr "Designate the mail destination for the subscribers."
 
-msgid "※読者登録の申し込み時に入力されたメールアドレスに送信されます"
+msgid "※会員登録の申し込み時に入力されたメールアドレスに送信されます"
 msgstr ""
 "* Mails will be sent to the mail address registered on the subscribers "
 "registration."
@@ -5304,7 +5304,7 @@ msgstr ""
 "Designate the place of the template of the mail's body sent to the "
 "subscribers."
 
-msgid "読者登録（管理者）"
+msgid "会員登録（管理者）"
 msgstr "Subscribers registration (administrator)"
 
 msgid "From（管理者）"
@@ -9622,7 +9622,7 @@ msgstr "Approved"
 msgid "承認中"
 msgstr "Being approved"
 
-msgid "差し戻し"
+msgid "承認却下"
 msgstr "Decline"
 
 msgid "承認前"
@@ -9655,13 +9655,13 @@ msgstr "All member"
 msgid "承認依頼します。よろしいですか？"
 msgstr "Are you sure you want to send the approval request?"
 
-msgid "差し戻し依頼"
+msgid "承認却下依頼"
 msgstr "Rejection Request"
 
-msgid "承認の差し戻しを依頼します。よろしいですか？"
+msgid "承認却下を依頼します。よろしいですか？"
 msgstr "Are you sure you want to send a rejection request?"
 
-msgid "承認を差し戻します。よろしいですか？"
+msgid "承認却下します。よろしいですか？"
 msgstr "Are you sure you want to reject?"
 
 msgid "最終承認をします。記事が公開または削除されます。よろしいですか？"
@@ -9676,7 +9676,7 @@ msgstr "Remaining Approval Point"
 msgid "却下まで"
 msgstr "Remaining Rejection Point"
 
-msgid "差し戻し依頼"
+msgid "承認却下依頼"
 msgstr "Decline Request"
 
 #: themes/system/include/module/edit.html

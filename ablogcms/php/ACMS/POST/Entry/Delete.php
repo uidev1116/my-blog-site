@@ -40,8 +40,11 @@ class ACMS_POST_Entry_Delete extends ACMS_POST_Entry
             if (HOOK_ENABLE) {
                 Webhook::call(BID, 'entry', 'entry:deleted', array($eid, null));
             }
+            $entryTitle = ACMS_RAM::entryTitle($eid);
             $this->delete($eid);
             $redirect   = $this->Post->get('redirect');
+
+            AcmsLogger::info('「' . $entryTitle . '」エントリーを削除しました');
 
             // @todo issue: nextstep周りの実装は、プレビューが会った頃の古いコードと思われる．暫定でコメントアウト．v1.4.3リリースまでに消すこと
 

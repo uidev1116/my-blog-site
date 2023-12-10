@@ -1,79 +1,87 @@
 <?php
 
+declare(strict_types=1);
+
+use Acms\Services\Facades\Application;
+use Acms\Services\Shortcut\Repository;
+use Acms\Services\Shortcut\Entities\Shortcut;
+
 class ACMS_GET_Admin_Shortcut_Index extends ACMS_GET_Admin
 {
-    function buildTpl(& $Tpl, $Tmp)
+    /**
+     * @var Repository
+     */
+    protected $ShortcutRepository;
+
+    /**
+     * @var Helper
+     */
+    protected $ShortcutService;
+
+    public function get()
     {
-        $amount = count($Tmp);
-        $i      = 1;
-        foreach ( $Tmp as $hash => $data ) {
-            $name = $data['name'];
-            $auth = $data['auth'];
-            $action = $data['action'];
-            $query = $data['query'];
-            $admin = $data['admin'];
+        /** @var Repository $ShortcutRepository */
+        $this->ShortcutRepository = Application::make('shortcut.repository');
+        /** @var Helper $ShortcutService */
+        $this->ShortcutService = Application::make('shortcut.helper');
 
-            // sort
-            for ( $j=1; $j<=$amount; $j++) {
-                $_vars  = array(
-                    'value' => $j,
-                    'label' => $j,
-                );
-                if ( $i === $j ) $_vars['selected'] = config('attr_selected');
-                $Tpl->add(array('sort:loop', 'shortcut:loop'), $_vars);
-            }
+        if (!sessionWithAdministration()) {
+            return '';
+        }
 
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
+        $Shortcuts = $this->ShortcutRepository->findAll(BID);
+        if (empty($Shortcuts)) {
+            $this->buildNotFround($Tpl);
+            return $Tpl->get();
+        }
+
+        $this->buildTpl($Tpl, $Shortcuts);
+
+        return $Tpl->get();
+    }
+
+    /**
+     * テンプレートの組み立て
+     *
+     * @param Template $Tpl
+     * @param Shortcut[] $Shortcuts
+     * @return void
+     */
+    protected function buildTpl(Template $Tpl, array $Shortcuts)
+    {
+        foreach ($Shortcuts as $Shortcut) {
             // auth
-            $Tpl->add(array('auth#'.$auth, 'shortcut:loop'));
+            $Tpl->add(array('auth#' . $Shortcut->getAuth(), 'shortcut:loop'));
 
             // data
-            $ids = $this->extractQuery($query);
-            $Tpl->add('shortcut:loop', array(
-                'name'  => $name,
-                'url'   => $this->createUrl($admin, $ids),
-                'itemUrl'   => acmsLink(array(
+            $Tpl->add('shortcut:loop', [
+                'name'  => $Shortcut->getName(),
+                'sort' => $Shortcut->getSort(),
+                'url'   => $this->ShortcutService->createUrl(
+                    $Shortcut->getAdmin(),
+                    $Shortcut->getIds()
+                ),
+                'itemUrl'   => acmsLink([
                     'bid'   => BID,
                     'admin' => 'shortcut_edit',
-                    'query' => array_merge($ids, array(
-                        'action' => $action,
-                        'admin' => $admin,
-                    )),
-                )),
-            ));
-            $i++;
+                    'query' => array_merge($Shortcut->getIds(), [
+                        'action' => $Shortcut->getAction(),
+                        'admin' => $Shortcut->getAdmin(),
+                    ]),
+                ]),
+            ]);
         }
         $Tpl->add(null, $this->buildField($this->Post, $Tpl));
     }
 
-    function get()
+    /**
+     * NotFoundテンプレートの組み立て
+     *
+     * @return array
+     */
+    protected function buildNotFround(Template $Tpl)
     {
-        if ( !sessionWithAdministration() ) return '';
-
-        $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('dashboard');
-        $SQL->addWhereOpr('dashboard_key', 'shortcut_%', 'LIKE');
-        $SQL->addWhereOpr('dashboard_blog_id', BID);
-        $SQL->setOrder('dashboard_sort');
-        if ( !$all = $DB->query($SQL->get(dsn()), 'all') ) {
-            $Tpl->add('index#notFound');
-            $Tpl->add(null, array('notice_mess' => 'show'));
-            return $Tpl->get();
-        }
-
-        $Tmp = array();
-        foreach ( $all as $row ) {
-            if ( !preg_match('@^shortcut_((?:(?:bid|uid|cid|eid|rid|mid|fmid|mbid|scid|null)_(?:\d+|null)_)*)(.+)_([^_]+)$@', $row['dashboard_key'], $match) ) continue;
-            $key = $match[1].$match[2];
-            $action = $match[3];
-            $Tmp[$key]['query'] = $match[1];
-            $Tmp[$key]['admin'] = $match[2];
-            $Tmp[$key][$action] = $row['dashboard_value'];
-        }
-
-        $this->buildTpl($Tpl, $Tmp);
-
-        return $Tpl->get();
-
+        $Tpl->add('index#notFound');
     }
 }

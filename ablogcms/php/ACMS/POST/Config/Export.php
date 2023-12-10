@@ -34,9 +34,15 @@ class ACMS_POST_Config_Export extends ACMS_POST
             Storage::remove($this->destPath);
             $this->putYaml();
             $this->download();
+
+            AcmsLogger::info('コンフィグをエクスポートしました', [
+                'path' => $this->destPath,
+            ]);
         } catch ( \Exception $e ) {
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
+
+            AcmsLogger::info('コンフィグのエクスポートに失敗しました', Common::exceptionArray($e));
         }
 
         return $this->Post;

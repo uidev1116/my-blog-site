@@ -40,6 +40,10 @@ class ACMS_POST_Comment_Delete extends ACMS_POST_Comment
         $SQL->addWhereOpr('comment_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのコメントを削除しました', [
+            'comment_id' => CMID,
+        ]);
+
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);
         } else if ( !empty($nextstep) ) {

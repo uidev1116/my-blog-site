@@ -29,7 +29,7 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
             'limit'                 => intval(config('entry_geo-list_limit')),
             'offset'                => intval(config('entry_geo-list_offset')),
             'indexing'              => config('entry_geo-list_indexing'),
-            'subCategory'           => config('entry_geo-list_sub_category'),
+            'membersOnly'           => config('entry_geo-list_members_only'),
             'secret'                => config('entry_geo-list_secret'),
             'notfound'              => config('mo_entry_geo-list_notfound'),
             'notfoundStatus404'     => config('entry_geo-list_notfound_status_404'),

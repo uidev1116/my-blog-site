@@ -13,8 +13,17 @@ class ACMS_POST_Webhook_Delete extends ACMS_POST
         $sql->addWhereOpr('webhook_id', $id);
         $bid = DB::query($sql->get(dsn()), 'one');
         if (sessionWithAdministration($bid)) {
+            $sql = SQL::newSelect('webhook');
+            $sql->setSelect('webhook_name');
+            $sql->addWhereOpr('webhook_id', $id);
+            $name = DB::query($sql->get(dsn()), 'one');
+
             $this->delete($id);
             $this->addMessage('Webhookを削除しました。');
+
+            AcmsLogger::info('Webhook「' . $name . '」を削除しました', [
+                'id' => $id,
+            ]);
         } else {
             $this->addError('権限がありません。');
         }

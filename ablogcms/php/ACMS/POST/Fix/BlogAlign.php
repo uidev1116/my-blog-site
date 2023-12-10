@@ -72,6 +72,7 @@ class ACMS_POST_Fix_BlogAlign extends ACMS_POST
                 }
                 if ( empty($que) ) break;
             }
+            AcmsLogger::info('ブログの親子構造を修復しました');
         }
         Cache::flush('temp');
 

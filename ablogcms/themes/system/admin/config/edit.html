@@ -3,7 +3,7 @@
 		@include("/admin/topicpath.html")
 	</div>
 	<div>
-		@include("/admin/config/parts/header.html", {"title": "<!--T--> 編集設定<!--/T--> "})
+		@include("/admin/config/parts/header-editor.html", {"title": "<!--T--> 編集設定<!--/T--> "})
 	</div>
 </header>
 
@@ -20,7 +20,20 @@
 <form action="" method="post" class="acms-admin-form js-dialog-body">
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
-			<a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+      <div class="js-fake-form" data-method="post" >
+        <input type="hidden" name="bid" value="%{BID}" />
+        <input type="hidden" name="admin" value="config_editor" />
+        <!-- BEGIN_IF [%{setid}/nem/] -->
+        <input type="hidden" name="setid" value="%{setid}" />
+        <input type="hidden" name="query[]" value="setid" />
+        <!-- END_IF -->
+        <!-- BEGIN_IF [%{rid}/nem/] -->
+        <input type="hidden" name="rid" value="%{rid}" />
+        <input type="hidden" name="query[]" value="rid" />
+        <!-- END_IF -->
+        <input type="hidden" name="ACMS_POST_2GET" value="on"/>
+        <button type="button" class="js-submit acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></button>
+      </div>
 
 			<input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"/>
 			@include("/admin/config/action.html")
@@ -375,7 +388,29 @@
 				<input type="hidden" name="config[]" value="entry_edit_link_url_label">
 			</td>
 			<td>
-
+			</td>
+		</tr>
+		<tr>
+			<td><!--T-->会員限定<!--/T--></td>
+			<td class="acms-admin-table-nowrap">
+				<input type="hidden" name="entry_edit_members_only_display" value="false">
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="entry_edit_members_only_display" value="true" {entry_edit_members_only_display:checked#true} id="input-checkbox-entry_edit_members_only_display-true">
+					<label for="input-checkbox-entry_edit_members_only_display-true"><i class="acms-admin-ico-checkbox"></i><!--T-->表示<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="entry_edit_members_only_display">
+			</td>
+			<td>
+				<input type="text" name="entry_edit_members_only_label" value="{entry_edit_members_only_label}" class="acms-admin-form-width-medium">
+				<input type="hidden" name="config[]" value="entry_edit_members_only_label">
+			</td>
+			<td>
+				<div class="acms-admin-form-checkbox">
+					<input type="hidden" name="entry_edit_members_only_default" value="off">
+					<input type="checkbox" name="entry_edit_members_only_default" value="on" {entry_edit_members_only_default:checked#on} id="input-checkbox-entry_edit_members_only_default-on">
+					<label for="input-checkbox-entry_edit_members_only_default-on"><i class="acms-admin-ico-checkbox"></i><!--T-->会員限定記事にする<!--/T--></label>
+				</div>
+				<input type="hidden" name="config[]" value="entry_edit_members_only_default">
 			</td>
 		</tr>
 		<tr>
@@ -383,8 +418,11 @@
 			<td class="acms-admin-table-nowrap">
 				<input type="hidden" name="related_entry_function" value="off"/>
 				<div class="acms-admin-form-checkbox">
-					<input type="checkbox" name="related_entry_function" value="on" {related_entry_function:checked#on}
-						   id="input-checkbox-related_entry_label"/>
+					<input
+						type="checkbox"
+						name="related_entry_function"
+						value="on" {related_entry_function:checked#on}
+						id="input-checkbox-related_entry_label"/>
 					<label for="input-checkbox-related_entry_label">
 						<i class="acms-admin-ico-checkbox"></i><!--T-->表示<!--/T-->
 					</label>
@@ -1063,7 +1101,7 @@
 
 				<input type="text" name="image_size_large" size="4" value="{image_size_large}"/> px
 				<input type="hidden" name="config[]" value="image_size_large"/>
-				<input type="hidden" name="image_size_large:convert" value="a"/>
+				<input type="hidden" name="image_size_large:c" value="a"/>
 				<input type="hidden" name="image_size_large:validator#digits" id="validator-image_size_large-digits"/>
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-image_size_large-digits"
@@ -1085,7 +1123,7 @@
 
 				<input type="text" name="image_size_tiny" size="4" value="{image_size_tiny}"/> px
 				<input type="hidden" name="config[]" value="image_size_tiny"/>
-				<input type="hidden" name="image_size_tiny:convert" value="a"/>
+				<input type="hidden" name="image_size_tiny:c" value="a"/>
 				<input type="hidden" name="image_size_tiny:validator#digits" id="validator-image_size_tiny-digits"/>
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-image_size_tiny-digits"
@@ -1102,7 +1140,7 @@
 			<td>
 				<input type="text" name="image_size_square" size="4" value="{image_size_square}"/> px
 				<input type="hidden" name="config[]" value="image_size_square"/>
-				<input type="hidden" name="image_size_square:convert" value="a"/>
+				<input type="hidden" name="image_size_square:c" value="a"/>
 				<input type="hidden" name="image_size_square:validator#digits" id="validator-image_size_square-digits"/>
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-image_size_square-digits"
@@ -1117,7 +1155,7 @@
 			<td>
 				<input type="text" name="image_jpeg_quality" size="4" value="{image_jpeg_quality}"/> %
 				<input type="hidden" name="config[]" value="image_jpeg_quality"/>
-				<input type="hidden" name="image_jpeg_quality:convert" value="a"/>
+				<input type="hidden" name="image_jpeg_quality:c" value="a"/>
 				<input type="hidden" name="image_jpeg_quality:validator#digits" id="validator-image_jpeg_quality-digits"/>
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-image_jpeg_quality-digits"
@@ -1133,7 +1171,7 @@
 			<td>
 				<input type="text" name="resize_image_jpeg_quality" size="4" value="{resize_image_jpeg_quality}"/> %
 				<input type="hidden" name="config[]" value="resize_image_jpeg_quality"/>
-				<input type="hidden" name="resize_image_jpeg_quality:convert" value="a"/>
+				<input type="hidden" name="resize_image_jpeg_quality:c" value="a"/>
 				<input type="hidden" name="resize_image_jpeg_quality:validator#digits" id="validator-resize_image_jpeg_quality-digits"/>
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-resize_image_jpeg_quality-digits"

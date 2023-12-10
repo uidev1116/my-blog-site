@@ -23,6 +23,24 @@ class Schema
     public $define;
 
     /**
+     * 現在のテーブル定義
+     * @var array
+     */
+    public $schema;
+
+    /**
+     * 新しいデータベースのインデックス情報
+     * @var array
+     */
+    public $indexDefine;
+
+    /**
+     * 現在のインデックス情報
+     * @var mixed
+     */
+    public $dbIndex;
+
+    /**
      * DB接続情報
      *
      * @var array
@@ -40,13 +58,6 @@ class Schema
      * 新しいデータベースのEngine変更情報
      */
     protected $engineDefine;
-
-    /**
-     * 新しいデータベースのインデックス情報
-     *
-     * @var array
-     */
-    protected $indexDefine;
 
     /**
      * @var \Acms\Services\Update\DatabaseInfo
@@ -216,7 +227,6 @@ class Schema
     public function createTables($tables, $idx = null)
     {
         $this->dbInfo->createTables($tables, $idx, $this->define);
-
         $this->reloadSchema();
     }
 
@@ -369,8 +379,10 @@ class Schema
         }
         $DB = DB::singleton($this->dsn);
         foreach ($res as $index) {
-            $q = "ALTER TABLE `$table` ADD $index";
-            $DB->query($q, 'exec');
+            if (!preg_match('/^PRIMARY\sKEY/', $index)) {
+                $q = "ALTER TABLE `$table` ADD $index";
+                $DB->query($q, 'exec');
+            }
         }
     }
 

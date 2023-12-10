@@ -4,30 +4,30 @@
  トピックパス
 ------------------------------- */
 .acms-topicpath {
-	margin: 0 0 10px 0;
-	padding: 0;
-	line-height: 1;
-	list-style: none;
-	@include global.font-size(11);
-	li {
-		float: left;
-		margin-right: 5px;
-		color: #999999;
-		+ li:before {
-			margin-right: 5px;
-			color: #999999;
-			content: "/";
-		}
-	}
-	a {
-		color: #333333;
-		line-height: 1;
-		@include global.font-size(11);
-		&:link {
-			text-decoration: none;
-		}
-		&:hover {
-			text-decoration: underline;
-		}
-	}
+  margin: 0 0 10px 0;
+  padding: 0;
+  line-height: 1;
+  list-style: none;
+  @include global.font-size(11);
+  li {
+    float: left;
+    margin-right: 5px;
+    color: global.$acms-color-gray80;
+    + li:before {
+      margin-right: 5px;
+      color: global.$acms-color-gray80;
+      content: "/";
+    }
+  }
+  a {
+    color: global.$acms-color-black;
+    line-height: 1;
+    @include global.font-size(11);
+    &:link {
+      text-decoration: none;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

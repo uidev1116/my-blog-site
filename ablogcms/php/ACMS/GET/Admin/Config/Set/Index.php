@@ -2,6 +2,26 @@
 
 class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
 {
+    /**
+     * コンフィグセットのタイプ
+     * @var string
+     */
+    protected $type = null;
+
+    /**
+     * 編集ページ
+     *
+     * @var string
+     */
+    protected $editPage = 'config_set_base_edit';
+
+    /**
+     * コンフィグ一覧
+     *
+     * @var string
+     */
+    protected $configPage = 'config_index';
+
     function get()
     {
         if (!$this->validate()) {
@@ -35,6 +55,7 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
         $SQL = SQL::newSelect('config_set');
         $SQL->addLeftJoin('blog', 'blog_id', 'config_set_blog_id');
         ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
+        $SQL->addWhereOpr('config_set_type', $this->type);
         $Where = SQL::newWhere();
         $Where->addWhereOpr('config_set_blog_id', BID, '=', 'OR');
         $Where->addWhereOpr('config_set_scope', 'global', '=', 'OR');
@@ -103,14 +124,14 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
             'configSetId' => $setid,
             'itemUrl' => acmsLink(array(
                 'bid' => $bid,
-                'admin' => 'config_set_edit',
+                'admin' => $this->editPage,
                 'query' => new Field(array(
                     'setid' => $setid,
                 )),
             )),
             'configUrl' => acmsLink(array(
                 'bid' => $bid,
-                'admin' => 'config_index',
+                'admin' => $this->configPage,
                 'query' => new Field(array(
                     'setid' => $setid,
                     'rid'   => $this->Get->get('rid'),

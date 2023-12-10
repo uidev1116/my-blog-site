@@ -10,8 +10,8 @@ class ACMS_POST_Role_Update extends ACMS_POST
 
         $Role->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
 
             //-----------
             // role
@@ -38,6 +38,16 @@ class ACMS_POST_Role_Update extends ACMS_POST
             }
 
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('「' . $Role->get('name') . '」ロールを更新しました', [
+                'roleID' => $rid,
+                'data' => $Role->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ロールの更新に失敗しました', [
+                'roleID' => $rid,
+                'validate' => $Role->_aryV,
+            ]);
         }
         return $this->Post;
     }

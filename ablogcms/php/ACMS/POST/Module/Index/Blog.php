@@ -16,21 +16,22 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
 
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
-            $DB     = DB::singleton(dsn());
+            $DB = DB::singleton(dsn());
+            $targetModules = [];
+            $errorModules = [];
 
-            $error  = array();
-            foreach ( array_reverse($this->Post->getArray('checks')) as $mid ) {
-                $id     = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
-                $mid    = $id[1];
-                if ( !($mid = intval($mid)) ) continue;
+            foreach (array_reverse($this->Post->getArray('checks')) as $mid) {
+                $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
+                $mid = $id[1];
+                if (!($mid = intval($mid))) continue;
 
-                $Module     = loadModule($mid);
+                $Module = loadModule($mid);
                 $identifier = $Module->get('identifier');
-                $scope      = $Module->get('scope');
+                $scope = $Module->get('scope');
 
-                if ( Module::double($identifier, $mid, $scope, $bid) ) {
+                if (Module::double($identifier, $mid, $scope, $bid)) {
                     //--------
                     // module
                     $SQL    = SQL::newUpdate('module');
@@ -54,16 +55,28 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
                     $DB->query($SQL->get(dsn()), 'exec');
                     Common::deleteFieldCache('mid', $mid);
 
+                    $targetModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
                 } else {
-                    $error[] = $mid;
+                    $errorModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
                 }
             }
-
-            if ( empty($error) ) {
-                $this->Post->set('refreshed', 'refreshed');
-            } else {
-                $this->Post->set('error', 'blog');
+            if (!empty($targetModules)) {
+                AcmsLogger::info('選択したモジュールIDを「' . ACMS_RAM::blogName($bid) . '」ブログに移動しました', [
+                    'targetModules' => $targetModules,
+                ]);
             }
+            if (!empty($errorModules)) {
+                AcmsLogger::info('選択したモジュールIDのブログ移動に失敗しました', [
+                    'errorModules' => $errorModules,
+                ]);
+            }
+            if (!empty($errorModules)) {
+                $this->Post->set('error', 'blog');
+            } else {
+                $this->Post->set('refreshed', 'refreshed');
+            }
+        } else {
+            AcmsLogger::info('選択したモジュールIDのブログ移動に失敗しました');
         }
 
         return $this->Post;

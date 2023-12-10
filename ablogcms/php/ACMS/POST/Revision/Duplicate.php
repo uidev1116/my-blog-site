@@ -4,56 +4,70 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
 {
     function post()
     {
-        if ( !IS_LICENSED ) die();
-
-        if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('entry_edit', BID, EID) ) die();
-        } else {
-            if ( !sessionWithCompilation(BID, false) ) {
-                if ( !sessionWithContribution(BID, false) ) die();
-                if ( SUID <> ACMS_RAM::entryUser(EID) && !enableApproval(BID, CID) ) die();
+        try {
+            if (roleAvailableUser()) {
+                if (!roleAuthorization('entry_edit', BID, EID)) {
+                    throw new \RuntimeException ('権限がありません');
+                }
+            } else {
+                if (!sessionWithCompilation(BID, false)) {
+                    if (!sessionWithContribution(BID, false)) {
+                        throw new \RuntimeException ('権限がありません');
+                    }
+                    if (SUID <> ACMS_RAM::entryUser(EID) && !enableApproval(BID, CID)) {
+                        throw new \RuntimeException ('権限がありません');
+                    }
+                }
             }
-        }
-        $DB     = DB::singleton(dsn());
+            $DB = DB::singleton(dsn());
 
-        // 新規リビジョン番号取得
-        $SQL = SQL::newSelect('entry_rev');
-        $SQL->addSelect('entry_rev_id', 'max_rev_id', null, 'MAX');
-        $SQL->addWhereOpr('entry_id', EID);
-        $SQL->addWhereOpr('entry_blog_id', BID);
+            // 新規リビジョン番号取得
+            $SQL = SQL::newSelect('entry_rev');
+            $SQL->addSelect('entry_rev_id', 'max_rev_id', null, 'MAX');
+            $SQL->addWhereOpr('entry_id', EID);
+            $SQL->addWhereOpr('entry_blog_id', BID);
 
-        $rvid = 2;
-        if ( $max = $DB->query($SQL->get(dsn()), 'one') ) {
-            $rvid = $max + 1;
-        }
+            $rvid = 2;
+            if ( $max = $DB->query($SQL->get(dsn()), 'one') ) {
+                $rvid = $max + 1;
+            }
 
-        $revisionName = $this->Post->get('revisionName');
-        if ( empty($revisionName) ) {
-            $revisionName = sprintf(config('revision_default_memo'), $rvid);
-        }
+            $revisionName = $this->Post->get('revisionName');
+            if ( empty($revisionName) ) {
+                $revisionName = sprintf(config('revision_default_memo'), $rvid);
+            }
 
-        $this->entryDupe($rvid, $revisionName);
-        $this->subCategoryDupe($rvid);
-        $this->unitDupe($rvid);
-        $this->fieldDupe($rvid);
-        $this->tagsDupe($rvid);
-        $this->relationDupe($rvid);
+            $this->entryDupe($rvid, $revisionName);
+            $this->subCategoryDupe($rvid);
+            $this->unitDupe($rvid);
+            $this->fieldDupe($rvid);
+            $this->tagsDupe($rvid);
+            $this->relationDupe($rvid);
 
-        if ( $this->Post->get('redirect', '') == 'approval' ) {
-            $this->redirect(acmsLink(array(
-                'bid'   => BID,
-                'eid'   => EID,
-                'tpl'   => 'ajax/revision-preview.html',
-                'query' => array(
-                    'rvid'  => $rvid,
-                ),
-            )));
-        } else {
-            $this->redirect(acmsLink(array(
-                'bid'   => BID,
-                'eid'   => EID,
-                'tpl'   => 'ajax/revision-index-list.html',
-            )));
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリの作業領域からバージョンを作成しました', [
+                'eid' => EID,
+                'rvid' => $rvid,
+                'versionName' => $revisionName,
+            ]);
+
+            if ( $this->Post->get('redirect', '') == 'approval' ) {
+                $this->redirect(acmsLink(array(
+                    'bid'   => BID,
+                    'eid'   => EID,
+                    'tpl'   => 'ajax/revision-preview.html',
+                    'query' => array(
+                        'rvid'  => $rvid,
+                    ),
+                )));
+            } else {
+                $this->redirect(acmsLink(array(
+                    'bid'   => BID,
+                    'eid'   => EID,
+                    'tpl'   => 'ajax/revision-index-list.html',
+                )));
+            }
+        } catch (\Exception $e) {
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリの作業領域からバージョンを作成できませんでした。' . $e->getMessage(), Common::exceptionArray($e));
         }
     }
 
@@ -71,12 +85,13 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
         if ( $row = $DB->query($q, 'row') ) {
             foreach ( $row as $key => $val ) {
                 if ( !in_array($key, array(
-                    'entry_rev_id', 'entry_rev_user_id', 'entry_rev_datetime', 'entry_rev_memo'
+                    'entry_rev_id', 'entry_rev_status', 'entry_rev_user_id', 'entry_rev_datetime', 'entry_rev_memo'
                 )) ) {
                     $Entry->addInsert($key, $val);
                 }
             }
             $Entry->addInsert('entry_rev_id', $rvid);
+            $Entry->addInsert('entry_rev_status', 'none');
             $Entry->addInsert('entry_rev_user_id', SUID);
             $Entry->addInsert('entry_rev_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
             $Entry->addInsert('entry_rev_memo', $revisionName);
@@ -126,16 +141,16 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                     foreach ( $oldAry as $old ) {
                         $info   = pathinfo($old);
                         $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory(REVISON_ARCHIVES_DIR.$dirname);
+                        Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                         $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
 
-                        $path   = REVISON_ARCHIVES_DIR.$old;
+                        $path   = ARCHIVES_DIR . $old;
                         $large  = otherSizeImagePath($path, 'large');
                         $tiny   = otherSizeImagePath($path, 'tiny');
                         $square = otherSizeImagePath($path, 'square');
 
-                        $newPath    = REVISON_ARCHIVES_DIR.$newOld;
+                        $newPath    = ARCHIVES_DIR . $newOld;
                         $newLarge   = otherSizeImagePath($newPath, 'large');
                         $newTiny    = otherSizeImagePath($newPath, 'tiny');
                         $newSquare  = otherSizeImagePath($newPath, 'square');
@@ -157,12 +172,12 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                     foreach ( $oldAry as $old ) {
                         $info   = pathinfo($old);
                         $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory(REVISON_ARCHIVES_DIR.$dirname);
+                        Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                         $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
 
-                        $path   = REVISON_ARCHIVES_DIR.$old;
-                        $newPath    = REVISON_ARCHIVES_DIR.$newOld;
+                        $path   = ARCHIVES_DIR . $old;
+                        $newPath    = ARCHIVES_DIR . $newOld;
 
                         copyFile($path, $newPath);
 
@@ -192,8 +207,8 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                             $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
                             $newOld = $dirname . uniqueString() . $ext;
 
-                            $path = REVISON_ARCHIVES_DIR . $old;
-                            $newPath = REVISON_ARCHIVES_DIR . $newOld;
+                            $path = ARCHIVES_DIR . $old;
+                            $newPath = ARCHIVES_DIR . $newOld;
 
                             copyFile($path, $newPath);
                             if (!$set) {
@@ -230,14 +245,14 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
             }
             foreach ( $revisionField->getArray($fd, true) as $i => $val ) {
                 $path   = $val;
-                if ( !Storage::isFile(REVISON_ARCHIVES_DIR.$path) ) continue;
+                if ( !Storage::isFile(ARCHIVES_DIR . $path) ) continue;
                 $info       = pathinfo($path);
                 $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                Storage::makeDirectory(ARCHIVES_DIR.'TEMP/'.$dirname);
-                Storage::copy(REVISON_ARCHIVES_DIR.$path, ARCHIVES_DIR.'TEMP/'.$path);
+                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
+                Storage::copy(ARCHIVES_DIR . $path, ARCHIVES_DIR . $path);
             }
         }
-        Entry::saveFieldRevision(EID, $revisionField, $rvid, 'REVISON_ARCHIVES_DIR');
+        Entry::saveFieldRevision(EID, $revisionField, $rvid);
     }
 
     function tagsDupe($rvid)

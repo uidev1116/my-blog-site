@@ -6,10 +6,15 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
     {
         $eid = idval($this->Post->get('eid', EID));
         if (!$this->validate($eid)) {
-            die();
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーを複製に失敗しました');
         }
         $newEid = $this->duplicate($eid);
-        $cid    = idval($this->Post->get('cid'));
+        $cid = idval($this->Post->get('cid'));
+
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーを複製しました', [
+            'newEID' => $newEid,
+        ]);
+
         $this->redirect(acmsLink(array(
             'bid'   => BID,
             'cid'   => $cid,
@@ -178,7 +183,6 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $sourceRev  = false;
 
         if ( $approval === 'pre_approval' ) {
-            $sourceDir  = REVISON_ARCHIVES_DIR;
             $sourceRev  = true;
         }
 
@@ -209,7 +213,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                         $large  = otherSizeImagePath($path, 'large');
                         $tiny   = otherSizeImagePath($path, 'tiny');
                         $square = otherSizeImagePath($path, 'square');
-                        $newPath    = REVISON_ARCHIVES_DIR.$newOld;
+                        $newPath    = ARCHIVES_DIR . $newOld;
                         $newLarge   = otherSizeImagePath($newPath, 'large');
                         $newTiny    = otherSizeImagePath($newPath, 'tiny');
                         $newSquare  = otherSizeImagePath($newPath, 'square');
@@ -232,7 +236,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                         $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
                         $path   = $sourceDir.$old;
-                        $newPath    = REVISON_ARCHIVES_DIR.$newOld;
+                        $newPath    = ARCHIVES_DIR . $newOld;
                         copyFile($path, $newPath);
 
                         $newAry[]   = $newOld;
@@ -251,7 +255,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                             if ( !Storage::isFile($sourceDir.$path) ) continue;
                             $info       = pathinfo($path);
                             $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                            Storage::makeDirectory(REVISON_ARCHIVES_DIR.$dirname);
+                            Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                             $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
                             $newPath    = $dirname.uniqueString().$ext;
 
@@ -264,10 +268,10 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                             $newTinyPath    = otherSizeImagePath($newPath, 'tiny');
                             $newSquarePath  = otherSizeImagePath($newPath, 'square');
 
-                            Storage::copy($path, REVISON_ARCHIVES_DIR.$newPath);
-                            Storage::copy($largePath, REVISON_ARCHIVES_DIR.$newLargePath);
-                            Storage::copy($tinyPath, REVISON_ARCHIVES_DIR.$newTinyPath);
-                            Storage::copy($squarePath, REVISON_ARCHIVES_DIR.$newSquarePath);
+                            Storage::copy($path, ARCHIVES_DIR . $newPath);
+                            Storage::copy($largePath, ARCHIVES_DIR . $newLargePath);
+                            Storage::copy($tinyPath, ARCHIVES_DIR . $newTinyPath);
+                            Storage::copy($squarePath, ARCHIVES_DIR . $newSquarePath);
 
 
                             if ( !$set ) {
@@ -379,7 +383,8 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 'entry_rev_memo',
                 'entry_rev_user_id',
                 'entry_rev_datetime',
-                'entry_current_rev_id'
+                'entry_current_rev_id',
+                'entry_reserve_rev_id'
             )) ) {
                 $SQL->addInsert($fd, $val);
             }
@@ -392,6 +397,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         foreach ( $row as $fd => $val ) {
             if ( !in_array($fd, array(
                 'entry_current_rev_id',
+                'entry_reserve_rev_id',
                 'entry_last_update_user_id',
                 'entry_rev_id',
                 'entry_rev_user_id',
@@ -445,7 +451,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 if ( !Storage::isFile($sourceDir.$path) ) continue;
                 $info       = pathinfo($path);
                 $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                Storage::makeDirectory(REVISON_ARCHIVES_DIR.$dirname);
+                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                 $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
                 $newPath    = $dirname.uniqueString().$ext;
 
@@ -458,10 +464,10 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 $newTinyPath    = otherSizeImagePath($newPath, 'tiny');
                 $newSquarePath  = otherSizeImagePath($newPath, 'square');
 
-                Storage::copy($path, REVISON_ARCHIVES_DIR.$newPath);
-                Storage::copy($largePath, REVISON_ARCHIVES_DIR.$newLargePath);
-                Storage::copy($tinyPath, REVISON_ARCHIVES_DIR.$newTinyPath);
-                Storage::copy($squarePath, REVISON_ARCHIVES_DIR.$newSquarePath);
+                Storage::copy($path, ARCHIVES_DIR . $newPath);
+                Storage::copy($largePath, ARCHIVES_DIR . $newLargePath);
+                Storage::copy($tinyPath, ARCHIVES_DIR . $newTinyPath);
+                Storage::copy($squarePath, ARCHIVES_DIR . $newSquarePath);
 
                 if ( !$set ) {
                     $Field->delete($fd);
@@ -508,11 +514,11 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                         $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
                         $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
-                        $path   = ARCHIVES_DIR.$old;
+                        $path   = ARCHIVES_DIR . $old;
                         $large  = otherSizeImagePath($path, 'large');
                         $tiny   = otherSizeImagePath($path, 'tiny');
                         $square = otherSizeImagePath($path, 'square');
-                        $newPath    = ARCHIVES_DIR.$newOld;
+                        $newPath    = ARCHIVES_DIR . $newOld;
                         $newLarge   = otherSizeImagePath($newPath, 'large');
                         $newTiny    = otherSizeImagePath($newPath, 'tiny');
                         $newSquare  = otherSizeImagePath($newPath, 'square');
@@ -616,7 +622,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $row['entry_user_id']           = SUID;
         $SQL    = SQL::newInsert('entry');
         foreach ( $row as $fd => $val ) {
-            if ( $fd == 'entry_current_rev_id' ) {
+            if ($fd === 'entry_current_rev_id' || $fd === 'entry_reserve_rev_id') {
                 continue;
             }
             $SQL->addInsert($fd, $val);

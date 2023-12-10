@@ -41,6 +41,8 @@ class ACMS_POST_Unit_Update extends ACMS_POST_Unit
             Webhook::call(BID, 'entry', 'entry:updated', array(EID, null));
         }
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのユニットを更新しました', $Column);
+
         return $this->Post;
     }
 }

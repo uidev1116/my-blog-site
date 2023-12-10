@@ -31,6 +31,8 @@ class ACMS_POST_Backup_BlogExport extends ACMS_POST_Backup_Base
     public function post()
     {
         try {
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログのエクスポートを実行しました');
+
             $this->authCheck('backup_export');
 
             ignore_user_abort(true);
@@ -55,6 +57,8 @@ class ACMS_POST_Backup_BlogExport extends ACMS_POST_Backup_Base
         } catch (\Exception $e) {
             $this->Post->set('error', $e->getMessage());
             Storage::removeDirectory($this->srcPath);
+
+            AcmsLogger::warning('ブログのエクスポート中にエラーが発生しました。', Common::exceptionArray($e));
         }
         return $this->Post;
     }

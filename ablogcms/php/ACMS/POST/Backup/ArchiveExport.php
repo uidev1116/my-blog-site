@@ -7,6 +7,8 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
     function post()
     {
         try {
+            AcmsLogger::info('アーカイブのエクスポートを実行しました');
+
             $this->authCheck('backup_export');
             ignore_user_abort(true);
             set_time_limit(0);
@@ -20,6 +22,7 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
             die();
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('アーカイブのバックアップに失敗しました', Common::exceptionArray($e));
         }
         return $this->Post;
     }
@@ -64,6 +67,8 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
         } catch ( \Exception $e ) {
             if ($message = $e->getMessage()) {
                 $logger->error($message);
+
+                AcmsLogger::warning('アーカイブのバックアップ中にエラーが発生しました。', Common::exceptionArray($e));
             }
         }
         DB::setThrowException(false);

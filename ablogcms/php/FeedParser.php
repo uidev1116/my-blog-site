@@ -159,8 +159,12 @@ class FeedParser
         try {
             $req = \Http::init($url, 'GET');
             $response = $req->send();
+            if (strpos(\Http::getResponseHeader('http_code'), '200') === false) {
+                throw new \RuntimeException(\Http::getResponseHeader('http_code'));
+            }
             $this->feed = $response->getResponseBody();
         } catch (\Exception $e) {
+            \AcmsLogger::error('Feedを取得できませんでした', \Common::exceptionArray($e, ['url' => $url]));
         }
     }
 

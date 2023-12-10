@@ -347,6 +347,8 @@
     "link_settings": "Set the link",
     "caption": "Caption",
     "caption_settings": "Set the caption",
+    "filename": "File Name",
+    "filename_settings": "Rename the file.",
     "alt_settings": "Set the alt text",
     "title": "Title",
     "details": "Details",
@@ -388,5 +390,43 @@
   },
   "scrollhint": {
     "scrollable": "scrollable"
+  },
+  "entry_lock": {
+    "modal": {
+      "title": "Another User is Editing this Article",
+      "lead1": "Another user is currently editing this article. To edit it safely, please wait until the user finishes editing.",
+      "lead2": "You cannot edit the article at the same time as the other user. Please wait until the user finishes editing or the lock expires.",
+      "lead3": "\"Continue editing\" button allows you to force edit, but please be careful as there is a possibility that one of the edited contents may not be saved.",
+      "noteLabel": "Risk of losing one's own edit",
+      "note": "There is a possibility that your saved edits may disappear as they may be overwritten by later saved data. It is safe to coordinate with the editing user and arrange the editing order.",
+      "nameLabel": "Username",
+      "editDateLabel": "Edit date and time",
+      "lockExpireLabel": "Lock expiration date and time",
+      "viewLink": "Go to the viewing page",
+      "editLink": "Continue editing"
+    }
+  },
+  "logger": {
+    "modal": {
+      "title": "Log Details",
+      "clipboardButton": "Copy to clipboard",
+      "clipboardMessage": "Copied to clipboard.",
+      "datetime": "Datetime",
+      "level": "Level",
+      "message": "Message",
+      "blog": "Blog name",
+      "loginUserName": "Logged-in user",
+      "switchUserName": "Switched user",
+      "ipAddress": "IP Address",
+      "referer": "Referer",
+      "method": "HTTP Method",
+      "httpStatus": "HTTP Status",
+      "responseTime": "Response time",
+      "ruleName": "Rule name",
+      "postModule": "Post Module",
+      "httpRequestHeader": "HTTP Request Header",
+      "httpRequestBody": "HTTP Request Body",
+      "extraInfo": "Extra info"
+    }
   }
 }

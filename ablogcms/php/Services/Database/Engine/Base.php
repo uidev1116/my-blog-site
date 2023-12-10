@@ -435,7 +435,7 @@ abstract class Base
             return;
         }
         $this->hook($sql);
-        if ( isBench() && $time > DB_SLOW_QUERY_TIME ) {
+        if (isBenchMarkMode() && $time > DB_SLOW_QUERY_TIME) {
             global $bench_slow_query;
             $bench_slow_query[] = array(
                 'time' => $time,

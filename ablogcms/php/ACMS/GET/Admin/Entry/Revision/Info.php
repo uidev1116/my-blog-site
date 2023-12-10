@@ -1,60 +1,80 @@
 <?php
 
-class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry
+class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
 {
-    function get()
+    public function get()
     {
-        if ( !sessionWithContribution(BID, false) ) return 'Bad Access.';
-        if ( !EID ) return '';
-        if ( !RVID ) return '';
+        if (!sessionWithContribution(BID, false)) {
+            return 'Bad Access.';
+        }
+        if (!EID) {
+            return '';
+        }
+        if (!RVID) {
+            return '';
+        }
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
+        $revision = $this->getRevision(EID, RVID);
+        $isReserve = strtotime($revision['entry_start_datetime']) > REQUEST_TIME;
+        $vars = [];
 
-        $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $sql = SQL::newSelect('entry');
+        $sql->setSelect('entry_current_rev_id');
+        $sql->addWhereOpr('entry_id', EID);
+        $currentRevId = DB::query($sql->get(dsn()), 'one');
 
-        if ( roleAvailableUser() ) {
-            if ( 0
-                || ( enableApproval(BID, CID) && sessionWithApprovalPublic(BID, CID) )
-                || ( !enableApproval(BID, CID) && roleAuthorization('entry_edit', BID, EID) )
+        if (RVID === 1) {
+        } else if (RVID === intval($currentRevId)) {
+        } else if (roleAvailableUser()) {
+            if (0
+                || (enableApproval(BID, $revision['entry_category_id']) && sessionWithApprovalPublic(BID, $revision['entry_category_id']))
+                || (!enableApproval(BID, $revision['entry_category_id']) && roleAuthorization('entry_edit', BID, EID))
             ) {
-                $Tpl->add('revisionChange');
+                $Tpl->add('revisionChange', [
+                    'canChange' => '1',
+                    'isReserve' => $isReserve ? '1' : '0',
+                    'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
+                ]);
             }
-        } else if ( enableApproval(BID, CID) ) {
-            if ( sessionWithApprovalPublic(BID, CID) ) {
-                $Tpl->add('revisionChange');
+        } else if (enableApproval(BID, $revision['entry_category_id'])) {
+            if (sessionWithApprovalAdministrator(BID, $revision['entry_category_id']) && isset($revision['entry_rev_status']) && $revision['entry_rev_status'] === 'approved') {
+                $Tpl->add('revisionChange', [
+                    'canChange' => '1',
+                    'isReserve' => $isReserve ? '1' : '0',
+                    'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
+                ]);
             }
         } else {
             do {
-                if ( !sessionWithCompilation(BID, false) ) {
-                    if ( !sessionWithContribution(BID, false) ) break;
-                    if ( SUID <> ACMS_RAM::entryUser(EID) ) break;
+                if (!sessionWithCompilation(BID, false)) {
+                    if (!sessionWithContribution(BID, false)) {
+                        break;
+                    }
+                    if (SUID != ACMS_RAM::entryUser(EID)) {
+                        break;
+                    }
                 }
-                $Tpl->add('revisionChange');
-            } while ( false );
+                $Tpl->add('revisionChange', [
+                    'canChange' => '1',
+                    'isReserve' => $isReserve ? '1' : '0',
+                    'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
+                ]);
+            } while (false);
         }
-
-        $DB     = DB::singleton(dsn());
-
-        $SQL    = SQL::newSelect('entry_rev');
-        $SQL->addSelect('entry_rev_user_id');
-        $SQL->addSelect('entry_rev_datetime');
-        $SQL->addSelect('entry_rev_status');
-        $SQL->addSelect('entry_status');
-        $SQL->addSelect('entry_rev_memo');
-        $SQL->addWhereOpr('entry_id', EID);
-        $SQL->addWhereOpr('entry_rev_id', RVID);
-        $SQL->addWhereOpr('entry_blog_id', BID);
-
-        if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
-            $auid   = $row['entry_rev_user_id'];
+        if (sessionWithApprovalAdministrator(BID, $revision['entry_category_id']) || intval($revision['entry_rev_user_id']) === SUID) {
+            $Tpl->add('edit');
+        }
+        if ($revision) {
+            $auid = $revision['entry_rev_user_id'];
             $author = ACMS_RAM::user($auid);
 
             $status = '承認前';
-            switch ( $row['entry_rev_status'] ) {
+            switch ($revision['entry_rev_status']) {
                 case 'in_review':
                     $status = '承認中';
                     break;
                 case 'reject':
-                    $status = '差し戻し';
+                    $status = '承認却下';
                     break;
                 case 'approved':
                     $status = '承認済み';
@@ -63,27 +83,30 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry
                     $status = '承認前';
                     break;
             }
-            if ( $row['entry_status'] === 'trash' ) {
+            if ($revision['entry_status'] === 'trash') {
                 $status .= ' 削除依頼';
             }
 
             $vars = array(
-                'rvid'          => RVID,
-                'memo'          => $row['entry_rev_memo'],
-                'author'        => $author['user_name'],
-                'icon'          => loadUserIcon($auid),
-                'datetime'      => $row['entry_rev_datetime'],
-                'url'           => acmsLink(array(
-                    'eid'   => EID,
-                    'bid'   => BID,
-                    'aid'   => $this->Get->get('aid', null),
+                'rvid' => RVID,
+                'memo' => $revision['entry_rev_memo'],
+                'author' => $author['user_name'],
+                'icon' => loadUserIcon($auid),
+                'status_code' => $revision['entry_rev_status'],
+                'isReserve' => $isReserve ? '1' : '0',
+                'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
+                'datetime' => $revision['entry_rev_datetime'],
+                'url' => acmsLink(array(
+                    'eid' => EID,
+                    'bid' => BID,
+                    'aid' => $this->Get->get('aid', null),
                     'query' => array(
-                        'rvid'  => RVID,
+                        'rvid' => RVID,
                         'trash' => 'show',
                     ),
                 )),
             );
-            if ( enableApproval(BID, CID) ) {
+            if (enableApproval(BID, CID)) {
                 $vars['status'] = $status;
             }
         }

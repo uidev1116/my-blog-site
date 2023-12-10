@@ -172,7 +172,7 @@
 // ------------------------------
 [class*="acms-table-scroll-"],
 .acms-table-responsive {
-  border: 1px solid #ddd;
+  border: 1px solid global.$acms-color-gray50;
 }
 
 
@@ -274,7 +274,7 @@
     border-collapse: collapse;
     // 見出し
     thead {
-      border-bottom: 1px solid #e8e8e8;
+      border-bottom: global.$acms-table-admin-border;
     }
 
     thead th {
@@ -342,7 +342,7 @@
 
     th {
       width: global.$acms-table-admin-edit-th-width;
-      color: #424242;
+      color: global.$acms-color-gray90;
       text-align: right;
       vertical-align: top;
 
@@ -541,7 +541,7 @@
     border-collapse: collapse;
 
     thead {
-      background: #FFF;
+      background: global.$acms-color-white;
       border-bottom: global.$acms-admin-mini-table-border;
     }
 

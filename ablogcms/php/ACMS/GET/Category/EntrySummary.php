@@ -52,9 +52,19 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
     protected function buildQuery($cid, &$Tpl)
     {
+        $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
+            'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
+            'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id', 'blog_id', 'blog_code',
+            'blog_status', 'blog_parent', 'blog_name', 'blog_domain', 'blog_indexing', 'blog_alias_status', 'blog_alias_sort', 'blog_alias_primary', 'category_id', 'category_code',
+            'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id');
+
         $subCategory = isset($this->_config['subCategory']) && $this->_config['subCategory'] === 'on';
 
+
         $SQL1 = SQL::newSelect('entry', 'union1');
+        foreach ($list as $name) {
+            $SQL1->addSelect($name);
+        }
         $SQL1->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
         $SQL1->addLeftJoin('category', 'entry_category_id', 'category_id');
         if ($subCategory) {
@@ -66,6 +76,9 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
         if ($subCategory) {
             $SQL2 = SQL::newSelect('entry', 'union2');
+            foreach ($list as $name) {
+                $SQL2->addSelect($name);
+            }
             $SQL2->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
             $SQL2->addLeftJoin('entry_sub_category', 'entry_id', 'entry_sub_category_eid');
             $SQL2->addLeftJoin('category', 'entry_sub_category_id', 'category_id');
@@ -155,8 +168,6 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
     protected function unionQuery($SQL)
     {
         $BlogSub = null;
-        $CategorySub = null;
-
         if (!empty($this->bid)) {
             if ($this->blogAxis() === 'self') {
                 $SQL->addWhereOpr('entry_blog_id', $this->bid);
@@ -177,13 +188,19 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
             }
         }
         if ( $uid = intval($this->uid) ) {
-            $SQL->addWhereOpr('entry_user_id', $this->uid);
+            $SQL->addWhereOpr('entry_user_id', $uid);
         }
         if ( !empty($this->eid) ) {
             $SQL->addWhereOpr('entry_id', $this->eid);
         }
         ACMS_Filter::entrySpan($SQL, $this->start, $this->end);
         ACMS_Filter::entrySession($SQL);
+
+        if ('on' === $this->_config['secret']) {
+            ACMS_Filter::categoryDisclosureSecretStatus($SQL);
+        } else {
+            ACMS_Filter::categoryStatus($SQL);
+        }
 
         if ( !empty($this->tags) ) {
             ACMS_Filter::entryTag($SQL, $this->tags);

@@ -6,6 +6,7 @@ use App;
 use DB;
 use SQL;
 use Common;
+use AcmsLogger;
 use Field;
 use Field_Validation;
 use ACMS_Filter;
@@ -53,11 +54,12 @@ class Engine
     {
         $noCache = true;
         try {
+            $moduleName = $this->getModuleName($identifier);
+
             $this->validateAddress();
             $this->validateReferrer();
             $this->validateApiKey();
 
-            $moduleName = $this->getModuleName($identifier);
             $opt = ' id="' . $identifier . '"';
             $post = Field_Validation::singleton('post');
             $config = clone Field::singleton('config');
@@ -72,6 +74,9 @@ class Engine
             $json = boot($moduleName, '', $opt, $post, $config, $eagerLoadModule);
             $noCache = false;
         } catch (NotFoundModuleException $e) {
+            AcmsLogger::error('API機能: 有効なモジュールIDが存在しません', [
+                'identifier' => $identifier,
+            ]);
             httpStatusCode('404 Not Found');
             $json = json_encode(array(
                 'status' => 404,
@@ -80,6 +85,7 @@ class Engine
                 'path' => REQUEST_PATH,
             ));
         } catch (ApiKeyException $e) {
+            $this->logging($e, $moduleName, $identifier);
             httpStatusCode('401 Unauthorized');
             $json = json_encode(array(
                 'status' => 401,
@@ -88,6 +94,7 @@ class Engine
                 'path' => REQUEST_PATH,
             ));
         } catch (ForbiddenException $e) {
+            $this->logging($e, $moduleName, $identifier);
             httpStatusCode('403 Forbidden');
             $json = json_encode(array(
                 'status' => 403,
@@ -96,6 +103,7 @@ class Engine
                 'path' => REQUEST_PATH,
             ));
         } catch (\Exception $e) {
+            $this->logging($e, $moduleName, $identifier);
             httpStatusCode('404 Not Found');
             $json = json_encode(array(
                 'status' => 404,
@@ -105,6 +113,25 @@ class Engine
             ));
         }
         $this->response($json, $noCache);
+    }
+
+    /**
+     *
+     * @param \Exception $e
+     * @param string $moduleName
+     * @param string $identifier
+     * @return void
+     */
+    protected function logging($e, string $moduleName, string $identifier): void
+    {
+        $data = [
+            'moduleName' => $moduleName,
+            'identifier' => $identifier,
+        ];
+        if (isset($_SERVER['HTTP_X_API_KEY'])) {
+            $data['x-api-key'] = $_SERVER['HTTP_X_API_KEY'];
+        }
+        AcmsLogger::error('API機能: ' . $e->getMessage(), $data);
     }
 
     /**

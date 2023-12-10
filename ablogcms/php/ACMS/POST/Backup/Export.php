@@ -43,6 +43,8 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
         $this->hashFilePath = $this->tempDirectory . 'md5_hash.txt';
 
         try {
+            AcmsLogger::info('データベースのバックアップを開始しました');
+
             $this->authCheck('backup_export');
 
             if (Storage::exists($this->lockFile)) {
@@ -53,6 +55,7 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
             die();
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('データベースのバックアップでエラーが発生しました。', Common::exceptionArray($e));
         }
         return $this->Post;
     }
@@ -86,6 +89,7 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
         } catch (Exception $e) {
             if ($message = $e->getMessage()) {
                 $logger->error($message);
+                AcmsLogger::warning('データベースのバックアップ中にでエラーが発生しました。', Common::exceptionArray($e));
             }
         }
         DB::setThrowException(false);
@@ -110,6 +114,7 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
             '/session/',
             '/lock/',
             '/lock_source/',
+            '/logger/',
         );
 
         try {

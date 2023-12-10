@@ -24,6 +24,8 @@ class ACMS_POST_Backup_BlogImport extends ACMS_POST_Backup_Base
         DB::setThrowException(true);
 
         try {
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログのインポートを実行しました');
+
             $this->authCheck('backup_import');
             $this->tmpDir = MEDIA_STORAGE_DIR . 'blog_data/';
             $import = App::make('blog.import');

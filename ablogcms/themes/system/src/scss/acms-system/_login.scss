@@ -1,505 +1,304 @@
 @use "../global/common" as global;
 
-// ------------------------------
-// ログイン画面
-// ------------------------------
-// 背景色
-#loginBg {
-  background-color: #e5e5e9;
+/* ------------------------------
+ 管理者ログイン ベース
+------------------------------- */
+@media (min-width: global.$breakpoint-sm-min) {
+  .login-bg {
+    background-color: #e5e5e9;
+  }
 }
 
-// コンテンツ
-.acms-loginBox-container {
+/* ------------------------------
+ 管理者ログイン レイアウト
+------------------------------- */
+/* コンテナー */
+.acms-login-container {
   max-width: 480px;
-  margin: 0 auto;
-}
-
-.acms-titleBox {
-  max-height: 140px;
-  margin: 100px auto 0;
+  margin: 0 auto 80px;
+  background-color: global.$acms-color-white;
   overflow: hidden;
 }
-
-.acms-login-text {
-  color: #333;
-  @include global.font-size(13);
-  line-height: 1.7;
-}
-
-// ログイン囲い
-.acms-loginBox {
-  max-width: 480px;
-  margin: 0 auto 0;
-  padding: 20px;
-  background-color: #fff;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-// サイトサムネイル
-.acms-siteImage {
-  float: left;
-  margin: 0 20px 0 0;
-  border: 1px solid #cccccc;
-}
-
-// サイト名
-.acms-siteImageText {
-  display: block;
-  margin-bottom: 15px;
-  text-align: center;
-
-  & span {
-    margin-right: 5px;
+@media (min-width: global.$breakpoint-sm-min) {
+  .acms-login-container {
+    margin-top: 100px;
+    margin-bottom: 60px;
+    border-radius: var(--login-radius-container);
   }
 }
 
-.acms-titleBox {
-  text-align: center;
+/* メインコンテンツボックス */
+.acms-login-main-box {
+  padding-right: var(--login-space-container-x);
+  padding-left: var(--login-space-container-x);
+  margin-bottom: var(--login-space-section-y);
 }
 
-.acms-loginHeaderImage {
-  width: 480px;
+/* ネガティブアクションボタンボックス */
+.acms-login-main-box-bottom {
+  margin-top: var(--login-space-section-y);
+  padding-right: var(--login-space-container-x);
+  padding-left: var(--login-space-container-x);
+}
+@media (min-width: global.$breakpoint-sm-min) {
+  .acms-login-main-box-bottom {
+    @include global.round-bottom(var(--login-radius-container));
+    padding-top: var(--login-space-section-y);
+    padding-bottom: var(--login-space-section-y);
+    border-top: 1px solid var(--login-color-border-section);
+  }
+}
+
+/* ------------------------------
+ 管理者ログイン パーツ
+------------------------------- */
+/* ヘッダー画像 */
+.acms-login-header-img {
+  display: block;
+  width: 100%;
   height: auto;
-  vertical-align: top;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  max-height: 140px;
+  object-fit: contain;
+  object-position: center;
+  margin-bottom: var(--login-space-section-y);
 }
 
-.acms-loginLogo {
-  border: none;
+/* アクションボタンラップ */
+.acms-login-action {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-// 入力フォーム
-.acms-loginBox .acms-form {
-  margin-top: 25px;
-
-  input {
-    margin-bottom: 10px;
+/* 見出し */
+.acms-login-page-title {
+  margin-bottom: var(--login-space-section-y);
+  margin-top: 0;
+  font-weight: normal;
+  text-align: center;
+  .acms-admin-label {
+    margin-right: 2px;
+    margin-left: 2px;
   }
 }
 
-// ラベル
-.acms-loginBox .acms-form label {
-  @include global.font-size($size:13,$important:true);
-  margin-top: 10px;
-}
-
-.acms-loginBox .acms-form-block {
-  width: 100%;
-}
-
-label.acms-form-block a {
-  margin-left: 15px;
-}
-
-//　読者リンク
-.acms-loginBox-bottom {
-  margin-top: -10px;
-  padding: 20px;
-  background: #ffffff;
-  border-top: 1px solid #e5e5e9;
-  @include global.round-bottom(5px);
-}
-
-.acms-loginBox-bottom p {
-  margin: 0;
-}
-
-// エラー
-.acms-loginBox input.validator-result- {
-  display: block;
-}
-
-.acms-loginBox input.validator-result-0,
-.acms-loginBox input.validator-result-0:focus {
-  background: #fff;
-  border: 1px solid #bd3f5e;
-  box-shadow: none;
-}
-
-// ロゴ
-.loginLogo {
-  float: right;
-  margin-top: 10px;
-}
-
-//ソーシャルログイン
-.acms-border {
+/* 左右ボーダー付きテキスト */
+.acms-login-border-text-outer {
   position: relative;
   width: 100%;
-  margin: 20px 0 18px 0;
+  margin: var(--login-space-section-y) 0;
   text-align: center;
+  &:before {
+    position: absolute;
+    left: 0;
+    margin: 10px 0 0;
+    padding: 0 0 0 100%;
+    border-top: 1px solid var(--login-color-border-section);
+    content: "";
+  }
 }
-
-.acms-border:before {
-  position: absolute;
-  left: 0;
-  margin: 10px 0 0 0;
-  padding: 0 0 0 100%;
-  border-top: 1px solid #e5e5e9;
-  content: "";
-}
-
-.acms-borderText {
+.acms-login-border-text {
+  @include global.font-size(13);
+  color: global.$acms-color-black;
+  line-height: 1.4;
   position: relative;
   padding: 0 10px;
-  background: #fff;
+  background: global.$acms-color-white;
 }
 
-.acms-btn-snslogin-container {
-  margin: 0 -10px;
-  padding: 0;
+/* 説明テキスト */
+.acms-login-notice-text {
+  @include global.font-size(13);
+  margin: 20px 0;
+  color: global.$acms-color-black;
+  line-height: 1.4;
+  font-weight: bold;
 }
 
-.acms-btn-snslogin-col {
-  position: relative;
-  display: block;
-  float: left;
-  box-sizing: border-box;
-  width: 100%;
-  margin: 0 0 20px 0;
-  padding: 0 10px;
-}
-
-@media screen and (min-width: global.$breakpoint-sm-min){
-  .acms-btn-snslogin-col {
-    width: 50%;
-
-    &:only-child {
-      width: 100%;
-    }
-
-    &:nth-last-child(n+3),
-    &:nth-last-child(n+3) ~ .acms-btn-snslogin-col {
-      width: 33%;
-    }
-  }
-}
-
-.acms-btn-snsimage {
-  position: absolute;
-  left: 10px;
-  width: 44px;
-  height: 100%;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-  border-right: 1px solid #ccc;
-  border-radius: 6px 0 0 6px;
-  @include global.font-size(22);
-}
-
-.acms-btn-snsimage-facebook {
-  background-color: #1877f2;
-}
-
-.acms-btn-snsimage-twitter {
-  background-color: #55acee;
-}
-
-.acms-btn-snsimage-google {
-  box-sizing: border-box;
-  background-color: #FFF;
-  border: 1px solid #CECED2;
-}
-.acms-btn-snsimage-line {
-  background-color: #00b901;
-}
-
-.acms-btn-snsimage {
-  .acms-icon-facebook-circle {
-    position: static;
-    padding: 0;
-    @include global.font-size(28);
-
-    &:before {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: -14px 0 0 -14px;
-    }
-  }
-
-  .acms-icon-twitter {
-    position: static;
-    padding: 0;
-
-    &:before {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: -11px 0 0 -11px;
-    }
-  }
-
-  .acms-icon-google-login {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -11px 0 0 -11px;
-    padding: 0;
-  }
-
-  .acms-icon-line-login {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -16px 0 0 -16px;
-    padding: 0;
-  }
-}
-
-.acms-btn-snslogin {
-  padding: 12px 15px;
+/* リンクテキスト */
+.acms-login-text-link {
   @include global.font-size(14);
-  border-radius: 6px;
-}
-
-@media screen and (min-width: global.$breakpoint-sm-min){
-  .acms-btn-snslogin {
-    padding: 12px 15px 12px 44px;
+  line-height: 1.5;
+  text-decoration: none;
+  &:link,
+  &:visited,
+  &:focus,
+  &:active {
+    color: #006DEC;
+  }
+  &:hover {
+    color: #8ebef7;
   }
 }
 
-//Facebook ログイン
-.acms-login-facebook {
-  padding: 0 10px 0 0;
+/* ------------------------------
+ 管理者ログイン フォームパーツ
+------------------------------- */
+/* フォームラベル */
+.acms-login-form-label {
+  @include global.font-size(14);
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 3px;
+  line-height: 1.4;
+  /* legendタグスタイルリセット */
+  padding: 0;
+  border: 0;
 }
 
-.acms-btn-facebooklogin {
+/* 注意文 */
+.acms-login-input-caution {
+  @include global.font-size(13);
+  margin: 6px 0 0;
+  color: var(--login-color-error);
+  line-height: 1.4;
+  font-weight: bold;
+}
+
+/* validatorスタイルで入力欄が非表示にならないよう上書き */
+.acms-login-main-box input.validator-result- {
+  display: block;
+}
+
+/* エラー時の入力欄スタイル */
+.acms-login-main-box input.validator-result-0 {
+  border-color: var(--login-color-error);
+}
+
+/* ------------------------------
+ 管理者ページ ソーシャルログイン
+------------------------------- */
+/* ソーシャルログインリスト */
+.acms-login-sns-btn-list {
+  margin-bottom: 20px;
+}
+.acms-login-sns-btn-item {
+  & + & {
+    margin-top: 20px;
+  }
+}
+
+/* ソーシャルログインボタン */
+.acms-login-sns-btn-item .acms-btn {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
   box-sizing: border-box;
-  color:  #FFF;
-  background: #1877f2;
-  border: 1px solid #1877f2;
-
-  // hover
-  &:hover {
-    color:  #FFF;
-    text-decoration: none;
-    background: #0163e2;
-    border: 1px solid #192752;
+  height: var(--login-height-sns-btn);
+  padding: 0;
+  border-radius: global.$acms-btn-large-border-radius;
+  overflow: hidden;
+  &::before {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: transparent;
+    content: "";
+    transition: background-color 0.2s;
   }
-
-  // 色
-  &:link,
-  &:hover,
-  &:active,
-  &:visited {
-    color: #ffffff;
+  &:hover::before {
+    background-color: rgba(0, 0, 0, 0.1);
   }
-
-  // active
-  &:active {
-    text-decoration: none;
-    border: 1px solid #192752;
-    @include global.btn-color-active($background-color: #2D4694, $color: #FFFFFF, $inset-color: #192752);
-  }
-
-  &:focus {
-    border-color: #192752;
-    outline: none;
+  &:active::before {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 }
 
-.acms-btn-linelogin {
+/* ソーシャルログインボタンアイコン */
+.acms-login-sns-btn-icon-outer {
+  position: relative;
+  z-index: 2;
   box-sizing: border-box;
-  color:  #FFF;
-  background: #00b901;
-  border: 1px solid #00b901;
-
-  // hover
-  &:hover {
-    color:  #FFF;
-    text-decoration: none;
-    background: #0a9a0a;
-    border: 1px solid #192752;
-  }
-
-  // 色
-  &:link,
-  &:hover,
-  &:active,
-  &:visited {
-    color: #ffffff;
-  }
-
-  // active
-  &:active {
-    text-decoration: none;
-    border: 1px solid #192752;
-    @include global.btn-color-active($background-color: #00b901, $color: #FFFFFF, $inset-color: #192752);
-  }
-
-  &:focus {
-    border-color: #192752;
-    outline: none;
-  }
+  width: calc(var(--login-height-sns-btn) - (var(--login-border-width-btn-sns) * 2));
+  display: grid;
+  place-content: center;
+}
+.acms-login-sns-btn-icon {
+  display: inline-block;
+  height: auto;
 }
 
-//Twitter ログイン
-.acms-btn-twitterlogin {
-  border: 1px solid #299af1;
-  @include global.btn-color($start-color: #55AFF4, $end-color: #299AF1, $color: #FFFFFF);
-
-  // hover
-  &:hover {
-    text-decoration: none;
-    border: 1px solid #005896;
-    @include global.btn-color($start-color: #6CB9F5, $end-color: #4BAAF4, $color: #FFFFFF);
-  }
-
-  // 色
-  &:link,
-  &:hover,
-  &:active,
-  &:visited {
-    color: #ffffff;
-  }
-
-  // active
-  &:active {
-    text-decoration: none;
-    border: 1px solid #005896;
-    @include global.btn-color-active($background-color: #299AF1, $color: #FFFFFF, $inset-color: #005896);
-  }
-
-  &:focus {
-    border-color: #005896;
-    outline: none;
-  }
+/* ソーシャルログインボタンテキスト */
+.acms-login-sns-btn-text {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left-width: var(--login-border-width-btn-sns);
+  border-left-style: solid;
 }
 
-.acms-login-twitter {
-  padding: 0 0 0 10px;
-}
-
-//Google ログイン
-.acms-btn-googlelogin {
-  color: #333;
-  background: #FFF;
-  border: 1px solid #CECED2;
-  // 色
-  &:link,
+/* ソーシャルログインボタンのカラー変化
+------------------------------ */
+/* Googleログインボタン */
+.acms-login-sns-btn-google {
+  &,
   &:hover,
-  &:active,
-  &:visited {
-    color: #FFF;
-  }
-
-  // hover,active
-  &:hover,
+  &:focus,
   &:active {
     color: #333;
-    text-decoration: none;
-    background: #EEE;
-    border: 1px solid #C9C9CA;
+    background-color: #FFF;
+    border-color: #CECECE;
   }
-
-  &:focus {
-    border-color: #005896;
-    outline: none;
+  .acms-login-sns-btn-text {
+    border-color: rgba(0, 0, 0, 0.08);
   }
 }
 
-// スマートフォンのとき
-@media (max-width: global.$breakpoint-sm-max) {
-  .acms-titleBox {
-    margin: 0 auto;
+/* LINEログインボタン */
+.acms-login-sns-btn-line {
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    color: #FFF;
+    background-color: #06C755;
+    border-color: #06C755;
   }
-
-  .acms-loginLogo {
-    width: 133px;
-    height: 23px;
-    border: none;
+  .acms-login-sns-btn-text {
+    border-color: rgba(0, 0, 0, 0.08);
   }
+}
 
-  .acms-loginHeaderImage {
-    width: 100%;
-    height: auto;
-    border-radius: 0;
+/* Xログインボタン */
+.acms-login-sns-btn-x {
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    color: #FFF;
+    background-color: #000;
+    border-color: #000;
   }
-
-  #loginBg {
-    background-color: #fff;
+  .acms-login-sns-btn-text {
+    border-color: rgba(255, 255, 255, 0.35);
   }
-
-  .acms-loginBox {
-    margin: 0;
-    padding: 10px;
+  /* Xのみダーク系のためhoverカラーを反転 */
+  &.acms-btn:hover::before {
+    background-color: rgba(255, 255, 255, 0.25);
   }
-
-  .acms-loginBox .acms-form {
-    margin-top: 18px;
+  &.acms-btn:active::before {
+    background-color: rgba(255, 255, 255, 0.45);
   }
+}
 
-  .acms-loginTitle {
-    margin: 0 auto;
+/* Facebookログインボタン */
+/* Facebookによるログイン機能は、将来廃止予定になります。 */
+.acms-login-sns-btn-facebook {
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    color: #FFF;
+    background-color: #1877F2;
+    border-color: #1877F2;
   }
-
-  // スマートフォン時のみボタンになるスタイル
-  .acms-sp-btn-admin {
-    display: inline-block;
-    margin: 0 5px 5px 0;
-    text-align: center;
-    text-decoration: none;
-    transition: all .2s linear;
-    @include global.button-shape();
-    @include global.button-decoration(
-      $border: 1px solid rgba(0,0,0,.2),
-      $hover-bg-color: #F1F1F1,
-      $hover-border-color: rgba(0,0,0,.3),
-      $text-color: global.$acms-btn-text-default-color,
-      $active-border-color: global.$acms-btn-active-border-color,
-      $active-bg-color: #E1E1E1,
-      $active-box-shadow: inset 0 1px 2px rgba(0,0,0,.3),
-      $active-text-color: #333,
-      $focus-border-color: global.$acms-btn-focus-border-color
-    );
-    @include global.box-sizing(border-box);
-
-    &:hover {
-      text-decoration: none;
-      background-color: darken(global.$acms-btn-admin-background, 5%);
-      border-top: 1px solid rgba(0, 0, 0, 0.3);
-    }
-
-    &:link,
-    &:hover,
-    &:active,
-    &:visited {
-      color: #0085cc;
-    }
-
-    &:active {
-      text-decoration: none;
-      background-color: darken(global.$acms-btn-admin-background, 10%);
-      border-top: 1px solid rgba(0, 0, 0, 0.3) !important;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-  }
-
-  .acms-loginBox,
-  .acms-loginBox-bottom {
-    background: transparent;
-    border: none;
-  }
-
-  // 新規の読者登録ボタン
-  .acms-loginBox-bottom {
-    margin: 0 0 20px 0;
-    padding: 0 10px;
-  }
-
-  // ログインページンのロゴ
-  .loginLogo {
-    float: none;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  //SNSログインのボタン
-  .acms-btn-snsimage {
-    padding: 0;
+  .acms-login-sns-btn-text {
+    border-color: rgba(255, 255, 255, 0.35);
   }
 }

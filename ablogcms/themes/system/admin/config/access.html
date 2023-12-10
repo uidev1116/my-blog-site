@@ -9,23 +9,56 @@
 
 <!-- BEGIN_MODULE Admin_Config -->
 <!-- BEGIN_IF [{notice_mess}/nem/] -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info"><span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button><!--T-->アクセス設定を保存しました<!--/T--></p><!-- END_IF -->
+<div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+  <span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+  <!--T-->アクセス設定を保存しました<!--/T-->
+</div>
+<!-- END_IF -->
 
 <!-- BEGIN msg#error -->
-<p class="acms-admin-alert acms-admin-alert-danger"><!--T-->コンフィグを保存出来ませんでした。<!--/T--></p><!-- END msg#error -->
+<div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+  <span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+  <!--T-->コンフィグを保存出来ませんでした。<!--/T-->
+</div>
+<!-- END msg#error -->
 
 <form action="" method="post" class="acms-admin-form">
   <div class="js-acms_fix_marker acms_fix_bg">
     <div class="acms_fix_bg_index">
       <a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
-      <input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
+      <button
+        type="submit"
+        name="ACMS_POST_Config"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"
+      >
+        <!--T-->保存<!--/T-->
+      </button>
       @include("/admin/config/action.html")
 
-      <!-- BEGIN_MODULE Touch_SessionWithAdministration --><a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right acms-admin-float-none-sp"><i class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a><!-- END_MODULE Touch_SessionWithAdministration -->
+      <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+      <a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right acms-admin-float-none-sp">
+        <i class="acms-admin-icon acms-admin-icon-shortcut"></i>
+        <!--T-->ショートカットに追加<!--/T-->
+      </a>
+      <!-- END_MODULE Touch_SessionWithAdministration -->
     </div>
   </div>
 
-  <h3 class="acms-admin-admin-title2 "><!--T-->ログイン制限<!--/T--></h3>
+  <h3 class="acms-admin-admin-title2 "><!--T-->管理ログイン制限<!--/T--></h3>
   <table class="adminTable acms-admin-table-admin-edit">
     <tr>
       <th><!--T-->許可リスト<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限りログインできるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）<!--/T-->"></i></th>
@@ -83,7 +116,65 @@
     </tr>
   </table>
 
-  <h3 class="acms-admin-admin-title2 "><!--T-->権限制限<!--/T--><!--T-->（デバッグモード中は、この機能は有効になりません。）<!--/T--></h3>
+  <h3 class="acms-admin-admin-title2 "><!--T-->一般サインイン制限<!--/T--></h3>
+  <table class="adminTable acms-admin-table-admin-edit">
+    <tr>
+      <th><!--T-->許可リスト<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限りログインできるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）<!--/T-->"></i></th>
+      <td>
+        <ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN signin_white_hosts:loop -->
+          <li class="sortable-item acms-admin-form-group">
+            <span class="item-handle acms-admin-icon-sort acms-admin-hide-sp"></span>
+            <input type="text" name="signin_white_hosts[]" value="{signin_white_hosts}" class="acms-admin-form-width-mini" />
+            <input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp" />
+          </li><!-- END signin_white_hosts:loop -->
+          <li class="item-template sortable-item acms-admin-form-group">
+            <span class="item-handle acms-admin-icon-sort acms-admin-hide-sp"></span>
+            <input type="text" name="signin_white_hosts[]" class="acms-admin-form-width-mini" placeholder="192.168.99.100/32" />
+            <input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp" />
+          </li>
+          <li>
+            <input type="button" value="<!--T-->追加<!--/T-->" class="item-insert acms-admin-btn-admin" />
+          </li>
+        </ul>
+        <input type="hidden" name="config[]" value="signin_white_hosts" />
+        <input type="hidden" name="signin_white_hosts:validator#regex" value="@\d+(\.\d+)\{3\}/\d+@" />
+        <div role="alert" aria-live="assertive">
+          <div data-validator-label="validator-signin_white_hosts" class="validator-result-{signin_white_hosts:validator#regex}">
+            <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->不正な形式です<!--/T--></p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th><!--T-->拒否リスト<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限りログインが拒否されるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）<!--/T-->"></i></th>
+      <td>
+        <ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN signin_black_hosts:loop -->
+          <li class="sortable-item acms-admin-form-group">
+            <span class="item-handle acms-admin-icon-sort acms-admin-hide-sp"></span>
+            <input type="text" name="signin_black_hosts[]" value="{signin_black_hosts}" class="acms-admin-form-width-mini" />
+            <input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp" />
+          </li><!-- END signin_black_hosts:loop -->
+          <li class="item-template sortable-item acms-admin-form-group">
+            <span class="item-handle acms-admin-icon-sort acms-admin-hide-sp"></span>
+            <input type="text" name="signin_black_hosts[]" class="acms-admin-form-width-mini" placeholder="192.168.99.100/32" />
+            <input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp" />
+          </li>
+          <li>
+            <input type="button" value="<!--T-->追加<!--/T-->" class="item-insert acms-admin-btn-admin" />
+          </li>
+        </ul>
+        <input type="hidden" name="config[]" value="signin_black_hosts" />
+        <input type="hidden" name="signin_black_hosts:validator#regex" value="@\d+(\.\d+)\{3\}/\d+@" />
+        <div role="alert" aria-live="assertive">
+          <div data-validator-label="validator-signin_black_hosts" class="validator-result-{signin_black_hosts:validator#regex}">
+            <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->不正な形式です<!--/T--></p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <h3 class="acms-admin-admin-title2 "><!--T-->権限制限<!--/T--></h3>
   <table class="adminTable acms-admin-table-admin-edit">
     <tr>
       <th><!--T-->制限リスト<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限り、指定された権限のログインできるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）<!--/T-->"></i></th>

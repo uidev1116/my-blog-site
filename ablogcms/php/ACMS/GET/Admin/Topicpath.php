@@ -88,12 +88,36 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 $aryAdmin[] = 'schedule_index';
             }
             $aryAdmin[] = ADMIN;
-        } else if ('config_set' == substr(ADMIN, 0, strlen('config_set'))) {
-            $aryAdmin[] = 'config_set_index';
+        } else if ('config_set_theme' == substr(ADMIN, 0, strlen('config_set_theme'))) {
+            $aryAdmin[] = 'config_set_theme_index';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if ('config' == substr(ADMIN, 0, strlen('config'))) {
-            $aryAdmin[] = 'config_set_index';
+        } else if ('config_set_editor' == substr(ADMIN, 0, strlen('config_set_editor'))) {
+            $aryAdmin[] = 'config_set_editor_index';
+            $aryAdmin[] = 'rule_index';
+            $aryAdmin[] = 'rule_edit';
+        } else if ('config_set_base' === substr(ADMIN, 0, strlen('config_set_base'))) {
+            $aryAdmin[] = 'config_set_base_index';
+            $aryAdmin[] = 'rule_index';
+            $aryAdmin[] = 'rule_edit';
+        } else if ('config_theme' === ADMIN) {
+            $aryAdmin[] = 'config_set_theme_index';
+            $aryAdmin[] = 'config_theme';
+            $aryAdmin[] = 'rule_index';
+            $aryAdmin[] = 'rule_edit';
+        } else if ('config_editor' === ADMIN) {
+            $aryAdmin[] = 'config_set_editor_index';
+            $aryAdmin[] = 'config_editor';
+            $aryAdmin[] = 'rule_index';
+            $aryAdmin[] = 'rule_edit';
+        } else if (preg_match('/^config_(edit|unit|bulk-change)/', ADMIN)) {
+            $aryAdmin[] = 'config_set_editor_index';
+            $aryAdmin[] = 'config_editor';
+            $aryAdmin[] = 'rule_index';
+            $aryAdmin[] = 'rule_edit';
+            $aryAdmin[] = ADMIN;
+        } else if ('config' === substr(ADMIN, 0, strlen('config'))) {
+            $aryAdmin[] = 'config_set_base_index';
             if (!in_array(ADMIN, array('config_set_index', 'config_set_edit'))) {
                 if ('config_import' !== ADMIN && 'config_export' !== ADMIN) {
                     $aryAdmin[] = 'config_index';
@@ -171,8 +195,44 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             }
             $topicVars = array('url' => $url);
 
-            if ($admin === 'config_set_default' || $admin === 'config_index') {
-                if ($configSet = $this->getConfigSet()) {
+            if ($admin === 'config_theme') {
+                if ($configSet = $this->getConfigSet('theme', 'このブログの初期テーマ')) {
+                    $topicVars['config_set'] = 1;
+                    foreach ($configSet as $set) {
+                        $Tpl->add(array('configSet:loop', 'topic:loop'), array(
+                            'name' => $set['name'],
+                            'configSetUrl' => acmsLink(array(
+                                'bid' => $set['bid'],
+                                'admin' => ADMIN,
+                                'query' => array(
+                                    'rid' => $this->Get->get('rid'),
+                                    'setid' => $set['id'],
+                                )
+                            )),
+                        ));
+                    }
+                }
+            }
+            if ($admin === 'config_editor') {
+                if ($configSet = $this->getConfigSet('editor', 'このブログの初期編集画面')) {
+                    $topicVars['config_set'] = 1;
+                    foreach ($configSet as $set) {
+                        $Tpl->add(array('configSet:loop', 'topic:loop'), array(
+                            'name' => $set['name'],
+                            'configSetUrl' => acmsLink(array(
+                                'bid' => $set['bid'],
+                                'admin' => ADMIN,
+                                'query' => array(
+                                    'rid' => $this->Get->get('rid'),
+                                    'setid' => $set['id'],
+                                )
+                            )),
+                        ));
+                    }
+                }
+            }
+            if ($admin === 'config_index') {
+                if ($configSet = $this->getConfigSet(null, 'このブログの初期コンフィグ')) {
                     $topicVars['config_set'] = 1;
                     foreach ($configSet as $set) {
                         $Tpl->add(array('configSet:loop', 'topic:loop'), array(
@@ -218,8 +278,9 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    protected function getConfigSet() {
+    protected function getConfigSet($type = null, $name = 'このブログの初期コンフィグ') {
         $SQL = SQL::newSelect('config_set');
+        $SQL->addWhereOpr('config_set_type', $type);
         $SQL->addWhereOpr('config_set_blog_id', BID);
         $SQL->setOrder('config_set_sort', 'ASC');
 
@@ -227,7 +288,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $result[] = array(
             'id' => null,
             'bid' => BID,
-            'name' => gettext('このブログの初期コンフィグ'),
+            'name' => $name,
         );
 
         $all = DB::query($SQL->get(dsn()), 'all');

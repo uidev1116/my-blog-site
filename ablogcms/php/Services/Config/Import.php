@@ -8,6 +8,7 @@ use Module;
 use Common;
 use Config;
 use Cache;
+use AcmsLogger;
 
 class Import
 {
@@ -58,10 +59,10 @@ class Import
      */
     public function run($bid, $yaml)
     {
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
+            AcmsLogger::info('権限がないため、コンフィグのインポートに失敗しました');
             die();
         }
-
         $this->yaml = $yaml;
         $this->bid = $bid;
         $this->failedMeta = array();

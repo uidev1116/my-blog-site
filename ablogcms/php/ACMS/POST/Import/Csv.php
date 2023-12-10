@@ -39,6 +39,7 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
 
         } catch ( Exception $e ) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
         }
         return $this->Post;
     }
@@ -78,6 +79,8 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
             Storage::remove($this->lockFile);
             sleep(5);
             $logger->terminate();
+
+            AcmsLogger::warning('CSVインポートでエラーが発生しました', Common::exceptionArray($e, ['message' => $e->getMessage()]));
             return;
         }
 
@@ -103,6 +106,8 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
             } catch (Exception $e) {
                 $logger->addProcessLog('CSV' . ($i+1) . '行目: ' . $e->getMessage(), 0);
                 $this->errorCount++;
+
+                AcmsLogger::notice('CSVインポートの' . ($i + 1) . '行目がエラーのため、この行は読み込みません', Common::exceptionArray($e, ['message' => $e->getMessage()]));
             }
         }
         sleep(3);
@@ -112,6 +117,11 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
         $logger->addProcessLog('インポート成功件数: ' . $this->entryCount . '件');
         $logger->addProcessLog('インポート失敗件数: ' . $this->errorCount . '件');
         $logger->success();
+
+        AcmsLogger::info('CSVインポートを実行しました', [
+            'success' => $this->entryCount,
+            'error' => $this->errorCount,
+        ]);
 
         Storage::remove($this->lockFile);
         sleep(5);

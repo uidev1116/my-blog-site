@@ -9,6 +9,8 @@ class ACMS_POST_I18n_DownloadPot extends ACMS_POST
         try {
             $pot='lang/messages.pot';
             if ( xi18n(null, $pot) ) {
+                AcmsLogger::info('国際化（i18n）のための POTファイル をダウンロードしました');
+
                 // download
                 header('Content-Type: application/force-download');
                 header('Content-Length: '.filesize($pot));

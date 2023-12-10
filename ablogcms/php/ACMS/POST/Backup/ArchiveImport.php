@@ -7,6 +7,8 @@ class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
     function post()
     {
         try {
+            AcmsLogger::info('アーカイブのインポートを実行しました');
+
             $this->authCheck('backup_import');
 
             ignore_user_abort(true);
@@ -22,6 +24,7 @@ class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
 
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('アーカイブのインポート中にエラーが発生しました。', Common::exceptionArray($e));
         }
     }
 

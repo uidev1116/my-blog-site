@@ -1,6 +1,5 @@
 <?php
 
-use ImageOptimizer\OptimizerFactory;
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Image;
 
@@ -64,102 +63,23 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         if ( LICENSE_BLOG_LIMIT == 2147483647 ) {
             $Tpl->add(array('userUnlimited', 'license'));
         } else {
-             $Tpl->add(array('userLimited', 'license'), array(
+            $Tpl->add(array('userLimited', 'license'), array(
                 'limit' => LICENSE_BLOG_LIMIT,
             ));
         }
 
-        $license = array();
-        $license['domain']  = LICENSE_DOMAIN;
-        $license['version'] = VERSION;
-        switch ( LICENSE_EDITION ) {
-            case 'enterprise':
-                $license['edition'] = 'Enterprise';
-                break;
-            case 'professional':
-                $license['edition'] = 'Professional';
-                break;
-            default:
-                $license['edition'] = 'Standard';
-                break;
-        }
-
-        $offset = strlen(DOMAIN) - strlen(LICENSE_DOMAIN);
-        if ( 1
-            and !((0 <= $offset) and LICENSE_DOMAIN == substr(DOMAIN, $offset))
-            and !is_private_ip(DOMAIN)
-        ) {
-            $license['matchDomain'] = gettext('ドメインが一致していません');
-            $license['caution']     = 'caution';
-        }
-
-        //--------------
-        // license type
-        $type = array();
-        if ( defined('LICENSE_OPTION_SUBDOMAIN') && !!LICENSE_OPTION_SUBDOMAIN ) {
-            $type[] = gettext('サブドメイン拡張オプション');
-        }
-        if ( defined('LICENSE_OPTION_OWNDOMAIN') && !!LICENSE_OPTION_OWNDOMAIN ) {
-            $type[] = gettext('独自ドメイン拡張オプション');
-        }
-        if ( defined('LICENSE_OPTION_PLUSDOMAIN') && intval(LICENSE_OPTION_PLUSDOMAIN) > 0 ) {
-            $type[]   = gettext('独自ドメイン追加オプション') . '('.LICENSE_OPTION_PLUSDOMAIN.')';
-        }
-        if ( defined('LICENSE_OPTION_OEM') && !!LICENSE_OPTION_OEM ) {
-            $type[] = gettext('OEMライセンス');
-        }
-        if ( LICENSE_BLOG_LIMIT == 2147483647 ) {
-            $type[] = gettext('ユーザー数無制限オプション');
-        }
-        if (LICENSE_BLOG_LIMIT == 1 && !defined('LICENSE_PLAN')) {
-             $type[] = gettext('Oneライセンス');
-        }
-
-        foreach ( $type as $i => $val ) {
-            if ( $i > 0 ) {
-                $Tpl->add(array('licenseType:glue', 'licenseType:loop', 'license'));
-            }
-            $Tpl->add(array('licenseType:loop', 'license'), array(
-                'type'  => $val,
-            ));
-        }
-
-        //----------------
-        // license option
-        $option = array();
-        if ( defined('LICENSE_PLUGIN_SHOP_PRO') && !!LICENSE_PLUGIN_SHOP_PRO ) {
-            $option[] = gettext('ショップ');
-        }
-        if ( defined('LICENSE_PLUGIN_MAILMAGAZINE') && !!LICENSE_PLUGIN_MAILMAGAZINE ) {
-            $option[] = gettext('メールマガジン');
-        }
-        foreach ( $option as $i => $val ) {
-            if ( $i > 0 ) {
-                $Tpl->add(array('option:glue', 'option:loop', 'license'));
-            }
-            $Tpl->add(array('option:loop', 'license'), array(
-                'option'  => $val,
-            ));
-        }
-
-        if ( !IS_DEVELOPMENT && !!LICENSE_EXPIRE ) {
-            $license['expire'] = date('Y/m/d H:i', strtotime(LICENSE_EXPIRE));
-        }
-
-        $Tpl->add('license', $license);
-
         //-------------
         // debug mode
-        $debugMode['mode'] = ( defined('DEBUG_MODE') && DEBUG_MODE ) ? 'ON' : 'OFF';
-        if ( defined('DEBUG_MODE') && DEBUG_MODE ) {
+        $debugMode['mode'] = isDebugMode() ? 'ON' : 'OFF';
+        if (isDebugMode()) {
             $debugMode['caution'] = 'caution';
         }
         $Tpl->add('debugMode', $debugMode);
 
         //-------------
         // debug mode
-        $benchmarkMode['mode'] = ( defined('BENCHMARK_MODE') && BENCHMARK_MODE ) ? 'ON' : 'OFF';
-        if (defined('BENCHMARK_MODE') && BENCHMARK_MODE ) {
+        $benchmarkMode['mode'] = isBenchMarkMode() ? 'ON' : 'OFF';
+        if (isBenchMarkMode()) {
             $benchmarkMode['caution'] = 'caution';
         }
         $Tpl->add('benchmarkMode', $benchmarkMode);
@@ -248,12 +168,11 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
     function addBlogInfo(& $Tpl, $bid=0, $rid=null)
     {
         $blogConfig = array(
-            'bid'               => $bid,
-            'rid'               => $rid,
-            'cache'             => $this->config('cache', $bid, $rid),
+            'bid' => $bid,
+            'rid' => $rid,
+            'cache' => $this->config('cache', $bid, $rid),
             'cacheClearWhenPost' => $this->config('cache_clear_when_post', $bid, $rid),
-            'cacheClearTarget'  => $this->config('cache_clear_target', $bid, $rid),
-            'logAccess'         => $this->config('log_access', $bid, $rid),
+            'cacheClearTarget' => $this->config('cache_clear_target', $bid, $rid),
         );
         $blogConfig['editUrl']  = acmsLink(array(
             'bid'       => $bid,
@@ -308,7 +227,10 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
             return $config;
         } else {
             $config = loadDefaultConfig();
-            return $config[$key];
+            if (isset($config[$key])) {
+                return $config[$key];
+            }
         }
+        return false;
     }
 }

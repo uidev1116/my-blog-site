@@ -71,7 +71,10 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 } else {
                     $row    = ACMS_RAM::entry(EID);
                 }
-                $RVID_      = RVID;
+                if (empty($row)) {
+                    return;
+                }
+                $RVID_  = RVID;
                 if ( !RVID && $row['entry_approval'] === 'pre_approval' ) {
                     $RVID_  = 1;
                 }
@@ -88,6 +91,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 $Entry->setField('code', $row['entry_code']);
                 $Entry->setField('link', $row['entry_link']);
                 $Entry->setField('indexing', $row['entry_indexing']);
+                $Entry->setField('members_only', $row['entry_members_only']);
                 $Entry->setField('summary_range', $row['entry_summary_range']);
                 $Entry->setField('category_id', $row['entry_category_id']);
                 $Entry->setField('primary_image', $row['entry_primary_image']);
@@ -174,6 +178,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 $Column     = array();
                 $vars['status:selected#' . config('initial_entry_status', 'draft')] = config('attr_selected');
                 $vars['indexing:checked#' . config('entry_edit_indexing_default', 'on')] = config('attr_checked');
+                $vars['members_only:checked#' . config('entry_edit_members_only_default', 'off')] = config('attr_checked'); // phpcs:ignore
                 foreach ( $aryType as $i => $type ) {
                     if ( !$data = Tpl::getAdminColumnDefinition('insert', $type, $i) ) continue;
                     $Column[]   = $data + array(
@@ -289,9 +294,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 ));
             }
         } else {
-            //-----------
-            // [CMS-608]
-            $Tpl->add(array('adminEntryColumn', $rootBlock));
+            $Tpl->add(['adminEntryColumn', $rootBlock]);
         }
 
         //---------------
@@ -341,7 +344,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         } else if ( empty($summaryRange) ) {
             $vars['range:selected#all']     = config('attr_selected');
         }
-        $vars['summaryRange']   = $summaryRange;
+        $vars['summaryRange'] = $summaryRange;
 
         //----------
         // next eid

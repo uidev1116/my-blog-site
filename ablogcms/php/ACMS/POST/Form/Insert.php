@@ -51,10 +51,10 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
         $this->Post->removeChild('mail');
         $this->Post->removeChild('option');
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            $fmid   = $DB->query(SQL::nextval('form_id', dsn()), 'seq');
-            $SQL    = SQL::newInsert('form');
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $fmid = $DB->query(SQL::nextval('form_id', dsn()), 'seq');
+            $SQL = SQL::newInsert('form');
             $SQL->addInsert('form_id', $fmid);
             $SQL->addInsert('form_code', $Form->get('code'));
             $SQL->addInsert('form_name', $Form->get('name'));
@@ -67,6 +67,11 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('edit', 'insert');
+            AcmsLogger::info('フォームID「' . $Form->get('name') . '（' . $Form->get('code') . '）」を作成しました');
+        } else {
+            AcmsLogger::info('フォームIDの作成に失敗しました', [
+                'Form' => $Form,
+            ]);
         }
 
         return $this->Post;

@@ -90,6 +90,12 @@ class ACMS_POST_Category_Delete extends ACMS_POST_Category
             deleteWorkflow(BID, CID);
 
             $this->Post->set('edit', 'delete');
+
+            AcmsLogger::info('「' . ACMS_RAM::categoryName(CID) . '」カテゴリーの削除をしました');
+        } else {
+            AcmsLogger::info('「' . ACMS_RAM::categoryName(CID) . '」カテゴリーの削除に失敗しました', [
+                'Post' => $this->Post->_aryV,
+            ]);
         }
 
         return $this->Post;

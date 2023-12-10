@@ -106,10 +106,13 @@ class FilesystemTagAwareAdapter extends AbstractTagAwareAdapter implements Prune
                 }
 
                 $file = $this->getFile($id);
+                $tagLink = $this->getFile($id, true, $tagFolder);
 
-                if (!@symlink($file, $tagLink = $this->getFile($id, true, $tagFolder)) && !is_link($tagLink)) {
-                    @unlink($file);
-                    $failed[] = $id;
+                if (!is_link($tagLink)) {
+                    if (!@symlink($file, $tagLink) && !is_link($tagLink)) {
+                        @unlink($file);
+                        $failed[] = $id;
+                    }
                 }
             }
         }

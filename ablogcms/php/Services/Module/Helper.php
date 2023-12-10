@@ -4,7 +4,6 @@ namespace Acms\Services\Module;
 
 use DB;
 use SQL;
-use ACMS_RAM;
 use ACMS_Filter;
 use Image;
 use Common;
@@ -12,6 +11,19 @@ use Storage;
 
 class Helper
 {
+    const DEFAULT_ALLOWED_MULTIPLE_ARGUMENTS_MODULE_NAMES = [
+        'Entry_Body',
+        'Entry_Summary',
+        'Entry_List',
+        'Entry_Headline',
+        'Entry_Photo',
+        'Entry_TagRelational',
+        'Entry_GeoList',
+        'Admin_Entry_Autocomplete',
+        'Tag_Cloud',
+        'Tag_Filter',
+    ];
+
     /**
      * 重複チェック
      *
@@ -109,7 +121,7 @@ class Helper
         }
 
         //-------
-        // module 
+        // module
         $SQL = SQL::newInsert('module');
         foreach ( $base as $key => $val ) {
             $SQL->addInsert($key, $val);
@@ -158,5 +170,23 @@ class Helper
         Common::saveField('mid', $new, $Field);
 
         return $new;
+    }
+
+    /**
+     * 複数引数を許可するモジュールかどうか
+     *
+     * @param \Field $Module
+     *
+     * @return bool
+     */
+    public function isAllowedMultipleArguments(\Field $Module): bool
+    {
+        $allowedMultipleArgsModuleNames = array_unique(
+            array_merge(
+                self::DEFAULT_ALLOWED_MULTIPLE_ARGUMENTS_MODULE_NAMES,
+                configArray('module_allow_multiple_arguments')
+            )
+        );
+        return in_array($Module->get('name'), $allowedMultipleArgsModuleNames);
     }
 }

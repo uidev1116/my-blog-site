@@ -14,6 +14,7 @@ class ACMS_GET_Entry_Photo extends ACMS_GET_Entry_Summary
             'limit'            => intval(config('entry_photo_limit')),
             'offset'           => intval(config('entry_photo_offset')),
             'indexing'         => config('entry_photo_indexing'),
+            'membersOnly'      => config('entry_photo_members_only'),
             'subCategory'      => config('entry_photo_sub_category'),
             'secret'           => config('entry_photo_secret'),
             'newtime'          => config('entry_photo_newtime'),

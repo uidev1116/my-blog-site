@@ -5,11 +5,11 @@ class ACMS_POST_Rule_Delete extends ACMS_POST_Rule
     function post()
     {
         if ( roleAvailableUser() ) {
-            $this->Post->setMethod('rule', 'operative', 
+            $this->Post->setMethod('rule', 'operative',
                 ($rid = idval($this->Get->get('rid'))) and roleAuthorization('rule_edit', BID)
             );
         } else {
-            $this->Post->setMethod('rule', 'operative', 
+            $this->Post->setMethod('rule', 'operative',
                 ($rid = idval($this->Get->get('rid'))) and sessionWithAdministration()
             );
         }
@@ -18,6 +18,7 @@ class ACMS_POST_Rule_Delete extends ACMS_POST_Rule
 
         if ( $this->Post->isValidAll() ) {
             $DB = DB::singleton(dsn());
+            $Rule = loadRule($rid);
 
             //--------
             // cofnig
@@ -40,6 +41,14 @@ class ACMS_POST_Rule_Delete extends ACMS_POST_Rule
             $this->trim();
 
             $this->Post->set('edit', 'delete');
+
+            AcmsLogger::info('「' . $Rule->get('name') . '」ルールを削除しました', [
+                'ruleID' => $rid,
+            ]);
+        } else {
+            AcmsLogger::info('ルールの削除に失敗しました', [
+                'ruleID' => $rid,
+            ]);
         }
 
         return $this->Post;

@@ -73,7 +73,7 @@
 		<td>
 			<input type="text" name="entry_photo_limit" value="{entry_photo_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="entry_photo_limit" />
-			<input type="hidden" name="entry_photo_limit:convert" value="a" />
+			<input type="hidden" name="entry_photo_limit:c" value="a" />
 			<input type="hidden" name="entry_photo_limit:validator#digits" id="validator-entry_photo_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_photo_limit-digits" class="validator-result-{entry_photo_limit:validator#digits}">
@@ -87,7 +87,7 @@
 		<td>
 			<input type="text" name="entry_photo_offset" value="{entry_photo_offset}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="entry_photo_offset" />
-			<input type="hidden" name="entry_photo_offset:convert" value="a" />
+			<input type="hidden" name="entry_photo_offset:c" value="a" />
 			<input type="hidden" name="entry_photo_offset:validator#digits" id="validator-entry_photo_offset-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_photo_offset-digits" class="validator-result-{entry_photo_offset:validator#digits}">
@@ -107,6 +107,17 @@
 			<input type="hidden" name="config[]" value="entry_photo_indexing" />
 		</td>
 	</tr>
+  <tr>
+		<th><!--T-->会員限定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、会員限定にチェックが入ったエントリーのみ表示されます。<!--/T-->"></i></th>
+		<td>
+			<input type="hidden" name="entry_photo_members_only" value="off" />
+			<div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="entry_photo_members_only" value="on"{entry_photo_members_only:checked#on} id="input-checkbox-entry_photo_members_only" />
+				<label for="input-checkbox-entry_photo_members_only"><i class="acms-admin-ico-checkbox"></i><!--T-->会員限定のエントリーのみ表示する<!--/T--></label>
+			</div>
+			<input type="hidden" name="config[]" value="entry_photo_members_only" />
+		</td>
+	</tr>
 	<tr>
 		<th><!--T-->サブカテゴリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックを外すと、カテゴリー絞り込み時にサブカテゴリーに所属するエントリーは表示されないようになります。<!--/T-->"></i></th>
 		<td>
@@ -119,12 +130,12 @@
 		</td>
 	</tr>
 	<tr>
-		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログのエントリーが表示されます。ステータスがシークレットの子ブログのエントリーを表示するためには、モジュールIDの設定でブログIDは指定せず、ブログの階層は下階層のブログを含めるようにしてください。<!--/T-->"></i></th>
+		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログ・カテゴリーのエントリーが表示されます。ステータスがシークレットの子ブログのエントリーを表示するためには、モジュールIDの設定でブログIDは指定せず、ブログの階層は下階層のブログを含めるようにしてください。<!--/T-->"></i></th>
 		<td>
 			<input type="hidden" name="entry_photo_secret" value="off" />
 			<div class="acms-admin-form-checkbox">
 				<input type="checkbox" name="entry_photo_secret" value="on"{entry_photo_secret:checked#on} id="input-checkbox-entry_photo_secret" />
-				<label for="input-checkbox-entry_photo_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログのエントリーを表示する<!--/T--></label>
+				<label for="input-checkbox-entry_photo_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログ・カテゴリーのエントリーを表示する<!--/T--></label>
 			</div>
 			<input type="hidden" name="config[]" value="entry_photo_secret" />
 		</td>
@@ -193,9 +204,9 @@
 			<!--T-->横<!--/T-->&nbsp;<input type="text" name="entry_photo_image_x" value="{entry_photo_image_x}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル x 縦<!--/T-->&nbsp;<input type="text" name="entry_photo_image_y" value="{entry_photo_image_y}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル<!--/T-->
 			<input type="hidden" name="config[]" value="entry_photo_image_x" />
 			<input type="hidden" name="config[]" value="entry_photo_image_y" />
-			<input type="hidden" name="entry_photo_image_x:convert" value="a" />
+			<input type="hidden" name="entry_photo_image_x:c" value="a" />
 			<input type="hidden" name="entry_photo_image_x:validator#digits" id="validator-entry_photo_image_x-digits" />
-			<input type="hidden" name="entry_photo_image_y:convert" value="a" />
+			<input type="hidden" name="entry_photo_image_y:c" value="a" />
 			<input type="hidden" name="entry_photo_image_y:validator#digits" id="validator-entry_photo_image_y-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_photo_image_x-digits" class="validator-result-{entry_photo_image_x:validator#digits}">

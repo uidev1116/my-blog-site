@@ -25,8 +25,14 @@ class ACMS_POST_Backup_Remove extends ACMS_POST_Backup_Base
             Storage::remove($this->getPath($type, $fileName));
 
             $this->addMessage($fileName . ' を削除しました。');
+
+            AcmsLogger::info('バックアップの削除を行いました', [
+                'type' => $type,
+                'fileName' => $fileName,
+            ]);
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('バックアップの削除に失敗しました', Common::exceptionArray($e));
         }
         return $this->Post;
     }

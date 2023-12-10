@@ -136,9 +136,9 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function extractColumn(& $summaryRange=null, $olddel=true, $directAdd=false, $moveArchive='')
+    function extractColumn(& $summaryRange=null, $olddel=true, $directAdd=false)
     {
-        $unit = Entry::extractColumn($summaryRange, $olddel, $directAdd, $moveArchive);
+        $unit = Entry::extractColumn($summaryRange, $olddel, $directAdd);
         $summaryRange = Entry::getSummaryRange();
 
         return $unit;
@@ -147,9 +147,9 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveColumn(& $Column, $eid, $bid, $add=false, $rvid=null, $moveArchive=false)
+    function saveColumn(& $Column, $eid, $bid, $add=false, $rvid=null)
     {
-        $main_image_id = Entry::saveColumn($Column, $eid, $bid, $add, $rvid, $moveArchive);
+        $main_image_id = Entry::saveColumn($Column, $eid, $bid, $add, $rvid);
         $Column = Entry::getSavedColumn();
 
         return $main_image_id;
@@ -174,9 +174,9 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveUnitRevision(& $Unit, $eid, $bid, $rvid, $moveArchive=false)
+    function saveUnitRevision(& $Unit, $eid, $bid, $rvid)
     {
-        $main_image_id = Entry::saveUnitRevision($Unit, $eid, $bid, $rvid, $moveArchive);
+        $main_image_id = Entry::saveUnitRevision($Unit, $eid, $bid, $rvid);
         $Unit = Entry::getSavedColumn();
 
         return $main_image_id;
@@ -185,9 +185,9 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveFieldRevision($eid, $Field, $rvid, $moveFieldArchive=false)
+    function saveFieldRevision($eid, $Field, $rvid)
     {
-        return Entry::saveFieldRevision($eid, $Field, $rvid, $moveFieldArchive);
+        return Entry::saveFieldRevision($eid, $Field, $rvid);
     }
 
     /**

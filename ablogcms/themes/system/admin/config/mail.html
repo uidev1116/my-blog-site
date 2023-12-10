@@ -81,7 +81,29 @@
 		</tr>
 	</table>
 
-	<h2 class="acms-admin-admin-title2 "><!--T-->読者登録<!--/T--></h2>
+  <h2 class="acms-admin-admin-title2 "><!--T-->エラー通知<!--/T--></h2>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->.envファイルで、エラー通知メールの差出人を指定します。<!--/T-->"></i></th>
+			<td>
+				{alert_email_from}
+			</td>
+		</tr>
+		<tr>
+			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->.envファイルで、エラー通知メールの宛先を指定します。空の場合UIDが一番小さい管理者アカウントのメールアドレスに送信します。<!--/T-->"></i></th>
+			<td>
+        {alert_email_to}
+			</td>
+		</tr>
+    <tr>
+			<th>Bcc<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->.envファイルで、エラー通知メールのBCCを指定します。<!--/T-->"></i></th>
+			<td>
+        {alert_email_bcc}
+			</td>
+		</tr>
+	</table>
+
+	<h2 class="acms-admin-admin-title2 "><!--T-->会員登録<!--/T--></h2>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
 			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->登録者宛に送信されるメールの差出人を指定します。<!--/T-->"></i></th>
@@ -93,12 +115,14 @@
 		<tr>
 			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->登録者宛に送信されるメールの宛先を指定します。<!--/T-->"></i></th>
 			<td>
-				(&nbsp;<!--T-->※読者登録の申し込み時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
+				(&nbsp;<!--T-->※会員登録の申し込み時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
 			</td>
 		</tr>
 		<tr>
-			<th>Bcc<i class="acms-admin-icon-tooltip js-acms-tooltip-hover"
-					  data-acms-tooltip="<!--T-->登録者宛に送信されるメールのBcc（ブラインドカーボンコピー）を指定します。<!--/T-->"></i></th>
+			<th>Bcc
+        <i
+          class="acms-admin-icon-tooltip js-acms-tooltip-hover"
+					data-acms-tooltip="<!--T-->登録者宛に送信されるメールのBcc（ブラインドカーボンコピー）を指定します。<!--/T-->"></i></th>
 			<td>
 				<ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN mail_subscribe_bcc:loop -->
 					<li class="sortable-item acms-admin-margin-bottom-mini">
@@ -144,7 +168,7 @@
 		</tr>
 	</table>
 
-	<h2 class="acms-admin-admin-title2 "><!--T-->読者登録（管理者）<!--/T--></h2>
+	<h2 class="acms-admin-admin-title2 "><!--T-->会員登録（管理者）<!--/T--></h2>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
 			<th><!--T-->From（管理者）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->管理者宛に送信されるメールの差出人を指定します。<!--/T-->"></i></th>
@@ -232,7 +256,7 @@
 		<tr>
 			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->登録者宛に送信されるメールの宛先を指定します。<!--/T-->"></i></th>
 			<td>
-				(&nbsp;<!--T-->※読者登録の申し込み時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
+				(&nbsp;<!--T-->※会員登録の申し込み時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
 			</td>
 		</tr>
 		<tr>
@@ -359,13 +383,95 @@
 		</tr>
 	</table>
 
+  <h2 class="acms-admin-admin-title2 "><!--T-->メール認証管理ログイン<!--/T--></h2>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの差出人を指定します。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="mail_auth_login_from" value="{mail_auth_login_from}" size="60"/>
+				<input type="hidden" name="config[]" value="mail_auth_login_from"/>
+			</td>
+		</tr>
+		<tr>
+			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの宛先を指定します。<!--/T-->"></i></th>
+			<td>
+				(&nbsp;<!--T-->※ 管理ログイン時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->件名テンプレート<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの件名のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_login_tpl_subject" value="{mail_auth_login_tpl_subject}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_login_tpl_subject"/>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_login_tpl_body" value="{mail_auth_login_tpl_body}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_login_tpl_body"/>
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->本文テンプレート（HTML）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_login_tpl_body_html" value="{mail_auth_login_tpl_body_html}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_login_tpl_body_html"/>
+			</td>
+		</tr>
+	</table>
+
+  <h2 class="acms-admin-admin-title2 "><!--T-->メール認証サインイン<!--/T--></h2>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの差出人を指定します。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="mail_auth_signin_from" value="{mail_auth_signin_from}" size="60"/>
+				<input type="hidden" name="config[]" value="mail_auth_signin_from"/>
+			</td>
+		</tr>
+		<tr>
+			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの宛先を指定します。<!--/T-->"></i></th>
+			<td>
+				(&nbsp;<!--T-->※ サインイン時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->件名テンプレート<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの件名のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_signin_tpl_subject" value="{mail_auth_signin_tpl_subject}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_signin_tpl_subject"/>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_signin_tpl_body" value="{mail_auth_signin_tpl_body}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_signin_tpl_body"/>
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->本文テンプレート（HTML）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_auth_signin_tpl_body_html" value="{mail_auth_signin_tpl_body_html}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_auth_signin_tpl_body_html"/>
+			</td>
+		</tr>
+	</table>
+
 	<h2 class="acms-admin-admin-title2 "><!--T-->パスワード再発行<!--/T--></h2>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
 			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの差出人を指定します。<!--/T-->"></i></th>
 			<td>
-				<input type="text" name="mail_remind_from" value="{mail_remind_from}" size="60"/>
-				<input type="hidden" name="config[]" value="mail_remind_from"/>
+				<input type="text" name="mail_reset_password_from" value="{mail_reset_password_from}" size="60"/>
+				<input type="hidden" name="config[]" value="mail_reset_password_from"/>
 			</td>
 		</tr>
 		<tr>
@@ -377,46 +483,46 @@
 		<tr>
 			<th>Bcc<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールのBcc（ブラインドカーボンコピー）を指定します。<!--/T-->"></i></th>
 			<td>
-				<ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN mail_remind_bcc:loop -->
+				<ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN mail_reset_password_bcc:loop -->
 					<li class="sortable-item acms-admin-margin-bottom-mini">
 						<i class="acms-admin-icon-sort item-handle acms-admin-hide-sp"></i>
-						<input type="text" name="mail_remind_bcc[]" value="{mail_remind_bcc}" size="60"/>
+						<input type="text" name="mail_reset_password_bcc[]" value="{mail_reset_password_bcc}" size="60"/>
 						<input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp"/>
-					</li><!-- END mail_remind_bcc:loop -->
+					</li><!-- END mail_reset_password_bcc:loop -->
 					<li class="sortable-item item-template acms-admin-margin-bottom-mini">
 						<i class="acms-admin-icon-sort item-handle acms-admin-hide-sp"></i>
-						<input type="text" name="mail_remind_bcc[]" size="60"/>
+						<input type="text" name="mail_reset_password_bcc[]" size="60"/>
 						<input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp"/>
 					</li>
 					<li>
 						<input type="button" value="<!--T-->追加<!--/T-->" class="item-insert acms-admin-btn-admin"/>
 					</li>
 				</ul>
-				<input type="hidden" name="config[]" value="mail_remind_bcc"/>
+				<input type="hidden" name="config[]" value="mail_reset_password_bcc"/>
 			</td>
 		</tr>
 		<tr>
 			<th><!--T-->件名テンプレート<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの件名のテンプレートの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
-				<input type="text" name="mail_remind_tpl_subject" value="{mail_remind_tpl_subject}" size="40"/>
-				<input type="hidden" name="config[]" value="mail_remind_tpl_subject"/>
+				<input type="text" name="mail_reset_password_tpl_subject" value="{mail_reset_password_tpl_subject}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_reset_password_tpl_subject"/>
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->本文テンプレート（プレーンテキスト）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
-				<input type="text" name="mail_remind_tpl_body" value="{mail_remind_tpl_body}" size="40"/>
-				<input type="hidden" name="config[]" value="mail_remind_tpl_body"/>
+				<input type="text" name="mail_reset_password_tpl_body" value="{mail_reset_password_tpl_body}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_reset_password_tpl_body"/>
 			</td>
 		</tr>
     <tr>
 			<th><!--T-->本文テンプレート（HTML）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
-				<input type="text" name="mail_remind_tpl_body_html" value="{mail_remind_tpl_body_html}" size="40"/>
-				<input type="hidden" name="config[]" value="mail_remind_tpl_body_html"/>
+				<input type="text" name="mail_reset_password_tpl_body_html" value="{mail_reset_password_tpl_body_html}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_reset_password_tpl_body_html"/>
 			</td>
 		</tr>
 	</table>
@@ -467,7 +573,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->本文テンプレート（プレーンテキスト）<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->管理者宛に送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->管理者宛に送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
 				<input type="text" name="mail_comment_tpl_body" value="{mail_comment_tpl_body}" size="40"/>
@@ -543,7 +649,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->本文テンプレート（プレーンテキスト）<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->承認者宛に送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->承認者宛に送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
 				<input type="text" name="mail_approval_tpl_body" value="{mail_approval_tpl_body}" size="40"/>
@@ -585,7 +691,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->本文テンプレート（プレーンテキスト）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->送信されるメールのテキスト形式の本文になる文章の雛形が記述されているテンプレートファイルの場所を指定します。<!--/T-->"></i>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->送信されるメールのテキスト形式の本文になる文章の雛形が記述されているテンプレートファイルの場所を指定します。<!--/T-->"></i>
 			</th>
 			<td>
 				<input type="text" name="mail_entry_tpl_body_plain" value="{mail_entry_tpl_body_plain}" size="40"/>

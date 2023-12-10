@@ -4,29 +4,48 @@ class ACMS_POST_Revision_Change extends ACMS_POST_Entry
 {
     function post()
     {
-        if ( !EID ) die();
-        if ( !IS_LICENSED ) die();
-
-        if ( enableApproval(BID, CID) ) {
-            if ( !sessionWithApprovalAdministrator(BID, CID) ) die();
-        } else if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('entry_edit', BID, EID) ) die();
-        } else {
-            if ( !sessionWithCompilation(BID, false) ) {
-                if ( !sessionWithContribution(BID, false) ) die();
-                if ( SUID <> ACMS_RAM::entryUser(EID) ) die();
+        try {
+            if (!EID)  {
+                throw new \RuntimeException('エントリーが指定されていません');
             }
+            if (enableApproval(BID, CID)) {
+                if (!sessionWithApprovalAdministrator(BID, CID)) {
+                    throw new \RuntimeException('権限がありません');
+                }
+            } else if (roleAvailableUser()) {
+                if ( !roleAuthorization('entry_edit', BID, EID) ) {
+                    throw new \RuntimeException('権限がありません');
+                }
+            } else {
+                if (!sessionWithCompilation(BID, false)) {
+                    if (!sessionWithContribution(BID, false)) {
+                        throw new \RuntimeException('権限がありません');
+                    }
+                    if (SUID <> ACMS_RAM::entryUser(EID)) {
+                        throw new \RuntimeException('権限がありません');
+                    }
+                }
+            }
+
+            $rvid = $this->Post->get('revision');
+            if (!is_numeric($rvid)) {
+                throw new \RuntimeException('バージョン番号が指定されていません');
+            }
+            $cid = Entry::changeRevision($rvid, EID, BID);
+            $revision = Entry::getRevision(EID, $rvid);
+
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '（' . $revision['entry_rev_memo'] . '）」を公開バージョンに切り替えました', [
+                'eid' => EID,
+                'rvid' => $rvid,
+            ]);
+
+            $this->redirect(acmsLink(array(
+                'bid'   => BID,
+                'eid'   => EID,
+                'cid'   => $cid,
+            )));
+        } catch (\Exception $e) {
+            AcmsLogger::info('公開バージョンへの切り替えができませんでした。' . $e->getMessage(), Common::exceptionArray($e));
         }
-
-        $rvid = $this->Post->get('revision');
-        if ( !is_numeric($rvid) ) die();
-
-        $cid = Entry::changeRevision($rvid, EID, BID);
-
-        $this->redirect(acmsLink(array(
-            'bid'   => BID,
-            'eid'   => EID,
-            'cid'   => $cid,
-        )));
     }
 }

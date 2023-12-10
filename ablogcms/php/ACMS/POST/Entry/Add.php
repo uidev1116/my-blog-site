@@ -37,12 +37,15 @@ class ACMS_POST_Entry_Add extends ACMS_POST_Entry
 
         $SQL = SQL::newUpdate('entry');
         $SQL->addUpdate('entry_current_rev_id', 0);
+        $SQL->addUpdate('entry_reserve_rev_id', 0);
         $SQL->addUpdate('entry_last_update_user_id', SUID);
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
         ACMS_RAM::entry(EID, null);
         $this->clearCache(BID, EID);
+
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーにユニットを追加しました');
 
         $this->redirect(acmsLink(array(
             'bid'   => BID,

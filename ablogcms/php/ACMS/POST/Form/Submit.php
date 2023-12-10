@@ -17,31 +17,35 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      */
     function post()
     {
+        // フォーム情報のロード
+        $id = $this->Post->get('id');
+        $info = $this->loadForm($id);
+        if (empty($info)) {
+            AcmsLogger::critical('フォームID「' . $id . '」が存在しないため、フォーム送信の処理を中断しました');
+            $this->Post->set('step', 'forbidden');
+            return $this->Post;
+        }
+
         if (config('form_csrf_enable', 'on') !== 'off') {
             // CSRF対策
             if (!$this->checkCsrfToken()) {
+                AcmsLogger::notice('フォームID「' . $id . '」で、CSRFトークンが一致しないため、処理を中断しました');
                 $this->Post->set('step', 'forbidden');
                 return $this->Post;
             }
             // 2重送信対策
             if (!$this->checkDoubleSubmit()) {
+                AcmsLogger::notice('フォームID「' . $id . '」で、二重送信を検知したため処理を中断しました');
                 $this->Post->set('step', 'repeated');
                 return $this->Post;
             }
         }
         if (isCSRF()) {
+            AcmsLogger::notice('フォームID「' . $id . '」で、Referrerから外部からのリクエストと判断されたため処理を中断しました');
             $this->Post->set('step', 'forbidden');
             return $this->Post;
         }
 
-        // フォーム情報のロード
-        $id = $this->Post->get('id');
-        $info = $this->loadForm($id);
-        if (empty($info)) {
-            userErrorLog('Not Found Form ID.');
-            $this->Post->set('step', 'forbidden');
-            return $this->Post;
-        }
         $Form = $info['data'];
         $Mail =& $this->mergeMainConfig($Form->getChild('mail'));
 
@@ -60,6 +64,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
         // バリデート
         $Field->validate(new ACMS_Validator());
         if (!$this->Post->isValidAll()) {
+            AcmsLogger::notice('フォームID「' . $id . '」で、バリデートに失敗したため、送信処理を中断しました');
             return $this->Post;
         }
 
@@ -70,16 +75,20 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             // メール送信
             $admin_log = $this->sendToAdministrator($Mail, $Field);
             $log = $this->sendAutoReply($Mail, $Field);
+        } catch (Exception $e) {
+            $this->Post->set('step', 'forbidden');
+            AcmsLogger::warning('フォームID「' . $id . '」でメール送信に失敗しました', Common::exceptionArray($e, ['message' => $e->getMessage()]));
+            return $this->Post;
+        }
 
+        try {
             // ログを記憶
             if (!(isset($info['log']) && $info['log'] === '0')) {
                 $this->updateLog($info, $log, $admin_log, $Field);
             }
         } catch (Exception $e) {
             $this->Post->set('step', 'forbidden');
-            if (DEBUG_MODE) {
-                throw $e;
-            }
+            AcmsLogger::warning('フォームID「' . $id . '」で送信結果のDB保存に失敗しました', Common::exceptionArray($e, ['message' => $e->getMessage()]));
             return $this->Post;
         }
 
@@ -186,6 +195,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             'reply-to' => $Mail->getArray('Reply-To'),
             'body' => $body,
         ));
+
         $mailer = Mailer::init();
 
         // 基本設定を追加
@@ -199,7 +209,9 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
         } else {
             $mailer->setBody($info['body']);
         }
-        $mailer->send();
+        if ($Mail->get('FormSend') !== 'no') {
+            $mailer->send();
+        }
 
         return $info;
     }
@@ -260,7 +272,9 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
         } else {
             $mailer->setBody($info['body']);
         }
-        $mailer->send();
+        if ($Mail->get('AdminFormSend') !== 'no') {
+            $mailer->send(config('form_attached_file_delete_immediately', 'on') === 'on');
+        }
 
         return $info;
     }

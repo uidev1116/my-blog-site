@@ -12,8 +12,8 @@ use ACMS_POST_File;
 use ACMS_POST_Image;
 use ACMS_Validator;
 use Field;
+use AcmsLogger;
 use ACMS_Hook;
-use ACMS_Services_Twitter;
 use Embed\Embed;
 
 class Helper
@@ -31,6 +31,86 @@ class Helper
      * @var string
      */
     protected $savedColumn;
+
+    /**
+     * 苦肉の策で、新規アップロードされたファイルをここに一時保存する
+     *
+     * @var array
+     */
+    protected $uploadedFiles = [];
+
+    /**
+     * 苦肉の策で、新規バージョン作成か一時的に保存する
+     *
+     * @var mixed
+     */
+    protected $isNewVersion = false;
+
+    /**
+     * サマリーの表示で使うユニットの範囲を取得
+     * Entry::extractColumn 後に決定
+     *
+     * @return int
+     */
+    public function getSummaryRange()
+    {
+        return $this->summaryRange;
+    }
+
+    /**
+     * ユニット保存後のユニットデータを取得
+     * Entry::extractColumn 後に決定
+     *
+     * @return int
+     */
+    public function getSavedColumn()
+    {
+        return $this->savedColumn;
+    }
+
+    /**
+     * アップロードされたファイルを取得
+     * Entry::extractColumn 後に決定
+     *
+     * @return array
+     */
+    public function getUploadedFiles()
+    {
+        return $this->uploadedFiles;
+    }
+
+    /**
+     * アップロードされたファイルを取得
+     * Entry::extractColumn 後に決定
+     *
+     * @param string $name
+     * @return void
+     */
+    public function addUploadedFiles($path)
+    {
+        $this->uploadedFiles[] = $path;
+    }
+
+    /**
+     * 新規バージョン作成の判定をセット
+     *
+     * @param boolean $flag
+     * @return void
+     */
+    public function setNewVersion($flag)
+    {
+        $this->isNewVersion = $flag;
+    }
+
+    /**
+     * 新規バージョン作成の判定を取得
+     *
+     * @return boolean
+     */
+    public function isNewVersion()
+    {
+        return $this->isNewVersion;
+    }
 
     /**
      * エントリーコードの重複をチェック
@@ -92,6 +172,9 @@ class Helper
      */
     public function validateMediaUnit()
     {
+        if (!isset($_POST['type']) || !is_array($_POST['type'])) {
+            return true;
+        }
         foreach ($_POST['type'] as $i => $type) {
             $id = $_POST['id'][$i];
             $type = detectUnitTypeSpecifier($type);
@@ -141,6 +224,7 @@ class Helper
                 $response = $req->send();
                 $response->getResponseBody();
             } catch (\Exception $e) {
+                AcmsLogger::notice('トラックバックの送信に失敗しました', Common::exceptionArray($e, ['url' => $ep]));
             }
         }
     }
@@ -286,7 +370,7 @@ class Helper
                     if ( empty($row['column_field_2']) ) break;
                     $oldAry = explodeUnitData($row['column_field_2']);
                     foreach ( $oldAry as $old ) {
-                        $path   = REVISON_ARCHIVES_DIR.$old;
+                        $path   = ARCHIVES_DIR . $old;
                         $large  = otherSizeImagePath($path, 'large');
                         $tiny   = otherSizeImagePath($path, 'tiny');
                         $square = otherSizeImagePath($path, 'square');
@@ -300,7 +384,7 @@ class Helper
                     if ( empty($row['column_field_2']) ) break;
                     $oldAry = explodeUnitData($row['column_field_2']);
                     foreach ( $oldAry as $old ) {
-                        $path   = REVISON_ARCHIVES_DIR.$old;
+                        $path   = ARCHIVES_DIR . $old;
                         deleteFile($path);
                     }
                     break;
@@ -317,7 +401,7 @@ class Helper
                             continue;
                         }
                         foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                            $path = REVISON_ARCHIVES_DIR.$old;
+                            $path = ARCHIVES_DIR . $old;
                             deleteFile($path);
                         }
                     }
@@ -362,8 +446,8 @@ class Helper
                         continue;
                     }
                     foreach ( $Field->getArray($fd, true) as $i => $path ) {
-                        if ( !Storage::isFile(REVISON_ARCHIVES_DIR.$path) ) continue;
-                        Storage::remove(REVISON_ARCHIVES_DIR.$path);
+                        if ( !Storage::isFile(ARCHIVES_DIR . $path) ) continue;
+                        Storage::remove(ARCHIVES_DIR . $path);
                     }
                 }
                 Common::saveField('eid', $eid, null, null, $rvid);
@@ -391,30 +475,48 @@ class Helper
         $DB = DB::singleton(dsn());
         $cid = null;
         $primaryImageId = null;
-
-        if ( !is_numeric($rvid) ) die();
+        if (!is_numeric($rvid)) {
+            return false;
+        }
+        $sql = SQL::newSelect('entry_rev');
+        $sql->addWhereOpr('entry_id', $eid);
+        $sql->addWhereOpr('entry_rev_id', $rvid);
+        $revision = DB::query($sql->get(dsn()), 'row');
+        if (empty($revision)) {
+            return false;
+        }
+        $publicDatetime = $revision['entry_start_datetime'];
+        if (strtotime($publicDatetime) > REQUEST_TIME) {
+            $sql = SQL::newUpdate('entry');
+            $sql->setUpdate('entry_reserve_rev_id', $rvid);
+            $sql->addWhereOpr('entry_id', $eid);
+            DB::query($sql->get(dsn()), 'exec');
+            return ACMS_RAM::entryCategory($eid);
+        }
 
         // エントリの情報を削除
-        Entry::entryDelete(EID, true);
+        Entry::entryDelete($eid, true);
 
         //-------
         // entry
         $SQL    = SQL::newSelect('entry_rev');
-        $SQL->addWhereOpr('entry_id', EID);
+        $SQL->addWhereOpr('entry_id', $eid);
         $SQL->addWhereOpr('entry_rev_id', $rvid);
-        $SQL->addWhereOpr('entry_blog_id', BID);
         $q      = $SQL->get(dsn());
 
         $Entry  = SQL::newInsert('entry');
         if ( $row = $DB->query($q, 'row') ) {
             $cid = $row['entry_category_id'];
             foreach ( $row as $key => $val ) {
-                if ( !preg_match('@^(entry_rev|entry_approval)@', $key) ) {
+                if (!preg_match('@^(entry_rev|entry_approval)@', $key)) {
                     $Entry->addInsert($key, $val);
                 }
             }
             $Entry->addInsert('entry_current_rev_id', $rvid);
-            $Entry->addInsert('entry_last_update_user_id', SUID);
+            $Entry->addInsert('entry_reserve_rev_id', 0);
+            if (SUID) {
+                $Entry->addInsert('entry_last_update_user_id', SUID);
+            }
             $DB->query($Entry->get(dsn()), 'exec');
 
             $primaryImageId = $row['entry_primary_image'];
@@ -423,100 +525,12 @@ class Helper
         //------
         // unit
         $SQL    = SQL::newSelect('column_rev');
-        $SQL->addWhereOpr('column_entry_id', EID);
+        $SQL->addWhereOpr('column_entry_id', $eid);
         $SQL->addWhereOpr('column_rev_id', $rvid);
-        $SQL->addWhereOpr('column_blog_id', BID);
         $q      = $SQL->get(dsn());
 
         $Unit   = SQl::newInsert('column');
         if ( $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) { do {
-            $type = detectUnitTypeSpecifier($row['column_type']);
-            switch ( $type ) {
-                case 'image':
-                    if ( empty($row['column_field_2']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_2']);
-                    $newAry = array();
-                    foreach ( $oldAry as $old ) {
-                        $info   = pathinfo($old);
-                        $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-                        $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
-                        $newOld = $dirname.uniqueString().$ext;
-
-                        $path   = REVISON_ARCHIVES_DIR.$old;
-                        $large  = otherSizeImagePath($path, 'large');
-                        $tiny   = otherSizeImagePath($path, 'tiny');
-                        $square = otherSizeImagePath($path, 'square');
-
-                        $newPath    = ARCHIVES_DIR.$newOld;
-                        $newLarge   = otherSizeImagePath($newPath, 'large');
-                        $newTiny    = otherSizeImagePath($newPath, 'tiny');
-                        $newSquare  = otherSizeImagePath($newPath, 'square');
-
-                        copyFile($path, $newPath);
-                        copyFile($large, $newLarge);
-                        copyFile($tiny, $newTiny);
-                        copyFile($square, $newSquare);
-
-                        $newAry[]   = $newOld;
-                    }
-                    $row['column_field_2']  = implodeUnitData($newAry);
-                    break;
-                case 'file':
-                    if ( empty($row['column_field_2']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_2']);
-                    $newAry = array();
-                    foreach ( $oldAry as $old ) {
-                        $info   = pathinfo($old);
-                        $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-                        $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
-                        $newOld = $dirname.uniqueString().$ext;
-
-                        $path   = REVISON_ARCHIVES_DIR.$old;
-                        $newPath    = ARCHIVES_DIR.$newOld;
-
-                        copyFile($path, $newPath);
-
-                        $newAry[]   = $newOld;
-                    }
-                    $row['column_field_2']  = implodeUnitData($newAry);
-                    break;
-                case 'custom':
-                    if ( empty($row['column_field_6']) ) break;
-                    $Field = acmsUnserialize($row['column_field_6']);
-                    foreach ( $Field->listFields() as $fd ) {
-                        if ( 1
-                            and !strpos($fd, '@path')
-                            and !strpos($fd, '@tinyPath')
-                            and !strpos($fd, '@largePath')
-                            and !strpos($fd, '@squarePath')
-                        ) {
-                            continue;
-                        }
-                        $set = false;
-                        foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                            $info       = pathinfo($old);
-                            $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                            Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-
-                            $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
-                            $newOld = $dirname.uniqueString().$ext;
-
-                            $path   = REVISON_ARCHIVES_DIR.$old;
-                            $newPath    = ARCHIVES_DIR.$newOld;
-
-                            copyFile($path, $newPath);
-                            if ( !$set ) {
-                                $Field->delete($fd);
-                                $set = true;
-                            }
-                            $Field->add($fd, $newOld);
-                        }
-                    }
-                    $row['column_field_6'] = acmsSerialize($Field);
-                    break;
-            }
             foreach ( $row as $key => $val ) {
                 if ( $key !== 'column_id' && $key !== 'column_rev_id' ) {
                     $Unit->addInsert($key, $val);
@@ -534,50 +548,20 @@ class Helper
         // primaryImageIdを更新
         $SQL = SQL::newUpdate('entry');
         $SQL->addUpdate('entry_primary_image', $primaryImageId);
-        $SQL->addWhereOpr('entry_id', EID);
-        $SQL->addWhereOpr('entry_blog_id', BID);
+        $SQL->addWhereOpr('entry_id', $eid);
         $DB->query($SQL->get(dsn()), 'exec');
-        ACMS_RAM::entry(EID, null);
+        ACMS_RAM::entry($eid, null);
 
         //-------
         // field
-        $Field  = loadEntryField(EID, $rvid);
-        foreach ( $Field->listFields() as $fd ) {
-            if ( 1
-                and !strpos($fd, '@path')
-                and !strpos($fd, '@tinyPath')
-                and !strpos($fd, '@largePath')
-                and !strpos($fd, '@squarePath')
-            ) {
-                continue;
-            }
-            $set = false;
-            foreach ($Field->getArray($fd, true) as $i => $path) {
-                if (!$set) {
-                    $Field->delete($fd);
-                    $set = true;
-                }
-                if (Storage::isFile(REVISON_ARCHIVES_DIR.$path)) {
-                    $info       = pathinfo($path);
-                    $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                    Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-                    $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
-                    $newPath    = $dirname.uniqueString().$ext;
-                    Storage::copy(REVISON_ARCHIVES_DIR.$path, ARCHIVES_DIR.$newPath);
-                    $Field->add($fd, $newPath);
-                } else {
-                    $Field->add($fd, '');
-                }
-            }
-        }
-        Common::saveField('eid', EID, $Field);
+        $Field = loadEntryField($eid, $rvid);
+        Common::saveField('eid', $eid, $Field);
 
         //-------
         // tag
         $SQL    = SQL::newSelect('tag_rev');
-        $SQL->addWhereOpr('tag_entry_id', EID);
+        $SQL->addWhereOpr('tag_entry_id', $eid);
         $SQL->addWhereOpr('tag_rev_id', $rvid);
-        $SQL->addWhereOpr('tag_blog_id', BID);
         $q      = $SQL->get(dsn());
 
         $Tag    = SQl::newInsert('tag');
@@ -597,7 +581,7 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
 
         $SQL = SQL::newSelect('entry_sub_category_rev');
-        $SQL->addWhereOpr('entry_sub_category_eid', EID);
+        $SQL->addWhereOpr('entry_sub_category_eid', $eid);
         $SQL->addWhereOpr('entry_sub_category_rev_id', $rvid);
         $q = $SQL->get(dsn());
         $SubCategory = SQl::newInsert('entry_sub_category');
@@ -613,13 +597,13 @@ class Helper
         //---------------
         // related entry
         $SQL    = SQL::newSelect('relationship_rev');
-        $SQL->addWhereOpr('relation_id', EID);
+        $SQL->addWhereOpr('relation_id', $eid);
         $SQL->addWhereOpr('relation_rev_id', $rvid);
 
         $all    = $DB->query($SQL->get(dsn()), 'all');
         foreach ( $all as $row ) {
             $SQL    = SQL::newInsert('relationship');
-            $SQL->addInsert('relation_id', EID);
+            $SQL->addInsert('relation_id', $eid);
             $SQL->addInsert('relation_eid', $row['relation_eid']);
             $SQL->addInsert('relation_type', $row['relation_type']);
             $SQL->addInsert('relation_order', $row['relation_order']);
@@ -721,50 +705,22 @@ class Helper
     }
 
     /**
-     * サマリーの表示で使うユニットの範囲を取得
-     * Entry::extractColumn 後に決定
-     *
-     * @return int
-     */
-    public function getSummaryRange()
-    {
-        return $this->summaryRange;
-    }
-
-    /**
-     * ユニット保存後のユニットデータを取得
-     * Entry::extractColumn 後に決定
-     *
-     * @return int
-     */
-    public function getSavedColumn()
-    {
-        return $this->savedColumn;
-    }
-
-    /**
      * ユニットデータの抜き出し
      *
+     * @param int $range
      * @param bool $olddel
      * @param bool $directAdd
-     * @param string $moveArchive
      *
      * @return array
      */
-    public function extractColumn($range=0, $olddel=true, $directAdd=false, $moveArchive='')
+    public function extractColumn($range = 0, $olddel = true, $directAdd = false)
     {
         $summaryRange = $range;
-
-        if ( !empty($_POST['column_object']) ) {
+        if (!empty($_POST['column_object'])) {
             return unserialize(gzinflate(base64_decode($_POST['column_object'])));
         }
-
         $Column = array();
         $overCount = 0;
-        $ARCHIVES_DIR = ARCHIVES_DIR;
-        if ( !empty($moveArchive) ) {
-            $ARCHIVES_DIR = ARCHIVES_DIR.'TEMP/';
-        }
         if ( !(isset($_POST['type']) and is_array($_POST['type'])) ) return $Column;
         foreach ( $_POST['type'] as $i => $type ) {
             $id     = $_POST['id'][$i];
@@ -800,7 +756,7 @@ class Helper
             } else if ( 'image' == $type ) {
                 $caption        = isset($_POST['image_caption_'.$id]) ? $_POST['image_caption_'.$id] : null;
                 $old            = isset($_POST['image_old_'.$id]) ? $_POST['image_old_'.$id] : null;
-                $Image          = new ACMS_POST_Image($olddel, $directAdd, $moveArchive);
+                $Image          = new ACMS_POST_Image($olddel, $directAdd);
                 $imageFiles     = array();
                 $dataArray      = array();
 
@@ -815,7 +771,7 @@ class Helper
                         $edit   = isset($_POST['image_edit_'.$id][$n]) ? $_POST['image_edit_'.$id][$n] : $_POST['image_edit_'.$id];
 
                         if ( isset($_POST['image_file_'.$id][$n]) && !empty($_POST['image_file_'.$id][$n]) ) {
-                            $Image = new ACMS_POST_Image($olddel, true, $moveArchive);
+                            $Image = new ACMS_POST_Image($olddel, true);
                             ACMS_POST_Image::base64DataToImage($_POST['image_file_'.$id][$n], 'image_file_'.$id, $n);
                         }
 
@@ -864,7 +820,7 @@ class Helper
                             || !is_array($_POST['image_file_'.$id]) && !empty($_POST['image_file_'.$id])
                         )
                     ) {
-                        $Image = new ACMS_POST_Image($olddel, true, $moveArchive);
+                        $Image = new ACMS_POST_Image($olddel, true);
                         ACMS_POST_Image::base64DataToImage($_POST['image_file_'.$id], 'image_file_'.$id);
                     }
                     $tmp = isset($_FILES['image_file_'.$id]['tmp_name']) ? $_FILES['image_file_'.$id]['tmp_name'] : '';
@@ -901,7 +857,7 @@ class Helper
             } else if ( 'file' == $type ) {
                 $caption        = isset($_POST['file_caption_'.$id]) ? $_POST['file_caption_'.$id] : null;
                 $old            = isset($_POST['file_old_'.$id]) ? $_POST['file_old_'.$id] : null;
-                $File           = new ACMS_POST_File($olddel, $directAdd, $moveArchive);
+                $File           = new ACMS_POST_File($olddel, $directAdd);
                 $files          = array();
                 $fileArray      = array();
 
@@ -990,7 +946,7 @@ class Helper
                     'size'          => $_POST['youtube_size_'.$id],
                 );
                 if ( $directAdd && strlen($data['youtube_id']) === 0 ) {
-                     $data['youtube_id'] = config('action_direct_def_youtubeid');
+                    $data['youtube_id'] = config('action_direct_def_youtubeid');
                 }
             //---------
             // video
@@ -1000,7 +956,7 @@ class Helper
                     'size'      => $_POST['video_size_'.$id],
                 );
                 if ( $directAdd && strlen($data['video_id']) === 0 ) {
-                     $data['video_id'] = config('action_direct_def_videoid');
+                    $data['video_id'] = config('action_direct_def_videoid');
                 }
             //---------
             // eximage
@@ -1054,9 +1010,9 @@ class Helper
                     'size'      => $size,
                 );
                 if ( $directAdd && strlen($data['normal']) === 0 ) {
-                     $data['normal'] = config('action_direct_def_eximage');
-                     $data['size'] = config('action_direct_def_eximage_size');
-                 }
+                    $data['normal'] = config('action_direct_def_eximage');
+                    $data['size'] = config('action_direct_def_eximage_size');
+                }
             //---------
             // quote
             } else if ( 'quote' == $type ) {
@@ -1135,7 +1091,7 @@ class Helper
             //--------
             // custom
             } else if ( 'custom' == $type ) {
-                $Field = Common::extract('unit'.$id, new ACMS_Validator, new Field(), $moveArchive);
+                $Field = Common::extract('unit'.$id, new ACMS_Validator, new Field());
                 $obj = Common::getDeleteField();
                 $Field->retouchCustomUnit($id);
                 $data = array(
@@ -1213,148 +1169,33 @@ class Helper
      * @param int $bid
      * @param bool $add
      * @param int $rvid
-     * @param string $moveArchive
      *
      * @return array
      */
-    function saveColumn($Column, $eid, $bid, $add=false, $rvid=null, $moveArchive=false)
+    function saveColumn($Column, $eid, $bid, $add=false, $rvid=null)
     {
-        $DB                 = DB::singleton(dsn());
-        $ARCHIVES_DIR_TO    = REVISON_ARCHIVES_DIR;
-        $tableName          = 'column';
-        $revision           = false;
+        $DB = DB::singleton(dsn());
+        $tableName = 'column';
+        $asNewVersion = false;
 
-        if ( 1
-            && enableRevision(false)
-            && $rvid !== null
-        ) {
-            if ( $moveArchive === 'ARCHIVES_DIR' ) {
-                $ARCHIVES_DIR_TO = ARCHIVES_DIR;
-                $SQL    = SQL::newSelect('column');
-                $SQL->addWhereOpr('column_entry_id', $eid);
-                $SQL->addWhereOpr('column_blog_id', $bid);
-                $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
-                $q      = $SQL->get(dsn());
-                if ( $row = $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) { do {
-                    $type = detectUnitTypeSpecifier($row['column_type']);
-                    switch ( $type ) {
-                        case 'image':
-                            if ( empty($row['column_field_2']) ) break;
-                            $oldAry = explodeUnitData($row['column_field_2']);
-                            foreach ( $oldAry as $old ) {
-                                $path   = ARCHIVES_DIR.$old;
-                                $large  = otherSizeImagePath($path, 'large');
-                                $tiny   = otherSizeImagePath($path, 'tiny');
-                                $square = otherSizeImagePath($path, 'square');
-                                deleteFile($path);
-                                deleteFile($large);
-                                deleteFile($tiny);
-                                deleteFile($square);
-                            }
-                            break;
-                        case 'file':
-                            if ( empty($row['column_field_2']) ) break;
-                            $oldAry = explodeUnitData($row['column_field_2']);
-                            foreach ( $oldAry as $old ) {
-                                $path   = ARCHIVES_DIR.$old;
-                                deleteFile($path);
-                            }
-                            break;
-                        case 'custom':
-                            if ( empty($row['column_field_6']) ) break;
-                            $Field = acmsUnserialize($row['column_field_6']);
-                            foreach ( $Field->listFields() as $fd ) {
-                                if ( 1
-                                    && !strpos($fd, '@path')
-                                    && !strpos($fd, '@tinyPath')
-                                    && !strpos($fd, '@largePath')
-                                    && !strpos($fd, '@squarePath')
-                                ) {
-                                    continue;
-                                }
-                                foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                    $path   = ARCHIVES_DIR.$old;
-                                    deleteFile($path);
-                                }
-                            }
-                            break;
-                    }
-                } while ( $row = $DB->fetch($q) ); }
-            } else {
-                $tableName  = 'column_rev';
+        if (enableRevision(false) && $rvid !== null) {
+            $tableName = 'column_rev';
+            if (Entry::isNewVersion()) {
+                $asNewVersion = true;
             }
-            $revision   = true;
         }
-        if ( 1
-            && $revision
-            && intval($rvid) === 1
-            && empty($moveArchive)
-        ) {
-            $SQL    = SQL::newSelect('column_rev');
-            $SQL->addWhereOpr('column_entry_id', $eid);
-            $SQL->addWhereOpr('column_blog_id', $bid);
-            $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
-            $SQL->addWhereOpr('column_rev_id', 1);
-            $q      = $SQL->get(dsn());
-            if ( $row = $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) { do {
-                $type = detectUnitTypeSpecifier($row['column_type']);
-                switch ( $type ) {
-                    case 'image':
-                        if ( empty($row['column_field_2']) ) break;
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ( $oldAry as $old ) {
-                            $path   = REVISON_ARCHIVES_DIR.$old;
-                            $large  = otherSizeImagePath($path, 'large');
-                            $tiny   = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-                            deleteFile($path);
-                            deleteFile($large);
-                            deleteFile($tiny);
-                            deleteFile($square);
-                        }
-                        break;
-                    case 'file':
-                        if ( empty($row['column_field_2']) ) break;
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ( $oldAry as $old ) {
-                            $path   = REVISON_ARCHIVES_DIR.$old;
-                            deleteFile($path);
-                        }
-                        break;
-                    case 'custom':
-                        if ( empty($row['column_field_6']) ) break;
-                        $Field = acmsUnserialize($row['column_field_6']);
-                        foreach ( $Field->listFields() as $fd ) {
-                            if ( 1
-                                && !strpos($fd, '@path')
-                                && !strpos($fd, '@tinyPath')
-                                && !strpos($fd, '@largePath')
-                                && !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            foreach ( $Field->getArray($fd, true) as $i => $old ) {
-                                $path   = REVISON_ARCHIVES_DIR.$old;
-                                deleteFile($path);
-                            }
-                        }
-                        break;
-                }
-            } while ( $row = $DB->fetch($q) ); }
-        }
-
-        $TMP    = null;
+        $TMP = null;
         $offset = 0;
-        if ( !$add ) {
+        if (!$add) {
             $SQL    = SQL::newDelete($tableName);
             $SQL->addWhereOpr('column_entry_id', $eid);
             $SQL->addWhereOpr('column_blog_id', $bid);
             $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
             if ( $tableName  === 'column_rev' ) {
                 $SQL->addWhereOpr('column_rev_id', $rvid);
-                $TMP    = loadColumn($eid, null, $rvid);
+                $TMP = loadColumn($eid, null, $rvid);
             } else {
-                $TMP    = loadColumn($eid);
+                $TMP = loadColumn($eid);
             }
             $DB->query($SQL->get(dsn()), 'exec');
 
@@ -1368,12 +1209,7 @@ class Helper
                 $offset = min($arySort) - 1;
             }
         }
-        $Res    = array();
-
-        $temp   = '';
-        if ( !empty($moveArchive) ) {
-            $temp   = 'TEMP/';
-        }
+        $Res = array();
 
         foreach ( $Column as $key => $data ) {
             $id     = $data['id'];
@@ -1443,23 +1279,26 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_5']  = $display_size;
                 }
-
-                if ( $revision || !empty($moveArchive) ) {
+                if ($asNewVersion) {
                     $oldAry = explodeUnitData($row['column_field_2']);
-                    $newAry = array();
+                    $newAry = [];
                     foreach ( $oldAry as $old ) {
+                        if (in_array($old, $this->getUploadedFiles())) {
+                            $newAry[] = $old;
+                            continue;
+                        }
                         $info   = pathinfo($old);
                         $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
+                        Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                         $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
 
-                        $path   = ARCHIVES_DIR.$temp.$old;
+                        $path   = ARCHIVES_DIR . $old;
                         $large  = otherSizeImagePath($path, 'large');
                         $tiny   = otherSizeImagePath($path, 'tiny');
                         $square = otherSizeImagePath($path, 'square');
 
-                        $newPath    = $ARCHIVES_DIR_TO.$newOld;
+                        $newPath    = ARCHIVES_DIR . $newOld;
                         $newLarge   = otherSizeImagePath($newPath, 'large');
                         $newTiny    = otherSizeImagePath($newPath, 'tiny');
                         $newSquare  = otherSizeImagePath($newPath, 'square');
@@ -1469,7 +1308,7 @@ class Helper
                         copyFile($tiny, $newTiny);
                         copyFile($square, $newSquare);
 
-                        $newAry[]   = $newOld;
+                        $newAry[] = $newOld;
                     }
                     $row['column_field_2']  = implodeUnitData($newAry);
                     $Column[$key]['path']   = implodeUnitData($newAry);
@@ -1482,22 +1321,24 @@ class Helper
                 $row['column_field_1']  = $data['caption'];
                 $row['column_field_2']  = $data['path'];
 
-                if ( $revision || !empty($moveArchive) ) {
+                if ($asNewVersion) {
                     $oldAry = explodeUnitData($row['column_field_2']);
                     $newAry = array();
-                    foreach ( $oldAry as $old ) {
-                        $info   = pathinfo($old);
-                        $dirname= empty($info['dirname']) ? '' : $info['dirname'].'/';
-                        Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
-                        $ext    = empty($info['extension']) ? '' : '.'.$info['extension'];
+                    foreach ($oldAry as $old) {
+                        if (in_array($old, $this->getUploadedFiles())) {
+                            $newAry[] = $old;
+                            continue;
+                        }
+                        $info = pathinfo($old);
+                        $dirname = empty($info['dirname']) ? '' : $info['dirname'].'/';
+                        Storage::makeDirectory(ARCHIVES_DIR . $dirname);
+                        $ext = empty($info['extension']) ? '' : '.'.$info['extension'];
                         $newOld = $dirname.uniqueString().$ext;
 
-                        $path   = ARCHIVES_DIR.$temp.$old;
-                        $newPath    = $ARCHIVES_DIR_TO.$newOld;
-
+                        $path = ARCHIVES_DIR . $old;
+                        $newPath = ARCHIVES_DIR . $newOld;
                         copyFile($path, $newPath);
-
-                        $newAry[]   = $newOld;
+                        $newAry[] = $newOld;
                     }
                     $row['column_field_2']  = implodeUnitData($newAry);
                     $Column[$key]['path']   = implodeUnitData($newAry);
@@ -1678,42 +1519,18 @@ class Helper
                             if (!empty($html)) {
                                 $field7Ary[] = $html;
                             } else {
-                                //----------
-                                // twitter
-                                if ( 1
-                                    && $parsed_url['host'] === 'twitter.com'
-                                    && ACMS_Services_Twitter::loadAcsToken(1)
-                                    && count(ACMS_Services_Twitter::loadAcsToken(1)) == 2
-                                ) {
-                                    preg_match('/status\/([\w]+).*/', $parsed_url['path'], $matches);
-                                    if ( !isset($matches[1]) ) continue;
-                                    $twid = $matches[1];
-
-                                    $API = ACMS_Services_Twitter::establish(1);
-                                    $API->httpRequest('statuses/oembed.json', array(
-                                        'id'   => $twid,
-                                    ));
-                                    $res    = $API->Response->getResponseBody();
-                                    $json   = json_decode($res);
-
-                                    if ( isset($json->html) ) {
-                                        $oembed = $json->html;
-                                        $field7Ary[] = $oembed;
-                                    }
-                                //------------
-                                // OGP Check
-                                } else if ($graph = Embed::create($url)) {
-                                    $field1Ary[]    = $graph->providerName;
-                                    $field2Ary[]    = $graph->authorName;
-                                    $field3Ary[]    = $graph->title;
-                                    $field4Ary[]    = $graph->description;
-                                    $field5Ary[]    = $graph->image;
+                                if ($graph = Embed::create($url)) {
+                                    $field1Ary[] = $graph->providerName;
+                                    $field2Ary[] = $graph->authorName;
+                                    $field3Ary[] = $graph->title;
+                                    $field4Ary[] = $graph->description;
+                                    $field5Ary[] = $graph->image;
                                 } else {
-                                    $field1Ary[]    = '';
-                                    $field2Ary[]    = '';
-                                    $field3Ary[]    = '';
-                                    $field4Ary[]    = '';
-                                    $field5Ary[]    = '';
+                                    $field1Ary[] = '';
+                                    $field2Ary[] = '';
+                                    $field3Ary[] = '';
+                                    $field4Ary[] = '';
+                                    $field5Ary[] = '';
                                 }
                             }
                         }
@@ -1773,7 +1590,7 @@ class Helper
                 }
                 $row['column_field_6'] = acmsSerialize($data['field']);
 
-                if ($revision || !empty($moveArchive)) {
+                if ($asNewVersion) {
                     $Field = $data['field'];
                     foreach ($Field->listFields() as $fd) {
                         if ( 1
@@ -1786,14 +1603,17 @@ class Helper
                         }
                         $set = false;
                         foreach ($Field->getArray($fd, true) as $i => $old) {
+                            if (in_array($old, $this->getUploadedFiles())) {
+                                continue;
+                            }
                             $info = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                            Storage::makeDirectory($ARCHIVES_DIR_TO.$dirname);
+                            Storage::makeDirectory(ARCHIVES_DIR . $dirname);
                             $ext = empty($info['extension']) ? '' : '.'.$info['extension'];
                             $newOld = $dirname . uniqueString() . $ext;
 
-                            $path = ARCHIVES_DIR . $temp . $old;
-                            $newPath = $ARCHIVES_DIR_TO . $newOld;
+                            $path = ARCHIVES_DIR . $old;
+                            $newPath = ARCHIVES_DIR . $newOld;
                             copyFile($path, $newPath);
 
                             if (!$set) {
@@ -1806,6 +1626,7 @@ class Helper
                     $row['column_field_6'] = acmsSerialize($Field);
                     $Column[$key]['field'] = $Field;
                 }
+
             } else {
                 $offset++;
                 continue;
@@ -1980,100 +1801,117 @@ class Helper
      * エントリーのバージョンを保存
      *
      * @param int $eid
+     * @param int $rvid
      * @param array $entryAry
      * @param string $type
      * @param string $memo
      *
      * @return int
      */
-    public function saveEntryRevision($eid, $entryAry, $type=null, $memo='')
+    public function saveEntryRevision($eid, $rvid, $entryAry, $type = '', $memo = '')
     {
-        if ( !enableRevision(false) ) return false;
+        if (!enableRevision(false)) return false;
+        if (empty($rvid) || empty($type)) {
+            $rvid = 1;
+        }
+        $isNewRevision = false;
 
-        $DB     = DB();
-        $rev_id = 0;
+        if ($type === 'new') {
+            // 新しいリビジョン番号取得
+            $sql = SQL::newSelect('entry_rev');
+            $sql->addSelect('entry_rev_id', 'max_rev_id', null, 'MAX');
+            $sql->addWhereOpr('entry_id', $eid);
+            $sql->addWhereOpr('entry_blog_id', BID);
 
-        //-----------------------------------
-        // 上書き保存　一時リビジョンは取っておく
-        if ( empty($type) ) {
-            // 一時リビジョンを削除
-            $SQL = SQL::newDelete('entry_rev');
-            $SQL->addWhereOpr('entry_id', $eid);
-            $SQL->addWhereOpr('entry_rev_id', 1);
-            $DB->query($SQL->get(dsn()), 'exec');
-
-            $memo = config('revision_temp_memo');
-            $rev_id = 1;
-
-        //----------------------------------------------
-        // バージョンを残して保存 & 下書きバージョンとして保存
-        } else if ( $type === 'revision' || $type === 'draft_revision' ) {
-            // リビジョン番号取得
-            $SQL = SQL::newSelect('entry_rev');
-            $SQL->addSelect('entry_rev_id', 'max_rev_id', null, 'MAX');
-            $SQL->addWhereOpr('entry_id', $eid);
-            $SQL->addWhereOpr('entry_blog_id', BID);
-
-            $rev_id = 2;
-            if ( $max = $DB->query($SQL->get(dsn()), 'one') ) {
-                $rev_id = $max + 1;
+            $rvid = 2;
+            if ($max = DB::query($sql->get(dsn()), 'one')) {
+                $rvid = $max + 1;
             }
-
-            if ( empty($memo) ) {
-                $memo = sprintf(config('revision_default_memo'), $rev_id);
+            if (empty($memo)) {
+                $memo = sprintf(config('revision_default_memo'), $rvid);
             }
+            $isNewRevision = true;
+        } else {
+            if ($rvid === 1) {
+                $memo = config('revision_temp_memo');
+            }
+            $sql = SQL::newSelect('entry_rev');
+            $sql->setSelect('entry_id');
+            $sql->addWhereOpr('entry_id', $eid);
+            $sql->addWhereOpr('entry_rev_id', $rvid);
+            $isNewRevision = !DB::query($sql->get(dsn()), 'one');
         }
 
-        // 現在のエントリ情報を抜き出す
-        $SQL = SQL::newSelect('entry');
-        $SQL->addWhereOpr('entry_id', $eid);
-        $SQL->addWhereOpr('entry_blog_id', BID);
-
-        $entryData = array();
-        if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
-            foreach ( $row as $key => $val ) {
-                $entryData[$key] = $val;
+        $entryData = [];
+        if ($isNewRevision) {
+            // 現在のエントリ情報を抜き出す
+            $sql = SQL::newSelect('entry');
+            $sql->addWhereOpr('entry_id', $eid);
+            $sql->addWhereOpr('entry_blog_id', BID);
+            if ($row = DB::query($sql->get(dsn()), 'row')) {
+                foreach ($row as $key => $val) {
+                    $entryData[$key] = $val;
+                }
             }
         }
-        foreach ( $entryAry as $key => $val ) {
+        foreach ($entryAry as $key => $val) {
             $entryData[$key] = $val;
         }
 
-         // リビジョン作成
-        $SQL = SQL::newInsert('entry_rev');
-        $SQL->addInsert('entry_rev_id', $rev_id);
-        $SQL->addInsert('entry_rev_user_id', SUID);
-        $SQL->addInsert('entry_rev_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
-        $SQL->addInsert('entry_rev_memo', $memo);
-        foreach ( $entryData as $key => $val ) {
-            if ( !in_array($key, array('entry_current_rev_id', 'entry_last_update_user_id')) ) {
-                $SQL->addInsert($key, $val);
+        if ($isNewRevision) {
+            // リビジョン作成
+            $sql = SQL::newInsert('entry_rev');
+            $sql->addInsert('entry_rev_id', $rvid);
+            $sql->addInsert('entry_rev_user_id', SUID);
+            $sql->addInsert('entry_rev_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
+            $sql->addInsert('entry_rev_memo', $memo);
+            if (sessionWithApprovalAdministrator(BID, $entryData['entry_category_id'])) {
+                $sql->addInsert('entry_rev_status', 'approved');
             }
+            foreach ($entryData as $key => $val) {
+                if (!in_array($key, array('entry_current_rev_id', 'entry_reserve_rev_id', 'entry_last_update_user_id'))) {
+                    $sql->addInsert($key, $val);
+                }
+            }
+            DB::query($sql->get(dsn()), 'exec');
+        } else {
+            $sql = SQL::newUpdate('entry_rev');
+            $sql->addUpdate('entry_rev_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
+            if (!empty($memo)) {
+                $sql->addUpdate('entry_rev_memo', $memo);
+            }
+            if (sessionWithApprovalAdministrator(BID, $entryData['entry_category_id'])) {
+                $sql->addUpdate('entry_rev_status', 'approved');
+            }
+            $sql->addWhereOpr('entry_id', $eid);
+            $sql->addWhereOpr('entry_rev_id', $rvid);
+            foreach ($entryData as $key => $val) {
+                if (!in_array($key, array('entry_current_rev_id', 'entry_last_update_user_id'))) {
+                    $sql->addUpdate($key, $val);
+                }
+            }
+            DB::query($sql->get(dsn()), 'exec');
         }
-        $DB->query($SQL->get(dsn()), 'exec');
-
-        return $rev_id;
+        return $rvid;
     }
 
     /**
      * ユニットのバージョンを保存
      *
-     * @param array $Unit
+     * @param array $units
      * @param int $eid
      * @param int $bid
      * @param int $rvid
-     * @param string $moveArchive
+     * @param string $revisionType
      *
      * @return array|bool
      */
-    public function saveUnitRevision($Unit, $eid, $bid, $rvid, $moveArchive=false)
+    public function saveUnitRevision($units, $eid, $bid, $rvid)
     {
-        if ( !enableRevision(false) ) return false;
+        if (!enableRevision(false)) return false;
+        $unitIds = $this->saveColumn($units, $eid, $bid, false, $rvid);
 
-        $Res = array();
-        $Res = $this->saveColumn($Unit, $eid, $bid, false, $rvid, $moveArchive);
-
-        return $Res;
+        return $unitIds;
     }
 
     /**
@@ -2082,15 +1920,14 @@ class Helper
      * @param int $eid
      * @param Field $Field
      * @param int $rvid
-     * @param bool $moveFieldArchive
      *
      * @return bool
      */
-    public function saveFieldRevision($eid, $Field, $rvid, $moveFieldArchive=false)
+    public function saveFieldRevision($eid, $Field, $rvid)
     {
         if ( !enableRevision(false) ) return false;
 
-        Common::saveField('eid', $eid, $Field, null, $rvid, $moveFieldArchive);
+        Common::saveField('eid', $eid, $Field, null, $rvid);
 
         return true;
     }
@@ -2165,5 +2002,20 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
 
         return true;
+    }
+
+    /**
+     * 指定されたリビジョンを取得
+     * @param int $eid
+     * @param int $rvid
+     * @return array
+     */
+    public function getRevision($eid, $rvid)
+    {
+        $sql = SQL::newSelect('entry_rev');
+        $sql->addWhereOpr('entry_id', $eid);
+        $sql->addWhereOpr('entry_rev_id', $rvid);
+
+        return DB::query($sql->get(dsn()), 'row');
     }
 }

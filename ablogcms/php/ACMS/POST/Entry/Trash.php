@@ -29,6 +29,8 @@ class ACMS_POST_Entry_Trash extends ACMS_POST_Trash
 
         $this->trash($eid);
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーをゴミ箱に移動しました');
+
         $this->redirect(acmsLink(array(
             'bid'   => BID,
             'cid'   => CID,

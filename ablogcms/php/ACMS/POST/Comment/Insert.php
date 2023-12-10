@@ -143,10 +143,14 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
                 }
                 $mailer->send();
 
-            } catch ( Exception $e  ) {
-                throw $e;
+            } catch (Exception $e) {
+                AcmsLogger::warning('コメントの通知メール送信に失敗しました', Common::exceptionArray($e));
             }
         }
+
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーにコメントを投稿しました', [
+            'comment_id' => $cmid,
+        ]);
 
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);

@@ -3,7 +3,7 @@
 		@include("/admin/topicpath.html")
 	</div>
 	<div>
-		@include("/admin/config/parts/header.html", {"title": "<!--T-->テーマ設定<!--/T-->"})
+		@include("/admin/config/parts/header-theme.html", {"title": "<!--T-->テーマ設定<!--/T-->"})
 	</div>
 </header>
 
@@ -15,7 +15,16 @@
 <form action="" method="post" class="acms-admin-form">
 	<div class="js-acms_fix_marker acms_fix_bg">
 		<div class="acms_fix_bg_index">
-			<a href="{indexUrl}" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+      <div class="js-fake-form" data-method="post">
+        <input type="hidden" name="bid" value="%{BID}" />
+        <input type="hidden" name="admin" value="config_set_theme_index" />
+        <!-- BEGIN_IF [%{rid}/nem/] -->
+        <input type="hidden" name="rid" value="%{rid}" />
+        <input type="hidden" name="query[]" value="rid" />
+        <!-- END_IF -->
+        <input type="hidden" name="ACMS_POST_2GET" value="dummy"/>
+        <button type="button" class="js-submit acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></button>
+      </div>
 
 			<input type="submit" name="ACMS_POST_Config" value="<!--T-->保存<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
 			@include("/admin/config/action.html")
@@ -92,7 +101,7 @@
 				<td>{tpl_entry_add}</td>
 			</tr><!-- END tpl_entry_add:veil --><!-- BEGIN tpl_login:veil -->
 			<tr>
-				<th><!--T-->ログインページ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->「設置URL/login/」で表示されるログインページに適用されるテンプレートファイルです。<!--/T-->"></i></th>
+				<th><!--T-->管理ログインページ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->「設置URL/login/」で表示されるログインページに適用されるテンプレートファイルです。<!--/T-->"></i></th>
 				<td>{tpl_login}</td>
 			</tr><!-- END tpl_login:veil -->
 		</table><!-- BEGIN not_found:veil -->
@@ -152,7 +161,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th><!--T-->ログインページ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->「設置URL/login/」で表示されるログインページに適用されるテンプレートファイルです。<!--/T-->"></i></th>
+			<th><!--T-->管理ログインページ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->「設置URL/login/」で表示されるログインページに適用されるテンプレートファイルです。<!--/T-->"></i></th>
 			<td>
 				<input type="text" name="tpl_login" value="{tpl_login}" size="20" />
 				<input type="hidden" name="config[]" value="tpl_login" />

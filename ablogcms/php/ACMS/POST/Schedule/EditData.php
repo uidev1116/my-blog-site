@@ -23,6 +23,8 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
         if ( !$Conf->isValid() || $build == false ) {
             $this->Post->set('step', 'reapply');
             $this->Post->set('reapply', array('data'=> @unserialize($sche), 'field'=>@unserialize($sfds)));
+
+            AcmsLogger::info('スケジュールのデータ登録に失敗しました');
             return $this->Post;
         }
 
@@ -53,6 +55,16 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
         $DB->query($SQL->get(dsn()), 'exec');
 
         $this->Post->set('edit', 'update');
+
+        AcmsLogger::info('スケジュールにデータ登録をしました', [
+            'id' => $scid,
+            'name' => $define['name'],
+            'desc' => $define['desc'],
+            'year' => $Conf->get('year'),
+            'month' => $Conf->get('month'),
+            'data' => @unserialize($sche),
+            'field' => @unserialize($sfds),
+        ]);
 
         return $this->Post;
     }

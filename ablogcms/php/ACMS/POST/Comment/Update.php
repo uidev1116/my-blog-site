@@ -47,6 +47,10 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
         $SQL->addWhereOpr('comment_id', CMID);
         $DB->query($SQL->get(dsn()), 'exec');
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのコメントを更新しました', [
+            'comment_id' => CMID,
+        ]);
+
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);
         } else if ( !empty($nextstep) ) {

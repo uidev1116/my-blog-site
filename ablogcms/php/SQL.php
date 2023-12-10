@@ -519,7 +519,7 @@ class SQL_Where extends SQL
         return true;
     }
 
-     /**
+    /**
      * 指定されたSQL_SelectオブジェクトからEXISTS句を生成する。<br>
      * $SQL->addWhereExists(SQL_SELECT);<br>
      * WHERE 1 AND EXISTS (SELECT * ...)
@@ -1390,6 +1390,35 @@ class SQL_Delete extends SQL_Where
 }
 
 /**
+ * SQL_ShowTable
+ *
+ * SQLヘルパのSHOW TABLEメソッド群です。
+ *
+ * @package php
+ */
+class SQL_ShowTable extends SQL
+{
+    var $_table  = null;
+
+    function setTable($tb)
+    {
+        $this->_table = $tb;
+    }
+
+    function get($dsn=null)
+    {
+        $tbPfx = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
+
+        if (empty($this->_table)) {
+            $q  = 'SHOW TABLES';
+        } else {
+            $q  = 'SHOW TABLES LIKE \'' . $tbPfx . $this->_table . '\'';
+        }
+        return $q;
+    }
+}
+
+/**
  * SQL_Where
  *
  * SQLヘルパのSequenceメソッド群です。
@@ -1857,5 +1886,14 @@ class SQL
         $Obj    = SQL::newDelete($tb);
         if ( !empty($w) ) $Obj->setWhere($w);
         return $Obj->get($dsn);
+    }
+
+    public static function showTable($tb=null)
+    {
+        $obj = new SQL_ShowTable();
+        if (!empty($tb)) {
+            $obj->setTable($tb);
+        }
+        return $obj;
     }
 }

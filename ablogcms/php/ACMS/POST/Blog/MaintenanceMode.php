@@ -22,6 +22,10 @@ class ACMS_POST_Blog_MaintenanceMode extends ACMS_POST_Blog
             DB::query($sql->get(dsn()), 'exec');
             ACMS_RAM::blog(BID, null);
             ACMS_RAM::setBlogMaintenanceMode(BID, $mode);
+
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログをメンテナンスモードに変更しました');
+        } else {
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログのメンテナンスモードへの変更に失敗しました');
         }
         return $this->Post;
     }

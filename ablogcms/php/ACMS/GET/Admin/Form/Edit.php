@@ -35,7 +35,7 @@ class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
             $vars   = array();
             foreach ( $Mail->listFields() as $fd ) {
                 $vars[$fd]  = join(', ', $Mail->getArray($fd));
-                if (preg_match('/^(AdminAttachment|template)/', $fd)) {
+                if (preg_match('/^(AdminAttachment|template|FormSend|AdminFormSend)/', $fd)) {
                     $vars[ $fd . ":checked#" . $Mail->get($fd) ]  = config('attr_checked');
                     $Tpl->add(array($fd . ":checked#" . $Mail->get($fd), 'mail'), NULL);
                 }

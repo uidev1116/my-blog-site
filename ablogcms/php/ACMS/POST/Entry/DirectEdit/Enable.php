@@ -7,6 +7,9 @@ class ACMS_POST_Entry_DirectEdit_Enable extends ACMS_POST
         if (SUID) {
             $session =& Field::singleton('session');
             $session->set('entry_direct_edit', 'enable');
+
+            AcmsLogger::info('ダイレクト編集を有効化させました');
+
             $this->redirect(REQUEST_URL);
         }
     }

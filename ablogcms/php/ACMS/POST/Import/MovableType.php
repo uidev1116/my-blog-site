@@ -7,6 +7,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
 
     function init()
     {
+        $this->importType = 'Movable Type';
         $this->uploadFiledName = 'mt_import_file';
         $this->importCid = intval($this->Post->get('category_id'));
 
@@ -29,7 +30,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         $entryBlock = '';
         $handle = @fopen($path, "r");
         @rewind($handle);
-        
+
         if ( $handle ) {
             while ( ($buffer = fgets($handle)) !== false ) {
                 if ( preg_match('@^--------$@m', $buffer) ) {
@@ -58,17 +59,17 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
             throw new RuntimeException('ファイルの読み込みに失敗しました。');
         }
     }
-    
+
     function buildEntryBlock($entryBlock)
     {
         $meta_regex = '@^(.*?): (.*?)$@si';
         $body_regex = '@^[\x0D\x0A|\x0D|\x0A/\n]*(.*?):[\x0D\x0A|\x0D|\x0A/\n]@si';
-        
+
         $content    = preg_split('@^-----$@m', $entryBlock);
         $meta       = array_splice($content, 0, 1);
         $body       = array_splice($content, 0);
         $entry      = array();
-        
+
         /**
         * get meta data
         */
@@ -80,7 +81,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
                 $entry[$key]    = $val;
             }
         }
-        
+
         /**
         * get body data
         */
@@ -94,14 +95,14 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         }
         $this->convertMtContents($entry);
     }
-    
+
     function convertMtContents($entry)
     {
         $tags       = array();
         $content    = array();
         $category   = null;
         $ecode      = null;
-        
+
         $date   = $this->convertMtDate($entry['DATE']);
         $status = $this->convertMtStatus($entry['STATUS']);
         if ( isset($entry['TAGS']) and !empty($entry['TAGS']) ) {
@@ -119,11 +120,11 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         if ( isset($entry['BASENAME']) and !empty($entry['BASENAME']) ) {
             $ecode   = $entry['BASENAME'];
         }
-        
+
         if ( intval($this->importCid) != -1 ) {
             $category = null;
         }
-        
+
         $entry = array(
             'title'     => $entry['TITLE'],
             'content'   => $content,
@@ -133,19 +134,19 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
             'category'  => $category,
             'ecode'     => $ecode,
         );
-        
+
         $this->insertEntry($entry);
     }
-    
+
     function convertMtDate($date)
     {
         return date('Y-m-d H:i:s', strtotime($date));
     }
-    
+
     function convertMtStatus($status)
     {
         $status = strtoupper($status);
-        
+
         switch ( $status ) {
             case 'PUBLISH':
                 $status  = 'open';
@@ -159,7 +160,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         }
         return $status;
     }
-    
+
     function convertMtTags($tagStr)
     {
         $tagStr =  preg_replace("@\"@", "", $tagStr);

@@ -50,6 +50,21 @@ class ACMS_POST_Alias_Insert extends ACMS_POST_Alias
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('エイリアス「' . $Alias->get('name') . '」を作成しました', [
+                'aid' => $aid,
+                'status' => $Alias->get('status'),
+                'domain' => $Alias->get('domain'),
+                'code' => $Alias->get('code'),
+                'name' => $Alias->get('name'),
+                'scope' => $Alias->get('scope'),
+                'indexing' => $Alias->get('indexing'),
+                'bid' => BID,
+            ]);
+        } else {
+            AcmsLogger::info('エイリアスの作成に失敗しました', [
+                'validator' => $Alias->_aryV,
+            ]);
         }
 
         return $this->Post;

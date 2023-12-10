@@ -99,20 +99,20 @@
 .acms-modal-content {
   padding: 5px;
   overflow: hidden;
-  background: #fff;
+  background: global.$acms-color-white;
   border-radius: 6px;
 }
 
 .acms-modal-header {
   margin: 0 -5px;
   padding: 0 10px;
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid global.$acms-color-gray60;
 }
 
 .acms-modal-heading {
   margin: 5px 0;
   @include global.font-size(14);
-  color: #333;
+  color: global.$acms-color-black;
 }
 
 .acms-modal-body {
@@ -137,17 +137,17 @@
   bottom: 0;
   left: 0;
   z-index: global.zIndex(acms-modal);
-  background-color: #4e4e4e;
+  background-color: global.$acms-color-gray90;
   -webkit-transform: translateZ(0);
 }
 
 .acms-modal-hide {
   float: right;
   padding: 0;
-  color: #4b4b4b;
+  color: global.$acms-color-gray90;
   font-size: 20px;
   line-height: 1;
-  background: #fff;
+  background: global.$acms-color-white;
   border: 1px solid transparent;
   cursor: pointer;
 
@@ -161,7 +161,7 @@
   margin: 0 -5px;
   padding: 15px;
   text-align: right;
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid global.$acms-color-gray60;
 
   .acms-btn {
     margin-left: 5px;
@@ -177,21 +177,13 @@
   max-width: 600px;
   height: auto;
 
-  .acms-table-hover tr:hover td {
-    background-color: #FFF;
+  .acms-table-hover tr:hover td,
+  .acms-table-hover tr:focus-within td {
+    background: global.$acms-color-info10;
   }
 
   .acms-table-hover tr.hover td {
-    color: #fff;
-    background: #5690d8;
-
-    a {
-      color: #fff;
-    }
-
-    span {
-      color: #fff;
-    }
+    background: global.$acms-color-info10;
   }
 }
 
@@ -238,7 +230,7 @@
   .acms-module-en {
     display: inline-block;
     margin: 0 15px 10px 0;
-    color: #666666;
+    color: global.$acms-color-gray90;
     @include global.font-size(12);
     font-weight: bold;
   }

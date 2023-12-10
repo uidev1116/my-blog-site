@@ -73,7 +73,7 @@
 		<td>
 			<input type="text" name="entry_headline_limit" value="{entry_headline_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="entry_headline_limit" />
-			<input type="hidden" name="entry_headline_limit:convert" value="a" />
+			<input type="hidden" name="entry_headline_limit:c" value="a" />
 			<input type="hidden" name="entry_headline_limit:validator#digits" id="validator-entry_headline_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_headline_limit-digits" class="validator-result-{entry_headline_limit:validator#digits}">
@@ -87,7 +87,7 @@
 		<td>
 			<input type="text" name="entry_headline_offset" value="{entry_headline_offset}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="entry_headline_offset" />
-			<input type="hidden" name="entry_headline_offset:convert" value="a" />
+			<input type="hidden" name="entry_headline_offset:c" value="a" />
 			<input type="hidden" name="entry_headline_offset:validator#digits" id="validator-entry_headline_offset-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_headline_offset-digits" class="validator-result-{entry_headline_offset:validator#digits}">
@@ -108,7 +108,7 @@
 		<td>
 			<input type="text" name="entry_headline_newtime" value="{entry_headline_newtime}" size="8" class="acms-admin-form-width-mini" /> <!--T-->秒<!--/T-->
 			<input type="hidden" name="config[]" value="entry_headline_newtime" />
-			<input type="hidden" name="entry_headline_newtime:convert" value="a" />
+			<input type="hidden" name="entry_headline_newtime:c" value="a" />
 			<input type="hidden" name="entry_headline_newtime:validator#digits" id="validator-entry_headline_newtime-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_headline_newtime-digits" class="validator-result-{entry_headline_newtime:validator#digits}">
@@ -128,6 +128,17 @@
 			<input type="hidden" name="config[]" value="entry_headline_indexing" />
 		</td>
 	</tr>
+  <tr>
+		<th><!--T-->会員限定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、会員限定にチェックが入ったエントリーのみ表示されます。<!--/T-->"></i></th>
+		<td>
+			<input type="hidden" name="entry_headline_members_only" value="off" />
+			<div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="entry_headline_members_only" value="on"{entry_headline_members_only:checked#on} id="input-checkbox-entry_headline_members_only" />
+				<label for="input-checkbox-entry_headline_members_only"><i class="acms-admin-ico-checkbox"></i><!--T-->会員限定のエントリーのみ表示する<!--/T--></label>
+			</div>
+			<input type="hidden" name="config[]" value="entry_headline_members_only" />
+		</td>
+	</tr>
 	<tr>
 		<th><!--T-->サブカテゴリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックを外すと、カテゴリー絞り込み時にサブカテゴリーに所属するエントリーは表示されないようになります。<!--/T-->"></i></th>
 		<td>
@@ -140,12 +151,12 @@
 		</td>
 	</tr>
 	<tr>
-		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログのエントリーが表示されます。<br />ステータスがシークレットの子ブログのエントリーを表示するためには、モジュールIDの設定でブログIDは指定せず、ブログの階層は下階層のブログを含めるようにしてください。<!--/T-->"></i></th>
+		<th><!--T-->シークレットエントリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、ログインしていなくてもシークレットブログ・カテゴリーのエントリーが表示されます。<br />ステータスがシークレットの子ブログのエントリーを表示するためには、モジュールIDの設定でブログIDは指定せず、ブログの階層は下階層のブログを含めるようにしてください。<!--/T-->"></i></th>
 		<td>
 			<input type="hidden" name="entry_headline_secret" value="off" />
 			<div class="acms-admin-form-checkbox">
 				<input type="checkbox" name="entry_headline_secret" value="on"{entry_headline_secret:checked#on} id="input-checkbox-entry_headline_secret" />
-				<label for="input-checkbox-entry_headline_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログのエントリーを表示する<!--/T--></label>
+				<label for="input-checkbox-entry_headline_secret"><i class="acms-admin-ico-checkbox"></i><!--T-->ログインしていなくてもシークレットブログ・カテゴリーのエントリーを表示する<!--/T--></label>
 			</div>
 			<input type="hidden" name="config[]" value="entry_headline_secret" />
 		</td>

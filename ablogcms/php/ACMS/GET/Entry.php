@@ -158,15 +158,11 @@ class ACMS_GET_Entry extends ACMS_GET
                 $vars = array();
                 $pathAry = explodeUnitData($data['path']);
 
-                $pattern = '@^\.\./'.REVISON_ARCHIVES_DIR.'@';
-                $revisonPath = preg_match($pattern, $data['path']) ? '../'.REVISON_ARCHIVES_DIR : '';
-
                 foreach ($pathAry as $i => $path_) {
                     if (empty($i)) {
                         $i = '';
                     } else {
                         $i++;
-                        $path_  = $revisonPath . $path_;
                     }
                     $path = ARCHIVES_DIR.$path_;
                     $xy = Storage::getImageSize($path);
@@ -879,9 +875,6 @@ class ACMS_GET_Entry extends ACMS_GET
                     }
                     $set = false;
                     foreach ($Field->getArray($fd, true) as $i => $path) {
-                        if (RVID) {
-                            $path = '../' . REVISON_ARCHIVES_DIR . $path;
-                        }
                         if (!$set) {
                             $Field->delete($fd);
                             $set = true;
@@ -937,7 +930,7 @@ class ACMS_GET_Entry extends ACMS_GET
 
         // ユニットグループでかつ最後の要素が非表示だった場合
         $lastUnit = array_pop($Column);
-        if (!$showInvisible && $lastUnit['align'] == 'hidden' && $currentGroup !== null) {
+        if (!$showInvisible && isset($lastUnit['align']) && $lastUnit['align'] === 'hidden' && $currentGroup !== null) {
             $Tpl->add(array_merge(array('unitGroup#last'), $rootBlock));
             $Tpl->add($rootBlock);
         }

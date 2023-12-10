@@ -37,8 +37,14 @@ class ACMS_POST_App_Install extends ACMS_POST
                 Cache::flush('temp');
 
                 $this->Post->set('installSucceed', true);
+
+                AcmsLogger::info('拡張アプリ「' . get_class($App) . '」をインストールしました', [
+                    'version' => $App->version,
+                ]);
             } catch(Exception $e) {
                 $this->Post->set('installFailed', true);
+
+                AcmsLogger::info('拡張アプリ「' . get_class($App) . '」のインストールに失敗しました', Common::exceptionArray($e, ['version' => $App->version]));
             }
         } else {
             $this->Post->set('requirementsNotEnough', true);

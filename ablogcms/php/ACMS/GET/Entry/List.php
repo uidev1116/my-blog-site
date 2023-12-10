@@ -14,6 +14,7 @@ class ACMS_GET_Entry_List extends ACMS_GET_Entry_Summary
             'limit'            => intval(config('entry_list_limit')),
             'offset'           => intval(config('entry_list_offset')),
             'indexing'         => config('entry_list_indexing'),
+            'membersOnly'      => config('entry_list_members_only'),
             'subCategory'      => config('entry_list_sub_category'),
             'secret'           => config('entry_list_secret'),
             'newtime'          => config('entry_list_newtime'),

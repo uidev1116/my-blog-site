@@ -9,27 +9,19 @@ class ACMS_POST_File extends ACMS_POST
 
     var $olddel;
     var $directAdd;
-    var $moveArchive;
 
     /*
      * Image = new ACMS_File();
      *
      */
-    public function __construct($olddel=true, $directAdd=false, $moveArchive='')
+    public function __construct($olddel=true, $directAdd=false)
     {
         //-------
         // init
-        $this->pattern      = '@'.REVISON_ARCHIVES_DIR.'@';
         $this->delete       = null;
-
         $this->olddel       = $olddel;
         $this->directAdd    = $directAdd;
-        $this->moveArchive  = $moveArchive;
-
         $this->ARCHIVES_DIR = ARCHIVES_DIR;
-        if ( !empty($moveArchive) ) {
-            $this->ARCHIVES_DIR = ARCHIVES_DIR.'TEMP/';
-        }
     }
 
     public function buildAndSave($id, $old, $FILES, $name, $n, $edit)
@@ -40,9 +32,6 @@ class ACMS_POST_File extends ACMS_POST
         $this->edit         = $edit;
         $this->pathArray    = array();
         $this->num          = $n;
-
-        $pattern    = '@'.REVISON_ARCHIVES_DIR.'@';
-        $this->old  = preg_replace($pattern, '', $this->old, 1);
 
         //----------------
         // build and save
@@ -125,6 +114,8 @@ class ACMS_POST_File extends ACMS_POST
 
                     Storage::copy($ufile, $this->ARCHIVES_DIR.$path);
 
+                    Entry::addUploadedFiles($path); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
+
                     if ( HOOK_ENABLE ) {
                         $Hook = ACMS_Hook::singleton();
                         $Hook->call('mediaCreate', $this->ARCHIVES_DIR.$path);
@@ -145,8 +136,11 @@ class ACMS_POST_File extends ACMS_POST
 
     private function deleteFiles()
     {
-        if ( $this->olddel === TRUE ) {
-            if ( !empty($this->delete) ) {
+        if (Entry::isNewVersion()) {
+            return;
+        }
+        if ($this->olddel === true) {
+            if (!empty($this->delete)) {
                 deleteFile($this->delete);
             }
         }

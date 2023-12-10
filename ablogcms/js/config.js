@@ -12,46 +12,36 @@ ACMS.Config({
   googleCodePrettifyClass: 'prettyprint linenums', // prettyprint linenums, acms-admin-pre
   googleCodePrettifyTheme: 'prettify', // prettify, desert, doxy, sons-of-obsidian, sunburst
 
-  //--------
-  // 絵文字
-  emoMark: 'textarea.js-emoditor', // セレクタの示す要素で絵文字 ( ウィジウィグ ) エディターが利用出来ます。
-  emoToolbar: [
-    ['Source', '-', 'Templates'],
-    ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord'],
-    ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat'],
-    ['Maximize', 'ShowBlocks'],
-    '/',
-    ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript'],
-    ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote'],
-    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-    ['Link', 'Unlink', 'Anchor'],
-    ['Table', 'HorizontalRule'],
-    '/',
-    ['Styles', 'Format', 'Font', 'FontSize'],
-    ['TextColor', 'BGColor'],
-  ],
-  emoConfig: {
-    //http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.config.html
-    enterMode: 1, // 1:<p>, 2:<br>, 3:<div>
-    fontSize_sizes:
-      '80%/80%;90%/90%;100%/100%;110%/110%;120%/120%;130%/130%;140%/140%;150%/150%;160%/160%;170%/170%;180%/180%;190%/190%;200%/200%',
-    font_names:
-      'MSゴシック/MS Gothic, Osaka-Mono, monospace; MS Pゴシック/MS PGothic, Osaka, sans-serif; MS UI Gothic/MS UI Gothic, Meiryo, Meiryo UI, Osaka, sans-serif; MS P明朝/MS PMincho, Saimincho, serif; Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif',
-    language: 'ja',
-    extraPlugins: 'colorbutton,justify,font',
+  //-------------------
+  // WYSIWYG Editor (trumbowyg)
+  // @link https://alex-d.github.io/Trumbowyg/
+  wysiwygMark: 'textarea.js-wysiwyg,textarea.js-ckeditor,textarea.js-emoditor',
+  wysiwygConfig: {
+    lang: 'ja',
+    // resetCss: true,
+    autogrow: true,
+    tagsToRemove: ['script'],
+    btns: [
+      ['viewHTML'],
+      ['undo', 'redo'], // Only supported in Blink browsers
+      ['formatting'],
+      ['fontsize'],
+      ['lineheight'],
+      ['strong', 'em', 'del'],
+      // ['superscript', 'subscript'],
+      ['foreColor', 'backColor'],
+      ['link'],
+      ['justifyLeft', 'justifyCenter', 'justifyRight'],
+      ['unorderedList', 'orderedList'],
+      ['horizontalRule'],
+      ['table', 'tableCellBackgroundColor', 'tableBorderColor'],
+      ['removeformat'],
+      ['fullscreen'],
+    ],
+    tagClasses: {
+      // table: 'class-name',
+    },
   },
-  emoArray: [
-    //    {
-    //        'mark'      : '',
-    //        'toolbar'   : [],
-    //        'config'    : {}
-    //    }
-  ],
-
-  //----------
-  // CKEditor
-  ckeMark: 'textarea.js-ckeditor',
-  ckeAutoInline: false, // contenteditable 属性がtrueの要素に対するCKEditorの自動生成をOFF
 
   //----------------------------------
   // イメージビューア ( prettyPhoto )
@@ -374,6 +364,17 @@ ACMS.Config({
   dialogTitleMark: '.js-dialog-title',
   dialogBodyMark: '.js-dialog-body',
 
+  //------------------------
+  // 会員限定記事の表示・非表示
+  membersOnlyEntryMark: '.js-members-only-entry', // 非公開時の案内表示にこのクラスを付与する
+
+  //----------------------------
+  // ログイン状態による表示・非表示
+  loginHiddenMark: '.js-login-hidden', // ログイン状態の時、非表示にする
+  loginShowMark: '.js-login-show', // ログイン状態の時、表示する
+  logoutHiddenMark: '.js-logout-hidden', // ログアウト状態の時、非表示にする
+  logoutShowMark: '.js-logout-show', // ログアウト状態の時、表示する
+
   //-------------
   // scroll hint
   scrollHintMark: '.js-scroll-hint',
@@ -537,7 +538,7 @@ ACMS.Config({
     child_attr: ACMS.i18n('navigation.child_attr'),
     remove: ACMS.i18n('navigation.remove'),
     label: ACMS.i18n('navigation.label'),
-    onRemove: ACMS.i18n('nestable.on_remove'),
+    onRemove: ACMS.i18n('navigation.on_remove'),
     onFirstUpdate: ACMS.i18n('navigation.on_first_update'),
   },
 
@@ -877,7 +878,7 @@ ACMS.Config({
   // acms alert close
   acmsAlertCloseMark: '.js-acms-alert-close',
   acmsAlertCloseConfig: {
-    target: '.acms-admin-alert',
+    target: '.acms-admin-alert, .acms-alert',
   },
   acmsAlertCloseArray: [
     //    {
@@ -1242,7 +1243,7 @@ ACMS.Config({
   viewingMark: 'a.js-viewing-receptor', // 1.3.0 未満のバージョンからアップデートする場合には 'a' と指定してください。
   viewingId: 'viewing',
   viewingClass: 'viewing',
-  viewingEraseMark: 'a:not(.js-viewing-indelible)', // display:blockの要素は取り除かれません
+  viewingEraseMark: 'a.js-viewing-erase', // 'a:not(.js-viewing-indelible)', v3.1: デフォルトでaタグを削除しないように修正
   viewingReplacement: '',
   viewingRemoveAttr: [
     'href',
@@ -1253,7 +1254,17 @@ ACMS.Config({
     'rev',
     'target',
   ],
-  viewingNonTarget: ['block', 'inline-block', 'flex', 'grid', 'table'],
+  viewingNonTarget: [
+    'block',
+    'inline-block',
+    'flex',
+    'inline-flex',
+    'grid',
+    'inline-grid',
+    'table',
+    'table-row',
+    'list-item',
+  ],
 
   //--------------------
   // link outside blank
@@ -1549,19 +1560,6 @@ ACMS.Config.Admin = {
 
     Form2_Unit: ['eid'],
 
-    Api_GoogleAnalytics_Ranking: [],
-    Api_Twitter_Statuses_HomeTimeline: ['bid', 'field_', 'page'],
-    Api_Twitter_Statuses_UserTimeline: ['bid', 'field_', 'page'],
-    Api_Twitter_Search: ['bid', 'field_', 'keyword', 'page'],
-    Api_Twitter_List_Statuses: ['bid', 'field_', 'page'],
-    Api_Twitter_List_Members: ['bid', 'field_', 'page'],
-
-    Api_Instagram_Users_Media_Recent: ['bid', 'field_'],
-    Api_Instagram_Users_Media_Liked: ['bid', 'field_'],
-
-    Api_Bing_WebSearch: ['bid', 'keyword', 'page'],
-    Api_Bing_ImageSearch: ['bid', 'keyword', 'page'],
-
     Plugin_Schedule: ['bid'],
     Schedule: ['bid'],
   },
@@ -1599,7 +1597,7 @@ ACMS.Config.Admin = {
     Blog_ChildList: [],
 
     Tag_Cloud: ['bid_axis', 'cid_axis'],
-    Tag_Filter: ['cid_axis'],
+    Tag_Filter: ['bid_axis', 'cid_axis'],
 
     Calendar_Month: ['bid_axis', 'cid_axis'],
     Calendar_Year: ['bid_axis', 'cid_axis'],
@@ -1631,19 +1629,6 @@ ACMS.Config.Admin = {
 
     Form2_Unit: [],
 
-    Api_GoogleAnalytics_Ranking: [],
-    Api_Twitter_Statuses_HomeTimeline: [],
-    Api_Twitter_Statuses_UserTimeline: [],
-    Api_Twitter_Search: [],
-    Api_Twitter_List_Statuses: [],
-    Api_Twitter_List_Members: [],
-
-    Api_Instagram_Users_Media_Recent: [],
-    Api_Instagram_Users_Media_Liked: [],
-
-    Api_Bing_WebSearch: [],
-    Api_Bing_ImageSearch: [],
-
     Plugin_Schedule: [],
     Schedule: [],
   },
@@ -1658,11 +1643,13 @@ ACMS.Config.Admin = {
     Entry_Summary: ['bid', 'uid', 'cid', 'eid'],
     Entry_ArchiveList: ['bid', 'uid', 'cid', 'eid'],
     Entry_TagRelational: ['cid'],
-    Entry_Continue: ['bid', 'uid', 'cid', 'eid'],
+    Entry_Continue: [],
     Entry_Field: ['bid', 'uid', 'cid', 'eid'],
-    Entry_Calendar: ['bid', 'uid', 'cid', 'eid'],
+    Entry_Calendar: [],
 
-    Entry_GeoList: [],
+    Entry_GeoList: ['bid', 'uid', 'cid'],
+
+    Admin_Entry_Autocomplete: ['bid', 'uid', 'cid', 'eid'],
 
     Unit_List: [],
 
@@ -1678,8 +1665,8 @@ ACMS.Config.Admin = {
     Blog_Field: [],
     Blog_ChildList: [],
 
-    Tag_Cloud: [],
-    Tag_Filter: [],
+    Tag_Cloud: ['bid', 'cid'],
+    Tag_Filter: ['bid', 'cid'],
 
     Calendar_Month: [],
     Calendar_Year: [],
@@ -1710,19 +1697,6 @@ ACMS.Config.Admin = {
     Field_ValueList: [],
 
     Form2_Unit: [],
-
-    Api_GoogleAnalytics_Ranking: [],
-    Api_Twitter_Statuses_HomeTimeline: [],
-    Api_Twitter_Statuses_UserTimeline: [],
-    Api_Twitter_Search: [],
-    Api_Twitter_List_Statuses: [],
-    Api_Twitter_List_Members: [],
-
-    Api_Instagram_Users_Media_Recent: [],
-    Api_Instagram_Users_Media_Liked: [],
-
-    Api_Bing_WebSearch: [],
-    Api_Bing_ImageSearch: [],
 
     Plugin_Schedule: [],
     Schedule: [],

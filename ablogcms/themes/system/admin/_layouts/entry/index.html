@@ -37,6 +37,15 @@
 </p>
 <!-- END_MODULE Admin_Errors -->
 
+<!-- BEGIN_MODULE Admin_Messages -->
+<!-- BEGIN message:loop -->
+<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+	<span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+	{message}
+</p>
+<!-- END message:loop -->
+<!-- END_MODULE Admin_Messages -->
+
 <!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1/_or_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-filter">
   <form action="" method="post" class="acms-admin-form">
@@ -249,7 +258,8 @@
         <th><!--T-->日時<!--/T--> </th>
         <th class="acms-admin-table-nowrap"><!--T-->ブログ<!--/T--> / <!--T-->カテゴリー<!--/T--></th>
         <th><!--T-->ユーザー<!--/T--></th>
-        <th></th>
+        <th class="acms-admin-table-nowrap"></th>
+        <th class="acms-admin-table-nowrap"></th>
         @endsection
       </tr>
       </thead>
@@ -313,8 +323,14 @@
           </ul>
         </td>
         <td class="acms-admin-td-user">
-          <a href="{userUrl}"><img src="%{ARCHIVES_DIR}{userIcon}" width="28" height="28" alt="%{SESSION_USER_NAME}"
-                                   class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle">{userName}</a>
+          <a href="{userUrl}">
+            <img
+              src="%{ARCHIVES_DIR}{userIcon}"
+              width="28"
+              height="28"
+              alt="%{SESSION_USER_NAME}"
+              class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle"
+            >{userName}</a>
         </td>
 
         @include("/admin/entry/field-list.html")
@@ -338,6 +354,25 @@
               </ul>
             </div>
           </div>
+        </td>
+        <td>
+          <!-- BEGIN_IF [{lockUser}/nem] -->
+          <!-- BEGIN_IF [{selfLock}/eq/yes] -->
+          <div class="js-fake-form" data-method="post">
+            <input type="hidden" name="eid" value="{eid}"/>
+            <input type="hidden" name="ACMS_POST_Entry_Lock_Unlock" value="on"/>
+            <button class="js-submit" style="border: none; background: transparent; padding: 0;" data-confirm="ロックを解除してもよろしいですか？">
+              <i class="acms-admin-icon acms-admin-icon-large acms-admin-icon-logout"></i>
+            </button>
+          </div>
+          <!-- ELSE -->
+          <i
+            class="acms-admin-icon acms-admin-icon-large acms-admin-icon-lock js-acms-tooltip"
+            data-acms-position="top-left"
+            data-acms-tooltip="{lockUser}さんが編集中です"
+          ></i>
+          <!-- END_IF -->
+          <!-- END_IF -->
         </td>
         @endsection
       </tr>

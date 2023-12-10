@@ -6,7 +6,7 @@
 .acms-select2 {
 	.Select-control {
 		height: global.$acms-form-height-sp;
-		background-color: #fbfbfb;
+		background-color: global.$acms-color-gray20;
 		border: global.$acms-form-border;
 		&:hover {
 			border-color: global.$acms-form-hover-border-color;
@@ -28,7 +28,7 @@
 		.Select-control {
 			.Select-value {
 				line-height: 1.7 !important;
-				background-color: #fbfbfb;
+				background-color: global.$acms-color-gray10;
 				border: none;
 			}
 		}
@@ -42,7 +42,7 @@
     }
 		.Select-control {
 			height: global.$acms-form-height;
-			background-color: #f7f7f7;
+			background-color: global.$acms-color-gray10;
 		}
 		.Select-input {
 			height: global.$acms-form-height;
@@ -57,12 +57,12 @@
 
 body .Select-multi-value-wrapper>.Select-value {
 	margin-top: 3px;
-	color: #5A5A5A;
+	color: global.$acms-color-gray90;
 	line-height: 1.8;
-	background-color: #EDEDED;
-	border: 1px solid #B7B7B7;
+	background-color: global.$acms-color-gray30;
+	border: 1px solid global.$acms-color-gray60;
 	.Select-value-icon {
-		border-right: 1px solid #B7B7B7;
+		border-right: 1px solid global.$acms-color-gray60;
 		&:hover {
 			color: inherit;
 			background-color: inherit;

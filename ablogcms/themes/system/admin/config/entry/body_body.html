@@ -66,7 +66,7 @@
 		<td>
 			<input type="text" name="entry_body_limit" value="{entry_body_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="entry_body_limit" />
-			<input type="hidden" name="entry_body_limit:convert" value="a" />
+			<input type="hidden" name="entry_body_limit:c" value="a" />
 			<input type="hidden" name="entry_body_limit:validator#digits" id="validator-entry_body_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_body_limit-digits" class="validator-result-{entry_body_limit:validator#digits}">
@@ -80,7 +80,7 @@
 		<td>
 			<input type="text" name="entry_body_offset" value="{entry_body_offset}" size="4" class="acms-admin-form-width-mini"  />
 			<input type="hidden" name="config[]" value="entry_body_offset" />
-			<input type="hidden" name="entry_body_offset:convert" value="a" />
+			<input type="hidden" name="entry_body_offset:c" value="a" />
 			<input type="hidden" name="entry_body_offset:validator#digits" id="validator-entry_body_offset-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_body_offset-digits" class="validator-result-{entry_body_offset:validator#digits}">
@@ -114,6 +114,17 @@
 			<input type="hidden" name="config[]" value="entry_body_indexing" />
 		</td>
 	</tr>
+  <tr>
+		<th><!--T-->会員限定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、会員限定にチェックが入ったエントリーのみ表示されます。<!--/T-->"></i></th>
+		<td>
+			<input type="hidden" name="entry_body_members_only" value="off" />
+			<div class="acms-admin-form-checkbox">
+				<input type="checkbox" name="entry_body_members_only" value="on"{entry_body_members_only:checked#on} id="input-checkbox-entry_body_members_only" />
+				<label for="input-checkbox-entry_body_members_only"><i class="acms-admin-ico-checkbox"></i><!--T-->会員限定のエントリーのみ表示する<!--/T--></label>
+			</div>
+			<input type="hidden" name="config[]" value="entry_body_members_only" />
+		</td>
+	</tr>
 	<tr>
 		<th><!--T-->サブカテゴリー<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックを外すと、カテゴリー絞り込み時にサブカテゴリーに所属するエントリーは表示されないようになります。<!--/T-->"></i></th>
 		<td>
@@ -130,7 +141,7 @@
 		<td>
 			<input type="text" name="entry_body_newtime" value="{entry_body_newtime}" size="8" class="acms-admin-form-width-mini"  /> <!--T-->秒<!--/T-->
 			<input type="hidden" name="config[]" value="entry_body_newtime" />
-			<input type="hidden" name="entry_body_newtime:convert" value="a" />
+			<input type="hidden" name="entry_body_newtime:c" value="a" />
 			<input type="hidden" name="entry_body_newtime:validator#digits" id="validator-entry_body_newtime-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-entry_body_newtime-digits" class="validator-result-{entry_body_newtime:validator#digits}">
@@ -400,9 +411,9 @@
 				<!--T-->横<!--/T-->&nbsp;<input type="text" name="entry_body_image_x" value="{entry_body_image_x}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル x 縦<!--/T-->&nbsp;<input type="text" name="entry_body_image_y" value="{entry_body_image_y}" size="8" class="acms-admin-form-width-mini" /><!--T-->ピクセル<!--/T-->
 				<input type="hidden" name="config[]" value="entry_body_image_x" />
 				<input type="hidden" name="config[]" value="entry_body_image_y" />
-				<input type="hidden" name="entry_body_image_x:convert" value="a" />
+				<input type="hidden" name="entry_body_image_x:c" value="a" />
 				<input type="hidden" name="entry_body_image_x:validator#digits" id="validator-entry_body_image_x-digits" />
-				<input type="hidden" name="entry_body_image_y:convert" value="a" />
+				<input type="hidden" name="entry_body_image_y:c" value="a" />
 				<input type="hidden" name="entry_body_image_y:validator#digits" id="validator-entry_body_image_y-digits" />
 				<div role="alert" aria-live="assertive">
 					<div data-validator-label="validator-entry_body_image_x-digits" class="validator-result-{entry_body_image_x:validator#digits}">

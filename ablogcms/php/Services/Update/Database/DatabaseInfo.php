@@ -171,12 +171,13 @@ class DatabaseInfo
         $q = "ALTER TABLE `$tb`";
 
         $def['Null'] = ($def['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
-        $def['Default'] = !empty($def['Default']) ? "default '" . $def['Default'] . "'" : null;
+        $def['Default'] = !empty($def['Default']) ? "default '" . $def['Default']  . "'" : null;
+        $def['Extra'] = isset($def['Extra']) ? ' ' . $def['Extra'] : '';
 
-        switch ( $method ) {
-            case 'add'   :
+        switch ($method) {
+            case 'add':
                 $q .= " ADD";
-                $q .= " `" . $left . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'] . " AFTER " . " `" . $right . "`";
+                $q .= " `" . $left . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'] . $def['Extra'] . " AFTER " . " `" . $right . "`";
                 break;
             case 'change':
                 // カラムのサイズ変更で現行サイズより小さい場合は処理をスキップ
@@ -197,11 +198,11 @@ class DatabaseInfo
                     }
                 }
                 $q .= " CHANGE";
-                $q .= " `" . $left . "` `" . $left . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'];
+                $q .= " `" . $left . "` `" . $left . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'] . $def['Extra'];
                 break;
             case 'rename':
                 $q .= " CHANGE";
-                $q .= " `" . $left . "` `" . $right . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'];
+                $q .= " `" . $left . "` `" . $right . "` " . $def['Type'] . " " . $def['Null'] . " " . $def['Default'] . $def['Extra'];
                 break;
             case 'engine':
                 $q .= " ENGINE=";
@@ -220,44 +221,45 @@ class DatabaseInfo
      *
      * @param $tables
      * @param null $idx
+     *
+     * @throws \RuntimeException
      */
     public function createTables($tables, $idx = null, $define = array())
     {
-        foreach ( $tables as $tb ) {
+        foreach ($tables as $tb) {
             $def = $define[$tb];
 
-            $q = "CREATE TABLE ${tb} ( \r\n";
-            foreach ( $def as $row ) {
+            $q = "CREATE TABLE {$tb} ( \r\n";
+            foreach ($def as $row) {
                 $row['Null'] = (isset($row['Null']) && $row['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
                 $row['Default'] = !empty($row['Default']) ? "default '" . $row['Default'] . "'" : null;
 
                 // Example: field_name var_type(11) NOT NULL default HOGEHOGE,\r\n
-                $q .= $row['Field'] . ' ' . $row['Type'] . ' ' . $row['Null'] . ' ' . $row['Default'] . ",\r\n";
+                $q .= $row['Field'] . ' ' . $row['Type'] . ' ' . $row['Null'] . ' ' . $row['Default']  .  ' ' . $row['Extra'] . ",\r\n";
             }
 
             /**
              * if $idx is exists Generate KEYs
              */
-            if ( is_array($idx) && !empty($idx) && isset($idx[$tb]) ) {
+            if (is_array($idx) && !empty($idx) && isset($idx[$tb])) {
                 $keys = $idx[$tb];
-                if ( is_array($keys) && !empty($keys) ) {
+                if (is_array($keys) && !empty($keys)) {
                     foreach ( $keys as $key ) {
                         $q .= $key . ",\r\n";
                     }
                 }
             }
             $q = preg_replace('@,(\r\n)$@', '$1', $q);
-            if ( preg_match('/(fulltext|geo)$/', $tb) ) {
+            if (preg_match('/(fulltext|geo)$/', $tb)) {
                 $q .= ") ENGINE=MyISAM;";
             } else {
                 $q .= ") ENGINE=InnoDB;";
             }
 
             $DB = DB::singleton($this->dsn);
-            $res = $DB->query($q, 'exec');
-
-            if ( $res == false ) {
-                $this->_errLog();
+            $isSuccess = $DB->query($q, 'exec');
+            if ($isSuccess === false) {
+                throw new \RuntimeException('「' . $tb . '」' . 'テーブルの作成に失敗しました。');
             }
         }
     }

@@ -159,6 +159,8 @@ function acmsStandAloneRun($exec)
         }
         exit(0);
     } catch (Exception $e) {
+        AcmsLogger::error($e->getMessage());
+
         $date = date('Y-m-d H:i:s');
         $stderr = fopen('php://stderr', 'w');
         fwrite($stderr, "$date [Error] " . $e->getMessage() . "\n");

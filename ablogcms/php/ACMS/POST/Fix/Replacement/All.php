@@ -40,6 +40,15 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
 
             $this->Post->set('updated', $updated);
             $this->Post->set('message', 'success');
+
+            if (intval($updated) > 0) {
+                $targetName = '';
+                if ($target === 'title') $targetName = 'タイトル';
+                if ($target === 'unit') $targetName = 'ユニット';
+                if ($target === 'field') $targetName = 'カスタムフィールド';
+
+                AcmsLogger::info($updated . '件、エントリーの「' . $targetName . '」のテキスト置換を実行しました「' . $pattern . '」->「' . $replacement . '」');
+            }
         }
         return $this->Post;
     }

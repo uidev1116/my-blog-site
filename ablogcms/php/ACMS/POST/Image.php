@@ -4,7 +4,6 @@ class ACMS_POST_Image extends ACMS_POST
 {
     var $id;
     var $old;
-    var $pattern;
     var $path;
     var $size;
     var $selectSize;
@@ -16,28 +15,21 @@ class ACMS_POST_Image extends ACMS_POST
 
     var $olddel;
     var $directAdd;
-    var $moveArchive;
 
     /*
      * Image = new ACMS_POST_Image();
      *
      */
-    public function __construct($olddel=true, $directAdd=false, $moveArchive='')
+    public function __construct($olddel=true, $directAdd=false)
     {
         //-------
         // init
-        $this->pattern      = '@'.REVISON_ARCHIVES_DIR.'@';
         $this->delete       = null;
         $this->angle        = null;
 
         $this->olddel       = $olddel;
         $this->directAdd    = $directAdd;
-        $this->moveArchive  = $moveArchive;
-
         $this->ARCHIVES_DIR = ARCHIVES_DIR;
-        if ( !empty($moveArchive) ) {
-            $this->ARCHIVES_DIR = ARCHIVES_DIR.'TEMP/';
-        }
     }
 
     public static function getBase64Data($string)
@@ -56,11 +48,9 @@ class ACMS_POST_Image extends ACMS_POST
         if ( empty($base64) ) {
             return false;
         }
-
         if ( !Storage::exists(ARCHIVES_DIR.'tmp/') ) {
             if ( !Storage::makeDirectory(ARCHIVES_DIR.'tmp/') ) { return false; }
         }
-
         $name       = $_FILES[$id]['name'];
         $type       = $_FILES[$id]['type'];
         $tmp_name   = $_FILES[$id]['tmp_name'];
@@ -88,7 +78,8 @@ class ACMS_POST_Image extends ACMS_POST
                     $tmp_name[$i] = $tmpPath;
                     $error[$i]    = '';
                     $size[$i]     = filesize($dest);
-                } catch ( \Exception $e ) {
+                } catch (\Exception $e) {
+                    AcmsLogger::notice($e->getMessage(), Common::exceptionArray($e));
                     continue;
                 }
             }
@@ -119,7 +110,9 @@ class ACMS_POST_Image extends ACMS_POST
                     $error      = '';
                     $size       = filesize($dest);
                 }
-            } catch ( \Exception $e ) {}
+            } catch (\Exception $e) {
+                AcmsLogger::notice($e->getMessage(), Common::exceptionArray($e));
+            }
         }
 
         if ( empty($name) ) {
@@ -146,7 +139,6 @@ class ACMS_POST_Image extends ACMS_POST
         $this->delete   = null;
 
         $this->old      = ltrim($old, './');
-        $this->old      = preg_replace($this->pattern, '', $this->old, 1);
         $this->path     = $this->old;
 
         if ( 'delete' == $this->edit ) {
@@ -277,15 +269,14 @@ class ACMS_POST_Image extends ACMS_POST
                 $ext    = isset($exts[$mime]) ? $exts[$mime] : 'jpg';
                 $path   = $dir.uniqueString(8).'.'.$ext;
                 $file   = $this->ARCHIVES_DIR.$path;
+
+                Entry::addUploadedFiles($path); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
+
                 $imageFiles[] = array(
                     'edit'      => $Edit,
                     'target'    => $this->target,
                     'file'      => $file,
                     'path'      => $path,
-                );
-                $tmpMedia[] = array(
-                    'type'  => 'image',
-                    'path'  => $file,
                 );
             }
         } while ( false );
@@ -420,6 +411,9 @@ class ACMS_POST_Image extends ACMS_POST
 
     private function deleteImage()
     {
+        if (Entry::isNewVersion()) {
+            return;
+        }
         if (!empty($this->delete)) {
             if (empty($this->target)) $path = null;
             if (Storage::isFile($this->delete)) {

@@ -6,7 +6,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
     {
         $Column     = array();
         $overCount  = 0;
-        
+
         $typeAry = $this->Post->getArray('type');
         if ( empty($typeAry) ) {
             return $Column;
@@ -88,7 +88,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             //----------------
             // text, textarea
             if ( in_array($type, array('text', 'textarea')) ) {
-                
+
             //-------------------------
             // radio, select, checkbox
             } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
@@ -142,10 +142,15 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
 
         $Column = $this->extractFormColumn();
 
-        if ( !$this->Post->isValidAll() ) {
+        if (!$this->Post->isValidAll()) {
             $this->Post->set('step', 'reapply');
             $this->Post->set('action', 'update');
             $this->Post->set('column', acmsSerialize($Column));
+
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの動的フォームを更新に失敗しました', [
+                'Form' => $Form,
+                'Column' => $Column,
+            ]);
             return false;
         }
         //--------
@@ -163,6 +168,12 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         $SQL->addWhereOpr('entry_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
         ACMS_RAM::entry(EID, null);
+
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの動的フォームを更新しました', [
+            'eid' => EID,
+            'Form' => $Form,
+            'Column' => $Column,
+        ]);
 
         return array('eid' => EID, 'cid' => CID);
     }

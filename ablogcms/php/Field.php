@@ -157,9 +157,10 @@ class Field
         } else {
             if ( !is_array($vals) ) $vals   = array($vals);
             $this->_aryField[$fd]   = array();
-            $max    = max(array_keys($vals));
-            for ( $i=0; $i<=$max; $i++ ) {
-                $this->_aryField[$fd][$i]   = isset($vals[$i]) ? $vals[$i] : '';
+            $max = max(array_keys($vals));
+            $max = intval($max);
+            for ($i=0; $i<=$max; $i++) {
+                $this->_aryField[$fd][$i] = isset($vals[$i]) ? $vals[$i] : '';
             }
         }
         return true;
@@ -493,14 +494,14 @@ class Field_Search extends Field
 
     function getOperator($fd, $i=0)
     {
-        return is_null($i) ? 
+        return is_null($i) ?
             (!is_null($this->_aryOperator[$fd]) ? $this->_aryOperator[$fd] : null) :
             (isset($this->_aryOperator[$fd][$i]) ? $this->_aryOperator[$fd][$i] : null);
     }
 
     function getConnector($fd, $i=0)
     {
-        return is_null($i) ? 
+        return is_null($i) ?
             (!is_null($this->_aryConnector[$fd]) ? $this->_aryConnector[$fd] : null) :
             (isset($this->_aryConnector[$fd][$i]) ? $this->_aryConnector[$fd][$i] : null);
     }

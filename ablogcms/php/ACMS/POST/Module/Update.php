@@ -3,6 +3,20 @@
 class ACMS_POST_Module_Update extends ACMS_POST_Module
 {
     /**
+     * モジュールID
+     *
+     * @var int|null
+     */
+    protected $moduleId = null;
+
+    /**
+     * ルールID
+     *
+     * @var int|null
+     */
+    protected $ruleId = null;
+
+    /**
      * CSRF対策
      *
      * @var bool
@@ -17,18 +31,22 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return false|Field
+     * @return Field_Validation
      */
-    function post()
+    public function post()
     {
-        if ( !$rid = idval($this->Post->get('rid')) ) $rid = null;
-        if ( !$mid = idval($this->Post->get('mid')) ) $mid = null;
+        if (!$this->ruleId = idval($this->Post->get('rid'))) {
+            $this->ruleId = null;
+        }
+        if (!$this->moduleId = idval($this->Post->get('mid'))) {
+            $this->moduleId = null;
+        }
 
         //---------
         // module
         $this->Post->set('module', array(
             'name', 'status', 'identifier', 'label', 'description', 'cache', 'scope', 'custom_field', 'layout_use', 'api_use',
-            'bid', 'uid', 'cid', 'eid','keyword', 'tag', 'field_',
+            'bid', 'uid', 'cid', 'eid', 'keyword', 'tag', 'field_',
             'start_date', 'start_time', 'end_date', 'end_time',
             'page', 'order',
             'uid_scope', 'cid_scope', 'eid_scope', 'keyword_scope', 'tag_scope', 'field_scope',
@@ -36,21 +54,14 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             'bid_axis', 'cid_axis',
         ));
         $Module = $this->extract('module');
-        if ( 'global' !== $Module->get('scope') ) {
-            $Module->set('scope', 'local');
-        }
 
         $Module->setMethod('name', 'required');
-        $Module->setMethod('module', 'midIsNull', $mid);
+        $Module->setMethod('module', 'midIsNull', $this->moduleId);
         $Module->setMethod('module', 'invalidLicense', IS_LICENSED);
-        $Module->setMethod('identifier', 'double', array($Module->get('scope'), $mid));
+        $Module->setMethod('identifier', 'double', [$Module->get('scope') ?: 'local', $this->moduleId]);
         $Module->setMethod('label', 'required');
 
-        $allow_multiple_args = configArray('module_allow_multiple_arguments');
-        if ( empty($allow_multiple_args) ) {
-            $allow_multiple_args = array('Entry_Body', 'Entry_Summary', 'Entry_List', 'Entry_Headline', 'Entry_Photo', 'Entry_TagRelational');
-        }
-        if ( !in_array($Module->get('name'), $allow_multiple_args) ) {
+        if (!Module::isAllowedMultipleArguments($Module)) {
             $Module->setMethod('bid', 'intOrGlobalVars');
             $Module->setMethod('uid', 'intOrGlobalVars');
             $Module->setMethod('cid', 'intOrGlobalVars');
@@ -58,15 +69,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
         }
         $Module->setMethod('page', 'intOrGlobalVars');
 
-        if ( roleAvailableUser() ) {
-            $Module->setMethod('module', 'operative', roleAuthorization('module_edit', BID) ?
-                true : Auth::checkShortcut('Module_Update', ADMIN, 'mid', $mid)
-            );
-        } else {
-            $Module->setMethod('module', 'operative', sessionWithAdministration() ?
-                true : Auth::checkShortcut('Module_Update', ADMIN, 'mid', $mid)
-            );
-        }
+        $Module->setMethod('module', 'operative', $this->isOperable());
 
         $Module->validate(new ACMS_Validator_Module());
         $this->fix($Module);
@@ -74,7 +77,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
         //-----------
         // config
         $Config = $this->extract('config');
-        $Config = Config::setValide($Config, $rid, $mid);
+        $Config = Config::setValide($Config, $this->ruleId, $this->moduleId);
         $Config->validate(new ACMS_Validator());
         $Config = Config::fix($Config);
 
@@ -82,20 +85,20 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
         // field
         $Field = $this->extract('field', new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             //---------
             // module
-            $start  = $Module->get('start_date') ? ($Module->get('start_date').' '.$Module->get('start_time')) : null;
-            $end    = $Module->get('end_date') ? ($Module->get('end_date').' '.$Module->get('end_time')) : null;
+            $start = $Module->get('start_date') ? ($Module->get('start_date') . ' ' . $Module->get('start_time')) : null;
+            $end = $Module->get('end_date') ? ($Module->get('end_date') . ' ' . $Module->get('end_time')) : null;
 
-            $DB     = DB::singleton(dsn());
-            $SQL    = SQL::newUpdate('module');
+            $DB = DB::singleton(dsn());
+            $SQL = SQL::newUpdate('module');
             $SQL->addUpdate('module_name', $Module->get('name'));
             $SQL->addUpdate('module_identifier', strval($Module->get('identifier')));
             $SQL->addUpdate('module_label', $Module->get('label'));
             $SQL->addUpdate('module_description', strval($Module->get('description')));
             $SQL->addUpdate('module_status', $Module->get('status', 'open'));
-            $SQL->addUpdate('module_scope', $Module->get('scope'));
+            $SQL->addUpdate('module_scope', $Module->get('scope') ?: 'local');
             $SQL->addUpdate('module_cache', intval($Module->get('cache', 0)));
             $SQL->addUpdate('module_bid', $Module->get('bid'));
             $SQL->addUpdate('module_uid', $Module->get('uid'));
@@ -124,17 +127,17 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             $SQL->addUpdate('module_layout_use', $Module->get('layout_use', 1));
             $SQL->addUpdate('module_api_use', $Module->get('api_use', 'off'));
 
-            $SQL->addWhereOpr('module_id', $mid);
+            $SQL->addWhereOpr('module_id', $this->moduleId);
             $SQL->addWhereOpr('module_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
 
             //--------
             // config
-            Config::saveConfig($Config, BID, $rid, $mid);
+            Config::saveConfig($Config, BID, $this->ruleId, $this->moduleId);
 
             //-------
             // field
-            Common::saveField('mid', $mid, $Field);
+            Common::saveField('mid', $this->moduleId, $Field);
 
             //-------------
             // delete cache
@@ -142,10 +145,66 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             $cache->forget(md5($Module->get('name') . $Module->get('identifier')));
 
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを更新しました', [
+                'mid' => $this->moduleId,
+                'rid' => $this->ruleId,
+                'module' => $Module->_aryField,
+            ]);
         } else {
             $this->Post->set('validate', true);
+
+            AcmsLogger::info('モジュールの更新に失敗しました', [
+                'mid' => $this->moduleId,
+                'rid' => $this->ruleId,
+                'module' => $Module,
+                'config' => $Config,
+                'field' => $Field,
+            ]);
+        }
+        return $this->Post;
+    }
+
+    /**
+     * モジュールの更新が可能なユーザーかどうか
+     *
+     * @return bool
+     */
+    protected function isOperable(): bool
+    {
+        if (roleAvailableUser()) {
+            if (roleAuthorization('module_edit', BID)) {
+                return true;
+            }
+
+            if ($this->shortcutAuthorization()) {
+                return true;
+            }
+
+            return false;
         }
 
-        return $this->Post;
+        if (sessionWithAdministration()) {
+            return true;
+        }
+
+        if ($this->shortcutAuthorization()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *  ショートカットによる認可チェック
+     *
+     * @return bool
+     */
+    protected function shortcutAuthorization(): bool
+    {
+        return Auth::checkShortcut([
+            'mid' => $this->moduleId,
+            'rid' => $this->ruleId
+        ]);
     }
 }

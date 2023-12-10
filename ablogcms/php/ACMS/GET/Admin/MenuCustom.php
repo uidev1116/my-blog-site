@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Config;
+
 class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
 {
     /**
@@ -72,6 +74,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('blog_edit');
             $this->standardMenu('alias_index', 'alias');
             $this->standardMenu('user_index', 'user');
+            $this->standardMenu('member_index');
             $this->standardMenu('rule_index', 'rule');
             $this->standardMenu('module_index', 'module');
             $this->standardMenu('webhook_index', 'webhook');
@@ -81,18 +84,21 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('import_index', 'import');
             $this->standardMenu('app_index');
             $this->standardMenu('checklist');
+            if (BID === RBID) {
+                $this->standardMenu('audit_log');
+            }
             $this->standardMenu('cart_menu');
             $this->standardMenu('fix_index', 'fix');
             if (defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO) {
                 $this->standardMenu('shop_menu', 'shop');
             }
-            if (IS_LICENSED) {
-                $this->standardMenu('user_edit', 'user');
-                $this->standardMenu('config_set_index', 'config');
-                $this->standardMenu('rule_edit', 'rule');
-                $this->standardMenu('module_edit', 'module');
-                $this->standardMenu('category_edit', 'category');
-            }
+            $this->standardMenu('user_edit', 'user');
+            $this->standardMenu('config_set_base_index', 'config_set_base');
+            $this->standardMenu('config_set_theme_index', 'config_set_theme');
+            $this->standardMenu('config_set_editor_index', 'config_set_editor');
+            $this->standardMenu('rule_edit', 'rule');
+            $this->standardMenu('module_edit', 'module');
+            $this->standardMenu('category_edit', 'category');
         }
     }
 
@@ -130,7 +136,9 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('publish_index', 'publish');
         }
         if (roleAuthorization('config_edit', BID) && IS_LICENSED) {
-            $this->standardMenu('config_set_index', 'config');
+            $this->standardMenu('config_set_base_index', 'config_set_base');
+            $this->standardMenu('config_set_theme_index', 'config_set_theme');
+            $this->standardMenu('config_set_editor_index', 'config_set_editor');
         }
         if (roleAuthorization('module_edit', BID)) {
             $this->standardMenu('module_index', 'module');
@@ -150,11 +158,15 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('webhook_index', 'webhook');
             $this->standardMenu('alias_index', 'alias');
             $this->standardMenu('user_index', 'user');
+            $this->standardMenu('member_index');
             $this->standardMenu('shortcut_index', 'shortcut');
             $this->standardMenu('schedule_index', 'schedule');
             $this->standardMenu('import_index', 'import');
             $this->standardMenu('app_index', 'app');
             $this->standardMenu('checklist');
+            if (BID === RBID) {
+                $this->standardMenu('audit_log');
+            }
             $this->standardMenu('cart_menu');
             if (defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO) {
                 $this->standardMenu('shop_menu', 'shop');
@@ -196,7 +208,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
      * メニューのURLを組み立て
      *
      * @param $admin
-     * @param bool $linkCheck
+     * @param bool|string $linkCheck
      */
     protected function standardMenu($admin, $linkCheck = false)
     {
@@ -280,18 +292,33 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
      */
     protected function extractMenus()
     {
-        $ids = configArray('admin_menu_card_laneid');
+        $config =& Field::singleton('config');
+        $defaultConfig = Config::loadDefaultField();
+        $defaultMenuIds = $defaultConfig->getArray('admin_menu_card_id');
+        $customMenuIds = $config->getArray('admin_menu_card_id');
 
+        foreach ($defaultMenuIds as $i => $id) {
+            if (!in_array($id, $customMenuIds)) {
+                $config->add('admin_menu_card_id', $id);
+                $config->add('admin_menu_card_title', $defaultConfig->get('admin_menu_card_title', '', $i));
+                $config->add('admin_menu_card_url', $defaultConfig->get('admin_menu_card_url', '', $i));
+                $config->add('admin_menu_card_icon', $defaultConfig->get('admin_menu_card_icon', '', $i));
+                $config->add('admin_menu_card_admin', $defaultConfig->get('admin_menu_card_admin', '', $i));
+                $config->add('admin_menu_card_laneid', $defaultConfig->get('admin_menu_card_laneid', '', $i));
+            }
+        }
+
+        $ids = $config->getArray('admin_menu_card_laneid');
         foreach ($ids as $i => $id) {
             if (!isset($this->menus[$id])) {
                 $this->menus[$id] = array();
             }
             $this->menus[$id][] = array(
-                'id' => config('admin_menu_card_id', '', $i),
-                'title' => config('admin_menu_card_title', '', $i),
-                'url' => setGlobalVars(config('admin_menu_card_url', '', $i)),
-                'admin' => config('admin_menu_card_admin', '', $i) === 'true',
-                'icon' => config('admin_menu_card_icon', '', $i),
+                'id' => $config->get('admin_menu_card_id', '', $i),
+                'title' => $config->get('admin_menu_card_title', '', $i),
+                'url' => setGlobalVars($config->get('admin_menu_card_url', '', $i)),
+                'admin' => $config->get('admin_menu_card_admin', '', $i) === 'true',
+                'icon' => $config->get('admin_menu_card_icon', '', $i),
             );
         }
     }

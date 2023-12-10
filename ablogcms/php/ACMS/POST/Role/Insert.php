@@ -10,16 +10,16 @@ class ACMS_POST_Role_Insert extends ACMS_POST
 
         $Role->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
 
             //-----
             // rid
-            $rid    = $DB->query(SQL::nextval('role_id', dsn()), 'seq');
+            $rid = $DB->query(SQL::nextval('role_id', dsn()), 'seq');
 
             //-----------
             // role
-            $SQL    = SQL::newInsert('role');
+            $SQL = SQL::newInsert('role');
             $SQL->addInsert('role_id', $rid);
             foreach ( $Role->listFields() as $key ) {
                 if ( $key !== 'blog_list' ) {
@@ -38,6 +38,15 @@ class ACMS_POST_Role_Insert extends ACMS_POST
             }
 
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('「' . $Role->get('name') . '」ロールを作成しました', [
+                'roleID' => $rid,
+                'data' => $Role->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ロールの作成に失敗しました', [
+                'validate' => $Role->_aryV,
+            ]);
         }
         return $this->Post;
     }

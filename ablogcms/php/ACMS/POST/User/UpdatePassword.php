@@ -10,6 +10,15 @@ class ACMS_POST_User_UpdatePassword extends ACMS_POST_User_Update
         if ($this->Post->isValidAll()) {
             $this->updatePassword();
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName(UID) . '」のパスワードを変更しました', [
+                'uid' => UID,
+            ]);
+        } else {
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName(UID) . '」のパスワード変更に失敗しました', [
+                'uid' => UID,
+                'pass' => $this->user->_aryV,
+            ]);
         }
         return $this->Post;
     }
@@ -18,15 +27,7 @@ class ACMS_POST_User_UpdatePassword extends ACMS_POST_User_Update
     {
         $this->user->setMethod('pass', 'required');
         $this->user->setMethod('pass', 'password');
-        $this->user->setMethod('user', 'operable', 1
-            and !!UID
-            and !!SUID
-            and IS_LICENSED
-            and (0
-                or (sessionWithAdministration() or UID == SUID)
-                or (sessionWithAdministration() ? true : Auth::checkShortcut('User_Update', ADMIN, 'uid', UID))
-            )
-        );
+        $this->user->setMethod('user', 'operable', $this->isOperable());
         $this->user->validate(new ACMS_Validator());
     }
 

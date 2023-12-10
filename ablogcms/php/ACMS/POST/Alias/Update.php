@@ -37,6 +37,22 @@ class ACMS_POST_Alias_Update extends ACMS_POST_Alias
             ACMS_RAM::alias($aid, null);
 
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('エイリアス「' . $Alias->get('name') . '」を更新しました', [
+                'aid' => $aid,
+                'status' => $Alias->get('status'),
+                'domain' => $Alias->get('domain'),
+                'code' => $Alias->get('code'),
+                'name' => $Alias->get('name'),
+                'scope' => $Alias->get('scope'),
+                'indexing' => $Alias->get('indexing'),
+                'bid' => BID,
+            ]);
+        } else {
+            AcmsLogger::info('エイリアスの更新に失敗しました', [
+                'aid' => $aid,
+                'validator' => $Alias->_aryV,
+            ]);
         }
 
         return $this->Post;

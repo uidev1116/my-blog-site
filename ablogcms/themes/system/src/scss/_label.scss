@@ -5,14 +5,14 @@
 ------------------------------- */
 // デフォルト
 .acms-label {
-	display: inline-block;
-	padding: 2px 5px;
-	color: global.$acms-label-text-color;
-	line-height: 1.3;
-	vertical-align: middle;
-	background-color: global.$acms-label-default;
-	border-radius: 3px;
-	@include global.font-size(11);
+  display: inline-block;
+  padding: 2px 5px;
+  color: global.$acms-label-text-color;
+  line-height: 1.3;
+  vertical-align: middle;
+  background-color: global.$acms-label-default;
+  border-radius: 3px;
+  @include global.font-size(11);
 
   @at-root {
     a#{&}:link,
@@ -33,35 +33,35 @@
 // 大きめ
 .acms-label-large {
   padding: 4px 7px;
-	@include global.font-size(16);
+  @include global.font-size(16);
 }
 
 .acms-label-group {
-	.acms-label:first-child {
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
-	}
-	.acms-label:last-child {
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-	}
-	.acms-label-side:first-child {
-		border-right: 1px solid rgba(0,0,0,.2);
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
-	}
-	.acms-label-side:last-child {
-		border-left: 1px solid rgba(0,0,0,.2);
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-	}
+  .acms-label:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .acms-label:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .acms-label-side:first-child {
+    border-right: 1px solid rgba(0,0,0,.2);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .acms-label-side:last-child {
+    border-left: 1px solid rgba(0,0,0,.2);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 }
 
 
 // success
 .acms-label-success {
   color: global.$acms-label-text-success-color;
-	background-color: global.$acms-label-success-color;
+  background-color: global.$acms-label-success-color;
   @at-root {
     a#{&}:link,
     a#{&}:visited,
@@ -74,7 +74,7 @@
 // info
 .acms-label-info {
   color: global.$acms-label-text-info-color;
-	background-color: global.$acms-label-info-color;
+  background-color: global.$acms-label-info-color;
   @at-root {
     a#{&}:link,
     a#{&}:visited,
@@ -87,7 +87,7 @@
 // warning
 .acms-label-warning {
   color: global.$acms-label-text-warning-color;
-	background-color: global.$acms-label-warning-color;
+  background-color: global.$acms-label-warning-color;
   @at-root {
     a#{&}:link,
     a#{&}:visited,
@@ -100,7 +100,7 @@
 // danger
 .acms-label-danger {
   color: global.$acms-label-text-danger-color;
-	background-color: global.$acms-label-danger-color;
+  background-color: global.$acms-label-danger-color;
   @at-root {
     a#{&}:link,
     a#{&}:visited,
@@ -113,5 +113,5 @@
 
 // 管理画面内にてtdの幅が変わってしまってレイアウトが崩れてしまう場合
 .acms-admin-labelbox {
-	min-width: 55px;
+  min-width: 55px;
 }

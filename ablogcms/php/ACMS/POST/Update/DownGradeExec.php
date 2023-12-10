@@ -27,6 +27,8 @@ class ACMS_POST_Update_DownGradeExec extends ACMS_POST_Update_Base
         }
         $this->newSetup= $this->Post->get('new_setup') === 'create';
         Common::backgroundRedirect(HTTP_REQUEST_URL);
+
+        AcmsLogger::info('ダウングレードを開始しました');
         $this->run();
         die();
     }
@@ -83,6 +85,8 @@ class ACMS_POST_Update_DownGradeExec extends ACMS_POST_Update_Base
             $dbUpdateService->update();
 
             $logger->success();
+
+            AcmsLogger::info('ダウングレードが完了しました');
         } catch (\Exception $e) {
             $message = $e->getMessage();
             if (!empty($message)) {
@@ -90,6 +94,8 @@ class ACMS_POST_Update_DownGradeExec extends ACMS_POST_Update_Base
             }
             sleep(3);
             $logger->terminate();
+
+            AcmsLogger::warning('ダウングレードに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
 
         DB::setThrowException(false);

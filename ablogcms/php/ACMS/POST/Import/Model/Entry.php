@@ -80,6 +80,11 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
                         throw new \RuntimeException('on または off 以外の値が設定されています（' . $key . '）');
                     }
                     break;
+                case 'entry_members_only':
+                    if (!in_array($value, array('on', 'off'))) {
+                        throw new \RuntimeException('on または off 以外の値が設定されています（' . $key . '）');
+                    }
+                    break;
             }
         }
     }
@@ -537,6 +542,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             'entry_hash'            => md5(SYSTEM_GENERATED_DATETIME.$posted_datetime),
             'entry_summary_range'   => null,
             'entry_indexing'        => 'on',
+            'entry_members_only'    => 'off',
             'entry_primary_image'   => null,
             'entry_category_id'     => $this->importCid,
             'entry_user_id'         => SUID,

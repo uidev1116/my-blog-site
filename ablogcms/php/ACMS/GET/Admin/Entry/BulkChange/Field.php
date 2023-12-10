@@ -8,6 +8,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Field extends ACMS_GET_Admin_Entry_BulkCha
         try {
             $this->buildFieldBlock($tpl);
         } catch (\Exception $e) {
+            AcmsLogger::debug($e->getMessage(), Common::exceptionArray($e));
         }
         return $tpl->get();
     }

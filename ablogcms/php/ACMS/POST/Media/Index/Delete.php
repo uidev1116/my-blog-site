@@ -16,6 +16,7 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
                 throw new \RuntimeException('Permission denied');
             }
             @set_time_limit(0);
+            $targetMIDs = [];
             foreach ($this->Post->getArray('checks') as $mid) {
                 $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
                 $mbid = intval($id[0]);
@@ -28,11 +29,24 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
                     continue;
                 }
                 Media::deleteItem($mid);
+                $targetMIDs[] = $mid;
+            }
+            if (!empty($targetMIDs)) {
+                AcmsLogger::info('メディアを一覧から一括削除しました', [
+                    'targetMIDs' => $targetMIDs,
+                ]);
             }
             Common::responseJson(array(
                 'status' => 'success'
             ));
         } catch (\Exception $e) {
+            if (!$this->Post->isValid('media', 'operable')) {
+                AcmsLogger::info('権限がないため、メディアを一覧から削除できませんでした');
+            } else if (!$this->Post->isValid('checks', 'required')) {
+                AcmsLogger::info('メディアが指定されていないため、メディアを一覧から削除できませんでした');
+            } else {
+                AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
+            }
             Common::responseJson(array(
                 'status' => 'failure',
                 'message' => $e->getMessage(),

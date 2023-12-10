@@ -37,6 +37,8 @@ class ACMS_POST_Unit_SortUp extends ACMS_POST_Unit
 
         $this->fixEntry($eid);
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの「' . $sort . '」番目のユニットを上に移動しました');
+
         return $this->Post;
     }
 }

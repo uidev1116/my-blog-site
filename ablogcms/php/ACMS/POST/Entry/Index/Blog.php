@@ -63,6 +63,7 @@ class ACMS_POST_Entry_Index_Blog extends ACMS_POST
                 $cidSorts[$cid] = $cmax;
             }
 
+            $targetEIDs = [];
             foreach ( array_reverse($this->Post->getArray('checks')) as $eid ) {
                 $id     = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
                 $eid    = $id[1];
@@ -112,7 +113,15 @@ class ACMS_POST_Entry_Index_Blog extends ACMS_POST
                 $SQL->addUpdate('tag_blog_id', $bid);
                 $SQL->addWhereOpr('tag_entry_id', $eid);
                 $DB->query($SQL->get(dsn()), 'exec');
+
+                $targetEIDs[] = $eid;
             }
+            AcmsLogger::info('指定されたエントリーを「' . ACMS_RAM::blogName($bid) . '」ブログに一括移動させました', [
+                'targetEIDs' => implode(',', $targetEIDs),
+                'targetBID' => $bid,
+            ]);
+        } else {
+            AcmsLogger::info('指定されたエントリーの一括ブログ移動に失敗しました');
         }
 
         return $this->Post;

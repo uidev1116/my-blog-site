@@ -56,8 +56,9 @@ class ACMS_POST_Fix_BlogDelete extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::blog(intval($this->Post->get('bid_'.$i)), null);
             }
-
             $this->Post->set('delete', 'success');
+
+            AcmsLogger::info('ブログレコードの重複問題を修復しました');
         } while ( false );
 
         $this->Post->validate();

@@ -4,21 +4,21 @@ return [
     'type' => [
         // テンプレートのキャッシュをするドライバーを選択します
         'template' => [
-            'driver' => env('CACHE_TEMPLATE_DRIVER', 'file'),
+            'driver' => env('CACHE_TEMPLATE_DRIVER', 'database'),
             'namespace' => env('CACHE_TEMPLATE_NAMESPACE', 'template'),
             'lifetime' => env('CACHE_TEMPLATE_LIFETIME', 60 * 60 * 24),
         ],
 
         // フィールド情報のキャッシュをするドライバーを選択します
         'field' => [
-            'driver' => env('CACHE_FIELD_DRIVER', 'file'),
+            'driver' => env('CACHE_FIELD_DRIVER', 'database'),
             'namespace' => env('CACHE_FIELD_NAMESPACE', 'field'),
             'lifetime' => env('CACHE_FIELD_LIFETIME', 60 * 60 * 24),
         ],
 
         // モジュールキャッシュで利用するドライバーを選択します
         'module' => [
-            'driver' => env('CACHE_MODULE_DRIVER', 'file'),
+            'driver' => env('CACHE_MODULE_DRIVER', 'database'),
             'namespace' => env('CACHE_MODULE_NAMESPACE', 'module'),
             'lifetime' => env('CACHE_MODULE_LIFETIME', 60 * 60 * 24),
         ],
@@ -32,14 +32,13 @@ return [
 
         // コンフィグのキャッシュをするドライバーを選択します
         'config' => [
-            'driver' => env('CACHE_CONFIG_DRIVER', 'file'),
+            'driver' => env('CACHE_CONFIG_DRIVER', 'database'),
             'namespace' => env('CACHE_CONFIG_NAMESPACE', 'config'),
-            'lifetime' => env('CACHE_CONFIG_LIFETIME', 60 * 60 * 24),
         ],
 
         // ページキャッシュをするドライバーを選択します
         'page' => [
-            'driver' => env('CACHE_PAGE_DRIVER', 'file'),
+            'driver' => env('CACHE_PAGE_DRIVER', 'database'),
             'namespace' => env('CACHE_PAGE_NAMESPACE', 'page'),
         ],
     ],
@@ -53,6 +52,9 @@ return [
         ],
         'file' => [
             'driver' => 'file',
+        ],
+        'database' => [
+            'driver' => 'database',
         ],
         'redis' => [
             'driver' => 'redis',

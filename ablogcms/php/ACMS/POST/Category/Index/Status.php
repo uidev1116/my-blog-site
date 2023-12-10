@@ -11,16 +11,15 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
         $this->Post->setMethod('category', 'operable', ( 1
             and sessionWithCompilation()
             and !empty($aryCid)
-            and in_array($status, array('open', 'close'))
+            and in_array($status, array('open', 'close', 'secret'))
         ));
         $this->Post->validate();
 
         if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+            $DB = DB::singleton(dsn());
+            $targetCIDs = [];
             while ( !!($cid = intval(array_shift($aryCid))) ) {
-                if ( 'close' == $status ) {
-
-                    //----------------
+                if (!!$status && $status !== 'open') {
                     // cid collection
                     $SQL    = SQL::newSelect('category');
                     $SQL->setSelect('category_id');
@@ -35,25 +34,14 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                             if ( !is_bool($key = array_search($_cid, $aryCid)) ) unset($aryCid[$key]);
                             $_aryCid[]  = $_cid;
                         }
-
-                        //----------
                         // catetory
                         $SQL    = SQL::newUpdate('category');
-                        $SQL->setUpdate('category_status', 'close');
+                        $SQL->setUpdate('category_status', $status);
                         $SQL->addWhereIn('category_id', $_aryCid);
                         $DB->query($SQL->get(dsn()), 'exec');
-
-                        //-------
-                        // entry
-//                        $SQL    = SQL::newUpdate('entry');
-//                        $SQL->setUpdate('entry_status', 'close');
-//                        $SQL->addWhereIn('entry_category_id', $_aryCid);
-//                        $DB->query($SQL->get(dsn()), 'exec');
                     }
 
                 } else {
-
-                    //---------------------
                     // check parent status
                     $SQL    = SQL::newSelect('category');
                     $SQL->setSelect('category_id');
@@ -63,17 +51,23 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                     $SQL->addWhereOpr('category_status', 'close');
                     $SQL->setLimit(1);
                     if ( $DB->query($SQL->get(dsn()), 'one') ) continue;
-
-                    //--------
                     // update
                     $SQL    = SQL::newUpdate('category');
                     $SQL->addUpdate('category_status', $status);
                     $SQL->addWhereOpr('category_id', $cid);
                     $SQL->addWhereOpr('category_blog_id', BID);
                     $DB->query($SQL->get(dsn()), 'exec');
-
                 }
+                $targetCIDs[] = $cid;
             }
+            if ($status === 'open') $status = '公開';
+            if ($status === 'close') $status = '非公開';
+            if ($status === 'secret') $status = 'シークレット';
+            AcmsLogger::info('指定されたカテゴリーのステータスを「' . $status . '」に変更', [
+                'targetCIDs' => implode(',', $targetCIDs),
+            ]);
+        } else {
+
         }
         Cache::flush('temp');
 

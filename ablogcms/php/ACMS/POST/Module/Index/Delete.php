@@ -16,15 +16,25 @@ class ACMS_POST_Module_Index_Delete extends ACMS_POST_Module_Delete
         }
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        $targetModules = [];
+
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
-            $DB     = DB::singleton(dsn());
             foreach ( $this->Post->getArray('checks') as $mid ) {
-                $id     = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
-                $mid    = $id[1];
+                $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
+                $mid = $id[1];
+                $module = loadModule($mid);
                 $this->delete($mid);
+
+                $targetModules[] = $module->get('label') . '（' . $module->get('identifier') . '）';
             }
             $this->Post->set('refreshed', 'refreshed');
+
+            AcmsLogger::info('選択したモジュールIDを削除しました', [
+                'targetModules' => $targetModules,
+            ]);
+        } else {
+            AcmsLogger::info('選択したモジュールIDの削除に失敗しました');
         }
 
         return $this->Post;

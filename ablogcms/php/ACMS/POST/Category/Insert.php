@@ -7,15 +7,20 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
         $Category = $this->extract('category');
         $Category->setMethod('name', 'required');
         $Category->setMethod('code', 'required');
-        $Category->setMethod('code', 'double', array($Category->get('scope')));
+        $Category->setMethod('code', 'double', array($Category->get('scope'),  $Category->get('parent')));
         $Category->setMethod('code', 'reserved', !isReserved($Category->get('code')));
         $Category->setMethod('code', 'string', isValidCode($Category->get('code')));
         $Category->setMethod('status', 'required');
-        $Category->setMethod('status', 'in', array('open', 'close'));
+        $Category->setMethod('status', 'in', array('open', 'close', 'secret'));
         $Category->setMethod('scope', 'required');
         $Category->setMethod('indexing', 'required');
         $Category->setMethod('indexing', 'in', array('on', 'off'));
         $Category->setMethod('config_set_id', 'value', $this->checkConfigSetScope($Category->get('config_set_id')));
+        $Category->setMethod('config_set_scope', 'in', ['local', 'global']);
+        $Category->setMethod('theme_set_id', 'value', $this->checkConfigSetScope($Category->get('theme_set_id')));
+        $Category->setMethod('theme_set_scope', 'in', ['local', 'global']);
+        $Category->setMethod('editor_set_id', 'value', $this->checkConfigSetScope($Category->get('editor_set_id')));
+        $Category->setMethod('editor_set_scope', 'in', ['local', 'global']);
 
         if ( roleAvailableUser() ) {
             $Category->setMethod('category', 'operable', roleAuthorization('category_create', BID) and IS_LICENSED);
@@ -57,15 +62,25 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
             $parent = $Category->get('parent');
             $status = $Category->get('status');
 
-            // if parent's status is 'close'. when status force changes to 'close'.
-            if ( 'close' == ACMS_RAM::categoryStatus($parent) ) {
-                $status = 'close';
+            $parentStatus = ACMS_RAM::categoryStatus($parent);
+            if (!empty($parentStatus) && $parentStatus !== 'open') {
+                $status = $parentStatus;
             }
 
-            $setid = $Category->get('config_set_id');
-            if (empty($setid)) {
-                $setid = null;
+            $configSetId = $Category->get('config_set_id') ?: null;
+            $themeSetId = $Category->get('theme_set_id') ?: null;
+            $editorSetId = $Category->get('editor_set_id') ?: null;
+
+            if (empty($configSetId)) {
+                $Category->set('config_set_scope', 'local');
             }
+            if (empty($themeSetId)) {
+                $Category->set('theme_set_scope', 'local');
+            }
+            if (empty($editorSetId)) {
+                $Category->set('editor_set_scope', 'local');
+            }
+
             $SQL = SQL::newInsert('category');
             $SQL->addInsert('category_id', $cid);
             $SQL->addInsert('category_parent', 0);
@@ -78,7 +93,12 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
             $SQL->addInsert('category_scope', $Category->get('scope'));
             $SQL->addInsert('category_indexing', $Category->get('indexing'));
             $SQL->addInsert('category_code', $code);
-            $SQL->addInsert('category_config_set_id', $setid);
+            $SQL->addInsert('category_config_set_id', $configSetId);
+            $SQL->addInsert('category_config_set_scope', $Category->get('config_set_scope', 'local'));
+            $SQL->addInsert('category_theme_set_id', $themeSetId);
+            $SQL->addInsert('category_theme_set_scope', $Category->get('theme_set_scope', 'local'));
+            $SQL->addInsert('category_editor_set_id', $editorSetId);
+            $SQL->addInsert('category_editor_set_scope', $Category->get('editor_set_scope', 'local'));
             $DB->query($SQL->get(dsn()), 'exec');
             Common::saveField('cid', $cid, $Field);
 
@@ -99,6 +119,23 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
 
             Common::saveFulltext('cid', $cid, Common::loadCategoryFulltext($cid));
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('「' . $name . '」カテゴリーの作成をしました', [
+                'status' => $status,
+                'name' => $name,
+                'scope' => $Category->get('scope'),
+                'indexing' => $Category->get('indexing'),
+                'code' => $code,
+                'configSetId' => $configSetId,
+                'themeSetId' => $themeSetId,
+                'editorSetId' => $editorSetId,
+                'field' => $Field,
+            ]);
+        } else {
+            AcmsLogger::info('カテゴリーの作成に失敗しました', [
+                'category' => $Category->_aryV,
+                'field' => $Field->_aryV,
+            ]);
         }
 
         return $this->Post;

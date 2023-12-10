@@ -4,9 +4,13 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
 {
     function post()
     {
-        if ( !sessionWithCompilation() ) die();
+        if (!sessionWithCompilation()) {
+            AcmsLogger::warning('権限がないため、指定されたカテゴリーの並び順変更に失敗しました');
+            die();
+        }
         if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
             $DB = DB::singleton(dsn());
+            $targetCIDs = [];
             foreach ( $_POST['checks'] as $cid ) {
                 if ( !$cid = idval($cid) ) continue;
                 if ( BID <> ACMS_RAM::categoryBlog($cid) ) continue;
@@ -137,9 +141,13 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                     $Case->setElse(SQL::newField('category_sort'));
                     $SQL->addUpdate('category_sort', $Case);
                 }
-
                 $DB->query($SQL->get(dsn()), 'exec');
+
+                $targetCIDs[] = $cid;
             }
+            AcmsLogger::info('指定されたカテゴリーの並び順を変更', [
+                'targetCIDs' => implode(',', $targetCIDs),
+            ]);
         }
         Cache::flush('temp');
 

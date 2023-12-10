@@ -5,12 +5,12 @@
 // ------------------------------
 // ボタンの幅
 .acms-btn-group-entry {
-  min-width: 90px;
+  min-width: 70px;
 }
 
 // リンクカラー
 .acms-dropdown-menu > li > a {
-  color: #333333;
+  color: global.$acms-color-black;
 }
 
 .acms-btn-admin + .acms-dropdown-toggle {

@@ -8,15 +8,36 @@ class ACMS_POST_Rule_Index_Sort extends ACMS_POST_Rule
     {
         $this->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $this->init();
             $this->sort();
             $this->trim();
-        }
 
+            $sql = SQL::newSelect('rule');
+            $sql->addWhereOpr('rule_blog_id', BID);
+            $sql->setOrder('rule_sort', 'ASC');
+            $rules = DB::query($sql->get(dsn()), 'all');
+
+            $result = [];
+            foreach ($rules as $rule) {
+                $result[] = [
+                    'rid' => $rule['rule_id'],
+                    'name' => $rule['rule_name'],
+                    'sort' => $rule['rule_sort'],
+                ];
+            }
+            AcmsLogger::info('選択したルールの優先度を変更しました', $result);
+        } else {
+            if (!$this->Post->isValid('checks', 'required')) {
+                AcmsLogger::info('ルールが選択されていないため、ルールの優先度を変更できませんでした');
+            }
+            if (!$this->Post->isValid('rule', 'operable')) {
+                AcmsLogger::info('権限がないため、選択したルールの優先度を変更できませんでした');
+            }
+        }
         return $this->Post;
     }
-    
+
     protected function validate()
     {
         $this->Post->setMethod('checks', 'required');

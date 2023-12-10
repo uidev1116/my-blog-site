@@ -201,6 +201,9 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                     if ($large = loadUserLargeIcon($uid)) {
                         $Field->setField('fieldUserLargeIcon', $large);
                     }
+                    if ($orig = loadUserOriginalIcon($uid)) {
+                        $Field->setField('fieldUserOrigIcon', $orig);
+                    }
                     $Tpl->add(array('userField', 'unit:loop'), $this->buildField($Field, $Tpl, 'unit:loop'));
                 }
 

@@ -81,25 +81,15 @@ class Helper
         $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
 
         $newPath = $dir . $name . $ext;
-        $i = 1;
-        while (Storage::isReadable($newPath)) {
-            if (preg_match('/\_[\d]{6}\_[\d]{6}$/', $name)) {
-                $name = $name . '_' . $i;
-            } else if (preg_match('/\_[\d]{6}\_[\d]{6}\_[\d]+$/', $name)) {
-                $name = preg_replace('/\_[\d]+$/', '_' . $i, $name);
-            } else {
-                $name = $name . date('_ymd_His', REQUEST_TIME);
-            }
-            $newPath = $dir . $name . $ext;
-            $i++;
-        }
+        $newPath = uniqueFilePath($newPath, '');
+        $newName = preg_replace("/(.+)(\.[^.]+$)/", "$1", Storage::mbBasename($newPath));
         copyFile($oldPath, $newPath);
         copyFile(otherSizeImagePath($oldPath, 'large'), otherSizeImagePath($newPath, 'large'));
         copyFile(otherSizeImagePath($oldPath, 'tiny'), otherSizeImagePath($newPath, 'tiny'));
 
         return array(
             'path' => substr($newPath, strlen(MEDIA_LIBRARY_DIR)),
-            'name' => $name . $ext,
+            'name' => $newName . $ext,
         );
     }
 
@@ -118,23 +108,13 @@ class Helper
         $ext = empty($info['extension']) ? '' : $info['extension'];
 
         $newPath = $dir . $name . '.' . $ext;
-        $i = 1;
-        while (Storage::isReadable($newPath)) {
-            if (preg_match('/\_[\d]{6}\_[\d]{6}$/', $name)) {
-                $name = $name . '_' . $i;
-            } else if (preg_match('/\_[\d]{6}\_[\d]{6}\_[\d]+$/', $name)) {
-                $name = preg_replace('/\_[\d]+$/', '_' . $i, $name);
-            } else {
-                $name = $name . date('_ymd_His', REQUEST_TIME);
-            }
-            $newPath = $dir . $name . '.' . $ext;
-            $i++;
-        }
+        $newPath = uniqueFilePath($newPath, '');
+        $newName = preg_replace("/(.+)(\.[^.]+$)/", "$1", Storage::mbBasename($newPath));
         copyFile($oldPath, $newPath);
 
         return array(
             'path' => substr($newPath, strlen($baseDir)),
-            'name' => $name . '.' . $ext,
+            'name' => $newName . '.' . $ext,
         );
     }
 
@@ -226,16 +206,65 @@ class Helper
         $path = $oldData['path'];
         $baseDir = $status ? MEDIA_STORAGE_DIR : MEDIA_LIBRARY_DIR;
         Storage::remove($baseDir . $path);
+        Image::deleteImageAllSize(MEDIA_LIBRARY_DIR . $oldData['thumbnail']);
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
             $Hook->call('mediaDelete', $baseDir . $path);
         }
     }
+    public function rename($data, $rename)
+    {
+        if ($data['name'] === $rename) {
+            return $data;
+        }
+        $type = $data['type'];
+        $basename = preg_replace("/(.+)(\.[^.]+$)/", "$1", $rename) . '.' . strtolower($data['extension']);
+
+        $path = $data['path'];
+        $renamePath = trim(dirname($path), '/') . '/' . $basename;
+        if ($type === 'image' || $type === 'svg') {
+            $renamePath = uniqueFilePath($renamePath, MEDIA_LIBRARY_DIR); // 名前の重複を避ける
+        } else if ($type === 'file') {
+            $renamePath = uniqueFilePath($renamePath, MEDIA_STORAGE_DIR); // 名前の重複を避ける
+        }
+        $data['name'] = Storage::mbBasename($renamePath);
+        $data['path'] = $renamePath;
+
+        if ($type === 'image') {
+            $normalPath = $path;
+            foreach (['normal', 'large', 'tiny', 'square'] as $imageType) {
+                $fromPath = otherSizeImagePath($normalPath, $imageType);
+                $toPath = otherSizeImagePath($renamePath, $imageType);
+                Storage::move(MEDIA_LIBRARY_DIR . $fromPath, MEDIA_LIBRARY_DIR . $toPath);
+                Storage::move(MEDIA_LIBRARY_DIR . $fromPath . '.webp', MEDIA_LIBRARY_DIR . $toPath . '.webp');
+            }
+            $data['original'] = otherSizeImagePath($renamePath, 'large');
+
+            // mode_xxxxファイルを削除
+            $cacheImagePath = trim(dirname(MEDIA_LIBRARY_DIR . $path), '/') . '/*-' . Storage::mbBasename($path);
+            $cacheImages = glob($cacheImagePath);
+            if (is_array($cacheImages)) {
+                foreach ($cacheImages as $filename) {
+                    if (preg_match('/(tiny|large|square)-(.*)$/', $filename)) {
+                        continue;
+                    }
+                    Storage::remove($filename);
+                    Storage::remove($filename . '.webp');
+                }
+            }
+        } else if ($type === 'svg') {
+            Storage::move(MEDIA_LIBRARY_DIR . $path, MEDIA_LIBRARY_DIR . $renamePath);
+            $data['original'] = $renamePath;
+        } else if ($type === 'file') {
+            Storage::move(MEDIA_STORAGE_DIR . $path, MEDIA_STORAGE_DIR . $renamePath);
+        }
+        return $data;
+    }
 
     public function urlencode($path)
     {
         $name = Storage::mbBasename($path);
-        return substr($path, 0, strlen($path) - strlen($name)) . urlencode($name);
+        return substr($path, 0, strlen($path) - strlen($name)) . rawurlencode($name);
     }
 
     public function isImageFile($type)
@@ -290,13 +319,13 @@ class Helper
     public function getFilePermalink($mid, $fullpath = true)
     {
         if ($fullpath) {
-            return acmsLink(array('bid'=>BID), false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/';
+            return acmsLink(array('bid'=>BID), false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
         }
         $offset = rtrim(DIR_OFFSET . acmsPath(array('bid' => BID)), '/');
         if (strlen($offset) > 1) {
             $offset .= '/';
         }
-        return '/' . $offset .  MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/';
+        return '/' . $offset .  MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
     }
 
     public function getDownloadLinkHash($mid)

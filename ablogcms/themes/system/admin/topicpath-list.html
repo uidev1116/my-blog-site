@@ -22,7 +22,8 @@
 <!--T-->コメント管理<!--/T--><!-- END comment_index --><!-- BEGIN trackback_index -->
 <!--T-->トラックバック管理<!--/T--><!-- END trackback_index --><!-- BEGIN blog_edit -->
 <!--T-->ブログ管理<!--/T--><!-- END blog_edit --><!-- BEGIN user_index -->
-<!--T-->ユーザー管理<!--/T--><!-- END user_index --><!-- BEGIN usergroup_index -->
+<!--T-->ユーザー管理<!--/T--><!-- END user_index --><!-- BEGIN member_index -->
+<!--T-->会員管理<!--/T--><!-- END member_index --><!-- BEGIN usergroup_index -->
 <!--T-->ユーザーグループ管理<!--/T--><!-- END usergroup_index --><!-- BEGIN usergroup_edit -->
 <!--T-->ユーザーグループ詳細<!--/T--><!-- END usergroup_edit --><!-- BEGIN workflow_index -->
 <!--T-->ワークフロー管理<!--/T--><!-- END workflow_index --><!-- BEGIN user_edit -->
@@ -30,10 +31,16 @@
 <!--T-->パスワード変更<!--/T--><!-- END user_password --><!-- BEGIN user_tfa -->
 <!--T-->２段階認証<!--/T--><!-- END user_tfa --><!-- BEGIN role_index -->
 <!--T-->ロール管理<!--/T--><!-- END role_index --><!-- BEGIN role_edit -->
-<!--T-->ロール詳細<!--/T--><!-- END role_edit --><!-- BEGIN config_set_index -->
-<!--T-->コンフィグセット<!--/T--><!-- END config_set_index --><!-- BEGIN config_set_edit -->
-<!--T-->コンフィグセット編集<!--/T--><!-- END config_set_edit --><!-- BEGIN config_index -->
-<!-- BEGIN_MODULE Admin_Config_Set_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->このブログの初期コンフィグ<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Config_Set_Name --><!-- END config_index --><!-- BEGIN fix_index -->
+<!--T-->ロール詳細<!--/T--><!-- END role_edit --><!-- BEGIN config_set_theme_index -->
+<!--T-->テーマセット<!--/T--><!-- END config_set_theme_index --><!-- BEGIN config_set_theme_edit -->
+<!--T-->テーマセット編集<!--/T--><!-- END config_set_theme_edit --><!-- BEGIN config_set_editor_index -->
+<!--T-->編集画面セット<!--/T--><!-- END config_set_editor_index --><!-- BEGIN config_set_editor_edit -->
+<!--T-->編集画面セット編集<!--/T--><!-- END config_set_editor_edit --><!-- BEGIN config_set_base_index -->
+<!--T-->コンフィグセット<!--/T--><!-- END config_set_base_index --><!-- BEGIN config_set_base_edit -->
+<!--T-->コンフィグセット編集<!--/T--><!-- END config_set_base_edit --><!-- BEGIN config_index -->
+<!-- BEGIN_MODULE Admin_Config_Set_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->このブログの初期コンフィグ<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Config_Set_Name --><!-- END config_index --><!-- BEGIN config_theme -->
+<!-- BEGIN_MODULE Admin_Config_Set_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->このブログの初期テーマ<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Config_Set_Name --><!-- END config_theme --><!-- BEGIN config_editor -->
+<!-- BEGIN_MODULE Admin_Config_Set_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->このブログの初期編集画面<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Config_Set_Name --><!-- END config_editor --><!-- BEGIN fix_index -->
 <!--T-->データ修正<!--/T--><!-- END fix_index --><!-- BEGIN fix_image -->
 <!--T-->画像サイズ修正<!--/T--><!-- END fix_image --><!-- BEGIN fix_unit-size -->
 <!--T-->ユニット修正<!--/T--><!-- END fix_unit-size --><!-- BEGIN fix_unit-group -->
@@ -47,12 +54,10 @@
 <!--T-->機能設定<!--/T--><!-- END config_function --><!-- BEGIN config_api -->
 <!--T-->API設定<!--/T--><!-- END config_api --><!-- BEGIN config_output -->
 <!--T-->出力設定<!--/T--><!-- END config_output --><!-- BEGIN config_property -->
-<!--T-->プロパティ設定<!--/T--><!-- END config_property --><!-- BEGIN config_authorize -->
-<!--T-->外部認証設定<!--/T--><!-- END config_authorize --><!-- BEGIN config_cache -->
+<!--T-->プロパティ設定<!--/T--><!-- END config_property --><!-- BEGIN config_cache -->
 <!--T-->ページキャッシュ<!--/T--><!-- END config_cache --><!-- BEGIN config_mail -->
 <!--T-->メール設定<!--/T--><!-- END config_mail --><!-- BEGIN config_access -->
-<!--T-->アクセス設定<!--/T--><!-- END config_access --><!-- BEGIN config_theme -->
-<!--T-->テーマ設定<!--/T--><!-- END config_theme --><!-- BEGIN config_edit -->
+<!--T-->アクセス設定<!--/T--><!-- END config_access --><!-- BEGIN config_edit -->
 <!--T-->編集設定<!--/T--><!-- END config_edit --><!-- BEGIN config_unit -->
 <!--T-->ユニット設定<!--/T--><!-- END config_unit --><!-- BEGIN config_common -->
 <!--T-->共通設定<!--/T--><!-- END config_common --><!-- BEGIN config_entry_body -->
@@ -99,19 +104,7 @@
 <!--T-->OGP<!--/T--><!-- END config_ogp --><!-- BEGIN config_shop_cart_list -->
 <!--T-->カートリスト<!--/T--><!-- END config_shop_cart_list --><!-- BEGIN config_alias_list -->
 <!--T-->エイリアスリスト<!--/T--><!-- END config_alias_list --><!-- BEGIN config_field_value-list -->
-<!--T-->フィールドバリューリスト<!--/T--><!-- END config_field_value-list --><!-- BEGIN config_api_yahoo_web-search -->
-<!--T-->Yahooウェブ検索<!--/T--><!-- END config_api_yahoo_web-search --><!-- BEGIN config_api_yahoo_image-search -->
-<!--T-->Yahooイメージ検索<!--/T--><!-- END config_api_yahoo_image-search --><!-- BEGIN config_api_google-analytics_ranking -->
-<!--T-->Google Analytics Ranking<!--/T--><!-- END config_api_google-analytics_ranking --><!-- BEGIN config_api_twitter_statuses_home-timeline -->
-<!--T-->Twitterホームタイムライン<!--/T--><!-- END config_api_twitter_statuses_home-timeline --><!-- BEGIN config_api_twitter_statuses_user-timeline -->
-<!--T-->Twitterユーザータイムライン<!--/T--><!-- END config_api_twitter_statuses_user-timeline --><!-- BEGIN config_api_twitter_search -->
-<!--T-->Twitterサーチ<!--/T--><!-- END config_api_twitter_search --><!-- BEGIN config_api_twitter_list_statuses -->
-<!--T-->Twitterリストタイムライン<!--/T--><!-- END config_api_twitter_list_statuses --><!-- BEGIN config_api_twitter_list_members -->
-<!--T-->Twitterリストメンバーズ<!--/T--><!-- END config_api_twitter_list_members -->
-<!-- BEGIN config_api_bing_web-search -->
-<!--T-->Bingウェブ検索<!--/T--><!-- END config_api_bing_web-search -->
-<!-- BEGIN config_api_bing_image-search -->
-<!--T-->Bingイメージ検索<!--/T--><!-- END config_api_bing_image-search --><!-- BEGIN rule_index -->
+<!--T-->フィールドバリューリスト<!--/T--><!-- END config_field_value-list --><!-- BEGIN rule_index -->
 <!--T-->ルール<!--/T--><!-- END rule_index --><!-- BEGIN rule_edit -->
 <!-- BEGIN_MODULE Admin_Rule_Name --><!-- BEGIN_IF [{name}/nem/] -->{name}<!-- ELSE --><!--T-->ルールなし<!--/T--><!-- END_IF --><!-- END_MODULE Admin_Rule_Name --><!-- END rule_edit --><!-- BEGIN webhook_index -->
 <!--T-->Webhook 管理<!--/T--><!-- END webhook_index --><!-- BEGIN webhook_edit -->
@@ -151,7 +144,8 @@
 <!--T-->スタイルガイド<!--/T-->（<!--T-->CSSフレームワーク<!--/T-->）<!-- END styleguide_acms --><!-- BEGIN styleguide_acms-admin -->
 <!--T-->スタイルガイド<!--/T-->（<!--T-->管理画面<!--/T-->）<!-- END styleguide_acms-admin --><!-- BEGIN i18n_index -->
 <!--T-->国際化<!--/T--><!-- END i18n_index --><!-- BEGIN static-export_index -->
-<!--T-->静的書き出し<!--/T--><!--END static-export_index -->
+<!--T-->静的書き出し<!--/T--><!--END static-export_index --><!-- BEGIN audit_log -->
+<!--T-->監査ログ<!--/T--><!--END audit_log -->
 
 <!-- BEGIN_MODULE Admin_InjectTemplate id="admin-topicpath" --><!-- END_MODULE Admin_InjectTemplate -->
 

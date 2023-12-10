@@ -30,10 +30,26 @@ class ACMS_POST_Config extends ACMS_POST
         $Config->validate(new ACMS_Validator());
         $Config = Config::fix($Config);
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $this->saveConfig($Config, BID, $rid, $mid, $setid);
             $this->Post->set('notice_mess', 'show');
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('「' . ADMIN . '」のコンフィグを保存しました', [
+                'bid' => BID,
+                'rid' => $rid,
+                'setid' => $setid,
+                'mid' => $mid,
+                'data' => $Config->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('「' . ADMIN . '」のコンフィグ保存に失敗しました', [
+                'bid' => BID,
+                'rid' => $rid,
+                'setid' => $setid,
+                'mid' => $mid,
+                'validator' => $Config->_aryV,
+            ]);
         }
 
         return $this->Post;

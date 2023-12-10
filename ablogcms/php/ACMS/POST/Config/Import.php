@@ -20,8 +20,11 @@ class ACMS_POST_Config_Import extends ACMS_POST
             $import->run(BID, $yaml);
             $this->Post->set('notice', $import->getFailedContents());
             $this->Post->set('import', 'success');
+
+            AcmsLogger::info('コンフィグのインポートを実行しました');
         } catch ( \Exception $e ) {
             $this->addError($e->getMessage());
+            AcmsLogger::info('コンフィグのインポートが失敗しました', Common::exceptionArray($e));
         }
 
         return $this->Post;

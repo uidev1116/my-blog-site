@@ -11,7 +11,7 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
         $Fix->setMethod('fix_image_size', 'required');
         $Fix->setMethod('fix_image_size', 'regex', '^[1-9][\d]+$');
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
             $DB = DB::singleton(dsn());
 
@@ -20,7 +20,7 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
             $this->resize   = $Fix->get('fix_image_size');
             $this->stdSide  = $Fix->get('fix_image_size_criterion');
 
-            $SQL    = SQL::newSelect('column');
+            $SQL = SQL::newSelect('column');
             $SQL->addSelect('column_id');
             $SQL->addSelect('column_field_2');
             $SQL->addWhereOpr('column_type', 'image');
@@ -35,6 +35,19 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
             }
 
             $this->Post->set('message', 'success');
+
+            $typeName = '';
+            if ($type === 'large') $typeName = '拡大画像';
+            if ($type === 'normal') $typeName = '通常画像（' . $normalSize . '）';
+            if ($type === 'tiny') $typeName = 'モバイル画像';
+            if ($type === 'square') $typeName = '正方形画像';
+
+            $sizeName = '';
+            if ($this->stdSide === 'width') $sizeName = '横' . $this->resize;
+            if ($this->stdSide === 'height') $sizeName = '縦' . $this->resize;
+            if (empty($this->stdSide)) $sizeName = '長辺' . $this->resize;
+
+            AcmsLogger::info('データ修正ツールで、「' . $typeName . '」を「' . $sizeName . '」にリサイズしました');
         }
 
         return $this->Post;

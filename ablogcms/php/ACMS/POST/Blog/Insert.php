@@ -16,6 +16,11 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
         $Blog->setMethod('code', 'reserved', !isReserved($Blog->get('code')));
         $Blog->setMethod('code', 'string', isValidCode($Blog->get('code')));
         $Blog->setMethod('config_set_id', 'value', $this->checkConfigSetScope($Blog->get('config_set_id')));
+        $Blog->setMethod('config_set_scope', 'in', ['local', 'global']);
+        $Blog->setMethod('theme_set_id', 'value', $this->checkConfigSetScope($Blog->get('theme_set_id')));
+        $Blog->setMethod('theme_set_scope', 'in', ['local', 'global']);
+        $Blog->setMethod('editor_set_id', 'value', $this->checkConfigSetScope($Blog->get('editor_set_id')));
+        $Blog->setMethod('editor_set_scope', 'in', ['local', 'global']);
         $Blog->setMethod('indexing', 'required');
         $Blog->setMethod('indexing', 'in', array('on', 'off'));
         $Blog->setMethod('blog', 'operable', 1
@@ -68,9 +73,19 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
             //------
             // insert
             $bid = $DB->query(SQL::nextval('blog_id', dsn()), 'seq');
-            $setid = $Blog->get('config_set_id');
-            if (empty($setid)) {
-                $setid = null;
+
+            $configSetId = $Blog->get('config_set_id') ?: null;
+            $themeSetId = $Blog->get('theme_set_id') ?: null;
+            $editorSetId = $Blog->get('editor_set_id') ?: null;
+
+            if (empty($configSetId)) {
+                $Blog->set('config_set_scope', 'local');
+            }
+            if (empty($themeSetId)) {
+                $Blog->set('theme_set_scope', 'local');
+            }
+            if (empty($editorSetId)) {
+                $Blog->set('editor_set_scope', 'local');
             }
 
             $SQL = SQL::newInsert('blog');
@@ -85,7 +100,12 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
             $SQL->addInsert('blog_code', trim(strval($Blog->get('code')), '/'));
             $SQL->addInsert('blog_domain', $Blog->get('domain'));
             $SQL->addInsert('blog_indexing', $Blog->get('indexing'));
-            $SQL->addInsert('blog_config_set_id', $setid);
+            $SQL->addInsert('blog_config_set_id', $configSetId);
+            $SQL->addInsert('blog_config_set_scope', $Blog->get('config_set_scope', 'local'));
+            $SQL->addInsert('blog_theme_set_id', $themeSetId);
+            $SQL->addInsert('blog_theme_set_scope', $Blog->get('theme_set_scope', 'local'));
+            $SQL->addInsert('blog_editor_set_id', $editorSetId);
+            $SQL->addInsert('blog_editor_set_scope', $Blog->get('editor_set_scope', 'local'));
             $DB->query($SQL->get(dsn()), 'exec');
 
             //-------
@@ -112,6 +132,12 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
 
             $this->Post->set('edit', 'insert');
             Common::saveFulltext('bid', $bid, Common::loadBlogFulltext($bid));
+
+            AcmsLogger::info('「' . ACMS_RAM::blogName($bid) . '」ブログを作成しました');
+        } else {
+            AcmsLogger::info('ブログの作成に失敗しました', [
+                'validator' => $Blog->_aryV,
+            ]);
         }
 
         return $this->Post;

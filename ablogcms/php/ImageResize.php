@@ -48,6 +48,9 @@ class ImageResize
     public function __construct($path, $engine = 'gd')
     {
         if (!$xy = Storage::getImageSize($path)) {
+            AcmsLogger::warning('画像が読み込めないため、リサイズできませんでした', [
+                'path' => $path,
+            ]);
             throw new Exception('Can\'t read image file');
         }
         $this->mimeType = $xy['mime'];
@@ -226,6 +229,11 @@ class ImageResize
             || $this->colorG > 255 || $this->colorG < 0
             || $this->colorB > 255 || $this->colorB < 0
         ) {
+            AcmsLogger::warning('画像リサイズで、無効な色指定されました', [
+                'colorR' => $this->colorR,
+                'colorG' => $this->colorG,
+                'colorB' => $this->colorB,
+            ]);
             throw new Exception('Incorrect Color Value');
         }
 

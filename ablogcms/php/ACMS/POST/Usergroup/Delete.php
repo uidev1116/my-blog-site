@@ -5,15 +5,26 @@ class ACMS_POST_Usergroup_Delete extends ACMS_POST
     public function post()
     {
         $ugid = intval($this->Get->get('ugid'));
-
         $this->validate($ugid);
 
         if (!$this->Post->isValidAll()) {
+            AcmsLogger::info('ユーザーグループの削除に失敗しました', [
+                'ugid' => $ugid,
+            ]);
             return $this->Post;
         }
 
+        $sql = SQL::newSelect('usergroup');
+        $sql->setSelect('usergroup_name');
+        $sql->addWhereOpr('usergroup_id', $ugid);
+        $name = DB::query($sql->get(dsn()), 'one');
+
         $this->delete($ugid);
         $this->Post->set('edit', 'delete');
+
+        AcmsLogger::info('ユーザーグループ「' . $name . '」を削除しました', [
+            'ugid' => $ugid,
+        ]);
 
         return $this->Post;
     }

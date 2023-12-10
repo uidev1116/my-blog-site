@@ -40,16 +40,16 @@
           <tr>
             <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
               class="acms-admin-icon acms-admin-icon-config_access"></i><!--T-->アクセス設定<!--/T--></a></td>
-          </tr><!-- END config_access --><!-- BEGIN config_theme -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_theme"></i><!--T-->テーマ設定<!--/T--></a></td>
-          </tr><!-- END config_theme --><!-- BEGIN config_admin-menu -->
+          </tr><!-- END config_access --><!-- BEGIN config_admin-menu -->
           <tr>
             <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
               class="acms-admin-icon acms-admin-icon-sort"></i><!--T-->メニュー管理<!--/T--></a></td>
-          </tr><!-- END config_admin-menu -->
-
+          </tr><!-- END config_admin-menu --><!-- BEGIN config_approval -->
+          <tr>
+            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block">
+              <i class="acms-admin-icon acms-admin-icon-config_unit"></i><!--T-->承認機能設定<!--/T--></a>
+            </td>
+          </tr><!-- END config_approval -->
           </tbody>
         </table>
       </div>
@@ -66,36 +66,36 @@
           <tr>
             <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
               class="acms-admin-icon acms-admin-icon-config_property"></i><!--T-->プロパティ設定<!--/T--></a></td>
-          </tr><!-- END config_property --><!-- BEGIN config_authorize -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_authorize"></i><!--T-->外部認証設定<!--/T--></a></td>
-          </tr><!-- END config_authorize -->
+          </tr><!-- END config_property -->
           </tbody>
         </table>
       </div>
       <div class="acms-admin-margin-bottom-large">
         <table class="acms-admin-admin-mini-table acms-admin-admin-config-table">
           <thead>
-          <th><!--T-->エントリー編集画面<!--/T--></th>
+          <th><!--T-->非推奨<!--/T-->（テーマセットや編集画面セットの設定値が優先されます）</th>
           </thead>
-          <tbody><!-- BEGIN config_edit -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_edit"></i><!--T-->編集設定<!--/T--></a></td>
-          </tr><!-- END config_edit --><!-- BEGIN config_unit -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_unit"></i><!--T-->ユニット設定<!--/T--></a></td>
-          </tr><!-- END config_unit --><!-- BEGIN config_bulk-change -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_entry_list"></i><!--T-->一括変更フィールド設定<!--/T--></a></td>
-          </tr><!-- END config_bulk-change --><!-- BEGIN config_approval -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_unit"></i><!--T-->承認機能設定<!--/T--></a></td>
-          </tr><!-- END config_approval -->
+          <tbody><!-- BEGIN config_deprecated_theme -->
+            <tr>
+              <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block">
+                <i class="acms-admin-icon acms-admin-icon-config_theme"></i><!--T-->テーマ設定（非推奨）<!--/T--></a>
+              </td>
+            </tr><!-- END config_deprecated_theme --><!-- BEGIN config_deprecated_edit -->
+            <tr>
+              <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block">
+                <i class="acms-admin-icon acms-admin-icon-config_edit"></i><!--T-->編集設定（非推奨）<!--/T--></a>
+              </td>
+            </tr><!-- END config_deprecated_edit --><!-- BEGIN config_deprecated_unit -->
+            <tr>
+              <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block">
+                <i class="acms-admin-icon acms-admin-icon-config_unit"></i><!--T-->ユニット設定（非推奨）<!--/T--></a>
+              </td>
+            </tr><!-- END config_deprecated_unit --><!-- BEGIN config_deprecated_bulk-change -->
+            <tr>
+              <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block">
+                <i class="acms-admin-icon acms-admin-icon-config_entry_list"></i><!--T-->一括変更フィールド設定（非推奨）<!--/T--></a>
+              </td>
+            </tr><!-- END config_deprecated_bulk-change -->
           </tbody>
         </table>
       </div>
@@ -130,32 +130,33 @@
         </table>
       </div>
 
-      <table class="acms-admin-admin-mini-table acms-admin-admin-config-table">
-        <thead>
-        <th><!--T-->ガイドライン/ツール<!--/T--></th>
-        </thead>
-        <tbody><!-- BEGIN styleguide_acms-admin -->
-        <tr>
-          <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-            class="acms-admin-icon acms-admin-icon-config_default"></i><!--T-->スタイルガイド（管理画面）<!--/T--></a></td>
-        </tr>
-        <!-- END styleguide_acms-admin --><!-- BEGIN styleguide_acms -->
-        <tr>
-          <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-            class="acms-admin-icon acms-admin-icon-config_default"></i><!--T-->スタイルガイド（CSSフレームワーク）<!--/T--></a></td>
-        </tr>
-        <!-- END styleguide_acms --><!-- BEGIN customfield_maker -->
-        <tr>
-          <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-            class="acms-admin-icon acms-admin-icon-custom-field"></i><!--T-->カスタムフィールドメーカー<!--/T--></a></td>
-        </tr><!-- END customfield_maker --><!-- BEGIN i18n_index -->
-        <tr>
-          <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-            class="acms-admin-icon acms-admin-icon-exit"></i><!--T-->国際化 ( i18n )<!--/T--></a></td>
-        </tr><!-- END i18n_index -->
-        </tbody>
-      </table>
-
+      <div class="acms-admin-margin-bottom-large">
+        <table class="acms-admin-admin-mini-table acms-admin-admin-config-table">
+          <thead>
+          <th><!--T-->ガイドライン/ツール<!--/T--></th>
+          </thead>
+          <tbody><!-- BEGIN styleguide_acms-admin -->
+          <tr>
+            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
+              class="acms-admin-icon acms-admin-icon-config_default"></i><!--T-->スタイルガイド（管理画面）<!--/T--></a></td>
+          </tr>
+          <!-- END styleguide_acms-admin --><!-- BEGIN styleguide_acms -->
+          <tr>
+            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
+              class="acms-admin-icon acms-admin-icon-config_default"></i><!--T-->スタイルガイド（CSSフレームワーク）<!--/T--></a></td>
+          </tr>
+          <!-- END styleguide_acms --><!-- BEGIN customfield_maker -->
+          <tr>
+            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
+              class="acms-admin-icon acms-admin-icon-custom-field"></i><!--T-->カスタムフィールドメーカー<!--/T--></a></td>
+          </tr><!-- END customfield_maker --><!-- BEGIN i18n_index -->
+          <tr>
+            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
+              class="acms-admin-icon acms-admin-icon-exit"></i><!--T-->国際化 ( i18n )<!--/T--></a></td>
+          </tr><!-- END i18n_index -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -384,112 +385,6 @@
               <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/shop2_cart_list.html" class="js-popup_setting">
                 <!--T-->スニペット<!--/T--></a></td>
           </tr><!-- END config_shop2_cart_list -->
-          </tbody>
-        </table>
-      </div>
-
-      <div class="acms-admin-margin-bottom-large">
-        <table class="acms-admin-admin-mini-table acms-admin-admin-config-table">
-          <thead>
-          <th colspan="2"><!--T-->外部API連携<!--/T--></th>
-          </thead>
-          <tbody><!-- BEGIN config_api_google-analytics_ranking -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-graph"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Google Analyticsランキング<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_GoogleAnalytics_Ranking</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_GoogleAnalytics_Ranking.html"
-                 class="js-popup_setting"><!--T-->変数表<!--/T--></a>
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_google-analytics_ranking.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_google-analytics_ranking --><!-- BEGIN config_api_twitter_statuses_user-timeline -->
-          <!-- BEGIN config_api_twitter_statuses_home-timeline -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_twitter_statuses_home-timeline"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Twitterホームタイムライン<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Twitter_Statuses_HomeTimeline</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_twitter_statuses_home-timeline.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_twitter_statuses_home-timeline -->
-          <!-- BEGIN config_api_twitter_statuses_user-timeline -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_twitter_statuses_user-timeline"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Twitterユーザータイムライン<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Twitter_Statuses_UserTimeline</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_twitter_statuses_user-timeline.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_twitter_statuses_user-timeline --><!-- BEGIN config_api_twitter_search -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_twitter_search"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Twitterサーチ<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Twitter_Search</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_twitter_search.html" class="js-popup_setting">
-                <!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_twitter_search --><!-- BEGIN config_api_twitter_list_statuses -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_twitter_list_statuses"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Twitterリストタイムライン<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Twitter_List_Statuses</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_twitter_list_statuses.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_twitter_list_statuses --><!-- BEGIN config_api_twitter_list_members -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_twitter_list_members"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Twitterリストメンバーズ<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Twitter_List_Members</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code">
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_twitter_list_members.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_twitter_list_members --><!-- BEGIN config_api_bing_web-search -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" title="Api_BingWebSearch" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_bing_web-search"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Bingウェブ検索<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Bing_WebSearch</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code"><a
-              href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_Bing_WebSearch.html" class="js-popup_setting">
-              <!--T-->変数表<!--/T--></a>
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_bing_web-search.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_bing_web-search --><!-- BEGIN config_api_bing_image-search -->
-          <tr>
-            <td class="acms-admin-config-name"><a href="{url}" title="Api_BingImageSearch" class="acms-admin-block"><i
-              class="acms-admin-icon acms-admin-icon-config_api_bing_image-search"></i>
-              <div class="acms-admin-config-module-name"><!--T-->Bingイメージ検索<!--/T--><span
-                class="acms-admin-config-module-name-en">Api_Bing_ImageSearch</span>
-              </div>
-            </a></td>
-            <td class="acms-admin-config-code"><a
-              href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_Bing_ImageSearch.html" class="js-popup_setting">
-              <!--T-->変数表<!--/T--></a>
-              <a href="%{ADMIN_BASE_URL}bid/%{BID}/acms-code/snippets/api_bing_image-search.html"
-                 class="js-popup_setting"><!--T-->スニペット<!--/T--></a></td>
-          </tr><!-- END config_api_bing_image-search -->
           </tbody>
         </table>
       </div>

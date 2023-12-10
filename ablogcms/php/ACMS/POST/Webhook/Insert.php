@@ -42,8 +42,17 @@ class ACMS_POST_Webhook_Insert extends ACMS_POST_Module
             DB::query($sql->get(dsn()), 'exec');
 
             $this->addMessage('Webhookを作成しました');
+
+            AcmsLogger::info('Webhook「' . $input->get('name') .'」を作成しました', [
+                'id' => $id,
+                'data' => $input->_aryField,
+            ]);
         } else {
             $this->addError('Webhookの作成に失敗しました');
+
+            AcmsLogger::info('Webhookの作成に失敗しました', [
+                'data' => $input,
+            ]);
         }
         return $this->Post;
     }

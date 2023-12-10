@@ -63,7 +63,16 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
                 Cache::flush('temp');
 
                 $this->Post->set('success', 'status');
+
+                $aryBid[] = $bid;
             }
+            if ($status === 'open') $status = '公開';
+            if ($status === 'close') $status = '非公開';
+            if ($status === 'secret') $status = 'シークレット';
+
+            AcmsLogger::info('指定されたブログのステータスを「' . $status . '」に変更', [
+                'targetBIDs' => implode(',', $aryBid),
+            ]);
         } else {
             $this->Post->set('error', 'status_1');
         }

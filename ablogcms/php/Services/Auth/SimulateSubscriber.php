@@ -82,16 +82,9 @@ class SimulateSubscriber extends General
     }
 
     /**
-     * ログインしているユーザーが特定の管理ページで権限があるかチェック
-     *
-     * @param string $action
-     * @param string $admin
-     * @param string $idKey
-     * @param string $id
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function checkShortcut($action, $admin, $idKey, $id)
+    public function checkShortcut(array $ids): bool
     {
         return false;
     }

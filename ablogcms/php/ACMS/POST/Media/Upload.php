@@ -7,18 +7,20 @@ class ACMS_POST_Media_Upload extends ACMS_POST
 {
     function post()
     {
+        $mid = 0;
+        $data = [];
+
         try {
             if (!Media::validate()) {
-                throw new \RuntimeException('You are not authorized to upload media.');
+                throw new \RuntimeException('メディア機能が有効でないか、権限がありません');
             }
             $tags = $this->Post->get('tags');
             $name = $this->Post->get('name');
-            if ($_FILES['file']['error'] != 0) {
-                throw new \RuntimeException('Uploaded files are invalid.');
-            }
+            Common::validateFileUpload('file');
+
             $info = Media::getBaseInfo($_FILES['file'], $tags, $name);
             if ($info === false) {
-                throw new \RuntimeException('Uploaded files are invalid.');
+                throw new \RuntimeException('アップロードファイルの情報が取得できませんでした');
             }
             $type = mime_content_type($_FILES['file']['tmp_name']);
             if (Media::isImageFile($type)) {
@@ -47,9 +49,17 @@ class ACMS_POST_Media_Upload extends ACMS_POST
             $tags = Media::getMediaLabel($mid);
             $json = Media::buildJson($mid, $data, $tags, BID);
             $json['status'] = 'success';
+
+            AcmsLogger::info('メディアをアップロードしました', [
+                'mid' => $mid,
+                'data' => $data,
+            ]);
+
             Common::responseJson($json);
 
         } catch (\Exception $e) {
+            AcmsLogger::notice('メディアのアップロードに失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
+
             Common::responseJson(array(
                 'status' => 'failure',
                 'message' => $e->getMessage(),

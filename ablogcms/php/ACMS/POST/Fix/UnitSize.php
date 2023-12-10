@@ -49,6 +49,8 @@ class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('message', 'success');
+
+            AcmsLogger::info('データ修正ツールで、「' . $type . '」ユニットのサイズを変更しました「' . $target . '」->「' . $value . '」');
         }
 
         return $this->Post;

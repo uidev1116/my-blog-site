@@ -4,12 +4,20 @@ class ACMS_POST_Schedule_Delete extends ACMS_POST_Schedule
 {
     function post()
     {
+        $DB = DB::singleton(dsn());
+        $scid = $this->Get->get('scid');
+
+        $SQL = SQL::newSelect('schedule');
+        $SQL->setSelect('schedule_name');
+        $SQL->addWhereOpr('schedule_id', $scid);
+        $name = $DB->query($SQL->get(dsn()), 'one');
+
         if (!sessionWithScheduleAdministration()) {
+            AcmsLogger::info('権限がないため「' . $name . '」スケジュールセットの削除に失敗しました', [
+                'scid' => $scid,
+            ]);
             return $this->Post;
         }
-
-        $DB     = DB::singleton(dsn());
-        $scid   = $this->Get->get('scid');
 
         $SQL    = SQL::newDelete('schedule');
         $SQL->addWhereOpr('schedule_id', $scid);
@@ -24,6 +32,10 @@ class ACMS_POST_Schedule_Delete extends ACMS_POST_Schedule
         Config::forgetCache(BID);
 
         $this->Post->set('edit', 'delete');
+
+        AcmsLogger::info('「' . $name . '」スケジュールセットを削除しました', [
+            'scid' => $scid,
+        ]);
 
         return $this->Post;
     }

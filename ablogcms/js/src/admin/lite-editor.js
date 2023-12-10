@@ -60,69 +60,56 @@ export default () => {
             self.data.showSource = true
             self.data.disableEditorMode = true
             self.update()
-            ACMS.Dispatch.emoditor(
+            ACMS.Dispatch.wysiwyg.init(
               self._getElementByQuery('[data-selector="lite-editor-source"]'),
             )
           }
         } else if (tag === 'markdown') {
           opt.onSelect = (self) => {
-            const editor = $(
-              self._getElementByQuery('[data-selector="lite-editor-source"]'),
-            ).data('emoditor')
+            const editor = self._getElementByQuery(
+              '[data-selector="lite-editor-source"]',
+            )
             self.data.mode = 'markdown'
             self.data.disableEditorMode = true
             self.data.hideBtns = false
-            if (editor) {
-              self.data.value = editor.getData()
-              editor.destroy()
-              $(
-                self._getElementByQuery('[data-selector="lite-editor-source"]'),
-              ).data('emoditor', null)
+            if (editor && ACMS.Dispatch.wysiwyg.isAdapted(editor)) {
+              self.data.value = ACMS.Dispatch.wysiwyg.getHtml(editor)
+              ACMS.Dispatch.wysiwyg.destroy(editor)
               self.data.showSource = true
               self.update()
             } else if (!self.data.showSource) {
               self.data.showSource = true
               self.update()
-              $(
-                self._getElementByQuery('[data-selector="lite-editor-source"]'),
-              ).show()
+              $(editor).show()
             }
           }
         } else if (tag.match(sourceModeTags)) {
           opt.onSelect = (self) => {
-            const editor = $(
-              self._getElementByQuery('[data-selector="lite-editor-source"]'),
-            ).data('emoditor')
+            const editor = self._getElementByQuery(
+              '[data-selector="lite-editor-source"]',
+            )
             self.data.mode = 'html'
             self.data.disableEditorMode = true
             self.data.hideBtns = false
-            if (editor) {
-              self.data.value = editor.getData()
-              editor.destroy()
-              $(
-                self._getElementByQuery('[data-selector="lite-editor-source"]'),
-              ).data('emoditor', null)
+            if (editor && ACMS.Dispatch.wysiwyg.isAdapted(editor)) {
+              self.data.value = ACMS.Dispatch.wysiwyg.getHtml(editor)
+              ACMS.Dispatch.wysiwyg.destroy(editor)
               self.data.showSource = true
               self.update()
             } else if (!self.data.showSource) {
               self.data.showSource = true
               self.update()
-              $(
-                self._getElementByQuery('[data-selector="lite-editor-source"]'),
-              ).show()
+              $(editor).show()
             }
           }
         } else {
           opt.onSelect = (self) => {
-            const emoditor = $(
-              self._getElementByQuery('[data-selector="lite-editor-source"]'),
-            ).data('emoditor')
-            if (emoditor) {
-              self.data.value = emoditor.getData()
-              emoditor.destroy()
-              $(
-                self._getElementByQuery('[data-selector="lite-editor-source"]'),
-              ).data('emoditor', null)
+            const editor = self._getElementByQuery(
+              '[data-selector="lite-editor-source"]',
+            )
+            if (editor && ACMS.Dispatch.wysiwyg.isAdapted(editor)) {
+              self.data.value = ACMS.Dispatch.wysiwyg.getHtml(editor)
+              ACMS.Dispatch.wysiwyg.destroy(editor)
             }
             self.data.showSource = false
             self.data.mode = 'html'

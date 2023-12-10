@@ -4,63 +4,63 @@
  タイムライン
 ------------------------------- */
 .acms-timeline {
-	position: relative;
-	padding-left: 20px;
-	list-style: none;
+  position: relative;
+  padding-left: 20px;
+  list-style: none;
 
-	 &:before {
-		position: absolute;
-		width: global.$timeline-line-width;
-		height: 100%;
-		background: global.$timeline-line-color;
-		content: "";
-	}
+   &:before {
+    position: absolute;
+    width: global.$timeline-line-width;
+    height: 100%;
+    background: global.$timeline-line-color;
+    content: "";
+  }
 }
 
 .acms-timeline-mark {
-	position: absolute;
-	left: -55px;
-	box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  left: -55px;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
 .acms-timeline-side {
-	position: relative;
-		left: -15px;
-	box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
+  position: relative;
+    left: -15px;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
 }
 .acms-timeline-label {
-	padding: 5px 10px;
-	@include global.font-size(global.$timeline-label-font-size);
+  padding: 5px 10px;
+  @include global.font-size(global.$timeline-label-font-size);
 }
 .acms-timeline-status-label {
-	float: left;
-	margin-right: 10px;
-	line-height: 1.2;
+  float: left;
+  margin-right: 10px;
+  line-height: 1.2;
 }
 
 .acms-timeline-item-group {
-	margin-top: global.$timeline-itemgroup-margin-top;
-	list-style: none;
+  margin-top: global.$timeline-itemgroup-margin-top;
+  list-style: none;
 }
 .acms-timeline-item {
-	position: relative;
+  position: relative;
 }
 
 .acms-timeline-panel {
-	margin: global.$timeline-panel-margin;
-	padding: global.$timeline-panel-padding;
-	border: global.$timeline-panel-border;
+  margin: global.$timeline-panel-margin;
+  padding: global.$timeline-panel-padding;
+  border: global.$timeline-panel-border;
 
-	[class*='acms-icon'] {
-		font-size:inherit;
-	}
+  [class*='acms-icon'] {
+    font-size:inherit;
+  }
 }
 .acms-timeline-time {
-	float: right;
-	color: #AAA;
+  float: right;
+  color: global.$acms-color-gray70;
 }
 
 //acms-panelと組み合わせているとき
 .acms-panel.acms-timeline-panel {
-	padding: 0;
+  padding: 0;
 }

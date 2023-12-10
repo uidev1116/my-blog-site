@@ -8,11 +8,10 @@ class ACMS_POST_Blog_Index_ConfigSet extends ACMS_POST_Blog
         $this->Post->setMethod('blog', 'isOperable', sessionWithAdministration());
         $this->Post->setMethod('checks', 'required');
         $this->Post->validate(new ACMS_Validator());
-        $setid = $this->Post->get('config_set_id', null);
+        $setid = $this->Post->get('config_set_id') ?: null;
         if (empty($setid)) {
             $setid = null;
         }
-
         if ($this->Post->isValidAll()) {
             $aryBid = $this->Post->getArray('checks');
             $DB = DB::singleton(dsn());
@@ -24,6 +23,17 @@ class ACMS_POST_Blog_Index_ConfigSet extends ACMS_POST_Blog
             foreach ($aryBid as $bid) {
                 ACMS_RAM::blog($bid, null);
             }
+            $sql = SQL::newSelect('config_set');
+            $sql->setSelect('config_set_name');
+            $sql->addWhereOpr('config_set_id', $setid);
+            $name = DB::query($sql->get(dsn()), 'one');
+            if (empty($name)) {
+                $name = '設定なし';
+            }
+            AcmsLogger::info('指定されたブログのコンフィグセットを「' . $name . '」に変更', [
+                'targetBIDs' => implode(',', $aryBid),
+                'configSetID' => $setid,
+            ]);
         }
         return $this->Post;
     }

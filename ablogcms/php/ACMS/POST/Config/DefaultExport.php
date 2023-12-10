@@ -24,9 +24,13 @@ class ACMS_POST_Config_DefaultExport extends ACMS_POST_Config_Export
             Storage::remove($this->destPath);
             $this->putYaml();
             $this->download();
+
+            AcmsLogger::info('デフォルトコンフィグのエクスポートをしました');
         } catch ( \Exception $e ) {
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
+
+            AcmsLogger::info('デフォルトコンフィグのエクスポートに失敗しました', Common::exceptionArray($e));
         }
 
         return $this->Post;

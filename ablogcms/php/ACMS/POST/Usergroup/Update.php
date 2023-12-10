@@ -14,8 +14,8 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
 
         $Usergroup->validate(new ACMS_Validator_Usergroup());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
 
             //-----------
             // usergroup
@@ -42,6 +42,16 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
             }
 
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('ユーザーグループ「' . $Usergroup->get('name') . '」の情報を更新しました', [
+                'ugid' => $ugid,
+                'data' => $Usergroup->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ユーザーグループ「' . $Usergroup->get('name') . '」の更新に失敗しました', [
+                'ugid' => $ugid,
+                'data' => $Usergroup->_aryV,
+            ]);
         }
         return $this->Post;
     }

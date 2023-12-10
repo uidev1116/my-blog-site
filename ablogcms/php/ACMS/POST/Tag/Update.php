@@ -33,6 +33,7 @@ class ACMS_POST_Tag_Update extends ACMS_POST
         $this->Post->validate(new ACMS_Validator());
 
         if (!$this->Post->isValidAll()) {
+            AcmsLogger::info('タグ名の更新に失敗しました', $this->Post->_aryV);
             return $this->Post;
         }
 
@@ -64,6 +65,12 @@ class ACMS_POST_Tag_Update extends ACMS_POST
         $DB->query($SQL->get(dsn()), 'exec');
 
         $this->Post->set('edit', 'update');
+
+        AcmsLogger::info('タグの名前を変更しました', [
+            'old' => $oldTag,
+            'new' => $tag,
+        ]);
+
         return $this->Post;
     }
 }

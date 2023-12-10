@@ -9,11 +9,19 @@ class ACMS_POST_Role_Delete extends ACMS_POST
         $this->validate($rid);
 
         if (!$this->Post->isValidAll() ) {
+            AcmsLogger::info('ロールの削除に失敗しました', [
+                'roleID' => $rid,
+            ]);
             return $this->Post;
         }
 
+        $role = loadRole($rid);
         $this->delete($rid);
         $this->Post->set('edit', 'delete');
+
+        AcmsLogger::info('「' . $role->get('name') . '」ロールを削除しました', [
+            'roleID' => $rid,
+        ]);
 
         return $this->Post;
     }

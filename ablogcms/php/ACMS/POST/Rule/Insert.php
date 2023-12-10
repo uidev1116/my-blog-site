@@ -90,6 +90,15 @@ class ACMS_POST_Rule_Insert extends ACMS_POST_Rule
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('「' . $Rule->get('name') . '」ルールを作成しました', [
+                'ruleID' => $rid,
+                'data' => $Rule->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ルールの作成に失敗しました', [
+                'data' => $Rule,
+            ]);
         }
 
         return $this->Post;

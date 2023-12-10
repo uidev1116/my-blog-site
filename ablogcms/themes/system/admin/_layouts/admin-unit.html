@@ -1,7 +1,20 @@
 <div class="js-ajax_upload_image_unit entryFormColumn" aria-label="ユニットの入力が始まります">
   <!-- BEGIN adminEntryColumn -->
   <div id="more">
-    <div class="sorthandle"><i class="acms-admin-icon-sort js-sp-sort-handle" aria-hidden="true"></i> <!--T-->以下のユニットが<!--/T--><span class="acms-admin-hide-sp"><!--T-->一覧表示時に<!--/T--></span><!--T-->「続きを読む」<!--/T--><span class="acms-admin-hide-sp"><!--T-->になります<!--/T--></span></div>
+    <div class="sorthandle">
+      <i class="acms-admin-icon-sort js-sp-sort-handle" aria-hidden="true"></i>
+      <div class="js-normal-delimiter {members_only}">
+        <!--T-->以下のユニットが<!--/T-->
+        <span class="acms-admin-hide-sp"><!--T-->一覧表示時に<!--/T--></span>
+        <!--T-->「続きを読む」<!--/T-->
+        <span class="acms-admin-hide-sp"><!--T-->になります<!--/T--></span>
+      </div>
+      <div class="js-members-only-delimiter {members_only}">
+        <!--T-->以下のユニットが<!--/T-->
+        <!--T-->「会員限定」<!--/T-->
+        <span class="acms-admin-hide-sp"><!--T-->になります<!--/T--></span>
+      </div>
+    </div>
   </div>
   <!-- BEGIN column:loop -->
   <div class="js-ajax_upload_image_box entryFormColumnItem entryFormColumnItem-opened" aria-label="<!--T-->ユニットが追加されました<!--/T-->" tabindex="-1">

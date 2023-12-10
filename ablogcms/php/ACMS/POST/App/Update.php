@@ -31,9 +31,15 @@ class ACMS_POST_App_Update extends ACMS_POST
                 Cache::flush('temp');
 
                 $this->Post->set('updateSucceed', true);
+
+                AcmsLogger::info('拡張アプリ「' . $className . '」をアップデートしました', [
+                    'version' => $App->version,
+                ]);
             }
         } catch(Exception $e) {
             $this->Post->set('updateFailed', true);
+
+            AcmsLogger::info('拡張アプリ「' . $className . '」のアップデートに失敗しました', Common::exceptionArray($e, ['version' => $App->version]));
         }
 
         return $this->Post;

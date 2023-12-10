@@ -67,7 +67,7 @@
 .acms-entry blockquote {
   margin: 0 0 20px 0;
   padding: 10px 20px;
-  border-left: solid 5px #ccc;
+  border-left: solid 5px #CCCCCC;
 }
 
 /* ------------------------------
@@ -279,12 +279,12 @@
   }
 }
 [class*=column-quote] .quoteTitleLink {
-  color: #006cd8;
+  color: #006DD9;
 }
 [class*=column-quote] .quoteSiteName {
   margin: 0 0 10px 0;
   padding: 0;
-  color: #666;
+  color: #4B4B4B;
   font-size: 11px;
 }
 @media print {
@@ -295,7 +295,7 @@
 [class*=column-quote] .quoteDescription {
   margin: 0;
   padding: 0;
-  color: #333;
+  color: #333333;
   line-height: 1.6;
   font-size: 12px;
 }
@@ -663,7 +663,7 @@
 /* PDFプレビュー */
 .column-pdf-image {
   width: 100%;
-  border: solid 1px #aaa;
+  border: solid 1px #AAAAAA;
 }
 
 /* ストリートビュー */

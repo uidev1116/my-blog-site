@@ -44,8 +44,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
 
         //----------
         // init SQL
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newSelect('entry');
+        $DB = DB::singleton(dsn());
+        $SQL = SQL::newSelect('entry');
+        $lockService = App::make('entry.lock');
 
         //-----
         // bid
@@ -264,6 +265,17 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
                         'cid'   => $cid,
                     )),
                 );
+            }
+
+            //-----------
+            // Lock User
+            if ($lockUid = $row['entry_lock_uid']) {
+                if ($lockService->getExpiredDatetime() < strtotime($row['entry_lock_datetime'])) {
+                    $_vars['lockUser'] = ACMS_RAM::userName($lockUid);
+                }
+                if (intval($lockUid) === SUID) {
+                    $_vars['selfLock'] = 'yes';
+                }
             }
 
             //------------

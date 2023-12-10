@@ -10,24 +10,27 @@ class ACMS_POST_Blog_Index_Config extends ACMS_POST_Blog
         $this->Post->validate(new ACMS_Validator());
 
         if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+            $targetBids = [];
             foreach ( $this->Post->getArray('checks') as $bid ) {
                 if ( !($bid = idval($bid)) ) continue;
                 if ( !(1
                     and ACMS_RAM::blogLeft(SBID) <= ACMS_RAM::blogRight($bid)
                     and ACMS_RAM::blogRight(SBID) >= ACMS_RAM::blogRight($bid)
                 ) ) continue;
-
+                $targetBids[] = $bid;
                 $this->copyConfigToChild($bid);
                 $this->Post->set('success', 'config');
             }
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログのコンフィグをコピーして子ブログに反映しました', [
+                'targetBIDs' => implode(',', $targetBids),
+            ]);
         } else {
             $this->Post->set('error', 'config_1');
         }
 
         return $this->Post;
     }
-    
+
     function copyConfigToChild($cbid)
     {
         $DB = DB::singleton(dsn());
@@ -38,7 +41,7 @@ class ACMS_POST_Blog_Index_Config extends ACMS_POST_Blog
             $val    = $Config->getArray($fd);
             $config[$fd]    = (1 == count($val)) ? $val[0] : $val;
         }
-        
+
         $SQL    = SQL::newDelete('config');
         $SQL->addWhereOpr('config_rule_id', null);
         $SQL->addWhereOpr('config_module_id', null);
@@ -46,7 +49,7 @@ class ACMS_POST_Blog_Index_Config extends ACMS_POST_Blog
         $DB->query($SQL->get(dsn()), 'exec');
 
         Config::forgetCache(BID);
-        
+
         $sort   = 1;
         foreach ( $config as $key => $vals ) {
             if ( empty($vals) ) continue;

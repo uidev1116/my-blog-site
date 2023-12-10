@@ -13,7 +13,7 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
         );
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $l      = ACMS_RAM::blogLeft(BID);
             $r      = ACMS_RAM::blogRight(BID);
             $sort   = ACMS_RAM::blogSort(BID);
@@ -50,7 +50,7 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
 
             foreach ( array(
                 'alias', 'category', 'column', 'comment', 'config', 'config_set', 'dashboard',
-                'entry', 'field', 'form', 'fulltext', 'log_access', 'log_form',
+                'entry', 'field', 'form', 'fulltext', 'log_form',
                 'module', 'rule', 'tag', 'trackback', 'user',
             ) as $tb ) {
                 $SQL    = SQL::newDelete($tb);
@@ -61,10 +61,14 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
             Cache::flush('temp');
             deleteWorkflow(BID);
 
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログを削除しました');
+
             $this->redirect(acmsLink(array(
                 'bid'   => $pid,
                 'admin' => 'blog_edit',
             )));
+        } else {
+            AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログの削除に失敗しました');
         }
 
         return $this->Post;

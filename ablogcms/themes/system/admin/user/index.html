@@ -57,6 +57,8 @@
 									<option value=""><!--T-->全てのステータス<!--/T--></option>
 									<option value="open" {status:selected#open}><!--T-->有効<!--/T--></option>
 									<option value="close" {status:selected#close}><!--T-->無効<!--/T--></option>
+                  <option value="pseudo" {status:selected#pseudo}><!--T-->仮登録<!--/T--></option>
+                  <option value="withdrawal" {status:selected#withdrawal}><!--T-->退会<!--/T--></option>
 								</select>
 								<input type="hidden" name="query[]" value="status">
 							</div>
@@ -262,10 +264,23 @@
 					<!--T-->(読者)<!--/T--><!-- END auth_default#subscriber -->
 				</td>
 				<td class="acms-admin-text-center">
-					<span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->ステータス：<!--/T--></span><!-- BEGIN_IF [{expiry}/eq/expired] -->
-          <span class="acms-admin-label acms-admin-label-danger">期限切れ</span><!-- ELSE --><!-- BEGIN status#open -->
-					<span class="acms-admin-label acms-admin-label-info"><!--T-->有効<!--/T--></span><!-- END status#open --><!-- BEGIN status#close -->
-					<span class="acms-admin-label"><!--T-->無効<!--/T--></span><!-- END status#close --><!-- END_IF -->
+					<span class="acms-admin-hide-tablet acms-admin-hide-pc"><!--T-->ステータス：<!--/T--></span>
+          <!-- BEGIN_IF [{expiry}/eq/expired] -->
+          <span class="acms-admin-label acms-admin-label-danger">期限切れ</span>
+          <!-- ELSE -->
+          <!-- BEGIN status#open -->
+					<span class="acms-admin-label acms-admin-label-info"><!--T-->有効<!--/T--></span>
+          <!-- END status#open -->
+          <!-- BEGIN status#pseudo -->
+					<span class="acms-admin-label acms-admin-label-warning"><!--T-->仮登録<!--/T--></span>
+          <!-- END status#pseudo -->
+          <!-- BEGIN status#withdrawal -->
+					<span class="acms-admin-label acms-admin-label-danger"><!--T-->退会<!--/T--></span>
+          <!-- END status#withdrawal -->
+          <!-- BEGIN status#close -->
+					<span class="acms-admin-label"><!--T-->無効<!--/T--></span>
+          <!-- END status#close -->
+          <!-- END_IF -->
 				</td>
 				<td class="acms-admin-table-nowrap">
 					<a href="{itemUrl}?edit=update" class="acms-admin-btn"><!--T-->変更<!--/T--></a>

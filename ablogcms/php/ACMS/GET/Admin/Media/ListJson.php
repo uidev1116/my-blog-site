@@ -66,6 +66,8 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
             Common::responseJson($json);
 
         } catch (\Exception $e) {
+            AcmsLogger::notice('メディア一覧のJSON取得に失敗しました', Common::exceptionArray($e));
+
             Common::responseJson(array(
                 'status' => 'failure',
                 'message' => $e->getMessage(),

@@ -32,7 +32,7 @@ class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
         try {
             $this->httpFile = ACMS_Http::file($this->uploadFiledName);
             if (Storage::exists($this->lockFile)) {
-                throw new \RuntimeException('CSVインポートを中止しました。すでにインポート中の可能性があります。変化がない場合は、cache/user-csv-import-lock ファイルを削除してお試しください。');
+                throw new \RuntimeException('CSVユーザーインポートを中止しました。すでにインポート中の可能性があります。変化がない場合は、cache/user-csv-import-lock ファイルを削除してお試しください。');
             }
             Common::backgroundRedirect(HTTP_REQUEST_URL);
             $this->run();
@@ -40,6 +40,7 @@ class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
 
         } catch ( Exception $e ) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
         }
         return $this->Post;
     }
@@ -74,6 +75,8 @@ class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
             Storage::remove($this->lockFile);
             sleep(5);
             $logger->terminate();
+
+            AcmsLogger::warning('CSVユーザーインポートでエラーが発生しました', Common::exceptionArray($e, ['message' => $e->getMessage()]));
             return;
         }
         $count = $this->getNumberOfCsvRows($csv);
@@ -94,6 +97,8 @@ class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
             } catch (Exception $e) {
                 $logger->addProcessLog('CSV' . ($i+1) . '行目: ' . $e->getMessage(), 0);
                 $this->errorCount++;
+
+                AcmsLogger::notice('CSVユーザーインポートの' . ($i + 1) . '行目がエラーのため、この行は読み込みません', Common::exceptionArray($e, ['message' => $e->getMessage()]));
             }
         }
         sleep(3);
@@ -103,6 +108,11 @@ class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
         $logger->addProcessLog('インポート成功件数: ' . $this->entryCount . '件');
         $logger->addProcessLog('インポート失敗件数: ' . $this->errorCount . '件');
         $logger->success();
+
+        AcmsLogger::info('CSVユーザーインポートを実行しました', [
+            'success' => $this->entryCount,
+            'error' => $this->errorCount,
+        ]);
 
         Storage::remove($this->lockFile);
         Cache::flush('page');

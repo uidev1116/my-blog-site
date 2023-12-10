@@ -16,12 +16,12 @@ class ACMS_POST_Entry_Index_Delete extends ACMS_POST_Entry_Delete
         }
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
-            $DB     = DB::singleton(dsn());
-            foreach ( $this->Post->getArray('checks') as $eid ) {
-                $id     = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
-                $eid    = $id[1];
+            $targetEIDs = [];
+            foreach ($this->Post->getArray('checks') as $eid) {
+                $id = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
+                $eid = $id[1];
                 if ( roleAvailableUser() ) {
                     if ( !( 1
                         and !!($eid = intval($eid))
@@ -41,7 +41,13 @@ class ACMS_POST_Entry_Index_Delete extends ACMS_POST_Entry_Delete
                     ) ) continue;
                 }
                 $this->delete($eid);
+                $targetEIDs[] = $eid;
             }
+            AcmsLogger::info('指定されたエントリーを一括削除しました', [
+                'targetEIDs' => implode(',', $targetEIDs),
+            ]);
+        } else {
+            AcmsLogger::info('指定されたエントリーの一括削除に失敗しました');
         }
 
         return $this->Post;

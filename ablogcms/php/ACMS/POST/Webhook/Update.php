@@ -47,8 +47,17 @@ class ACMS_POST_Webhook_Update extends ACMS_POST
             DB::query($sql->get(dsn()), 'exec');
 
             $this->addMessage('Webhookを保存しました');
+
+            AcmsLogger::info('Webhook「' . $input->get('name') .'」を保存しました', [
+                'id' => $id,
+                'data' => $input->_aryField,
+            ]);
         } else {
             $this->addError('Webhookの保存に失敗しました');
+
+            AcmsLogger::info('Webhookの保存に失敗しました', [
+                'data' => $input,
+            ]);
         }
         return $this->Post;
     }

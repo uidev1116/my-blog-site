@@ -3,10 +3,13 @@
 @section("body")
 
       <div class="content-body">
-        <h1 class="title">{request_user}[raw]さんから<!-- BEGIN_IF [{approval}/eq/request] -->承認依頼されました。<!-- ELSE_IF [{approval}/eq/reject] -->承認依頼を差し戻されました。<!-- ELSE_IF [{approval}/eq/public] -->最終承認されました。<!-- END_IF --><!-- BEGIN_IF [{approvalType}/eq/parallel] --></h1>
+        <h1 class="title">{request_user}[raw]さんから<!-- BEGIN_IF [{approval}/eq/request] -->承認依頼されました。<!-- ELSE_IF [{approval}/eq/comment] -->コメントされました。<!-- ELSE_IF [{approval}/eq/reject] -->承認依頼を差し戻されました。<!-- ELSE_IF [{approval}/eq/public] -->最終承認されました。<!-- END_IF --><!-- BEGIN_IF [{approvalType}/eq/parallel] --></h1>
 
-        <p>{request_user}[raw]さんから<!-- BEGIN_IF [{approval}/eq/request] -->承認依頼されました。<!-- ELSE_IF [{approval}/eq/reject] -->承認依頼を差し戻されました。<!-- ELSE_IF [{approval}/eq/public] -->最終承認されました。<!-- END_IF --><!-- BEGIN_IF [{approvalType}/eq/parallel] --><br>
-          あと{approvalPoint}ポイントで公開されます。 {currentPoint}/{workflowPoint}ポイント<!-- END_IF --></p>
+        <!-- BEGIN_IF [{approvalType}/eq/parallel] -->
+        <p>
+          あと{approvalPoint}ポイントで公開されます。 {currentPoint}/{workflowPoint}ポイント
+        </p>
+        <!-- END_IF -->
 
         <div class="no-scroll amount">
           <table class="info">
@@ -36,14 +39,6 @@
                 </td>
               </tr>
               <tr>
-                <th>
-                  期限日
-                </th>
-                <td>
-                  {deadline_date}
-                </td>
-              </tr>
-              <tr>
                 <th colspan="2" class="vertical">コメント
                 </th>
               </tr>
@@ -55,7 +50,7 @@
             </tbody>
           </table>
         </div>
-  <!-- BEGIN_IF [{approval}/eq/request] -->
+      <!-- BEGIN_IF [{approval}/eq/request] -->
       <p>以下のボタンより内容を確認し、承認してください。</p><!-- ELSE_IF [{approval}/eq/reject] -->
       <p>承認依頼が差し戻されました。以下のボタンより内容を確認し、「変更」ボタンを押して再度承認依頼して下さい。</p><!-- ELSE_IF [{approval}/eq/public] -->
       <p>以下のボタンより内容をご確認ください。</p><!-- END_IF -->

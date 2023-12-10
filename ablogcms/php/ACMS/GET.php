@@ -31,7 +31,7 @@ class ACMS_GET
      */
     var $Get;
     /**
-     * @var Field
+     * @var Field_Validation
      */
     var $Post;
 
@@ -228,25 +228,6 @@ class ACMS_GET
     function get()
     {
         return false;
-    }
-
-    function checkShortcut($action, $admin, $idKey, $id)
-    {
-        $admin = str_replace('/', '_', $admin);
-
-        $aryAuth = array();
-        if ( sessionWithContribution() ) $aryAuth[] = 'contribution';
-        if ( sessionWithCompilation() ) $aryAuth[] = 'compilation';
-        if ( sessionWithAdministration() ) $aryAuth[] = 'administration';
-
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('dashboard');
-        $SQL->setSelect('dashboard_key');
-        $SQL->addWhereOpr('dashboard_key', 'shortcut_' . $idKey . '_' . $id . '_' . $admin . '_auth');
-        $SQL->addWhereIn('dashboard_value', $aryAuth);
-        $SQL->addWhereOpr('dashboard_blog_id', BID);
-
-        return !!$DB->query($SQL->get(dsn()), 'one');
     }
 
     /**

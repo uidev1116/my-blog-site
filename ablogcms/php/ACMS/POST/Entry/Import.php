@@ -22,6 +22,8 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
         }
 
         try {
+            AcmsLogger::info('エントリーのインポートを開始しました');
+
             $this->tmpDir = MEDIA_STORAGE_DIR . 'entry_data/';
             $import = App::make('entry.import');
             $status = $this->Post->get('entry_status');
@@ -35,12 +37,16 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
 
             if (empty($errors)) {
                 $this->addMessage('インポートに成功しました。');
+                AcmsLogger::info('エントリーのインポートが成功しました');
+            } else {
+                AcmsLogger::info('エントリーのインポートでエラーが発生しました', $errors);
             }
             foreach ($errors as $error) {
                 $this->addError($error);
             }
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::info('エントリーのインポートが失敗しました', Common::exceptionArray($e));
         }
 
         DB::setThrowException(false);

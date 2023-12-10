@@ -3,6 +3,7 @@
 namespace Acms\Services\Database;
 
 use DB;
+use AcmsLogger;
 
 class Replication
 {
@@ -109,11 +110,15 @@ class Replication
 
             try {
                 DB::query($sql, 'exec');
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                AcmsLogger::notice($e->getMessage());
+            }
 
             try {
                 DB::query($sql2, 'exec');
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                AcmsLogger::notice($e->getMessage());
+            }
         }
     }
 

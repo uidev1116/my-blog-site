@@ -16,11 +16,11 @@ class ACMS_POST_App_Activate extends ACMS_POST
             $App->activate();
 
             $DB = DB::singleton(dsn());
-            
+
             $SQL = SQL::newSelect('app');
             $SQL->addWhereOpr('app_name', get_class($App));
             $SQL->addWhereOpr('app_blog_id', BID);
-            
+
             if ( $row = $DB->query($SQL->get(dsn()), 'one') ) {
                 $SQL = SQL::newUpdate('app');
                 $SQL->addUpdate('app_status',  'on');
@@ -38,7 +38,12 @@ class ACMS_POST_App_Activate extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
             }
             $this->Post->set('activateSucceed', true);
+
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」を有効化しました', [
+                'version' => $App->version,
+            ]);
         } catch(Exception $e) {
+            AcmsLogger::info('拡張アプリ「' . get_class($App) . '」の有効化に失敗しました', Common::exceptionArray($e, ['version' => $App->version]));
             $this->Post->set('activateFailed', true);
         }
 

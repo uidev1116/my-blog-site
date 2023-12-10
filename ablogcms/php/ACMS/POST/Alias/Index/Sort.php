@@ -6,7 +6,7 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
     {
         $this->Post->reset(true);
         $this->Post->setMethod('checks', 'required');
-        $this->Post->setMethod('alias', 'operable', sessionWithAdministration());    
+        $this->Post->setMethod('alias', 'operable', sessionWithAdministration());
         $this->Post->validate(new ACMS_Validator());
 
         if ( $this->Post->isValidAll() ) {
@@ -29,7 +29,7 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
                 $SQL->addWhereNotIn('alias_id', $aids);
                 $SQL->addWhereOpr('alias_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
-      
+
                 //-----------------
                 // blog alias sort
                 $SQL    = SQL::newUpdate('blog');
@@ -38,7 +38,7 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
                 $SQL->addWhereOpr('blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::blog(BID, null);
-                
+
                 if ( $aid ) {
                     $SQL    = SQL::newUpdate('alias');
                     $SQL->setUpdate('alias_sort', $to);
@@ -58,6 +58,11 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
             $SQL->setSelect('blog_alias_sort');
             $SQL->addWhereOpr('blog_id', BID);
             ACMS_RAM::_mapping('blog_alias_sort', BID, intval($DB->query($SQL->get(dsn()), 'one')));
+
+            AcmsLogger::info('エイリアスの表示順を一括変更しました', [
+                'aid' => implode(',', $aids),
+                'bid' => BID,
+            ]);
         }
 
         return $this->Post;

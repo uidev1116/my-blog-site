@@ -75,12 +75,13 @@ class ACMS_RAM
         if (empty(self::$cache)) {
             self::$cache = Cache::temp();
         }
-
         $s = explode('_', $key, 2);
         $type = $s[0];
-        $all = count($s) === 1;
+        if (strpos($key, 'config_set') === 0) {
+            $type = 'config_set';
+        }
+        $all = $type === $key;
         $cacheKey = "cache-ram-$type-$id";
-        $DB = DB::singleton(dsn());
         $nocache = ($type === 'unit' || $type === 'comment') ? true : false;
 
         if (3 <= func_num_args()) {
@@ -104,17 +105,23 @@ class ACMS_RAM
                 if (self::$cache->has($cacheKey)) {
                     $table[$type][$id] = self::$cache->get($cacheKey);
                 } else {
-                    $SQL = new SQL_Select();
-                    $SQL->setTable($type);
-                    $SQL->addWhereOpr($type.'_id', $id);
-                    if (!$row = $DB->query($SQL->get(dsn()), 'row')) return null;
-                    $table[$type][$id] = $row;
-                    if ($nocache) {
-                        self::$cache->put($cacheKey, $row);
+                    DB::setThrowException(true);
+                    try {
+                        $SQL = new SQL_Select();
+                        $SQL->setTable($type);
+                        $SQL->addWhereOpr($type.'_id', $id);
+                        if (!$row = DB::query($SQL->get(dsn()), 'row')) return null;
+                        $table[$type][$id] = $row;
+                        if ($nocache) {
+                            self::$cache->put($cacheKey, $row);
+                        }
+                    } catch (\Exception $e) {
                     }
+                    DB::setThrowException(false);
                 }
                 if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
-                    trigger_error('Mapper unsolved', E_USER_ERROR);
+                    AcmsLogger::error("$type テーブルのID「" . $id . "」に該当する $key カラムが取得できませんでした");
+                    return null;
                 }
             }
             return $all ? $table[$type][$id] : $table[$type][$id][$key];
@@ -133,6 +140,9 @@ class ACMS_RAM
      */
     public static function blog($bid, $val=null)
     {
+        if ($val !== null && isset($val['blog_domain']) && isUnregisteredDomain()) {
+            $val['blog_domain'] = HTTP_HOST;
+        }
         return is_null($val) ? ACMS_RAM::_mapping('blog', $bid) : ACMS_RAM::_mapping('blog', $bid, $val);
     }
 
@@ -230,6 +240,30 @@ class ACMS_RAM
     public static function blogConfigSetId($bid)
     {
         return ACMS_RAM::_mapping('blog_config_set_id', $bid);
+    }
+
+    /**
+     * 指定されたidから該当するブログのテーマセットIDを返します
+     * $configSetId = ACMS_RAM::blogThemeSetId($bid);
+     *
+     * @param int $bid
+     * @return string
+     */
+    public static function blogThemeSetId($bid)
+    {
+        return ACMS_RAM::_mapping('blog_theme_set_id', $bid);
+    }
+
+    /**
+     * 指定されたidから該当するブログの編集画面セットIDを返します
+     * $configSetId = ACMS_RAM::blogEditorSetId($bid);
+     *
+     * @param int $bid
+     * @return string
+     */
+    public static function blogEditorSetId($bid)
+    {
+        return ACMS_RAM::_mapping('blog_editor_set_id', $bid);
     }
 
     /**
@@ -778,6 +812,30 @@ class ACMS_RAM
     }
 
     /**
+     * 指定されたidから該当するブログのテーマセットIDを返します
+     * $configSetId = ACMS_RAM::categoryThemeSetId($cid);
+     *
+     * @param int $cid
+     * @return string
+     */
+    public static function categoryThemeSetId($cid)
+    {
+        return ACMS_RAM::_mapping('category_theme_set_id', $cid);
+    }
+
+    /**
+     * 指定されたidから該当するブログの編集画面セットIDを返します
+     * $configSetId = ACMS_RAM::categoryEditorSetId($cid);
+     *
+     * @param int $cid
+     * @return string
+     */
+    public static function categoryEditorSetId($cid)
+    {
+        return ACMS_RAM::_mapping('category_editor_set_id', $cid);
+    }
+
+    /**
      * 指定されたidから該当するカテゴリーの公開状態を返します
      * $status = ACMS_RAM::categoryStatus($cid);
      *
@@ -995,6 +1053,18 @@ class ACMS_RAM
     public static function entryIndexing($eid)
     {
         return ACMS_RAM::_mapping('entry_indexing', $eid);
+    }
+
+    /**
+     * 指定されたidから該当するエントリーのインデキシングの状態を返します
+     * $indexing = ACMS_RAM::entryIndexing($eid);
+     *
+     * @param int $eid
+     * @return string
+     */
+    public static function entryMembersOnly($eid)
+    {
+        return ACMS_RAM::_mapping('entry_members_only', $eid);
     }
 
     /**
@@ -1354,6 +1424,36 @@ class ACMS_RAM
     }
 
     /**
+     * 指定されたidから該当するコンフィグセットの名前を返します
+     * @param int $setid
+     * @return string
+     */
+    public static function configSetName($setid)
+    {
+        return ACMS_RAM::_mapping('config_set_name', $setid);
+    }
+
+    /**
+     * 指定されたidから該当するフォームのコードを返します
+     * @param int $setid
+     * @return string
+     */
+    public static function formCode($id)
+    {
+        return ACMS_RAM::_mapping('form_code', $id);
+    }
+
+    /**
+     * 指定されたidから該当するフォームの名前を返します
+     * @param int $setid
+     * @return string
+     */
+    public static function formName($id)
+    {
+        return ACMS_RAM::_mapping('form_name', $id);
+    }
+
+    /**
      * 指定されたidから該当するトラックバックのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
@@ -1376,5 +1476,246 @@ class ACMS_RAM
     public static function trackbackEntry($tbid)
     {
         return intval(ACMS_RAM::_mapping('trackback_entry_id', $tbid));
+    }
+
+    /**
+     * 指定されたidから該当するメディアのレコードを配列で返します
+     * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
+     *
+     * @param int $mid
+     * @param mixed $val
+     * @return array|bool
+     */
+    public static function media($mid, $val = null)
+    {
+        return is_null($val) ? ACMS_RAM::_mapping('media', $mid) : ACMS_RAM::_mapping('media', $mid, $val);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのステータスを返します
+     * $name = ACMS_RAM::mediaStatus($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaStatus($mid)
+    {
+        return ACMS_RAM::_mapping('media_status', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのタイプを返します
+     * $name = ACMS_RAM::mediaType($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaType($mid)
+    {
+        return ACMS_RAM::_mapping('media_type', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアの拡張子を返します
+     * $name = ACMS_RAM::mediaExtension($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaExtension($mid)
+    {
+        return ACMS_RAM::_mapping('media_extension', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのパスを返します
+     * $name = ACMS_RAM::mediaPath($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaPath($mid)
+    {
+        return ACMS_RAM::_mapping('media_extension', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのサムネイルパスを返します
+     * $name = ACMS_RAM::mediaThumbnail($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaThumbnail($mid)
+    {
+        return ACMS_RAM::_mapping('media_thumbnail', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのオリジナルパスを返します
+     * $name = ACMS_RAM::mediaOriginal($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaOriginal($mid)
+    {
+        return ACMS_RAM::_mapping('media_original', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのファイル名を返します
+     * $name = ACMS_RAM::mediaFileName($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaFileName($mid)
+    {
+        return ACMS_RAM::_mapping('media_file_name', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアの画像サイズを返します
+     * $name = ACMS_RAM::mediaImageSize($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaImageSize($mid)
+    {
+        return ACMS_RAM::_mapping('media_image_size', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのファイルサイズを返します
+     * $name = ACMS_RAM::mediaFileSize($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaFileSize($mid)
+    {
+        return ACMS_RAM::_mapping('media_file_size', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアのアップロード日を返します
+     * $name = ACMS_RAM::mediaUploadDate($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaUploadDate($mid)
+    {
+        return ACMS_RAM::_mapping('media_upload_date', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するメディアの更新日を返します
+     * $name = ACMS_RAM::mediaUpdateDate($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaUpdateDate($mid)
+    {
+        return ACMS_RAM::_mapping('media_update_date', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド1を返します
+     * $name = ACMS_RAM::mediaField1($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField1($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_1', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド2を返します
+     * $name = ACMS_RAM::mediaField2($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField2($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_2', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド3を返します
+     * $name = ACMS_RAM::mediaField3($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField3($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_3', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド4を返します
+     * $name = ACMS_RAM::mediaField4($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField4($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_4', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド5を返します
+     * $name = ACMS_RAM::mediaField5($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField5($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_5', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するフィールド6を返します
+     * $name = ACMS_RAM::mediaField6($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaField6($mid)
+    {
+        return ACMS_RAM::_mapping('media_field_6', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するユーザーIDを返します
+     * $name = ACMS_RAM::mediaUserId($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaUserId($mid)
+    {
+        return ACMS_RAM::_mapping('media_user_id', $mid);
+    }
+
+    /**
+     * 指定されたidから該当するブログIDを返します
+     * $name = ACMS_RAM::mediaBlogId($mid);
+     *
+     * @param int $mid
+     * @return string
+     */
+    public static function mediaBlogId($mid)
+    {
+        return ACMS_RAM::_mapping('media_blog_id', $mid);
     }
 }

@@ -17,6 +17,10 @@ class ACMS_POST_Config_Reset extends ACMS_POST
 
         if ($this->Post->isValidAll()) {
             Config::resetConfig($Config, BID, $rid, null, $setid);
+            AcmsLogger::info('コンフィグのリセットを行いました', [
+                'rid' => $rid,
+                'setid' => $setid,
+            ]);
             redirect(REQUEST_URL);
         }
         return $this->Post;

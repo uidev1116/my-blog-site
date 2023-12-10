@@ -59,7 +59,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
                     }
                     break;
                 case 'user_status':
-                    if (!in_array($value, array('open', 'close'))) {
+                    if (!in_array($value, array('open', 'close', 'withdrawal', 'pseudo'))) {
                         throw new \RuntimeException('不正な値が設定されています（' . $key . '）');
                     }
                     break;

@@ -1,4 +1,4 @@
-{request_user}[raw]さんから<!-- BEGIN_IF [{approval}/eq/request] -->承認依頼されました。<!-- ELSE_IF [{approval}/eq/reject] -->承認依頼を差し戻されました。<!-- ELSE_IF [{approval}/eq/public] -->最終承認されました。<!-- END_IF --><!-- BEGIN_IF [{approvalType}/eq/parallel] -->
+{request_user}[raw]さんから<!-- BEGIN_IF [{approval}/eq/request] -->承認依頼されました。<!-- ELSE_IF [{approval}/eq/comment] -->コメントされました。<!-- ELSE_IF [{approval}/eq/reject] -->承認依頼を差し戻されました。<!-- ELSE_IF [{approval}/eq/public] -->最終承認されました。<!-- END_IF --><!-- BEGIN_IF [{approvalType}/eq/parallel] -->
 あと{approvalPoint}ポイントで公開されます。 {currentPoint}/{workflowPoint}ポイント<!-- END_IF -->
 ----------------------------------
 【タイトル】 {entryTitle}[raw]

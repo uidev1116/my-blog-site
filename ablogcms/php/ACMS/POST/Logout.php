@@ -7,6 +7,9 @@ class ACMS_POST_Logout extends ACMS_POST
     function post()
     {
         if (SUID) {
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName(SUID) . '」がログアウト処理をしました', [
+                'suid' => SUID,
+            ]);
             logout();
         }
 

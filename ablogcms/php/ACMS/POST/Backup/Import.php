@@ -33,6 +33,9 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
     {
         try {
             $this->authCheck('backup_import');
+
+            AcmsLogger::info('データベースのリストアを開始しました');
+
             ignore_user_abort(true);
             set_time_limit(0);
 
@@ -60,6 +63,8 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
             }
         } catch (Exception $e) {
             $this->addError($e->getMessage());
+            AcmsLogger::warning('データベースのインポートでエラーが発生しました。', Common::exceptionArray($e));
+
             return $this->Post;
         }
     }
@@ -199,7 +204,7 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
                 }
                 $mailer->send();
             } catch (Exception $e) {
-                throw $e;
+                AcmsLogger::warning('データベースのインポート完了通知メールの送信に失敗しました', Common::exceptionArray($e));
             }
         }
     }

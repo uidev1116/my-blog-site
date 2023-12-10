@@ -5,6 +5,7 @@ namespace Acms\Services\Cache;
 use Acms\Services\Cache\Adapters\Standard;
 use Acms\Services\Cache\Adapters\Tag;
 use Acms\Services\Cache\Adapters\NoCache;
+use Acms\Services\Cache\Exceptions\NotFoundException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -12,6 +13,8 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
 use Symfony\Component\Cache\Adapter\RedisTagAwareAdapter;
+use Acms\Services\Cache\Adapters\Custom\DatabaseTagAwareAdapter;
+use AcmsLogger;
 
 class CacheManager
 {
@@ -69,12 +72,26 @@ class CacheManager
         if ($cache) {
             return $cache;
         }
+        if (defined('IS_SETUP') && IS_SETUP) {
+            $cache = new NoCache();
+            return $cache;
+        }
         try {
             $config = $this->config['type']['config'];
             $driver = $this->createTagDriver($config['driver'], $this->getNameSpace($config['namespace']));
-            $cache =  new Tag($driver);
+            $cache = new Tag($driver);
+        } catch (NotFoundException $e) {
+            AcmsLogger::warning(
+                'キャッシュ機能: 利用可能なキャッシュドライバーが見つかりませんでした。cms 設置ディレクトリ直下の .env ファイルを確認してください。',
+                [
+                    'type' => 'config',
+                    'driver' => $config['driver']
+                ]
+            );
+            $cache = new NoCache();
         } catch (\Exception $e) {
-            $cache = new NoCache;
+            AcmsLogger::warning('キャッシュ機能: ' . $e->getMessage());
+            $cache = new NoCache();
         }
         return $cache;
     }
@@ -88,12 +105,26 @@ class CacheManager
         if ($cache) {
             return $cache;
         }
+        if (defined('IS_SETUP') && IS_SETUP) {
+            $cache = new NoCache();
+            return $cache;
+        }
         try {
             $config = $this->config['type']['page'];
             $driver = $this->createTagDriver($config['driver'], $this->getNameSpace($config['namespace']));
-            $cache =  new Tag($driver);
+            $cache = new Tag($driver);
+        } catch (NotFoundException $e) {
+            AcmsLogger::warning(
+                'キャッシュ機能: 利用可能なキャッシュドライバーが見つかりませんでした。cms 設置ディレクトリ直下の .env ファイルを確認してください。',
+                [
+                    'type' => 'page',
+                    'driver' => $config['driver']
+                ]
+            );
+            $cache = new NoCache();
         } catch (\Exception $e) {
-            $cache = new NoCache;
+            AcmsLogger::warning('キャッシュ機能: ' . $e->getMessage());
+            $cache = new NoCache();
         }
         return $cache;
     }
@@ -158,12 +189,31 @@ class CacheManager
         if (isset($cache[$name])) {
             return $cache[$name];
         }
-        try {
-            $driver = $this->createDriver($config['driver'], $this->getNameSpace($config['namespace']), $config['lifetime']);
-            $cache[$name] =  new Standard($driver);
-        } catch (\Exception $e) {
-            $cache[$name] = new NoCache;
+        if (defined('IS_SETUP') && IS_SETUP) {
+            $cache[$name] = new NoCache();
+            return $cache[$name];
         }
+        try {
+            $driver = $this->createDriver(
+                $config['driver'],
+                $this->getNameSpace($config['namespace']),
+                $config['lifetime']
+            );
+            $cache[$name] = new Standard($driver);
+        } catch (NotFoundException $e) {
+            AcmsLogger::warning(
+                'キャッシュ機能: 利用可能なキャッシュドライバーが見つかりませんでした。cms 設置ディレクトリ直下の .env ファイルを確認してください。',
+                [
+                    'type' => $name,
+                    'driver' => $config['driver']
+                ]
+            );
+            $cache[$name] = new NoCache();
+        } catch (\Exception $e) {
+            AcmsLogger::warning('キャッシュ機能: ' . $e->getMessage());
+            $cache[$name] = new NoCache();
+        }
+
         return $cache[$name];
     }
 
@@ -173,6 +223,8 @@ class CacheManager
      * @param string $drivers
      * @param string $namespace
      * @param int $lifetime
+     *
+     * @throws NotFoundException
      */
     protected function createDriver($drivers, $namespace, $lifetime = 0)
     {
@@ -188,17 +240,22 @@ class CacheManager
             }
         }
         if (empty($useDriver)) {
-            throw new \RuntimeException('Cache driver not found.');
+            throw new NotFoundException('Cache driver is not found.');
         }
         $createMethod = 'create' . ucwords($useDriver) . 'Driver';
         if (method_exists($this, $createMethod)) {
             return $this->{$createMethod}($namespace, $lifetime);
         }
-        throw new \RuntimeException('Cache driver not found.');
+        throw new NotFoundException('Cache driver is not found.');
     }
 
     /**
      * タグ対応キャッシュドライバーの作成
+     *
+     * @param string $drivers
+     * @param string $namespace
+     *
+     * @throws NotFoundException
      */
     protected function createTagDriver($drivers, $namespace)
     {
@@ -214,13 +271,13 @@ class CacheManager
             }
         }
         if (empty($useDriver)) {
-            throw new \RuntimeException('Cache driver not found.');
+            throw new NotFoundException('Cache driver is not found.');
         }
         $createMethod = 'create' . ucwords($useDriver) . 'TagDriver';
         if (method_exists($this, $createMethod)) {
             return $this->{$createMethod}($namespace);
         }
-        throw new \RuntimeException('Cache driver not found.');
+        throw new NotFoundException('Cache driver is not found.');
     }
 
     /**
@@ -256,11 +313,23 @@ class CacheManager
      */
     protected function createFileDriver($namespace, $lifetime)
     {
-        return new FilesystemAdapter(
-            $namespace,
-            $defaultLifetime = $lifetime,
-            $directory = $this->cacheDir
-        );
+        return new FilesystemAdapter($namespace, $lifetime, $this->cacheDir);
+    }
+
+    /**
+     * ファイルキャッシュドライバーが使用可能か
+     */
+    protected function canDatabaseDriver()
+    {
+        return true;
+    }
+
+    /**
+     * ファイルキャッシュドライバーの作成
+     */
+    protected function createDatabaseDriver($namespace, $lifetime)
+    {
+        return new DatabaseTagAwareAdapter($namespace, $lifetime);
     }
 
     /**
@@ -276,12 +345,7 @@ class CacheManager
      */
     protected function createMemoryDriver($namespace, $lifetime)
     {
-        return new ArrayAdapter(
-            $defaultLifetime = $lifetime,
-            $storeSerialized = false,
-            $maxLifetime = 100,
-            $maxItems = 1000
-        );
+        return new ArrayAdapter($lifetime, false, 100, 1000);
     }
 
     /**
@@ -297,11 +361,7 @@ class CacheManager
      */
     protected function createApcuDriver($namespace, $lifetime)
     {
-        return new ApcuAdapter(
-            $namespace,
-            $defaultLifetime = $lifetime,
-            $version = null
-        );
+        return new ApcuAdapter($namespace, $lifetime, null);
     }
 
     /**
@@ -320,11 +380,7 @@ class CacheManager
         $redisInfo = $this->config['drivers']['redis']['connection'];
         $client = $this->createRedisClient($redisInfo['host'], $redisInfo['port'], $redisInfo['password'], $redisInfo['db']);
 
-        return new RedisAdapter(
-            $client,
-            $namespace,
-            $defaultLifetime = $lifetime
-        );
+        return new RedisAdapter($client, $namespace, $lifetime);
     }
 
     /**
@@ -340,11 +396,23 @@ class CacheManager
      */
     protected function createFileTagDriver($namespace)
     {
-        return new FilesystemTagAwareAdapter(
-            $namespace,
-            $defaultLifetime = 0,
-            $directory = $this->cacheDir
-        );
+        return new FilesystemTagAwareAdapter($namespace, 120, $this->cacheDir);
+    }
+
+    /**
+     * DBキャッシュドライバーが使用可能か
+     */
+    protected function canDatabaseTagDriver()
+    {
+        return true;
+    }
+
+    /**
+     * ファイルキャッシュドライバーの作成
+     */
+    protected function createDatabaseTagDriver($namespace)
+    {
+        return new DatabaseTagAwareAdapter($namespace, 120);
     }
 
     /**
@@ -363,11 +431,7 @@ class CacheManager
         $redisInfo = $this->config['drivers']['redis']['connection'];
         $client = $this->createRedisClient($redisInfo['host'], $redisInfo['port'], $redisInfo['password'], $redisInfo['db']);
 
-        return new RedisTagAwareAdapter(
-            $client,
-            $namespace,
-            $defaultLifetime = 0
-        );
+        return new RedisTagAwareAdapter($client, $namespace, 120);
     }
 
     /**

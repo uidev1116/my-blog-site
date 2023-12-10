@@ -14,8 +14,9 @@ class ACMS_POST_Entry_Index_Sort extends ACMS_POST
         $this->Post->setMethod('checks', 'required');
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $targetEIDs = [];
             foreach ( $this->Post->getArray('checks') as $eid ) {
                 $id     = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
                 $bid    = $id[0];
@@ -36,8 +37,13 @@ class ACMS_POST_Entry_Index_Sort extends ACMS_POST
                 }
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::entry($eid, null);
-
+                $targetEIDs[] = $eid;
             }
+            AcmsLogger::info('指定されたエントリーの並び順を変更しました', [
+                'targetEIDs' => $targetEIDs,
+            ]);
+        } else {
+            AcmsLogger::info('指定されたエントリーの並び順変更に失敗しました');
         }
 
         return $this->Post;

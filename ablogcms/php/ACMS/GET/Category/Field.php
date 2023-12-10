@@ -12,7 +12,8 @@ class ACMS_GET_Category_Field extends ACMS_GET
         if ( !$row = ACMS_RAM::category($this->cid) ) return '';
 
         $status = ACMS_RAM::categoryStatus($this->cid);
-        if (!sessionWithAdministration() and 'close' === $status) return '';
+        if (!sessionWithAdministration() && 'close' === $status) return '';
+        if (!sessionWithSubscription() && 'secret'  === $status) return '';
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);

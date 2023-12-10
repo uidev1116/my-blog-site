@@ -55,6 +55,18 @@
 			</td>
 		</tr>
 		<tr>
+			<th><!--T-->読者ユーザーの場合<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ログイン時は通常ページキャッシュが使用されないが、読者ユーザーの場合ページキャッシュを有効にします<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="subscriber_cache" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="subscriber_cache" value="on"{subscriber_cache:checked#on} id="input-checkbox-subscriber_cache" />
+					<label for="input-checkbox-subscriber_cache"><i class="acms-admin-ico-checkbox"></i><!--T-->読者の場合ログインしていても、ページキャッシュを有効にする<!--/T--></label>
+          <span class="acms-admin-text-error" style="font-size: 12px;">有効にすると、Touch_LoginやUser_Profileモジュールなど、ログイン状態やユーザーの情報など個々の情報がページキャッシュされてしまいます。有効にする場合は注意して設定ください。</span>
+				</div>
+				<input type="hidden" name="config[]" value="subscriber_cache" />
+			</td>
+		</tr>
+		<tr>
 			<th><!--T-->キャッシュ有効時間<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->キャッシュが有効な時間です。この時間内で同じデータに複数回アクセスがあった場合、2回目以降はキャッシュファイルが表示されます。<!--/T-->"></i></th>
 			<td>
 				<input class="acms-admin-form-width-mini" type="text" name="cache_expire" value="{cache_expire}" size="8" /> <!--T-->秒<!--/T-->

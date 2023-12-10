@@ -33,29 +33,6 @@
 	<h3 class="acms-admin-admin-title2"><!--T-->基本<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
-			<th><!--T-->アクセスログ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->アクセスに関するログを記録してデータベースに記録します。取得しないという選択肢もあります。保存期間を越えたログは自動的に削除されます。また、ここで取得したログは「その他管理」内の「チェックリスト」からCSVデータとしてダウンロードできます。<!--/T-->"></i></th>
-			<td>
-				<select type="text" name="log_access" class="js-select2">
-					<option value="off"{log_access:selected#off}><!--T-->取得しない<!--/T--></option>
-					<option value="post"{log_access:selected#post}><!--T-->POSTのみ取得<!--/T--></option>
-					<option value="on"{log_access:selected#on}><!--T-->全て取得<!--/T--></option>
-				</select>
-				<input type="hidden" name="config[]" value="log_access" />
-				<!-- BEGIN_MODULE Touch_RootBlog -->
-				<!--T-->保存期間<!--/T-->
-				<select type="text" name="log_access_save_period" class="js-select2">
-					<option value="7"{log_access_save_period:selected#7}>7<!--T-->日間<!--/T--></option>
-					<option value="30"{log_access_save_period:selected#30}>30<!--T-->日間<!--/T--></option>
-					<option value="90"{log_access_save_period:selected#90}>90<!--T-->日間<!--/T--></option>
-					<option value="365"{log_access_save_period:selected#365}>1<!--T-->年間<!--/T--></option>
-				</select>
-				<input type="hidden" name="config[]" value="log_access_save_period" />
-				<!-- END_MODULE Touch_RootBlog --><!-- BEGIN_MODULE Touch_NotRootBlog -->
-				<!--T-->保存期間 {log_access_save_period}日間 (保存期間はルートブログで設定できます)<!--/T-->
-				<!-- END_MODULE Touch_NotRootBlog -->
-			</td>
-		</tr>
-		<tr>
 			<th><!--T-->RSS,Sitemap.xml 出力なし<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをつけると、このブログをRSSとSitemap.xmlに出力をしないように設定<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="feed_output_disable" value="off" />
@@ -85,7 +62,8 @@
 
 
 			</td>
-		</tr><!-- BEGIN_MODULE Touch_EditionIsProfessional -->
+		</tr>
+    <!-- BEGIN_MODULE Touch_EditionIsProfessional -->
 		<tr>
 			<th><!--T-->承認機能<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをするとエントリーで承認機能が利用できるようになります。<!--/T-->"></i></th>
 			<td>
@@ -98,20 +76,6 @@
 					</label>
 				</div>
 				<input type="hidden" name="config[]" value="manage_approval" />
-			</td>
-		</tr>
-    <tr>
-			<th><!--T-->承認機能有効時の編集権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると承認機能有効時に投稿者は自身が投稿した記事のみを編集できます。<!--/T-->"></i></th>
-			<td>
-				<input type="hidden" name="approval_contributor_edit_auth" value="off" />
-				<div class="acms-admin-form-checkbox">
-					<input type="checkbox" name="approval_contributor_edit_auth" value="on"{approval_contributor_edit_auth:checked#on} id="input-checkbox-approval_contributor_edit_auth" />
-					<label for="input-checkbox-approval_contributor_edit_auth">
-						<i class="acms-admin-ico-checkbox"></i>
-						<!--T-->投稿者は自身が投稿した記事のみ編集できる<!--/T-->
-					</label>
-				</div>
-				<input type="hidden" name="config[]" value="approval_contributor_edit_auth" />
 			</td>
 		</tr>
     <!-- BEGIN_IF [%{BID}/neq/1] -->
@@ -127,7 +91,24 @@
 				<input type="hidden" name="config[]" value="blog_manage_approval" />
 			</td>
 		</tr><!-- END_IF -->
-		<tr><!-- END_MODULE Touch_EditionIsProfessional -->
+    <!-- END_MODULE Touch_EditionIsProfessional -->
+    <!-- BEGIN_MODULE Touch_NotEditionIsStandard -->
+    <tr>
+			<th><!--T-->承認機能有効時の編集権限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると承認機能有効時に投稿者は自身が投稿した記事のみを編集できます。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="approval_contributor_edit_auth" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="approval_contributor_edit_auth" value="on"{approval_contributor_edit_auth:checked#on} id="input-checkbox-approval_contributor_edit_auth" />
+					<label for="input-checkbox-approval_contributor_edit_auth">
+						<i class="acms-admin-ico-checkbox"></i>
+						<!--T-->投稿者は自身が投稿した記事のみ編集できる<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="approval_contributor_edit_auth" />
+			</td>
+		</tr>
+    <!-- END_MODULE Touch_NotEditionIsStandard -->
+		<tr>
 			<th><!--T-->バージョン管理<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをするとエントリーのバージョン管理ができるようになります。<!--/T-->"></i></th>
 			<td>
 				<input type="hidden" name="manage_revisions" value="off" />
@@ -163,19 +144,6 @@
 					</label>
 				</div>
 				<input type="hidden" name="config[]" value="media_library" />
-			</td>
-		</tr>
-		<tr>
-			<th><!--T-->プレビュー共有の有効期限<!--/T--></th>
-			<td>
-				<input type="text" name="url_preview_expire" value="{url_preview_expire}" size="5" /> <!--T-->時間<!--/T-->
-				<input type="hidden" name="config[]" value="url_preview_expire" />
-				<input type="hidden" name="url_preview_expire:validator#digits" id="validator-url_preview_expire-digits" />
-				<div role="alert" aria-live="assertive">
-					<div data-validator-label="validator-url_preview_expire-digits" class="validator-result-{url_preview_expire:validator#digits}">
-						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
-					</div>
-				</div>
 			</td>
 		</tr>
 		<tr>
@@ -216,6 +184,49 @@
 			</td>
 		</tr>
 	</table>
+
+  <h3 class="acms-admin-admin-title2"><!--T-->エントリー同時編集ロック<!--/T-->（<!--T-->プロフェッショナル版以上<!--/T-->）</h3>
+  <table class="adminTable acms-admin-table-admin-edit">
+    <tr>
+			<th><!--T-->同時編集ロック機能<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをするとエントリーのロック（排他制御）が利用できるようになります。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="entry_lock_enable" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="entry_lock_enable" value="on"{entry_lock_enable:checked#on} id="input-checkbox-entry_lock_enable" />
+					<label for="input-checkbox-entry_lock_enable">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->エントリーの同時編集ロック機能を利用可能にする<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="entry_lock_enable" />
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->アラートのみ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると実際のエントリーのロックはしないで、アラートのみ表示します。<!--/T-->"></i></th>
+			<td>
+				<input type="hidden" name="entry_lock_alert_only" value="off" />
+				<div class="acms-admin-form-checkbox">
+					<input type="checkbox" name="entry_lock_alert_only" value="on"{entry_lock_alert_only:checked#on} id="input-checkbox-entry_lock_alert_only" />
+					<label for="input-checkbox-entry_lock_alert_only">
+						<i class="acms-admin-ico-checkbox"></i><!--T-->実際にロックはしないで、アラートのみ表示します<!--/T-->
+					</label>
+				</div>
+				<input type="hidden" name="config[]" value="entry_lock_alert_only" />
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->ロック有効期限<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->エントリーのロック有効期限。この時間を過ぎると自動的にロックを解除します。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="entry_lock_expire" value="{entry_lock_expire}" size="5" /> <!--T-->時間<!--/T-->
+				<input type="hidden" name="config[]" value="entry_lock_expire" />
+				<input type="hidden" name="entry_lock_expire:validator#digits" id="validator-entry_lock_expire-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-entry_lock_expire-digits" class="validator-result-{entry_lock_expire:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
+			</td>
+		</tr>
+  </table>
 
 	<h3 class="acms-admin-admin-title2"><!--T-->プレビュー<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
@@ -271,6 +282,19 @@
 					<option value="PC"{timemachine_preview_default_device:selected#PC}>PC</option>
 				</select>
 				<input type="hidden" name="config[]" value="timemachine_preview_default_device" />
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->プレビュー共有の有効期限<!--/T--></th>
+			<td>
+				<input type="text" name="url_preview_expire" value="{url_preview_expire}" size="5" /> <!--T-->時間<!--/T-->
+				<input type="hidden" name="config[]" value="url_preview_expire" />
+				<input type="hidden" name="url_preview_expire:validator#digits" id="validator-url_preview_expire-digits" />
+				<div role="alert" aria-live="assertive">
+					<div data-validator-label="validator-url_preview_expire-digits" class="validator-result-{url_preview_expire:validator#digits}">
+						<p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention" aria-hidden="true"></span><!--T-->数字を入力して下さい。<!--/T--></p>
+					</div>
+				</div>
 			</td>
 		</tr>
 	</table>

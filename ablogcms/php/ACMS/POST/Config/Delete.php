@@ -20,6 +20,12 @@ class ACMS_POST_Config_Delete extends ACMS_POST
 
         $this->addMessage('success');
 
+        AcmsLogger::info('コンフィグをリセットしました', [
+            'bid' => BID,
+            'rid' => $rid,
+            'setid' => $setid,
+        ]);
+
         return $this->Post;
     }
 }

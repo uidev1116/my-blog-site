@@ -78,7 +78,7 @@ class ThemeGenerator extends Generator
             try {
                 $url = acmsLink(array('bid'=>BID), false) . $file->getRelativePathname();
                 $this->request($url, $file);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), $file->getRelativePathname());
             }
         }

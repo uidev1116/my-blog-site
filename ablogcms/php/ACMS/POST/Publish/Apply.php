@@ -42,28 +42,41 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
         $max = min($resourceCnt, $layoutOnlyCnt, $tgtThemeCnt, $tgtPathCnt);
 
         $basePath = SCRIPT_DIR . THEMES_DIR;
-        $error = 0;
 
+        $successLog = [];
+        $errorLog = [];
         for ($i = 0; $i < $max; $i++) {
-
             $uri = $resources[$i];
             $layout = $layoutOnly[$i];
             $theme = $tgtTheme[$i];
             $path = $tgtPath[$i];
-
             $this->pointer = md5($uri . $theme . $path);
 
             if (!preg_match('@^/@', $path)) {
                 $path = '/' . $path;
             }
-
             if (!$this->validateUri($uri)) {
+                $errorLog[] = [
+                    'url' => $uri,
+                    'path' => $path,
+                    'message' => 'URLが不正です',
+                ];
                 continue;
             }
             if (!$this->isWritable($basePath . $theme)) {
+                $errorLog[] = [
+                    'url' => $uri,
+                    'path' => $basePath . $theme,
+                    'message' => '書き込み権限がありません',
+                ];
                 continue;
             }
             if (!$this->isExists($basePath . $theme . $path)) {
+                $errorLog[] = [
+                    'url' => $uri,
+                    'path' => $basePath . $theme . $path,
+                    'message' => '書き込み権限がありません',
+                ];
                 continue;
             }
             try {
@@ -77,23 +90,41 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
                     'User-Agent ' . $ua,
                 ));
                 $response = $req->send();
+                if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
+                    throw new \RuntimeException(Http::getResponseHeader('http_code'));
+                }
                 $body = $response->getResponseBody();
 
                 $fullpath = $basePath . $theme . $path;
                 if (!!($fp = fopen($fullpath, 'w'))) {
                     fwrite($fp, $body);
                     fclose($fp);
+
+                    $successLog[] = [
+                        'url' => $uri,
+                        'path' => $fullpath,
+                    ];
                 } else {
                     $this->addError('failed to put content in ' . $fullpath);
-                    $error++;
+                    $errorLog[] = [
+                        'url' => $uri,
+                        'path' => $fullpath,
+                    ];
                 }
             } catch (Exception $e) {
                 $this->addError($e->getMessage());
-                $error++;
+                $errorLog[] = [
+                    'url' => $uri,
+                    'path' => $fullpath,
+                    'message' => $e->getMessage(),
+                ];
             }
         }
-        if (empty($error)) {
+        if (empty($errorLog) && count($successLog) > 0) {
             $this->addMessage(gettext('書き出しに成功しました'));
+            AcmsLogger::info('テンプレートの書き出しに成功しました', $successLog);
+        } else {
+            AcmsLogger::warning('テンプレート書き出しに失敗しました', $errorLog);
         }
         return $this->Post;
     }

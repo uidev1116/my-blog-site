@@ -22,6 +22,8 @@ class ACMS_POST_Config_Reset_Rule extends ACMS_POST_Config
             $Config = null;
             $this->Post->set('notice_mess', 'show');
             $this->Post->set('edit', 'update');
+
+            AcmsLogger::info('「' . ACMS_RAM::ruleName($rid) . '」ルールのコンフィグをリセットしました');
         }
 
         return $this->Post;

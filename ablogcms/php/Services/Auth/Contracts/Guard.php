@@ -80,14 +80,18 @@ interface Guard
     /**
      * ログインしているユーザーが特定の管理ページで権限があるかチェック
      *
-     * @param string $action
-     * @param string $admin
-     * @param string $idKey
-     * @param string $id
+     * @param array{
+     *  bid?: int,
+     *  cid?: int,
+     *  rid?: int,
+     *  mid?: int,
+     *  scid?: int,
+     *  setid?: int
+     * } $ids
      *
      * @return bool
      */
-    public function checkShortcut($action, $admin, $idKey, $id);
+    public function checkShortcut(array $ids);
 
     /**
      * 指定したユーザーの権限があるブログリストを取得

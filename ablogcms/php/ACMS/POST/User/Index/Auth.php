@@ -16,9 +16,11 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
         $this->Post->setMethod('user', 'limit', $this->isLimit());
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            $auth   = $this->Post->get('auth');
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $auth = $this->Post->get('auth');
+            $targetUsers = [];
+
             foreach ( $this->Post->getArray('checks') as $uid ) {
                 if ( !($uid = intval($uid)) ) continue;
                 $SQL    = SQL::newUpdate('user');
@@ -27,6 +29,16 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
                 $SQL->addWhereOpr('user_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::user($uid, null);
+
+                $targetUsers[] = ACMS_RAM::userName($uid) . '（' . ACMS_RAM::userMail($uid) . '）';
+            }
+            if (!empty($targetUsers)) {
+                $authName = '';
+                if ($auth === 'subscriber') $authName = '読者';
+                if ($auth === 'contributor') $authName = '投稿者';
+                if ($auth === 'editor') $authName = '編集者';
+                if ($auth === 'administrator') $authName = '管理者';
+                AcmsLogger::info('選択したユーザーの権限を「' . $authName . '」に変更しました', $targetUsers);
             }
         }
 

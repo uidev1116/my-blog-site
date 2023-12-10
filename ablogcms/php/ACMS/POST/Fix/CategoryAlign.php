@@ -76,6 +76,7 @@ class ACMS_POST_Fix_CategoryAlign extends ACMS_POST
 
                 if ( empty($que) ) break;
             }
+            AcmsLogger::info('カテゴリーの親子構造を修復しました');
         }
         Cache::flush('temp');
 

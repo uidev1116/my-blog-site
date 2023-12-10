@@ -38,6 +38,11 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
 
         ignore_user_abort(true);
         set_time_limit(0);
+
+        AcmsLogger::info('差分静的書き出しを開始しました', [
+            'bid' => BID,
+        ]);
+
         Common::backgroundRedirect(HTTP_REQUEST_URL);
         $this->run();
         die();
@@ -103,9 +108,14 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
             $engine->runDiff($fromDatetime);
             $this->saveExportDatetime($exportDate, $exportTime);
 
+            AcmsLogger::info('部分静的書き出しを完了しました', [
+                'bid' => BID,
+            ]);
+
             App::checkException();
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $logger->error($e->getMessage());
+            AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
         }
         DB::setThrowException(false);
     }

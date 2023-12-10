@@ -38,6 +38,7 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
             $SQL->addWhereOpr('approval_revision_id', $row['approval_revision_id']);
             $SQL->addWhereOpr('approval_entry_id', $row['approval_entry_id']);
             $SQL->addWhereOpr('approval_blog_id', $row['approval_blog_id']);
+            $SQL->addWhereOpr('approval_type', 'comment', '<>');
             $SQL->setOrder('approval_datetime', 'DESC');
             if ( !($history = $DB->query($SQL->get(dsn()), 'all')) ) return '';
 
@@ -52,7 +53,7 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                 //------------------
                 // 担当者 承認依頼のみ
                 if ( $row2['approval_type'] === 'request' ) {
-                    $receive['deadline']    = $row2['approval_deadline_datetime'];
+                    $receive = null;
                     if ( !!$row2['approval_receive_user_id'] ) {
                         $receive['userOrGroupp'] = ACMS_RAM::userName($row2['approval_receive_user_id']);
                     } else if ( !!$row2['approval_receive_usergroup_id'] ) {
@@ -62,7 +63,9 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                         $groupName = $DB->query($SQL->get(dsn()), 'one');
                         $receive['userOrGroupp'] = $groupName;
                     }
-                    $Tpl->add(array('receiveUser', 'history:loop', 'approval:loop'), $receive);
+                    if ($receive) {
+                        $Tpl->add(array('receiveUser', 'history:loop', 'approval:loop'), $receive);
+                    }
                 }
 
                 //---------
@@ -92,27 +95,28 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
             // last status
             $last = array_shift($history);
             $Tpl->add('type:touch#'.$last['approval_type']);
-            
-            $loop = array();
+
+            $loop = [];
 
             $SQL = SQL::newSelect('entry_rev');
             $SQL->addWhereOpr('entry_id', $row['approval_entry_id']);
             $SQL->addWhereOpr('entry_rev_id', $row['approval_revision_id']);
             $rev = $DB->query($SQL->get(dsn()), 'row');
 
-            $loop['title']      = $rev['entry_title'];
-            $loop['version']    = $rev['entry_rev_memo'];
-            $loop['rvid']       = $row['approval_revision_id'];
-            $loop['eid']        = $row['approval_entry_id'];
-            $loop['url'] = acmsLink(array(
-                'bid'   => $row['approval_blog_id'],
-                'eid'   => $row['approval_entry_id'],
-                'tpl'   => 'ajax/revision-preview.html',
-                'query' => array(
-                    'rvid'  => $row['approval_revision_id'],
-                ),
-            ), false, false, true);
-
+            if ($rev) {
+                $loop['title'] = $rev['entry_title'];
+                $loop['version'] = $rev['entry_rev_memo'];
+                $loop['rvid'] = $row['approval_revision_id'];
+                $loop['eid'] = $row['approval_entry_id'];
+                $loop['url'] = acmsLink(array(
+                    'bid' => $row['approval_blog_id'],
+                    'eid' => $row['approval_entry_id'],
+                    'tpl' => 'ajax/revision-preview.html',
+                    'query' => array(
+                        'rvid' => $row['approval_revision_id'],
+                    ),
+                ), false, false, true);
+            }
             $Tpl->add('approval:loop', $loop);
         }
         $Tpl->add(null, $vars);

@@ -17,7 +17,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Form extends ACMS_GET_Admin_Entry_BulkChan
             }
             $tpl->add($block, $this->buildField($this->Post, $tpl, $block, ''));
         } catch (\Exception $e) {
-
+            AcmsLogger::debug($e->getMessage(), Common::exceptionArray($e));
         }
         return $tpl->get();
     }

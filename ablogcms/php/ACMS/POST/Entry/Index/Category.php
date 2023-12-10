@@ -22,8 +22,9 @@ class ACMS_POST_Entry_Index_Category extends ACMS_POST
             return $this->Post;
         }
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
+            $targetEIDs = [];
             foreach ( $this->Post->getArray('checks') as $beid ) {
                 $id     = preg_split('@:@', $beid, 2, PREG_SPLIT_NO_EMPTY);
                 $bid    = $id[0];
@@ -42,7 +43,14 @@ class ACMS_POST_Entry_Index_Category extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::entry($eid, null);
 
+                $targetEIDs[] = $eid;
             }
+            AcmsLogger::info('指定されたエントリーのカテゴリーを「' . ACMS_RAM::blogName($bid) . '」カテゴリーに一括変更しました', [
+                'targetEIDs' => implode(',', $targetEIDs),
+                'targetCID' => $cid,
+            ]);
+        } else {
+            AcmsLogger::info('指定されたエントリーの一括カテゴリー変更に失敗しました');
         }
 
         return $this->Post;

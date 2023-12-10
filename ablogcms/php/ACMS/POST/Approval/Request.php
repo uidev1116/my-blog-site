@@ -24,7 +24,6 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
             $receiver   = $Approval->get('receiver');
             $comment    = $Approval->get('request_comment');
             $req_group  = $Approval->get('current_group');
-            $deadline   = $Approval->get('deadline_date');
             $ugid       = null;
             $uid        = null;
 
@@ -135,19 +134,16 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                 and $subjectTpl = findTemplate(config('mail_approval_tpl_subject'))
                 and $bodyTpl    = findTemplate(config('mail_approval_tpl_body'))
             ) {
-                $SQL = SQL::newSelect('entry_rev');
-                $SQL->addWhereOpr('entry_id', EID);
-                $SQL->addWhereOpr('entry_rev_id', $rvid);
-                $rev = $DB->query($SQL->get(dsn()), 'row');
+                $revision = Entry::getRevision(EID, $rvid);
 
                 $Approval->setField('request_user', ACMS_RAM::userName(SUID));
                 $Approval->setField('approval', 'request');
                 $Approval->setField('approval2', 'request');
                 $Approval->setField('approval3', 'request');
                 $Approval->setField('approval4', 'request');
-                $Approval->setField('entryTitle', $rev['entry_title']);
+                $Approval->setField('entryTitle', $revision['entry_title']);
                 $Approval->setField('entryStatus', ACMS_RAM::entryStatus(EID));
-                $Approval->setField('version', $rev['entry_rev_memo']);
+                $Approval->setField('version', $revision['entry_rev_memo']);
                 $Approval->setField('revisionUrl', acmsLink(array(
                     'protocol'  => SSL_ENABLE ? 'https' : 'http',
                     'bid'   => BID,
@@ -200,8 +196,8 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                             $mailer = $mailer->setHtml($bodyHtml);
                         }
                         $mailer->send();
-                    } catch ( Exception $e  ) {
-                        throw $e;
+                    } catch (Exception $e) {
+                        AcmsLogger::warning('最終依頼の通知メールの送信に失敗しました', Common::exceptionArray($e));
                     }
                 }
 
@@ -229,7 +225,6 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                     $SQL->addInsert('approval_type', 'request');
                     $SQL->addInsert('approval_method', $type);
                     $SQL->addInsert('approval_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
-                    $SQL->addInsert('approval_deadline_datetime', $deadline.' 00:00:00');
                     $SQL->addInsert('approval_comment', $comment);
                     $SQL->addInsert('approval_receive_usergroup_id', $ugid);
                     $SQL->addInsert('approval_receive_user_id', $uid);
@@ -302,6 +297,14 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                     $DB->query($SQL->get(dsn()), 'exec');
                 }
             }
+
+            $revision = Entry::getRevision(EID, $rvid);
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '（' . $revision['entry_rev_memo'] . '）」の承認依頼をしました', [
+                'apid' => $apid,
+                'eid' => EID,
+                'rvid' => $rvid,
+                'comment' => $comment,
+            ]);
         }
         return $this->Post;
     }

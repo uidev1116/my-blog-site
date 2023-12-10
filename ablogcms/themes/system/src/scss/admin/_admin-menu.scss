@@ -7,7 +7,7 @@
 
   // 列
   .react-trello-lane {
-    background: #f0f1f5;
+    background: global.$acms-color-system-gray10;
   }
 
   .react-trello-board .smooth-dnd-container {
@@ -50,7 +50,7 @@
   .react-trello-card-sort {
     margin-top: 5px;
     margin-right: 5px;
-    color: #666;
+    color: global.$acms-color-gray90;
     @include global.font-size(16);
   }
   .react-trello-card-edit-btn {

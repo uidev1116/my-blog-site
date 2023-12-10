@@ -422,7 +422,7 @@ class ACMS_CorrectorBody
             $pfx .= '_' . $color;
         }
 
-        foreach (array('', ARCHIVES_DIR, REVISON_ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $archive_dir) {
+        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $archive_dir) {
             $tmpPath = $archive_dir . normalSizeImagePath($src);
             $destPath = trim(dirname($tmpPath), '/') . '/' . $pfx . '-' . Storage::mbBasename($tmpPath);
             $destPathVars = trim(dirname($src), '/') . '/' . $pfx . '-' . Storage::mbBasename($tmpPath);
@@ -650,8 +650,8 @@ class ACMS_CorrectorBody
 
     public function imageRatioSizeH($src, $args = array())
     {
-        foreach (array('', ARCHIVES_DIR, REVISON_ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
-            $size = Storage::getImageSize($dir . $src);
+        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
+            $size = Storage::getImageSize($dir . urldecode($src));
 
             if ($size) {
                 $width = isset($args[0]) ? intval($args[0]) : 200;
@@ -665,8 +665,8 @@ class ACMS_CorrectorBody
 
     public function imageRatioSizeW($src, $args = array())
     {
-        foreach (array('', ARCHIVES_DIR, REVISON_ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
-            $size = Storage::getImageSize($dir . $src);
+        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
+            $size = Storage::getImageSize($dir . urldecode($src));
 
             if ($size) {
                 $height = isset($args[0]) ? intval($args[0]) : 200;

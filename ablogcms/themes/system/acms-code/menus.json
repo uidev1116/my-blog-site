@@ -56,7 +56,13 @@
       "title": "<!--T-->ユーザー一覧<!--/T-->",
       "subtitle": "user",
       "url": "{url}"
-    },<!-- END user#index --><!-- BEGIN form#index -->
+    },<!-- END user#index --><!-- BEGIN member#index -->
+    {
+      "bid": "%{BID}",
+      "title": "<!--T-->会員一覧<!--/T-->",
+      "subtitle": "member",
+      "url": "{url}"
+    },<!-- END member#index --><!-- BEGIN form#index -->
     {
       "bid": "%{BID}",
       "title": "<!--T-->フォーム一覧<!--/T-->",
@@ -116,13 +122,25 @@
       "title": "<!--T-->カート<!--/T-->",
       "subtitle": "cart",
       "url": "{url}"
-    },<!-- END cart#menu --><!-- BEGIN config#set_index -->
+    },<!-- END cart#menu --><!-- BEGIN config#set_base_index -->
     {
       "bid": "%{BID}",
       "title": "<!--T-->コンフィグセット管理<!--/T-->",
       "subtitle": "config set",
       "url": "{url}"
-    },<!-- END config#set_index --><!-- BEGIN rule#index -->
+    },<!-- END config#set_base_index --><!-- BEGIN config#set_theme_index -->
+    {
+      "bid": "%{BID}",
+      "title": "<!--T-->テーマセット管理<!--/T-->",
+      "subtitle": "theme set",
+      "url": "{url}"
+    },<!-- END config#set_theme_index --><!-- BEGIN config#set_editor_index -->
+    {
+      "bid": "%{BID}",
+      "title": "<!--T-->編集画面セット管理<!--/T-->",
+      "subtitle": "editor set",
+      "url": "{url}"
+    },<!-- END config#set_editor_index --><!-- BEGIN rule#index -->
     {
       "bid": "%{BID}",
       "title": "<!--T-->ルール<!--/T-->",
@@ -134,19 +152,25 @@
       "title": "<!--T-->モジュールID<!--/T-->",
       "subtitle": "module",
       "url": "{url}"
-    },<!-- END module#index --><!-- BEGIN moduleDefault#index -->
+    },<!-- END module#index --><!-- BEGIN webhook#index -->
     {
       "bid": "%{BID}",
-      "title": "<!--T-->モジュール<!--/T-->",
-      "subtitle": "module default",
+      "title": "Webhook",
+      "subtitle": "webhook",
       "url": "{url}"
-    },<!-- END moduleDefault#index --><!-- BEGIN checklist -->
+    },<!-- END webhook#index --><!-- BEGIN checklist -->
     {
       "bid": "%{BID}",
       "title": "<!--T-->チェックリスト<!--/T-->",
       "subtitle": "checklist",
       "url": "{url}"
-    },<!-- END checklist --><!-- BEGIN shortcut#index -->
+    },<!-- END checklist --><!-- BEGIN audit_log -->
+    {
+      "bid": "%{BID}",
+      "title": "<!--T-->監査ログ<!--/T-->",
+      "subtitle": "audit_log",
+      "url": "{url}"
+    },<!-- END audit_log --><!-- BEGIN shortcut#index -->
     {
       "bid": "%{BID}",
       "title": "<!--T-->ショートカット<!--/T-->",
@@ -247,12 +271,6 @@
     },
     {
       "bid": "%{BID}",
-      "title": "<!--T-->外部認証設定<!--/T-->",
-      "subtitle": "config_authorize",
-      "url": "%{ADMIN_BASE_URL}bid/%{BID}/admin/config_authorize/"
-    },
-    {
-      "bid": "%{BID}",
       "title": "<!--T-->編集設定<!--/T-->",
       "subtitle": "config_edit",
       "url": "%{ADMIN_BASE_URL}bid/%{BID}/admin/config_edit/"
@@ -298,6 +316,26 @@
     },
     <!-- END config_set:loop -->
     <!-- END_MODULE Admin_Config_Set_Index -->
+    <!-- BEGIN_MODULE Admin_Config_Set_Theme -->
+    <!-- BEGIN config_set:loop -->
+    {
+      "bid": "%{BID}",
+      "title": "{name}",
+      "subtitle": "theme set",
+      "url": "<!-- BEGIN mine -->{configUrl}<!-- END mine --><!-- BEGIN notMinePermit -->{configUrl}<!-- END notMinePermit -->"
+    },
+    <!-- END config_set:loop -->
+    <!-- END_MODULE Admin_Config_Set_Theme -->
+    <!-- BEGIN_MODULE Admin_Config_Set_Editor -->
+    <!-- BEGIN config_set:loop -->
+    {
+      "bid": "%{BID}",
+      "title": "{name}",
+      "subtitle": "editor set",
+      "url": "<!-- BEGIN mine -->{configUrl}<!-- END mine --><!-- BEGIN notMinePermit -->{configUrl}<!-- END notMinePermit -->"
+    },
+    <!-- END config_set:loop -->
+    <!-- END_MODULE Admin_Config_Set_Editor -->
     {
       "bid": "%{BID}",
       "title": "",

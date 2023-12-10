@@ -28,11 +28,13 @@ class ACMS_POST_Update_ExecDB extends ACMS_POST_Update_Exec
             $dbUpdateService->update();
 
             $logger->success();
+            AcmsLogger::info('データベースのアップデートしました');
         } catch ( \Exception $e ) {
             $message = $e->getMessage();
             if ( !empty($message) ) {
                 $logger->error($e->getMessage());
             }
+            AcmsLogger::warning('データベースのアップデートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
         DB::setThrowException(false);
 

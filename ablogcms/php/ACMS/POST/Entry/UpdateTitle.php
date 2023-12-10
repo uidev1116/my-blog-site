@@ -15,6 +15,8 @@ class ACMS_POST_Entry_UpdateTitle extends ACMS_POST_Entry_Update
             ACMS_RAM::entry(EID, null);
 
             httpStatusCode('200 OK');
+
+            AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのタイトルを変更しました');
         } else {
             httpStatusCode('403 Forbidden');
         }

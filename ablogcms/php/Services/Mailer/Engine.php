@@ -318,7 +318,7 @@ class Engine implements MailerInterface
      *
      * @throws \RuntimeException
      */
-    public function send($background = 'default')
+    public function send($removeAttachedFiles = true)
     {
         if (empty($this->to)) {
             throw  new RuntimeException('\'to\' fields is empty.');
@@ -351,8 +351,10 @@ class Engine implements MailerInterface
             $this->message->returnPath($this->returnPath);
         }
         $this->mailer->send($this->message);
-        foreach ($this->attachedFiles as $path) {
-            Storage::remove($path);
+        if ($removeAttachedFiles) {
+            foreach ($this->attachedFiles as $path) {
+                Storage::remove($path);
+            }
         }
         return $this;
     }

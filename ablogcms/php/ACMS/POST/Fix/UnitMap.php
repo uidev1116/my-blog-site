@@ -22,6 +22,8 @@ class ACMS_POST_Fix_UnitMap extends ACMS_POST_Fix
             $this->sameType($target, $value);
             $this->sameType($target, $value, true);
             $this->Post->set('message', 'success');
+
+            AcmsLogger::info('データ修正ツールで、マップユニットの種類を変更しました「' . $target . '」->「' . $value . '」');
         }
 
         return $this->Post;

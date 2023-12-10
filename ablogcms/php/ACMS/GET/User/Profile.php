@@ -18,6 +18,8 @@ class ACMS_GET_User_Profile extends ACMS_GET
         $SQL->addSelect('user_mail_mobile_magazine');
         $SQL->addSelect('user_url');
         $SQL->addSelect('user_auth');
+        $SQL->addWhereOpr('user_status', 'open');
+        $SQL->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=');
         $SQL->addWhereOpr('user_blog_id', $this->bid);
         $SQL->addLeftJoin('entry', 'entry_user_id', 'user_id');
 
@@ -67,9 +69,12 @@ class ACMS_GET_User_Profile extends ACMS_GET
                 $vars[substr($key, strlen('user_'))] = $val;
             }
             $uid = intval($row['user_id']);
-            $vars['icon']       = loadUserIcon($uid);
-            if ( $large = loadUserLargeIcon($uid) ) {
-                $vars['largeIcon']  = $large;
+            $vars['icon'] = loadUserIcon($uid);
+            if ($large = loadUserLargeIcon($uid)) {
+                $vars['largeIcon'] = $large;
+            }
+            if ($orig = loadUserOriginalIcon($uid)) {
+                $vars['origIcon'] = $orig;
             }
             if (isset($row['latitude'])) {
                 $vars['geo_lat'] = $row['latitude'];

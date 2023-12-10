@@ -42,6 +42,8 @@ class ACMS_POST_Unit_SortDown extends ACMS_POST_Unit
 
         $this->fixEntry($eid);
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの「' . $sort . '」番目のユニットを下に移動しました');
+
         return $this->Post;
     }
 }

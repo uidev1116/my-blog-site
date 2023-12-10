@@ -53,6 +53,9 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             $req->setRequestHeaders($header);
             $response = $req->send();
             $responseHeaders = $response->getResponseHeader();
+            if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
+                throw new \RuntimeException(Http::getResponseHeader('http_code'));
+            }
             $body = $response->getResponseBody();
             if ( 1
                 and isset($responseHeaders['content-type'])
@@ -61,6 +64,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $subject = mb_convert_encoding($body, 'UTF-8', $match[1]);
             }
         } catch (\Exception $e) {
+            AcmsLogger::warning('メールテンプレートの取得に失敗しました', Common::exceptionArray($e, ['url' => acmsLink($url)]));
             $this->addError($e->getMessage());
         }
 
@@ -89,6 +93,9 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             $req = Http::init(acmsLink($url), 'GET');
             $req->setRequestHeaders($header);
             $response = $req->send();
+            if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
+                throw new \RuntimeException(Http::getResponseHeader('http_code'));
+            }
             $responseHeaders = $response->getResponseHeader();
             $body = $response->getResponseBody();
             if ( 1
@@ -98,6 +105,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $plain = mb_convert_encoding($body, 'UTF-8', $match[1]);
             }
         } catch (\Exception $e) {
+            AcmsLogger::warning('メールテンプレートの取得に失敗しました', Common::exceptionArray($e, ['url' => acmsLink($url)]));
             $this->addError($e->getMessage());
         }
         if ( empty($plain) ) {
@@ -123,6 +131,9 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             $req = Http::init(acmsLink($url), 'GET');
             $req->setRequestHeaders($header);
             $response = $req->send();
+            if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
+                throw new \RuntimeException(Http::getResponseHeader('http_code'));
+            }
             $responseHeaders = $response->getResponseHeader();
             $body = $response->getResponseBody();
             if ( 1
@@ -133,6 +144,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $html = mb_convert_encoding($body, 'UTF-8', $htmlCharset);
             }
         } catch (\Exception $e) {
+            AcmsLogger::warning('メールテンプレートの取得に失敗しました', Common::exceptionArray($e, ['url' => acmsLink($url)]));
             $this->addError($e->getMessage());
         }
 
@@ -210,8 +222,15 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                         $mailer->setBcc(implode(',', $aryBcc));
                     }
                     $mailer->send();
-                } catch ( Exception $e  ) {
-                    throw $e;
+
+                    AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーのメールマガジンを送信しました', [
+                        'to' => $to,
+                        'from' => $from,
+                        'subject' => $subject,
+                        'bcc' => $aryBcc,
+                    ]);
+                } catch (Exception $e ) {
+                    AcmsLogger::warning('メールマガジンの送信に失敗しました', Common::exceptionArray($e, ['entryTitle' => ACMS_RAM::entryTitle($eid)]));
                 }
             }
         }

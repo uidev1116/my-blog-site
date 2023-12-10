@@ -22,6 +22,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
             'order' => $this->order ? $this->order : config('entry_tag-relational_order'),
             'limit' => intval(config('entry_tag-relational_limit')),
             'indexing' => config('entry_tag-relational_indexing'),
+            'membersOnly' => config('entry_tag-relational_members_only'),
             'secret' => config('entry_tag-relational_secret'),
             'notfound' => config('mo_entry_tag-relational_notfound'),
             'notfoundStatus404' => config('entry_tag-relational_notfound_status_404'),
@@ -140,8 +141,11 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
         if (!empty($this->Field)) {
             ACMS_Filter::entryField($SQL, $this->Field);
         }
-        if ('on' == $this->config['indexing']) {
+        if ('on' === $this->config['indexing']) {
             $SQL->addWhereOpr('entry_indexing', 'on');
+        }
+        if (isset($this->config['membersOnly']) && 'on' === $this->config['membersOnly']) {
+            $SQL->addWhereOpr('entry_members_only', 'on');
         }
         if ('on' <> $this->config['noimage']) {
             $SQL->addWhereOpr('entry_primary_image', null, '<>');

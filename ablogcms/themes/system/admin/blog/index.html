@@ -128,7 +128,9 @@
 					<th class="acms-admin-table-nowrap">ID</th>
 					<th class="acms-admin-table-nowrap acms-admin-text-center">ステータス</th>
 					<th><!--T-->名前<!--/T--></th>
-					<th><!--T-->コンフィグセット<!--/T--></th>
+					<th class="acms-admin-table-nowrap"><!--T-->コンフィグセット<!--/T--></th>
+          <th class="acms-admin-table-nowrap"><!--T-->テーマセット<!--/T--></th>
+          <th class="acms-admin-table-nowrap"><!--T-->編集画面セット<!--/T--></th>
 					<th>URL</th>
 					<th class="acms-admin-table-nowrap"><!--T-->アクション<!--/T--></th>
 				</tr>
@@ -154,8 +156,23 @@
 					<td>
 						<p class="acms-admin-title-sp"><strong>{name}</strong><!-- BEGIN branch -->&nbsp;<i class="acms-admin-icon acms-admin-icon-blog-children acms-admin-icon-admin-blog-children"></i><!-- END branch --></p>
 					</td>
-					<td>
+					<td class="acms-admin-td-config-set acms-admin-text-center">
 						<!-- BEGIN_IF [{configSet}/nem/] -->{configSet}<!-- ELSE --> - <!-- END_IF -->
+            <!-- BEGIN_IF [{configSetScope}/eq/global]-->
+            <span class="acms-admin-label acms-admin-label-info admin-status-label"><!--T-->グローバル<!--/T--></span>
+            <!-- END_IF -->
+					</td>
+          <td class="acms-admin-td-config-set acms-admin-text-center">
+						<!-- BEGIN_IF [{themeSet}/nem/] -->{themeSet}<!-- ELSE --> - <!-- END_IF -->
+            <!-- BEGIN_IF [{themeSetScope}/eq/global]-->
+            <span class="acms-admin-label acms-admin-label-info admin-status-label"><!--T-->グローバル<!--/T--></span>
+            <!-- END_IF -->
+					</td>
+          <td class="acms-admin-td-config-set acms-admin-text-center">
+						<!-- BEGIN_IF [{editorSet}/nem/] -->{editorSet}<!-- ELSE --> - <!-- END_IF -->
+            <!-- BEGIN_IF [{editorSetScope}/eq/global]-->
+            <span class="acms-admin-label acms-admin-label-info admin-status-label"><!--T-->グローバル<!--/T--></span>
+            <!-- END_IF -->
 					</td>
 					<td>
 						<p class="acms-admin-blog-index-url"><a href="{urlValue}">{urlLabel}</a></p>

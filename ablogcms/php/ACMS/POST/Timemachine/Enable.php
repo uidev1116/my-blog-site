@@ -26,6 +26,8 @@ class ACMS_POST_Timemachine_Enable extends ACMS_POST
                 $session->set('timemachine_rule_id', $ruleId);
             }
             Preview::startPreviewMode($fakeUa, $token);
+
+            AcmsLogger::info('タイムマシンモードを開始しました');
             die('OK');
         }
         die('NG');

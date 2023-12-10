@@ -1,17 +1,17 @@
-import React, { Component, Fragment } from 'react';
-import keyboardJS from 'keyboardjs';
-import classnames from 'classnames';
-import axios from 'axios';
-import copy from 'copy-to-clipboard';
-import unescape from 'unescape';
-import IncrementalSearch from '../lib/incremental-search';
-import ACMSModal from './modal';
-import Notify from './notify';
-import { ExpireLocalStorage } from '../lib/utility';
+import React, { Component, Fragment } from 'react'
+import keyboardJS from 'keyboardjs'
+import classnames from 'classnames'
+import axios from 'axios'
+import copy from 'copy-to-clipboard'
+import unescape from 'unescape'
+import IncrementalSearch from '../lib/incremental-search'
+import ACMSModal from './modal'
+import Notify from './notify'
+import { ExpireLocalStorage } from '../lib/utility'
 
-const FreeStyle = require('free-style');
+const FreeStyle = require('free-style')
 
-const Style = FreeStyle.create();
+const Style = FreeStyle.create()
 const styleValiableTable = Style.registerStyle({
   fontFamily: 'Consolas, Courier New ,Courier, monospace',
   height: '100%',
@@ -81,7 +81,7 @@ const styleValiableTable = Style.registerStyle({
   '.textTooLong': {
     width: '520px',
   },
-});
+})
 
 const styleQuickSearch = Style.registerStyle({
   '.acms-admin-modal': {
@@ -110,7 +110,7 @@ const styleQuickSearch = Style.registerStyle({
   },
   '.acms-admin-label': {
     marginRight: '5px',
-    backgroundColor: '#5690d9',
+    backgroundColor: '#1861D8',
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: '11px',
@@ -131,17 +131,17 @@ const styleQuickSearch = Style.registerStyle({
     fontSize: '12px',
   },
   '.hover .acms-admin-label': {
-    backgroundColor: '#FFF',
-    color: '#5690d9 !important',
+    backgroundColor: '#FFFFFF',
+    color: '#1861D8 !important',
   },
   '.hover .mainTitle': {
-    color: '#FFF',
+    color: '#333',
   },
   '.hover .subTitle': {
-    color: '#FFF',
+    color: '#5E6C84',
   },
   '.hover .subTitle span': {
-    color: '#BBB',
+    color: '#666',
   },
   '.acms-admin-table-admin td': {
     display: 'table-cell',
@@ -255,15 +255,16 @@ const styleQuickSearch = Style.registerStyle({
   '.customFieldCopied.active': {
     top: 0,
   },
-});
+})
 
-const styleElement = Style.getStyles();
+const styleElement = Style.getStyles()
 
 export default class QuickSearch extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       lists: [],
+      init: false,
       menus: null,
       snippets: null,
       vars: null,
@@ -275,30 +276,30 @@ export default class QuickSearch extends Component {
       showModal: false,
       modalContent: '',
       copied: false,
-    };
-    this.currentItem = null;
-    this.box = null;
+    }
+    this.currentItem = null
+    this.box = null
 
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleCopySnippet = this.handleCopySnippet.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this)
+    this.handleCopySnippet = this.handleCopySnippet.bind(this)
   }
 
   componentDidUpdate() {
     if (this.currentItem) {
-      const boxTop = this.box.getBoundingClientRect().top;
-      const boxBottom = boxTop + this.box.offsetHeight;
-      const itemTop = this.currentItem.getBoundingClientRect().top;
-      const itemBottom = itemTop + this.currentItem.offsetHeight;
-      const positionTop = itemTop - boxTop;
-      const positionBottom = boxBottom - itemBottom;
+      const boxTop = this.box.getBoundingClientRect().top
+      const boxBottom = boxTop + this.box.offsetHeight
+      const itemTop = this.currentItem.getBoundingClientRect().top
+      const itemBottom = itemTop + this.currentItem.offsetHeight
+      const positionTop = itemTop - boxTop
+      const positionBottom = boxBottom - itemBottom
       if (positionTop < 0 || positionBottom < 0) {
-        this.box.scrollTop += positionTop;
+        this.box.scrollTop += positionTop
       }
     }
   }
 
   componentDidMount() {
-    const is = new IncrementalSearch();
+    const is = new IncrementalSearch()
 
     is.addRequest(
       this.search,
@@ -306,24 +307,22 @@ export default class QuickSearch extends Component {
         bid: ACMS.Config.bid,
       }),
       (lists) => {
-        this.setState({ lists });
+        this.setState({ lists })
       },
-    );
+    )
 
-    this.setDefinedLists();
-
-    const items = document.querySelectorAll('.js-search-everything');
+    const items = document.querySelectorAll('.js-search-everything')
     if (items && items.length) {
-      [].forEach.call(items, (item) => {
+      ;[].forEach.call(items, (item) => {
         item.addEventListener('click', () => {
-          this.toggleDialog();
-        });
-      });
+          this.toggleDialog()
+        })
+      })
     }
     keyboardJS.bind(ACMS.Config.quickSearchCommand, (e) => {
-      e.preventDefault();
-      this.toggleDialog();
-    });
+      e.preventDefault()
+      this.toggleDialog()
+    })
 
     keyboardJS.bind(['escape'], () => {
       if (this.state.display === 'block') {
@@ -332,49 +331,49 @@ export default class QuickSearch extends Component {
           showModal: false,
           keyword: '',
           lists: [],
-        });
-        this.search.focus();
+        })
+        this.search.focus()
       }
-    });
+    })
 
     keyboardJS.bind(['tab', 'down'], (e) => {
       if (this.state.display === 'block' && !this.state.showModal) {
-        e.preventDefault();
-        this.gotoNextItem();
+        e.preventDefault()
+        this.gotoNextItem()
       }
-    });
+    })
 
     keyboardJS.bind(['shift + tab', 'up'], (e) => {
       if (this.state.display === 'block' && !this.state.showModal) {
-        e.preventDefault();
-        this.gotoPrevItem();
+        e.preventDefault()
+        this.gotoPrevItem()
       }
-    });
+    })
 
     keyboardJS.bind(['enter'], (e) => {
       if (this.state.display === 'block' && !this.state.showModal) {
-        e.preventDefault();
-        const item = this.getCurrentItem();
-        this.handleClickEvent(item);
+        e.preventDefault()
+        const item = this.getCurrentItem()
+        this.handleClickEvent(item)
       }
-    });
+    })
   }
 
   setDefinedLists() {
     const endpoint = `${ACMS.Library.acmsLink({
       tpl: 'acms-code/all.json',
-    })}?cache=${new Date().getTime()}`;
+    })}?cache=${new Date().getTime()}`
 
-    const key = `acms_big_${ACMS.Config.bid}_quick_search_data`;
-    const storage = new ExpireLocalStorage();
-    const data = storage.load(key);
+    const key = `acms_big_${ACMS.Config.bid}_quick_search_data`
+    const storage = new ExpireLocalStorage()
+    const data = storage.load(key)
     if (data) {
       this.setState({
         menus: data.menus,
         snippets: data.snippets,
         vars: data.vars,
-      });
-      this.setGlobalVars();
+      })
+      this.setGlobalVars()
     } else {
       axios
         .get(endpoint)
@@ -383,19 +382,19 @@ export default class QuickSearch extends Component {
             menus: res.data.menus,
             snippets: res.data.snippets,
             vars: res.data.vars,
-          });
-          storage.save(key, res.data, 1800);
+          })
+          storage.save(key, res.data, 1800)
         })
         .then(() => {
-          this.setGlobalVars();
-        });
+          this.setGlobalVars()
+        })
     }
   }
 
   setGlobalVars() {
-    const params = new URLSearchParams();
-    params.append('ACMS_POST_Search_GlobalVars', true);
-    params.append('formToken', window.csrfToken);
+    const params = new URLSearchParams()
+    params.append('ACMS_POST_Search_GlobalVars', true)
+    params.append('formToken', window.csrfToken)
     axios({
       method: 'POST',
       url: window.location.href,
@@ -407,322 +406,330 @@ export default class QuickSearch extends Component {
         title: '\u0025{ROOT_TPL}',
         subtitle: ACMS.i18n('quick_search.root_tpl'),
         url: ACMS.Config.rootTpl,
-      });
+      })
       this.setState({
         globalVars: res.data,
-      });
-    });
+      })
+    })
   }
 
   handleClickEvent(item) {
-    const mode = this.getMode();
+    const mode = this.getMode()
     if (mode === 'snippets') {
-      this.showSnippets(item);
+      this.showSnippets(item)
     } else if (mode === 'vars') {
-      this.showVars(item);
+      this.showVars(item)
     } else if (mode === 'global-vars') {
-      this.showGlobalVars(item);
+      this.showGlobalVars(item)
     } else {
-      this.gotoLink(item);
+      this.gotoLink(item)
     }
   }
 
   gotoLink(item) {
     if (item) {
-      location.href = item.url;
+      location.href = item.url
     }
   }
 
   showSnippets(item) {
     if (item) {
       axios.get(item.url).then((res) => {
-        const parser = new DOMParser();
-        let html = parser.parseFromString(res.data, 'text/html');
-        html = html.querySelector('textarea').innerHTML;
-        html = unescape(html);
+        const parser = new DOMParser()
+        let html = parser.parseFromString(res.data, 'text/html')
+        html = html.querySelector('textarea').innerHTML
+        html = unescape(html)
         this.setState({
           showModal: true,
           modalContent: html,
-        });
-      });
+        })
+      })
     }
   }
 
   showVars(item) {
     if (item) {
       axios.get(item.url).then((res) => {
-        const parser = new DOMParser();
-        const html = parser.parseFromString(res.data, 'text/html');
+        const parser = new DOMParser()
+        const html = parser.parseFromString(res.data, 'text/html')
         this.setState({
           showModal: true,
           modalContent: html.body.innerHTML,
-        });
-      });
+        })
+      })
     }
   }
 
   showGlobalVars(item) {
     if (item) {
-      copy(item.title);
+      copy(item.title)
       this.setState({
         copied: true,
-      });
+      })
     }
   }
 
   getMode() {
-    const { keyword } = this.state;
+    const { keyword } = this.state
     if (ACMS.Config.auth !== 'administrator') {
-      return 'normal';
+      return 'normal'
     }
     if (keyword.slice(0, 1) === ';') {
-      return 'snippets';
+      return 'snippets'
     }
     if (keyword.slice(0, 1) === ':') {
-      return 'vars';
+      return 'vars'
     }
     if (keyword.slice(0, 1) === '%') {
-      return 'global-vars';
+      return 'global-vars'
     }
-    return 'normal';
+    return 'normal'
   }
 
   getFilteredSnippets() {
-    const { keyword, snippets } = this.state;
-    const searchWord = keyword ? keyword.toLowerCase().slice(1) : '';
+    const { keyword, snippets } = this.state
+    const searchWord = keyword ? keyword.toLowerCase().slice(1) : ''
 
     if (snippets && snippets.items && searchWord) {
       const items = snippets.items.filter((item) => {
         if (
-          item.title.toLowerCase().indexOf(searchWord) !== -1
-          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+          item.title.toLowerCase().indexOf(searchWord) !== -1 ||
+          item.subtitle.toLowerCase().indexOf(searchWord) !== -1
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
       return {
         title: snippets.title,
         enTitle: snippets.enTitle,
         items,
-      };
+      }
     }
-    return snippets;
+    return snippets
   }
 
   getFilteredVars() {
-    const { keyword, vars } = this.state;
-    const searchWord = keyword ? keyword.toLowerCase().slice(1) : '';
+    const { keyword, vars } = this.state
+    const searchWord = keyword ? keyword.toLowerCase().slice(1) : ''
 
     if (vars && vars.items && searchWord) {
       const items = vars.items.filter((item) => {
         if (
-          item.title.toLowerCase().indexOf(searchWord) !== -1
-          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+          item.title.toLowerCase().indexOf(searchWord) !== -1 ||
+          item.subtitle.toLowerCase().indexOf(searchWord) !== -1
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
       return {
         title: vars.title,
         enTitle: vars.enTitle,
         items,
-      };
+      }
     }
-    return vars;
+    return vars
   }
 
   getFilteredGlobalVars() {
-    const { keyword, globalVars } = this.state;
-    const searchWord = keyword ? keyword.toLowerCase().slice(1) : '';
+    const { keyword, globalVars } = this.state
+    const searchWord = keyword ? keyword.toLowerCase().slice(1) : ''
 
     if (globalVars && globalVars.items && searchWord) {
       const items = globalVars.items.filter((item) => {
         if (
-          item.title.toLowerCase().indexOf(searchWord) !== -1
-          || item.subtitle.toLowerCase().indexOf(searchWord) !== -1
+          item.title.toLowerCase().indexOf(searchWord) !== -1 ||
+          item.subtitle.toLowerCase().indexOf(searchWord) !== -1
         ) {
-          return true;
+          return true
         }
-        return false;
-      });
+        return false
+      })
       return {
         title: globalVars.title,
         enTitle: globalVars.enTitle,
         items,
-      };
+      }
     }
-    return globalVars;
+    return globalVars
   }
 
   getFilteredMenus() {
-    const { keyword, menus } = this.state;
+    const { keyword, menus } = this.state
     if (menus && menus.items) {
       const items = menus.items.filter((item) => {
         if (!keyword) {
-          return false;
+          return false
         }
-        if (item.title.indexOf(keyword) !== -1 || item.subtitle.indexOf(keyword) !== -1) {
-          return true;
+        if (
+          item.title.indexOf(keyword) !== -1 ||
+          item.subtitle.indexOf(keyword) !== -1
+        ) {
+          return true
         }
-        return false;
-      });
+        return false
+      })
       return {
         title: menus.title,
         enTitle: menus.enTitle,
         items,
-      };
+      }
     }
-    return menus;
+    return menus
   }
 
   getCombindLists() {
-    const { lists } = this.state;
-    const mode = this.getMode();
+    const { lists } = this.state
+    const mode = this.getMode()
     if (mode === 'snippets') {
-      return [this.getFilteredSnippets()];
+      return [this.getFilteredSnippets()]
     }
     if (mode === 'vars') {
-      return [this.getFilteredVars()];
+      return [this.getFilteredVars()]
     }
     if (mode === 'global-vars') {
-      return [this.getFilteredGlobalVars()];
+      return [this.getFilteredGlobalVars()]
     }
-    const menus = this.getFilteredMenus();
+    const menus = this.getFilteredMenus()
     if (menus) {
-      return [menus, ...lists];
+      return [menus, ...lists]
     }
-    return lists;
+    return lists
   }
 
   setKeyword(keyword) {
     this.setState({
       keyword,
       number: 0,
-    });
+    })
   }
 
   toggleDialog() {
-    const { display } = this.state;
-    const nextStyle = display === 'block' ? 'none' : 'block';
+    const { display, init } = this.state
+    if (init === false) {
+      this.setState({
+        init: true,
+      })
+      this.setDefinedLists()
+    }
+    const nextStyle = display === 'block' ? 'none' : 'block'
     this.setState({
       display: nextStyle,
       keyword: '',
       lists: [],
-    });
+    })
     if (nextStyle === 'block') {
-      this.search.focus();
+      this.search.focus()
     }
   }
 
   gotoNextItem() {
-    const { display, number } = this.state;
-    const lists = this.getCombindLists();
-    const maxNumber = this.getNumber(lists.length, 0) - 1;
+    const { display, number } = this.state
+    const lists = this.getCombindLists()
+    const maxNumber = this.getNumber(lists.length, 0) - 1
     if (display === 'none') {
-      return;
+      return
     }
-    const nextNumber = number + 1 > maxNumber ? 0 : number + 1;
+    const nextNumber = number + 1 > maxNumber ? 0 : number + 1
     this.setState({
       number: nextNumber,
-    });
+    })
   }
 
   gotoPrevItem() {
-    const { display, number } = this.state;
-    const lists = this.getCombindLists();
-    const maxNumber = this.getNumber(lists.length, 0) - 1;
+    const { display, number } = this.state
+    const lists = this.getCombindLists()
+    const maxNumber = this.getNumber(lists.length, 0) - 1
     if (display === 'none') {
-      return;
+      return
     }
-    const nextNumber = number - 1 < 0 ? maxNumber : number - 1;
+    const nextNumber = number - 1 < 0 ? maxNumber : number - 1
     this.setState({
       number: nextNumber,
-    });
+    })
   }
 
   getCurrentItem() {
-    const { number } = this.state;
-    const lists = this.getCombindLists();
-    let itemNum = 0;
-    let res = false;
+    const { number } = this.state
+    const lists = this.getCombindLists()
+    let itemNum = 0
+    let res = false
     lists.forEach((list) => {
       list.items.forEach((item) => {
         if (number === itemNum) {
-          res = item;
+          res = item
         }
-        itemNum++;
-      });
-    });
-    return res;
+        itemNum++
+      })
+    })
+    return res
   }
 
   setNumber(listIndex, index) {
-    const number = this.getNumber(listIndex, index);
-    this.setState({ number });
+    const number = this.getNumber(listIndex, index)
+    this.setState({ number })
   }
 
   getNumber(listIndex, index) {
-    const lists = this.getCombindLists();
-    let number = 0;
+    const lists = this.getCombindLists()
+    let number = 0
     while (listIndex > 0) {
-      listIndex--;
+      listIndex--
       if (lists[listIndex]) {
         if (lists[listIndex].items) {
-          number += lists[listIndex].items.length;
+          number += lists[listIndex].items.length
         }
       }
     }
-    return number + index;
+    return number + index
   }
 
   handleCloseModal() {
-    const { keyword } = this.state;
+    const { keyword } = this.state
     this.setState({
       showModal: false,
       keyword: keyword.replace(/^(:|;)(.*)/g, '$1'),
-    });
-    this.search.focus();
+    })
+    this.search.focus()
   }
 
   handleCopySnippet() {
-    const { modalContent } = this.state;
-    copy(modalContent);
+    const { modalContent } = this.state
+    copy(modalContent)
     this.setState({
       copied: true,
-    });
+    })
   }
 
   getInitialClassByName(name) {
     switch (name) {
       case 'Blogs':
-        return 'initial-b';
+        return 'initial-b'
       case 'Categories':
-        return 'initial-c';
+        return 'initial-c'
       case 'Entries':
-        return 'initial-e';
+        return 'initial-e'
       case 'Modules':
-        return 'initial-m';
+        return 'initial-m'
       case 'Menu':
-        return 'initial-m2';
+        return 'initial-m2'
       case 'Vars':
-        return 'initial-v';
+        return 'initial-v'
       case 'Snippets':
-        return 'initial-s';
+        return 'initial-s'
       case 'Global vars':
-        return 'initial-g';
+        return 'initial-g'
       default:
-        return '';
+        return ''
     }
   }
 
   render() {
-    const {
-      display, number, isMacOs, showModal, modalContent, copied,
-    } = this.state;
-    const lists = this.getCombindLists();
-    const mode = this.getMode();
+    const { display, number, isMacOs, showModal, modalContent, copied } =
+      this.state
+    const lists = this.getCombindLists()
+    const mode = this.getMode()
 
     return (
       <div className={styleQuickSearch}>
@@ -732,7 +739,7 @@ export default class QuickSearch extends Component {
           id="quick-search-dialog"
           onClick={(e) => {
             if (e.target.id === 'quick-search-dialog') {
-              this.toggleDialog();
+              this.toggleDialog()
             }
           }}
           role="dialog"
@@ -748,26 +755,42 @@ export default class QuickSearch extends Component {
               )
             }
             lastFocus={mode === 'snippets'}
-            footer={(
+            footer={
               <div style={{ marginRight: '20px' }}>
-                <button type="button" onClick={this.handleCloseModal} className="acms-admin-btn">
+                <button
+                  type="button"
+                  onClick={this.handleCloseModal}
+                  className="acms-admin-btn"
+                >
                   {ACMS.i18n('quick_search.close')}
                 </button>
                 {mode === 'snippets' && (
-                  <button type="button" onClick={this.handleCopySnippet} className="acms-admin-btn">
+                  <button
+                    type="button"
+                    onClick={this.handleCopySnippet}
+                    className="acms-admin-btn"
+                  >
                     {ACMS.i18n('quick_search.copy')}
                   </button>
                 )}
               </div>
-            )}
+            }
           >
             <div className="acms-admin-form">
               <div style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 {mode === 'snippets' ? (
-                  <textarea rows="10" value={modalContent} readOnly style={{ width: '100%', fontSize: '16px' }} />
+                  <textarea
+                    rows="10"
+                    value={modalContent}
+                    readOnly
+                    style={{ width: '100%', fontSize: '16px' }}
+                  />
                 ) : (
                   // eslint-disable-next-line react/no-danger
-                  <div className={styleValiableTable} dangerouslySetInnerHTML={{ __html: modalContent }} />
+                  <div
+                    className={styleValiableTable}
+                    dangerouslySetInnerHTML={{ __html: modalContent }}
+                  />
                 )}
               </div>
             </div>
@@ -775,23 +798,26 @@ export default class QuickSearch extends Component {
           <div className="acms-admin-modal-dialog acms-admin-modal-quick-search">
             <div className="acms-admin-modal-content">
               <div className="acms-admin-modal-body">
-                <div className="acms-admin-form" style={{ paddingTop: '15px', paddingBottom: '15px' }}>
+                <div
+                  className="acms-admin-form"
+                  style={{ paddingTop: '15px', paddingBottom: '15px' }}
+                >
                   <input
                     type="text"
                     ref={(ref) => {
-                      this.search = ref;
+                      this.search = ref
                     }}
                     style={{ fontSize: '24px', fontWeight: 'bold' }}
                     placeholder={ACMS.i18n('quick_search.input_placeholder')}
                     className="acms-admin-form-width-full acms-admin-form-large acms-admin-margin-bottom-small"
                     onInput={(e) => {
-                      this.setKeyword(e.target.value);
+                      this.setKeyword(e.target.value)
                     }}
                   />
                 </div>
                 <div
                   ref={(element) => {
-                    this.box = element;
+                    this.box = element
                   }}
                   className="acms-admin-modal-middle-scroll"
                 >
@@ -799,7 +825,10 @@ export default class QuickSearch extends Component {
                     <div key={`label-${list.enTitle}`}>
                       {list && list.items.length > 0 && (
                         <div>
-                          <h2 className="acms-admin-admin-title3" style={{ background: '#FFF' }}>
+                          <h2
+                            className="acms-admin-admin-title3"
+                            style={{ background: '#FFF' }}
+                          >
                             {list.title}
                           </h2>
                           <table className="acms-admin-table-admin acms-admin-form acms-admin-table-hover">
@@ -808,15 +837,40 @@ export default class QuickSearch extends Component {
                                 <tr
                                   key={this.getNumber(listIndex, index)}
                                   ref={(element) => {
-                                    if (this.getNumber(listIndex, index) === number) this.currentItem = element;
+                                    if (
+                                      this.getNumber(listIndex, index) ===
+                                      number
+                                    )
+                                      this.currentItem = element
                                   }}
-                                  onClick={this.handleClickEvent.bind(this, item)}
-                                  onMouseMove={this.setNumber.bind(this, listIndex, index)}
-                                  className={classnames({ hover: this.getNumber(listIndex, index) === number })}
+                                  onClick={this.handleClickEvent.bind(
+                                    this,
+                                    item,
+                                  )}
+                                  onMouseMove={this.setNumber.bind(
+                                    this,
+                                    listIndex,
+                                    index,
+                                  )}
+                                  className={classnames({
+                                    hover:
+                                      this.getNumber(listIndex, index) ===
+                                      number,
+                                  })}
                                 >
-                                  <td style={{ width: '1px', wordBreak: 'break-all' }}>
+                                  <td
+                                    style={{
+                                      width: '1px',
+                                      wordBreak: 'break-all',
+                                    }}
+                                  >
                                     <div
-                                      className={classnames('initial-mark', this.getInitialClassByName(list.enTitle))}
+                                      className={classnames(
+                                        'initial-mark',
+                                        this.getInitialClassByName(
+                                          list.enTitle,
+                                        ),
+                                      )}
                                     />
                                   </td>
                                   <td>
@@ -824,19 +878,31 @@ export default class QuickSearch extends Component {
                                       {item.title}
                                     </a>
                                     <div className="subTitle">
-                                      {item.subtitle}
-                                      {' '}
+                                      {item.subtitle}{' '}
                                       <span>{item.blogName}</span>
                                     </div>
                                   </td>
                                   {mode !== 'normal' ? (
-                                    <td style={{ textAlign: 'right', wordBreak: 'break-all' }}>
+                                    <td
+                                      style={{
+                                        textAlign: 'right',
+                                        wordBreak: 'break-all',
+                                      }}
+                                    >
                                       {mode === 'global-vars' && (
-                                        <span style={{ paddingRight: '10px' }}>{item.url}</span>
+                                        <span style={{ paddingRight: '10px' }}>
+                                          {item.url}
+                                        </span>
                                       )}
                                     </td>
                                   ) : (
-                                    <td style={{ width: '1px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                                    <td
+                                      style={{
+                                        width: '1px',
+                                        textAlign: 'right',
+                                        whiteSpace: 'nowrap',
+                                      }}
+                                    >
                                       {item.bid && (
                                         <span className="acms-admin-label">
                                           bid:
@@ -875,44 +941,32 @@ export default class QuickSearch extends Component {
                 <div className="acms-admin-modal-footer">
                   <ul className="acms-admin-list-inline">
                     <li>
-                      <strong>tab</strong>
-                      {' '}
-                      or
-                      <strong>⇅</strong>
-                      {' '}
-                      {ACMS.i18n('quick_search.choice')}
+                      <strong>tab</strong> or
+                      <strong>⇅</strong> {ACMS.i18n('quick_search.choice')}
                     </li>
                     <li>
-                      <strong>↵</strong>
-                      {' '}
-                      {ACMS.i18n('quick_search.move')}
+                      <strong>↵</strong> {ACMS.i18n('quick_search.move')}
                     </li>
                     <li>
-                      <strong>esc</strong>
-                      {' '}
-                      {ACMS.i18n('quick_search.close')}
+                      <strong>esc</strong> {ACMS.i18n('quick_search.close')}
                     </li>
                     {ACMS.Config.auth === 'administrator' && (
                       <>
                         <li>
-                          <strong>{isMacOs ? <span>⌘K</span> : <span>ctl+k</span>}</strong>
-                          {' '}
+                          <strong>
+                            {isMacOs ? <span>⌘K</span> : <span>ctl+k</span>}
+                          </strong>{' '}
                           {ACMS.i18n('quick_search.open')}
                         </li>
                         <li>
-                          <strong>;</strong>
-                          {' '}
+                          <strong>;</strong>{' '}
                           {ACMS.i18n('quick_search.snippets')}
                         </li>
                         <li>
-                          <strong>:</strong>
-                          {' '}
-                          {ACMS.i18n('quick_search.vars')}
+                          <strong>:</strong> {ACMS.i18n('quick_search.vars')}
                         </li>
                         <li>
-                          <strong>%</strong>
-                          {' '}
-                          {ACMS.i18n('quick_search.g_vars')}
+                          <strong>%</strong> {ACMS.i18n('quick_search.g_vars')}
                         </li>
                       </>
                     )}
@@ -929,10 +983,10 @@ export default class QuickSearch extends Component {
           onFinish={() => {
             this.setState({
               copied: false,
-            });
+            })
           }}
         />
       </div>
-    );
+    )
   }
 }

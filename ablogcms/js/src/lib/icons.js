@@ -170,4 +170,7 @@ export default [
   'acms-admin-icon-facebook-square',
   'acms-admin-icon-gplus',
   'acms-admin-icon-gplus-square',
-];
+  'acms-admin-icon-x',
+  'acms-admin-icon-x-square',
+  'acms-admin-icon-x-circle',
+]

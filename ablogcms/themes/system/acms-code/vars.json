@@ -161,24 +161,6 @@
     },
     {
       "bid": "%{BID}",
-      "title": "<!--T-->Google Analyticsランキング<!--/T-->",
-      "subtitle": "Api_GoogleAnalytics_Ranking",
-      "url": "%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_GoogleAnalytics_Ranking.html"
-    },
-    {
-      "bid": "%{BID}",
-      "title": "<!--T-->Bingウェブ検索<!--/T-->",
-      "subtitle": "Api_Bing_WebSearch",
-      "url": "%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_Bing_WebSearch.html"
-    },
-    {
-      "bid": "%{BID}",
-      "title": "<!--T-->Bingイメージ検索<!--/T-->",
-      "subtitle": "Api_Bing_ImageSearch",
-      "url": "%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Api_Bing_ImageSearch.html"
-    },
-    {
-      "bid": "%{BID}",
       "title": "<!--T-->Ogp<!--/T-->",
       "subtitle": "Ogp",
       "url": "%{ADMIN_BASE_URL}bid/%{BID}/acms-code/vars/Ogp.html"

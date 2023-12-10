@@ -32,6 +32,9 @@ class ACMS_POST_Layout_Save extends ACMS_POST_Layout
             );
             $this->save($data);
         }
+
+        AcmsLogger::info('「' . $identifier . '」レイアウトを保存しました');
+
         $Get = $this->Get;
         $query = '';
         $url = HTTP_REQUEST_URL;

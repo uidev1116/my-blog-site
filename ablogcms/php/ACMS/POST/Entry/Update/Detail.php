@@ -2,38 +2,45 @@
 
 class ACMS_POST_Entry_Update_Detail extends ACMS_POST_Entry_Update
 {
-    function saveColumn(& $Column, $eid, $bid, $add=false, $rvid=null, $moveArchive=false)
+
+    /**
+     * ユニットを保存せずプライマリーイメージを取得
+     *
+     * @param array $units
+     * @param int $eid
+     * @param int $primary_image
+     */
+    protected function saveUnit($units, $eid, $primary_image)
     {
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('entry');
-        $SQL->addSelect('entry_primary_image');
-        $SQL->addWhereOpr('entry_id', $eid);
-        $SQL->addWhereOpr('entry_blog_id', $bid);
-        $Res = array($DB->query($SQL->get(dsn()), 'one'));
-        return $Res;
+        $sql = SQL::newSelect('entry');
+        $sql->addSelect('entry_primary_image');
+        $sql->addWhereOpr('entry_id', $eid);
+        $primaryImageId = DB::query($sql->get(dsn()), 'one');
+
+        return $primaryImageId;
     }
 
     function post()
     {
+        $this->lockService = App::make('entry.lock');
         $updatedResponse = $this->update();
 
-        if ( is_array($updatedResponse) ) {
+        if (is_array($updatedResponse)) {
             $Session =& Field::singleton('session');
             $Session->add('entry_action', 'update');
-
-            $info   = array(
+            $info = array(
                 'bid'   => BID,
                 'cid'   => $updatedResponse['cid'],
                 'eid'   => EID,
             );
-            if ( $updatedResponse['trash'] == 'trash' ) {
+            if ($updatedResponse['trash'] == 'trash') {
                 $info['query'] = array('trash' => 'show');
             }
             $this->redirect(acmsLink($info));
         }
         $this->redirect(acmsLink(array(
-                'bid'   => BID,
-                'eid'   => EID,
+                'bid' => BID,
+                'eid' => EID,
                 'admin' => 'entry-edit',
         )));
         return $this->Post;

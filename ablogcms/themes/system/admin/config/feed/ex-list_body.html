@@ -4,7 +4,7 @@
 		<td>
 			<input type="text" name="feed_exlist_source" value="{feed_exlist_source}" class="acms-admin-form-width-large" />
 			<input type="hidden" name="config[]" value="feed_exlist_source" />
-			<input type="hidden" name="feed_exlist_source:convert" value="a" />
+			<input type="hidden" name="feed_exlist_source:c" value="a" />
 		</td>
 	</tr>
 	<tr>
@@ -12,14 +12,14 @@
 		<td>
 			<div class="acms-admin-form-radio">
 				<input type="radio" name="feed_exlist_kind" value="rss20"{feed_exlist_kind:checked#rss20} id="feed-exlist-kind-rss20" />
-				<label for="feed-exlist-kind-rss20"><i class="acms-admin-ico-radio"></i>RSS2.0</label>　
+				<label for="feed-exlist-kind-rss20"><i class="acms-admin-ico-radio"></i>RSS2.0</label>
 			</div>
 			<div class="acms-admin-form-radio">
 				<input type="radio" name="feed_exlist_kind" value="atom10"{feed_exlist_kind:checked#atom10} id="feed-exlist-kind-atom10" />
 				<label for="feed-exlist-kind-atom10"><i class="acms-admin-ico-radio"></i>Atom1.0</label>
 			</div>
 			<input type="hidden" name="config[]" value="feed_exlist_kind" />
-			<input type="hidden" name="feed_exlist_kind:convert" value="a" />
+			<input type="hidden" name="feed_exlist_kind:c" value="a" />
 			<input type="hidden" name="feed_exlist_kind:validator#required" id="validator-feed_exlist_kind-required" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-feed_exlist_kind-required" class="validator-result-{feed_exlist_kind:validator#required}">
@@ -33,7 +33,7 @@
 		<td>
 			<input type="text" name="feed_exlist_limit" value="{feed_exlist_limit}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="feed_exlist_limit" />
-			<input type="hidden" name="feed_exlist_limit:convert" value="a" />
+			<input type="hidden" name="feed_exlist_limit:c" value="a" />
 			<input type="hidden" name="feed_exlist_limit:validator#digits" id="validator-feed_exlist_limit-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-feed_exlist_limit-digits" class="validator-result-{feed_exlist_limit:validator#digits}">
@@ -47,7 +47,7 @@
 		<td>
 			<input type="text" name="feed_exlist_offset" value="{feed_exlist_offset}" size="4" class="acms-admin-form-width-mini" />
 			<input type="hidden" name="config[]" value="feed_exlist_offset" />
-			<input type="hidden" name="feed_exlist_offset:convert" value="a" />
+			<input type="hidden" name="feed_exlist_offset:c" value="a" />
 			<input type="hidden" name="feed_exlist_offset:validator#digits" id="validator-feed_exlist_offset-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-feed_exlist_offset-digits" class="validator-result-{feed_exlist_offset:validator#digits}">
@@ -61,7 +61,7 @@
 		<td>
 			<input type="text" name="feed_exlist_newtime" value="{feed_exlist_newtime}" size="8" class="acms-admin-form-width-mini" /> <!--T-->秒<!--/T-->
 			<input type="hidden" name="config[]" value="feed_exlist_newtime" />
-			<input type="hidden" name="feed_exlist_newtime:convert" value="a" />
+			<input type="hidden" name="feed_exlist_newtime:c" value="a" />
 			<input type="hidden" name="feed_exlist_newtime:validator#digits" id="validator-feed_exlist_newtime-digits" />
 			<div role="alert" aria-live="assertive">
 				<div data-validator-label="validator-feed_exlist_newtime-digits" class="validator-result-{feed_exlist_newtime:validator#digits}">

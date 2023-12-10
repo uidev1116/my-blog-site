@@ -2,9 +2,9 @@
 
 namespace Acms\Services\SocialLogin;
 
-use Session;
+use Acms\Services\Facades\Session;
 
-class Line extends Base
+class Line
 {
     /**
      * @var string
@@ -34,16 +34,11 @@ class Line extends Base
     protected $loginUrlParam;
 
     /**
-     * @var object
-     */
-    protected $me;
-
-    /**
      * Facebook constructor.
      * @param string $appId
      * @param string $appSecret
      */
-    public function __construct($appId, $appSecret)
+    public function __construct(string $appId, string $appSecret)
     {
         $this->appId = $appId;
         $this->appSecret = $appSecret;
@@ -67,11 +62,11 @@ class Line extends Base
     }
 
     /**
-     * Get login url.
+     * 認証URLを取得
      *
      * @return string
      */
-    public function getLoginUrl()
+    public function getAuthUrl(): string
     {
         $query = array();
         foreach ($this->loginUrlParam as $key => $val) {
@@ -81,19 +76,12 @@ class Line extends Base
     }
 
     /**
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param string $code
+     * アクセストークンを取得
      *
+     * @param string $code
      * @return string
      */
-    public function getAccessToken($code)
+    public function getAccessToken(string $code): string
     {
         if ($this->accessToken) {
             return $this->accessToken;
@@ -132,8 +120,9 @@ class Line extends Base
      * ユーザー情報を取得
      *
      * @param string $accessToken
+     * @return array
      */
-    public function setMe($accessToken)
+    public function getLineAccount($accessToken): array
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $accessToken));
@@ -143,69 +132,23 @@ class Line extends Base
 
         $response = curl_exec($ch);
         curl_close($ch);
-        $json = json_decode($response);
-        if (!property_exists($json, 'userId')) {
+        $data = json_decode($response, true);
+        if (!isset($data['userId'])) {
             throw new \RuntimeException('Failed to get profile.');
         }
-        $this->me = $json;
+        return $data;
     }
 
     /**
+     * Line OAuth認証のコールバック
+     *
      * @return string
      */
-    protected function getRedirectUrl()
+    protected function getRedirectUrl(): string
     {
-        return acmsLink(array('bid'=>BID, '_protocol'=>'http'), false) . 'callback/signin/line.html';
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getId()
-    {
-        return $this->me->userId;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getEmail()
-    {
-        return $this->getId() . '@example.com';
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getName()
-    {
-        return $this->me->displayName;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getCode()
-    {
-        return $this->getId();
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getIcon()
-    {
-        if (property_exists($this->me, 'pictureUrl')) {
-            return $this->userIconFromUri($this->me->pictureUrl);
-        }
-        return '';
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getUserKey()
-    {
-        return 'user_line_id';
+        return acmsLink([
+            'protocol' => SSL_ENABLE ? 'https' : 'http',
+            'bid' => BID,
+        ], false) . 'callback/signin/line.html';
     }
 }

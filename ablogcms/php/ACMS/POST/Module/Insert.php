@@ -2,11 +2,11 @@
 
 class ACMS_POST_Module_Insert extends ACMS_POST_Module
 {
-    function post()
+    public function post()
     {
         $this->Post->set('module', array(
             'name', 'status', 'identifier', 'label', 'description', 'cache', 'scope', 'custom_field', 'layout_use', 'api_use',
-            'bid', 'uid', 'cid', 'eid','keyword', 'tag', 'field_',
+            'bid', 'uid', 'cid', 'eid', 'keyword', 'tag', 'field_',
             'start_date', 'start_time', 'end_date', 'end_time',
             'page', 'order',
             'uid_scope', 'cid_scope', 'eid_scope', 'keyword_scope', 'tag_scope', 'field_scope',
@@ -14,20 +14,13 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
             'bid_axis', 'cid_axis',
         ));
         $Module = $this->extract('module');
-        if ( 'global' !== $Module->get('scope') ) {
-            $Module->set('scope', 'local');
-        }
 
         $Module->setMethod('name', 'required');
         $Module->setMethod('module', 'invalidLicense', IS_LICENSED);
-        $Module->setMethod('identifier', 'double', array($Module->get('scope')));
+        $Module->setMethod('identifier', 'double', [$Module->get('scope') ?: 'local']);
         $Module->setMethod('label', 'required');
 
-        $allow_multiple_args = configArray('module_allow_multiple_arguments');
-        if ( empty($allow_multiple_args) ) {
-            $allow_multiple_args = array('Entry_Body', 'Entry_Summary', 'Entry_List', 'Entry_Headline', 'Entry_Photo');
-        }
-        if ( !in_array($Module->get('name'), $allow_multiple_args) ) {
+        if (!Module::isAllowedMultipleArguments($Module)) {
             $Module->setMethod('bid', 'intOrGlobalVars');
             $Module->setMethod('uid', 'intOrGlobalVars');
             $Module->setMethod('cid', 'intOrGlobalVars');
@@ -35,7 +28,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
         }
         $Module->setMethod('page', 'intOrGlobalVars');
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $Module->setMethod('module', 'operative', roleAuthorization('module_edit', BID));
         } else {
             $Module->setMethod('module', 'operative', sessionWithAdministration());
@@ -46,12 +39,12 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
 
         $Field = $this->extract('field', new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            $mid    = $DB->query(SQL::nextval('module_id', dsn()), 'seq');
-            $start  = $Module->get('start_date') ? ($Module->get('start_date').' '.$Module->get('start_time')) : null;
-            $end    = $Module->get('end_date') ? ($Module->get('end_date').' '.$Module->get('end_time')) : null;
-            $SQL    = SQL::newInsert('module');
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $mid = $DB->query(SQL::nextval('module_id', dsn()), 'seq');
+            $start = $Module->get('start_date') ? ($Module->get('start_date') . ' ' . $Module->get('start_time')) : null;
+            $end = $Module->get('end_date') ? ($Module->get('end_date') . ' ' . $Module->get('end_time')) : null;
+            $SQL = SQL::newInsert('module');
             $SQL->addInsert('module_id', $mid);
             $SQL->addInsert('module_blog_id', BID);
             $SQL->addInsert('module_name', $Module->get('name'));
@@ -59,7 +52,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
             $SQL->addInsert('module_label', $Module->get('label'));
             $SQL->addInsert('module_description', strval($Module->get('description')));
             $SQL->addInsert('module_status', $Module->get('status', 'open'));
-            $SQL->addInsert('module_scope', $Module->get('scope'));
+            $SQL->addInsert('module_scope', $Module->get('scope') ?: 'local');
             $SQL->addInsert('module_cache', intval($Module->get('cache', 0)));
             $SQL->addInsert('module_bid', $Module->get('bid'));
             $SQL->addInsert('module_uid', $Module->get('uid'));
@@ -99,10 +92,16 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
 
             $key    = 'admin';
             $val    = 'module_edit';
-            if ( ADMIN !== 'module_edit' ) {
+            if (ADMIN !== 'module_edit') {
                 $key    = 'tpl';
                 $val    = 'ajax/module/edit.html';
             }
+
+            AcmsLogger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを作成しました', [
+                'mid' => $mid,
+                'module' => $Module->_aryField,
+            ]);
+
             $this->redirect(acmsLink(array(
                 'bid'   => BID,
                 $key    => $val,
@@ -112,9 +111,13 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
                     'msg'   => 'new',
                 ),
             )));
-
         } else {
             $this->Post->set('validate', true);
+
+            AcmsLogger::info('モジュールの作成に失敗しました', [
+                'module' => $Module,
+                'field' => $Field,
+            ]);
         }
 
         return $this->Post;

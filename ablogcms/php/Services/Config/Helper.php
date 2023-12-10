@@ -2,6 +2,7 @@
 
 namespace Acms\Services\Config;
 
+use ACMS_Filter;
 use Storage;
 use DB;
 use SQL;
@@ -164,6 +165,17 @@ class Helper
     }
 
     /**
+     * コンフィグセット名のキャッシュクリア
+     *
+     * @param mixed $setid
+     * @return void
+     */
+    public function forgetConfigSetNameCache($setid)
+    {
+        $this->cache->forget("cache-config-set-name-$setid");
+    }
+
+    /**
      * キャッシュの全クリア
      */
     public function cacheClear()
@@ -239,15 +251,92 @@ class Helper
     }
 
     /**
+     * 先祖ブログのグローバル設定のコンフィグセットを取得する
+     *
+     * @param int $bid
+     * @return ?int
+     */
+    public function getAncestorBlogConfigSet($bid, $type)
+    {
+        $response = null;
+        DB::setThrowException(true);
+
+        try {
+            $sql = SQL::newSelect('blog');
+            $sql->setSelect('blog_' . $type . '_set_id');
+            $sql->addWhereOpr('blog_' . $type . '_set_id', null, '<>');
+            $sql->addWhereOpr('blog_' . $type . '_set_scope', 'global');
+            ACMS_Filter::blogTree($sql, $bid, 'ancestor');
+            $sql->setOrder('blog_left', 'DESC');
+            $sql->setLimit(1);
+            $q = $sql->get(dsn());
+            $response = DB::query($q, 'one');
+        } catch (\Exception $e) {
+        }
+        DB::setThrowException(false);
+
+        return $response;
+    }
+
+    /**
+     * 先祖カテゴリーのグローバル設定のコンフィグセットを取得する
+     *
+     * @param int $cid
+     * @return ?int
+     */
+    public function getAncestorCategoryConfigSet($cid, $type)
+    {
+        $sql = SQL::newSelect('category');
+        $sql->setSelect('category_' . $type . '_set_id');
+        $sql->addWhereOpr('category_' . $type . '_set_id', null, '<>');
+        $sql->addWhereOpr('category_' . $type . '_set_scope', 'global');
+        ACMS_Filter::categoryTree($sql, $cid, 'ancestor');
+        $sql->setOrder('category_left', 'DESC');
+        $sql->setLimit(1);
+
+        return DB::query($sql->get(dsn()), 'one');
+    }
+
+    /**
      * 指定されたidに該当するブログのコンフィグセットを考慮したFieldを返す
      */
     public function loadBlogConfigSet($bid)
     {
-        $configSetId = ACMS_RAM::blogConfigSetId($bid);
-        if ($configSetId) {
+        if ($configSetId = ACMS_RAM::blogConfigSetId($bid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet($bid, 'config')) {
             return $this->loadConfigSetField($configSetId);
         }
         return $this->loadBlogField($bid);
+    }
+
+    /**
+     * 指定されたidに該当するブログのテーマセットを考慮したFieldを返す
+     */
+    public function loadBlogThemeSet($bid)
+    {
+        if ($configSetId = ACMS_RAM::blogThemeSetId($bid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet($bid, 'theme')) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        return new Field;
+    }
+
+    /**
+     * 指定されたidに該当するブログの編集画面セットを考慮したFieldを返す
+     */
+    public function loadBlogEditorSet($bid)
+    {
+        if ($configSetId = ACMS_RAM::blogEditorSetId($bid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet($bid, 'editor')) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        return new Field;
     }
 
     /**
@@ -258,11 +347,47 @@ class Helper
         if (empty($cid)) {
             return false;
         }
-        $configSetId = ACMS_RAM::categoryConfigSetId($cid);
-        if (empty($configSetId)) {
+        if ($configSetId = ACMS_RAM::categoryConfigSetId($cid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorCategoryConfigSet($cid, 'config')) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        return false;
+    }
+
+    /**
+     * 指定されたidに該当するカテゴリーのテーマセットを考慮したFieldを返す
+     */
+    public function loadCategoryThemeSet($cid)
+    {
+        if (empty($cid)) {
             return false;
         }
-        return $this->loadConfigSetField($configSetId);
+        if ($configSetId = ACMS_RAM::categoryThemeSetId($cid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorCategoryConfigSet($cid, 'theme')) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        return false;
+    }
+
+    /**
+     * 指定されたidに該当するカテゴリーの編集画面セットを考慮したFieldを返す
+     */
+    public function loadCategoryEditorSet($cid)
+    {
+        if (empty($cid)) {
+            return false;
+        }
+        if ($configSetId = ACMS_RAM::categoryEditorSetId($cid)) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        if ($configSetId = $this->getAncestorCategoryConfigSet($cid, 'editor')) {
+            return $this->loadConfigSetField($configSetId);
+        }
+        return false;
     }
 
     /**
@@ -271,11 +396,64 @@ class Helper
     public function getCurrentConfigSetId()
     {
         if (CID) {
-            if ($categorySetId = ACMS_RAM::categoryConfigSetId(CID)) {
-                return $categorySetId;
+            if ($configSetId = ACMS_RAM::categoryConfigSetId(CID)) {
+                return $configSetId;
+            }
+            if ($configSetId = $this->getAncestorCategoryConfigSet(CID, 'config')) {
+                return $configSetId;
             }
         }
-        return ACMS_RAM::blogConfigSetId(BID);
+        if ($configSetId = ACMS_RAM::blogConfigSetId(BID)) {
+            return $configSetId;
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet(BID, 'config')) {
+            return $configSetId;
+        }
+        return null;
+    }
+
+    /**
+     * 現在のコンテキストでのテーマセットIDを返します
+     */
+    public function getCurrentThemeSetId()
+    {
+        if (CID) {
+            if ($configSetId = ACMS_RAM::categoryThemeSetId(CID)) {
+                return $configSetId;
+            }
+            if ($configSetId = $this->getAncestorCategoryConfigSet(CID, 'theme')) {
+                return $configSetId;
+            }
+        }
+        if ($configSetId = ACMS_RAM::blogThemeSetId(BID)) {
+            return $configSetId;
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet(BID, 'theme')) {
+            return $configSetId;
+        }
+        return null;
+    }
+
+    /**
+     * 現在のコンテキストでの編集画面セットIDを返します
+     */
+    public function getCurrentEditorSetId()
+    {
+        if (CID) {
+            if ($configSetId = ACMS_RAM::categoryEditorSetId(CID)) {
+                return $configSetId;
+            }
+            if ($configSetId = $this->getAncestorCategoryConfigSet(CID, 'editor')) {
+                return $configSetId;
+            }
+        }
+        if ($configSetId = ACMS_RAM::blogEditorSetId(BID)) {
+            return $configSetId;
+        }
+        if ($configSetId = $this->getAncestorBlogConfigSet(BID, 'editor')) {
+            return $configSetId;
+        }
+        return null;
     }
 
     /**
@@ -291,11 +469,43 @@ class Helper
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
         }
-        $sql = SQL::newSelect('config_set');
-        $sql->setSelect('config_set_name');
-        $sql->addWhereOpr('config_set_id', $id);
-        $name = DB::query($sql->get(dsn()), 'one');
+        $name = ACMS_RAM::configSetName($id);
+        $this->cache->put($cacheKey, $name);
+        return $name;
+    }
 
+    /**
+     * 現在のコンテキストでのテーマセット名を返します
+     */
+    public function getCurrentThemeSetName()
+    {
+        $id = $this->getCurrentThemeSetId();
+        if (empty($id)) {
+            return '';
+        }
+        $cacheKey = "cache-config-set-name-$id";
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
+        $name = ACMS_RAM::configSetName($id);
+        $this->cache->put($cacheKey, $name);
+        return $name;
+    }
+
+    /**
+     * 現在のコンテキストでの編集画面セット名を返します
+     */
+    public function getCurrentEditorSetName()
+    {
+        $id = $this->getCurrentEditorSetId();
+        if (empty($id)) {
+            return '';
+        }
+        $cacheKey = "cache-config-set-name-$id";
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
+        }
+        $name = ACMS_RAM::configSetName($id);
         $this->cache->put($cacheKey, $name);
         return $name;
     }
@@ -442,65 +652,67 @@ class Helper
     /**
      * コンフィグへのアクセス権限チェック
      *
-     * @param Field $Config
+     * @param Field_Validation $Config
      * @param int $rid
      * @param int $mid
      * @param int $setid
      *
-     * @return Field
+     * @return Field_Validation
      */
     public function setValide($Config, $rid = null, $mid = null, $setid = null)
     {
-        $action = 'config_edit';
-        $key = null;
-        $id = null;
-
-        // action
-        if ($mid) {
-            $action = 'module_edit';
-        } else if (ADMIN === 'publish_index') {
-            $action = 'publish_edit';
-        }
-
-        // id
-        if ($mid && $rid) {
-            $key = 'rid_' . $rid;
-            $id = 'mid_' . $mid;
-        } else if ($mid) {
-            $key = 'mid';
-            $id = $mid;
-        } else if ($setid && $rid) {
-            $key = 'setid_' . $setid;
-            $id = 'rid_' . $rid;
-        } else if ($setid) {
-            $key = 'setid';
-            $id = $setid;
-        } else if ($rid) {
-            $key = 'rid';
-            $id = $rid;
-        }
-
         // check
-        if (roleAvailableUser()) {
-            // ロールで権限管理
-            $Config->setMethod(
-                'config',
-                'operative',
-                roleAuthorization($action, BID) ?
-                    true : Auth::checkShortcut('Config', ADMIN, $key, $id)
-            );
-        } else {
-            // 通常権限
-            $Config->setMethod(
-                'config',
-                'operative',
-                sessionWithAdministration() ?
-                    true : Auth::checkShortcut('Config', ADMIN, $key, $id)
-            );
-        }
+        $Config->setMethod(
+            'config',
+            'operative',
+            $this->isOperable($rid, $mid, $setid)
+        );
 
         return $Config;
     }
+
+    /**
+     * コンフィグの操作権限があるかどうか
+     *
+     * @param string $action
+     * @param int $rid
+     * @param int $mid
+     * @param int $setid
+     * @return bool
+     */
+    public function isOperable($rid = null, $mid = null, $setid = null): bool
+    {
+        if (roleAvailableUser()) {
+            $action = 'config_edit';
+            // action
+            if ($mid) {
+                $action = 'module_edit';
+            } else if (ADMIN === 'publish_index') {
+                $action = 'publish_edit';
+            }
+            if (roleAuthorization($action, BID)) {
+                return true;
+            }
+
+            if (Auth::checkShortcut(['rid' => $rid, 'mid' => $mid, 'setid' => $setid])) {
+                return true;
+            }
+
+            return false;
+        }
+
+        if (sessionWithAdministration()) {
+            return true;
+        }
+
+        if (Auth::checkShortcut(['rid' => $rid, 'mid' => $mid, 'setid' => $setid])) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 
     /**
      * タイプ指定によるデータベーススキーマの取得

@@ -15,13 +15,23 @@ class ACMS_POST_Entry_BulkChange_Exec extends ACMS_POST_Entry_BulkChange_Confirm
             $this->validate();
             $this->bulkChange();
 
+            AcmsLogger::info('エントリーの一括変更を行いました', [
+                'eids' => implode(',', $this->eids),
+                'action' => $this->entryActions,
+                'entry' => Common::extract('entry'),
+                'field' => Common::extract('field'),
+            ]);
+
             $this->Post->set('step', '4');
         } catch (ACMS_POST_Entry_BulkChange_Exceptions_PermissionDenied $e) {
+            AcmsLogger::info('権限がないため、エントリーの一括変更に失敗しました');
             die('Permission denied.');
         } catch (ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty $e) {
+            AcmsLogger::info('一括変更するエントリーが指定されていないため、処理を終了しました');
             $this->Post->set('step', '1');
             $this->Post->set('error', 'targetEmpty');
         } catch (ACMS_POST_Entry_BulkChange_Exceptions_OperationEmpty $e) {
+            AcmsLogger::info('一括変更する内容が指定されていないため、エントリーの一括変更処理を終了しました');
             $this->Post->set('step', '2');
             $this->Post->set('error', 'operationEmpty');
         }

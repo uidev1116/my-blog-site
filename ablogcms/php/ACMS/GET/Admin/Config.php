@@ -4,7 +4,7 @@ use Acms\Services\Facades\RichEditor;
 
 class ACMS_GET_Admin_Config extends ACMS_GET_Admin
 {
-    function & getConfig($rid, $mid, $setid = null)
+    public function & getConfig($rid, $mid, $setid = null)
     {
         $post_config =& $this->Post->getChild('config');
 
@@ -16,49 +16,75 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         }
         $_config = null;
 
-        if ( !!$rid && !$mid ) {
+        if (!!$rid && !$mid) {
             $_config = Config::loadRuleConfig($rid, $setid);
-        } else if ( !!$mid ) {
+        } elseif (!!$mid) {
             $_config = Config::loadModuleConfig($mid, $rid);
         }
 
-        if ( !!$_config ) {
+        if (!!$_config) {
             $config->overload($_config);
-            foreach ( array(
-                'links_label', 'links_value',
-                'navigation_label', 'navigation_uri', 'navigation_attr', 'navigation_a_attr', 'navigation_parent', 'navigation_target', 'navigation_publish',
-            ) as $fd ) {
+            foreach (
+                array(
+                    'links_label',
+                    'links_value',
+                    'navigation_label',
+                    'navigation_uri',
+                    'navigation_attr',
+                    'navigation_a_attr',
+                    'navigation_parent',
+                    'navigation_target',
+                    'navigation_publish',
+                ) as $fd
+            ) {
                 $config->setField($fd, $_config->getArray($fd));
             }
-
         }
-        if ( !$post_config->isNull() && ADMIN !== 'config_unit' ) {
+        $config->set('session_cookie_lifetime', env('SESSION_COOKIE_LIFETIME', 259200));
+
+        if (!$post_config->isNull() && ADMIN !== 'config_unit') {
             $config->overload($post_config);
             $post_config->overload($config);
             return $post_config;
         }
-        $config->set('session_cookie_lifetime', env('SESSION_COOKIE_LIFETIME', 259200));
 
         return $config;
     }
 
-    function get()
+    public function get()
     {
-        if ( !IS_LICENSED ) { return ''; }
-        if ( !($rid = intval($this->Get->get('rid'))) ) { $rid = null; }
-        if ( !($mid = intval($this->Get->get('mid'))) ) { $mid = null; }
-        if ( !($setid = intval($this->Get->get('setid'))) ) { $setid = null; }
+        if (!IS_LICENSED) {
+            return '';
+        }
+        if (!($rid = intval($this->Get->get('rid')))) {
+            $rid = null;
+        }
+        if (!($mid = intval($this->Get->get('mid')))) {
+            $mid = null;
+        }
+        if (!($setid = intval($this->Get->get('setid')))) {
+            $setid = null;
+        }
         if ($mid) {
             $setid = null;
+        }
+
+        if (!Config::isOperable($rid, $mid, $setid)) {
+            die403();
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $vars   = array();
         $Config =& $this->getConfig($rid, $mid, $setid);
 
-        if ( !$this->Post->isValidAll() ) {
+        if (!$this->Post->isValidAll()) {
             $Tpl->add('msg#error');
         }
+
+        // add alert email info
+        $Config->setField('alert_email_from', env('ALERT_EMAIL_FROM'));
+        $Config->setField('alert_email_to', env('ALERT_EMAIL_TO'));
+        $Config->setField('alert_email_bcc', env('ALERT_EMAIL_BCC'));
 
         //----------------
         // file extension
@@ -89,12 +115,10 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
                 'bid'   => BID,
                 'admin' => 'shortcut_edit',
                 'query' => array(
-                    'action' => 'Config',
                     'admin'  => $admin,
-                    'edit'   => 'add',
-                    'step'   => 'reapply',
                     'rid'   => $rid,
                     'mid'   => $mid,
+                    'setid' => $setid
                 )
         ));
 
@@ -120,14 +144,6 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
 
         $vars   += $this->buildNavigation($Config, $Tpl);
         $vars   += $this->buildField($Config, $Tpl, array(), 'config');
-
-        if ( RBID !== BID ) {
-            $r_config = Config::loadBlogConfigSet(RBID);
-            $log_access_save_period = $r_config->get('log_access_save_period');
-            if ( !empty($log_access_save_period) ) {
-                $vars['log_access_save_period'] = $log_access_save_period;
-            }
-        }
 
         $vars['notice_mess'] = $this->Post->get('notice_mess');
 

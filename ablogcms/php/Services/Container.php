@@ -93,7 +93,7 @@ class Container implements Contracts\ContainerInterface
      * register service
      *
      * @param string $alias
-     * @param string | callable $class
+     * @param string|callable $class
      * @param array $arguments
      *
      * @return void
@@ -113,7 +113,7 @@ class Container implements Contracts\ContainerInterface
      * register service as singleton
      *
      * @param string $alias
-     * @param string | callable $class
+     * @param string|callable $class
      * @param array $arguments
      *
      * @return void

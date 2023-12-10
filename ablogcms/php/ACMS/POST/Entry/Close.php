@@ -23,6 +23,8 @@ class ACMS_POST_Entry_Close extends ACMS_POST_Entry
         // キャッシュクリア予約削除
         Entry::deleteCacheControl($eid);
 
+        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーを非公開にしました');
+
         $this->redirect(acmsLink(array(
             'bid'   => BID,
             'eid'   => $eid,

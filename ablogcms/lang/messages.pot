@@ -1,24 +1,24 @@
-# Copyright (C) 2019 a-blog cms
+# Copyright (C) 2023 a-blog cms
 # This file is distributed under the same license as the a-blog cms.
-# a-blog cms <info@a-blogcms.jp>, 2019.
+# a-blog cms <info@a-blogcms.jp>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: a-blog cms ver2.10.16 professional\n"
+"Project-Id-Version: a-blog cms ver3.0.25 professional\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-18T19:53:09+09:00\n"
+"POT-Creation-Date: 2023-05-12T21:12:41+09:00\n"
 "PO-Revision-Date: YEAR-MO-DATHO:MI+ZONE\n"
-"Last-Translator: steelydylan <hori@appleple.com>\n"
+"Last-Translator: アップルップル <ito@appleple.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/beginner2019/admin/dashboard-left.html
+#: themes/beginner/admin/dashboard-left.html
 msgid "Google Analytics"
 msgstr ""
 
-#: themes/beginner2019/include/check-seo-extend.html
+#: themes/beginner/include/check-seo-extend.html
 msgid "出力設定"
 msgstr ""
 
@@ -38,10 +38,6 @@ msgid "このカテゴリを一覧に表示しない"
 msgstr ""
 
 msgid "このブログを一覧に表示しない"
-msgstr ""
-
-#: themes/bootstrap2019/admin/dashboard-left.html
-msgid "リンク集"
 msgstr ""
 
 #: themes/system/_layouts/admin.html
@@ -99,15 +95,6 @@ msgstr ""
 msgid "ライセンス購入"
 msgstr ""
 
-msgid "開発ライセンス適用中"
-msgstr ""
-
-msgid "本番運用の場合、<a href='https://mypage.a-blogcms.jp' target='_blank'>こちら</a>よりライセンスをご購入ください"
-msgstr ""
-
-msgid "（現在検索エンジンにインデックスされていません）"
-msgstr ""
-
 msgid "ダッシュボード"
 msgstr ""
 
@@ -130,6 +117,33 @@ msgid "連続送信は禁止されています。"
 msgstr ""
 
 msgid "不正なアクセスです。"
+msgstr ""
+
+msgid "開発モードで動作中"
+msgstr ""
+
+msgid "開発モードが適用されています"
+msgstr ""
+
+msgid "トライアルモードで動作中"
+msgstr ""
+
+msgid "マイナーバージョン（２桁目）のアップデートにはライセンスの更新が必要です。"
+msgstr ""
+
+msgid "現在はトライアルモードで動作しています。バージョンをダウングレードするか、新しいライセンスファイルを適用してください。<br>アップデート期間が終了している場合、アップデート期間延長オプションをマイページより購入する必要があります。"
+msgstr ""
+
+msgid "トライアルモードが終了すると、検索エンジンから検索されない開発モードに切り替わります。"
+msgstr ""
+
+msgid "トライアル期間"
+msgstr ""
+
+msgid "ダウングレードする（無料）"
+msgstr ""
+
+msgid "マイページに移動する"
 msgstr ""
 
 #: themes/system/_layouts/check-seo.html
@@ -166,6 +180,178 @@ msgstr ""
 msgid "OGP画像"
 msgstr ""
 
+#: themes/system/_layouts/login.html
+msgid "ログイン"
+msgstr ""
+
+msgid "お使いの端末（ブラウザ）からはログインが禁止されています。"
+msgstr ""
+
+msgid "ユーザーIDまたはパスワードが違います。"
+msgstr ""
+
+msgid "$1回ログインに失敗したため、アカウントがロックされました。"
+msgstr ""
+
+msgid "$1分後にもう一度試してください。"
+msgstr ""
+
+msgid "２段階認証を無効化しました"
+msgstr ""
+
+msgid "アカウントを有効化しました。メールアドレスとパスワードを入力してログインください。"
+msgstr ""
+
+msgid "有効期限切れのURLです。再度申請ください。"
+msgstr ""
+
+msgid "すでに有効済みか無効なURLです。"
+msgstr ""
+
+msgid "パスワードを変更しました。"
+msgstr ""
+
+msgid "ユーザーID"
+msgstr ""
+
+msgid "メールアドレス"
+msgstr ""
+
+msgid "パスワード"
+msgstr ""
+
+msgid "パスワードをお忘れですか？"
+msgstr ""
+
+msgid "もしくは"
+msgstr ""
+
+msgid "新規会員登録"
+msgstr ""
+
+msgid "サイトに戻る"
+msgstr ""
+
+msgid "パスワード変更"
+msgstr ""
+
+msgid "パスワードが入力されていません。"
+msgstr ""
+
+msgid "不正なパスワードです。別のパスワードを入力ください。"
+msgstr ""
+
+msgid "パスワードが一致しません。"
+msgstr ""
+
+msgid "不正な操作です。"
+msgstr ""
+
+msgid "新しいパスワード"
+msgstr ""
+
+msgid "新しいパスワードを確認"
+msgstr ""
+
+msgid "パスワードを変更"
+msgstr ""
+
+msgid "ログイン画面に戻る"
+msgstr ""
+
+msgid "２段階認証コードが違います。"
+msgstr ""
+
+msgid "認証用アプリに表示されている、認証コードを入力してください。"
+msgstr ""
+
+msgid "認証コード"
+msgstr ""
+
+msgid "リカバリーコードを使って、２段階認証を無効にする"
+msgstr ""
+
+msgid "正しいリカバリーコードを入力してください。"
+msgstr ""
+
+msgid "リカバリーコード"
+msgstr ""
+
+msgid "２段階認証を無効化"
+msgstr ""
+
+msgid "登録いただくと指定されたメールアドレスに確認メールが送信されます。メールの内容に従って登録を完了してください。"
+msgstr ""
+
+msgid "入力されたメールアドレス宛に、確認用メールを送信しました。"
+msgstr ""
+
+msgid "名前が入力されていません。"
+msgstr ""
+
+msgid "メールアドレスが入力されていません。"
+msgstr ""
+
+msgid "不正なメールアドレスです。"
+msgstr ""
+
+msgid "すでに登録されているメールアドレスです。"
+msgstr ""
+
+msgid "メールの送信に失敗しました。システムの設定に問題があります。システムの管理者にお問い合わせください。"
+msgstr ""
+
+msgid "名前"
+msgstr ""
+
+msgid "パスワードを確認"
+msgstr ""
+
+msgid "会員登録"
+msgstr ""
+
+msgid "SNSアカウントで登録するとワンクリックでログインできます。"
+msgstr ""
+
+msgid "ブログ選択"
+msgstr ""
+
+msgid "ログインできるブログ一覧"
+msgstr ""
+
+msgid "ブログ名"
+msgstr ""
+
+msgid "パスワードの再設定をご案内するメールを送信します。"
+msgstr ""
+
+msgid "パスワードの再設定をご案内するメールを送信しました。"
+msgstr ""
+
+msgid "登録されていないメールアドレスです。"
+msgstr ""
+
+msgid "有効化されていないメールアドレスです。"
+msgstr ""
+
+msgid "パスワード再設定メールを送る"
+msgstr ""
+
+msgid "試用期間の終了に伴う 継続利用のご案内"
+msgstr ""
+
+msgid "商用・法人等でご利用の場合"
+msgstr ""
+
+msgid "ライセンス体系のページ"
+msgstr ""
+
+msgid "ライセンス体系"
+msgstr ""
+
+msgid "をご覧ください。"
+msgstr ""
+
 #: themes/system/acms-code/global-vars.json
 msgid "グローバル変数"
 msgstr ""
@@ -186,9 +372,6 @@ msgid "カテゴリーID"
 msgstr ""
 
 msgid "エントリーID"
-msgstr ""
-
-msgid "ユーザーID"
 msgstr ""
 
 msgid "エイリアスID"
@@ -422,10 +605,10 @@ msgstr ""
 msgid "コンフィグで指定したブログのテーマカラー"
 msgstr ""
 
-msgid "コンフィグで指定した管理者宛読者登録通知メールの送信元メールアドレス"
+msgid "コンフィグで指定した管理者宛会員登録通知メールの送信元メールアドレス"
 msgstr ""
 
-msgid "コンフィグで指定した読者登録通知メールの送信元メールアドレス"
+msgid "コンフィグで指定した会員登録通知メールの送信元メールアドレス"
 msgstr ""
 
 msgid "コンフィグで指定したパスワード再発行通知メールの送信元メールアドレス"
@@ -585,6 +768,9 @@ msgstr ""
 msgid "機能設定"
 msgstr ""
 
+msgid "ログイン設定"
+msgstr ""
+
 msgid "プロパティ設定"
 msgstr ""
 
@@ -664,6 +850,9 @@ msgstr ""
 msgid "カテゴリーエントリーサマリー"
 msgstr ""
 
+msgid "リンク集"
+msgstr ""
+
 msgid "バナー"
 msgstr ""
 
@@ -713,6 +902,9 @@ msgid "Instagramいいね！"
 msgstr ""
 
 msgid "Instagram最新投稿"
+msgstr ""
+
+msgid "Instagram Graph API 最新投稿"
 msgstr ""
 
 msgid "Bingウェブ検索"
@@ -804,7 +996,10 @@ msgstr ""
 msgid "デバッグモード"
 msgstr ""
 
-msgid "現在表示中のテンプレート"
+msgid "ベンチマークモード"
+msgstr ""
+
+msgid "現在のテンプレート"
 msgstr ""
 
 msgid "現在のコンフィグセット"
@@ -819,7 +1014,10 @@ msgstr ""
 msgid "登録されているユーザー数が上限を超えているため、ラインセンスが無効になっています。"
 msgstr ""
 
-msgid "データベースのタイムスタンプが不正であるため、ライセンスが無効になっています。"
+msgid "ライセンスのドメインと違うため、ライセンスが無効になっています。"
+msgstr ""
+
+msgid "ライセンスの有効期限切れのため、ライセンスが無効になっています。"
 msgstr ""
 
 msgid "ダイレクト編集ONにする"
@@ -973,22 +1171,22 @@ msgstr ""
 msgid "詳細"
 msgstr ""
 
+msgid "ピッチ"
+msgstr ""
+
+msgid "ズーム"
+msgstr ""
+
+msgid "ヘディング"
+msgstr ""
+
 msgid "緯度"
 msgstr ""
 
 msgid "経度"
 msgstr ""
 
-msgid "ズーム"
-msgstr ""
-
 msgid "吹き出し ( HTML可 )"
-msgstr ""
-
-msgid "地図大きさ"
-msgstr ""
-
-msgid "レイヤー"
 msgstr ""
 
 msgid "サイズ"
@@ -1077,9 +1275,6 @@ msgstr ""
 msgid "カテゴリー"
 msgstr ""
 
-msgid "なし"
-msgstr ""
-
 msgid "サブカテゴリー"
 msgstr ""
 
@@ -1113,6 +1308,9 @@ msgstr ""
 msgid "上から"
 msgstr ""
 
+msgid "なし"
+msgstr ""
+
 msgid "全て"
 msgstr ""
 
@@ -1138,6 +1336,12 @@ msgid "エントリーの編集をやめます。\\n現在の変更内容が破�
 msgstr ""
 
 msgid "この操作は許可されていません。"
+msgstr ""
+
+msgid "エントリーがロックされているため、エントリーを保存できませんでした。"
+msgstr ""
+
+msgid "「新しいバージョン」として保存することで、現在の編集内容を別バージョンとして残しておけます。"
 msgstr ""
 
 msgid "エントリーの作成ができませんでした。"
@@ -1174,91 +1378,46 @@ msgstr ""
 msgid "エントリー一覧を更新しました。"
 msgstr ""
 
-msgid "エントリーがありません。"
+msgid "
+  子ブログのカテゴリーをグローバル（共有）カテゴリーではないものに変更することはできません。"
 msgstr ""
 
-msgid "子ブログのカテゴリーをグローバル（共有）カテゴリーではないものに変更することはできません。"
-msgstr ""
-
-msgid "検索条件"
-msgstr ""
-
-msgid "全てのカテゴリー"
-msgstr ""
-
-msgid "カテゴリーなし"
-msgstr ""
-
-msgid "タイトル・本文・カスタムフィールドから検索（複数指定可）"
-msgstr ""
-
-msgid "詳しい条件"
-msgstr ""
-
-msgid "全てのステータス"
-msgstr ""
-
-msgid "全ての期間"
-msgstr ""
-
-msgid "公開中"
-msgstr ""
-
-msgid "公開終了"
-msgstr ""
-
-msgid "未来公開"
-msgstr ""
-
-msgid "全てのユーザー"
-msgstr ""
-
-msgid "現在のブログ"
-msgstr ""
-
-msgid "下階層のブログも表示"
-msgstr ""
-
-msgid "下階層のカテゴリーも表示"
-msgstr ""
-
-msgid "絞り込み"
-msgstr ""
-
-msgid "ソート"
-msgstr ""
-
-msgid "昇順"
-msgstr ""
-
-msgid "降順"
-msgstr ""
-
-msgid "更新日時"
-msgstr ""
-
-msgid "投稿日時"
-msgstr ""
-
-msgid "表示順"
-msgstr ""
-
-msgid "表示数"
+msgid "まとめて操作"
 msgstr ""
 
 msgid "詳細検索"
 msgstr ""
 
+msgid "該当するエントリーが見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したエントリーはありませんでした。<br>再検索または新規作成してください。"
+msgstr ""
+
+msgid "エントリーがありません"
+msgstr ""
+
+msgid "新しくエントリーを作成してください。"
+msgstr ""
+
 msgid "ドラッグでエントリーの表示順を変更できます"
 msgstr ""
 
-msgid "ドラッグでユーザー絞り込み時の表示順を変更できます"
+msgid "ドラッグでユーザー絞り込み時の表示順を変更できます
+  "
 msgstr ""
 
-msgid "ドラッグでカテゴリー絞り込み時の表示順を変更できます"
+msgid "ドラッグでカテゴリー絞り込み時の表示順を変更できます
+  "
+msgstr ""
+
+msgid "表示順"
 msgstr ""
 
 msgid "ユーザー"
+msgstr ""
+
+msgid "エクスポート"
 msgstr ""
 
 msgid "※変更されたエントリーはログイン中のユーザーの所有になり、カテゴリーの設定は解除されます。ただし、グローバルカテゴリーとして設定されている場合はカテゴリーが保持されます"
@@ -1270,7 +1429,12 @@ msgstr ""
 msgid "ゴミ箱に移します。\\nよろしいですか？"
 msgstr ""
 
-msgid "すべてのエントリーを選択する"
+msgid "エントリー作成
+        "
+msgstr ""
+
+msgid "すべてのエントリーを選択する
+              "
 msgstr ""
 
 msgid "コード"
@@ -1285,6 +1449,10 @@ msgstr ""
 msgid "編集"
 msgstr ""
 
+msgid "非公開
+            "
+msgstr ""
+
 msgid "承認履歴"
 msgstr ""
 
@@ -1294,10 +1462,14 @@ msgstr ""
 msgid "次へ"
 msgstr ""
 
-msgid "件"
+msgid " 件"
 msgstr ""
 
 msgid "全"
+msgstr ""
+
+msgid " 件
+          "
 msgstr ""
 
 #: themes/system/admin/_layouts/schedule/edit-data.html
@@ -1332,12 +1504,6 @@ msgid "設定しない"
 msgstr ""
 
 #: themes/system/admin/_layouts/top.html
-msgid "開発ライセンスで動いています。"
-msgstr ""
-
-msgid "本番運用の場合、<a href=\"https://mypage.a-blogcms.jp\" target=\"_blank\">こちら</a>よりライセンスをご購入ください"
-msgstr ""
-
 msgid "システム・ライセンス情報"
 msgstr ""
 
@@ -1347,16 +1513,25 @@ msgstr ""
 msgid "状態"
 msgstr ""
 
-msgid "システムバージョン"
+msgid "バージョン"
 msgstr ""
 
-msgid "ライセンス"
+msgid "エディション"
 msgstr ""
 
-msgid "開発ライセンス"
+msgid "ライセンスステータス"
 msgstr ""
 
-msgid "認証済みライセンス"
+msgid "未認証（開発モード）"
+msgstr ""
+
+msgid "未認証（トライアルモード）"
+msgstr ""
+
+msgid "認証済み（サブスクリプション）"
+msgstr ""
+
+msgid "認証済み"
 msgstr ""
 
 msgid "ユーザーの上限"
@@ -1386,52 +1561,67 @@ msgstr ""
 msgid "メールマガジン拡張"
 msgstr ""
 
+msgid "メンテナンスモード"
+msgstr ""
+
+msgid "管理者以外のこのブログ以下へのアクセスをメンテナンス表示にします。"
+msgstr ""
+
+msgid "出力ページのHTTPステータス"
+msgstr ""
+
+msgid "設定"
+msgstr ""
+
+msgid "メンテナンス中"
+msgstr ""
+
+msgid "サービス利用不可"
+msgstr ""
+
+msgid "ページ"
+msgstr ""
+
+msgid "正常"
+msgstr ""
+
+msgid "メンテナンスを終了"
+msgstr ""
+
+msgid "メンテナンスを開始"
+msgstr ""
+
+msgid "一般の方がサイトを閲覧できなくなります。よろしいですか？"
+msgstr ""
+
 msgid "Ping送信"
 msgstr ""
 
-msgid "キャッシュファイル管理"
+msgid "キャッシュクリア"
 msgstr ""
 
-msgid "キャッシュ生成の状態"
+msgid "クリア対象"
 msgstr ""
 
-msgid "有効"
+msgid "ページ キャッシュ"
 msgstr ""
 
-msgid "無効"
+msgid "テンプレート キャッシュ"
 msgstr ""
 
-msgid "全体の件数"
+msgid "コンフィグ キャッシュ"
 msgstr ""
 
-msgid "全体の総サイズ"
+msgid "カスタムフィールド キャッシュ"
 msgstr ""
 
-msgid "バイト"
+msgid "モジュール キャッシュ"
 msgstr ""
 
-msgid "最大同時キャッシュ生成数"
+msgid "一時的なキャッシュ"
 msgstr ""
 
-msgid "子ブログのキャッシュも含める"
-msgstr ""
-
-msgid "完全消去"
-msgstr ""
-
-msgid "リフレッシュ"
-msgstr ""
-
-msgid "キャッシュ生成"
-msgstr ""
-
-msgid "config.server.phpのMAX_PUBLISHESの値が低いとキャッシュが一度に作られない場合があります。"
-msgstr ""
-
-msgid "その場合は、MAX_PUBLISHESを大きくするか、キャッシュの生成を何回か行ってください。"
-msgstr ""
-
-msgid "キャッシュ生成リスト"
+msgid "キャッシュをクリア"
 msgstr ""
 
 msgid "公開 / 掲載終了 予定の記事"
@@ -1479,9 +1669,6 @@ msgstr ""
 msgid "端末制限されているユーザーに、この端末でのログインの許可・拒否を設定する"
 msgstr ""
 
-msgid "設定"
-msgstr ""
-
 msgid "許可端末"
 msgstr ""
 
@@ -1522,13 +1709,7 @@ msgstr ""
 msgid "エイリアスの有効・無効を変更します。"
 msgstr ""
 
-msgid "名前"
-msgstr ""
-
 msgid "エイリアスの名前を変更します。（日本語可）"
-msgstr ""
-
-msgid "名前が入力されていません。"
 msgstr ""
 
 msgid "ドメイン"
@@ -1610,10 +1791,6 @@ msgstr ""
 msgid "先祖ブログ"
 msgstr ""
 
-#: themes/system/admin/app/base/index.html
-msgid "30日間APIリクエストがないとトークンが失効します。失効すると再度認証が必要になります。"
-msgstr ""
-
 #: themes/system/admin/app/index.html
 msgid "拡張アプリ管理"
 msgstr ""
@@ -1651,9 +1828,6 @@ msgstr ""
 msgid "アプリ名"
 msgstr ""
 
-msgid "バージョン"
-msgstr ""
-
 msgid "提供"
 msgstr ""
 
@@ -1661,6 +1835,12 @@ msgid "説明"
 msgstr ""
 
 msgid "利用可能な拡張アプリはありません。子ブログで利用するにはルートブログでインストールを行ってください。"
+msgstr ""
+
+msgid "有効"
+msgstr ""
+
+msgid "無効"
 msgstr ""
 
 msgid "未インストール"
@@ -1706,6 +1886,21 @@ msgstr ""
 msgid "承認履歴がありません。"
 msgstr ""
 
+msgid "承認依頼されると一覧が表示されます。"
+msgstr ""
+
+msgid "ソート"
+msgstr ""
+
+msgid "降順"
+msgstr ""
+
+msgid "昇順"
+msgstr ""
+
+msgid "表示数"
+msgstr ""
+
 msgid "表示"
 msgstr ""
 
@@ -1733,17 +1928,20 @@ msgstr ""
 msgid "バージョンが削除されています"
 msgstr ""
 
+msgid "件"
+msgstr ""
+
 #: themes/system/admin/approval/notification.html
 msgid "承認通知はありません。"
+msgstr ""
+
+msgid "全ての承認依頼を確認済みです。"
 msgstr ""
 
 msgid "承認タスク"
 msgstr ""
 
 msgid "依頼ユーザー"
-msgstr ""
-
-msgid "期限"
 msgstr ""
 
 msgid "担当"
@@ -1755,14 +1953,63 @@ msgstr ""
 msgid "通知を削除します。\\nこの操作は取り消せません。\\nよろしいですか？"
 msgstr ""
 
-msgid "承認期限"
-msgstr ""
-
 msgid "次の承認者"
 msgstr ""
 
+#: themes/system/admin/audit/log.html
+msgid "監査ログ"
+msgstr ""
+
+msgid "全てのユーザー"
+msgstr ""
+
+msgid "{label}"
+msgstr ""
+
+msgid "期間"
+msgstr ""
+
+msgid "レベル"
+msgstr ""
+
+msgid "緊急"
+msgstr ""
+
+msgid "重大"
+msgstr ""
+
+msgid "エラー"
+msgstr ""
+
+msgid "警告"
+msgstr ""
+
+msgid "注意"
+msgstr ""
+
+msgid "デバッグ"
+msgstr ""
+
+msgid "このページをJSON形式でダウンロード"
+msgstr ""
+
+msgid "該当するログは見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したログはありませんでした。"
+msgstr ""
+
+msgid "再検索してください。"
+msgstr ""
+
+msgid "実行ユーザー"
+msgstr ""
+
+msgid "内容"
+msgstr ""
+
 #: themes/system/admin/backup/index.html
-msgid "注意事項"
+msgid "バックアップする際の注意事項"
 msgstr ""
 
 msgid "CMS全体のデータベースとアーカイブのデータを置き換える際に利用します。"
@@ -1780,19 +2027,52 @@ msgstr ""
 msgid "データベースのバックアップ"
 msgstr ""
 
-msgid "アクセスログとキャッシュ以外のテーブルをzip形式でダウンロードします。解凍はしないでください。"
+msgid "バックアップに成功しました。"
 msgstr ""
 
-msgid "データベースのデータを一括ダウンロードします。よろしいですか？"
+msgid "バックアップに失敗しました。"
 msgstr ""
 
-msgid "アーカイブのバックアップ"
+msgid "アクセスログとキャッシュ以外のテーブルをバックアップします。"
 msgstr ""
 
-msgid "archives ディレクトリのデータをzip形式でダウンロードします。"
+msgid "アクセスログとキャッシュ以外のテーブルをzip形式でバックアップします。よろしいですか？"
 msgstr ""
 
-msgid "全てのarchivesディレクトリを一括ダウンロードします。データが大きい場合にはサーバに負荷がかかります。よろしいですか？"
+msgid "画像・ファイルのバックアップ"
+msgstr ""
+
+msgid "archives, media, storageディレクトリのデータをバックアップします。"
+msgstr ""
+
+msgid "archives, media, storageディレクトリのデータをzip形式でバックアップします。データが大きい場合にはサーバに負荷がかかります。よろしいですか？"
+msgstr ""
+
+msgid "バックアップデータのダウンロード・削除"
+msgstr ""
+
+msgid "バックアップ直後のバックアップはリストに出てこないため、リロードをしてください。"
+msgstr ""
+
+msgid "バックアップファイルは暗号化されていないため、%{MEDIA_STORAGE_DIR}に、htaccess.txt を .htaccess にリネームしてhttpでアクセスできないようにしてください。"
+msgstr ""
+
+msgid "storageディレクトリは、ドキュメントルートより上の階層への設置が望ましいです。"
+msgstr ""
+
+msgid "上の階層に設置した場合は、config.server.php の MEDIA_STORAGE_DIR のパスを変更ください。（例: '../storage/'）"
+msgstr ""
+
+msgid "データベース"
+msgstr ""
+
+msgid "画像・ファイル"
+msgstr ""
+
+msgid "ダウンロード"
+msgstr ""
+
+msgid "選択したバックアップを削除します。本当によろしいですか？"
 msgstr ""
 
 msgid "データベースのリストア"
@@ -1804,10 +2084,10 @@ msgstr ""
 msgid "BACKUP_ACMS_(元のテーブル名) としてバックアップされます。万が一処理に失敗した場合は、テーブルを元の名前に戻して復旧してください"
 msgstr ""
 
-msgid "元のテーブルをリネームして残しておく"
+msgid "インポート後に元のデータベーステーブルを自動で削除する"
 msgstr ""
 
-msgid "インポート後に元のデータベーステーブルを自動で削除する"
+msgid "元のテーブルをリネームして残しておく"
 msgstr ""
 
 msgid "バージョンチェック"
@@ -1825,29 +2105,36 @@ msgstr ""
 msgid "バックアップファイル"
 msgstr ""
 
-msgid "エクスポートしたZIPファイルを、FTPなどでprivate/backup_database/ディレクトリにアップロードしてください。テーマファイルはFTP等で別途アップロードしてください。"
+msgid "ダウンロードしたZIPファイルを、FTPなどで %{MEDIA_STORAGE_DIR}backup_database/backup_database/ ディレクトリにアップロードしてください。"
 msgstr ""
 
 msgid "参照先"
 msgstr ""
 
-msgid "リストア処理を行います。よろしいですか？"
+msgid "データベースのリストア処理を行います。よろしいですか？"
 msgstr ""
 
-msgid "アーカイブのリストア"
+msgid "リストア完了後、通知メールが送信されます。"
 msgstr ""
 
-msgid "エクスポートしたZIPアーカイブファイルを、private/backup_archives/ディレクトリにアップロードしてください。"
+msgid "送信先"
 msgstr ""
 
-msgid "前のアーカイブディレクトリを削除しリストア処理を行います。よろしいですか？"
+msgid "画像・ファイルのリストア"
+msgstr ""
+
+msgid "ダウンロードしたZIPファイルを、%{MEDIA_STORAGE_DIR}backup_archives/ディレクトリにアップロードしてください。"
+msgstr ""
+
+msgid "画像・ファイルのリストアを行います。よろしいですか？"
 msgstr ""
 
 #: themes/system/admin/blog/edit.html
 msgid "ブログ管理"
 msgstr ""
 
-msgid "新規ブログ作成"
+msgid "新規ブログ作成
+			"
 msgstr ""
 
 msgid "ブログを作成しました"
@@ -1865,10 +2152,12 @@ msgstr ""
 msgid "コンフィグを初期化しました"
 msgstr ""
 
-msgid "ブログを削除できませんでした。子を持つブログは削除できません。"
+msgid "ブログを削除できませんでした。子を持つブログは削除できません。
+	"
 msgstr ""
 
-msgid "子ブログを作成"
+msgid "子ブログを作成
+					"
 msgstr ""
 
 msgid "基本設定"
@@ -1892,7 +2181,8 @@ msgstr ""
 msgid "シークレット"
 msgstr ""
 
-msgid "親ブログのステータスとの関係でステータスを変更できません。"
+msgid "
+									親ブログのステータスとの関係でステータスを変更できません。"
 msgstr ""
 
 msgid "ルートブログは非公開にできません。"
@@ -1904,13 +2194,25 @@ msgstr ""
 msgid "日本語可"
 msgstr ""
 
-msgid "ブログ名"
-msgstr ""
-
 msgid "ブログのドメイン名です。"
 msgstr ""
 
+msgid "入力されたドメイン名はご利用できません。
+									"
+msgstr ""
+
+msgid "
+									入力されたドメインとコードネームの組み合わせは既に使用されています。"
+msgstr ""
+
 msgid "URL上で表示されるブログのコード（ディレクトリー名）を変更します。スラッシュでパス指定可（例：parent/own）"
+msgstr ""
+
+msgid " 英数字"
+msgstr ""
+
+msgid "システムで予約されているキーワードです。
+									"
 msgstr ""
 
 msgid "コンフィグセット"
@@ -1926,6 +2228,10 @@ msgid "不正な値です。"
 msgstr ""
 
 msgid "チェックが外されたブログはブログ一覧に表示されなくなります。しかし「非表示」ではないのでURLを入力するとブログが表示されます。"
+msgstr ""
+
+msgid "リストに出す
+								"
 msgstr ""
 
 msgid "テーマカラー"
@@ -1976,19 +2282,21 @@ msgstr ""
 msgid "このブログのデータ（データ、アーカイブ）をzip形式でダウンロードします。"
 msgstr ""
 
-msgid "このブログのデータをエクスポートします。データが大きい場合にはサーバに負荷がかかります。よろしいですか？"
-msgstr ""
-
-msgid "エクスポート"
+msgid "このブログのデータをエクスポートします。よろしいですか？"
 msgstr ""
 
 msgid "ブログのインポート"
 msgstr ""
 
-msgid "ディレクトリにアップロードされたエクスポートファイル<br>（zipファイル）を使用してインポートします。"
+msgid "ディレクトリにアップロードされたエクスポートファイル<br>（zipファイル）を使用してインポートします。
+						"
 msgstr ""
 
 msgid "このブログのデータをすべて削除しインポート処理を行います。よろしいですか？"
+msgstr ""
+
+msgid "
+									インポート"
 msgstr ""
 
 #: themes/system/admin/blog/index.html
@@ -2069,13 +2377,13 @@ msgstr ""
 msgid "税金の設定"
 msgstr ""
 
-msgid "税率の設定"
+msgid "消費税率"
 msgstr ""
 
 msgid "消費税の税率を設定してください。"
 msgstr ""
 
-msgid "税換算の設定"
+msgid "消費税区分"
 msgstr ""
 
 msgid "内税・外税の切り替えを行う事ができます。"
@@ -2087,7 +2395,37 @@ msgstr ""
 msgid "外税_CTX_tax_excluded"
 msgstr ""
 
-msgid "方式"
+msgid "税計算方式"
+msgstr ""
+
+msgid "消費税の計算方式を設定することができます。積み上げ計算は商品毎に消費税を計算し合計する方式。割り戻し計算は商品の税別合計金額から消費税を計算する方式。"
+msgstr ""
+
+msgid "小計毎に消費税を計算"
+msgstr ""
+
+msgid "商品毎に消費税を計算"
+msgstr ""
+
+msgid "税計算端数処理"
+msgstr ""
+
+msgid "消費税の端数処理を設定することができます。"
+msgstr ""
+
+msgid "切り捨て"
+msgstr ""
+
+msgid "四捨五入"
+msgstr ""
+
+msgid "切り上げ"
+msgstr ""
+
+msgid "登録番号"
+msgstr ""
+
+msgid "納税時の「適格請求書発行事業者 登録番号」を登録できます。 テンプレート変数：\\{shop_tax_no\\}"
 msgstr ""
 
 msgid "合計算出の設定"
@@ -2298,13 +2636,28 @@ msgstr ""
 msgid "カテゴリー管理"
 msgstr ""
 
+msgid "検索条件"
+msgstr ""
+
+msgid "タイトル・本文・カスタムフィールドから検索（複数指定可）"
+msgstr ""
+
+msgid "絞り込み"
+msgstr ""
+
 msgid "カテゴリー一覧を更新しました。"
 msgstr ""
 
-msgid "カテゴリーがありません。"
+msgid "該当するカテゴリーが見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したカテゴリーはありませんでした。<br>再検索または新規作成してください。"
 msgstr ""
 
 msgid "新規カテゴリー作成"
+msgstr ""
+
+msgid "カテゴリーがありません。"
 msgstr ""
 
 msgid "親カテゴリーを"
@@ -2332,6 +2685,12 @@ msgid "子カテゴリー"
 msgstr ""
 
 #: themes/system/admin/checklist.html
+msgid "期限切れです"
+msgstr ""
+
+msgid "ユーザー数がライセンスの限度を超えています"
+msgstr ""
+
 msgid "ユーザー数"
 msgstr ""
 
@@ -2344,10 +2703,26 @@ msgstr ""
 msgid "有効期限"
 msgstr ""
 
-msgid "動作モード"
+msgid "プラン"
 msgstr ""
 
-msgid "ベンチマークモード"
+msgid "支払い待ち<!--/--></td>
+					<!-- END_IF -->
+				</tr>
+				<!-- END_IF -->
+			</tbody>
+		</table>
+
+		<h2 class=\"acms-admin-admin-title2\">"
+msgstr ""
+
+msgid "アクティベーションを開始"
+msgstr ""
+
+msgid "※ライセンスを有効化するには以下のエンドポイントに通信できる必要があります。"
+msgstr ""
+
+msgid "動作モード"
 msgstr ""
 
 msgid "画像エンジン"
@@ -2357,36 +2732,6 @@ msgid "ロスレス圧縮対応フォーマット"
 msgstr ""
 
 msgid "ライブラリがあるのに対応フォーマットが表示されない場合、themes/system/images/system にあるファイルに書き込み権限があるか確認ください。"
-msgstr ""
-
-msgid "アクセスログ"
-msgstr ""
-
-msgid "開始"
-msgstr ""
-
-msgid "終了"
-msgstr ""
-
-msgid "子ブログのログも含める"
-msgstr ""
-
-msgid "対象期間を選択してください。"
-msgstr ""
-
-msgid "archivesディレクトリを書き込み可能にしてください。"
-msgstr ""
-
-msgid "CSVダウンロード"
-msgstr ""
-
-msgid "ログ収集の状態"
-msgstr ""
-
-msgid "全て取得"
-msgstr ""
-
-msgid "POSTのみ取得"
 msgstr ""
 
 msgid "サーバー環境情報"
@@ -2440,6 +2785,39 @@ msgstr ""
 msgid "画像の回転処理"
 msgstr ""
 
+msgid "アクセスログ"
+msgstr ""
+
+msgid "開始"
+msgstr ""
+
+msgid "終了"
+msgstr ""
+
+msgid "子ブログのログも含める"
+msgstr ""
+
+msgid "対象期間を選択してください。"
+msgstr ""
+
+msgid "archivesディレクトリを書き込み可能にしてください。"
+msgstr ""
+
+msgid "CSVダウンロード"
+msgstr ""
+
+msgid "ログ収集の状態"
+msgstr ""
+
+msgid "全て取得"
+msgstr ""
+
+msgid "POSTのみ取得"
+msgstr ""
+
+msgid "全体の件数"
+msgstr ""
+
 msgid "キャッシュ・アクセスログ"
 msgstr ""
 
@@ -2449,7 +2827,10 @@ msgstr ""
 msgid "キャッシュ"
 msgstr ""
 
-msgid "キャッシュ感度"
+msgid "POST時のキャッシュクリア"
+msgstr ""
+
+msgid "クリアの対象ブログ"
 msgstr ""
 
 msgid "一般宛メール設定"
@@ -2487,9 +2868,6 @@ msgstr ""
 msgid "コメント管理"
 msgstr ""
 
-msgid "コメントが見つかりません"
-msgstr ""
-
 msgid "コメント一覧を更新しました。"
 msgstr ""
 
@@ -2497,6 +2875,24 @@ msgid "階層"
 msgstr ""
 
 msgid "下階層ブログのコメントも表示する"
+msgstr ""
+
+msgid "全てのステータス"
+msgstr ""
+
+msgid "詳しい条件"
+msgstr ""
+
+msgid "該当するコメントが見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したコメントはありませんでした。"
+msgstr ""
+
+msgid "コメントはありません"
+msgstr ""
+
+msgid "このブログのエントリーにコメントはありません。"
 msgstr ""
 
 msgid "選択したコメントを削除します。\\nこの操作は元に戻せません、よろしいですか？"
@@ -2515,7 +2911,7 @@ msgstr ""
 msgid "アクセス設定を保存しました"
 msgstr ""
 
-msgid "ログイン"
+msgid "ログイン制限"
 msgstr ""
 
 msgid "許可リスト"
@@ -2533,6 +2929,24 @@ msgstr ""
 msgid "IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限りログインが拒否されるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）"
 msgstr ""
 
+msgid "権限制限"
+msgstr ""
+
+msgid "（デバッグモード中は、この機能は有効になりません。）"
+msgstr ""
+
+msgid "制限リスト"
+msgstr ""
+
+msgid "IPアドレスを半角数字と「.」「/」を使い<a href='http://ja.wikipedia.org/wiki/Classless_Inter-Domain_Routing' target='_blank'>CIDR記法</a>で入力してください。(例：a.b.c.d/32)<br />指定されたIPアドレスからのアクセスに限り、指定された権限のログインできるようになります。（この項目はブログごとの設定となり、ルールには反映されません。）"
+msgstr ""
+
+msgid "以上の権限は、"
+msgstr ""
+
+msgid "からのアクセスのみ許可"
+msgstr ""
+
 msgid "ベーシック認証"
 msgstr ""
 
@@ -2543,9 +2957,6 @@ msgid "ベーシック認証に使用するユーザー名とパスワードを�
 msgstr ""
 
 msgid "使用できない文字が含まれています"
-msgstr ""
-
-msgid "パスワード"
 msgstr ""
 
 msgid "パスワードを表示"
@@ -2630,22 +3041,13 @@ msgstr ""
 msgid "取得するデータを制限します。"
 msgstr ""
 
-#: themes/system/admin/config/api/instagram/users/media/liked.html
-msgid "Instagram最近のLiked"
-msgstr ""
-
-#: themes/system/admin/config/api/instagram/users/media/liked_body.html
+#: themes/system/admin/config/api/twitter/list/members_body.html
 msgid "APIリクエスト キャッシュ有効時間"
 msgstr ""
 
 msgid "APIリクエストの結果を、ここで設定した秒数の間だけキャッシュ利用します。ページのキャッシュとは異なることに注意してください。"
 msgstr ""
 
-#: themes/system/admin/config/api/instagram/users/media/recent.html
-msgid "Instagram最近の投稿"
-msgstr ""
-
-#: themes/system/admin/config/api/twitter/list/members_body.html
 msgid "リスト指定方法"
 msgstr ""
 
@@ -2694,6 +3096,47 @@ msgstr ""
 msgid "Twitterユーザー詳細"
 msgstr ""
 
+#: themes/system/admin/config/api.html
+msgid " API設定"
+msgstr ""
+
+msgid "API設定を保存しました"
+msgstr ""
+
+msgid "コンフィグを保存出来ませんでした。
+    "
+msgstr ""
+
+msgid "API有効化"
+msgstr ""
+
+msgid "APIを有効化するかどうかを設定します。"
+msgstr ""
+
+msgid "APIを利用する"
+msgstr ""
+
+msgid "APIへのリクエストのヘッダーに設定します。"
+msgstr ""
+
+msgid "Access-Control-Allow-Originに設定するドメインを入力します"
+msgstr ""
+
+msgid "APIの制限"
+msgstr ""
+
+msgid "HTTP リファラー"
+msgstr ""
+
+msgid "HTTP リファラーで API を制限します。"
+msgstr ""
+
+msgid "IP アドレス"
+msgstr ""
+
+msgid "IPアドレスで API を制限します。"
+msgstr ""
+
 #: themes/system/admin/config/authorize.html
 msgid "認証"
 msgstr ""
@@ -2735,18 +3178,6 @@ msgid "<a href=\"https://dev.twitter.com/apps\">Twitterアプリケーション<
 msgstr ""
 
 msgid "このブログのコールバックURL"
-msgstr ""
-
-msgid "InstagramAPI系モジュールを利用するために、認証してブログとアカウント情報を関連付けます。この設定は、ブログ単位で行われます。ルールを利用した個別の設定はできません。"
-msgstr ""
-
-msgid "認証には、<a href=\"http://instagram.com/developer/\">Instagramアプリケーション</a>の登録が必要です。"
-msgstr ""
-
-msgid "登録後に<a href=\"%{ADMIN_BASE_URL}bid/%{BID}/admin/config_property/\">プロパティ設定</a>で、Client Id、Client Secret、Client Redirectを入力してください。"
-msgstr ""
-
-msgid "<a href=\"http://instagram.com/developer/\">Instagramアプリケーション</a>を登録するときに、下記のURLをコールバックURLに指定してください。"
 msgstr ""
 
 #: themes/system/admin/config/banner_body.html
@@ -2872,11 +3303,84 @@ msgstr ""
 msgid "URLクエリストリングの位置情報を参照"
 msgstr ""
 
-#: themes/system/admin/config/cache-list.html
-msgid "キャッシュ生成リストを保存しました"
+#: themes/system/admin/config/bulk-change.html
+msgid "一括変更フィールド設定"
 msgstr ""
 
-msgid "キャッシュを手動or自動で即時生成をするリストです。URLを指定してください。"
+msgid "一括変更フィールド設定を保存しました"
+msgstr ""
+
+msgid "変換項目設定"
+msgstr ""
+
+msgid "項目名"
+msgstr ""
+
+msgid "管理用のラベルです。日本語入力できます。"
+msgstr ""
+
+msgid "フィールド名 or フィールドグループ名（グループ名は@から書きます）"
+msgstr ""
+
+msgid "テンプレートにカスタムフィールド名を指定します。（field#フィールド名 or field#@グループ名）"
+msgstr ""
+
+#: themes/system/admin/config/cache.html
+msgid "ページキャッシュ設定"
+msgstr ""
+
+msgid "キャッシュ設定を保存しました"
+msgstr ""
+
+msgid "ページキャッシュ"
+msgstr ""
+
+msgid "ページキャッシュ機能の設定状態です。チェックが外された場合、キャッシュ機能は動作しません。"
+msgstr ""
+
+msgid "エントリー保存や設定変更時にキャッシュをクリアするか設定します。"
+msgstr ""
+
+msgid "クリアする"
+msgstr ""
+
+msgid "（オフでもエントリ更新時の該当エントリのキャッシュはクリアします）"
+msgstr ""
+
+msgid "キャッシュ有効時間"
+msgstr ""
+
+msgid "キャッシュが有効な時間です。この時間内で同じデータに複数回アクセスがあった場合、2回目以降はキャッシュファイルが表示されます。"
+msgstr ""
+
+msgid "エントリーキャッシュ有効時間"
+msgstr ""
+
+msgid "エントリーキャッシュが有効な時間です。この時間内で同じデータに複数回アクセスがあった場合、2回目以降はキャッシュファイルが表示されます。"
+msgstr ""
+
+msgid "キャッシュクリアの対象ブログ"
+msgstr ""
+
+msgid "キャッシュをクリアするターゲットのブログの決め方を指定します。"
+msgstr ""
+
+msgid "実行ブログのみ"
+msgstr ""
+
+msgid "実行ブログと下階層のブログ"
+msgstr ""
+
+msgid "実行ブログと親階層のブログ"
+msgstr ""
+
+msgid "全ブログ"
+msgstr ""
+
+msgid "クライアントキャッシュ設定"
+msgstr ""
+
+msgid "サイトを閲覧している端末のクライアント（ブラウザ）のキャッシュの有効時間です。この時間内はクライアント側のキャッシュが使用されサーバにアクセスしません。そのためページが更新された場合にも反映されないことがあります。ブラウザの再読込ボタンを押したり、キャッシュを消去しないとページが切り替わらないことがあります。"
 msgstr ""
 
 #: themes/system/admin/config/calendar/month_body.html
@@ -2955,6 +3459,12 @@ msgid "数値フィールド"
 msgstr ""
 
 msgid "指定したクラスをエントリのループブロック内に設定できます。例えばグリッドシステムのカラム数設定などにご利用ください。"
+msgstr ""
+
+msgid "チェックを外すと、サブカテゴリーに所属するエントリーは表示されないようになります。"
+msgstr ""
+
+msgid "サブカテゴリーのエントリーも表示する"
 msgstr ""
 
 msgid "チェックを外すと、インデキシングされていないエントリーも表示されます。"
@@ -3120,9 +3630,6 @@ msgstr ""
 msgid "{group.label}"
 msgstr ""
 
-msgid "{label}"
-msgstr ""
-
 msgid "グループ2"
 msgstr ""
 
@@ -3237,9 +3744,6 @@ msgstr ""
 msgid "エントリー項目設定"
 msgstr ""
 
-msgid "項目名"
-msgstr ""
-
 msgid "表示設定"
 msgstr ""
 
@@ -3258,16 +3762,10 @@ msgstr ""
 msgid "カテゴリー作成可能"
 msgstr ""
 
-msgid "カテゴリー固定"
-msgstr ""
-
-msgid "URLコンテキストを反映"
+msgid "初期値"
 msgstr ""
 
 msgid "選択肢を子カテゴリーに限定"
-msgstr ""
-
-msgid "全て表示"
 msgstr ""
 
 msgid "常にエントリー日時と同じにする"
@@ -3324,9 +3822,6 @@ msgstr ""
 msgid "Googleマップ"
 msgstr ""
 
-msgid "Yahoo!地図"
-msgstr ""
-
 msgid "ビデオ"
 msgstr ""
 
@@ -3334,6 +3829,9 @@ msgid "画像URL"
 msgstr ""
 
 msgid "引用"
+msgstr ""
+
+msgid "リッチエディター"
 msgstr ""
 
 msgid "改ページ"
@@ -3660,12 +4158,6 @@ msgstr ""
 msgid "チェックを外すと、カテゴリー絞り込み時にサブカテゴリーに所属するエントリーは表示されないようになります。"
 msgstr ""
 
-msgid "サブカテゴリーのエントリーも表示する"
-msgstr ""
-
-msgid "エントリーの公開日時を基点に、ここで設定した期間中はnewブロックが出力されます。"
-msgstr ""
-
 msgid "チェックをするとタグ情報を出力できるようになります。"
 msgstr ""
 
@@ -3721,6 +4213,15 @@ msgid "チェックをするとコメント情報を出力できるようにな�
 msgstr ""
 
 msgid "コメント情報を表示できるようにする"
+msgstr ""
+
+msgid "関連エントリーの表示"
+msgstr ""
+
+msgid "結びついている関連エントリーを表示するように設定します。"
+msgstr ""
+
+msgid "関連エントリーを表示する"
 msgstr ""
 
 msgid "エントリーがない場合のHTTP応答"
@@ -3817,6 +4318,15 @@ msgid "(エントリーフィールド以外のフィールドは各基本設定
 msgstr ""
 
 #: themes/system/admin/config/entry/calendar_body.html
+msgid "日付の表示順"
+msgstr ""
+
+msgid "カレンダーの日付をどのような順序で表示するかの設定です。"
+msgstr ""
+
+msgid "エントリーの表示順"
+msgstr ""
+
 msgid "今日の日付 class指定"
 msgstr ""
 
@@ -3839,6 +4349,9 @@ msgid "月表示"
 msgstr ""
 
 msgid "週表示(その日から)"
+msgstr ""
+
+msgid "週表示(その日まで)"
 msgstr ""
 
 msgid "週表示(週の始まりから)"
@@ -3932,6 +4445,15 @@ msgstr ""
 msgid "表示順がフィールド順の場合に、ここで設定したフィールド名を元に並び替えます。空の場合はURLコンテキストの１番目のフィールドが使用されます。"
 msgstr ""
 
+msgid "絞り込み時の表示順"
+msgstr ""
+
+msgid "表示順が「表示順（昇順 or 降順）」の場合、チェックをつけると、カテゴリーやユーザーで絞り込み時に、絞り込み時の表示順を使用しなくなります。"
+msgstr ""
+
+msgid "カテゴリー、ユーザー絞り込み時にも、絞り込み時の表示順を使用しない"
+msgstr ""
+
 #: themes/system/admin/config/entry/photo_body.html
 msgid "チェックをすると、ログインしていなくてもシークレットブログのエントリーが表示されます。ステータスがシークレットの子ブログのエントリーを表示するためには、モジュールIDの設定でブログIDは指定せず、ブログの階層は下階層のブログを含めるようにしてください。"
 msgstr ""
@@ -3957,7 +4479,10 @@ msgid "関連度優先"
 msgstr ""
 
 #: themes/system/admin/config/export.html
-msgid "コンフィグのエクスポート"
+msgid "コンフィグの設定"
+msgstr ""
+
+msgid "エクスポートデータの取得"
 msgstr ""
 
 msgid "以下のエクスポートを行います。"
@@ -3975,13 +4500,13 @@ msgstr ""
 msgid "このブログで管理している全てのモジュール"
 msgstr ""
 
-msgid "デフォルトコンフィグのエクスポート"
+msgid "デフォルトコンフィグの設定"
 msgstr ""
 
 msgid "デフォルトのコンフィグセットのみエクスポートを行います。ブログコンフィグの初期値の config.system.yaml などに使用します。"
 msgstr ""
 
-msgid "＊ このファイルをインポートに利用しないでください。"
+msgid "※このファイルをインポートに利用しないでください。"
 msgstr ""
 
 #: themes/system/admin/config/feed/ex-list_body.html
@@ -4017,6 +4542,12 @@ msgid "アールエスエス2"
 msgstr ""
 
 #: themes/system/admin/config/feed/rss2_body.html
+msgid "更新日時"
+msgstr ""
+
+msgid "投稿日時"
+msgstr ""
+
 msgid "フィード配信時の件数です。"
 msgstr ""
 
@@ -4053,36 +4584,6 @@ msgid "機能設定を保存しました"
 msgstr ""
 
 msgid "基本"
-msgstr ""
-
-msgid "キャッシュ機能の設定状態です。チェックが外された場合、キャッシュ機能は動作しません。"
-msgstr ""
-
-msgid "キャッシュ自動生成"
-msgstr ""
-
-msgid "キャッシュクリア後に自動的にキャッシュ生成リストにあるページをキャッシュします。"
-msgstr ""
-
-msgid "キャッシュ有効時間"
-msgstr ""
-
-msgid "キャッシュが有効な時間です。この時間内で同じデータに複数回アクセスがあった場合、2回目以降はキャッシュファイルが表示されます。"
-msgstr ""
-
-msgid "キャッシュの感度"
-msgstr ""
-
-msgid "チェックすると、下位または上位ブログが更新された場合にもキャッシュのリフレッシュ（現在存在するキャッシュの有効期限を終了）を行うようになります。"
-msgstr ""
-
-msgid "祖先ブログまたは子孫ブログが更新されたときにもキャッシュをリフレッシュする"
-msgstr ""
-
-msgid "クライアントのキャッシュ有効時間"
-msgstr ""
-
-msgid "サイトを閲覧している端末のクライアント（ブラウザ）のキャッシュの有効時間です。この時間内はクライアント側のキャッシュが使用されサーバにアクセスしません。そのためページが更新された場合にも反映されないことがあります。ブラウザの再読込ボタンを押したり、キャッシュを消去しないとページが切り替わらないことがあります。"
 msgstr ""
 
 msgid "アクセスに関するログを記録してデータベースに記録します。取得しないという選択肢もあります。保存期間を越えたログは自動的に削除されます。また、ここで取得したログは「その他管理」内の「チェックリスト」からCSVデータとしてダウンロードできます。"
@@ -4130,6 +4631,15 @@ msgstr ""
 msgid "承認機能を利用可能にする"
 msgstr ""
 
+msgid "承認機能有効時の編集権限"
+msgstr ""
+
+msgid "チェックをすると承認機能有効時に投稿者は自身が投稿した記事のみを編集できます。"
+msgstr ""
+
+msgid "投稿者は自身が投稿した記事のみ編集できる"
+msgstr ""
+
 msgid "承認ブログ"
 msgstr ""
 
@@ -4166,15 +4676,6 @@ msgstr ""
 msgid "メディア管理を利用可能にする"
 msgstr ""
 
-msgid "プレビュー共有の有効期限"
-msgstr ""
-
-msgid "時間"
-msgstr ""
-
-msgid "プロ版以上"
-msgstr ""
-
 msgid "レイアウト表示"
 msgstr ""
 
@@ -4197,6 +4698,352 @@ msgid "マイナーバージョンも含める"
 msgstr ""
 
 msgid "更新メニューを非表示"
+msgstr ""
+
+msgid "エントリー同時編集ロック"
+msgstr ""
+
+msgid "プロフェッショナル版以上"
+msgstr ""
+
+msgid "同時編集ロック機能"
+msgstr ""
+
+msgid "チェックをするとエントリーのロック（排他制御）が利用できるようになります。"
+msgstr ""
+
+msgid "エントリーの同時編集ロック機能を利用可能にする"
+msgstr ""
+
+msgid "アラートのみ"
+msgstr ""
+
+msgid "チェックをすると実際のエントリーのロックはしないで、アラートのみ表示します。"
+msgstr ""
+
+msgid "実際にロックはしないで、アラートのみ表示します"
+msgstr ""
+
+msgid "ロック有効期限"
+msgstr ""
+
+msgid "エントリーのロック有効期限。この時間を過ぎると自動的にロックを解除します。"
+msgstr ""
+
+msgid "時間"
+msgstr ""
+
+msgid "プレビュー時の初期デバイス"
+msgstr ""
+
+msgid "プレビュー時のデフォルトのデバイスを設定します。"
+msgstr ""
+
+msgid "デバイスを選択"
+msgstr ""
+
+msgid "承認プレビュー時の初期デバイス"
+msgstr ""
+
+msgid "承認プレビュー時のデフォルトのデバイスを設定します。"
+msgstr ""
+
+msgid "タイムマシン時の初期デバイス"
+msgstr ""
+
+msgid "タイムマシンモード時のデフォルトのデバイスを設定します。"
+msgstr ""
+
+msgid "プレビュー共有の有効期限"
+msgstr ""
+
+msgid "入力マップタイプ"
+msgstr ""
+
+msgid "ブログの位置情報"
+msgstr ""
+
+msgid "チェックすると、ブログの位置情報機能が有効になります。"
+msgstr ""
+
+msgid "カテゴリーの位置情報"
+msgstr ""
+
+msgid "チェックすると、カテゴリーの位置情報機能が有効になります。"
+msgstr ""
+
+msgid "エントリーの位置情報"
+msgstr ""
+
+msgid "チェックすると、エントリーの位置情報機能が有効になります。"
+msgstr ""
+
+msgid "ユーザーの位置情報"
+msgstr ""
+
+msgid "チェックすると、ユーザーの位置情報機能が有効になります。"
+msgstr ""
+
+msgid "コメント機能"
+msgstr ""
+
+msgid "エントリーのコメントを受け取るか／受け取らないかの設定状態です。コメントフォームはテンプレート内のentry_bodyモジュールに記述されている必要があります。"
+msgstr ""
+
+msgid "コメントを受け取る"
+msgstr ""
+
+msgid "コメント受信時の初期状態"
+msgstr ""
+
+msgid "投稿されたコメントが「承認待ち」「公開」「非公開」のどの状態になるか選択します。「公開」以外の場合は、編集者以上の権限を持つユーザーが個別に公開するものになります。"
+msgstr ""
+
+msgid "ブラックリスト"
+msgstr ""
+
+msgid "コメントに対するNGワードの設定です。カンマ、スペース、改行のいずれかで単語が区切れます。"
+msgstr ""
+
+msgid "コメントクッキー有効時間"
+msgstr ""
+
+msgid "コメント欄で「Cookieに保存」のチェックボックスにチェックした場合、この有効時間内は名前などの情報がコメントした人のブラウザに保持されます。"
+msgstr ""
+
+#: themes/system/admin/config/import-part.html
+msgid "コンフィグの部分インポート"
+msgstr ""
+
+msgid "部分的なコンフィグのインポート"
+msgstr ""
+
+msgid "インポートの実行"
+msgstr ""
+
+msgid "部分的なコンフィグのインポートを行います。"
+msgstr ""
+
+msgid "インポートデータ（yaml）にあるキーのデータだけ上書きしてインポートデータにないデータはそのまま残ります。"
+msgstr ""
+
+msgid "ルール："
+msgstr ""
+
+msgid "指定なし"
+msgstr ""
+
+msgid "インポートを実行します。よろしいですか？"
+msgstr ""
+
+#: themes/system/admin/config/import.html
+msgid "コンフィグのインポート"
+msgstr ""
+
+msgid "以下項目で問題がありました。"
+msgstr ""
+
+msgid "ID重複よりインポートできませんでした。"
+msgstr ""
+
+msgid "IDの変換に失敗しました。"
+msgstr ""
+
+msgid "コンフィグセット / コンフィグ / ルール / モジュール のインポートを行います。IDをコードに変換してインポートを行います。"
+msgstr ""
+
+msgid "※既存のコンフィグセット / コンフィグ / ルール / モジュール を削除してインポートを行います。"
+msgstr ""
+
+msgid "（ただし、バナーモジュールのコンテンツとモジュールフィールドの画像、ファイルは削除・インポートを行いません。）"
+msgstr ""
+
+#: themes/system/admin/config/index.html
+msgid " コンフィグ管理"
+msgstr ""
+
+msgid "一般設定"
+msgstr ""
+
+msgid "キャッシュ設定"
+msgstr ""
+
+msgid "API設定"
+msgstr ""
+
+msgid "サービス設定"
+msgstr ""
+
+msgid "エントリー編集画面"
+msgstr ""
+
+msgid "承認機能設定"
+msgstr ""
+
+msgid "部分インポート"
+msgstr ""
+
+msgid "インポート（コンフィグセット / コンフィグ / ルール / モジュール）
+              "
+msgstr ""
+
+msgid "エクスポート（コンフィグセット / コンフィグ / ルール / モジュール）
+              "
+msgstr ""
+
+msgid "リセット"
+msgstr ""
+
+msgid "ガイドライン/ツール"
+msgstr ""
+
+msgid "国際化 ( i18n )"
+msgstr ""
+
+msgid "
+                スニペット"
+msgstr ""
+
+msgid "
+              変数表"
+msgstr ""
+
+msgid "サイトパーツ"
+msgstr ""
+
+msgid "スニペット
+                "
+msgstr ""
+
+msgid "カートショップ"
+msgstr ""
+
+msgid "外部API連携"
+msgstr ""
+
+msgid "ユニット・カテゴリー"
+msgstr ""
+
+msgid "ユーザー・ブログ"
+msgstr ""
+
+msgid "タグ・カレンダー"
+msgstr ""
+
+msgid "JSON テンプレート"
+msgstr ""
+
+msgid "その他"
+msgstr ""
+
+msgid "共通"
+msgstr ""
+
+#: themes/system/admin/config/links_body.html
+msgid "リンク名"
+msgstr ""
+
+msgid "リンクとして表示される文字列です。"
+msgstr ""
+
+msgid "リンク先URLです。"
+msgstr ""
+
+#: themes/system/admin/config/login.html
+msgid "現在のURLでログイン"
+msgstr ""
+
+msgid "ログイン後にリダイレクトされずに、そのままのページでログインします。"
+msgstr ""
+
+msgid "現在のURLでログイン ※チェックされている場合、管理ページへのリダイレクトは無効になります。"
+msgstr ""
+
+msgid "ログイン後ページの指定"
+msgstr ""
+
+msgid "ログイン後に表示したい管理ページのacmsパスを指定できます。"
+msgstr ""
+
+msgid "※ログイン後に表示したい管理ページのacmsパスを指定できます。"
+msgstr ""
+
+msgid "ログイン後ページのSSL"
+msgstr ""
+
+msgid "ログイン後に表示するページでSSLを使用します。"
+msgstr ""
+
+msgid "ログイン後に表示するページでSSLを使用する。"
+msgstr ""
+
+msgid "ログイン中の投稿者"
+msgstr ""
+
+msgid "チェックをすると投稿者権限ユーザーがログインしている場合、自身が投稿したエントリーのみ表示されるようになります。"
+msgstr ""
+
+msgid "ログイン中の投稿者には、自分が投稿したエントリーのみ表示する"
+msgstr ""
+
+msgid "編集、管理ページ以外の表示"
+msgstr ""
+
+msgid "チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条件で表示するようになります。"
+msgstr ""
+
+msgid "投稿者以上の権限であっても管理画面、編集画面以外は、読者（閲覧者）と同じ条件で表示する"
+msgstr ""
+
+msgid "セキュリティ"
+msgstr ""
+
+msgid "ログインクッキー有効時間"
+msgstr ""
+
+msgid "この有効時間内はログイン状態を保持できます。"
+msgstr ""
+
+msgid "（「.env」ファイルの「SESSION_COOKIE_LIFETIME」に秒数を設定することで変更できます。）"
+msgstr ""
+
+msgid "アカウントロック"
+msgstr ""
+
+msgid "パスワード入力の失敗回数の制限を設定できます。"
+msgstr ""
+
+msgid "分の間に"
+msgstr ""
+
+msgid "回パスワードが間違った場合、アカウントをロックする"
+msgstr ""
+
+msgid "アカウントロック時間"
+msgstr ""
+
+msgid "アカウントロックされた場合のロック時間を設定します。"
+msgstr ""
+
+msgid "分間ロックする"
+msgstr ""
+
+msgid "パスワード変更の有効時間"
+msgstr ""
+
+msgid "パスワード再発行リンクの有効時間の設定をします。"
+msgstr ""
+
+msgid "分間"
+msgstr ""
+
+msgid "２段階認証"
+msgstr ""
+
+msgid "２段階認証を利用できるか設定します。"
+msgstr ""
+
+msgid "設定できるようにする"
 msgstr ""
 
 msgid "パスワードポリシー"
@@ -4253,124 +5100,64 @@ msgstr ""
 msgid "大文字、小文字、数値、記号のうち、３種類を含む"
 msgstr ""
 
-msgid "ブラックリスト"
+msgid "メッセージ"
+msgstr ""
+
+msgid "パスワード入力時に表示するメッセージです。"
 msgstr ""
 
 msgid "パスワードで使うNGワードの設定です。カンマ、スペース、改行のいずれかで単語が区切れます。"
 msgstr ""
 
-msgid "入力マップタイプ"
-msgstr ""
-
-msgid "ブログの位置情報"
-msgstr ""
-
-msgid "チェックすると、ブログの位置情報機能が有効になります。"
-msgstr ""
-
-msgid "カテゴリーの位置情報"
-msgstr ""
-
-msgid "チェックすると、カテゴリーの位置情報機能が有効になります。"
-msgstr ""
-
-msgid "エントリーの位置情報"
-msgstr ""
-
-msgid "チェックすると、エントリーの位置情報機能が有効になります。"
-msgstr ""
-
-msgid "ユーザーの位置情報"
-msgstr ""
-
-msgid "チェックすると、ユーザーの位置情報機能が有効になります。"
-msgstr ""
-
-msgid "ログインクッキー有効時間"
-msgstr ""
-
-msgid "ログイン画面で「パスワードを保存」のチェックボックスにチェックした場合、この有効時間内はログイン状態を保持できます。"
-msgstr ""
-
-msgid "現在のURLでログイン"
-msgstr ""
-
-msgid "ログイン後にリダイレクトされずに、そのままのページでログインします。"
-msgstr ""
-
-msgid "現在のURLでログイン ※チェックされている場合、管理ページへのリダイレクトは無効になります。"
-msgstr ""
-
-msgid "ログイン後ページの指定"
-msgstr ""
-
-msgid "ログイン後に表示したい管理ページのacmsパスを指定できます。"
-msgstr ""
-
-msgid "※ログイン後に表示したい管理ページのacmsパスを指定できます。"
-msgstr ""
-
-msgid "ログイン後ページのSSL"
-msgstr ""
-
-msgid "ログイン後に表示するページでSSLを使用します。"
-msgstr ""
-
-msgid "ログイン後に表示するページでSSLを使用する。"
+msgid "会員登録機能"
 msgstr ""
 
 msgid "ユーザー登録の外部申請"
 msgstr ""
 
-msgid "チェックをすると読者登録の受付ができるようになります。ログインページ内に読者登録ページへのリンクが表示されます。"
+msgid "チェックをすると、外部からのユーザー登録申請を有効にします。ログインページ内に新規ユーザー登録ページへのリンクが表示されます。"
 msgstr ""
 
 msgid "ユーザー登録の外部申請を受け付ける"
 msgstr ""
 
-msgid "外部申請時のアクティベーション"
+msgid "メールアドレスの有効性確認"
 msgstr ""
 
-msgid "チェックをすると、読者登録フォームに入力された内容で、即座に有効なユーザーが作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに記載されているパスワードを使って最初にログインした時点で有効なユーザーとして登録されます。"
+msgid "チェックをすると、ユーザー登録フォームに入力された内容で、即座に有効なユーザーが作成されます。チェックをしない場合は仮ユーザーとして作成し、登録者宛メールに記載されているパスワードを使って最初にログインした時点で有効なユーザーとして登録します。"
 msgstr ""
 
 msgid "メールアドレスの有効性とパスワード認証を行わない"
 msgstr ""
 
-msgid "外部申請「どこでもログイン」"
+msgid "確認メールの有効時間"
 msgstr ""
 
-msgid "チェックをすると読者登録ユーザの「どこでもログイン」の初期値が「ON」に設定されます。"
+msgid "外部申請からのユーザー登録後の有効リンク有効時間の設定をします。"
 msgstr ""
 
-msgid "購読者を「どこでもログイン」を有効で作成する"
+msgid "どこでもログイン"
 msgstr ""
 
-msgid "外部申請時の権限"
+msgid "チェックをすると会員登録ユーザの「どこでもログイン」の初期値が「ON」に設定されます。"
 msgstr ""
 
-msgid "外部申請で登録されるユーザーの権限を設定します。"
+msgid "読者を「どこでもログイン」を有効で作成する"
+msgstr ""
+
+msgid "権限"
+msgstr ""
+
+msgid "外部申請から登録を行うユーザーの権限を設定します。"
 msgstr ""
 
 msgid "でユーザーを登録する"
 msgstr ""
 
-msgid "ログイン中の投稿者"
+msgid "外部申請から登録を行うユーザーのステータスを設定します。"
 msgstr ""
 
-msgid "チェックをすると投稿者権限ユーザーがログインしている場合、自身が投稿したエントリーのみ表示されるようになります。"
-msgstr ""
-
-msgid "ログイン中の投稿者には、自分が投稿したエントリーのみ表示する"
-msgstr ""
-
-msgid "編集、管理ページ以外の表示"
-msgstr ""
-
-msgid "チェックをすると投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示するようになります。"
-msgstr ""
-
-msgid "投稿者以上の権限であっても管理画面、編集画面以外は、購読者（閲覧者）と同じ条件で表示する"
+msgid "SNSログイン"
 msgstr ""
 
 msgid "SNSログイン機能"
@@ -4401,163 +5188,6 @@ msgid "全ての権限"
 msgstr ""
 
 msgid "でSNSログインを使用する。"
-msgstr ""
-
-msgid "プレビュー時の初期デバイス"
-msgstr ""
-
-msgid "プレビュー時のデフォルトのデバイスを設定します。"
-msgstr ""
-
-msgid "デバイスを選択"
-msgstr ""
-
-msgid "承認プレビュー時の初期デバイス"
-msgstr ""
-
-msgid "承認プレビュー時のデフォルトのデバイスを設定します。"
-msgstr ""
-
-msgid "タイムマシン時の初期デバイス"
-msgstr ""
-
-msgid "タイムマシンモード時のデフォルトのデバイスを設定します。"
-msgstr ""
-
-msgid "コメント機能"
-msgstr ""
-
-msgid "エントリーのコメントを受け取るか／受け取らないかの設定状態です。コメントフォームはテンプレート内のentry_bodyモジュールに記述されている必要があります。"
-msgstr ""
-
-msgid "コメントを受け取る"
-msgstr ""
-
-msgid "コメント受信時の初期状態"
-msgstr ""
-
-msgid "投稿されたコメントが「承認待ち」「公開」「非公開」のどの状態になるか選択します。「公開」以外の場合は、編集者以上の権限を持つユーザーが個別に公開するものになります。"
-msgstr ""
-
-msgid "コメントに対するNGワードの設定です。カンマ、スペース、改行のいずれかで単語が区切れます。"
-msgstr ""
-
-msgid "コメントクッキー有効時間"
-msgstr ""
-
-msgid "コメント欄で「Cookieに保存」のチェックボックスにチェックした場合、この有効時間内は名前などの情報がコメントした人のブラウザに保持されます。"
-msgstr ""
-
-#: themes/system/admin/config/import-part.html
-msgid "コンフィグの部分インポート"
-msgstr ""
-
-msgid "部分的なコンフィグのインポート"
-msgstr ""
-
-msgid "指定なし"
-msgstr ""
-
-msgid "インポートを実行します。よろしいですか？"
-msgstr ""
-
-msgid "部分的なコンフィグのインポートを行います。"
-msgstr ""
-
-msgid "インポートデータ（yaml）にあるキーのデータだけ上書きしてインポートデータにないデータはそのまま残ります。"
-msgstr ""
-
-#: themes/system/admin/config/import.html
-msgid "コンフィグのインポート"
-msgstr ""
-
-msgid "以下項目で問題がありました。"
-msgstr ""
-
-msgid "ID重複よりインポートできませんでした。"
-msgstr ""
-
-msgid "IDの変換に失敗しました。"
-msgstr ""
-
-msgid "コンフィグセット / コンフィグ / ルール / モジュール のインポートを行います。IDをコードに変換してインポートを行います。"
-msgstr ""
-
-msgid "既存のコンフィグセット / コンフィグ / ルール / モジュール を削除してインポートを行いますのでご注意ください。"
-msgstr ""
-
-msgid "ただし、バナーモジュールのコンテンツとモジュールフィールドの画像、ファイルは削除・インポートを行いません。"
-msgstr ""
-
-#: themes/system/admin/config/index.html
-msgid "コンフィグ管理"
-msgstr ""
-
-msgid "一般設定"
-msgstr ""
-
-msgid "サービス設定"
-msgstr ""
-
-msgid "エントリー編集画面"
-msgstr ""
-
-msgid "承認機能設定"
-msgstr ""
-
-msgid "部分インポート"
-msgstr ""
-
-msgid "インポート（コンフィグセット / コンフィグ / ルール / モジュール）"
-msgstr ""
-
-msgid "エクスポート（コンフィグセット / コンフィグ / ルール / モジュール）"
-msgstr ""
-
-msgid "リセット"
-msgstr ""
-
-msgid "ガイドライン/ツール"
-msgstr ""
-
-msgid "国際化 ( i18n )"
-msgstr ""
-
-msgid "サイトパーツ"
-msgstr ""
-
-msgid "カートショップ"
-msgstr ""
-
-msgid "外部API連携"
-msgstr ""
-
-msgid "ユニット・カテゴリー"
-msgstr ""
-
-msgid "ユーザー・ブログ"
-msgstr ""
-
-msgid "タグ・カレンダー"
-msgstr ""
-
-msgid "JSON テンプレート"
-msgstr ""
-
-msgid "その他"
-msgstr ""
-
-msgid "共通"
-msgstr ""
-
-#: themes/system/admin/config/links_body.html
-msgid "リンク名"
-msgstr ""
-
-msgid "リンクとして表示される文字列です。"
-msgstr ""
-
-msgid "リンク先URLです。"
 msgstr ""
 
 #: themes/system/admin/config/mail.html
@@ -4592,22 +5222,16 @@ msgstr ""
 msgid "SMTP認証が必要な場合にパスワードを指定します。"
 msgstr ""
 
-msgid "SSL/TLSを使用して接続します。"
+msgid "エラー通知"
 msgstr ""
 
-msgid "利用しない"
+msgid ".envファイルで、エラー通知メールの差出人を指定します。"
 msgstr ""
 
-msgid "認証方式"
+msgid ".envファイルで、エラー通知メールの宛先を指定します。空の場合UIDが一番小さい管理者アカウントのメールアドレスに送信します。"
 msgstr ""
 
-msgid "SMTP認証の方式を指定します。"
-msgstr ""
-
-msgid "自動選択"
-msgstr ""
-
-msgid "読者登録"
+msgid ".envファイルで、エラー通知メールのBCCを指定します。"
 msgstr ""
 
 msgid "登録者宛に送信されるメールの差出人を指定します。"
@@ -4616,7 +5240,7 @@ msgstr ""
 msgid "登録者宛に送信されるメールの宛先を指定します。"
 msgstr ""
 
-msgid "※読者登録の申し込み時に入力されたメールアドレスに送信されます"
+msgid "※会員登録の申し込み時に入力されたメールアドレスに送信されます"
 msgstr ""
 
 msgid "登録者宛に送信されるメールのBcc（ブラインドカーボンコピー）を指定します。"
@@ -4628,13 +5252,16 @@ msgstr ""
 msgid "登録者宛に送信されるメールの件名のテンプレートの場所を指定します。"
 msgstr ""
 
-msgid "本文テンプレート"
+msgid "本文テンプレート（プレーンテキスト）"
 msgstr ""
 
 msgid "登録者宛に送信されるメールの本文のテンプレートの場所を指定します。"
 msgstr ""
 
-msgid "読者登録（管理者）"
+msgid "本文テンプレート（HTML）"
+msgstr ""
+
+msgid "会員登録（管理者）"
 msgstr ""
 
 msgid "From（管理者）"
@@ -4661,16 +5288,10 @@ msgstr ""
 msgid "管理者宛に送信されるメールの件名のテンプレートの場所を指定します。"
 msgstr ""
 
-msgid "本文テンプレート（管理者）"
-msgstr ""
-
 msgid "管理者宛に送信されるメールの本文のテンプレートの場所を指定します。"
 msgstr ""
 
 msgid "ユーザ情報変更"
-msgstr ""
-
-msgid "プロフェッショナル版以上"
 msgstr ""
 
 msgid "チェックをつけると、ユーザー情報の変更時に変更内容をユーザーに送信します。"
@@ -4745,13 +5366,7 @@ msgstr ""
 msgid "送信されるメールの件名になる文章の雛形が記述されているテンプレートファイルの場所を指定します"
 msgstr ""
 
-msgid "本文テンプレート（プレーンテキスト）"
-msgstr ""
-
 msgid "送信されるメールのテキスト形式の本文になる文章の雛形が記述されているテンプレートファイルの場所を指定します。"
-msgstr ""
-
-msgid "本文テンプレート（HTML）"
 msgstr ""
 
 msgid "送信されるメールのHTML形式の本文になる文章の雛形が記述されているテンプレートファイルの場所を指定します。"
@@ -4773,16 +5388,34 @@ msgid "メールのReturn-Pathを特定のメールアドレスに指定しま�
 msgstr ""
 
 #: themes/system/admin/config/media/banner_edit.html
-msgid "属性1のラベル変更"
+msgid "属性1の設定"
 msgstr ""
 
-msgid "変数（attr1）用のラベルです。下のバナーデータの項目として表示されます。"
+msgid "属性1のラベルを変更できます"
 msgstr ""
 
-msgid "属性2のラベル変更"
+msgid "ツールチップ"
 msgstr ""
 
-msgid "変数（attr2）用のラベルです。下のバナーデータの項目として表示されます。"
+msgid "属性1のツールチップを変更できます"
+msgstr ""
+
+msgid "フォーム設定"
+msgstr ""
+
+msgid "属性1を非表示にすることができます。"
+msgstr ""
+
+msgid "属性2の設定"
+msgstr ""
+
+msgid "属性2のラベルを変更できます"
+msgstr ""
+
+msgid "属性2のツールチップを変更できます"
+msgstr ""
+
+msgid "属性2を非表示にすることができます。"
 msgstr ""
 
 #: themes/system/admin/config/navigation.html
@@ -4876,9 +5509,6 @@ msgstr ""
 msgid "ページ番号を出力するテキストのフォーマットを設定します。ページ番号は&#123;page&#125;で表示されます。"
 msgstr ""
 
-msgid "ページ"
-msgstr ""
-
 msgid "タグの区切り文字"
 msgstr ""
 
@@ -4915,6 +5545,9 @@ msgstr ""
 msgid "エントリーのユニット画像"
 msgstr ""
 
+msgid "オプションで含める場合"
+msgstr ""
+
 msgid "カテゴリーのカスタムフィールド画像"
 msgstr ""
 
@@ -4924,7 +5557,19 @@ msgstr ""
 msgid "ルートブログのカスタムフィールド画像"
 msgstr ""
 
+msgid "ユニットのメイン画像は含めない"
+msgstr ""
+
+msgid "ここにチェックをすると、ユニットのメイン画像はOGP画像に含まれなくなります。"
+msgstr ""
+
+msgid "ユニットのメイン画像はOGP画像に含めない"
+msgstr ""
+
 msgid "エントリーの画像カスタムフィールド名を設定します。"
+msgstr ""
+
+msgid "カテゴリーの画像カスタムフィールド名を設定します。"
 msgstr ""
 
 msgid "ブログの画像カスタムフィールド名を設定します。"
@@ -5307,10 +5952,10 @@ msgstr ""
 msgid "取得した<a href='http://developers.facebook.com/' target='_blank'>Facebookアプリケーション</a>の情報をセットします。"
 msgstr ""
 
-msgid "Instagram アプリケーション"
+msgid "LINE（SNSログイン用）"
 msgstr ""
 
-msgid "取得した<a href='http://instagram.com/developer/' target='_blank'>Instagramアプリケーション</a>の情報をセットします。"
+msgid "取得した<a href='https://developers.line.biz' target='_blank'>LINEログインチャンネル</a>の情報をセットします。"
 msgstr ""
 
 msgid "Google Analyticsの携帯電話用コードを参考に、アカウントIDを入力します。a-blog cmsインストール先ディレクトリから、ダウンロードしてきたga.phpへのパスを設定します。"
@@ -5338,7 +5983,10 @@ msgstr ""
 msgid "コンフィグをリセットしました"
 msgstr ""
 
-msgid "リセットを実行します。よろしいですか？"
+msgid "コンフィグのリセット"
+msgstr ""
+
+msgid "リセットの実行"
 msgstr ""
 
 msgid "現在のコンフィグを破棄して、コンフィグをリセットします。"
@@ -5348,6 +5996,13 @@ msgid "リセット後は、システムデフォルトのコンフィグ（priv
 msgstr ""
 
 msgid "ルール適用時のコンフィグがリセットされると、ブログの元々のコンフィグが適用されます。"
+msgstr ""
+
+msgid "リセットを実行します。よろしいですか？"
+msgstr ""
+
+#: themes/system/admin/config/schedule_body.html
+msgid "スケジュールを選択してください"
 msgstr ""
 
 #: themes/system/admin/config/set/edit.html
@@ -5379,7 +6034,7 @@ msgid "チェックされたコンフィグセットは子ブログにも受け�
 msgstr ""
 
 #: themes/system/admin/config/set/index.html
-msgid "コンフィグセットの一覧を更新しました。"
+msgid " コンフィグセット管理"
 msgstr ""
 
 msgid "コンフィグセットの作成"
@@ -5389,6 +6044,9 @@ msgid "セット名"
 msgstr ""
 
 msgid "このブログの標準コンフィグです。"
+msgstr ""
+
+msgid "コンフィグを複製してコンフィグセットを作成します。よろしいですか？"
 msgstr ""
 
 #: themes/system/admin/config/setting.html
@@ -5443,16 +6101,28 @@ msgid "一度に表示される件数です。空欄にすると全件を表示�
 msgstr ""
 
 #: themes/system/admin/config/tag/cloud_body.html
+msgid "タグ数 ( 昇順 )"
+msgstr ""
+
+msgid "タグ数 ( 降順 )"
+msgstr ""
+
 msgid "しきい値"
 msgstr ""
 
 msgid "あるタグを付けているエントリーの数が、ここに入力した値よりも少ない場合、そのタグは一覧に表示されません。"
 msgstr ""
 
-msgid "タグ数 ( 昇順 )"
+msgid "チェックをつけると、URLにカテゴリのURLコンテキストを考慮します。「リンク先のURLコンテキスト」に値がある場合、この設定は無視されます。"
 msgstr ""
 
-msgid "タグ数 ( 降順 )"
+msgid "チェックをつけると、カテゴリURLコンテキストの情報が入ったURLを生成します。"
+msgstr ""
+
+msgid "リンク先のURLコンテキスト"
+msgstr ""
+
+msgid "URLのベースとなるURLコンテキストを設定します"
 msgstr ""
 
 #: themes/system/admin/config/tag/filter_body.html
@@ -5587,6 +6257,9 @@ msgstr ""
 msgid "階層の表示数"
 msgstr ""
 
+msgid "チェックをつけるとカテゴリーのカスタムフィールドを出力するようになります。"
+msgstr ""
+
 msgid "カテゴリーのカスタムフィールドを使用する"
 msgstr ""
 
@@ -5597,6 +6270,9 @@ msgid "トピックパスに、今表示しているエントリーを含める�
 msgstr ""
 
 msgid "エントリーのタイトルを階層に表示する"
+msgstr ""
+
+msgid "チェックをつけるとエントリーのカスタムフィールドを出力するようになります。"
 msgstr ""
 
 msgid "エントリーのカスタムフィールドを使用する"
@@ -5644,9 +6320,6 @@ msgstr ""
 msgid "URLコンテキストのユーザーの位置情報を参照"
 msgstr ""
 
-msgid "権限"
-msgstr ""
-
 msgid "選択した権限のユーザーが一覧の表示対象になります。"
 msgstr ""
 
@@ -5684,15 +6357,116 @@ msgstr ""
 msgid "最終ログイン日時 ( 降順 )"
 msgstr ""
 
-#: themes/system/admin/config/user/search_body.html
-msgid "任意"
-msgstr ""
-
 #: themes/system/admin/entry/add.html
 msgid "ユニット追加"
 msgstr ""
 
 msgid "現在の変更が破棄されます、よろしいですか？"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change/confirm.html
+msgid "変換内容"
+msgstr ""
+
+msgid "操作"
+msgstr ""
+
+msgid "ステータスの変更"
+msgstr ""
+
+msgid "所有者の変更"
+msgstr ""
+
+msgid "カテゴリーの変更"
+msgstr ""
+
+msgid "サブカテゴリーの変更"
+msgstr ""
+
+msgid "タグの変更"
+msgstr ""
+
+msgid "リンクURLの変更"
+msgstr ""
+
+msgid "日時の変更"
+msgstr ""
+
+msgid "公開日時の変更"
+msgstr ""
+
+msgid "掲載期限の変更"
+msgstr ""
+
+msgid "インデキシングの変更"
+msgstr ""
+
+msgid "対象エントリー"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change/step1.html
+msgid "手順"
+msgstr ""
+
+msgid "操作エントリーの選択"
+msgstr ""
+
+msgid "選択したエントリーを操作"
+msgstr ""
+
+msgid "入力項目設定"
+msgstr ""
+
+msgid "すべてのエントリーを選択する"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change/step2.html
+msgid "操作の選択"
+msgstr ""
+
+msgid "最終確認画面へ"
+msgstr ""
+
+msgid "チェックした項目を一括変更します。"
+msgstr ""
+
+msgid "変更項目"
+msgstr ""
+
+msgid "ここで設定した値で一括変更します。"
+msgstr ""
+
+msgid "変更値"
+msgstr ""
+
+msgid "現在の日付に合わせる"
+msgstr ""
+
+msgid "現在の時刻に合わせる"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change/step3.html
+msgid "最終確認・実行"
+msgstr ""
+
+msgid "一括変更を実行"
+msgstr ""
+
+msgid "一括変換を実行します。本当によろしいですか？"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change/step4.html
+msgid "一括変更を完了しました。"
+msgstr ""
+
+#: themes/system/admin/entry/bulk-change.html
+msgid "一括変更"
+msgstr ""
+
+msgid "一括編集をするエントリーを少なくとも１つ選択する必要があります。"
+msgstr ""
+
+msgid "実行する一括操作を少なくとも１つ選択する必要があります。"
 msgstr ""
 
 #: themes/system/admin/entry/edit-field.html
@@ -5718,7 +6492,66 @@ msgstr ""
 msgid "一覧に戻る"
 msgstr ""
 
+msgid "このページに移動"
+msgstr ""
+
 msgid "このページを表示"
+msgstr ""
+
+#: themes/system/admin/entry/filter.html
+msgid "全ての期間"
+msgstr ""
+
+msgid "公開中"
+msgstr ""
+
+msgid "公開終了"
+msgstr ""
+
+msgid "未来公開"
+msgstr ""
+
+msgid "現在のブログ"
+msgstr ""
+
+msgid "下階層のブログも表示"
+msgstr ""
+
+msgid "下階層のカテゴリーも表示"
+msgstr ""
+
+#: themes/system/admin/entry/import.html
+msgid "エントリーインポート"
+msgstr ""
+
+msgid "注意事項"
+msgstr ""
+
+msgid "カテゴリーが存在しない場合（カテゴリーコードが一致しない）カテゴリがなしになります。"
+msgstr ""
+
+msgid "モジュールユニットで指定されているモジュールIDが存在しない場合、モジュールユニットはインポートされません。"
+msgstr ""
+
+msgid "関連エントリーはインポートされません。"
+msgstr ""
+
+msgid "リッチテキストのメディアは、変換されてインポートされません。"
+msgstr ""
+
+msgid "エントリーのインポート"
+msgstr ""
+
+msgid "インポート先ブログ"
+msgstr ""
+
+msgid " 現在のブログ"
+msgstr ""
+
+msgid "zipファイルをアップロード"
+msgstr ""
+
+msgid "インポートを実行する"
 msgstr ""
 
 #: themes/system/admin/entry/related-table.html
@@ -5732,32 +6565,26 @@ msgstr ""
 msgid "作業領域からバージョンを作成して承認画面に移動します。よろしいですか？"
 msgstr ""
 
-msgid "現在のバージョン"
+msgid "このバージョンは既に承認済みのため、新規バージョンとしてのみ保存できます。"
 msgstr ""
 
-msgid "バージョン数"
+msgid "このバージョンは既に承認却下されているため、新規バージョンとしてのみ保存できます。"
 msgstr ""
 
-msgid "現在の状態がバージョンとして保存されていません"
+msgid "公開バージョン"
 msgstr ""
 
-msgid "以下のエントリーは承認が完了されているものになります。"
+msgid "表示中のバージョン名"
 msgstr ""
 
-msgid "保存した内容は"
-msgstr ""
-
-msgid "作業領域"
-msgstr ""
-
-msgid "に保存されています。"
+msgid "公開されているバージョンはありません。"
 msgstr ""
 
 #: themes/system/admin/entry/revision.html
-msgid "バージョンを残して"
+msgid "このバージョンを"
 msgstr ""
 
-msgid "未来バージョンとして"
+msgid "新規バージョンとして"
 msgstr ""
 
 #: themes/system/admin/entry/title.html
@@ -5774,13 +6601,19 @@ msgid "内容を変更し、「保存」ボタンを押してください。"
 msgstr ""
 
 #: themes/system/admin/entry/trash.html
-msgid "ゴミ箱は空です。"
-msgstr ""
-
 msgid "全てのユーザ"
 msgstr ""
 
 msgid "削除日時"
+msgstr ""
+
+msgid "検索内容に一致したエントリーはありませんでした。"
+msgstr ""
+
+msgid "ゴミ箱は空です"
+msgstr ""
+
+msgid "削除されたエントリーはありません。"
 msgstr ""
 
 msgid "完全削除"
@@ -5801,6 +6634,13 @@ msgstr ""
 msgid "ゴミ箱を空にする"
 msgstr ""
 
+msgid "削除ユーザー"
+msgstr ""
+
+#: themes/system/admin/entry/unit_language.html
+msgid "メイン画像として設定"
+msgstr ""
+
 #: themes/system/admin/fix/fulltext.html
 msgid "フルテキスト修正"
 msgstr ""
@@ -5808,10 +6648,10 @@ msgstr ""
 msgid "フルテキストのデータを修正しました。"
 msgstr ""
 
-msgid "ブログ、カテゴリー、エントリーのフルテキストを再生成します。 ver2.1.0正式版以前のデータですと、KEYWORDコンテキストを利用したブログ、カテゴリーの全文検索時に検索対象に含まれていないので修正を行って下さい。"
+msgid "ブログ、カテゴリー、エントリーのフルテキストを再生成します。 <br>Ver2.1.0正式版以前のデータですと、KEYWORDコンテキストを利用したブログ、カテゴリーの全文検索時に検索対象に含まれていないので修正を行って下さい。"
 msgstr ""
 
-msgid "現在、正しく検索できている場合は実行する必要がありません。"
+msgid "現在正しく検索できている場合は実行する必要はありません。"
 msgstr ""
 
 msgid "ターゲット"
@@ -5836,7 +6676,7 @@ msgstr ""
 msgid "ユニットの画像サイズ（拡大画像、通常画像、モバイル画像、正方形画像）を修正します。"
 msgstr ""
 
-msgid "拡大画像がない場合や、拡大画像より大きいサイズには修正がされないのでご注意下さい。"
+msgid "拡大画像がない場合や、拡大画像より大きいサイズには修正されないのでご注意下さい。"
 msgstr ""
 
 msgid "リサイズをする画像サイズを選択してください。"
@@ -5901,6 +6741,9 @@ msgstr ""
 msgid "n-gramインデックスを付与しました。"
 msgstr ""
 
+msgid "N-gramインデックスとは"
+msgstr ""
+
 msgid "既存コンテンツにN-gramインデックスを付与します。文字列を指定した文字数(gram)で切り分けることで検索用のキーを生成します。<br>この処理を実行した後に、config.system.yamlなどからngramを有効にすると、サイト内検索の内部処理が変更されます。"
 msgstr ""
 
@@ -5959,13 +6802,13 @@ msgstr ""
 msgid "変換文字を入力してください"
 msgstr ""
 
-msgid "チェック"
+msgid "確認してから置換"
 msgstr ""
 
 msgid "変更箇所の確認を行います。最大100件表示されます。確認後,置換を実行してください。"
 msgstr ""
 
-msgid "確認を行わず置換"
+msgid "そのまま置換"
 msgstr ""
 
 msgid "データを置換します。この作業は元に戻せません。本当によろしいですか？"
@@ -6015,6 +6858,9 @@ msgstr ""
 msgid "タグを付与しました。"
 msgstr ""
 
+msgid "タグ追加とは"
+msgstr ""
+
 msgid "指定ワードを含むエントリーに対して、ワードをタグとして付与します。"
 msgstr ""
 
@@ -6055,6 +6901,9 @@ msgstr ""
 msgid "ユニットグループのデータを修正しました。"
 msgstr ""
 
+msgid "ユニットグループ修正とは"
+msgstr ""
+
 msgid "ユニットグループに設定してあるクラスを一括で書き換えます。"
 msgstr ""
 
@@ -6083,6 +6932,9 @@ msgstr ""
 msgid "マップタイプを修正しました。"
 msgstr ""
 
+msgid "マップユニットのタイプ修正とは"
+msgstr ""
+
 msgid "このブログの、地図（マップ）ユニットの種類を一括で変更します。"
 msgstr ""
 
@@ -6093,9 +6945,6 @@ msgid "標準マップ（OpenStreetMap）"
 msgstr ""
 
 msgid "GoogleMaps"
-msgstr ""
-
-msgid "変更値"
 msgstr ""
 
 msgid "変更するマップのタイプの指定します。"
@@ -6109,6 +6958,9 @@ msgid "ユニット修正"
 msgstr ""
 
 msgid "ユニットサイズのデータを修正しました。"
+msgstr ""
+
+msgid "ユニット修正とは"
 msgstr ""
 
 msgid "ユニットのサイズ（画像、マップ、メディア、ビデオ、画像URL）を修正します。サイズはピクセル指定の実際サイズ、表示サイズはクラスや %指定ができます。"
@@ -6199,15 +7051,6 @@ msgstr ""
 msgid "ログを残さないようにする"
 msgstr ""
 
-msgid "送信"
-msgstr ""
-
-msgid "メール送信をバックグランドで行います。フォーム送信者にはすぐレスポンスがくるのでパフォマンスが上がります。ただエラーが確認しにくくなりますので、開発中は外すことをおすすめします。"
-msgstr ""
-
-msgid "バックグランド送信する"
-msgstr ""
-
 msgid "複数指定"
 msgstr ""
 
@@ -6215,9 +7058,6 @@ msgid "テンプレート（お客様入力）でのメールアドレス指定�
 msgstr ""
 
 msgid "テンプレートでの複数アドレス指定を無効にする"
-msgstr ""
-
-msgid "このフォームから送信されるメールの、文字コードの設定です。"
 msgstr ""
 
 msgid "入力チェック・変換"
@@ -6395,9 +7235,6 @@ msgid "カンマ区切りで複数指定出来ます。管理者宛メールの�
 msgstr ""
 
 #: themes/system/admin/form/index.html
-msgid "フォームIDがありません。"
-msgstr ""
-
 msgid "フォームID一覧を更新しました"
 msgstr ""
 
@@ -6410,6 +7247,12 @@ msgstr ""
 msgid "最新の投稿"
 msgstr ""
 
+msgid "フォームIDがありません"
+msgstr ""
+
+msgid "機能を使用するには新しくフォームIDを作成してください。"
+msgstr ""
+
 msgid "フォームIDを作成"
 msgstr ""
 
@@ -6420,16 +7263,10 @@ msgstr ""
 msgid "投稿データ一覧"
 msgstr ""
 
-msgid "投稿データがありません。"
-msgstr ""
-
 msgid "投稿データ一覧を更新しました"
 msgstr ""
 
 msgid "通番"
-msgstr ""
-
-msgid "期間"
 msgstr ""
 
 msgid "表示切り替え"
@@ -6441,10 +7278,13 @@ msgstr ""
 msgid "連番"
 msgstr ""
 
-msgid "件の投稿データをCSV形式で"
+msgid "該当する投稿データがありません。"
 msgstr ""
 
-msgid "ダウンロード"
+msgid "投稿データがありません。"
+msgstr ""
+
+msgid "件の投稿データをCSV形式で"
 msgstr ""
 
 msgid "チェックした投稿データを"
@@ -6483,9 +7323,6 @@ msgid "チェックボックスを追加する"
 msgstr ""
 
 msgid "入力チェック"
-msgstr ""
-
-msgid "メッセージ"
 msgstr ""
 
 #: themes/system/admin/i18n/index.html
@@ -6616,10 +7453,7 @@ msgstr ""
 msgid "ファイルが選択されていません"
 msgstr ""
 
-msgid "エラーが発生しました [code={importMessage}]"
-msgstr ""
-
-msgid "$1 ブログ $2 に $3件、インポートしました。"
+msgid "{error}"
 msgstr ""
 
 msgid "CSVデータを、指定したカテゴリーにインポートまたは上書きします。"
@@ -6640,16 +7474,13 @@ msgstr ""
 msgid "CSVに<strong>entry_category_id</strong>を指定することで、優先してそのカテゴリーにインポートされます。"
 msgstr ""
 
-msgid "インポート中..."
+msgid "値の先頭を <strong>str-data_</strong> にしたデータは、表計算ソフトで文字列として扱い、値の自動変換を防止します。取り込み時はこの先頭の文字は無視してインポートされます。数値や日付のデータにお使いください。"
 msgstr ""
 
-msgid "インポートを実行する"
+msgid "CSVインポート状況"
 msgstr ""
 
-msgid "CSVデータ"
-msgstr ""
-
-msgid "インポート先ブログ"
+msgid "インポートに失敗しました。"
 msgstr ""
 
 msgid "インポート先カテゴリー"
@@ -6679,6 +7510,12 @@ msgstr ""
 
 #: themes/system/admin/import/mt.html
 msgid "Movable Typeインポート"
+msgstr ""
+
+msgid "エラーが発生しました。"
+msgstr ""
+
+msgid "$1 ブログ $2 に $3件、インポートしました。"
 msgstr ""
 
 msgid "Movable Typeのエクスポートデータ<strong>(txt形式)</strong>を、現在のブログにインポートします。"
@@ -6718,9 +7555,6 @@ msgstr ""
 msgid "ユーザーインポート"
 msgstr ""
 
-msgid "$1 ブログ に $2件、インポートしました。"
-msgstr ""
-
 msgid "CSVデータのユーザーを現在のブログにインポートまたは上書きします。"
 msgstr ""
 
@@ -6736,26 +7570,123 @@ msgstr ""
 msgid "CSVに <strong>user_id</strong> を指定することで既存のユーザーを上書きすることができます。"
 msgstr ""
 
-msgid "エクスポートデータ（CSV）"
-msgstr ""
-
 #: themes/system/admin/import/wordpress.html
-msgid "WordPressインポート"
+msgid "WordPressインポート
+      "
 msgstr ""
 
-msgid "WordPressのエクスポートデータを、選択されたカテゴリーにインポートします。"
+msgid "インポートに成功しました
+  "
 msgstr ""
 
-msgid "WordPressでエクスポートするときは、<strong>投稿のみ</strong>を選択して実行してください。"
+msgid "ファイルサイズが大きすぎます
+  "
 msgstr ""
 
-msgid "WordPressの各投稿における、パスワード保護設定は無視されてインポートされます"
+msgid "ファイルが選択されていません
+  "
 msgstr ""
 
-msgid "WordPressからの移行"
+msgid "エラーが発生しました。
+  "
 msgstr ""
 
-msgid "WordPressエクスポートデータ（XML）"
+msgid "
+  $1 ブログ
+  $2 に
+  $3件、インポートしました。
+  "
+msgstr ""
+
+msgid "WordPressのエクスポートデータを、選択されたカテゴリーにインポートします。
+      "
+msgstr ""
+
+msgid "WordPressでエクスポートするときは、<strong>投稿のみ</strong>を選択して実行してください。
+        "
+msgstr ""
+
+msgid "インポートされるデータは現在ログインしているユーザーでインポートされます
+        "
+msgstr ""
+
+msgid "WordPressの各投稿における、パスワード保護設定は無視されてインポートされます
+        "
+msgstr ""
+
+msgid "記事内で最初に挿入されているimg要素に設定されている画像URLがカスタムフィールド <strong>「wp_thumbnail_url」</strong> に保存されます"
+msgstr ""
+
+msgid "投稿データのインポート
+    "
+msgstr ""
+
+msgid "インポート先ブログ
+        "
+msgstr ""
+
+msgid "現在のブログ
+        "
+msgstr ""
+
+msgid "インポート先カテゴリー
+        "
+msgstr ""
+
+msgid "なし
+            "
+msgstr ""
+
+msgid "投稿データ（XML）
+        "
+msgstr ""
+
+msgid "投稿データのインポート形式
+        "
+msgstr ""
+
+msgid "ウィジウィグ
+            "
+msgstr ""
+
+msgid "pタグで囲む
+            "
+msgstr ""
+
+msgid "マークダウン
+            "
+msgstr ""
+
+msgid "自由入力
+            "
+msgstr ""
+
+msgid "インポート
+        "
+msgstr ""
+
+msgid "WordPressのメディアエクスポートデータからアイキャッチ画像URLをインポートします。
+      "
+msgstr ""
+
+msgid "投稿をインポート後に実行してください
+        "
+msgstr ""
+
+msgid "WordPressのエクスポートで<strong>メディアのみ</strong>を選択したエクスポートデータをお使いください
+        "
+msgstr ""
+
+msgid "アイキャッチの画像URLがカスタムフィールド <strong>「wp_thumbnail_url」</strong> に設定されます
+        "
+msgstr ""
+
+msgid "アイキャッチ画像のインポート
+    "
+msgstr ""
+
+msgid "メディアデータ（XML）
+        "
 msgstr ""
 
 #: themes/system/admin/layout/block.html
@@ -6769,61 +7700,45 @@ msgstr ""
 msgid "住所で検索する"
 msgstr ""
 
-#: themes/system/admin/media/_upload.html
-msgid "ラベルを選択"
+#: themes/system/admin/media-tag/edit.html
+msgid "メディア タグ管理"
 msgstr ""
 
-msgid "新しいラベル"
+msgid "メディア一覧へ"
 msgstr ""
 
-msgid "アップロード"
+msgid "タグを保存しました"
 msgstr ""
 
-#: themes/system/admin/media/edit.html
-msgid "メディア編集"
+msgid "タグを削除しました"
 msgstr ""
 
-msgid "編集を保存しました"
+msgid "メディア タグ一覧へ"
 msgstr ""
 
-msgid "メディアを削除しました"
+msgid "タグ名"
 msgstr ""
 
-msgid "サムネイル"
+msgid "このタグの名前です。管理、表示とも同じ内容が使われます。"
 msgstr ""
 
-msgid "画像のサムネイルです。"
+msgid "タグ名が入力されていません。"
 msgstr ""
 
-msgid "画像またはファイルを変更します。"
+#: themes/system/admin/media-tag/index.html
+msgid "クイック検索"
 msgstr ""
 
-msgid "ファイルのサムネイル画像です。"
+msgid "例）タグ1"
 msgstr ""
 
-msgid "管理用のラベルです。"
+msgid "名前順"
 msgstr ""
 
-msgid "パーマリンク"
+msgid "タグ数"
 msgstr ""
 
-msgid "メディアへのリンクです。"
-msgstr ""
-
-msgid "アップロード日時"
-msgstr ""
-
-msgid "メディアのファイル名"
-msgstr ""
-
-msgid "リンクを設定できます。"
-msgstr ""
-
-msgid "詳細な情報を入力できます。"
-msgstr ""
-
-#: themes/system/admin/media/upload.html
-msgid "メディア一覧"
+msgid "タグがありません。"
 msgstr ""
 
 #: themes/system/admin/menu.html
@@ -6884,16 +7799,10 @@ msgstr ""
 msgid "モジュールID管理"
 msgstr ""
 
-msgid "モジュールIDがありません。"
-msgstr ""
-
 msgid "モジュール一覧を更新しました。"
 msgstr ""
 
 msgid "移動に失敗したモジュールIDがあります"
-msgstr ""
-
-msgid "クイック検索"
 msgstr ""
 
 msgid "例）"
@@ -6902,22 +7811,53 @@ msgstr ""
 msgid "モジュール名"
 msgstr ""
 
+msgid " 昇順"
+msgstr ""
+
+msgid " 降順"
+msgstr ""
+
 msgid "適用モジュール名"
 msgstr ""
 
-msgid "現在のブログで管理しているモジュールのみ削除できます"
+msgid "該当するモジュールIDが見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したモジュールIDはありませんでした。<br>再検索または新規作成してください。"
 msgstr ""
 
 msgid "モジュールIDを作成"
 msgstr ""
 
-msgid "すべてのモジュールを選択する"
+msgid "モジュールIDがありません。"
+msgstr ""
+
+msgid "新しくモジュールIDを作成してください。"
+msgstr ""
+
+msgid "現在のブログで管理しているモジュールのみ削除できます"
+msgstr ""
+
+msgid "すべてのモジュールを選択する
+            "
 msgstr ""
 
 msgid "適用モジュール"
 msgstr ""
 
 msgid "モジュールID名「{name}」を選択する"
+msgstr ""
+
+msgid "有効
+            "
+msgstr ""
+
+msgid "無効
+            "
+msgstr ""
+
+msgid "グローバル
+          "
 msgstr ""
 
 #: themes/system/admin/module/select.html
@@ -6945,12 +7885,6 @@ msgstr ""
 msgid "Google Analytics ランキング"
 msgstr ""
 
-msgid "Instagram 最近の投稿"
-msgstr ""
-
-msgid "Instagram 最近のLiked"
-msgstr ""
-
 msgid "Bing ウェブ検索"
 msgstr ""
 
@@ -6961,9 +7895,6 @@ msgid "Open Graph Protocol"
 msgstr ""
 
 msgid "オートコンプリート"
-msgstr ""
-
-msgid "動的フォームユニット"
 msgstr ""
 
 #: themes/system/admin/publish/index.html
@@ -7173,7 +8104,10 @@ msgstr ""
 msgid "ロール一覧を更新しました。"
 msgstr ""
 
-msgid "ロールがありません。"
+msgid "ロールがありません"
+msgstr ""
+
+msgid "機能を使用するには新しくロールを作成してください。<br>（作成するには管理者以上の権限が必要です）"
 msgstr ""
 
 msgid "ロールの作成"
@@ -7279,6 +8213,12 @@ msgstr ""
 msgid "判定に使用するcookieのキーと値を設定します。"
 msgstr ""
 
+msgid "Hook.phpで返した値で判定します"
+msgstr ""
+
+msgid "(Hook.php)"
+msgstr ""
+
 msgid "期間を指定します。"
 msgstr ""
 
@@ -7320,6 +8260,9 @@ msgid "ルールの一覧を更新しました。"
 msgstr ""
 
 msgid "ルールがありません。"
+msgstr ""
+
+msgid "機能を使用するには新しくルールを作成してください。"
 msgstr ""
 
 msgid "ルールを作成"
@@ -7364,10 +8307,13 @@ msgid "このスケジュールがどのような動作をするかなどのメ�
 msgstr ""
 
 #: themes/system/admin/schedule/index.html
-msgid "スケジュールセットを作成"
+msgid "スケジュールセットがありません。"
 msgstr ""
 
-msgid "スケジュールセットがありません。"
+msgid "機能を使用するには新しくスケジュールを作成してください。"
+msgstr ""
+
+msgid "スケジュールセットを作成"
 msgstr ""
 
 msgid "登録データ"
@@ -7414,10 +8360,13 @@ msgid "ショートカット先になるURLを設定します。"
 msgstr ""
 
 #: themes/system/admin/shortcut/index.html
+msgid "表示順を変更しました"
+msgstr ""
+
 msgid "ショートカットがありません。"
 msgstr ""
 
-msgid "表示順を変更しました"
+msgid "ショートカットは、ショートカットに登録できる各機能のページから追加できます。"
 msgstr ""
 
 #: themes/system/admin/static-export/index.html
@@ -7520,6 +8469,18 @@ msgstr ""
 msgid "カテゴリーで絞り込まないページを指定したページ分作成します。"
 msgstr ""
 
+msgid "書き出し除外パス"
+msgstr ""
+
+msgid "書き出しから除外するパスを改行して設定します。"
+msgstr ""
+
+msgid "書き出し必須パス"
+msgstr ""
+
+msgid "フル書き出し・差分書き出し共に必ず書き出すパスを改行して設定します。"
+msgstr ""
+
 msgid "削除除外パス"
 msgstr ""
 
@@ -7569,32 +8530,8 @@ msgstr ""
 msgid "タグ管理"
 msgstr ""
 
-msgid "タグを保存しました"
-msgstr ""
-
-msgid "タグを削除しました"
-msgstr ""
-
-msgid "タグ名"
-msgstr ""
-
-msgid "このタグの名前です。管理、表示とも同じ内容が使われます。"
-msgstr ""
-
-msgid "タグ名が入力されていません。"
-msgstr ""
-
 #: themes/system/admin/tag/index.html
-msgid "例）タグ1"
-msgstr ""
-
-msgid "名前順"
-msgstr ""
-
-msgid "タグ数"
-msgstr ""
-
-msgid "タグがありません。"
+msgid "登録されたタグはありません。"
 msgstr ""
 
 #: themes/system/admin/topicpath-list.html
@@ -7604,7 +8541,13 @@ msgstr ""
 msgid "エイリアス詳細"
 msgstr ""
 
+msgid "メディア編集"
+msgstr ""
+
 msgid "メディアアップロード"
+msgstr ""
+
+msgid "メディア タグ詳細"
 msgstr ""
 
 msgid "タグ詳細"
@@ -7634,13 +8577,13 @@ msgstr ""
 msgid "N-gramインデックス"
 msgstr ""
 
-msgid "キャッシュ消去予約管理"
-msgstr ""
-
 msgid "トラックバック本文"
 msgstr ""
 
 msgid "トラックバックリスト"
+msgstr ""
+
+msgid "コンフィグのエクスポート"
 msgstr ""
 
 msgid "フラッシュトップイメージ"
@@ -7659,6 +8602,15 @@ msgid "Google Analytics Ranking"
 msgstr ""
 
 msgid "ルールなし"
+msgstr ""
+
+msgid "Webhook 管理"
+msgstr ""
+
+msgid "Webhook 詳細"
+msgstr ""
+
+msgid "Webhook 履歴"
 msgstr ""
 
 msgid "ショートカット詳細"
@@ -7703,6 +8655,9 @@ msgstr ""
 msgid "スケジュールのラベル設定"
 msgstr ""
 
+msgid "WordPressインポート"
+msgstr ""
+
 msgid "MovableTypeインポート"
 msgstr ""
 
@@ -7717,10 +8672,10 @@ msgstr ""
 msgid "システムの更新"
 msgstr ""
 
-msgid "アップデートに成功しました。"
+msgid "システムの更新に成功しました。"
 msgstr ""
 
-msgid "アップデートに失敗しました。"
+msgid "システムの更新に失敗しました。"
 msgstr ""
 
 msgid "最終チェック日時"
@@ -7738,22 +8693,47 @@ msgstr ""
 msgid "新しいシステムの更新情報があります。"
 msgstr ""
 
+msgid "マイナーバージョン（バージョン番号の２桁目）のアップデートには、ライセンスのアップデートが必要になります。"
+msgstr ""
+
+msgid "マイページから新しいライセンスファイルをダウンロードして差し替えた後、バージョンアップを行ってください。"
+msgstr ""
+
+msgid "アップデート期間が終了している場合、アップデート期間を延長するオプションを購入する必要があります。"
+msgstr ""
+
 msgid "新しいバージョンの「setup」を「_setup_日時」というディレクトリ名で作成"
 msgstr ""
 
-msgid "※ インストールディレクトリにある、「_setup_」から始まる名前のディレクトリが自動で削除されます。"
-msgstr ""
-
-msgid "プロフェッショナル・エンタープライズ版のマイナーバージョン（バージョン番号の２桁目）のアップデートはライセンスのアップデートが必要です。"
-msgstr ""
-
-msgid "マイページから新しいライセンスファイルをダウンロードして差し替えた後、バージョンアップをしてください。"
+msgid "※ インストールディレクトリにある、「_setup_」から始まる名前のディレクトリが自動で削除されます。
+								"
 msgstr ""
 
 msgid "今すぐ更新"
 msgstr ""
 
 msgid "本当にアップデートしてよろしいですか？"
+msgstr ""
+
+msgid "システムと適用されているライセンスが一致していません。ライセンスを更新、またはCMSをダウングレードしてください。"
+msgstr ""
+
+msgid "ライセンスを更新する場合はマイページから新しいライセンスファイルをダウンロードして適用してください。"
+msgstr ""
+
+msgid "アップデート期間が終了している場合、期間を延長するオプションを購入する必要があります。"
+msgstr ""
+
+msgid "（マイページに移動）"
+msgstr ""
+
+msgid "ダウングレードバージョンの「setup」を「_setup_日時」というディレクトリ名で作成"
+msgstr ""
+
+msgid "今すぐダウングレード"
+msgstr ""
+
+msgid "本当にダウングレードしてよろしいですか？"
 msgstr ""
 
 msgid "変更点一覧"
@@ -7780,9 +8760,6 @@ msgstr ""
 msgid "システム"
 msgstr ""
 
-msgid "データベース"
-msgstr ""
-
 msgid "データベースを更新"
 msgstr ""
 
@@ -7799,9 +8776,6 @@ msgid "本当にバックアップデータを削除してよろしいですか�
 msgstr ""
 
 #: themes/system/admin/user/edit.html
-msgid "<span class=\"js-dialog-title\">ユーザー管理</span>"
-msgstr ""
-
 msgid "ユーザーを作成しました"
 msgstr ""
 
@@ -7847,6 +8821,9 @@ msgstr ""
 msgid "ユーザーを削除します。\\nこの操作は取り消せません、よろしいですか？"
 msgstr ""
 
+msgid "ユーザーのステータスです。チェックを外した場合、このユーザーは無効となりログインできなくなります。"
+msgstr ""
+
 msgid "有効期限："
 msgstr ""
 
@@ -7877,16 +8854,10 @@ msgstr ""
 msgid "ユーザーがログイン時に入力するID名です。半角英数字で設定します。アップロードされた画像は64ピクセル四方の画像にリサイズ、トリミングされます。"
 msgstr ""
 
-msgid "メールアドレス"
-msgstr ""
-
 msgid "ユーザーのEメールアドレスです。「メールマガジンを受け取る」がチェックされているユーザーにはHTML形式のメールマガジンを送信できます。"
 msgstr ""
 
 msgid "メールマガジンを受け取る"
-msgstr ""
-
-msgid "メールアドレスが入力されていません。"
 msgstr ""
 
 msgid "無効なメールアドレスです。"
@@ -7899,9 +8870,6 @@ msgid "ユーザーがwebサイトを持っている場合のURLです。"
 msgstr ""
 
 msgid "無効なURLです。"
-msgstr ""
-
-msgid "新しいパスワード"
 msgstr ""
 
 msgid "ログイン用のパスワードです。"
@@ -7928,9 +8896,6 @@ msgstr ""
 msgid "英文字 （ 大文字、小文字 ）、数字、記号の内、3種類以上"
 msgstr ""
 
-msgid "パスワードが入力されていません。"
-msgstr ""
-
 msgid "無効なパスワードです。"
 msgstr ""
 
@@ -7938,6 +8903,18 @@ msgid "ログイン用のパスワードの確認です。コピー＆ペース�
 msgstr ""
 
 msgid "パスワードの確認ができません。"
+msgstr ""
+
+msgid "パスワードを変更します。"
+msgstr ""
+
+msgid "２段階認証を設定します。"
+msgstr ""
+
+msgid "設定する"
+msgstr ""
+
+msgid "（設定済み）"
 msgstr ""
 
 msgid "Googleログイン"
@@ -7961,6 +8938,12 @@ msgstr ""
 msgid "Facebookにログインした状態で「認証」を行うと、ログイン情報とこのユーザーが関連づけされます。"
 msgstr ""
 
+msgid "LINEログイン"
+msgstr ""
+
+msgid "LINEにログインした状態で「認証」を行うと、ログイン情報とこのユーザーが関連づけされます。"
+msgstr ""
+
 msgid "「管理者」「編集者」「投稿者」「読者」を選ぶことができます。ただしロール管理下にある場合は、ロールでの権限が優先されます。"
 msgstr ""
 
@@ -7968,9 +8951,6 @@ msgid "ロール管理による設定が優先されています"
 msgstr ""
 
 msgid "チェックが外されたユーザーはユーザー一覧に表示されなくなります。しかし「非表示」ではないのでURLを入力するとユーザーを表示できます。"
-msgstr ""
-
-msgid "どこでもログイン"
 msgstr ""
 
 msgid "チェックをすると、このユーザーが所属するブログ以下のどのブログでもログインできるようになり、このユーザーと同じメールアドレス、ユーザーIDは全てのブログで使用出来なくなります。チェックがはずされた場合には、このユーザーが所属するブログでしかログインできません。"
@@ -7982,13 +8962,16 @@ msgstr ""
 msgid "他のブログのユーザーとユーザーIDまたはメールアドレスが重複しています"
 msgstr ""
 
-msgid "ログイン制限"
-msgstr ""
-
 msgid "チェックがされたユーザーはが許可された端末からしかログイン出来なくなります。"
 msgstr ""
 
 msgid "許可された端末からのみログインを許可"
+msgstr ""
+
+msgid "ユーザー毎のモードを設定します。"
+msgstr ""
+
+msgid "通常モード"
 msgstr ""
 
 msgid "ロケール"
@@ -8010,19 +8993,28 @@ msgstr ""
 msgid "ユーザー一覧を更新しました。"
 msgstr ""
 
-msgid "ユーザーがありません。"
+msgid "ユーザーの名前・メールアドレス・カスタムフィールドの値から検索（複数指定可）"
 msgstr ""
 
-msgid "ユーザーの名前・メールアドレス・カスタムフィールドの値から検索（複数指定可）"
+msgid "該当するユーザーが見つかりませんでした"
+msgstr ""
+
+msgid "検索内容に一致したユーザー情報はありませんでした。<br>再検索または新規ユーザーを作成してください。"
+msgstr ""
+
+msgid "ユーザー作成"
+msgstr ""
+
+msgid "このブログにはユーザー情報がありません"
+msgstr ""
+
+msgid "機能を使用するには新しくユーザーを作成してください。"
 msgstr ""
 
 msgid "有効_CTX_user"
 msgstr ""
 
 msgid "無効_CTX_user"
-msgstr ""
-
-msgid "ユーザー作成"
 msgstr ""
 
 msgid "すべてのユーザーを選択する"
@@ -8037,6 +9029,18 @@ msgstr ""
 msgid "権限："
 msgstr ""
 
+msgid "（管理者）"
+msgstr ""
+
+msgid "(編集者)"
+msgstr ""
+
+msgid "(投稿者)"
+msgstr ""
+
+msgid "(読者)"
+msgstr ""
+
 msgid "ステータス："
 msgstr ""
 
@@ -8048,6 +9052,66 @@ msgid "携帯"
 msgstr ""
 
 msgid "ユーザーの携帯電話のEメールアドレスです。「メールマガジンを受け取る」がチェックされているユーザーにはHTML形式のメールマガジンを送信できます。"
+msgstr ""
+
+#: themes/system/admin/user/password.html
+msgid "<span class=\"js-dialog-title\">パスワード設定</span>"
+msgstr ""
+
+msgid "パスワードを変更しました"
+msgstr ""
+
+#: themes/system/admin/user/tfa.html
+msgid "<span class=\"js-dialog-title\">２段階認証</span>"
+msgstr ""
+
+msgid "戻る
+				"
+msgstr ""
+
+msgid "コードが入力されていません"
+msgstr ""
+
+msgid "認証に失敗しました。"
+msgstr ""
+
+msgid "シークレットキーがありません。"
+msgstr ""
+
+msgid "認証に成功しました。"
+msgstr ""
+
+msgid "２段階認証を設定"
+msgstr ""
+
+msgid "未設定"
+msgstr ""
+
+msgid "設定済み"
+msgstr ""
+
+msgid "シークレットキー"
+msgstr ""
+
+msgid "認証コード生成用のアプリにシークレットキーを設定します。"
+msgstr ""
+
+msgid "アプリで以下のQRコードを読み取るか、手動でシークレットキーを設定してください。"
+msgstr ""
+
+msgid "リカバリーコードは、一度しか表示されません。必ずここでメモして保管してください。"
+msgstr ""
+
+msgid "認証コードを発行できなくなった場合に、最終手段として以下の「リカバリーコード」を使用して２段階認証を無効にします。"
+msgstr ""
+
+msgid "認証コード生成アプリに表示されているコードを入力して、認証ボタンを押して認証します。"
+msgstr ""
+
+msgid "認証コードは短い時間で変わりますので、すばやく入力してください。"
+msgstr ""
+
+msgid "設定解除"
 msgstr ""
 
 #: themes/system/admin/usergroup/edit.html
@@ -8109,13 +9173,115 @@ msgstr ""
 msgid "ユーザーグループ一覧を更新しました。"
 msgstr ""
 
-msgid "ユーザーグループがありません。"
+msgid "ユーザーグループがありません"
+msgstr ""
+
+msgid "機能を使用するには新しくユーザーグループを作成してください。<br>（作成するには管理者以上の権限が必要です）"
 msgstr ""
 
 msgid "ユーザーグループの作成"
 msgstr ""
 
 msgid "登録ユーザー数"
+msgstr ""
+
+#: themes/system/admin/webhook/edit.html
+msgid "Webhookを削除します。\\nよろしいですか？"
+msgstr ""
+
+msgid "Webhook IDの固有のIDです。"
+msgstr ""
+
+msgid "Webhookのステータスを設定します。"
+msgstr ""
+
+msgid "この Webhook を管理するための名前です。（日本語可）"
+msgstr ""
+
+msgid "名前を入力してください。"
+msgstr ""
+
+msgid "イベントをフックするタイプを指定します。"
+msgstr ""
+
+msgid "タイプを選択してください。"
+msgstr ""
+
+msgid "フックするイベントを指定します。"
+msgstr ""
+
+msgid "イベントを選択してください。"
+msgstr ""
+
+msgid "一括更新などのイベントには対応していません。"
+msgstr ""
+
+msgid "WebhookのPOST先のURLを指定します。"
+msgstr ""
+
+msgid "Webhook URLを入力して下さい。"
+msgstr ""
+
+msgid "リクエスト履歴"
+msgstr ""
+
+msgid "チェックをすると、リクエスト履歴を残すようになります。"
+msgstr ""
+
+msgid "リクエスト履歴を残します"
+msgstr ""
+
+msgid "チェックをすると、このWebhookが下の階層のブログも対象になります。"
+msgstr ""
+
+msgid "下の階層のブログも対象にする"
+msgstr ""
+
+msgid "ペイロード"
+msgstr ""
+
+msgid "ペイロードをカスタムします。"
+msgstr ""
+
+msgid "ペイロードをカスタムする"
+msgstr ""
+
+msgid "ペイロードをテンプレートを使って組み立てます。"
+msgstr ""
+
+msgid "英数字とアンダースコア以外の文字列は、アンダースコアに変換して変数名を入力してください。"
+msgstr ""
+
+#: themes/system/admin/webhook/index.html
+msgid "Webhook機能は無効になっています。使用するにはconfig.server.php の「HOOK_ENABLE」に「1」を設定して有効化してください。"
+msgstr ""
+
+msgid "Webhookがありません"
+msgstr ""
+
+msgid "Webhook機能を使用するには新しく作成してください。"
+msgstr ""
+
+msgid "Webhook を作成"
+msgstr ""
+
+msgid "対象"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+#: themes/system/admin/webhook/log.html
+msgid "履歴がありません。"
+msgstr ""
+
+msgid "リクエスト日時"
+msgstr ""
+
+msgid "処理時間"
+msgstr ""
+
+msgid "閉じる"
 msgstr ""
 
 #: themes/system/admin/workflow/_setting.html
@@ -8220,6 +9386,12 @@ msgid "コードネーム（降順）"
 msgstr ""
 
 #: themes/system/ajax/arg/eid-reference.html
+msgid "全てのカテゴリー"
+msgstr ""
+
+msgid "カテゴリーなし"
+msgstr ""
+
 msgid "日付 (昇順)"
 msgstr ""
 
@@ -8265,10 +9437,6 @@ msgstr ""
 msgid "強調2"
 msgstr ""
 
-#: themes/system/ajax/media-library.html
-msgid "この「<%- media.name %>」の画像を選択する"
-msgstr ""
-
 #: themes/system/ajax/module/list.html
 msgid "モジュール選択"
 msgstr ""
@@ -8292,43 +9460,22 @@ msgstr ""
 msgid "バージョンがありません。"
 msgstr ""
 
-msgid "作業領域からバージョンを作成する事ができます"
-msgstr ""
-
 msgid "作成者"
-msgstr ""
-
-msgid "作成日時"
 msgstr ""
 
 msgid "承認ステータス"
 msgstr ""
 
-msgid "別バージョン"
+msgid "公開予約"
 msgstr ""
 
-msgid "<span class=\"acms-admin-hide-visually\">バージョンID</span>{rvid}<span class=\"acms-admin-hide-visually\">を選択する</span>"
-msgstr ""
-
-msgid "選択したバージョンを公開"
-msgstr ""
-
-msgid "選択したバージョンを公開してもよろしいですか？"
-msgstr ""
-
-msgid "バージョン一覧"
-msgstr ""
-
-msgid "バージョンの確認画面から承認依頼をする事ができます"
+msgid "作業領域"
 msgstr ""
 
 msgid "承認済"
 msgstr ""
 
 msgid "承認中"
-msgstr ""
-
-msgid "却下"
 msgstr ""
 
 msgid "承認前"
@@ -8341,7 +9488,10 @@ msgstr ""
 msgid "ページを表示"
 msgstr ""
 
-msgid "別バージョンを作成"
+msgid "このバージョンを公開予約"
+msgstr ""
+
+msgid "このバージョンを公開予約します。公開日時まで切り替わりません。よろしいですか？"
 msgstr ""
 
 msgid "このバージョンを公開"
@@ -8356,19 +9506,34 @@ msgstr ""
 msgid "全員"
 msgstr ""
 
+msgid "承認フロー"
+msgstr ""
+
+msgid "承認する"
+msgstr ""
+
+msgid "承認します。よろしいですか？"
+msgstr ""
+
+msgid "承認依頼する"
+msgstr ""
+
 msgid "承認依頼します。よろしいですか？"
 msgstr ""
 
-msgid "却下依頼"
+msgid "最終承認をします。記事が公開（予約）または削除されます。よろしいですか？"
 msgstr ""
 
-msgid "承認を却下依頼します。よろしいですか？"
+msgid "コメントのみ残す"
 msgstr ""
 
-msgid "承認を却下します。よろしいですか？"
+msgid "承認却下します。よろしいですか？"
 msgstr ""
 
-msgid "最終承認をします。記事が公開または削除されます。よろしいですか？"
+msgid "承認却下依頼"
+msgstr ""
+
+msgid "承認却下を依頼します。よろしいですか？"
 msgstr ""
 
 msgid "あなたのポイント"
@@ -8377,10 +9542,7 @@ msgstr ""
 msgid "承認まで"
 msgstr ""
 
-msgid "却下まで"
-msgstr ""
-
-msgid "承認却下依頼"
+msgid "承認却下まで"
 msgstr ""
 
 #: themes/system/include/module/edit.html
@@ -8411,10 +9573,13 @@ msgstr ""
 msgid "このモジュールIDを管理するための名前です。（日本語可）"
 msgstr ""
 
-msgid "名前を入力してください。"
+msgid "このモジュールIDがどのような動作をするかなどのメモです。"
 msgstr ""
 
-msgid "このモジュールIDがどのような動作をするかなどのメモです。"
+msgid "このモジュールキャッシュ時間を指定します"
+msgstr ""
+
+msgid "分"
 msgstr ""
 
 msgid "チェックをすると、このモジュールIDが下の階層のブログでも使用できます。"
@@ -8435,6 +9600,15 @@ msgstr ""
 msgid "レイアウトモジュールで使用"
 msgstr ""
 
+msgid "API"
+msgstr ""
+
+msgid "チェックをすると、このモジュールIDがAPIで取得できるようになります。"
+msgstr ""
+
+msgid "APIでの取得を許可"
+msgstr ""
+
 msgid "引数（チェックするとURLコンテキストが優先されます）"
 msgstr ""
 
@@ -8442,6 +9616,9 @@ msgid "ブログID（bid）"
 msgstr ""
 
 msgid "このモジュールIDの表示内容を、ブログの管理ID（番号）で指定します。"
+msgstr ""
+
+msgid "複数のIDを指定可能です"
 msgstr ""
 
 msgid "数字またはグローバル変数を入力してください。"

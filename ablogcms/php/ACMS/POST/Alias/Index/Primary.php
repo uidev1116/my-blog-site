@@ -23,6 +23,11 @@ class ACMS_POST_Alias_Index_Primary extends ACMS_POST
             //--------------
             // update cache
             ACMS_RAM::setBlogAliasPrimary(BID, $aid);
+
+            AcmsLogger::info('エイリアスのプライマリを変更しました', [
+                'primary_alias_id' => $aid,
+                'bid' => BID,
+            ]);
         }
 
         return $this->Post;

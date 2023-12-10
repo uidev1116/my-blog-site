@@ -19,6 +19,13 @@ class EntryServiceProvider extends ServiceProvider
         $container->singleton('entry', 'Acms\Services\Entry\Helper');
         $container->singleton('entry.export', 'Acms\Services\Entry\Export');
         $container->singleton('entry.import', 'Acms\Services\Entry\Import');
+        $container->singleton('entry.lock', function () {
+            return new Lock(
+                config('entry_lock_enable', 'on'),
+                config('entry_lock_alert_only', 'off'),
+                config('entry_lock_expire', 48)
+            );
+        });
     }
 
     /**

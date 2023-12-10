@@ -58,8 +58,8 @@
   height: 32px;
   margin-right: 0;
   padding: 10px 0;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 #ffffff;
+  background-color: global.$acms-color-white;
+  box-shadow: 0 0 0 global.$acms-color-white;
 }
 
 @media screen and (min-width: global.$breakpoint-md-min) {

@@ -22,9 +22,21 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{RCID}",
+      "subtitle": "<!--T-->ルートカテゴリID<!--/T-->",
+      "url": "%{RCID}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{PCID}",
       "subtitle": "<!--T-->親カテゴリーID<!--/T-->",
       "url": "%{PCID}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{RCCD}",
+      "subtitle": "<!--T-->ルートカテゴリーコード<!--/T-->",
+      "url": "%{RCCD}"
     },
     {
       "bid": "%{BID}",
@@ -43,12 +55,6 @@
       "title": "\u0025{UID}",
       "subtitle": "<!--T-->ユーザーID<!--/T-->",
       "url": "%{UID}"
-    },
-    {
-      "bid": "%{BID}",
-      "title": "\u0025{ALIAS_ID}",
-      "subtitle": "<!--T-->エイリアスID<!--/T-->",
-      "url": "%{ALIAS_ID}"
     },
     {
       "bid": "%{BID}",
@@ -82,6 +88,18 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ROOT_TPL}",
+      "subtitle": "<!--T-->現在表示中のルートテンプレートのパス<!--/T-->",
+      "url": "%{ROOT_TPL}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ROOT_TPL_NAME}",
+      "subtitle": "<!--T-->現在適用しているルートテンプレート名<!--/T-->",
+      "url": "%{ROOT_TPL_NAME}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{MID}",
       "subtitle": "<!--T-->モジュール編集画面のモジュールID<!--/T-->",
       "url": "%{MID}"
@@ -103,12 +121,6 @@
       "title": "\u0025{BCD}",
       "subtitle": "<!--T-->ブログコード<!--/T-->",
       "url": "%{BCD}"
-    },
-    {
-      "bid": "%{BID}",
-      "title": "\u0025{RCCD}",
-      "subtitle": "<!--T-->ルートカテゴリーコード<!--/T-->",
-      "url": "%{RCCD}"
     },
     {
       "bid": "%{BID}",
@@ -154,6 +166,12 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ALIAD_ID}",
+      "subtitle": "<!--T-->現在のエイリアスID<!--/T-->",
+      "url": "%{ALIAD_ID}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{ROOT_BLOG_NAME}",
       "subtitle": "<!--T-->表示ページが属するルートブログの名前<!--/T-->",
       "url": "%{ROOT_BLOG_NAME}"
@@ -196,6 +214,24 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{CONFIG_SET_NAME}",
+      "subtitle": "<!--T-->現在のコンフィグセット名<!--/T-->",
+      "url": "%{CONFIG_SET_NAME}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{THEME_SET_NAME}",
+      "subtitle": "<!--T-->現在のテーマセット名<!--/T-->",
+      "url": "%{THEME_SET_NAME}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{EDITOR_SET_NAME}",
+      "subtitle": "<!--T-->現在の編集画面セット名<!--/T-->",
+      "url": "%{EDITOR_SET_NAME}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{USER_NAME}",
       "subtitle": "<!--T-->ユーザーの名前<!--/T-->",
       "url": "%{USER_NAME}"
@@ -217,6 +253,18 @@
       "title": "\u0025{MODULE_NAME}",
       "subtitle": "<!--T-->モジュール編集画面でのモジュール名<!--/T-->",
       "url": "%{MODULE_NAME}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{STYLEGUIDE_PAGE}",
+      "subtitle": "<!--T-->スタイルガイドページ<!--/T-->",
+      "url": "%{STYLEGUIDE_PAGE}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{GETTEXT_TYPE}",
+      "subtitle": "<!--T-->多言語対応のタイプ（fix|user|auto）<!--/T-->",
+      "url": "%{GETTEXT_TYPE}"
     },
     {
       "bid": "%{BID}",
@@ -316,6 +364,12 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ADMIN_PATH_MID}",
+      "subtitle": "<!--T-->モジュール編集画面において、表示されているテンプレートファイルのパス<!--/T-->",
+      "url": "%{ADMIN_PATH_MID}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{HOME_URL}",
       "subtitle": "<!--T-->ルートブログのトップページのURL<!--/T-->",
       "url": "%{HOME_URL}"
@@ -358,9 +412,21 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{CANONICAL_URL}",
+      "subtitle": "<!--T-->カノニカルURL<!--/T-->",
+      "url": "%{CANONICAL_URL}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{BASE_URL}",
       "subtitle": "<!--T-->基本となるURL<!--/T-->",
       "url": "%{BASE_URL}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ADMIN_BASE_URL}",
+      "subtitle": "<!--T-->基本となるURL<!--/T-->",
+      "url": "%{ADMIN_BASE_URL}"
     },
     {
       "bid": "%{BID}",
@@ -388,9 +454,21 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ENTRY_URL}",
+      "subtitle": "<!--T-->エントリーページのURL<!--/T-->",
+      "url": "%{ENTRY_URL}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{ROOT_DIR}",
       "subtitle": "<!--T-->ドキュメントルートからindex.phpのある場所までのパス<!--/T-->",
       "url": "%{ROOT_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{DOCUMENT_ROOT}",
+      "subtitle": "<!--T-->ドキュメントルートからindex.phpのある場所までのパス<!--/T-->",
+      "url": "%{DOCUMENT_ROOT}"
     },
     {
       "bid": "%{BID}",
@@ -415,6 +493,18 @@
       "title": "\u0025{YM_ARCHIVES_DIR}",
       "subtitle": "<!--T-->ブログの日付を考慮したアーカイブディレクトリ( /archives/001/201801 )のパス<!--/T-->",
       "url": "%{YM_ARCHIVES_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ARCHIVES_DIR_TEMP}",
+      "subtitle": "<!--T-->tmpアーカイブディレクトリ( /archives/tmp )のパス<!--/T-->",
+      "url": "%{ARCHIVES_DIR_TEMP}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ARCHIVES_CACHE_SERVER}",
+      "subtitle": "<!--T-->キャッシュアーカイブサーバーのURL<!--/T-->",
+      "url": "%{ARCHIVES_CACHE_SERVER}"
     },
     {
       "bid": "%{BID}",
@@ -448,6 +538,12 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{HTTP_REQUEST_URL}",
+      "subtitle": "<!--T-->リクエストのURL<!--/T-->",
+      "url": "%{HTTP_REQUEST_URL}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{MEDIA_ARCHIVES_DIR}",
       "subtitle": "<!--T-->メディアアーカイブディレクトリ( /media )のパス<!--/T-->",
       "url": "%{MEDIA_ARCHIVES_DIR}"
@@ -460,9 +556,123 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{HTTP_ARCHIVES_DIR_TEMP}",
+      "subtitle": "<!--T-->tmpアーカイブディレクトリのURL<!--/T-->",
+      "url": "%{HTTP_ARCHIVES_DIR_TEMP}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{THEMES_DIR}",
       "subtitle": "<!--T-->テーマディレクトリ ( /themes )のパス<!--/T-->",
       "url": "%{THEMES_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{JS_DIR}",
+      "subtitle": "<!--T-->システムで利用するJavaScriptが設置されているディレクトリ ( /js )のパス<!--/T-->",
+      "url": "%{JS_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{JS_LIB_DIR}",
+      "subtitle": "<!--T-->システムで利用するJavaScriptライブラリが設置されているディレクトリ ( /js/library/ )のパス<!--/T-->",
+      "url": "%{JS_LIB_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{JS_LIB_JQUERY_DIR}",
+      "subtitle": "<!--T-->システムで利用するjQueryが設置されているディレクトリ ( /js/library/jquery/ )のパス<!--/T-->",
+      "url": "%{JS_LIB_JQUERY_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{JS_LIB_JQUERY_DIR_VERSION}",
+      "subtitle": "<!--T-->config.system.yaml の jquery_version で指定した jQuery のバージョン番号<!--/T-->",
+      "url": "%{JS_LIB_JQUERY_DIR_VERSION}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{LOGIN_SEGMENT}",
+      "subtitle": "<!--T-->管理ログインのURLパス<!--/T-->",
+      "url": "%{LOGIN_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ADMIN_RESET_PASSWORD_SEGMENT}",
+      "subtitle": "<!--T-->管理ユーザーのリセットパスワードのURLパス<!--/T-->",
+      "url": "%{ADMIN_RESET_PASSWORD_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ADMIN_RESET_PASSWORD_AUTH_SEGMENT}",
+      "subtitle": "<!--T-->管理ユーザーリセットパスワード確認のURLパス<!--/T-->",
+      "url": "%{ADMIN_RESET_PASSWORD_AUTH_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ADMIN_TFA_RECOVERY_SEGMENT}",
+      "subtitle": "<!--T-->管理ユーザーの2段階認証のURLパス<!--/T-->",
+      "url": "%{ADMIN_TFA_RECOVERY_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SIGNIN_SEGMENT}",
+      "subtitle": "<!--T-->一般ユーザーサインインのURLパス<!--/T-->",
+      "url": "%{SIGNIN_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SIGNUP_SEGMENT}",
+      "subtitle": "<!--T-->会員登録のURLパス<!--/T-->",
+      "url": "%{SIGNUP_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{RESET_PASSWORD_SEGMENT}",
+      "subtitle": "<!--T-->一般ユーザーリセットパスワードのURLパス<!--/T-->",
+      "url": "%{RESET_PASSWORD_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{RESET_PASSWORD_AUTH_SEGMENT}",
+      "subtitle": "<!--T-->一般ユーザーリセットパスワード確認のURLパス<!--/T-->",
+      "url": "%{RESET_PASSWORD_AUTH_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{TFA_RECOVERY_SEGMENT}",
+      "subtitle": "<!--T-->一般ユーザーの2段階認証のURLパス<!--/T-->",
+      "url": "%{TFA_RECOVERY_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{PROFILE_UPDATE_SEGMENT}",
+      "subtitle": "<!--T-->プロフィール更新画面のURLパス<!--/T-->",
+      "url": "%{PROFILE_UPDATE_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{PASSWORD_UPDATE_SEGMENT}",
+      "subtitle": "<!--T-->パスワード更新画面のURLパス<!--/T-->",
+      "url": "%{PASSWORD_UPDATE_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{EMAIL_UPDATE_SEGMENT}",
+      "subtitle": "<!--T-->メールアドレス更新画面のURLパス<!--/T-->",
+      "url": "%{EMAIL_UPDATE_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{TFA_UPDATE_SEGMENT}",
+      "subtitle": "<!--T-->2段階認証設定画面のURLパス<!--/T-->",
+      "url": "%{TFA_UPDATE_SEGMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{WITHDRAWAL_SEGMENT}",
+      "subtitle": "<!--T-->退会画面のURLパス<!--/T-->",
+      "url": "%{WITHDRAWAL_SEGMENT}"
     },
     {
       "bid": "%{BID}",
@@ -484,6 +694,12 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ALIAS_ID}",
+      "subtitle": "<!--T-->エイリアスID<!--/T-->",
+      "url": "%{ALIAS_ID}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{ALIAS_DOMAIN}",
       "subtitle": "<!--T-->エイリアスのドメイン<!--/T-->",
       "url": "%{ALIAS_DOMAIN}"
@@ -496,6 +712,24 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{ACMS_PATH_BASE}",
+      "subtitle": "<!--T-->基本となるacmsパス<!--/T-->",
+      "url": "%{ACMS_PATH_BASE}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SCRIPT_DIR}",
+      "subtitle": "<!--T-->a-blog cms 設置ディレクトリのパス<!--/T-->",
+      "url": "%{SCRIPT_DIR}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{CURRENT_ROOT}",
+      "subtitle": "<!--T-->表示URL中のドキュメントルートからのパス<!--/T-->",
+      "url": "%{CURRENT_ROOT}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{REQUEST_PATH}",
       "subtitle": "<!--T-->表示URL中の、a-blog cms設置ディレクトリ以降のパス<!--/T-->",
       "url": "%{REQUEST_PATH}"
@@ -505,6 +739,18 @@
       "title": "\u0025{REQUEST_DIRNAME}",
       "subtitle": "<!--T-->表示URL中の、a-blog cms設置ディレクトリ以降のURL<!--/T-->",
       "url": "%{REQUEST_DIRNAME}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{VALID_ID_REGEX}",
+      "subtitle": "<!--T-->ID（数値）の正規表現<!--/T-->",
+      "url": "%{VALID_ID_REGEX}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{REGEX_VALID_PASSWD}",
+      "subtitle": "<!--T-->ID（数値）の正規表現<!--/T-->",
+      "url": "%{REGEX_VALID_PASSWD}"
     },
     {
       "bid": "%{BID}",
@@ -538,14 +784,20 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{BLOG_THEME_CONTRAST_COLOR}",
+      "subtitle": "<!--T-->コンフィグで指定したブログのテーマカラーに同化しないカラー<!--/T-->",
+      "url": "%{BLOG_THEME_CONTRAST_COLOR}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{MAIL_SUBSCRIBE_ADMIN_FROM}",
-      "subtitle": "<!--T-->コンフィグで指定した管理者宛読者登録通知メールの送信元メールアドレス<!--/T-->",
+      "subtitle": "<!--T-->コンフィグで指定した管理者宛会員登録通知メールの送信元メールアドレス<!--/T-->",
       "url": "%{MAIL_SUBSCRIBE_ADMIN_FROM}"
     },
     {
       "bid": "%{BID}",
       "title": "\u0025{MAIL_SUBSCRIBE_FROM}",
-      "subtitle": "<!--T-->コンフィグで指定した読者登録通知メールの送信元メールアドレス<!--/T-->",
+      "subtitle": "<!--T-->コンフィグで指定した会員登録通知メールの送信元メールアドレス<!--/T-->",
       "url": "%{MAIL_SUBSCRIBE_FROM}"
     },
     {
@@ -580,6 +832,84 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{MEDIA_LIBRARY}",
+      "subtitle": "<!--T-->メディア機能が有効かどうか表示<!--/T-->",
+      "url": "%{MEDIA_LIBRARY}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{IS_DEVELOPMENT}",
+      "subtitle": "<!--T-->開発者モードか表示<!--/T-->",
+      "url": "%{IS_DEVELOPMENT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{IS_TRIAL}",
+      "subtitle": "<!--T-->トライアルモードか表示<!--/T-->",
+      "url": "%{IS_TRIAL}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{IS_TRIAL}",
+      "subtitle": "<!--T-->トライアルモードか表示<!--/T-->",
+      "url": "%{IS_TRIAL}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{TRIAL_COUNT_DOWN}",
+      "subtitle": "<!--T-->トライアルの残り日数を表示<!--/T-->",
+      "url": "%{TRIAL_COUNT_DOWN}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{IS_SUBSCRIPTION}",
+      "subtitle": "<!--T-->ライセンスがサブスクタイプか表示<!--/T-->",
+      "url": "%{IS_SUBSCRIPTION}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SUBSCRIPTION_PLAN}",
+      "subtitle": "<!--T-->ライセンス（サブスク）のプランを表示<!--/T-->",
+      "url": "%{SUBSCRIPTION_PLAN}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{UNLICENSED_REASON}",
+      "subtitle": "<!--T-->ライセンス切れの理由を表示<!--/T-->",
+      "url": "%{UNLICENSED_REASON}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SUBSCRIPTION_PAYMENT}",
+      "subtitle": "<!--T-->ライセンス（サブスク）の支払い状態を表示<!--/T-->",
+      "url": "%{UNLICENSED_REASON}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{ACTIVATION_ENDPOINT}",
+      "subtitle": "<!--T-->ライセンス（サブスク）のアクティベーションをするエンドポイントURL<!--/T-->",
+      "url": "%{ACTIVATION_ENDPOINT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{PREVIEW_DEFAULT_DEVICE}",
+      "subtitle": "<!--T-->プレビュー時のデフォルトデバイスを表示<!--/T-->",
+      "url": "%{PREVIEW_DEFAULT_DEVICE}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{APPROVAL_PREVIEW_DEFAULT_DEVICE}",
+      "subtitle": "<!--T-->承認時のデフォルトデバイスを表示<!--/T-->",
+      "url": "%{APPROVAL_PREVIEW_DEFAULT_DEVICE}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{TIMEMACHINE_PREVIEW_DEFAULT_DEVICE}",
+      "subtitle": "<!--T-->タイムマシンモード時のデフォルトのデバイスを表示<!--/T-->",
+      "url": "%{TIMEMACHINE_PREVIEW_DEFAULT_DEVICE}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{NOW_DATE}",
       "subtitle": "<!--T-->表示した時点の日付<!--/T-->",
       "url": "%{NOW_DATE}"
@@ -601,6 +931,18 @@
       "title": "\u0025{DOMAIN}",
       "subtitle": "<!--T-->表示しているブログのドメイン名<!--/T-->",
       "url": "%{DOMAIN}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{DOMAIN_ROOT}",
+      "subtitle": "<!--T-->config.server.phpのドメイン名<!--/T-->",
+      "url": "%{DOMAIN_ROOT}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{HTTP_HOST}",
+      "subtitle": "<!--T-->ホスト名<!--/T-->",
+      "url": "%{HTTP_HOST}"
     },
     {
       "bid": "%{BID}",
@@ -634,6 +976,24 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{CH_UA}",
+      "subtitle": "<!--T-->User-Agent Client Hints(UA-CH）の「sec-ch-ua」値<!--/T-->",
+      "url": "%{CH_UA}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{CH_UA_MOBILE}",
+      "subtitle": "<!--T-->User-Agent Client Hints(UA-CH）の「sec-ch-ua-mobile」値<!--/T-->",
+      "url": "%{CH_UA_MOBILE}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{CH_UA_PLATFORM}",
+      "subtitle": "<!--T-->User-Agent Client Hints(UA-CH）の「sec-ch-ua-platform」値<!--/T-->",
+      "url": "%{CH_UA_PLATFORM}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{UA_GROUP}",
       "subtitle": "<!--T-->クライアントのユーザーエージェントの所属グループ情報<!--/T-->",
       "url": "%{UA_GROUP}"
@@ -646,6 +1006,12 @@
     },
     {
       "bid": "%{BID}",
+      "title": "\u0025{MAINTENANCE_MODE}",
+      "subtitle": "<!--T-->メンテナンスモードか表示<!--/T-->",
+      "url": "%{MAINTENANCE_MODE}"
+    },
+    {
+      "bid": "%{BID}",
       "title": "\u0025{PROTOCOL}",
       "subtitle": "<!--T-->プロトコル（http : https）<!--/T-->",
       "url": "%{PROTOCOL}"
@@ -655,6 +1021,18 @@
       "title": "\u0025{VIEW}",
       "subtitle": "<!--T-->ページの表示状態（トップ・一覧・詳細）を示す文字列（top, index, entry）を出力する<!--/T-->",
       "url": "%{VIEW}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SUID}",
+      "subtitle": "<!--T-->現在ログイン中のユーザーID<!--/T-->",
+      "url": "%{SUID}"
+    },
+    {
+      "bid": "%{BID}",
+      "title": "\u0025{SBID}",
+      "subtitle": "<!--T-->現在ログイン中のユーザーが所属するブログID<!--/T-->",
+      "url": "%{SBID}"
     },
     {
       "bid": "%{BID}",

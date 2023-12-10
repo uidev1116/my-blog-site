@@ -19,8 +19,16 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $this->validate();
         $this->field();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $this->save();
+
+            AcmsLogger::info('ユーザー「' . $this->user->get('name') . '」の情報を更新しました', [
+                'uid' => UID,
+                'user' => $this->user->_aryField,
+                'field' => $this->field->_aryField,
+            ]);
+
+            Webhook::call(BID, 'user', ['user:updated'], UID);
 
             if ( (editionIsProfessional() || editionIsEnterprise()) ) {
                 $this->old();
@@ -28,6 +36,12 @@ class ACMS_POST_User_Update extends ACMS_POST_User
                     $this->send();
                 }
             }
+        } else {
+            AcmsLogger::info('ユーザー「' . $this->preUser->get('name') . '」の情報更新に失敗しました', [
+                'uid' => UID,
+                'user' => $this->user->_aryV,
+                'field' => $this->field->_aryV,
+            ]);
         }
         return $this->Post;
     }
@@ -78,10 +92,10 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
     protected function mail($subject, $body, $html, $to, $from, $bcc)
     {
-        if ( 1
-            and $to
-            and $subjectTpl = findTemplate($subject)
-            and $bodyTpl = findTemplate($body)
+        if (1
+            && $to
+            && $subjectTpl = findTemplate($subject)
+            && $bodyTpl = findTemplate($body)
         ) {
             $this->field->set('uid', UID);
             $subject = Common::getMailTxt($subjectTpl, $this->field);
@@ -113,7 +127,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
     protected function validate()
     {
-        $validator = new ACMS_Validator_User;
+        $validator = new ACMS_Validator_User();
 
         $this->user->setMethod('status', 'in', array('open', 'close'));
         $this->user->setMethod('name', 'required');
@@ -128,6 +142,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $this->user->setMethod('pass', 'password');
         $this->user->setMethod('auth', 'in', array('administrator', 'editor', 'contributor', 'subscriber'));
         $this->user->setMethod('indexing', 'in', array('on', 'off'));
+        $this->user->setMethod('mode', 'in', array('debug', 'benchmark'));
         $this->user->setMethod('code', 'string', isValidCode($this->user->get('code')));
 
         // 現在、読者かつ読者以外に変更しようとしているときだけ、ユーザー数の制限チェックを行う
@@ -148,15 +163,38 @@ class ACMS_POST_User_Update extends ACMS_POST_User
                 && $validator->doubleMail($this->user->get('mail'), array('uid' => UID))
             )
         ));
-        $this->user->setMethod('user', 'operable', 1
-            and !!UID
-            and IS_LICENSED
-            and (0
-                or (sessionWithAdministration() or UID == SUID)
-                or (sessionWithAdministration() ? true : Auth::checkShortcut('User_Update', ADMIN, 'uid', UID))
-            )
-        );
+        $this->user->setMethod('user', 'operable', $this->isOperable());
         $this->user->validate($validator);
+    }
+
+    /**
+     * ユーザーの更新権限があるかどうか
+     *
+     * @return bool
+     **/
+    protected function isOperable(): bool
+    {
+        if (empty(UID)) {
+            return false;
+        }
+
+        if (empty(SUID)) {
+            return false;
+        }
+
+        if (!IS_LICENSED) {
+            return false;
+        }
+
+        if (sessionWithAdministration()) {
+            return true;
+        }
+
+        if (UID === SUID) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function field()
@@ -196,6 +234,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
             if ( !!$this->user->get('indexing') ) {
                 $SQL->addUpdate('user_indexing', $this->user->get('indexing'));
             }
+            $SQL->addUpdate('user_mode', $this->user->get('mode'));
             if ( 1
                 and $this->user->get('login_anywhere')
                 and SBID == RBID
@@ -221,8 +260,10 @@ class ACMS_POST_User_Update extends ACMS_POST_User
             $SQL->addUpdate('user_pass', acmsUserPasswordHash($this->user->get('pass')));
             $SQL->addUpdate('user_pass_generation', PASSWORD_ALGORITHM_GENERATION);
         }
-        $this->iconQuery($SQL);
-
+        if ($iconPath = Login::resizeUserIcon($this->user->get('icon@squarePath'))) {
+            $SQL->addUpdate('user_icon', $iconPath);
+            $this->user->set('icon', $iconPath);
+        }
         $SQL->addWhereOpr('user_id', UID);
         $SQL->addWhereOpr('user_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
@@ -251,16 +292,5 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         }
         Common::saveFulltext('uid', UID, Common::loadUserFulltext(UID));
         $this->Post->set('edit', 'update');
-    }
-
-    protected function iconQuery(& $SQL)
-    {
-        if ( $squarePath = $this->user->get('icon@squarePath') ) {
-            $path = normalSizeImagePath($squarePath);
-            $icon64 = trim(dirname($path), '/') . '/square64-' . Storage::mbBasename($path);
-            $this->copyImage(ARCHIVES_DIR . $squarePath, ARCHIVES_DIR . $icon64, 64, 64, 64);
-            $SQL->addUpdate('user_icon', $icon64);
-        }
-        $this->Post->getChild('user')->delete('icon');
     }
 }

@@ -39,6 +39,15 @@ class ACMS_POST_Usergroup_Insert extends ACMS_POST_Usergroup
                 $DB->query($SQL->get(dsn()), 'exec');
             }
             $this->Post->set('edit', 'insert');
+
+            AcmsLogger::info('ユーザーグループ「' . $Usergroup->get('name') . '」を作成しました', [
+                'ugid' => $ugid,
+                'data' => $Usergroup->_aryField,
+            ]);
+        } else {
+            AcmsLogger::info('ユーザーグループの作成に失敗しました', [
+                'data' => $Usergroup->_aryV,
+            ]);
         }
         return $this->Post;
     }

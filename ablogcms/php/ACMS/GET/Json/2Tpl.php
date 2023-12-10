@@ -31,7 +31,10 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
                 return $Tpl->render($vars);
             }
         } catch ( \Exception $e ) {
-            if ( DEBUG_MODE ) {
+            AcmsLogger::critical('「Json_2Tpl」モジュールで「' . $uri . '」から情報を取得できませんでした', [
+                'detail' => $e->getMessage(),
+            ]);
+            if (isDebugMode()) {
                 throw $e;
             }
             return '';

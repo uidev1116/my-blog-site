@@ -10,6 +10,7 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
     function init()
     {
         @set_time_limit(-1);
+        $this->importType = 'WordPress';
         $this->uploadFiledName = 'wordpress_import_file';
         $this->importCid = intval($this->Post->get('category_id'));
         if (intval($this->importCid) == 0) {
@@ -32,15 +33,32 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
 
         while ($xml->read()) {
             if ($xml->name === 'item' and intval($xml->nodeType) === XMLReader::ELEMENT) {
-                $title      = $this->getNodeValue($xml, 'title');
-                $content    = $this->getNodeValue($xml, 'content:encoded');
-                $date       = $this->getNodeValue($xml, 'wp:post_date');
-                $status     = $this->getNodeValue($xml, 'wp:status');
-                $tags       = array();
-                $fields     = array();
-                $status     = $this->convertStatus($status);
+                $title = $this->getNodeValue($xml, 'title');
+                $content = $this->getNodeValue($xml, 'content:encoded');
+                $date = $this->getNodeValue($xml, 'wp:post_date');
+                $status = $this->getNodeValue($xml, 'wp:status');
+                $type = $this->getNodeValue($xml, 'wp:post_type');
+
+                if ($type !== 'post' && $type !== 'page') {
+                    continue; // 投稿タイプが「投稿」「固定ページ」でなかった場合はスキップ
+                }
+
+                $tags = array();
+                $fields = array();
+                $status = $this->convertStatus($status);
+
+                // 本文からサムネイル画像のパスを抜き出し
+                if (preg_match('/<\s*img(?:"[^"]*"|\'[^\']*\'|[^\'">])*\s+src\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>/ui', $content, $matches)) {
+                    if (isset($matches[1])) {
+                        $fields[] = array(
+                            'key' => 'wp_thumbnail_url',
+                            'value' => trim($matches[1], '"\''),
+                        );
+                    }
+                }
 
                 while ($xml->read()) {
+                    // エントリーを作成
                     if (intval($xml->nodeType) === XMLReader::END_ELEMENT and $xml->name === 'item') {
                         //insert
                         if (empty($title)) {
@@ -63,18 +81,24 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
                         $this->insertEntry($entry);
                         break;
                     }
-
+                    // タグ
                     if ($xml->name === 'category' and $xml->getAttribute('domain') === 'post_tag' and intval($xml->nodeType) === XMLReader::ELEMENT) {
                         $xml->read();
                         $tags[] = $xml->value;
                     }
-
+                    // カスタムフィールド
                     if ($xml->name === 'wp:postmeta' and intval($xml->nodeType) === XMLReader::ELEMENT) {
                         $key    = $this->getNodeValue($xml, 'wp:meta_key');
                         $value  = $this->getNodeValue($xml, 'wp:meta_value');
                         if (!preg_match('/^_.*/', $key)) {
                             $fields[] = array(
-                                'key'   => $key,
+                                'key' => $key,
+                                'value' => $value,
+                            );
+                        } else if ($key === '_thumbnail_id') {
+                            // アイキャッチの画像IDを保存
+                            $fields[] = array(
+                                'key' => 'wp_thumbnail_id',
                                 'value' => $value,
                             );
                         }

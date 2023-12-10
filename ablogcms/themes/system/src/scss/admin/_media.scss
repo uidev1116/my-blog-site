@@ -154,7 +154,7 @@ td.acms-media-row-image {
 		bottom: 5px;
 		left: 5px;
 		display: block;
-		background-color: #eaeef5;
+		background-color: global.$acms-color-system-gray10;
 		content: "";
 	}
 }
@@ -254,7 +254,7 @@ td.acms-media-row-image {
 
 .acms-media-thumb-ext {
   margin: 15px 0 0 0;
-  color: #333333;
+  color: global.$acms-color-black;
   font-weight: bold;
   @include global.font-size(16);
 }
@@ -269,8 +269,7 @@ td.acms-media-row-image {
   z-index: 0;
   width: 30px;
   height: 30px;
-	margin-top: -5px;
-  background-color: #FFFFFF;
+  background-color: global.$acms-color-white;
   background-size: cover;
   border-radius: 50%;
   opacity: .6;
@@ -282,7 +281,7 @@ td.acms-media-row-image {
     display: block;
     width: 14px;
     height: 8px;
-    border: 2px solid #9D9D9D;
+    border: 2px solid global.$acms-color-gray80;
     border-top: none;
     border-right: none;
     transform: rotate(-45deg);
@@ -299,7 +298,7 @@ td.acms-media-row-image {
 	width: 40px;
 	height: 40px;
 	margin-top: -25px;
-	color: #FFF;
+	color: global.$acms-color-white;
 	background: rgba(0,0,0,.1);
 	border: 0;
 	border-radius: 50%;
@@ -340,7 +339,6 @@ td.acms-media-row-image {
 	.acms-media-thumb-container &:hover {
 		background: rgba(0,0,0,.7);
 	}
-
 }
 
 
@@ -355,21 +353,21 @@ td.acms-media-row-image {
     height: 20px;
     margin-right: 5px;
     vertical-align: middle;
-    background-color: #CCC;
+    background-color: global.$acms-color-gray60;
     opacity: 1;
     &:before {
       top: 5px;
       left: 4px;
       width: 10px;
       height: 6px;
-      border-bottom-color: #FFF;
-      border-left-color: #FFF;
+      border-bottom-color: global.$acms-color-white;
+      border-left-color: global.$acms-color-white;
     }
   }
 
   &:hover .acms-media-grid-checkbox,
   .acms-media-grid-checkbox.selected {
-    background-color: #236DF8;
+    background-color: global.$acms-color-info60;
   }
 }
 @media screen and (min-width: global.$breakpoint-md-min){
@@ -392,8 +390,8 @@ td.acms-media-row-image {
   box-sizing: border-box;
   padding-bottom: 100%;
   overflow: hidden;
-  background-color: #EFF2F4;
-  border: 1px solid #C2D0DD;
+  background-color: global.$acms-color-system-gray20;
+  border: 1px solid global.$acms-color-system-gray30;
   .acms-media-grid-shadow {
     position: absolute;
     top: 0;
@@ -421,13 +419,13 @@ td.acms-media-row-image {
     }
 
     &.selected {
-      border: 4px solid #236DF8;
+      border: 4px solid global.$acms-color-info60;
       .acms-media-grid-checkbox {
-        background-color: #236DF8;
+        background-color: global.$acms-color-info60;
         opacity: 1;
         &:before {
-          border-bottom-color: #FFF;
-          border-left-color: #FFF;
+          border-bottom-color: global.$acms-color-white;
+          border-left-color: global.$acms-color-white;
         }
       }
     }
@@ -507,10 +505,10 @@ td.acms-media-row-image {
 .acms-media-edit-btn {
   display: block;
   padding: 3px 10px;
-  color: #FFF;
+  color: global.$acms-color-white;
   line-height: 1.3;
   background-color: rgba(49, 52, 77, .6);
-  border: 1px solid #FFF;
+  border: 1px solid global.$acms-color-white;
   border-radius: 10em;
   appearance: none;
   @include global.font-size(12);
@@ -578,7 +576,7 @@ td.acms-media-row-image {
   right: 10px;
   bottom: 10px;
   display: block;
-  border: 1px solid #FFF;
+  border: 1px solid global.$acms-color-white;
 }
 
 // ------------------------------
@@ -596,7 +594,7 @@ td.acms-media-row-image {
   width: 32px;
   height: 32px;
   background-color: rgba(0, 0, 0, .6);
-  border: 1px solid #FFF;
+  border: 1px solid global.$acms-color-white;
   border-radius: 50%;
   opacity: 0;
   transition: opacity .3s;
@@ -607,7 +605,7 @@ td.acms-media-row-image {
     display: block;
     width: 15px;
     height: 1px;
-    background-color: #FFF;
+    background-color: global.$acms-color-white;
     transform: rotate(45deg);
     transform-origin: center;
     content: "";
@@ -619,7 +617,7 @@ td.acms-media-row-image {
     display: block;
     width: 15px;
     height: 1px;
-    background-color: #FFF;
+    background-color: global.$acms-color-white;
     transform: rotate(-45deg);
     transform-origin: center;
     content: "";
@@ -654,7 +652,7 @@ td.acms-media-row-image {
 
 .acms-media-upload-item-inner {
   position: relative;
-  background-color: #EAEEF5;
+  background-color: global.$acms-color-info10;
   .acms-media-drop-inside {
     box-sizing: border-box;
   }
@@ -698,7 +696,7 @@ td.acms-media-row-image {
   box-sizing: border-box;
   width: 100%;
   padding: 5px 10px;
-  color: #FFF;
+  color: global.$acms-color-white;
   background-color: rgba(0, 0, 0, .6);
 }
 
@@ -717,12 +715,12 @@ td.acms-media-row-image {
 
 .acms-media-drop-box {
   height: 100%;
-  background-color: #FFFFFF !important;
-  border: 1px dashed #024CC5;
+  background-color: global.$acms-color-white !important;
+  border: 1px dashed global.$acms-color-info80;
   transition: background-color .3s;
   &.drag-n-drop-hover {
-    color: #333;
-    background-color: #EAEEF5 !important;
+    color: global.$acms-color-black;
+    background-color: global.$acms-color-info10 !important;
   }
   &.acms-media {
     display: block;
@@ -740,12 +738,12 @@ td.acms-media-row-image {
 
 .acms-media-drop-text {
   @include global.font-size(12);
-  color: #989FAC;
+  color: global.$acms-color-system-gray60;
   transition: color .3s;
 }
 
 .drag-n-drop-hover .acms-media-drop-text {
-  color: #333;
+  color: global.$acms-color-black;
 }
 
 .acms-media-img-container {
@@ -763,8 +761,8 @@ td.acms-media-row-image {
   margin-bottom: 5px;
   overflow: hidden;
   text-align: center;
-  background-color: #F8F8F8;
-  border: 2px solid #d5d5d5;
+  background-color: global.$acms-color-gray10;
+  border: 2px solid global.$acms-color-gray50;
   img {
     position: absolute;
     top: 50%;
@@ -809,7 +807,7 @@ td.acms-media-row-image {
   width: 66px;
   height: 66px;
   margin: 0 auto;
-  background-color: #EAEEF5;
+  background-color: global.$acms-color-info10;
   border-radius: 50%;
   &:before {
     position: absolute;
@@ -817,7 +815,7 @@ td.acms-media-row-image {
     left: 19px;
     width: 28px;
     height: 1px;
-    background-color: #3D4244;
+    background-color: global.$acms-color-system-gray90;
     content: "";
   }
   &:after {
@@ -826,7 +824,7 @@ td.acms-media-row-image {
     left: 50%;
     width: 1px;
     height: 28px;
-    background-color: #3D4244;
+    background-color: global.$acms-color-system-gray90;
     content: "";
   }
 }
@@ -846,39 +844,39 @@ td.acms-media-row-image {
   justify-content: center;
   box-sizing: border-box;
   padding: 35px 0;
-  border: 1px dashed #024CC5;
+  border: 1px dashed global.$acms-color-info80;
   transition: background-color .3s;
 }
 
 .drag-n-drop-hover .acms-media-unit-droparea {
-  background-color: #eaeef5;
+  background-color: rgba(0,77,198,.1);
 }
 
 .acms-media-unit-droparea-text {
   @include global.font-size(12);
-  color: #989fac;
+  color: global.$acms-color-system-gray60;
   transition: color .3s;
 }
 
 .acms-media-unit-droparea-btn {
   width: 120px;
   margin: 10px 0;
-  color: #333;
+  color: global.$acms-color-black;
   font-weight: bold;
   line-height: 30px;
   text-align: center;
-  background-color: #f1f1f1;
+  background-color: global.$acms-color-gray10;
   border-radius: 3px;
   box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
   transition: background-color .3s;
   &:hover {
-    background-color: #E2E2E2;
+    background-color: global.$acms-color-gray40;
   }
 }
 
 .drag-n-drop-hover {
   .acms-media-unit-droparea-btn {
-    background-color: #E2E2E2;
+    background-color: global.$acms-color-gray40;
   }
 }
 
@@ -887,7 +885,7 @@ td.acms-media-row-image {
   display: inline-block;
   min-width: 100px;
 	padding: 4px;
-	background-color: #eaeef5;
+	background-color: global.$acms-color-system-gray10;
 
   &:hover {
     .acms-media-unit-preview-overlay {
@@ -921,6 +919,7 @@ td.acms-media-row-image {
   box-sizing: content-box;
   height: 100px;
   margin: 5px;
+
   .acms-media-unit-file-icon-wrap {
     width: 100px;
     height: 100px;
@@ -955,7 +954,7 @@ td.acms-media-row-image {
 .acms-media-unit-preview-group-img {
   max-height: 100px;
   margin: auto;
-  background-color: #eee;
+  background-color: global.$acms-color-gray30;
 }
 
 .acms-media-unit-preview-overlay {
@@ -991,7 +990,11 @@ td.acms-media-row-image {
   justify-content: center;
   width: 200px;
   height: 200px;
-  background-color: #e4e5ea;
+  background-color: global.$acms-color-system-gray10;
+}
+
+.acms-media-unit-file-icon {
+  border: 1px solid rgba(100,100,100,.1);
 }
 
 .acms-media-unit-preview-remove-btn {
@@ -1022,7 +1025,7 @@ td.acms-media-row-image {
     display: block;
     width: 15px;
     height: 1px;
-    background-color: #fff;
+    background-color: global.$acms-color-white;
     content: "";
   }
 }

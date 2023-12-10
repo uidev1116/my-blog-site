@@ -18,7 +18,7 @@ class ACMS_POST
      * @var Field
      */
     var $Get;
-    
+
     /**
      * @var \Field_Validation
      */
@@ -163,7 +163,7 @@ class ACMS_POST
                 $Post->overload($this->Post, true);
                 $this->Post = $Post;
             } else {
-                userErrorLog('ACMS Warning: Illegal takeover property');
+                AcmsLogger::error('POSTデータの「takeover」が復元できません');
                 $this->addSystemError('IllegalAccess');
                 return $this->Post;
             }
@@ -172,7 +172,7 @@ class ACMS_POST
         //-------------------------
         // Check missing POST data
         if (!$this->Post->isExists('formToken')) {
-            userErrorLog('ACMS Warning: Failed to post data: ' . REMOTE_ADDR . ':' . $_SERVER['HTTP_USER_AGENT'] . ':' . $_SERVER['HTTP_REFERER']);
+            AcmsLogger::error('POSTデータが不完全である可能性があるため処理を中断しました');
             $this->addSystemError('IllegalPostData');
             return $this->Post;
         }
@@ -181,22 +181,22 @@ class ACMS_POST
         // CSRF Check
         if ($this->isCSRF) {
             if (!$this->csrfTokenExists()) {
-                userErrorLog('ACMS Warning: The page has expired');
+                AcmsLogger::notice('セッションにCSRFトークンが存在しないため、処理を中断しました');
                 $this->addSystemError('CsrfTokenExpired');
                 return $this->Post;
             }
             if ($this->checkDoubleSubmit && !$this->checkDoubleSubmit()) {
-                userErrorLog('ACMS Warning: Double Transmission');
+                AcmsLogger::notice('重複送信を検知したため、処理を中断しました');
                 $this->addSystemError('DoubleTransmission');
                 return $this->Post;
             }
             if (!$this->checkCsrfToken()) {
-                userErrorLog('ACMS Warning: Illegal Token');
+                AcmsLogger::notice('POSTされたCSRFトークンとセッションのCSRFトークンが一致しないため、処理を中断しました');
                 $this->addSystemError('IllegalAccess');
                 return $this->Post;
             }
             if (isCSRF()) {
-                userErrorLog('ACMS Warning: Illegal Access: ' . REMOTE_ADDR . ':' . $_SERVER['HTTP_USER_AGENT'] . ':' . $_SERVER['HTTP_REFERER']);
+                AcmsLogger::notice('管理ドメイン以外のリファラーのため、処理を中断しました（' . REFERER . '）');
                 $this->addSystemError('IllegalAccess');
                 return $this->Post;
             }
@@ -232,7 +232,6 @@ class ACMS_POST
             if (config('cache_clear_when_post') === 'on') {
                 ACMS_POST_Cache::clearPageCache(BID);
             }
-            ACMS_POST_Log_Access_Delete::refresh();
         }
         define('ACMS_POST_VALID', $this->Post->isValidAll() ? 'true' : 'false');
 
@@ -341,9 +340,9 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function extract($scp = 'field', $V = null, & $deleteField = null, $moveArchive = false)
+    function extract($scp = 'field', $V = null, & $deleteField = null): Field_Validation
     {
-        $field = Common::extract($scp, $V, $deleteField, $moveArchive);
+        $field = Common::extract($scp, $V, $deleteField);
         $deleteField = Common::getDeleteField();
 
         return $field;
@@ -379,14 +378,6 @@ class ACMS_POST
     function getMailTxt($tplFile, $Field = null, $charset = null)
     {
         return Common::getMailTxt($tplFile, $Field, $charset);
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     */
-    function checkShortcut($action, $admin, $idKey, $id)
-    {
-        return Auth::checkShortcut($action, $admin, $idKey, $id);
     }
 
     /**
@@ -467,9 +458,9 @@ class ACMS_POST
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
-    function saveField($type, $id, $Field = null, $deleteField = null, $rvid = null, $moveFieldArchive = '')
+    function saveField($type, $id, $Field = null, $deleteField = null, $rvid = null)
     {
-        return Common::saveField($type, $id, $Field, $deleteField, $rvid, $moveFieldArchive);
+        return Common::saveField($type, $id, $Field, $deleteField, $rvid);
     }
 
     /**

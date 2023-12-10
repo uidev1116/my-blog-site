@@ -17,7 +17,7 @@
     margin-bottom: 6px;
     padding: 6px;
     font-size: 13px;
-    background-color: #f1f1f1;
+    background-color: global.$acms-color-gray20;
     border-radius: 2px;
     transition: background-color .3s, opacity .3s linear;
 }
@@ -118,14 +118,8 @@
     content: "-";
 }
 
-// .nestable-item .acms-nested-new {
-//     animation-timing-function: ease-out;
-//     animation-duration: .3s;
-//     animation-name: nested-item-added;
-// }
-
 .acms-nested-selected > .acms-nested-item{
-    background-color: #999;
+    background-color: global.$acms-color-gray80;
 }
 
 .acms-nested-item .acms-btn-admin {

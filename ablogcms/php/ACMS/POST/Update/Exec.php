@@ -27,6 +27,8 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
             return $this->Post;
         }
         $this->newSetup= $this->Post->get('new_setup') === 'create';
+        AcmsLogger::info('アップデートを開始しました');
+
         Common::backgroundRedirect(HTTP_REQUEST_URL);
         $this->run();
         die();
@@ -87,6 +89,8 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
 
             setTrial(); // トライアルの日付を更新
             $logger->success();
+
+            AcmsLogger::info('アップデートが完了しました');
         } catch (\Exception $e) {
             $message = $e->getMessage();
             if (!empty($message)) {
@@ -94,6 +98,8 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
             }
             sleep(3);
             $logger->terminate();
+
+            AcmsLogger::warning('アップデートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
 
         DB::setThrowException(false);
@@ -105,7 +111,6 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
         if (function_exists("opcache_reset")) {
             opcache_reset();
         }
-
         sleep(3);
         $logger->terminate();
     }

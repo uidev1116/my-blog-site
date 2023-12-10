@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
 {
-    function & getConfig($rid, $mid, $setid)
+    public function & getConfig($rid, $mid, $setid)
     {
         $config = Config::loadDefaultField();
         if ($setid) {
@@ -12,45 +12,68 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
         }
         $_config = null;
 
-        if ( !!$rid && !$mid ) {
+        if (!!$rid && !$mid) {
             $_config = Config::loadRuleConfig($rid, $setid);
-        } else if ( !!$mid ) {
+        } elseif (!!$mid) {
             $_config = Config::loadModuleConfig($mid, $rid);
         }
 
-        if ( !!$_config ) {
+        if (!!$_config) {
             $config->overload($_config);
-            foreach ( array(
-                  'banner_limit', 'banner_status', 'banner_src', 'banner_img',
-                  'banner_url', 'banner_alt', 'banner_attr1', 'banner_attr2', 'banner_target',
-                  'banner_datestart', 'banner_timestart', 'banner_dateend', 'banner_timeend',
-                  'banner_order') as $fd
+            foreach (
+                array(
+                  'banner_limit',
+                  'banner_status',
+                  'banner_src',
+                  'banner_img',
+                  'banner_url',
+                  'banner_alt',
+                  'banner_attr1',
+                  'banner_attr2',
+                  'banner_target',
+                  'banner_datestart',
+                  'banner_timestart',
+                  'banner_dateend',
+                  'banner_timeend',
+                  'banner_order'
+                ) as $fd
             ) {
                 $config->setField($fd, $_config->getArray($fd));
             }
-
         }
         return $config;
     }
 
-    function get()
+    public function get()
     {
-        if ( !IS_LICENSED ) return '';
-        if ( !$rid = idval(ite($_GET, 'rid')) ) $rid = null;
-        if ( !$mid = idval(ite($_GET, 'mid')) ) $mid = null;
-        if ( !$setid = idval(ite($_GET, 'setid')) ) $setid = null;
+        if (!IS_LICENSED) {
+            return '';
+        }
+        if (!($rid = intval($this->Get->get('rid')))) {
+            $rid = null;
+        }
+        if (!($mid = intval($this->Get->get('mid')))) {
+            $mid = null;
+        }
+        if (!($setid = intval($this->Get->get('setid')))) {
+            $setid = null;
+        }
         if ($mid) {
             $setid = null;
         }
 
-        $Config     =& $this->getConfig($rid, $mid, $setid);
-        $ary_vars   = array();
+        if (!Config::isOperable($rid, $mid, $setid)) {
+            die403();
+        }
+
+        $Config =& $this->getConfig($rid, $mid, $setid);
+        $ary_vars = array();
         $ary_vars['notice_mess'] = $this->Post->get('notice_mess');
 
-        $Tpl    = new Template($this->tpl, new ACMS_Corrector());
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $aryStatus  = $Config->getArray('banner_status');
-        $amount     = count($aryStatus) + 2;
+        $aryStatus = $Config->getArray('banner_status');
+        $amount = count($aryStatus) + 2;
 
         foreach ( $aryStatus as $i => $status ) {
             $id = uniqueString();
@@ -129,12 +152,10 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
             'bid'   => BID,
             'admin' => 'shortcut_edit',
             'query' => array(
-                'action' => 'Config',
                 'admin'  => ADMIN,
-                'edit'   => 'add',
-                'step'   => 'reapply',
                 'rid'   => $rid,
                 'mid'   => $mid,
+                'setid' => $setid
             )
         ));
 

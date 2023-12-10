@@ -28,6 +28,7 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
         if (!$this->Post->isValidAll()) {
             if (!sessionWithCompilation()) {
                 $this->addError('権限がありません。');
+                AcmsLogger::info('エントリーをエクスポートする権限がないため、処理を中止しました');
             }
             if (empty($this->Post->getArray('checks'))) {
                 $this->addError('エントリーが選択されていません。');
@@ -48,11 +49,12 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
             set_time_limit(0);
 
             $export = App::make('entry.export');
-
+            $targetEIDs = [];
             foreach ($this->Post->getArray('checks') as $eid) {
                 $id = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
                 $eid = $id[1];
                 $export->addEntry($eid);
+                $targetEIDs[] = $eid;
             }
 
             Storage::makeDirectory($this->srcPath);
@@ -67,11 +69,17 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
             Storage::compress(SCRIPT_DIR . $this->srcPath, $this->destPath, 'acms_entry_data');
             Storage::removeDirectory($this->srcPath);
 
+            AcmsLogger::info('指定されたエントリーのエクスポートをしました', [
+                'targetEIDs' => $targetEIDs,
+            ]);
+
             $this->download();
 
         } catch (\Exception $e) {
             $this->Post->set('error', $e->getMessage());
             Storage::removeDirectory($this->srcPath);
+
+            AcmsLogger::warning('指定されたエントリーのエクスポートに失敗しました', Common::exceptionArray($e));
         }
         DB::setThrowException(false);
 

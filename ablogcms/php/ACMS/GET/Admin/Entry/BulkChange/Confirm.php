@@ -40,7 +40,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
 
             return $tpl->render($data);
         } catch (\Exception $e) {
-
+            AcmsLogger::debug($e->getMessage(), Common::exceptionArray($e));
         }
         return '';
     }

@@ -61,11 +61,11 @@ label {
   input[type="tel"] {
     min-height: global.$acms-form-height-sp;
     padding: calc( global.$acms-form-padding-x-sp / 2 ) global.$acms-form-padding-x-sp;
-    color: #333;
+    color: global.$acms-color-black;
     @include global.font-size(16);
     line-height: 1;
     vertical-align: middle;
-    background: #FBFBFB;
+    background: global.$acms-color-gray10;
     border: global.$acms-form-border;
     border-radius: global.$acms-form-border-radius;
     box-shadow: global.$acms-form-box-shadow;
@@ -73,12 +73,12 @@ label {
     -webkit-appearance: none;
 
     &:hover {
-      background: #FFF;
+      background: global.$acms-color-white;
       border-color: global.$acms-form-hover-border-color;
     }
 
     &:focus {
-      background: #FFF;
+      background: global.$acms-color-white;
       border-color: global.$acms-form-focus-border-color;
       outline: none;
       box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
@@ -117,9 +117,9 @@ label {
     @include global.font-size(16);
     padding: 5px 5px 4px;
     overflow: auto;
-    color: #333;
+    color: global.$acms-color-black;
     line-height: 1.7;
-    background: #FBFBFB;
+    background: global.$acms-color-gray10;
     border: global.$acms-form-border;
     border-radius: global.$acms-form-border-radius;
     box-shadow: global.$acms-form-box-shadow;
@@ -127,12 +127,12 @@ label {
     resize: vertical;
 
     &:hover {
-      background: #FFF;
+      background: global.$acms-color-white;
       border-color: global.$acms-form-hover-border-color;
     }
 
     &:focus {
-      background: #FFF;
+      background: global.$acms-color-white;
       border-color: global.$acms-form-focus-border-color;
       outline: none;
       box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
@@ -167,7 +167,7 @@ label {
   input[type="tel"],
   input[type="email"],
   textarea {
-    @include global.placeholder($color: #AAA);
+    @include global.placeholder($color: global.$acms-color-gray70);
   }
 
   select,
@@ -216,7 +216,7 @@ label {
   @if global.$admin==true {
     .select2-container--default .select2-selection--single .select2-selection__arrow b {
       left: 5px;
-      border-color: #999999 transparent transparent;
+      border-color: global.$acms-color-gray80 transparent transparent;
     }
   }
 }
@@ -233,7 +233,7 @@ label {
       height: auto;
       padding-top: 7px;
       padding-bottom: 7px;
-      color: #000;
+      color: global.$acms-color-black;
       background-color: global.$acms-form-select-bg-color;
       border-color: rgba(0, 0, 0, .2);
       border-radius: global.$acms-form-border-radius;
@@ -271,21 +271,21 @@ label {
       }
 
       .select2-search__field {
-        color: #333;
+        color: global.$acms-color-black;
         line-height: 1;
-        background: #FBFBFB;
+        background: global.$acms-color-gray20;
         border: global.$acms-form-border;
         border-radius: global.$acms-form-border-radius;
         box-shadow: global.$acms-form-box-shadow;
         transition: background-color .2s;
 
         &:hover {
-          background: #FFF;
+          background: global.$acms-color-white;
           border-color: global.$acms-form-hover-border-color;
         }
 
         &:focus {
-          background: #FFF;
+          background: global.$acms-color-white;
           border-color: global.$acms-form-focus-border-color;
           outline: none;
           box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
@@ -297,17 +297,17 @@ label {
       }
 
       .select2-results__option[aria-selected=true] {
-        background-color: #dae6fb;
+        background-color: global.$acms-color-info10;
 
         &.select2-results__option--highlighted[aria-selected] {
-          background-color: #5897fb;
+          background-color: global.$acms-color-info50;
         }
       }
 
       .select2-results__group {
         padding: 2px 5px;
-        color: #616161;
-        background: #F1F1F1;
+        color: global.$acms-color-gray90;
+        background: global.$acms-color-gray20;
         @include global.font-size(12);
       }
     }
@@ -401,11 +401,11 @@ label {
   .acms-form-side {
     width: 1%;
     padding: 0 6px;
-    color: #333;
+    color: global.$acms-color-black;
     line-height: 1;
     @include global.font-size(14);
     vertical-align: middle;
-    background: #ECECEC;
+    background: global.$acms-color-gray30;
     border: global.$acms-form-border;
     border-radius: global.$acms-form-border-radius;
 
@@ -414,7 +414,7 @@ label {
     &:visited,
     &:active,
     &:focus {
-      color: #333;
+      color: global.$acms-color-black;
     }
   }
 
@@ -424,7 +424,7 @@ label {
 
   a.acms-form-side:hover {
     text-decoration: none;
-    background: #F1F1F1;
+    background: global.$acms-color-gray20;
     border-color: global.$acms-form-hover-border-color;
   }
 
@@ -534,20 +534,6 @@ label {
         border-radius: global.$acms-form-border-radius;
       }
     }
-
-    //input[type="text"],
-    //input[type="search"],
-    //input[type="email"],
-    //input[type="password"],
-    //input[type="url"] {
-    //	width: 100%;
-    //	&:first-child {
-    //		border-radius: global.$acms-form-border-radius;
-    //	}
-    //	&:last-child {
-    //		border-radius: global.$acms-form-border-radius;
-    //	}
-    //}
   }
 }
 
@@ -773,8 +759,8 @@ label {
     position: relative;
     display: inline-block;
     padding: 9px;
-    background-color: #FAFAFA;
-    border: 1px solid #CACECE;
+    background-color: global.$acms-color-gray20;
+    border: 1px solid global.$acms-color-system-gray40;
     border-radius: global.$acms-form-border-radius;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05);
   }
@@ -785,9 +771,9 @@ label {
   }
 
   &:checked + label {
-    color: #FFFFFF;
-    background-color: #BBBBBB;
-    border: 1px solid #adb8c0;
+    color: global.$acms-color-white;
+    background-color: global.$acms-color-gray70;
+    border: 1px solid global.$acms-color-system-gray60;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
   }
 
@@ -795,7 +781,7 @@ label {
     position: absolute;
     top: 0;
     left: 3px;
-    color: #99a1a7;
+    color: global.$acms-color-system-gray70;
     content: '';
     @include global.font-size(14);
   }
@@ -809,8 +795,8 @@ label {
     position: relative;
     display: inline-block;
     padding: 9px;
-    background-color: #FAFAFA;
-    border: 1px solid #CACECE;
+    background-color: global.$acms-color-gray20;
+    border: 1px solid global.$acms-color-system-gray40;
     border-radius: 50px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05);
     -webkit-appearance: none;
@@ -828,9 +814,9 @@ label {
   }
 
   &:checked + label {
-    color: #FFFFFF;
-    background-color: #BBBBBB;
-    border: 1px solid #adb8c0;
+    color: global.$acms-color-white;
+    background-color: global.$acms-color-gray70;
+    border: 1px solid global.$acms-color-system-gray60;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(0, 0, 0, 0.1);
   }
 

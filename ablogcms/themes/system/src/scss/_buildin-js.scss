@@ -65,7 +65,7 @@
   position: relative;
   box-sizing: border-box;
   padding: 0;
-  background: #FFF;
+  background: global.$acms-color-white;
 }
 .js-acms-expand-inner {
   box-sizing: border-box;
@@ -108,17 +108,13 @@
   margin: 0 auto;
 }
 
-.cke_panel {
-  z-index: global.zIndex(ckeditor-select) !important;
-}
-
 .ProseMirror figure.empty-node .caption {
   position: relative;
 }
 
 .ProseMirror figure.empty-node .caption:before {
   height: 0;
-  color: #aaa;
+  color: global.$acms-color-gray70;
   content: "キャプションを入力してください";
   pointer-events: none;
 }
@@ -138,7 +134,7 @@
   height: 85%;
   min-height: 23px;
   margin-top: 1px;
-  color: #555459;
+  color: global.$acms-color-system-gray80;
   font-size: 13px;
   background: transparent;
   border: none;

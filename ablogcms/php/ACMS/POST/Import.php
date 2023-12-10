@@ -13,6 +13,7 @@ class ACMS_POST_Import extends ACMS_POST
     protected $locale;
     protected $entryCount = 0;
     protected $categoryList = array();
+    protected $importType = '';
 
     function init() {}
 
@@ -41,6 +42,8 @@ class ACMS_POST_Import extends ACMS_POST
             $this->Post->set('importMessage', $e->getMessage());
             $this->Post->set('success', 'off');
 
+            AcmsLogger::notice('「' . $this->importType . '」インポートでエラーが発生しました', Common::exceptionArray($e, ['message' => $e->getMessage()]));
+
             return $this->Post;
         }
 
@@ -48,7 +51,11 @@ class ACMS_POST_Import extends ACMS_POST
         $this->Post->set('success', 'on');
         $this->Post->set('blogName', ACMS_RAM::blogName(BID));
         $this->Post->set('entryCount', $this->entryCount);
-        
+
+        AcmsLogger::info('「' . $this->importType . '」インポートを実行しました', [
+            'success' => $this->entryCount,
+        ]);
+
         return $this->Post;
     }
 
@@ -106,24 +113,24 @@ class ACMS_POST_Import extends ACMS_POST
         }
         if ( isset($entry['ecode']) and !empty($entry['ecode']) ) {
             $ecode  = $entry['ecode'].'.html';
-        } 
+        }
 
         $status         = $entry['status'];
         $contents       = $entry['content'];
         $summaryRange   = ( count($contents) > 1) ? 1 : null;
-        
+
         // units
         $this->insertUnit($eid, $contents);
-        
+
         // category
         if ( isset($entry['category']) and !empty($entry['category']) ) {
             $cid = $this->insertCategory($entry['category']);
         }
-        
+
         $posted_datetime = date('Y-m-d H:i:s');
         $second = sprintf('%02d', rand(1, 59));
         $posted_datetime = preg_replace('@[0-9]{2}$@', $second, $posted_datetime);
-        
+
         $SQL    = SQL::newInsert('entry');
         $row    = array(
             'entry_id'                  => $eid,
@@ -208,7 +215,7 @@ class ACMS_POST_Import extends ACMS_POST
     {
         $DB = DB::singleton(dsn());
         Common::deleteField('eid', $eid);
-        
+
         foreach ( $entry['fields'] as $i => $val ) {
             $SQL = SQL::newInsert('field');
             $SQL->addInsert('field_key', $val['key']);
@@ -220,13 +227,13 @@ class ACMS_POST_Import extends ACMS_POST
             $DB->query($SQL->get(dsn()), 'exec');
         }
     }
-    
+
     function insertCategory($name, $_code = null)
     {
         if ( isset($this->category_list[$name]) ) {
             return $this->category_list[$name];
         }
-        
+
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('category');
         $SQL->addWhereOpr('category_blog_id', BID);
@@ -260,9 +267,9 @@ class ACMS_POST_Import extends ACMS_POST
         $SQL->addInsert('category_indexing', 'on');
         $SQL->addInsert('category_code', $code);
         $DB->query($SQL->get(dsn()), 'exec');
-        
+
         $this->category_list[$name] = $cid;
-        
+
         return $cid;
     }
 }

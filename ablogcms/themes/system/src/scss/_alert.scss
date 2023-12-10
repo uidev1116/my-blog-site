@@ -6,125 +6,127 @@
 .acms-alert {
   margin-bottom: 20px;
   padding: global.$acms-alert-padding;
-	color: global.$acms-alert-black-text-color;
+  color: global.$acms-alert-black-text-color;
   font-weight: bold;
-	background: global.$acms-alert-black-bg;
-	border: 1px solid global.$acms-alert-black-border;
-	border-radius: global.$acms-alert-border-radius;
-	box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.1);
-	@include global.animation(anime1 .5s ease 1 alternate);
+  line-height: 1.7;
+  background: global.$acms-alert-black-bg;
+  border: 1px solid global.$acms-alert-black-border;
+  border-radius: global.$acms-alert-border-radius;
+  box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.1);
+  @include global.font-size(13);
+  @include global.animation(anime1 .5s ease 1 alternate);
 
-	.acms-icon {
-		color: global.$acms-alert-black-icon-color;
-	}
+  .acms-icon {
+    color: global.$acms-alert-black-icon-color;
+  }
 
-	.js-acms-alert-close {
-		color: global.$acms-alert-black-close-color;
-	}
+  .js-acms-alert-close {
+    color: global.$acms-alert-black-close-color;
+  }
 }
 
 // アニメーション
 @keyframes anime1 {
-	0% {
-		transform: translate(0,-5px);
-		opacity: 0;
-	}
+  0% {
+    transform: translate(0,-5px);
+    opacity: 0;
+  }
 
-	100% {
-		transform: translate(0,0);
-		opacity: 1;
-	}
+  100% {
+    transform: translate(0,0);
+    opacity: 1;
+  }
 }
 
 // info
 .acms-alert-info {
-	color: global.$acms-alert-info-text-color;
-	background: global.$acms-alert-info-bg;
-	border-color: global.$acms-alert-info-border;
+  color: global.$acms-alert-info-text-color;
+  background: global.$acms-alert-info-bg;
+  border-color: global.$acms-alert-info-border;
 
-	//閉じるボタン　文字カラー
-	.js-acms-alert-close {
-		color: global.$acms-alert-info-close-color;
-	}
+  //閉じるボタン　文字カラー
+  .js-acms-alert-close {
+    color: global.$acms-alert-info-close-color;
+  }
 
-	.acms-alert-icon-before {
-		color: global.$acms-alert-info-icon-color;
-	}
+  .acms-alert-icon-before {
+    color: global.$acms-alert-info-icon-color;
+  }
 }
 
 // danger
 .acms-alert-danger {
-	color: global.$acms-alert-danger-text-color;
-	background: global.$acms-alert-danger-bg;
-	border-color: global.$acms-alert-danger-border;
+  color: global.$acms-alert-danger-text-color;
+  background: global.$acms-alert-danger-bg;
+  border-color: global.$acms-alert-danger-border;
 
-	//閉じるボタン　文字カラー
-	.js-acms-alert-close {
-		color: global.$acms-alert-danger-close-color;
-	}
+  //閉じるボタン　文字カラー
+  .js-acms-alert-close {
+    color: global.$acms-alert-danger-close-color;
+  }
 
-	.acms-alert-icon-before {
-		color: global.$acms-alert-danger-icon-color;
-	}
+  .acms-alert-icon-before {
+    color: global.$acms-alert-danger-icon-color;
+  }
 }
 
 // warning
 .acms-alert-warning {
-	color: global.$acms-alert-warning-text-color;
-	background: global.$acms-alert-warning-bg;
-	border-color: global.$acms-alert-warning-border;
+  color: global.$acms-alert-warning-text-color;
+  background: global.$acms-alert-warning-bg;
+  border-color: global.$acms-alert-warning-border;
 
-	//閉じるボタン　文字カラー
-	.js-acms-alert-close {
-		color: global.$acms-alert-warning-close-color;
-	}
-	.acms-alert-icon-before {
-		color: global.$acms-alert-warning-icon-color;
-	}
+  //閉じるボタン　文字カラー
+  .js-acms-alert-close {
+    color: global.$acms-alert-warning-close-color;
+  }
+  .acms-alert-icon-before {
+    color: global.$acms-alert-warning-icon-color;
+  }
 }
 
 // success
 .acms-alert-success {
-	color: global.$acms-alert-success-text-color;
-	background: global.$acms-alert-success-bg;
-	border-color: global.$acms-alert-success-border;
+  color: global.$acms-alert-success-text-color;
+  background: global.$acms-alert-success-bg;
+  border-color: global.$acms-alert-success-border;
 
-	//閉じるボタン　文字カラー
-	.js-acms-alert-close {
-		color: global.$acms-alert-success-close-color;
-	}
-	.acms-alert-icon-before {
-		color: global.$acms-alert-success-icon-color;
-	}
+  //閉じるボタン　文字カラー
+  .js-acms-alert-close {
+    color: global.$acms-alert-success-close-color;
+  }
+  .acms-alert-icon-before {
+    color: global.$acms-alert-success-icon-color;
+  }
 }
 
 
 .acms-alert-icon {
-	position: relative;
-	padding: global.$acms-alert-icon-padding;
+  position: relative;
+  padding: global.$acms-alert-icon-padding;
 }
 .acms-alert-icon-before {
-	position: absolute;
-	left: 20px;
-	@include global.font-size(20);
+  position: absolute;
+  left: 20px;
+  @include global.font-size(20);
 }
 .acms-alert-icon-after {
-	position: absolute;
-	right: 20px;
-	@include global.font-size(20);
+  position: absolute;
+  right: 20px;
+  @include global.font-size(20);
 }
 
 
 // 閉じるボタン
 .js-acms-alert-close {
-	top: 50%;
-	margin-top: -10px;
-	padding: 0;
-	font-weight: normal;
-	line-height: 1;
-	background: transparent;
-	border: 0;
-	outline: 0;
-	-webkit-appearance: none;
-	@include global.font-size(18);
+  top: 50%;
+  margin-top: -10px;
+  padding: 0;
+  font-weight: normal;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  -webkit-appearance: none;
+  @include global.font-size(18);
 }

@@ -27,7 +27,7 @@ class ACMS_Filter
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
      * @param int $bid
      * @param string $axis self|descendant|ancestor
-     * @param null $scope
+     * @param null $scope
      * @return void
      */
     public static function blogTree(& $SQL, $bid, $axis='self', $scope=null)
@@ -254,11 +254,37 @@ class ACMS_Filter
      */
     public static function categoryStatus(& $SQL, $scope=null)
     {
-        if ( !sessionWithContribution() ) {
-            $Where  = SQL::newWhere();
-            $Where->addWhereOpr('category_status', null, '=', 'OR', $scope);
-            $Where->addWhereOpr('category_status', 'open', '=', 'OR', $scope);
-            $SQL->addWhere($Where, 'AND');
+        if (!sessionWithContribution()) {
+            $where = SQL::newWhere();
+            $where->addWhereOpr('category_status', null, '=', 'OR', $scope);
+            $where->addWhereOpr('category_status', 'open', '=', 'OR', $scope);
+            if (sessionWithSubscription()) {
+                $where->addWhereOpr('category_status', 'secret', '=', 'OR', $scope);
+            }
+            $SQL->addWhere($where, 'AND');
+        }
+    }
+
+    /**
+     * カテゴリーの公開状態とアクセス中の権限に応じて，表示条件を振り分けます
+     * secretモードを表示対象にします
+     *
+     * ACMS_Filter::categoryDisclosureSecretStatus($SQL);
+     *
+     * @access public
+     * @static
+     *
+     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param string|null $scope
+     * @return void
+     */
+    public static function categoryDisclosureSecretStatus(& $SQL, $scope = null)
+    {
+        if (!sessionWithAdministration()) {
+            $where = SQL::newWhere();
+            $where->addWhereOpr('category_status', null, '=', 'OR', $scope);
+            $where->addWhereIn('category_status', ['open', 'secret'], 'OR', $scope);
+            $SQL->addWhere($where, 'AND');
         }
     }
 

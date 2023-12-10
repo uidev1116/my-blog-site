@@ -19,9 +19,21 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
         // order
         $order  = ORDER ? ORDER : 'sort-asc';
 
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newSelect('blog');
-        $SQL->addLeftJoin('config_set', 'config_set_id', 'blog_config_set_id');
+        $DB = DB::singleton(dsn());
+        $SQL = SQL::newSelect('blog');
+        $SQL->addSelect('blog_id');
+        $SQL->addSelect('blog_name');
+        $SQL->addSelect('blog_status');
+        $SQL->addSelect('blog_sort');
+        $SQL->addSelect('blog_config_set_scope');
+        $SQL->addSelect('blog_theme_set_scope');
+        $SQL->addSelect('blog_editor_set_scope');
+        $SQL->addSelect('config_set_name', 'configSetName', 'configSet');
+        $SQL->addSelect('config_set_name', 'themeSetName', 'themeSet');
+        $SQL->addSelect('config_set_name', 'editorSetName', 'editorSet');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'blog_config_set_id', 'configSet');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'blog_theme_set_id', 'themeSet');
+        $SQL->addLeftJoin('config_set', 'config_set_id', 'blog_editor_set_id', 'editorSet');
         $SQL->addWhereOpr('blog_parent', BID);
 
         $Pager  = new SQL_Select($SQL);
@@ -74,7 +86,12 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
                 'bid'       => $bid,
                 'sort'      => $row['blog_sort'],
                 'name'      => $row['blog_name'],
-                'configSet' => $row['config_set_name'],
+                'configSet' => $row['configSetName'],
+                'configSetScope' => $row['blog_config_set_scope'],
+                'themeSet' => $row['themeSetName'],
+                'themeSetScope' => $row['blog_theme_set_scope'],
+                'editorSet' => $row['editorSetName'],
+                'editorSetScope' => $row['blog_editor_set_scope'],
                 'urlValue'  => acmsLink(array('bid' => $bid)),
                 'urlLabel'  => acmsLink(array('bid' => $bid, 'sid' => false)),
                 'adminTopLink'  => acmsLink(array(

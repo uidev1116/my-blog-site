@@ -59,14 +59,14 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         $this->Post->removeChild('mail');
         $this->Post->removeChild('option');
 
-        if ( $this->Post->isValidAll() ) {
-            $DB     = DB::singleton(dsn());
-            $SQL    = SQL::newUpdate('form');
+        if ($this->Post->isValidAll()) {
+            $DB = DB::singleton(dsn());
+            $SQL = SQL::newUpdate('form');
             $SQL->addUpdate('form_code', $Form->get('code'));
             $SQL->addUpdate('form_name', $Form->get('name'));
             $SQL->addUpdate('form_scope', $Form->get('scope', 'local'));
             $SQL->addUpdate('form_log', $Form->get('log', '1'));
-            $Data   = new Field($Form, true);
+            $Data = new Field($Form, true);
             $Data->delete('code');
             $Data->delete('name');
             $Data->delete('log');
@@ -76,8 +76,13 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('edit', 'update');
-        }
 
+            AcmsLogger::info('フォームID「' . $Form->get('name') . '（' . $Form->get('code') . '）」を更新しました');
+        } else {
+            AcmsLogger::info('フォームID「' . ACMS_RAM::formName($fmid) . '（' . ACMS_RAM::formCode($fmid) . '）」を更新に失敗しました', [
+                'Form' => $Form->_aryV,
+            ]);
+        }
         return $this->Post;
     }
 }
