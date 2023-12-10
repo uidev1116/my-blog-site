@@ -19,14 +19,6 @@ ACMS.addListener('configLoad', async () => {
  * ACMS Ready
  */
 ACMS.Ready(() => {
-  /**
-   * LiteEditor
-   */
-  ACMS.Config.LiteEditorConf.btnOptions.push({
-    label: 'コード',
-    tag: 'code',
-  })
-
   ACMS.addListener('acmsAddUnit', (event) => {
     setupTableEditor(event.obj.item as Element)
   })

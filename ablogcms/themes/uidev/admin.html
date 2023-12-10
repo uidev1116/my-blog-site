@@ -39,6 +39,14 @@
 
 <script>
   ACMS.Ready(() => {
+    /**
+     * LiteEditor
+     */
+    ACMS.Config.LiteEditorConf.btnOptions.push({
+      label: 'コード',
+      tag: 'code',
+    })
+    
     ACMS.Config.aTableSelector = [
       {
         label: ACMS.i18n('a_table.not_newline'),
