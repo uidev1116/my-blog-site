@@ -11,10 +11,10 @@ class Payload extends PayloadContract
     /**
      * @param array $events
      * @param int $eid
-     * @param int $revisionId
+     * @param int|null $revisionId
      * @return array
      */
-    public function entryHook(array $events, int $eid, int $revisionId): array
+    public function entryHook(array $events, int $eid, ?int $revisionId): array
     {
         if (empty($revisionId) || $revisionId < 2) {
             $revisionId = null;
