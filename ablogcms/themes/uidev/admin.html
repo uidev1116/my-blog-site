@@ -1,0 +1,85 @@
+@extends("/_layouts/admin.html")
+
+@section("admin-css")
+@parent
+<!-- BEGIN_MODULE Vite -->
+<!-- BEGIN_IF [{useDevServer}/neq/1] -->
+<!-- BEGIN manifest -->
+<!-- BEGIN src/js/admin.ts -->
+<!-- BEGIN css:loop -->
+<link rel="stylesheet" href="/dest/{css}" />
+<!-- END css:loop -->
+<!-- END src/js/admin.ts -->
+<!-- END manifest -->
+<!-- END_IF -->
+<!-- END_MODULE Vite -->
+@endsection
+
+@section("admin-js")
+@parent
+<!-- BEGIN_MODULE Vite -->
+<!-- BEGIN_IF [{useDevServer}/eq/1] -->
+<script type="module">
+  import RefreshRuntime from '{devServerUrl}@react-refresh'
+  RefreshRuntime.injectIntoGlobalHook(window)
+  window.$RefreshReg$ = () => {}
+  window.$RefreshSig$ = () => (type) => type
+  window.__vite_plugin_react_preamble_installed__ = true
+</script>
+<script type="module" src="{devServerUrl}@vite/client"></script>
+<script type="module" src="{devServerUrl}src/js/admin.ts"></script>
+<!-- ELSE -->
+<!-- BEGIN manifest -->
+<!-- BEGIN src/js/admin.ts -->
+<script type="module" src="/dest/{file}"></script>
+<!-- END src/js/admin.ts -->
+<!-- END manifest -->
+<!-- END_IF -->
+<!-- END_MODULE Vite -->
+
+<script>
+  ACMS.Ready(() => {
+    /**
+     * LiteEditor
+     */
+    ACMS.Config.LiteEditorConf.btnOptions.push({
+      label: 'コード',
+      tag: 'code',
+    })
+    
+    ACMS.Config.aTableSelector = [
+      {
+        label: ACMS.i18n('a_table.not_newline'),
+        value: 'acms-cell-text-nowrap acms-admin-cell-text-nowrap !whitespace-nowrap',
+      },
+      {
+        label: ACMS.i18n('a_table.bold'),
+        value: 'acms-cell-text-bold acms-admin-cell-text-bold !font-bold',
+      },
+      {
+        label: ACMS.i18n('a_table.top_alignment'),
+        value: 'acms-cell-text-top acms-admin-cell-text-top !align-top',
+      },
+      {
+        label: ACMS.i18n('a_table.center_alignment'),
+        value: 'acms-cell-text-middle acms-admin-cell-text-middle !align-middle',
+      },
+      {
+        label: ACMS.i18n('a_table.bottom_alignment'),
+        value: 'acms-cell-text-bottom acms-admin-cell-text-bottom !align-bottom',
+      },
+    ]
+
+    ACMS.Config.aTableOption = [
+      {
+        label: ACMS.i18n('a_table.scrollhint_table'),
+        value: '[&_th]:table-cell [&_th]:whitespace-nowrap [&_td]:table-cell [&_td]:whitespace-nowrap js-table-unit-scroll-hint ',
+      },
+      {
+        label: ACMS.i18n('a_table.scrollable_table'),
+        value: '[&_th]:table-cell [&_th]:whitespace-nowrap [&_td]:table-cell [&_td]:whitespace-nowrap',
+      },
+    ]
+  })
+</script>
+@endsection

@@ -1,0 +1,26 @@
+@use "sass:math";
+@use "../global/common" as global;
+
+// ------------------------------
+// メインカラム
+// ------------------------------
+// メインカラム
+#acms-admin-main {
+  z-index: global.zIndex(acms-main);
+  height: 100%;
+  padding-right: math.div(global.$grid-space, 2);
+  padding-right: calc((#{global.$grid-space} / 2) + constant(safe-area-inset-right));
+  padding-left: math.div(global.$grid-space, 2);
+}
+
+#main {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+@media screen and (min-width: global.$breakpoint-md-min) {
+  #acms-admin-main {
+    padding: 0 20px 0 245px;
+    padding: 0 calc(30px + constant(safe-area-inset-right)) 0 20px;
+  }
+}

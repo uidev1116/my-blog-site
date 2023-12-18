@@ -1,0 +1,54 @@
+<!-- BEGIN_MODULE Touch_SessionWithContribution -->
+<!-- BEGIN_MODULE Touch_NotPreview -->
+<!-- BEGIN revision -->
+<!-- BEGIN_IF [%{EID}/nem/] --><!-- BEGIN_IF [%{trash}]/neq/show] -->
+<!-- BEGIN_MODULE Touch_Version -->
+<div class="acms-admin-revison-admin">
+  <!-- BEGIN_MODULE Admin_Entry_Revision_Current -->
+	<form action="" method="post" class="acms-admin-inline-btn">
+		<input type="button" value="<!--T-->バージョン管理<!--/T-->" class="js-get_revisions acms-admin-btn-admin" />
+		<!-- BEGIN_MODULE Touch_NotsessionWithApprovalAdministrator -->
+    <!-- BEGIN_IF [%{rvid}/eq/1/_or_/%{rvid}/em/] -->
+		<input type="hidden" name="revisionName" value="" />
+		<input type="hidden" name="redirect" value="approval" />
+		<input
+      type="submit"
+      name="ACMS_POST_Revision_Duplicate"
+      value="<!--T-->作業領域から承認依頼<!--/T-->"
+      class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      onclick="return confirm('<!--T-->作業領域からバージョンを作成して承認画面に移動します。よろしいですか？<!--/T-->');"
+    />
+    <!-- ELSE_IF [{rev_status}/eq/none] -->
+    <a href="{confirmUrl}" class="js-get_revision_preview acms-admin-btn-admin acms-admin-btn-admin-primary">このバージョンを承認依頼</a>
+    <!-- ELSE_IF [{rev_status}/eq/in_review] -->
+    <a href="{confirmUrl}" class="js-get_revision_preview acms-admin-btn-admin acms-admin-btn-admin-info">承認画面を表示</a>
+    <!-- ELSE_IF [{rev_status}/eq/approved] -->
+    <span><!--T-->このバージョンは既に承認済みのため、新規バージョンとしてのみ保存できます。<!--/T--></span>
+    <!-- ELSE_IF [{rev_status}/eq/reject] -->
+    <span><!--T-->このバージョンは既に承認却下されているため、新規バージョンとしてのみ保存できます。<!--/T--></span>
+    <!-- END_IF -->
+		<!-- END_MODULE Touch_NotsessionWithApprovalAdministrator -->
+	</form>
+
+	<hr class="clearHidden" />
+
+  <!-- BEGIN_MODULE Touch_Approval -->
+  <!-- BEGIN_IF [{rev_status}/eq/in_review] -->
+  <span class="acms-admin-label acms-admin-label-warning">承認中</span>
+  <!-- ELSE_IF [{rev_status}/eq/approved] -->
+  <span class="acms-admin-label acms-admin-label-info">承認済み</span>
+  <!-- ELSE_IF [{rev_status}/eq/reject] -->
+  <span class="acms-admin-label acms-admin-label-danger">承認却下</span>
+  <!-- END_IF -->
+  <!-- END_MODULE Touch_Approval -->
+
+	<!-- BEGIN currentVersion:veil --><!--T-->公開バージョン<!--/T--> : <span class="acms-admin-label acms-admin-label-info">{currentVersion}</span><!-- END currentVersion:veil -->
+  <!-- BEGIN currentVersionName:veil --><!--T-->表示中のバージョン名<!--/T--> : <b>{currentVersionName}</b><!-- END currentVersionName:veil -->
+	<!-- BEGIN notExistCurrentVersion --><!--T-->公開されているバージョンはありません。<!--/T--><!-- END notExistCurrentVersion -->
+	<!-- END_MODULE Admin_Entry_Revision_Current -->
+</div>
+<!-- END_MODULE Touch_Version -->
+<!-- END_IF --><!-- END_IF -->
+<!-- END revision -->
+<!-- END_MODULE Touch_NotPreview -->
+<!-- END_MODULE Touch_SessionWithContribution -->

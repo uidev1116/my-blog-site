@@ -1,0 +1,45 @@
+@use "../global/variables" as var;
+@use "../mixins/font-size" as fontSize;
+
+// ------------------------------
+// セレクトメニュー
+// ------------------------------
+
+@mixin select(
+  $border-radius: 3px,
+  $background-color: var.$acms-form-select-bg-color,
+  $background-color-hover:#FFF ){
+  position: relative;
+  display: inline-block;
+  min-height: var.$acms-form-height-sp;
+  padding: var.$acms-form-select-padding;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  background: url( #{var.$acms-form-select} ) right center;
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgMTggNSI+PGc+PGc+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxOHY1SDB6Ii8+PHBhdGggZmlsbD0iIzk5OSIgZD0iTTQuMjIgMGg0LjIyTDYuMzMgMi41IDQuMjIgNSAyLjExIDIuNSAwIDBoNC4yMnoiLz48L2c+PC9nPjwvc3ZnPg==") right center;
+  background-color: $background-color;
+  background-repeat: no-repeat;
+  border: var.$acms-form-select-border;
+  border-radius: $border-radius;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  @include fontSize.font-size(var.$acms-form-select-font-size);
+
+  &:hover {
+    border-color: var.$acms-form-select-border-color-hover;
+  }
+}
+@mixin desktop-select(){
+  min-height: var.$acms-form-height;
+  padding: 5px 30px 4px 8px;
+  @include fontSize.font-size(12);
+}
+@mixin desktop-select-for-ie(){
+  @media all and (-ms-high-contrast:none){
+    padding-right: 30px;
+  }
+}

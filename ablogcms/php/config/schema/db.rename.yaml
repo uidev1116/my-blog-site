@@ -1,0 +1,3 @@
+---
+%{PREFIX}trackback:
+  trackback_ response: trackback_response

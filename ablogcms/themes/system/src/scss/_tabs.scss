@@ -1,0 +1,121 @@
+@use "global/common" as global;
+
+/* ------------------------------
+ タブ
+------------------------------- */
+.acms-tabs{
+
+  .acms-tabs-panel {
+    padding: 10px;
+    background: global.$acms-color-white;
+    border: 1px solid global.$acms-color-gray60;
+  }
+
+  // タブの切り替え
+  .js-acms_tabs,
+  .js-acms_admin_tabs,
+  .acms-tabs-inner{
+    @include global.clearfix();
+    margin: 0;
+    padding: 0;
+    li{
+      float: left;
+      margin-right: 2px;
+      list-style: none;
+    }
+    a{
+      position: relative;
+      display: block;
+      padding: 10px 8px;
+      color: global.$acms-color-gray90;
+      font-weight: 500;
+      @include global.font-size(14);
+      line-height: 1;
+      text-decoration: none;
+      outline: none;
+
+       &:hover{
+        color: global.$acms-color-gray90;
+        background: global.$acms-color-system-gray10;
+      }
+
+      // 現在いる位置
+       &.js-acms_tab-active,
+       &.acms-tab-active{
+        color: global.$acms-color-info70;
+         background: global.$acms-color-system-gray10;
+        border-bottom: 3px solid global.$acms-color-info70;
+        &:before {
+          position: absolute;
+            bottom: -1px;
+            left: 0;
+          width: 100%;
+          height: 1px;
+          background: global.$acms-color-system-gray10;
+          content: "";
+        }
+      }
+    }
+  }
+}
+
+.acms-tabs-inverse {
+  .acms-tabs-panel {
+    padding: 20px;
+    background: global.$acms-color-white;
+  }
+
+  // タブの切り替え
+  .js-acms_tabs,
+  .js-acms_admin_tabs{
+
+    @include global.clearfix();
+    margin: -10px -10px 0 -10px;
+    padding: 10px 0 0 0;
+    background: global.$acms-color-system-gray10;
+    li{
+      float: left;
+      margin-right: 2px;
+      list-style: none;
+    }
+    a{
+      display: block;
+      padding: 10px 8px;
+      color: global.$acms-color-black;
+      line-height: 1;
+      background: global.$acms-color-system-gray10;
+      border-radius: 3px 3px 0 0;
+      outline: none;
+      transition: background-color .2s;
+      @include global.font-size(14);
+
+       &:hover{
+        text-decoration: none;
+        background: global.$acms-color-system-gray20;
+        border-bottom: 1px solid global.$acms-color-white;
+      }
+
+      // 現在いる位置
+       &.js-acms_tab-active{
+        background: global.$acms-color-white;
+        border-bottom: 1px solid global.$acms-color-white;
+      }
+    }
+  }
+}
+
+// タブ内の見出しはmarginを外す
+.acms-tabs-panel {
+
+  .acms-table-admin-edit:last-child {
+    margin-bottom: 5px;
+  }
+}
+
+@media screen and (min-width: global.$breakpoint-md-min){
+  .acms-tabs{
+    .acms-tabs-panel {
+      padding: 20px;
+    }
+  }
+}

@@ -1,0 +1,842 @@
+@use "global/common" as global;
+
+/* ------------------------------
+ フォーム
+------------------------------- */
+
+/* ---------------
+ フォーム 基本設定
+--------------- */
+
+button,
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+// ボタン
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  cursor: pointer;
+  -webkit-appearance: button;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+select {
+  cursor: pointer;
+}
+
+// テキストエリア
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+
+// ラベル
+label {
+  display: inline-block;
+}
+
+// ---------------
+// フォーム スタイル
+// ---------------
+.acms-form {
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"] {
+    min-height: global.$acms-form-height-sp;
+    padding: calc( global.$acms-form-padding-x-sp / 2 ) global.$acms-form-padding-x-sp;
+    color: global.$acms-color-black;
+    @include global.font-size(16);
+    line-height: 1;
+    vertical-align: middle;
+    background: global.$acms-color-gray10;
+    border: global.$acms-form-border;
+    border-radius: global.$acms-form-border-radius;
+    box-shadow: global.$acms-form-box-shadow;
+    transition: background-color .2s;
+    -webkit-appearance: none;
+
+    &:hover {
+      background: global.$acms-color-white;
+      border-color: global.$acms-form-hover-border-color;
+    }
+
+    &:focus {
+      background: global.$acms-color-white;
+      border-color: global.$acms-form-focus-border-color;
+      outline: none;
+      box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
+    }
+
+    &:disabled {
+      color: global.$acms-form-disabled-text-color;
+      background-color: global.$acms-form-disabled-bg-color;
+      border-color: global.$acms-form-disabled-border-color;
+      cursor: not-allowed;
+    }
+
+    // ---------------
+    // サイズ
+    // ---------------
+    // フォームサイズ 大
+    &.acms-form-large {
+      min-height: global.$acms-form-height-large-sp;
+      @include global.font-size(20);
+    }
+
+    // フォームサイズ 小
+    &.acms-form-small {
+      min-height: global.$acms-form-height-small-sp;
+      @include global.font-size(16);
+    }
+  }
+
+  // iOS Safari用
+  input[type="search"] {
+    -webkit-appearance: none;
+  }
+
+  textarea,
+  .entryFormLiteEditor {
+    @include global.font-size(16);
+    padding: 5px 5px 4px;
+    overflow: auto;
+    color: global.$acms-color-black;
+    line-height: 1.7;
+    background: global.$acms-color-gray10;
+    border: global.$acms-form-border;
+    border-radius: global.$acms-form-border-radius;
+    box-shadow: global.$acms-form-box-shadow;
+    transition: background-color .2s;
+    resize: vertical;
+
+    &:hover {
+      background: global.$acms-color-white;
+      border-color: global.$acms-form-hover-border-color;
+    }
+
+    &:focus {
+      background: global.$acms-color-white;
+      border-color: global.$acms-form-focus-border-color;
+      outline: none;
+      box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
+    }
+
+    &:disabled {
+      color: global.$acms-form-disabled-text-color;
+      background-color: global.$acms-form-disabled-bg-color;
+      border-color: global.$acms-form-disabled-border-color;
+      cursor: not-allowed;
+    }
+
+    &.acms-form-large {
+      @include global.font-size(20);
+      vertical-align: middle;
+    }
+
+    &.acms-form-small {
+      @include global.font-size(10);
+    }
+  }
+
+  .entryFormLiteEditor img {
+    max-width: 100%;
+  }
+
+  // テキスト系入力欄のプレースホルダー
+  input[type="text"],
+  input[type="password"],
+  input[type="search"],
+  input[type="url"],
+  input[type="tel"],
+  input[type="email"],
+  textarea {
+    @include global.placeholder($color: global.$acms-color-gray70);
+  }
+
+  select,
+  .acms-form-select {
+    @include global.select($border-radius: 3px, $background-color: global.$acms-form-select-bg-color, $background-color-hover: global.$acms-form-select-bg-color);
+    text-align: left;
+
+    &:focus {
+      border-color: global.$acms-form-focus-border-color;
+      outline: none;
+    }
+
+    &:disabled {
+      color: global.$acms-form-disabled-text-color;
+      background-color: global.$acms-form-disabled-bg-color;
+      border-color: global.$acms-form-disabled-border-color;
+      cursor: not-allowed;
+    }
+  }
+
+  select::-ms-expand {
+    // IE対応
+    display: none;
+  }
+
+  select[multiple="multiple"] {
+    padding: 7px 10px;
+    background: global.$acms-form-multiple-bg-color;
+    box-shadow: global.$acms-form-box-shadow;
+    -webkit-appearance: none;
+
+    &:focus {
+      border-color: global.$acms-form-focus-border-color;
+      outline: none;
+      box-shadow: global.$acms-form-focus-box-shadow;
+    }
+
+    &:disabled {
+      color: global.$acms-form-disabled-text-color;
+      background-color: global.$acms-form-disabled-bg-color;
+      border-color: global.$acms-form-disabled-border-color;
+      cursor: not-allowed;
+    }
+  }
+
+  @if global.$admin==true {
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      left: 5px;
+      border-color: global.$acms-color-gray80 transparent transparent;
+    }
+  }
+}
+
+@if global.$admin==true {
+  .select2-container {
+    vertical-align: middle !important;
+
+    &.select2-in-modal {
+      z-index: global.zIndex(select2-container);
+    }
+
+    .select2-selection.acms-selectbox {
+      height: auto;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      color: global.$acms-color-black;
+      background-color: global.$acms-form-select-bg-color;
+      border-color: rgba(0, 0, 0, .2);
+      border-radius: global.$acms-form-border-radius;
+      @include global.font-size(16);
+
+      &:hover {
+        background-color: global.$acms-form-select-bg-color;
+        border-color: global.$acms-form-hover-border-color;
+      }
+
+      .select2-selection__rendered {
+        padding-right: 30px;
+        line-height: 1;
+      }
+
+      .select2-selection__arrow {
+        margin-top: 3px;
+      }
+
+      @media (min-width: global.$breakpoint-md-min) {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        line-height: 1;
+        @include global.font-size(12);
+        .select2-selection__arrow {
+          margin-top: 0;
+        }
+      }
+    }
+
+    .acms-select-dropdown {
+      &.select2-dropdown {
+        border: global.$acms-form-border;
+        box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .2);
+      }
+
+      .select2-search__field {
+        color: global.$acms-color-black;
+        line-height: 1;
+        background: global.$acms-color-gray20;
+        border: global.$acms-form-border;
+        border-radius: global.$acms-form-border-radius;
+        box-shadow: global.$acms-form-box-shadow;
+        transition: background-color .2s;
+
+        &:hover {
+          background: global.$acms-color-white;
+          border-color: global.$acms-form-hover-border-color;
+        }
+
+        &:focus {
+          background: global.$acms-color-white;
+          border-color: global.$acms-form-focus-border-color;
+          outline: none;
+          box-shadow: global.$acms-form-focus-box-shadow, global.$acms-form-box-shadow;
+        }
+      }
+
+      .select2-results__option {
+        padding: 3px 6px;
+      }
+
+      .select2-results__option[aria-selected=true] {
+        background-color: global.$acms-color-info10;
+
+        &.select2-results__option--highlighted[aria-selected] {
+          background-color: global.$acms-color-info50;
+        }
+      }
+
+      .select2-results__group {
+        padding: 2px 5px;
+        color: global.$acms-color-gray90;
+        background: global.$acms-color-gray20;
+        @include global.font-size(12);
+      }
+    }
+  }
+}
+
+// デスクトップ対応
+@media (min-width: global.$breakpoint-md-min) {
+  .acms-form {
+    input[type="text"],
+    input[type="password"],
+    input[type="datetime"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="month"],
+    input[type="time"],
+    input[type="week"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="search"],
+    input[type="tel"] {
+      min-height: global.$acms-form-height;
+      padding: global.$acms-form-padding-x;
+      line-height: 1;
+      @include global.font-size(14);
+
+      &.acms-form-small {
+        min-height: global.$acms-form-height-small;
+        @include global.font-size(12);
+      }
+
+
+      &.acms-form-large {
+        min-height: global.$acms-form-height-large;
+        @include global.font-size(16);
+      }
+    }
+
+    textarea {
+      @include global.font-size(14);
+    }
+
+    .entryFormLiteEditor {
+      @include global.font-size(14);
+    }
+
+    select {
+      @include global.desktop-select();
+    }
+  }
+}
+
+.acms-form {
+  select {
+    @include global.desktop-select-for-ie();
+  }
+}
+
+// ---------------
+// ブロック
+// ---------------
+// フォーム ブロック
+.acms-form-block {
+  display: block;
+}
+
+// フォーム インライン
+.acms-form-inline,
+.acms-form-inline label {
+  display: inline;
+}
+
+// フォームグループ
+.acms-form-group {
+  @include global.clearfix();
+  margin-bottom: 10px;
+}
+
+.acms-form-action {
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  .acms-form-side,
+  .acms-form-side-btn,
+  input {
+    display: table-cell;
+  }
+
+  .acms-form-side {
+    width: 1%;
+    padding: 0 6px;
+    color: global.$acms-color-black;
+    line-height: 1;
+    @include global.font-size(14);
+    vertical-align: middle;
+    background: global.$acms-color-gray30;
+    border: global.$acms-form-border;
+    border-radius: global.$acms-form-border-radius;
+
+    &:link,
+    &:hover,
+    &:visited,
+    &:active,
+    &:focus {
+      color: global.$acms-color-black;
+    }
+  }
+
+  a.acms-form-side {
+    text-decoration: none;
+  }
+
+  a.acms-form-side:hover {
+    text-decoration: none;
+    background: global.$acms-color-gray20;
+    border-color: global.$acms-form-hover-border-color;
+  }
+
+  .acms-form-side:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .acms-form-side:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .acms-form-side-btn {
+    position: relative;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .acms-form-side-btn:first-child {
+    > .acms-btn,
+    > .acms-btn-admin {
+      vertical-align: top;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .acms-form-side-btn:last-child {
+    > .acms-btn,
+    > .acms-btn-admin {
+      vertical-align: top;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .acms-form-side {
+    .acms-form-checkbox,
+    .acms-form-radio {
+      padding: 0;
+    }
+
+    .acms-ico-radio,
+    .acms-ico-checkbox {
+      margin-right: 0;
+    }
+  }
+
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  input[type="url"] {
+    width: 100%;
+    height: global.$acms-form-height-sp;
+  }
+
+  @media (min-width: global.$breakpoint-md-min) {
+    input[type="text"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    input[type="url"] {
+      height: global.$acms-form-height;
+    }
+  }
+
+  &:not(.acms-form-action-separate) {
+    input[type="text"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    input[type="url"] {
+      &:first-child {
+        border-right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &:last-child {
+        border-left: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+
+  &.acms-form-action-separate {
+    .acms-form-side-btn:first-child {
+      padding: 0 10px 0 0;
+
+      > .acms-btn,
+      > .acms-btn-admin {
+        vertical-align: top;
+        border-radius: global.$acms-form-border-radius;
+      }
+    }
+
+    .acms-form-side-btn:last-child {
+      padding: 0 0 0 10px;
+
+      > .acms-btn,
+      > .acms-btn-admin {
+        vertical-align: top;
+        border-radius: global.$acms-form-border-radius;
+      }
+    }
+  }
+}
+
+// エラー
+.acms-form-error {
+  color: global.$acms-form-error-text-color;
+  background: global.$acms-form-error-bg-color;
+  border-color: global.$acms-form-error-border-color;
+}
+
+.acms-text-error {
+  display: block;
+  color: global.$acms-text-error-color;
+}
+
+.acms-text-helper {
+  color: global.$acms-text-helper-color;
+  @include global.font-size(12);
+}
+
+// ---------------
+// 幅
+// ---------------
+// フォーム幅  100%
+.acms-form-width-full {
+  width: 100%;
+}
+
+// フォーム幅  750%
+.acms-form-width-3quarters {
+  width: 75%;
+}
+
+// フォーム幅  50%
+.acms-form-width-half {
+  width: 50%;
+}
+
+// フォーム幅  250%
+.acms-form-width-quarter {
+  width: 25%;
+}
+
+// フォーム幅 大
+.acms-form-width-large {
+  width: 100%;
+  max-width: global.$acms-form-width-large-width;
+}
+
+// フォーム幅 中
+.acms-form-width-medium {
+  width: 100%;
+  max-width: global.$acms-form-width-medium-width;
+}
+
+// フォーム幅 小
+.acms-form-width-small {
+  width: 100%;
+  max-width: global.$acms-form-width-small-width;
+}
+
+// フォーム幅 ミニ
+.acms-form-width-mini {
+  width: 100%;
+  max-width: global.$acms-form-width-mini-width;
+}
+
+// ---------------
+// チェックボックスとラジオボタン 画像
+// ---------------
+.acms-ico-checkbox,
+.acms-ico-radio {
+  display: inline-block;
+  width: 20px;
+  *width: auto;
+  _width: auto;
+  height: 20px;
+  *height: auto;
+  _height: auto;
+  margin: 0 5px 0 0;
+  vertical-align: middle;
+}
+
+// チェックボックス
+.acms-ico-checkbox {
+  background: url('#{global.$acms-input-images-path}') no-repeat left top;
+  *background-image: none;
+  _background-image: none;
+  background-size: 40px 80px; // IE6-IE8
+}
+
+.acms-form-checkbox {
+  input {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    opacity: 0;
+  }
+
+  input:focus + label .acms-ico-checkbox,
+  input:focus + .acms-ico-checkbox {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat left -60px;
+    background-size: 40px 80px;
+  }
+
+  input:checked + label .acms-ico-checkbox,
+  input:checked + .acms-ico-checkbox {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat left -20px;
+    background-size: 40px 80px;
+  }
+
+  input:disabled + label .acms-ico-checkbox,
+  input:disabled + .acms-ico-checkbox {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat left -40px;
+    background-size: 40px 80px;
+    cursor: not-allowed;
+  }
+
+  input:disabled + label {
+    opacity: global.$acms-form-disabled-opacity;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.acms-ico-radio {
+  background: url('#{global.$acms-input-images-path}') no-repeat -20px top;
+  background-size: 40px 80px;
+}
+
+.acms-form-radio {
+  input {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    opacity: 0;
+  }
+
+  input:focus + label .acms-ico-radio,
+  input:focus + .acms-ico-radio {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat -20px -60px;
+    background-size: 40px 80px;
+  }
+
+  input:checked + label .acms-ico-radio,
+  input:checked + .acms-ico-radio {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat -20px -20px;
+    background-size: 40px 80px;
+  }
+
+  input:disabled + label .acms-ico-radio,
+  input:disabled + .acms-ico-radio {
+    // 2つめの記述は旧マークアップとの互換性対応
+    background: url('#{global.$acms-input-images-path}') no-repeat -20px -40px;
+    background-size: 40px 80px;
+    cursor: not-allowed;
+  }
+
+  input:disabled + label {
+    opacity: global.$acms-form-disabled-opacity;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+// ---------------
+// チェックボックスとラジオボタン ボタン
+// ---------------
+// ボタン全体
+.acms-form-checkbox,
+.acms-form-radio {
+  position: relative;
+  display: inline-block;
+  margin-right: 15px;
+  cursor: pointer;
+  @if global.$admin==true {
+    line-height: 1.7;
+  }
+}
+
+.acms-form-radio {
+  &:before,
+  &::before {
+    width: 16px;
+    height: 16px;
+    border-radius: 10px;
+  }
+}
+
+.acms-btn-checkbox label,
+.acms-btn-radio label {
+  width: auto;
+}
+
+// チェックボックス
+.acms-btn-checkbox {
+  display: none;
+
+  + label {
+    position: relative;
+    display: inline-block;
+    padding: 9px;
+    background-color: global.$acms-color-gray20;
+    border: 1px solid global.$acms-color-system-gray40;
+    border-radius: global.$acms-form-border-radius;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05);
+  }
+
+  + label:active,
+  &:checked + label:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &:checked + label {
+    color: global.$acms-color-white;
+    background-color: global.$acms-color-gray70;
+    border: 1px solid global.$acms-color-system-gray60;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+  }
+
+  &:checked + label:after {
+    position: absolute;
+    top: 0;
+    left: 3px;
+    color: global.$acms-color-system-gray70;
+    content: '';
+    @include global.font-size(14);
+  }
+}
+
+// ラジオボタン
+.acms-btn-radio {
+  display: none;
+
+  + label {
+    position: relative;
+    display: inline-block;
+    padding: 9px;
+    background-color: global.$acms-color-gray20;
+    border: 1px solid global.$acms-color-system-gray40;
+    border-radius: 50px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05);
+    -webkit-appearance: none;
+  }
+
+  &:checked + label:after {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    text-shadow: 0;
+    content: '';
+    @include global.font-size(32);
+  }
+
+  &:checked + label {
+    color: global.$acms-color-white;
+    background-color: global.$acms-color-gray70;
+    border: 1px solid global.$acms-color-system-gray60;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  + label:active,
+  .acms-btn-radio:checked + label:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@if global.$admin==true {
+  .acms-action-spacer {
+    margin: 10px 0;
+    @media screen and (min-width: global.$breakpoint-lg-min) {
+      margin: 0 0 0 15px;
+      white-space: nowrap;
+    }
+  }
+  .acms-action-wrap {
+    @media screen and (min-width: global.$breakpoint-lg-min) {
+      display: flex;
+    }
+  }
+}

@@ -1,0 +1,1 @@
+[comment] %{ENTRY_TITLE}<!-- BEGIN_IF [%{BLOG_NAME}/neq/%{ROOT_BLOG_NAME}] --> | %{BLOG_NAME} <!-- END_IF -->| %{ROOT_BLOG_NAME}

@@ -1,0 +1,72 @@
+@use "../global/common" as global;
+
+/* ------------------------------
+ 管理画面の専用
+------------------------------ */
+html.is-admin-page {
+  background: global.$acms-color-white;
+}
+
+html.is-login {
+  font-size: 62.5%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  font-family: global.$acms-admin-font-family;
+  @include global.font-size(13);
+}
+
+// ------------------------------
+// フォント
+// ------------------------------
+.acms-font {
+  font-family: 'acms-fonts', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W6', Meiryo, 'メイリオ', 'ＭＳ Ｐゴシック', 'MS PGothic', Verdana, sans-serif;
+}
+
+
+// ------------------------------
+// リンクカラー
+// ------------------------------
+// リンク
+a {
+  color: #006dec;
+  text-decoration: none;
+}
+
+// visited
+a:visited {
+}
+
+// hover
+a:hover {
+  color: #8ebef7;
+}
+
+// active
+a:active {
+  color: #8ebef7;
+}
+
+// ------------------------------
+// IE対応
+// ------------------------------
+
+/* IE8以下 */
+.lt-ie9 {
+  #acms-admin-main {
+    padding-left: 170px;
+  }
+
+
+  #nav {
+    position: fixed;
+    width: 175px;
+  }
+
+  #outer-wrap {
+    overflow: visible;
+  }
+
+}

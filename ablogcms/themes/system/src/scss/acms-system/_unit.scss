@@ -1,0 +1,66 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// ユニット設定
+// ------------------------------
+// ユニット囲い
+.acms-unitbox {
+  margin: 0 0 20px 0;
+  padding: 10px;
+  background: global.$acms-color-white;
+  border: 1px solid global.$edit-entry-bg-color-dark;
+}
+
+// コンテンツ
+.acms-table-container {
+  margin: 0 0 10px 0;
+  background: global.$edit-entry-bg-color-light;
+  border: 1px solid global.$edit-entry-bg-color-dark;
+
+  // テーブル
+  .acms-table {
+    border: none;
+
+    th {
+      vertical-align: inherit;
+    }
+  }
+}
+
+.acms-unitbox {
+  .acms-table-container {
+    tr,
+    th,
+    td {
+      border: none;
+    }
+  }
+
+  .a-table {
+    th {
+      border: 1px dashed #a7a7aa;
+    }
+
+    td {
+      border: 1px solid global.$acms-color-gray60;
+    }
+  }
+
+
+  i.acms-icon-sort {
+    margin-right: 4px;
+  }
+
+  @media screen and (max-width: global.$breakpoint-md-max) {
+    th,
+    td {
+      display: block;
+    }
+
+    // 削除ボタン
+    .acms-table td.acms-table-action {
+      width: auto;
+      text-align: right;
+    }
+  }
+}

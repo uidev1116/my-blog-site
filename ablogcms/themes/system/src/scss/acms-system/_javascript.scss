@@ -1,0 +1,83 @@
+@use "../global/common" as global;
+
+// ------------------------------
+// 管理画面固定ヘッダー
+// ------------------------------
+.js-acms_fix_marker {
+  z-index: global.zIndex(js-acms_fix_marker);
+  margin: 0 0 10px 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: global.$acms-color-white;
+  &.js-acms-tab-select {
+    margin-bottom: 0;
+  }
+  &[style*="position: fixed;"] {
+    margin: 0;
+    box-shadow: 0 3px 0 rgba(50,50,50,0.1);
+  }
+}
+
+.acms-fix-right{
+  position: relative;
+  z-index: global.zIndex(acms-fix-right);
+}
+
+
+// ------------------------------
+// jQuery UI Tabs
+// ------------------------------
+// スマートフォンのとき
+@media screen and (max-width: global.$breakpoint-md-max) {
+  #main .ui-tabs {
+    margin-bottom: 20px;
+
+    .ui-tabs-panel {
+      padding: 0;
+    }
+  }
+}
+
+// ------------------------------
+// 管理画面 SmartPhoto
+// ------------------------------
+.is-admin-page .smartphoto {
+  z-index: global.zIndex(smartphoto);
+  background-color: rgba(0, 0, 0, .9);
+}
+
+// ------------------------------
+// WYSIWYG Editor
+// ------------------------------
+:root {
+  --tbw-cell-vertical-padding: 4px;
+  --tbw-cell-horizontal-padding: 8px;
+  --tbw-cell-line-height: 1.5em;
+  --tbw-box-min-height: 100px;
+  --tbw-box-max-height: 500px;
+}
+
+.trumbowyg-box {
+  min-height: var(--tbw-box-min-height) !important;
+  &:not(.trumbowyg-fullscreen) {
+    max-height: var(--tbw-box-max-height) !important;
+  }
+}
+
+.trumbowyg-fullscreen {
+  z-index: global.zIndex(wysiwyg-fullscreen) !important;
+}
+
+.trumbowyg-editor-box {
+  table {
+      margin-bottom: var(--tbw-cell-line-height);
+  }
+
+  th,
+  td {
+      min-width: calc(var(--tbw-cell-horizontal-padding) * 8);
+      height: calc(var(--tbw-cell-vertical-padding) * 2 + var(--tbw-cell-line-height));
+      padding: var(--tbw-cell-vertical-padding) var(--tbw-cell-horizontal-padding);
+      border: 1px solid #e7eaec;
+  }
+}

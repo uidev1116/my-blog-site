@@ -1,0 +1,166 @@
+<!-- BEGIN_MODULE Admin_Webhook_Edit -->
+<header>
+  <div>
+    @include("/admin/topicpath.html")
+  </div>
+  <div>
+    <h1 class="acms-admin-admin-title js-dialog-title"><!--T-->Webhook 詳細<!--/T--></h1>
+  </div>
+</header>
+
+<form class="acms-admin-form js-dialog-body js-config-not-saved" action="" method="post" enctype="multipart/form-data">
+  <div class="js-acms_fix_marker acms-admin-form-group">
+    <a href="%{HTTP_ROOT}bid/%{BID}/admin/webhook_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+
+    <!-- BEGIN submit#insert -->
+    <input type="submit" name="ACMS_POST_Webhook_Insert" value="<!--T-->作成<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
+    <!-- END submit#insert -->
+
+    <!-- BEGIN submit#update -->
+    <input type="submit" name="ACMS_POST_Webhook_Update" value="<!--T-->保存<!--/T-->" class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash" />
+    <input type="submit" name="ACMS_POST_Webhook_Delete" value="<!--T-->削除<!--/T-->" onclick="return confirm('<!--T-->Webhookを削除します。\nよろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-danger js-hide-on-modal" />
+    <input type="hidden" name="takeover" value="{takeover}" />
+    <!-- END submit#update -->
+  </div>
+
+  <!-- BEGIN_MODULE Admin_Errors -->
+  <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
+    <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+    <button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>
+    {error}
+  </p>
+  <!-- END_MODULE Admin_Errors -->
+
+  <!-- BEGIN_MODULE Admin_Messages -->
+  <!-- BEGIN message:loop -->
+  <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+    <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+    <button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>
+    {message}
+  </p>
+  <!-- END message:loop -->
+  <!-- END_MODULE Admin_Messages -->
+
+  <h3 class="acms-admin-admin-title2"><!--T-->設定<!--/T--></h3>
+  <table class="adminTable acms-admin-table-admin-edit">
+    <!-- BEGIN_IF [%{wid}/nem/] -->
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->ID<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->Webhook IDの固有のIDです。<!--/T-->"></i>
+      </th>
+      <td>
+        <span class="acms-admin-label">%{wid}</span>
+      </td>
+    </tr>
+    <!-- END_IF -->
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->ステータス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->Webhookのステータスを設定します。<!--/T-->"></i>
+      </th>
+      <td>
+        <input type="hidden" name="status" value="close">
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="status" value="open"{status:checked#open} id="input-checkbox-status">
+          <label for="input-checkbox-status"><i class="acms-admin-ico-checkbox"></i><!--T-->有効<!--/T--></label>
+        </div>
+        <input type="hidden" name="webhook[]" value="status">
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->名前<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->この Webhook を管理するための名前です。（日本語可）<!--/T-->"></i></th>
+      <td>
+        <input type="text" name="name" value="{name}" size="50" class="acms-admin-form-width-full">
+        <input type="hidden" name="webhook[]" value="name">
+        <input type="hidden" name="name:validator#required" id="validator-name-required">
+        <div role="alert" aria-live="assertive">
+          <div data-validator-name="validator-name-required" class="validator-result-{name:validator#required}">
+            <p class="acms-admin-text-danger"><!--T-->名前を入力してください。<!--/T--></p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->タイプ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->イベントをフックするタイプを指定します。<!--/T-->"></i></th>
+      <td>
+        <select name="type" class="js-webhook-type">
+          <option value=""><!--T-->選択してください<!--/T--></option>
+          <!-- BEGIN type_group:loop -->
+          <option value="{type_value}"{selected}>{type_label}</option>
+          <!-- END type_group:loop -->
+        </select>
+        <input type="hidden" name="webhook[]" value="type">
+        <div role="alert" aria-live="assertive">
+          <div data-validator-label="validator-identifier-type" class="validator-result-{type:validator#required}">
+            <p class="acms-admin-text-danger"><!--T-->タイプを選択してください。<!--/T--></p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap">イベント<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->フックするイベントを指定します。<!--/T-->"></i></th>
+      <td>
+        <div class="js-webhook-event">
+          <div class="js-target"></div>
+          <input type="hidden" name="events" value="{events}" data-label="{events-label}" class="js-value">
+          <input type="hidden" name="webhook[]" value="events">
+          <input type="hidden" name="event:validator#required" id="validator-events-required">
+        </div>
+        <label class="validator-result-{events:validator#required}"><!--T-->イベントを選択してください。<!--/T--></label>
+        <p class="acms-admin-margin-top-small" style="font-size: 12px;">※ <!--T-->一括更新などのイベントには対応していません。<!--/T--></p>
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap">Webhook URL<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->WebhookのPOST先のURLを指定します。<!--/T-->"></i></th>
+      <td>
+        <input type="text" name="url" value="{url}" class="acms-admin-form-width-full" placeholder="https://hooks.example.com/servicex/xxxxxx/xxxxxxxxxxxxxxxxxxxxxx"/>
+        <input type="hidden" name="webhook[]" value="url">
+        <input type="hidden" name="url:validator#required" id="validator-url-required">
+        <label class="validator-result-{url:validator#required}"><!--T-->Webhook URLを入力して下さい。<!--/T--></label>
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->リクエスト履歴<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、リクエスト履歴を残すようになります。<!--/T-->"></i></th>
+      <td>
+        <input type="hidden" name="history" value="off">
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="history" value="on"{history:checked#on} id="input-checkbox-history">
+          <label for="input-checkbox-history"><i class="acms-admin-ico-checkbox"></i><!--T-->リクエスト履歴を残します<!--/T--></label>
+        </div>
+        <input type="hidden" name="webhook[]" value="history">
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->グローバル<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをすると、このWebhookが下の階層のブログも対象になります。<!--/T-->"></i></th>
+      <td>
+        <input type="hidden" name="scope" value="local">
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="scope" value="global"{scope:checked#global} id="input-checkbox-scope">
+          <label for="input-checkbox-scope"><i class="acms-admin-ico-checkbox"></i><!--T-->下の階層のブログも対象にする<!--/T--></label>
+        </div>
+        <input type="hidden" name="webhook[]" value="scope">
+      </td>
+    </tr>
+  </table>
+
+  <h3 class="acms-admin-admin-title2"><!--T-->ペイロード<!--/T--></h3>
+  <table class="adminTable acms-admin-table-admin-edit">
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->カスタム<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ペイロードをカスタムします。<!--/T-->"></i></th>
+      <td>
+        <input type="hidden" name="payload" value="default">
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="payload" value="custom"{payload:checked#custom} id="input-checkbox-payload">
+          <label for="input-checkbox-payload"><i class="acms-admin-ico-checkbox"></i><!--T-->ペイロードをカスタムする<!--/T--></label>
+        </div>
+        <input type="hidden" name="webhook[]" value="payload">
+      </td>
+    </tr>
+    <tr>
+      <th class="acms-admin-table-nowrap"><!--T-->テンプレート<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ペイロードをテンプレートを使って組み立てます。<!--/T-->"></i></th>
+      <td>
+        <textarea name="payload_tpl" rows="20" style="width:100%;">{payload_tpl}</textarea>
+        <input type="hidden" name="webhook[]" value="payload_tpl">
+        <p class="acms-admin-margin-top-small" style="font-size: 12px;">※ <!--T-->英数字とアンダースコア以外の文字列は、アンダースコアに変換して変数名を入力してください。<!--/T--></p>
+      </td>
+    </tr>
+  </table>
+</form>
+<!-- END_MODULE Admin_Webhook_Edit -->

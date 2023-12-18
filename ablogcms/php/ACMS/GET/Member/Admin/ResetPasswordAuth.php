@@ -1,0 +1,14 @@
+<?php
+
+class ACMS_GET_Member_Admin_ResetPasswordAuth extends ACMS_GET_Member_ResetPasswordAuth
+{
+    /**
+     * 権限の限定
+     *
+     * @return array
+     */
+    protected function limitedAuthority(): array
+    {
+        return Login::getAdminLoginAuth();
+    }
+}

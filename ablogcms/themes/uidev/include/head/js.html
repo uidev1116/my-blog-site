@@ -1,0 +1,30 @@
+<!-- 投稿者以上以上の場合だけ組み込みJSを読み込むようにする -->
+<!-- BEGIN_MODULE Touch_SessionWithContribution -->
+<script src="%{JS_LIB_JQUERY_DIR}jquery-%{JS_LIB_JQUERY_DIR_VERSION}.min.js" charset="UTF-8"></script><!-- BEGIN_MODULE Js -->
+<script src="/acms.js{arguments}" charset="UTF-8" id="acms-js"></script><!-- END_MODULE Js -->
+<!-- END_MODULE Touch_SessionWithContribution -->
+
+
+<!-- BEGIN_MODULE Vite -->
+<!-- BEGIN_IF [{useDevServer}/eq/1] -->
+<script type="module" src="{devServerUrl}@vite/client"></script>
+<script type="module" src="{devServerUrl}src/js/index.js"></script>
+<!-- ELSE -->
+<!-- BEGIN manifest -->
+<!-- BEGIN src/js/index.js -->
+<script type="module" src="/dest/{file}"></script>
+<!-- END src/js/index.js -->
+<!-- END manifest -->
+<!-- END_IF -->
+<!-- END_MODULE Vite -->
+
+<!--BEGIN_MODULE Touch_Unlogin --><!-- BEGIN_MODULE Blog_Field id="BF_root" -->{google_analytics}[raw]<!-- END_MODULE Blog_Field --><!-- END_MODULE Touch_Unlogin -->
+
+<!-- ブログ別scriptタグ -->
+<!-- BEGIN_MODULE Blog_Field ctx="bid/%{BID}" -->
+<!-- BEGIN script_head:veil -->
+<script>
+  {script_head}[raw]
+</script>
+<!-- END script_head:veil -->
+<!-- END_MODULE Blog_Field -->

@@ -1,0 +1,11 @@
+// アニメーション
+@mixin animation($animation){
+  -webkit-animation: $animation;
+  animation: $animation;
+}
+
+// hoverのアニメーション
+@mixin hover-animation($duration: 0.1s){
+  -webkit-transition: all $duration linear;
+  transition: all $duration linear;
+}

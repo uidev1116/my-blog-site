@@ -1,0 +1,237 @@
+@use "global/common" as global;
+
+/* ------------------------------
+ モーダル
+------------------------------- */
+.acms-modal {
+  position: fixed;
+  top: 80px;
+  right: 0;
+  bottom: -80px;
+  left: 0;
+  z-index: global.zIndex(acms-modal);
+  display: none;
+  padding-right: calc(constant(safe-area-inset-right));
+  padding-left: calc(constant(safe-area-inset-left));
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: 0;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  opacity: 0;
+  will-change: transform, opacity;
+  -webkit-overflow-scrolling: touch;
+
+  @if global.$admin == true {
+    font-family: global.$acms-admin-font-family;
+  }
+}
+
+.acms-modal.in {
+  @include global.translate(0, -80px);
+  opacity: 1;
+  transition: all 0.3s;
+}
+
+.acms-modal.out {
+  @include global.translate(0, 40px);
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.acms-modal.display {
+  top: 0;
+  bottom: -20px;
+  opacity: 1;
+}
+
+.acms-modal-middle {
+  position: fixed;
+  overflow: hidden;
+
+  &.display {
+    bottom: 0;
+  }
+
+  .acms-modal-dialog {
+    height: 100vh;
+    box-shadow: none;
+  }
+
+  .acms-modal-content {
+    margin: 50px auto 50px auto;
+  }
+}
+
+.acms-modal-middle-scroll {
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.acms-modal-dialog {
+  position: relative;
+  max-width: 800px;
+  margin: 10px auto;
+  box-shadow: 0 5px 15px #000;
+}
+
+.acms-modal-dialog.large {
+  width: 95%;
+  max-width: 100%;
+}
+
+
+.acms-modal-dialog.medium {
+  width: 95%;
+  max-width: 100%;
+}
+
+@media screen and (min-width: global.$breakpoint-md-min) {
+  .acms-modal-dialog {
+    margin: 30px auto;
+  }
+  .acms-modal-dialog.medium {
+    width: 75%;
+    max-width: 100%;
+  }
+}
+
+.acms-modal-content {
+  padding: 5px;
+  overflow: hidden;
+  background: global.$acms-color-white;
+  border-radius: 6px;
+}
+
+.acms-modal-header {
+  margin: 0 -5px;
+  padding: 0 10px;
+  border-bottom: 1px solid global.$acms-color-gray60;
+}
+
+.acms-modal-heading {
+  margin: 5px 0;
+  @include global.font-size(14);
+  color: global.$acms-color-black;
+}
+
+.acms-modal-body {
+  margin: 0 -5px;
+  padding: 0 10px;
+  @include global.font-size(14);
+}
+
+.acms-modal-body-fit {
+  margin: 0 -10px;
+}
+
+.acms-modal-body-tab-scrollable .acms-tabs-panel {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+}
+
+.acms-modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: global.zIndex(acms-modal);
+  background-color: global.$acms-color-gray90;
+  -webkit-transform: translateZ(0);
+}
+
+.acms-modal-hide {
+  float: right;
+  padding: 0;
+  color: global.$acms-color-gray90;
+  font-size: 20px;
+  line-height: 1;
+  background: global.$acms-color-white;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  &:focus {
+    border-color: global.$acms-btn-focus-border-color;
+    outline: 0;
+  }
+}
+
+.acms-modal-footer {
+  margin: 0 -5px;
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid global.$acms-color-gray60;
+
+  .acms-btn {
+    margin-left: 5px;
+  }
+
+  .acms-btn:first-child {
+    margin-left: 0;
+  }
+}
+
+
+.acms-modal .acms-modal-quick-search {
+  max-width: 600px;
+  height: auto;
+
+  .acms-table-hover tr:hover td,
+  .acms-table-hover tr:focus-within td {
+    background: global.$acms-color-info10;
+  }
+
+  .acms-table-hover tr.hover td {
+    background: global.$acms-color-info10;
+  }
+}
+
+@media screen and (min-width: global.$breakpoint-md-min) {
+  .acms-modal-header {
+    padding: 0 15px;
+  }
+  .acms-modal-heading {
+    margin: 15px 0;
+    @include global.font-size(18);
+  }
+
+  .acms-modal-body {
+    padding: 0 15px;
+  }
+}
+
+// モジュールのタイトル
+.acms-title-wrapper {
+  position: relative;
+
+  .acms-modal-heading {
+    margin: 15px 0;
+  }
+
+  // アイコン
+  .acms-icon {
+    position: absolute;
+    top: 2px;
+    left: 0;
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 10px;
+    @include global.font-size(13);
+  }
+
+  h1 {
+    margin: 0;
+    @include global.font-size(20);
+  }
+
+  .acms-module-en {
+    display: inline-block;
+    margin: 0 15px 10px 0;
+    color: global.$acms-color-gray90;
+    @include global.font-size(12);
+    font-weight: bold;
+  }
+}
