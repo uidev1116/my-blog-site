@@ -72,6 +72,9 @@ class ACMS_POST_Member_Signup_Confirm extends ACMS_POST_Member
         if (!$user->isValid('mail', 'doubleMail')) {
             $reasons[] = 'すでに存在するメールアドレスです';
         }
+        if (!$user->isValid('mail', 'pseudoUserExists')) {
+            $reasons[] = '仮登録ステータスのユーザーで利用されているメールアドレスです';
+        }
         if (!$user->isValid('code', 'doubleCode')) {
             $reasons[] = 'すでに存在するユーザーコードです';
         }
@@ -106,33 +109,74 @@ class ACMS_POST_Member_Signup_Confirm extends ACMS_POST_Member
             $user->setMethod('retype_pass', 'equalTo', 'pass');
         }
 
-        $AnywhereOrBid = SQL::newWhere();
-        $AnywhereOrBid->addWhereOpr('user_login_anywhere', 'on', '=', 'OR');
-        $AnywhereOrBid->addWhereOpr('user_blog_id', BID, '=', 'OR');
-
         if ($user->get('mail')) {
-            $SQL = SQL::newSelect('user');
-            $SQL->setSelect('user_id');
-            $SQL->addWhereOpr('user_mail', $user->get('mail'));
-            $SQL->addWhereOpr('user_status', 'pseudo', '<>');
-            if (!$this->subscribeLoginAnywhere) {
-                $SQL->addWhere($AnywhereOrBid);
-            }
-            $SQL->setLimit(1);
-            $user->setMethod('mail', 'doubleMail', !DB::query($SQL->get(dsn()), 'one'));
+            $user->setMethod('mail', 'doubleMail', $this->doubleMail($user) === false);
+            $user->setMethod('mail', 'pseudoUserExists', $this->pseudoUserExists($user) === false);
         }
         if ($user->get('code')) {
-            $SQL = SQL::newSelect('user');
-            $SQL->setSelect('user_id');
-            $SQL->addWhereOpr('user_code', $user->get('code'));
-            $SQL->addWhereOpr('user_mail', $user->get('mail'), '<>');
-            if (!$this->subscribeLoginAnywhere) {
-                $SQL->addWhere($AnywhereOrBid);
-            }
-            $SQL->setLimit(1);
-            $user->setMethod('code', 'doubleCode', !DB::query($SQL->get(dsn()), 'one'));
+            $user->setMethod('code', 'doubleCode', $this->doubleCode($user) === false);
         }
 
         $user->validate(new ACMS_Validator());
+    }
+
+    /**
+     * @param Field_Validation $user
+     * @return bool
+     */
+    protected function doubleMail(Field_Validation $user): bool
+    {
+        $sql = SQL::newSelect('user');
+        $sql->setSelect('user_id');
+        $sql->addWhereOpr('user_mail', $user->get('mail'));
+        $sql->addWhereOpr('user_status', 'pseudo', '<>');
+        if ($this->subscribeLoginAnywhere === false) {
+            $AnywhereOrBid = SQL::newWhere();
+            $AnywhereOrBid->addWhereOpr('user_login_anywhere', 'on', '=', 'OR');
+            $AnywhereOrBid->addWhereOpr('user_blog_id', BID, '=', 'OR');
+            $sql->addWhere($AnywhereOrBid);
+        }
+        $sql->setLimit(1);
+        return !!DB::query($sql->get(dsn()), 'one');
+    }
+
+    /**
+     * 同一メールアドレスかつどこでもログインが有効な仮登録ユーザーが存在するか
+     * （メールアドレス認証URLを更新するため、現在のブログは除外）
+     *
+     * @param Field_Validation $user
+     * @return bool
+     */
+    protected function pseudoUserExists(Field_Validation $user): bool
+    {
+        $sql = SQL::newSelect('user');
+        $sql->setSelect('user_id');
+        $sql->addWhereOpr('user_mail', $user->get('mail'));
+        $sql->addWhereOpr('user_status', 'pseudo');
+        $sql->addWhereOpr('user_login_anywhere', 'on', '=');
+        $sql->addWhereOpr('user_blog_id', BID, '<>');
+        $sql->setLimit(1);
+
+        return !!DB::query($sql->get(dsn()), 'one');
+    }
+
+    /**
+     * @param Field_Validation $user
+     * @return bool
+     */
+    protected function doubleCode(Field_Validation $user): bool
+    {
+        $sql = SQL::newSelect('user');
+        $sql->setSelect('user_id');
+        $sql->addWhereOpr('user_code', $user->get('code'));
+        $sql->addWhereOpr('user_mail', $user->get('mail'), '<>');
+        if ($this->subscribeLoginAnywhere === false) {
+            $AnywhereOrBid = SQL::newWhere();
+            $AnywhereOrBid->addWhereOpr('user_login_anywhere', 'on', '=', 'OR');
+            $AnywhereOrBid->addWhereOpr('user_blog_id', BID, '=', 'OR');
+            $sql->addWhere($AnywhereOrBid);
+        }
+        $sql->setLimit(1);
+        return !!DB::query($sql->get(dsn()), 'one');
     }
 }

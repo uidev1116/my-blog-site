@@ -10,6 +10,9 @@
 <!-- BEGIN_IF [{mail:validator#doubleMail}/eq/0] -->
 <div class="acms-alert acms-alert-danger"><!--T-->すでに登録されているメールアドレスです。<!--/T--></div>
 <!-- END_IF -->
+<!-- BEGIN_IF [{mail:validator#pseudoUserExists}/eq/0] -->
+<div class="acms-alert acms-alert-danger"><!--T-->このメールアドレスは現在登録できません。別のメールアドレスで登録いただくか、しばらく時間を置いてから再度お試しください。<!--/T--></div>
+<!-- END_IF -->
 <!-- BEGIN_IF [{mail:validator#send}/eq/0] -->
 <div class="acms-alert acms-alert-danger"><!--T-->メールの送信に失敗しました。システムの設定に問題があります。システムの管理者にお問い合わせください。<!--/T--></div>
 <!-- END_IF -->
