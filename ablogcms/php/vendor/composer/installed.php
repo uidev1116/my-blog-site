@@ -3,7 +3,7 @@
         'name' => 'appleple/ablogcms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'fe8d8dec8b60d53af8d0babf8fa2c6deb9523c1f',
+        'reference' => '061b13ec62ae8ea02c5b52b7570c2ec3fc2c2022',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'appleple/ablogcms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'fe8d8dec8b60d53af8d0babf8fa2c6deb9523c1f',
+            'reference' => '061b13ec62ae8ea02c5b52b7570c2ec3fc2c2022',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),

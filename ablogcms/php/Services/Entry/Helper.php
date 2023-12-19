@@ -1519,13 +1519,21 @@ class Helper
                             if (!empty($html)) {
                                 $field7Ary[] = $html;
                             } else {
-                                if ($graph = Embed::create($url)) {
-                                    $field1Ary[] = $graph->providerName;
-                                    $field2Ary[] = $graph->authorName;
-                                    $field3Ary[] = $graph->title;
-                                    $field4Ary[] = $graph->description;
-                                    $field5Ary[] = $graph->image;
-                                } else {
+                                $existsGraphInfo = false;
+                                try {
+                                    $graph = Embed::create($url);
+                                    if ($graph) {
+                                        $existsGraphInfo = true;
+                                        $field1Ary[] = $graph->providerName;
+                                        $field2Ary[] = $graph->authorName;
+                                        $field3Ary[] = $graph->title;
+                                        $field4Ary[] = $graph->description;
+                                        $field5Ary[] = $graph->image;
+                                    }
+                                } catch (\Exception $e) {
+
+                                }
+                                if (!$existsGraphInfo) {
                                     $field1Ary[] = '';
                                     $field2Ary[] = '';
                                     $field3Ary[] = '';

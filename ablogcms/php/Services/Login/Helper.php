@@ -7,6 +7,7 @@ use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Image;
 use Acms\Services\Facades\Config;
 use Acms\Services\Facades\Session;
+use Acms\Services\Facades\Login;
 use Acms\Services\Login\Exceptions\BadRequestException;
 use Acms\Services\Login\Exceptions\ExpiredException;
 use DB;
@@ -77,6 +78,11 @@ class Helper
      */
     public function postLoginProcessing(Field $queryParameter): void
     {
+        // ログアウトしていたら、ログイン中に追加されるCookieを削除（ログイン判定には使用しない）
+        if (!SUID) {
+            Login::removeExtraLoggedInCookie();
+        }
+
         //----------------------------------------------
         // ログアウト時のみ表示できるページで、ログイン指定場合
         if (SUID && IS_AUTH_SYSTEM_PAGE) {
@@ -609,5 +615,31 @@ class Helper
         Image::copyImage(ARCHIVES_DIR . $squarePath, ARCHIVES_DIR . $iconPath, $size, $size, $size);
 
         return $iconPath;
+    }
+
+    /**
+     * ログインしている場合、権限のCookieを追加
+     *
+     * @param int $uid
+     * @return void
+     */
+    public function addExtraLoggedInCookie(int $uid): void
+    {
+        if (config('extra_logged_in_cookie') !== 'on') {
+            return;
+        }
+        $name = config('extra_logged_in_cookie_name', 'acms-logged-in');
+        acmsSetCookie($name, ACMS_RAM::userAuth($uid));
+    }
+
+    /**
+     * ログインしている時、追加されるCookieを削除
+     *
+     * @return void
+     */
+    public function removeExtraLoggedInCookie(): void
+    {
+        $name = config('extra_logged_in_cookie_name', 'acms-logged-in');
+        acmsSetCookie($name, null, REQUEST_TIME - 1);
     }
 }

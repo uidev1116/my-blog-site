@@ -58,7 +58,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
         $this->formatD  = config('schedule_formatD');
         $this->formatW  = config('schedule_formatW');
 
-        $this->unit     = config('schedule_unit');
+        $this->unit     = config('schedule_unit', 1);
         $this->key      = config('schedule_key');
         //$this->labels   = configArray('schedule_label@'.$this->key);
 

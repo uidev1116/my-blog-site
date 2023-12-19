@@ -204,11 +204,11 @@ class Helper
             if (strpos($fd, '@media') !== false) {
                 $useMediaField[] = substr($fd, 0, -6);
                 foreach ($Field->getArray($fd) as $mid) {
-                    $mediaIds = intval($mid);
+                    $mediaIds[] = intval($mid);
                 }
             }
         }
-        if ($mediaIds) {
+        if (!empty($mediaIds)) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newSelect('media');
             $SQL->addWhereIn('media_id', $mediaIds);
