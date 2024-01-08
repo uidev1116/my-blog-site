@@ -33,23 +33,7 @@ class Hook
     public function afterAuthenticate()
     {
         $previewService = App::make('api-preview.service.preview');
-        if ($previewService->isEnable() === false) {
-            return;
-        }
-
-        /**
-         * @var \Field $getParameter
-         */
-        $getParameter = App::getGetParameter();
-        if ($getParameter->isExists('previewKey') === false) {
-            return;
-        }
-
-        $previewKey = new Previewkey($getParameter->get('previewKey', ''));
-
-        if ($previewService->verifyPreviewKey($previewKey) === true) {
-            $previewService->enablePreviewMode();
-        }
+        $previewService->processPreview();
     }
 
     /**
