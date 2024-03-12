@@ -8,7 +8,7 @@ class ACMS_POST_Log_Form_Delete extends ACMS_POST
         $SQL    = SQL::newDelete('log_form');
         $SQL->addWhereOpr('log_form_form_id', $fmid);
         $SQL->addWhereOpr('log_form_serial', $sid);
-        if ( !empty($to) ) {
+        if (!empty($to)) {
             $SQL->addWhereOpr('log_form_mail_to', $to);
         }
         $SQL->addWhereOpr('log_form_blog_id', BID);
@@ -19,7 +19,7 @@ class ACMS_POST_Log_Form_Delete extends ACMS_POST
     {
         $this->Post->setMethod('log', 'fmidIsNull', !!($fmid = intval($this->Get->get('fmid'))));
         $this->Post->setMethod('log', 'operative', sessionWithAdministration());
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->Post->setMethod('log', 'operative', roleAuthorization('form_edit', BID));
         } else {
             $this->Post->setMethod('log', 'operative', sessionWithAdministration());
@@ -27,7 +27,7 @@ class ACMS_POST_Log_Form_Delete extends ACMS_POST
 
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newDelete('log_form');
             $SQL->addWhereOpr('log_form_form_id', $fmid);

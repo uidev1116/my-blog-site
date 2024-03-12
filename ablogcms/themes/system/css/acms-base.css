@@ -673,7 +673,6 @@
 }
 
 /* YouTube動画をレスポンシブ対応させるための記述 */
-.column-youtube,
 .column-iframe {
   position: relative;
   width: 100%;
@@ -682,9 +681,6 @@
   padding-bottom: 56.25%;
   overflow: hidden;
 }
-.column-youtube iframe,
-.column-youtube object,
-.column-youtube embed,
 .column-iframe iframe,
 .column-iframe object,
 .column-iframe embed {
@@ -701,23 +697,23 @@
 /* 検索結果のハイライト
 ------------------------------ */
 .highlight1 {
-  background-color: #FFFF66;
+  background-color: #ffff66;
 }
 
 .highlight2 {
-  background-color: #a0FFFF;
+  background-color: #a0ffff;
 }
 
 .highlight3 {
-  background-color: #99FF99;
+  background-color: #99ff99;
 }
 
 .highlight4 {
-  background-color: #FF9999;
+  background-color: #ff9999;
 }
 
 .highlight5 {
-  background-color: #FF66FF;
+  background-color: #ff66ff;
 }
 
 .highlight6 {

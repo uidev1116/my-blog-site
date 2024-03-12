@@ -23,7 +23,6 @@ class ACMS_POST_Module_Import extends ACMS_POST
             AcmsLogger::info('モジュールをインポートしました', [
                 'data' => $yaml,
             ]);
-
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
 
@@ -39,8 +38,10 @@ class ACMS_POST_Module_Import extends ACMS_POST
      */
     private function checkAuth()
     {
-        if ( !sessionWithAdministration() ) return false;
-        if ( empty($_FILES['file']['tmp_name']) ) {
+        if (!sessionWithAdministration()) {
+            return false;
+        }
+        if (empty($_FILES['file']['tmp_name'])) {
             $this->addError('No file was uploaded.');
             return false;
         }

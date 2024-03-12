@@ -6,14 +6,24 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
     {
         $DB = DB::singleton(dsn());
 
-        if ( !sessionWithAdministration() ) die();
-        if ( !$toPid = idval($this->Post->get('parent')) ) die();
-        if ( !isBlogAncestor($toPid, SBID, true) ) die('operation is not permitted.');
-        if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if (!$toPid = idval($this->Post->get('parent'))) {
+            die();
+        }
+        if (!isBlogAncestor($toPid, SBID, true)) {
+            die('operation is not permitted.');
+        }
+        if (!empty($_POST['checks']) and is_array($_POST['checks'])) {
             $aryBid = [];
-            foreach ( $_POST['checks'] as $bid ) {
-                if ( !$bid = idval($bid) ) continue;
-                if ( isBlogAncestor($toPid, $bid, true) ) continue;
+            foreach ($_POST['checks'] as $bid) {
+                if (!$bid = idval($bid)) {
+                    continue;
+                }
+                if (isBlogAncestor($toPid, $bid, true)) {
+                    continue;
+                }
 
                 //-----
                 // from:pid,left,right,sort
@@ -23,7 +33,9 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
                 $SQL->addSelect('blog_parent');
                 $SQL->addSelect('blog_sort');
                 $SQL->addWhereOpr('blog_id', $bid);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die();
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die();
+                }
                 $fromLeft   = intval($row['blog_left']);
                 $fromRight  = intval($row['blog_right']);
                 $fromPid    = intval($row['blog_parent']);
@@ -31,7 +43,9 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
 
                 //-----------
                 // same parent
-                if ( $toPid == $fromPid ) continue;
+                if ($toPid == $fromPid) {
+                    continue;
+                }
 
                 //-----------------
                 // toLeft, toRight
@@ -39,7 +53,9 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
                 $SQL->addSelect('blog_left');
                 $SQL->addSelect('blog_right');
                 $SQL->addWhereOpr('blog_id', $toPid);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die();
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die();
+                }
                 $toLeft     = intval($row['blog_left']);
                 $toRight    = intval($row['blog_right']);
 
@@ -59,15 +75,15 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
                 //-------
                 // align
                 $SQL    = SQL::newUpdate('blog');
-                if ( $fromRight > $toRight ) {
+                if ($fromRight > $toRight) {
                     //------
                     // upper
                     $delta  = $fromLeft - $toRight;
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_left', $delta, '-')
+                        SQL::newOprBw('blog_left', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_left', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_left', $toRight, '>=');
@@ -78,8 +94,8 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_right', $delta, '-')
+                        SQL::newOprBw('blog_right', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_right', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_right', $toRight, '>=');
@@ -87,7 +103,6 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
                     $Case->add($Where, SQL::newOpr('blog_right', $gap, '+'));
                     $Case->setElse(SQL::newField('blog_right'));
                     $SQL->addUpdate('blog_right', $Case);
-
                 } else {
                     //------
                     // lower
@@ -95,8 +110,8 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_left', $delta, '+')
+                        SQL::newOprBw('blog_left', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_left', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_left', $fromRight, '>');
@@ -107,8 +122,8 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_right', $delta, '+')
+                        SQL::newOprBw('blog_right', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_right', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_right', $fromRight, '>');
@@ -116,7 +131,6 @@ class ACMS_POST_Blog_Index_Parent extends ACMS_POST_Blog
                     $Case->add($Where, SQL::newOpr('blog_right', $gap, '-'));
                     $Case->setElse(SQL::newField('blog_right'));
                     $SQL->addUpdate('blog_right', $Case);
-
                 }
                 $DB->query($SQL->get(dsn()), 'exec');
 

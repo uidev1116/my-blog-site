@@ -4,7 +4,9 @@ class ACMS_POST_Fix_Fulltext extends ACMS_POST_Fix
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('fix_fulltext_targeet', 'required');
@@ -18,13 +20,13 @@ class ACMS_POST_Fix_Fulltext extends ACMS_POST_Fix
                 Common::saveFulltext('bid', BID, Common::loadBlogFulltext(BID));
             } else {
                 $SQL = SQL::newSelect($type);
-                $SQL->addSelect($type.'_id');
-                $SQL->addWhereOpr($type.'_blog_id', BID);
+                $SQL->addSelect($type . '_id');
+                $SQL->addWhereOpr($type . '_blog_id', BID);
                 $all = $DB->query($SQL->get(dsn()), 'all');
 
-                foreach ( $all as $row ) {
-                    $id = $row[$type.'_id'];
-                    switch ( $type ) {
+                foreach ($all as $row) {
+                    $id = $row[$type . '_id'];
+                    switch ($type) {
                         case 'category':
                             Common::saveFulltext('cid', $id, Common::loadCategoryFulltext($id));
                             break;
@@ -40,10 +42,18 @@ class ACMS_POST_Fix_Fulltext extends ACMS_POST_Fix
             $this->Post->set('message', 'success');
 
             $typeName = '';
-            if ($type === 'blog') $typeName = 'ブログ';
-            if ($type === 'category') $typeName = 'カテゴリー';
-            if ($type === 'user') $typeName = 'ユーザー';
-            if ($type === 'entry') $typeName = 'エントリー';
+            if ($type === 'blog') {
+                $typeName = 'ブログ';
+            }
+            if ($type === 'category') {
+                $typeName = 'カテゴリー';
+            }
+            if ($type === 'user') {
+                $typeName = 'ユーザー';
+            }
+            if ($type === 'entry') {
+                $typeName = 'エントリー';
+            }
 
             AcmsLogger::info('「' . $typeName . '」のフルテキストを修正しました');
         }

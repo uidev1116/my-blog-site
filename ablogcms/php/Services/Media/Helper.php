@@ -2,6 +2,7 @@
 
 namespace Acms\Services\Media;
 
+use Rhukster\DomSanitizer\DOMSanitizer;
 use DB;
 use SQL;
 use SQL_Select;
@@ -10,6 +11,7 @@ use ACMS_Hook;
 use Acms\Services\Facades\Image;
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Common;
+use RuntimeException;
 
 class Helper
 {
@@ -144,7 +146,7 @@ class Helper
 
     public function uploadSvg($size, $fieldName = 'file')
     {
-        $data = createFile(MEDIA_LIBRARY_DIR, $fieldName, false);
+        $data = $this->createFile(MEDIA_LIBRARY_DIR, $fieldName, false);
         $data['extension'] = $data['type'];
         $data['type'] = 'svg';
         $data['size'] = '';
@@ -157,7 +159,7 @@ class Helper
     {
         Storage::makeDirectory(MEDIA_STORAGE_DIR);
 
-        $data = createFile(MEDIA_STORAGE_DIR, $fieldName, false);
+        $data = $this->createFile(MEDIA_STORAGE_DIR, $fieldName, false);
         if (!Storage::exists(MEDIA_STORAGE_DIR . $data['path'])) {
             return false;
         }
@@ -169,34 +171,35 @@ class Helper
         return $data;
     }
 
-    public function deleteImageFile($path, $removeOriginal = true)
+    /**
+     * 画像ファイルを削除
+     *
+     * @param int $mid
+     * @param bool $removeOriginal
+     * @return void
+     */
+    public function deleteImage($mid, $removeOriginal = true)
     {
-        $edited = MEDIA_LIBRARY_DIR . $path;
-        $original = MEDIA_LIBRARY_DIR . otherSizeImagePath($path, 'large');
-        Storage::remove($edited);
-        if (Storage::exists($edited . '.webp')) {
-            Storage::remove($edited . '.webp');
+        $oldData = $this->getMedia($mid);
+        if (!isset($oldData['path'])) {
+            return;
         }
-        if ($dirname = dirname($edited)) {
-            $dirname .= '/';
+        $this->removeImageFiles($oldData['path'], $removeOriginal);
+    }
+
+    /**
+     * サムネイル画像を削除
+     *
+     * @param int $mid
+     * @return void
+     */
+    public function deleteThumbnail($mid)
+    {
+        $oldData = $this->getMedia($mid);
+        if (!isset($oldData['thumbnail'])) {
+            return;
         }
-        $basename = Storage::mbBasename($edited);
-        $images = glob($dirname . '*-' . $basename);
-        if (is_array($images)) {
-            foreach ($images as $filename) {
-                if (!$removeOriginal && $filename === $original) {
-                    continue;
-                }
-                Storage::remove($filename);
-                if (Storage::exists($filename . '.webp')) {
-                    Storage::remove($filename . '.webp');
-                }
-                if (HOOK_ENABLE) {
-                    $Hook = ACMS_Hook::singleton();
-                    $Hook->call('mediaDelete', $filename);
-                }
-            }
-        }
+        $this->removeImageFiles($oldData['path'], true);
     }
 
     public function deleteFile($mid)
@@ -224,7 +227,7 @@ class Helper
         $renamePath = trim(dirname($path), '/') . '/' . $basename;
         if ($type === 'image' || $type === 'svg') {
             $renamePath = uniqueFilePath($renamePath, MEDIA_LIBRARY_DIR); // 名前の重複を避ける
-        } else if ($type === 'file') {
+        } elseif ($type === 'file') {
             $renamePath = uniqueFilePath($renamePath, MEDIA_STORAGE_DIR); // 名前の重複を避ける
         }
         $data['name'] = Storage::mbBasename($renamePath);
@@ -252,10 +255,10 @@ class Helper
                     Storage::remove($filename . '.webp');
                 }
             }
-        } else if ($type === 'svg') {
+        } elseif ($type === 'svg') {
             Storage::move(MEDIA_LIBRARY_DIR . $path, MEDIA_LIBRARY_DIR . $renamePath);
             $data['original'] = $renamePath;
-        } else if ($type === 'file') {
+        } elseif ($type === 'file') {
             Storage::move(MEDIA_STORAGE_DIR . $path, MEDIA_STORAGE_DIR . $renamePath);
         }
         return $data;
@@ -289,7 +292,7 @@ class Helper
 
     public function getImageThumbnail($path)
     {
-        return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . otherSizeImagePath($path,'tiny');
+        return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . otherSizeImagePath($path, 'tiny');
     }
 
     public function getSvgThumbnail($path)
@@ -319,7 +322,7 @@ class Helper
     public function getFilePermalink($mid, $fullpath = true)
     {
         if ($fullpath) {
-            return acmsLink(array('bid'=>BID), false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
+            return acmsLink(array('bid' => BID), false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
         }
         $offset = rtrim(DIR_OFFSET . acmsPath(array('bid' => BID)), '/');
         if (strlen($offset) > 1) {
@@ -357,15 +360,17 @@ class Helper
 
     public function filterTag($SQL, $tags)
     {
-        if (!is_array($tags) and empty($tags)) return false;
+        if (!is_array($tags) and empty($tags)) {
+            return false;
+        }
 
         $tag = array_shift($tags);
         $SQL->addLeftJoin('media_tag', 'media_tag_media_id', 'media_id', 'tag0');
         $SQL->addWhereOpr('media_tag_name', $tag, '=', 'AND', 'tag0');
         $i  = 1;
-        while ( $tag = array_shift($tags) ) {
-            $SQL->addLeftJoin('media_tag', 'media_tag_media_id', 'media_tag_media_id', 'tag'.$i, 'tag'.($i-1));
-            $SQL->addWhereOpr('media_tag_name', $tag, '=', 'AND', 'tag'.$i);
+        while ($tag = array_shift($tags)) {
+            $SQL->addLeftJoin('media_tag', 'media_tag_media_id', 'media_tag_media_id', 'tag' . $i, 'tag' . ($i - 1));
+            $SQL->addWhereOpr('media_tag_name', $tag, '=', 'AND', 'tag' . $i);
             $i++;
         }
     }
@@ -408,7 +413,7 @@ class Helper
         $SQL->setHaving(SQL::newOpr('media_tag_media_id', 2, '>=', null, 'COUNT'));
         $q  = $SQL->get(dsn());
 
-        if ( $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) {
+        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
             do {
                 $eid    = intval($row['media_tag_media_id']);
                 $Del    = SQL::newDelete('media_tag');
@@ -416,7 +421,7 @@ class Helper
                 $Del->addWhereOpr('media_tag_media_id', $eid);
                 $Del->addWhereOpr('media_tag_blog_id', BID);
                 $DB->query($Del->get(dsn()), 'exec');
-            } while ( $row = $DB->fetch($q) );
+            } while ($row = $DB->fetch($q));
         }
 
         $SQL    = SQL::newUpdate('media_tag');
@@ -449,7 +454,7 @@ class Helper
                 $data['status'];
             }
         } else {
-            $SQL->addInsert('media_original', otherSizeImagePath($data['path'],'large'));
+            $SQL->addInsert('media_original', otherSizeImagePath($data['path'], 'large'));
         }
         foreach (array('1', '2', '3', '4', '5', '6') as $i) {
             if (isset($data['field_' . $i])) {
@@ -547,7 +552,7 @@ class Helper
             "media_ext" => $extension,
             "media_caption" => isset($data['field_1']) ? $data['field_1'] : '',
             "media_link" => isset($data['field_2']) ? $data['field_2'] : '',
-            "media_alt" => isset($data['field_3']) ? $data['field_3']: '',
+            "media_alt" => isset($data['field_3']) ? $data['field_3'] : '',
             "media_text" => isset($data['field_4']) ? $data['field_4'] : '',
             "media_focal_point" => isset($data['field_5']) ? $data['field_5'] : '',
             "media_editable" => isset($data['editable']) ? $data['editable'] : false,
@@ -587,16 +592,16 @@ class Helper
 
     public function getMediaExtensionList($sql)
     {
-      $exts = array();
-      $ext = new SQL_Select($sql);
-      $ext->addGroup('media_extension');
-      $all = DB::query($ext->get(dsn()), 'all');
-      foreach ($all as $row) {
-        if ($row['media_extension']) {
-            $exts[] = $row['media_extension'];
+        $exts = array();
+        $ext = new SQL_Select($sql);
+        $ext->addGroup('media_extension');
+        $all = DB::query($ext->get(dsn()), 'all');
+        foreach ($all as $row) {
+            if ($row['media_extension']) {
+                $exts[] = $row['media_extension'];
+            }
         }
-      }
-      return $exts;
+        return $exts;
     }
 
     public function getMediaLabel($mid)
@@ -608,7 +613,7 @@ class Helper
         $SQL->addWhereOpr('media_tag_media_id', $mid);
         $q = $SQL->get(dsn());
         $DB->query($q, 'fetch');
-        while($row = $DB->fetch($q)) {
+        while ($row = $DB->fetch($q)) {
             if ($label) {
                 $label = $label . ',' . $row['media_tag_name'];
             } else {
@@ -627,7 +632,9 @@ class Helper
             $type = detectUnitTypeSpecifier($actualType);
             if ($type === 'media') {
                 $mediaData = $data['media_id'];
-                if (empty($mediaData)) continue;
+                if (empty($mediaData)) {
+                    continue;
+                }
                 $mediaAry = explodeUnitData($mediaData);
                 foreach ($mediaAry as $i => $mediaId) {
                     $mediaList[] = $mediaId;
@@ -717,7 +724,6 @@ class Helper
             $SQL = SQL::newDelete('media_tag');
             $SQL->addWhereOpr('media_tag_media_id', $mid);
             $DB->query($SQL->get(dsn()), 'exec');
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -805,7 +811,7 @@ class Helper
                         $widthAry[] = $width;
                         $heightAry[] = $height;
                         $ratioAry[] = $ratio;
-                    } else if ($type === 'svg') {
+                    } elseif ($type === 'svg') {
                         $pathAry[] = $path;
                         $thumbnailAry[] = $this->getSvgThumbnail($path);
                         $imageSizeAry[] = '';
@@ -814,7 +820,7 @@ class Helper
                         $widthAry[] = '';
                         $heightAry[] = '';
                         $ratioAry[] = '';
-                    } else if ($type === 'file') {
+                    } elseif ($type === 'file') {
                         if (empty($media['media_status'])) {
                             $pathAry[] = $this->getFileOldPermalink($path, false);
                         } else {
@@ -885,6 +891,138 @@ class Helper
             httpStatusCode('403 Forbidden Media');
         } else {
             $download->download();
+        }
+    }
+
+    /**
+     * SVG（テキスト）をサニタイズ
+     *
+     * @param string $input
+     * @return string
+     */
+    public function sanitizeSvg(string $input): string
+    {
+        $sanitizer = new DOMSanitizer(DOMSanitizer::SVG);
+        return $sanitizer->sanitize($input);
+    }
+
+    /**
+     * ファイルをアップロードする
+     *
+     * @param string $archivesDir
+     * @param string $fieldName
+     * @param bool $random
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function createFile(string $archivesDir, string $fieldName = 'file', bool $random = true): array
+    {
+        if (!isset($_FILES[$fieldName])) {
+            throw new RuntimeException('ファイルアップロードに失敗しました');
+        }
+        $File = $_FILES[$fieldName];
+        if (!isset($File['tmp_name'])) {
+            throw new RuntimeException('ファイルアップロードに失敗しました');
+        }
+        $src = $File['tmp_name'];
+        $fileName = $File['name'];
+        if (empty($src)) {
+            throw new RuntimeException('ファイルアップロードに失敗しました');
+        }
+        if (!preg_match('@\.([^.]+)$@', $fileName, $match)) {
+            throw new RuntimeException('不正なアップロードを検知しました');
+        }
+        $nameParts = preg_split('/\./', $fileName);
+        array_pop($nameParts);
+        $name = implode('.', $nameParts);
+
+        $extension = $match[1];
+        $dir = Storage::archivesDir();
+        Storage::makeDirectory($archivesDir . $dir);
+
+        if (!$random) {
+            $path = $dir . $name . '.' . $extension;
+            $path = uniqueFilePath($path, $archivesDir);
+            $name = preg_replace("/(.+)(\.[^.]+$)/", "$1", Storage::mbBasename($path));
+        } else {
+            $path = $dir . uniqueString() . '.' . $extension;
+        }
+        $file = $archivesDir . $path;
+
+        if (!is_uploaded_file($src)) {
+            throw new RuntimeException('不正なアップロードを検知しました');
+        }
+        if (
+            !in_array(
+                $extension,
+                array_merge(
+                    array('svg', 'SVG'),
+                    configArray('file_extension_document'),
+                    configArray('file_extension_archive'),
+                    configArray('file_extension_movie'),
+                    configArray('file_extension_audio')
+                ),
+                true
+            )
+        ) {
+            throw new RuntimeException('許可されていないファイルです');
+        }
+
+        $mimeType = Common::getMimeType($src);
+        if (preg_match('/svg/', strtolower($mimeType))) {
+            // SVGの場合、サニタイズ処理をする
+            $dirty = Storage::get($src);
+            $clean = $this->sanitizeSvg($dirty);
+            Storage::put($file, $clean);
+        } else {
+            Storage::copy($src, $file);
+        }
+        if (HOOK_ENABLE) {
+            $Hook = ACMS_Hook::singleton();
+            $Hook->call('mediaCreate', $file);
+        }
+        return [
+            'path' => $path,
+            'type' => strtoupper($extension),
+            'name' => $name . '.' . $extension,
+            'size' => byteConvert($File['size']),
+        ];
+    }
+
+    /**
+     * 画像パスから、サイズ違い・拡張子違い（webp）など含めて削除
+     *
+     * @param string $path この値は、ユーザーの入力値など信頼されない値を指定しない
+     * @param bool $removeOriginal
+     * @return void
+     */
+    protected function removeImageFiles(string $path, bool $removeOriginal = true): void
+    {
+        $edited = MEDIA_LIBRARY_DIR . $path;
+        $original = MEDIA_LIBRARY_DIR . otherSizeImagePath($path, 'large');
+        Storage::remove($edited);
+        if (Storage::exists($edited . '.webp')) {
+            Storage::remove($edited . '.webp');
+        }
+        if ($dirname = dirname($edited)) {
+            $dirname .= '/';
+        }
+        $basename = Storage::mbBasename($edited);
+        $images = glob($dirname . '*-' . $basename);
+        if (is_array($images)) {
+            foreach ($images as $filename) {
+                if (!$removeOriginal && $filename === $original) {
+                    continue;
+                }
+                Storage::remove($filename);
+                if (Storage::exists($filename . '.webp')) {
+                    Storage::remove($filename . '.webp');
+                }
+                if (HOOK_ENABLE) {
+                    $Hook = ACMS_Hook::singleton();
+                    $Hook->call('mediaDelete', $filename);
+                }
+            }
         }
     }
 }

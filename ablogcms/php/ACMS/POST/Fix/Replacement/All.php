@@ -4,7 +4,9 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix = $this->extract('fix');
         $Fix->setMethod('fix_replacement_target', 'required');
@@ -43,9 +45,15 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
 
             if (intval($updated) > 0) {
                 $targetName = '';
-                if ($target === 'title') $targetName = 'タイトル';
-                if ($target === 'unit') $targetName = 'ユニット';
-                if ($target === 'field') $targetName = 'カスタムフィールド';
+                if ($target === 'title') {
+                    $targetName = 'タイトル';
+                }
+                if ($target === 'unit') {
+                    $targetName = 'ユニット';
+                }
+                if ($target === 'field') {
+                    $targetName = 'カスタムフィールド';
+                }
 
                 AcmsLogger::info($updated . '件、エントリーの「' . $targetName . '」のテキスト置換を実行しました「' . $pattern . '」->「' . $replacement . '」');
             }
@@ -66,19 +74,19 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
             $blogIds = DB::query($blog->get(dsn()), 'list');
         }
 
-        switch ( $target ) {
+        switch ($target) {
             case 'title':
                 $REP = SQL::newFunction('entry_title', array('REPLACE', $pattern, $replacement));
                 $SQL = SQL::newUpdate('entry');
                 $SQL->addUpdate('entry_title', $REP);
-                $SQL->addWhereOpr('entry_title', '%'.$pattern.'%', 'LIKE');
+                $SQL->addWhereOpr('entry_title', '%' . $pattern . '%', 'LIKE');
                 $SQL->addWhereIn('entry_blog_id', $blogIds);
                 break;
             case 'unit':
                 $REP = SQL::newFunction('column_field_1', array('REPLACE', $pattern, $replacement));
                 $SQL = SQL::newUpdate('column');
                 $SQL->addUpdate('column_field_1', $REP);
-                $SQL->addWhereOpr('column_field_1', '%'.$pattern.'%', 'LIKE');
+                $SQL->addWhereOpr('column_field_1', '%' . $pattern . '%', 'LIKE');
                 $SQL->addWhereIn('column_blog_id', $blogIds);
                 break;
             case 'field':
@@ -86,7 +94,7 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
                 $SQL = SQL::newUpdate('field');
                 $SQL->addUpdate('field_value', $REP);
                 $SQL->addWhereOpr('field_eid', null, '<>');
-                $SQL->addWhereOpr('field_value', '%'.$pattern.'%', 'LIKE');
+                $SQL->addWhereOpr('field_value', '%' . $pattern . '%', 'LIKE');
                 $SQL->addWhereIn('field_blog_id', $blogIds);
                 break;
         }

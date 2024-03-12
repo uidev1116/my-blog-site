@@ -36,7 +36,7 @@ class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
             }
             $sql->addInsert('config_set_name', $name);
             $sql->addInsert('config_set_description', '');
-            $sql->addInsert('config_set_scope',$scope);
+            $sql->addInsert('config_set_scope', $scope);
             $sql->addInsert('config_set_blog_id', BID);
             $db->query($sql->get(dsn()), 'exec');
 
@@ -45,7 +45,6 @@ class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
             $this->addMessage($configSetTypeName . 'を複製しました');
 
             AcmsLogger::info('「' . $name . '」' . $configSetTypeName . 'を複製しました');
-
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
 
@@ -119,4 +118,3 @@ class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
         }
     }
 }
-

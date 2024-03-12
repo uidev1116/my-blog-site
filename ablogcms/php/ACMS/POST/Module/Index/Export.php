@@ -3,6 +3,11 @@
 class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
 {
     /**
+     * @var \Acms\Services\Config\ModuleExport $export
+     */
+    protected $export;
+
+    /**
      * run
      *
      * @return Field
@@ -11,9 +16,9 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
     {
         @set_time_limit(0);
 
-        if ( enableApproval(BID, null) ) {
+        if (enableApproval(BID, null)) {
             $this->Post->setMethod('module', 'operative', sessionWithApprovalAdministrator(BID, CID));
-        } else if ( roleAvailableUser() ) {
+        } elseif (roleAvailableUser()) {
             $this->Post->setMethod('module', 'operative', roleAuthorization('entry_edit', BID));
         } else {
             $this->Post->setMethod('module', 'operative', sessionWithAdministration());
@@ -31,7 +36,7 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
             $this->export = App::make('config.export.module');
             $targetModules = [];
 
-            foreach ( $this->Post->getArray('checks') as $mid ) {
+            foreach ($this->Post->getArray('checks') as $mid) {
                 $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
                 $bid = $id[0];
                 $mid = $id[1];

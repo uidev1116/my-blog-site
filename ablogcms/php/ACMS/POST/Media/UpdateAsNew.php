@@ -37,9 +37,9 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
                     $_FILES[$this->uploadFieldName]['name'] = $name;
                     $data = Media::uploadImage($this->uploadFieldName, $replaced);
                     if ($replaced) {
-                        $data['original'] = otherSizeImagePath($data['path'],'large');
+                        $data['original'] = otherSizeImagePath($data['path'], 'large');
                     }
-                } else if (Media::isSvgFile($type)) {
+                } elseif (Media::isSvgFile($type)) {
                     $data = Media::uploadSvg($info['size'], $this->uploadFieldName);
                 } else {
                     $data = Media::uploadFile($info['size'], $this->uploadFieldName);
@@ -87,7 +87,6 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
             $json = Media::buildJson($mid, $data, $tags, BID);
             $json['status'] = 'success';
             Common::responseJson($json);
-
         } catch (\Exception $e) {
             AcmsLogger::info('新しいメディアとして作成に失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 

@@ -48,7 +48,7 @@ class ACMS_POST_Webhook_Update extends ACMS_POST
 
             $this->addMessage('Webhookを保存しました');
 
-            AcmsLogger::info('Webhook「' . $input->get('name') .'」を保存しました', [
+            AcmsLogger::info('Webhook「' . $input->get('name') . '」を保存しました', [
                 'id' => $id,
                 'data' => $input->_aryField,
             ]);

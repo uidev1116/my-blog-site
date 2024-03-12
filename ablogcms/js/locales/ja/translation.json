@@ -321,6 +321,7 @@
     "copy": "コピー",
     "copy_attention": "画像を変更するとパーマリンクも変更されます。直接パーマリンクを貼る場合はお気をつけください。",
     "status": "ステータス",
+    "status_settings": "ステータスを変更できます。",
     "follow_media_status": "エントリーの公開状態に従う",
     "secret": "ログイン限定",
     "managed_tag": "管理用のタグです。",

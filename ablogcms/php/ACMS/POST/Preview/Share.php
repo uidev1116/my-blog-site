@@ -11,8 +11,8 @@ class ACMS_POST_Preview_Share extends ACMS_POST
      */
     function post()
     {
+        $url = $this->Post->get('uri');
         try {
-            $url = $this->Post->get('uri');
             $this->validate($url);
 
             Preview::expiredShareUrl();
@@ -23,7 +23,7 @@ class ACMS_POST_Preview_Share extends ACMS_POST
                 'url' => $url,
             ]);
 
-            die (json_encode(array(
+            die(json_encode(array(
                 'status' => true,
                 'uri' => $shareUrl,
             )));
@@ -32,7 +32,7 @@ class ACMS_POST_Preview_Share extends ACMS_POST
                 'url' => $url,
             ]);
 
-            die (json_encode(array(
+            die(json_encode(array(
                 'status' => false,
                 'message' => $e->getMessage(),
             )));

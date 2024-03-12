@@ -2,7 +2,7 @@
 
 class ACMS_GET_Blog_ChildList extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'bid'   => 'global',
     );
 
@@ -86,15 +86,15 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function filterQuery(& $SQL)
+    protected function filterQuery(&$SQL)
     {
         $SQL->addWhereOpr('blog_parent', $this->bid);
         $SQL->addWhereOpr('blog_indexing', 'on');
         ACMS_Filter::blogStatus($SQL);
-        if ( !empty($this->keyword) ) {
+        if (!empty($this->keyword)) {
             ACMS_Filter::blogKeyword($SQL, $this->keyword);
         }
-        if ( !empty($this->Field) ) {
+        if (!empty($this->Field)) {
             ACMS_Filter::blogField($SQL, $this->Field);
         }
     }
@@ -105,7 +105,7 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function orderQuery(& $SQL)
+    protected function orderQuery(&$SQL)
     {
         ACMS_Filter::blogOrder($SQL, $this->config['order']);
     }
@@ -116,7 +116,7 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function limitQuery(& $SQL)
+    protected function limitQuery(&$SQL)
     {
         $SQL->setLimit($this->config['limit']);
     }
@@ -126,7 +126,7 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
      *
      * @param $Tpl
      */
-    protected function build(& $Tpl)
+    protected function build(&$Tpl)
     {
         $loopClass = $this->config['loop_class'];
 
@@ -137,7 +137,7 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
             //-------
             // field
             $Field  = loadBlogField($bid);
-            foreach ( $row as $key => $val ) {
+            foreach ($row as $key => $val) {
                 $Field->setField(preg_replace('/blog\_/', '', $key), $val);
             }
             $Field->set('url', acmsLink(array(
@@ -147,7 +147,7 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
 
             //------
             // glue
-            if ( $i !== $j ) {
+            if ($i !== $j) {
                 $Tpl->add('glue');
             }
             $vars = $this->buildField($Field, $Tpl);

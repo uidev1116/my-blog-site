@@ -32,9 +32,9 @@ class Queue
     protected $workingCount;
 
     /**
-     * @const float
+     * @var float
      */
-    const INTERVAL = 0.1;
+    private const INTERVAL = 0.1;
 
     /**
      * Queue constructor.
@@ -72,23 +72,22 @@ class Queue
      */
     public function exec($page404 = false)
     {
-        $self = $this;
-        $self->timer = $self->loop->addPeriodicTimer(self::INTERVAL, function () use ($self, $page404) {
-            for ( $i=$self->workingCount; $i<$self->workingTableSize; $i++ ) {
-                $request = $self->pop();
-                if ( $request instanceof Request ) {
-                    $request->updateQueue(function ($code) use ($self, $page404) {
-                        if ( $code != '200' && $page404 ) {
-                            $self->loop->cancelTimer($self->timer);
+        $this->timer = $this->loop->addPeriodicTimer(self::INTERVAL, function () use ($page404) {
+            for ($i = $this->workingCount; $i < $this->workingTableSize; $i++) {
+                $request = $this->pop();
+                if ($request instanceof Request) {
+                    $request->updateQueue(function ($code) use ($page404) {
+                        if ($code != '200' && $page404) {
+                            $this->loop->cancelTimer($this->timer);
                         }
-                        $self->workingCount--;
+                        $this->workingCount--;
                     });
-                    $self->workingCount++;
+                    $this->workingCount++;
                     $request->run();
                 }
             }
-            if ( $self->workingCount < 1 ) {
-                $self->loop->cancelTimer($self->timer);
+            if ($this->workingCount < 1) {
+                $this->loop->cancelTimer($this->timer);
             }
         });
         $this->loop->run();

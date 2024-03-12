@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Media_Tag_Edit extends ACMS_GET_Admin_Edit
 {
-    var $_scope = array(
+    public $_scope = array(
         'tag' => 'global',
     );
 

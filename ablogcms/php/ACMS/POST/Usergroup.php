@@ -4,7 +4,9 @@ class ACMS_Validator_Usergroup extends ACMS_Validator
 {
     function double($name, $ugid)
     {
-        if ( empty($name) ) return true;
+        if (empty($name)) {
+            return true;
+        }
 
         $DB     = DB::singleton(dsn());
 
@@ -13,11 +15,13 @@ class ACMS_Validator_Usergroup extends ACMS_Validator
         $SQL    = SQL::newSelect('usergroup');
         $SQL->setSelect('usergroup_id');
         $SQL->addWhereOpr('usergroup_name', $name);
-        if ( !empty($ugid) ) {
+        if (!empty($ugid)) {
             $SQL->addWhereOpr('usergroup_id', $ugid, '<>');
         }
         $SQL->setSelect(1);
-        if ( $DB->query($SQL->get(dsn()), 'one') ) return false;
+        if ($DB->query($SQL->get(dsn()), 'one')) {
+            return false;
+        }
 
         return true;
     }
@@ -25,5 +29,4 @@ class ACMS_Validator_Usergroup extends ACMS_Validator
 
 class ACMS_POST_Usergroup extends ACMS_POST
 {
-
 }

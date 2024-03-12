@@ -1,7 +1,7 @@
 <?php
 
 class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
-{   
+{
     function post()
     {
         $this->initVars();
@@ -10,7 +10,7 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
         $Order->setMethod('sendto', 'required', true);
         $Order->validate(new ACMS_Validator());
 
-        if ( $this->alreadySubmit() ) {
+        if ($this->alreadySubmit()) {
             $this->screenTrans();
         }
 
@@ -27,7 +27,7 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
 
         // 送り先がセカンダリで指定されていれば，バリデーションメソッドを追加
         $Secondary = $this->extract('secondary');
-        if ( $Order->get('sendto') == 'secondary' ) {
+        if ($Order->get('sendto') == 'secondary') {
             $Secondary->setMethod('name#2', 'required');
             $Secondary->setMethod('ruby#2', 'required');
             $Secondary->setMethod('zip#2', 'required');
@@ -38,19 +38,19 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
         }
         $Secondary->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
 
             /**
              * プライマリアドレスをINSERTまたはUPDATEする
              */
-            if ( !is_null(SUID) ) {
+            if (!is_null(SUID)) {
                 $SQL = SQL::newSelect('shop_address');
                 $SQL->addWhereOpr('address_user_id', SUID);
                 $SQL->addWhereOpr('address_primary', 'on');
                 $row = $DB->query($SQL->get(dsn()), 'row');
 
-                if ( empty($row) ) {
+                if (empty($row)) {
                     $aid    = $DB->query(SQL::nextval('shop_address_id', dsn()), 'seq');
                     $SQL    = SQL::newInsert('shop_address');
                     $SQL->addInsert('address_id', $aid);
@@ -83,11 +83,12 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
                     $DB->query($SQL->get(dsn()), 'exec');
                 }
             }
-            
+
             /**
              * セカンダリアドレスの指定があり，かつ登録フラグが立っていればINSERTを発行
              */
-            if ( 1 
+            if (
+                1
                 and !$Secondary->isNull()
                 and $Secondary->get('regist') == 'on'
                 and $Order->get('sendto') == 'secondary'
@@ -115,27 +116,29 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
             /**
              * セッションに保存する送り先のアドレスを決める
              */
-            $Address = new Field;
-            
-            if ( $Order->get('sendto') == 'primary' ) {
+            $Address = new Field();
 
+            if ($Order->get('sendto') == 'primary') {
                 $Address = $Primary;
-
-            } elseif ( $Order->get('sendto') == 'secondary' ) {
+            } elseif ($Order->get('sendto') == 'secondary') {
                 $list = $Secondary->listFields();
-                foreach ( $list as $fd ) {
+                foreach ($list as $fd) {
                     $fix = str_replace('#2', '', $fd);
                     $Address->set($fix, $Secondary->get($fd));
                 }
-            } elseif ( is_numeric($Order->get('sendto')) ) {
+            } elseif (is_numeric($Order->get('sendto'))) {
                 $SQL = SQL::newSelect('shop_address');
                 $SQL->addWhereOpr('address_user_id', SUID);
                 $SQL->addWhereOpr('address_id', $Order->get('sendto'));
-                
-                if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
-                    foreach ( $row as $key => $val ) {
-                        if ( $key == 'address_primary' ) continue;
-                        if ( $key == 'address_user_id' ) continue;
+
+                if ($row = $DB->query($SQL->get(dsn()), 'row')) {
+                    foreach ($row as $key => $val) {
+                        if ($key == 'address_primary') {
+                            continue;
+                        }
+                        if ($key == 'address_user_id') {
+                            continue;
+                        }
                         $Address->set(substr($key, strlen('address_')), $val);
                     }
                 }
@@ -144,7 +147,7 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
             //$SESSION =& Field::singleton('session');
             $SESSION =& $this->openSession();
 
-            if ( is_null(SUID) ) {
+            if (is_null(SUID)) {
                 $mail = $Primary->get('mail');
                 $Primary->delete('mail');
                 $SESSION->set('mail', $mail);
@@ -158,10 +161,8 @@ class ACMS_POST_Shop2_Form_Address extends ACMS_POST_Shop2
             $this->closeSession($SESSION);
 
             $step = 'deliver';
-
         } else {
             $step = 'address';
-
         }
 
         $this->Post->set('step', $step);

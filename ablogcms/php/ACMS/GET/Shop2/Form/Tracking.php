@@ -8,15 +8,13 @@ class ACMS_GET_Shop2_Form_Tracking extends ACMS_GET_Shop2
 
         $SESSION =& $this->openSession();
 
-        if ( $SESSION->isNull('submitted') ) {
-
+        if ($SESSION->isNull('submitted')) {
             $ADDRESS  =  $SESSION->getChild('address');
             $TEMP     =  $SESSION->getArray('portrait_cart');
 
             $Tpl    = new Template($this->config->get('shop_order_tracking_code'), new ACMS_Corrector());
 
-            foreach ( $TEMP as $item ) {
-
+            foreach ($TEMP as $item) {
                 $price  = !empty($item[$this->item_price])  ? $item[$this->item_price]  : 0;
                 $qty    = !empty($item[$this->item_qty])    ? $item[$this->item_qty]    : 0;
                 $name   = !empty($item[$this->item_name])   ? $item[$this->item_name]   : 'unknown';
@@ -41,7 +39,7 @@ class ACMS_GET_Shop2_Form_Tracking extends ACMS_GET_Shop2
                         'tax'       => $SESSION->get('tax-only', 0),
                         'shipping'  => $SESSION->get('charge#deliver', 0),
                         'city'      => $ADDRESS->get('city', 'unknown'),
-                        'prefecture'=> $ADDRESS->get('prefecture', 'unknown'),
+                        'prefecture' => $ADDRESS->get('prefecture', 'unknown'),
                         'country'   => $ADDRESS->get('country', 'Japan'),
                         );
 

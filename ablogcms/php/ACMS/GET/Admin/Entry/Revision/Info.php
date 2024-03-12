@@ -24,9 +24,10 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
         $currentRevId = DB::query($sql->get(dsn()), 'one');
 
         if (RVID === 1) {
-        } else if (RVID === intval($currentRevId)) {
-        } else if (roleAvailableUser()) {
-            if (0
+        } elseif (RVID === intval($currentRevId)) {
+        } elseif (roleAvailableUser()) {
+            if (
+                0
                 || (enableApproval(BID, $revision['entry_category_id']) && sessionWithApprovalPublic(BID, $revision['entry_category_id']))
                 || (!enableApproval(BID, $revision['entry_category_id']) && roleAuthorization('entry_edit', BID, EID))
             ) {
@@ -36,7 +37,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
                     'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
                 ]);
             }
-        } else if (enableApproval(BID, $revision['entry_category_id'])) {
+        } elseif (enableApproval(BID, $revision['entry_category_id'])) {
             if (sessionWithApprovalAdministrator(BID, $revision['entry_category_id']) && isset($revision['entry_rev_status']) && $revision['entry_rev_status'] === 'approved') {
                 $Tpl->add('revisionChange', [
                     'canChange' => '1',

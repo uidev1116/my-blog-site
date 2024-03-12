@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Dashboard_Log_Login extends ACMS_GET
 {
     function get()
     {
-        if ( !sessionWithAdministration() ) return '';
+        if (!sessionWithAdministration()) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
@@ -17,13 +19,15 @@ class ACMS_GET_Admin_Dashboard_Log_Login extends ACMS_GET
 
         $q  = $SQL->get(dsn());
 
-        if ( $DB->query($q, 'fetch') and $row = $DB->fetch($q) ) { do {
-            $Tpl->add('auth:touch#'.$row['user_auth']);
-            $Tpl->add('log:loop', array(
+        if ($DB->query($q, 'fetch') and $row = $DB->fetch($q)) {
+            do {
+                $Tpl->add('auth:touch#' . $row['user_auth']);
+                $Tpl->add('log:loop', array(
                 'datetime'  => $row['user_login_datetime'],
                 'name'      => $row['user_name'],
-            ));
-        } while( $row = $DB->fetch($q) ); } else {
+                ));
+            } while ($row = $DB->fetch($q));
+        } else {
             return '';
         }
 

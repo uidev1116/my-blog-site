@@ -24,8 +24,7 @@ class ACMS_POST_Comment_Confirm_Insert extends ACMS_POST_Comment
         $Comment    =& $this->extractComment();
         $this->Post->set('action', 'insert');
         $this->Post->set('step', $this->Post->isValidAll() ?
-            $this->Post->get('nextstep') : $this->Post->get('step')
-        );
+            $this->Post->get('nextstep') : $this->Post->get('step'));
         return $this->Post;
     }
 }

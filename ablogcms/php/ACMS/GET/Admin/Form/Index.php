@@ -1,10 +1,14 @@
 <?php
+
 class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
 {
     function get()
     {
-        if ( 'form_index' <> ADMIN && 'form2-edit' <> ADMIN ) return '';
-        if ( 0
+        if ('form_index' <> ADMIN && 'form2-edit' <> ADMIN) {
+            return '';
+        }
+        if (
+            0
             || ( !roleAvailableUser() && !sessionWithFormAdministration() )
             || ( roleAvailableUser() && !roleAuthorization('form_view', BID) && !roleAuthorization('form_edit', BID) )
         ) {
@@ -14,21 +18,23 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
         $Vars   = array();
         //---------
         // refresh
-        if ( !$this->Post->isNull() ) {
+        if (!$this->Post->isNull()) {
             $Tpl->add('refresh');
             $Vars['notice_mess'] = 'show';
         }
         //-------
         // order
         $order  = ORDER ? ORDER : 'id-asc';
-        $Vars['order:selected#'.$order] = config('attr_selected');
+        $Vars['order:selected#' . $order] = config('attr_selected');
         //--------
         // limit
         $limits = configArray('admin_limit_option');
         $limit  = $this->Q->get('limit', $limits[config('admin_limit_default')]);
-        foreach ( $limits as $val ) {
+        foreach ($limits as $val) {
             $_vars  = array('value' => $val);
-            if ( $limit == $val ) $_vars['selected'] = config('attr_selected');
+            if ($limit == $val) {
+                $_vars['selected'] = config('attr_selected');
+            }
             $Tpl->add('limit:loop', $_vars);
         }
         $DB     = DB::singleton(dsn());
@@ -43,14 +49,21 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
         $SQL->addWhere($Where);
         $Amount = new SQL_Select($SQL);
         $Amount->setSelect('*', 'form_amount', null, 'count');
-        if ( !$pageAmount = $DB->query($Amount->get(dsn()), 'one') ) {
+        if (!$pageAmount = $DB->query($Amount->get(dsn()), 'one')) {
             $Tpl->add('index#notFound');
             $Vars['notice_mess'] = 'show';
             $Tpl->add(null, $Vars);
             return $Tpl->get();
         }
-        $Vars   += $this->buildPager(PAGE, $limit, $pageAmount
-            , config('admin_pager_delta'), config('admin_pager_cur_attr'), $Tpl, array(), array('admin' => ADMIN)
+        $Vars   += $this->buildPager(
+            PAGE,
+            $limit,
+            $pageAmount,
+            config('admin_pager_delta'),
+            config('admin_pager_cur_attr'),
+            $Tpl,
+            array(),
+            array('admin' => ADMIN)
         );
         $Log = SQL::newSelect('log_form');
         $Log->setOrder('log_form_datetime', 'DESC');
@@ -71,11 +84,11 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
         $base       = $base_order[0];
         $ord        = $base_order[1];
         $ord   = ('asc' == $ord) ? 'ASC' : 'DESC';
-        if ( 'code' == $base ) {
+        if ('code' == $base) {
             $SQL->setOrder('form_code', $ord);
-        } else if ( 'amount' == $base ) {
+        } elseif ('amount' == $base) {
             $SQL->setOrder('form_log_amount', $ord);
-        } else if ( 'datetime' == $base ) {
+        } elseif ('datetime' == $base) {
             $SQL->setOrder('form_last_datetime', $ord);
         } else {
             $SQL->setOrder('form_id', $ord);
@@ -84,25 +97,27 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $fmid   = intval($row['form_id']);
             $fmbid  = intval($row['form_blog_id']);
             $editAction = false;
             $logAction  = false;
 
-            if ( 0
+            if (
+                0
                 || ( !roleAvailableUser() && sessionWithFormAdministration($fmbid) )
                 || ( roleAvailableUser() && roleAuthorization('form_edit', $fmbid) )
             ) {
                 $editAction = true;
             }
-            if ( 0
+            if (
+                0
                 || ( !roleAvailableUser() && sessionWithFormAdministration(BID) )
                 || ( roleAvailableUser() && roleAuthorization('form_view', BID) )
             ) {
                 $logAction  = true;
             }
-            if ( $editAction ) {
+            if ($editAction) {
                 $Tpl->add(array('editAction', 'form:loop'), array(
                     'itemUrl'   => acmsLink(array(
                         'bid'   => $fmbid,
@@ -113,7 +128,7 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
                     )),
                 ));
             }
-            if ( $logAction ) {
+            if ($logAction) {
                 $Tpl->add(array('logAction', 'form:loop'), array(
                     'logUrl'    => acmsLink(array(
                         'bid'   => BID,

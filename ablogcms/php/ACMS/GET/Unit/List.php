@@ -2,12 +2,12 @@
 
 class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
 {
-    var $_axis = array(
+    public $_axis = array(
         'bid' => 'descendant-or-self',
         'cid' => 'descendant-or-self',
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'cid' => 'global',
         'eid' => 'global',
         'start' => 'global',
@@ -109,7 +109,7 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                         if ($mediaType === 'image') {
                             $row['normal'] = Media::urlencode($media['media_path']);
                             $row['large'] = Media::urlencode($media['media_original']);
-                        } else if ($mediaType === 'file') {
+                        } elseif ($mediaType === 'file') {
                             if (empty($media['media_status'])) {
                                 $row['download'] = '/' . Media::getFileOldPermalink(Media::urlencode($media['media_path']), false);
                             } else {
@@ -240,15 +240,20 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
 
                 $Tpl->add('column:loop', $row);
                 $Tpl->add('unit:loop', $row);
-
             } while ($row = $DB->fetch($q));
         }
 
         //-------
         // pager
         if ('random' <> $order && config('column_list_pager_on') === 'on') {
-            $vars += $this->buildPager($this->page, $limit, $itemsAmount, config('column_list_pager_delta'),
-                config('column_list_pager_cur_attr'), $Tpl);
+            $vars += $this->buildPager(
+                $this->page,
+                $limit,
+                $itemsAmount,
+                config('column_list_pager_delta'),
+                config('column_list_pager_cur_attr'),
+                $Tpl
+            );
         }
 
         $Tpl->add(null, $vars);

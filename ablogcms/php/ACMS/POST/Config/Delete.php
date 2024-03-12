@@ -4,9 +4,15 @@ class ACMS_POST_Config_Delete extends ACMS_POST
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) die();
-        if ( !$rid = idval($this->Post->get('rid')) ) $rid = null;
-        if ( !$setid = idval($this->Post->get('setid')) ) $setid = null;
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if (!$rid = idval($this->Post->get('rid'))) {
+            $rid = null;
+        }
+        if (!$setid = idval($this->Post->get('setid'))) {
+            $setid = null;
+        }
 
         $DB = DB::singleton(dsn());
         $SQL = SQL::newDelete('config');

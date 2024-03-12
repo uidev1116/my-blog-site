@@ -20,7 +20,8 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
 
         if (!!$_config) {
             $config->overload($_config);
-            foreach (array(
+            foreach (
+                array(
                   'media_banner_limit',
                   'media_banner_status',
                   'media_banner_src',
@@ -146,13 +147,13 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
         $ary_vars['media_banner_hide_attr2'] = $hide2;
 
         if (strlen($order) > 0) {
-            $ary_vars[ 'media_banner_order:selected#'.$order ] = config('attr_selected');
+            $ary_vars[ 'media_banner_order:selected#' . $order ] = config('attr_selected');
         }
         if ($hide1 === 'true') {
-            $ary_vars['media_banner_hide_attr1:checked#'.$hide1 ] = config('attr_checked');
+            $ary_vars['media_banner_hide_attr1:checked#' . $hide1 ] = config('attr_checked');
         }
         if ($hide2 === 'true') {
-            $ary_vars['media_banner_hide_attr2:checked#'.$hide2 ] = config('attr_checked');
+            $ary_vars['media_banner_hide_attr2:checked#' . $hide2 ] = config('attr_checked');
         }
 
         $ary_vars['media_banner_json'] = json_encode($items);

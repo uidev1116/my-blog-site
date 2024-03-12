@@ -26,6 +26,5 @@ class MediaServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

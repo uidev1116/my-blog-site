@@ -7,16 +7,18 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 {
     /**
      * 階層設定
+     * @inheritdoc
      */
-    var $_axis = [
+    public $_axis = [ // phpcs:ignore
         'bid' => 'descendant-or-self',
         'cid' => 'descendant-or-self',
     ];
 
     /**
      * スコープ設定
+     * @inheritdoc
      */
-    var $_scope = [
+    public $_scope = [ // phpcs:ignore
         'uid' => 'global',
         'cid' => 'global',
         'eid' => 'global',
@@ -94,7 +96,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     function setConfig(): bool
     {
         $this->config = $this->initConfig();
-        if ( $this->config === false ) {
+        if ($this->config === false) {
             return false;
         }
         return true;
@@ -155,7 +157,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      */
     function get()
     {
-        if (!$this->setConfig()) return '';
+        if (!$this->setConfig()) {
+            return '';
+        }
 
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($tpl);
@@ -163,10 +167,10 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         if (in_array(ADMIN, ['entry-edit', 'entry_editor'])) {
             // 編集ページ
             $this->editPage($tpl);
-        } else if (ADMIN === 'form2-edit') {
+        } elseif (ADMIN === 'form2-edit') {
             // 動的フォーム編集ページ
             $this->formEditPage($tpl);
-        } else if (intval($this->eid) > 0 && strval($this->eid) === strval(intval($this->eid))) {
+        } elseif (intval($this->eid) > 0 && strval($this->eid) === strval(intval($this->eid))) {
             // エントリー詳細ページ
             try {
                 $this->entryPage($tpl);
@@ -235,7 +239,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $entry = DB::query($sql->get(dsn()), 'row');
 
         if (empty($entry)) {
-            throw new NotFoundException;
+            throw new NotFoundException();
         }
         $entry['entry_title'] = $this->getFixTitle($entry['entry_title']);
         $eid = intval($entry['entry_id']);
@@ -330,7 +334,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     {
         // not Found
         if (empty($entries)) {
-            throw new NotFoundException;
+            throw new NotFoundException();
         }
         // simple pager
         if ($this->config['simple_pager_on'] === 'on') {
@@ -379,7 +383,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $row['entry_title'] = $this->getFixTitle($row['entry_title']);
             $continueName = $row['entry_title'];
             $summaryRange = strval(config('entry_body_fix_summary_range'));
-            if (!strlen($summaryRange)) $summaryRange = strval($row['entry_summary_range']);
+            if (!strlen($summaryRange)) {
+                $summaryRange = strval($row['entry_summary_range']);
+            }
             $summaryRange = !!strlen($summaryRange) ? intval($summaryRange) : null;
             $inheritUrl = acmsLink([
                 'bid' => $row['entry_blog_id'],
@@ -408,7 +414,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                         $vars['continueName'] = $continueName;
                     }
                 }
-            } else if ($amount > 0) {
+            } elseif ($amount > 0) {
                 $vars['continueUrl'] = $inheritUrl;
                 $vars['continueName'] = $continueName;
             }
@@ -448,9 +454,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         if (!empty($this->cid)) {
             $categorySub = SQL::newSelect('category');
             $categorySub->setSelect('category_id');
-            if ( is_int($this->cid) ) {
+            if (is_int($this->cid)) {
                 ACMS_Filter::categoryTree($categorySub, $this->cid, $this->categoryAxis());
-            } else if ( strpos($this->cid, ',') !== false ) {
+            } elseif (strpos($this->cid, ',') !== false) {
                 $categorySub->addWhereIn('category_id', explode(',', $this->cid));
                 $multiId = true;
             }
@@ -478,7 +484,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         if (!empty($this->uid)) {
             if (is_int($this->uid)) {
                 $sql->addWhereOpr('entry_user_id', $this->uid);
-            } else if ( strpos($this->uid, ',') !== false ) {
+            } elseif (strpos($this->uid, ',') !== false) {
                 $sql->addWhereIn('entry_user_id', explode(',', $this->uid));
                 $multiId = true;
             }
@@ -496,7 +502,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 } else {
                     ACMS_Filter::blogTree($blogSub, $this->bid, $this->blogAxis());
                 }
-            } else if (strpos($this->bid, ',') !== false) {
+            } elseif (strpos($this->bid, ',') !== false) {
                 $blogSub->addWhereIn('blog_id', explode(',', $this->bid));
             }
             ACMS_Filter::blogStatus($blogSub);
@@ -514,7 +520,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 $sub2 = SQL::newSelect('entry_sub_category');
                 $sub2->addSelect('entry_sub_category_eid');
                 $sub2->addWhereIn('entry_sub_category_id', DB::subQuery($categorySub));
-                $sub->addWhereIn('entry_id',  DB::subQuery($sub2), 'OR');
+                $sub->addWhereIn('entry_id', DB::subQuery($sub2), 'OR');
 
                 $sql->addWhere($sub);
             } else {
@@ -533,7 +539,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      */
     protected function buildFormBody(Template $tpl, array $entry): void
     {
-        if ( 1
+        if (
+            1
             && isset($entry['entry_form_id'])
             && !empty($entry['entry_form_id'])
             && isset($entry['entry_form_status'])
@@ -622,7 +629,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         } else {
             // ユニットがない場合
             $tpl->add('unit:loop');
-            if (1
+            if (
+                1
                 && VIEW === 'entry'
                 && 'on' === config('entry_edit_inplace_enable')
                 && 'on' === config('entry_edit_inplace')
@@ -772,13 +780,13 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         }
         ACMS_Filter::entrySession($sql);
         ACMS_Filter::entrySpan($sql, $this->start, $this->end);
-        if ( !empty($this->tags) ) {
+        if (!empty($this->tags)) {
             ACMS_Filter::entryTag($sql, $this->tags);
         }
-        if ( !empty($this->keyword) ) {
+        if (!empty($this->keyword)) {
             ACMS_Filter::entryKeyword($sql, $this->keyword);
         }
-        if ( !empty($this->Field) ) {
+        if (!empty($this->Field)) {
             ACMS_Filter::entryField($sql, $this->Field);
         }
         $sql->addWhereOpr('entry_indexing', 'on');
@@ -808,7 +816,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                     if ($this->uid) {
                         $field = 'entry_user_sort';
                         $value = ACMS_RAM::entryUserSort($this->eid);
-                    } else if ($this->cid) {
+                    } elseif ($this->cid) {
                         $field = 'entry_category_sort';
                         $value = ACMS_RAM::entryCategorySort($this->eid);
                     } else {
@@ -897,7 +905,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             case 'current_order':
                 $_all = array(array_shift($_all));
                 break;
-            default :
+            default:
                 break;
         }
         while ($_row = array_shift($_all)) {
@@ -952,7 +960,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $sql = SQL::newSelect('comment');
         $sql->addSelect('*', 'comment_amount', null, 'COUNT');
         $sql->addWhereOpr('comment_entry_id', $eid);
-        if (1
+        if (
+            1
             && !sessionWithCompilation()
             && SUID !== ACMS_RAM::entryUser($eid)
         ) {
@@ -1014,13 +1023,19 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $q = $sql->get(dsn());
 
         do {
-            if (!DB::query($q, 'fetch')) break;
-            if (!$row = DB::fetch($q)) break;
+            if (!DB::query($q, 'fetch')) {
+                break;
+            }
+            if (!$row = DB::fetch($q)) {
+                break;
+            }
             $stack = [];
             $stack[] = $row;
             $stack[] = DB::fetch($q);
             while ($row = array_shift($stack)) {
-                if (!empty($stack[0])) $tpl->add(['glue', 'tag:loop']);
+                if (!empty($stack[0])) {
+                    $tpl->add(['glue', 'tag:loop']);
+                }
                 $tpl->add('tag:loop', [
                     'name' => $row['tag_name'],
                     'url' => acmsLink([
@@ -1055,7 +1070,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             if ('entry-add' === substr(ADMIN, 0, 9)) {
                 $tpl->add(array_merge(['adminEntryEdit'], $block));
             }
-        } else if ( 0
+        } elseif (
+            0
             || (!roleAvailableUser() && ((config('approval_contributor_edit_auth') !== 'on' && enableApproval()) || sessionWithCompilation() || (sessionWithContribution() && $uid == SUID)))
             || (roleAvailableUser() && (roleAuthorization('entry_edit_all', BID) || (roleAuthorization('entry_edit', BID) && $uid == SUID)))
         ) {
@@ -1083,8 +1099,12 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                         $cnt = count($types);
                         $labels = configArray('column_add_type_label');
                         for ($i = 0; $i < $cnt; $i++) {
-                            if (!$type = $types[$i]) continue;
-                            if (!$label = $labels[$i]) continue;
+                            if (!$type = $types[$i]) {
+                                continue;
+                            }
+                            if (!$label = $labels[$i]) {
+                                continue;
+                            }
                             $tpl->add(array_merge(['add:loop'], $block), $val + [
                                 'label' => $label,
                                 'type' => $type,
@@ -1099,7 +1119,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 if (!editionWithProfessional() || sessionWithApprovalAdministrator() || $entry['entry_approval'] === 'pre_approval') {
                     $tpl->add(array_merge(['delete'], $block), $val);
                 }
-                if ( 1
+                if (
+                    1
                     && 'on' === config('entry_edit_inplace_enable')
                     && 'on' === config('entry_edit_inplace')
                     && (!enableApproval() || sessionWithApprovalAdministrator())
@@ -1107,7 +1128,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 ) {
                     $tpl->add(array_merge(['adminDetailEdit'], $block), $val);
                 }
-            } else if ( sessionWithApprovalAdministrator() ) {
+            } elseif (sessionWithApprovalAdministrator()) {
                 $tpl->add(array_merge(['delete'], $block), $val);
             } else {
                 $tpl->add(array_merge(['revision'], $block), $val);
@@ -1124,7 +1145,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      * @param int $serial
      * @return void
      */
-    protected function buildBodyField(Template $tpl, array & $vars, array $row, int $serial = 0): void
+    protected function buildBodyField(Template $tpl, array &$vars, array $row, int $serial = 0): void
     {
         $bid = intval($row['entry_blog_id']);
         $uid = $row['entry_user_id'] ? intval($row['entry_user_id']) : null;
@@ -1156,7 +1177,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $vars['oddOrEven'] = $oddOrEven;
         }
         // build tag
-        if ($this->config['tag_on'] === 'on' ) {
+        if ($this->config['tag_on'] === 'on') {
             $this->buildEntryTag($tpl, $eid);
         }
         // build category loop
@@ -1177,7 +1198,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         // build summary
         if ($this->config['summary_on'] === 'on') {
             $vars = TplHelper::buildSummaryFulltext($vars, $eid, $this->summaryFulltextEagerLoadingData);
-            if ( 1
+            if (
+                1
                 && isset($vars['summary'])
                 && intval(config('entry_body_fulltext_width')) > 0
             ) {
@@ -1284,7 +1306,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         if ($this->config['date_on'] === 'on') {
             $vars += $this->buildDate($row['entry_datetime'], $tpl, 'entry:loop');
         }
-        if($this->config['detail_date_on'] === 'on') {
+        if ($this->config['detail_date_on'] === 'on') {
             $vars += $this->buildDate($row['entry_updated_datetime'], $tpl, 'entry:loop', 'udate#');
             $vars += $this->buildDate($row['entry_posted_datetime'], $tpl, 'entry:loop', 'pdate#');
             $vars += $this->buildDate($row['entry_start_datetime'], $tpl, 'entry:loop', 'sdate#');

@@ -16,34 +16,34 @@ class ACMS_GET_PasswordPolicy extends ACMS_GET
         $blacklist = Config::get('password_validator_blacklist', '');
         $blacklist = preg_split("/[,\s\n]/", $blacklist);
 
-        if ( intval($min) > 0 ) {
+        if (intval($min) > 0) {
             $Tpl->add('min', array(
                 'num' => $min,
             ));
         }
-        if ( intval($max) < 9999 ) {
+        if (intval($max) < 9999) {
             $Tpl->add('max', array(
                 'num' => $max,
             ));
         }
-        if ( $uppercase === 'on' ) {
+        if ($uppercase === 'on') {
             $Tpl->add('uppsercase');
         }
-        if ( $lowercase === 'on' ) {
+        if ($lowercase === 'on') {
             $Tpl->add('lowercase');
         }
-        if ( $digits === 'on' ) {
+        if ($digits === 'on') {
             $Tpl->add('digits');
         }
-        if ( $symbols === 'on' ) {
+        if ($symbols === 'on') {
             $Tpl->add('symbols');
         }
-        if ( $type3 === 'on' ) {
+        if ($type3 === 'on') {
             $Tpl->add('type3');
         }
-        if ( is_array($blacklist) && count($blacklist) > 0 ) {
-            foreach ( $blacklist as $word ) {
-                if ( empty($word) ) {
+        if (is_array($blacklist) && count($blacklist) > 0) {
+            foreach ($blacklist as $word) {
+                if (empty($word)) {
                     continue;
                 }
                 $Tpl->add('blacklist:loop', array(

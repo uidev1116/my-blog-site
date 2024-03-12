@@ -26,6 +26,5 @@ class UserServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

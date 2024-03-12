@@ -6,7 +6,7 @@ class ACMS_POST_Through extends ACMS_POST
     {
         if ($takeover = $this->Post->get('throughPost')) {
             $Post = acmsUnserialize($takeover);
-            if ( method_exists($Post, 'deleteField') && method_exists($Post, 'overload') ) {
+            if (method_exists($Post, 'deleteField') && method_exists($Post, 'overload')) {
                 $this->Post->deleteField('throughPost');
                 $Post->overload($this->Post, true);
                 $this->Post = $Post;

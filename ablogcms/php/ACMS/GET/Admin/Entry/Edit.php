@@ -5,7 +5,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
     /**
      * @var array
      */
-    var $fieldNames  = array ();
+    public $fieldNames  = array ();
 
     /**
      * @see ACMS_User_GET_EntryExtendSample_Edit
@@ -20,21 +20,27 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         return $Field;
     }
 
-    function get ()
+    function get()
     {
-        if ( !sessionWithContribution(BID, false) ) return false;
-        if ( 'entry-edit' <> ADMIN && 'entry_editor' <> ADMIN && 'entry-field' <> ADMIN ) return false;
+        if (!sessionWithContribution(BID, false)) {
+            return false;
+        }
+        if ('entry-edit' <> ADMIN && 'entry_editor' <> ADMIN && 'entry-field' <> ADMIN) {
+            return false;
+        }
 
         $CustomFieldCollection = array();
+        $Column = acmsUnserialize($this->Post->get('column'));
         $vars = array();
 
-        if ( 1
+        if (
+            1
             && !$this->Post->isNull()
             && ( !$this->Post->get('backend') || !$this->Post->isValidAll() )
+            && is_array($Column)
         ) {
             $step   = $this->Post->get('step');
             $action = $this->Post->get('action');
-            $Column = acmsUnserialize($this->Post->get('column'));
             $Entry  =& $this->Post->getChild('entry');
             $Field  =& $this->Post->getChild('field');
             $Geo    =& $this->Post->getChild('geometry');
@@ -44,7 +50,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
             foreach ($relateds as $i => $related) {
                 $type = $relatedTypes[$i];
                 if ($type) {
-                    $Entry->addField('related_'. $type, $related);
+                    $Entry->addField('related_' . $type, $related);
                 } else {
                     $Entry->addField('related', $related);
                 }
@@ -58,11 +64,11 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
             $DB = DB::singleton(dsn());
 
             $Column = array();
-            if ( EID ) {
+            if (EID) {
                 $step   = 'reapply';
                 $action = 'update';
 
-                if ( RVID ) {
+                if (RVID) {
                     $SQL    = SQL::newSelect('entry_rev');
                     $SQL->addWhereOpr('entry_id', EID);
                     $SQL->addWhereOpr('entry_blog_id', BID);
@@ -75,14 +81,14 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                     return;
                 }
                 $RVID_  = RVID;
-                if ( !RVID && $row['entry_approval'] === 'pre_approval' ) {
+                if (!RVID && $row['entry_approval'] === 'pre_approval') {
                     $RVID_  = 1;
                 }
 
                 //--------------
                 // custom field
                 $Field  = loadEntryField(EID, $RVID_, true);
-                foreach ( $this->fieldNames as $fieldName ) {
+                foreach ($this->fieldNames as $fieldName) {
                     $CustomFieldCollection[$fieldName]   = $this->loadCustomField($fieldName, EID);
                 }
 
@@ -111,7 +117,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 //-----
                 // tag
                 $tag    = '';
-                if ( RVID ) {
+                if (RVID) {
                     $SQL    = SQL::newSelect('tag_rev');
                     $SQL->addWhereOpr('tag_rev_id', RVID);
                 } else {
@@ -120,22 +126,23 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 $SQL->setSelect('tag_name');
                 $SQL->addWhereOpr('tag_entry_id', EID);
                 $q  = $SQL->get(dsn());
-                if ( $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) {
+                if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
                     do {
                         $tag    .= !empty($tag) ? ', ' : '';
                         $tag    .= $row['tag_name'];
-                    } while ( $row = $DB->fetch($q) );
+                    } while ($row = $DB->fetch($q));
                     $Entry->setField('tag', $tag);
                 }
 
                 //--------
                 // column
-                if ( 1
+                if (
+                    1
                     && !is_ajax()
                     && $Column = loadColumn(EID, null, $RVID_)
                 ) {
                     $cnt    = count($Column);
-                    for ( $i=0; $i<$cnt; $i++ ) {
+                    for ($i = 0; $i < $cnt; $i++) {
                         $Column[$i]['id']   = uniqueString();
                         $Column[$i]['sort'] = $i + 1;
                     }
@@ -152,25 +159,23 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
                 //---------------
                 // related entry
-                if ( $relatedEids = loadRelatedEntries(EID, $RVID_) ) {
-                    foreach ( $relatedEids as $reid ) {
+                if ($relatedEids = loadRelatedEntries(EID, $RVID_)) {
+                    foreach ($relatedEids as $reid) {
                         $Entry->addField('related', $reid);
                     }
                 }
                 //--------------
                 // related entry group
-                foreach( configArray('related_entry_type') as $type ) {
+                foreach (configArray('related_entry_type') as $type) {
                     $relatedEids = loadRelatedEntries(EID, $RVID_, $type);
-                    foreach ( $relatedEids as $reid ) {
-                        $Entry->addField('related_' . $type , $reid);
+                    foreach ($relatedEids as $reid) {
+                        $Entry->addField('related_' . $type, $reid);
                     }
                 }
 
                 //----------
                 // geometry
                 $Geo = loadGeometry('eid', EID, $RVID_);
-
-
             } else {
                 $step   = 'apply';
                 $action = 'insert';
@@ -179,8 +184,10 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 $vars['status:selected#' . config('initial_entry_status', 'draft')] = config('attr_selected');
                 $vars['indexing:checked#' . config('entry_edit_indexing_default', 'on')] = config('attr_checked');
                 $vars['members_only:checked#' . config('entry_edit_members_only_default', 'off')] = config('attr_checked'); // phpcs:ignore
-                foreach ( $aryType as $i => $type ) {
-                    if ( !$data = Tpl::getAdminColumnDefinition('insert', $type, $i) ) continue;
+                foreach ($aryType as $i => $type) {
+                    if (!$data = Tpl::getAdminColumnDefinition('insert', $type, $i)) {
+                        continue;
+                    }
                     $Column[]   = $data + array(
                         'id'    => uniqueString(),
                         'type'  => $type,
@@ -196,9 +203,9 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
             }
         }
 
-        $rootBlock  = 'step#'.$step;
-        $pattern    = '/<!--[\t 　]*BEGIN[\t 　]+'.$rootBlock.'[^>]*?-->(.*)<!--[\t 　]*END[\t 　]+'.$rootBlock.'[^>]*?-->/s';
-        if ( preg_match($pattern, $this->tpl, $matches) ) {
+        $rootBlock  = 'step#' . $step;
+        $pattern    = '/<!--[\t 　]*BEGIN[\t 　]+' . $rootBlock . '[^>]*?-->(.*)<!--[\t 　]*END[\t 　]+' . $rootBlock . '[^>]*?-->/s';
+        if (preg_match($pattern, $this->tpl, $matches)) {
             $this->tpl = $matches[0];
         }
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
@@ -206,13 +213,13 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         //--------
         // column
         $aryTypeLabel    = array();
-        foreach ( configArray('column_add_type') as $i => $type ) {
+        foreach (configArray('column_add_type') as $i => $type) {
             $aryTypeLabel[$type]    = config('column_add_type_label', '', $i);
         }
 
-        if ( $cnt = count($Column) ) {
+        if ($cnt = count($Column)) {
             $mediaData = Media::mediaEagerLoadFromUnit($Column);
-            foreach ( $Column as $data ) {
+            foreach ($Column as $data) {
                 $id     = $data['id'];
                 $clid   = intval(ite($data, 'clid'));
                 $type   = $data['type'];
@@ -230,36 +237,40 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
                 //--------------
                 // build column
-                if ( !$this->buildColumn($data, $Tpl, $rootBlock, $mediaData) ) continue;
+                if (!$this->buildColumn($data, $Tpl, $rootBlock, $mediaData)) {
+                    continue;
+                }
 
                 //------
                 // sort
-                for ( $i=1; $i<=$cnt; $i++ ) {
+                for ($i = 1; $i <= $cnt; $i++) {
                     $_vars  = array(
                         'value' => $i,
                         'label' => $i,
                     );
-                    if ( $sort == $i ) $_vars['selected']   = config('attr_selected');
+                    if ($sort == $i) {
+                        $_vars['selected']   = config('attr_selected');
+                    }
                     $Tpl->add(array('sort:loop', $rootBlock), $_vars);
                 }
 
                 //-------
                 // align
-                if ( in_array($type, array('text', 'custom', 'module', 'table')) ) {
+                if (in_array($type, array('text', 'custom', 'module', 'table'))) {
                     $Tpl->add(array('align#liquid', $rootBlock), array(
-                        'align:selected#'.$align => config('attr_selected')
+                        'align:selected#' . $align => config('attr_selected')
                     ));
                 } else {
                     $Tpl->add(array('align#solid', $rootBlock), array(
-                        'align:selected#'.$align => config('attr_selected')
+                        'align:selected#' . $align => config('attr_selected')
                     ));
                 }
 
                 //-------
                 // group
-                if ( 'on' === config('unit_group') ) {
+                if ('on' === config('unit_group')) {
                     $labels  = configArray('unit_group_label');
-                    foreach ( $labels as $i => $label ) {
+                    foreach ($labels as $i => $label) {
                         $class = config('unit_group_class', '', $i);
                         $Tpl->add(array('group:loop', $rootBlock), array(
                              'value' => $class,
@@ -271,14 +282,16 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
                 //------
                 // attr
-                if ( $aryAttr = configArray('column_'.$type.'_attr') ) {
-                    foreach ( $aryAttr as $i => $_attr ) {
-                        $label  = config('column_'.$type.'_attr_label', '', $i);
+                if ($aryAttr = configArray('column_' . $type . '_attr')) {
+                    foreach ($aryAttr as $i => $_attr) {
+                        $label  = config('column_' . $type . '_attr_label', '', $i);
                         $_vars  = array(
                             'value' => $_attr,
                             'label' => $label,
                         );
-                        if ( $attr == $_attr ) $_vars['selected'] = config('attr_selected');
+                        if ($attr == $_attr) {
+                            $_vars['selected'] = config('attr_selected');
+                        }
                         $Tpl->add(array('clattr:loop', $rootBlock), $_vars);
                     }
                 } else {
@@ -303,21 +316,21 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         $vars['related_entry_first_module_id'] = config('related_entry_first_module_id');
         $vars['related_entry_first_ctx'] = config('related_entry_first_ctx');
         $vars['related_entry_first_max_item'] = config('related_entry_first_max_item');
-        if ( $relatedEids = $Entry->getArray('related') ) {
+        if ($relatedEids = $Entry->getArray('related')) {
             $Entry->delete('related');
             Tpl::buildRelatedEntries($Tpl, $relatedEids, $rootBlock, $this->start, $this->end);
         }
-        foreach ( configArray('related_entry_type') as $i => $type ) {
+        foreach (configArray('related_entry_type') as $i => $type) {
             if (empty($type)) {
                 continue;
             }
-            $relatedEids = $Entry->getArray('related_'. $type);
+            $relatedEids = $Entry->getArray('related_' . $type);
             $label = config('related_entry_label', '', $i);
             $moduleId = config('related_entry_module_id', '', $i);
             $ctx = config('related_entry_ctx', '', $i);
             $maxItem = config('related_entry_max_item', '', $i);
             if (!!$relatedEids) {
-                $Entry->delete('related_'. $type);
+                $Entry->delete('related_' . $type);
                 Tpl::buildRelatedEntries($Tpl, $relatedEids, array('related_group:loop', $rootBlock), $this->start, $this->end, 'other_related:loop');
             }
             $Tpl->add(array('related_group:loop', $rootBlock), array(
@@ -333,22 +346,26 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         // summary range
         $summaryRange   = $Entry->get('summary_range');
         $columnAmount   = count($Column);
-        if ( $columnAmount < $summaryRange ) $summaryRange = $columnAmount;
-        for ( $i=1; $i<=$columnAmount; $i++ ) {
+        if ($columnAmount < $summaryRange) {
+            $summaryRange = $columnAmount;
+        }
+        for ($i = 1; $i <= $columnAmount; $i++) {
             $_vars  = array('value' => $i);
-            if ( $summaryRange == $i ) $_vars['selected']   = config('attr_selected');
+            if ($summaryRange == $i) {
+                $_vars['selected']   = config('attr_selected');
+            }
             $Tpl->add(array('range:loop', $rootBlock), $_vars);
         }
-        if ( '0' === $summaryRange ) {
+        if ('0' === $summaryRange) {
             $vars['range:selected#none']    = config('attr_selected');
-        } else if ( empty($summaryRange) ) {
+        } elseif (empty($summaryRange)) {
             $vars['range:selected#all']     = config('attr_selected');
         }
         $vars['summaryRange'] = $summaryRange;
 
         //----------
         // next eid
-        if ( $action == 'insert' ) {
+        if ($action == 'insert') {
             $DB = DB::singleton(dsn());
             $vars['next_eid'] = intval($DB->query(SQL::currval('entry_id', dsn()), 'one')) + 1;
         }
@@ -362,14 +379,15 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
         //--------------
         // custom field
-        foreach ( $CustomFieldCollection as $fieldName => $customField ) {
+        foreach ($CustomFieldCollection as $fieldName => $customField) {
             $vars   += $this->buildField($customField, $Tpl, $rootBlock, $fieldName);
         }
 
         //--------
         // action
-        if ( IS_LICENSED ) {
-            if ( 0
+        if (IS_LICENSED) {
+            if (
+                0
                 || ( !roleAvailableUser() && sessionWithCompilation() )
                 || ( roleAvailableUser() && roleAuthorization('category_create', BID) )
             ) {
@@ -377,18 +395,20 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
             }
 
             $Tpl->add(array('action#confirm', $rootBlock));
-            $Tpl->add(array('action#'.$action, $rootBlock));
+            $Tpl->add(array('action#' . $action, $rootBlock));
 
-            if ( 'entry-edit' == ADMIN ) {
+            if ('entry-edit' == ADMIN) {
                 $Tpl->add(array('view#frontend', $rootBlock));
-            } else if ( 'entry_editor' == ADMIN ) {
+            } elseif ('entry_editor' == ADMIN) {
                 $Tpl->add(array('view#backend', $rootBlock));
                 $Tpl->add(array('backend', $rootBlock));
-            } else if ( 'entry-field' == ADMIN && $this->Post->get('backend') ) {
+            } elseif ('entry-field' == ADMIN && $this->Post->get('backend')) {
                 $Tpl->add(array('message', $rootBlock));
             }
         }
-        if ( 'update' == $action ) $Tpl->add(array('action#delete', $rootBlock));
+        if ('update' == $action) {
+            $Tpl->add(array('action#delete', $rootBlock));
+        }
 
         $Tpl->add($rootBlock, $vars);
         return $Tpl->get();

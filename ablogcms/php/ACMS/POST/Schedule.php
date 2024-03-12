@@ -6,31 +6,35 @@ class ACMS_POST_Schedule extends ACMS_POST
     {
         return $this->Post;
     }
-    function buildSchedule(& $sche, & $sfds, $limit)
+    function buildSchedule(&$sche, &$sfds, $limit)
     {
         $invalid = false;
 
-        for ( $i = 1; $i < $limit; $i++ ) {
-            $_sche[$i] = $this->extract('schedule'.$i);
+        for ($i = 1; $i < $limit; $i++) {
+            $_sche[$i] = $this->extract('schedule' . $i);
             $_sche[$i]->validate(new ACMS_Validator());
-            if ( !$_sche[$i]->isValid() ) $invalid = true;
+            if (!$_sche[$i]->isValid()) {
+                $invalid = true;
+            }
 
-            $_sfds[$i] = $this->extract('field'.$i); 
+            $_sfds[$i] = $this->extract('field' . $i);
             $_sfds[$i]->validate(new ACMS_Validator());
-            if ( !$_sfds[$i]->isValid() ) $invalid = true;
+            if (!$_sfds[$i]->isValid()) {
+                $invalid = true;
+            }
         }
 
-        if ( $invalid ) {
+        if ($invalid) {
             return false;
         } else {
-            for ( $i = 1; $i < $limit; $i++ ) {
+            for ($i = 1; $i < $limit; $i++) {
                 $schedules[$i] = $_sche[$i]->_aryField;
             }
             $sche  = serialize($schedules);
 
-            for ( $i = 1; $i < $limit; $i++ ) {
+            for ($i = 1; $i < $limit; $i++) {
                 $sField[$i] = new Field();
-                foreach ( $_sfds[$i]->_aryField as $key => $val ) {
+                foreach ($_sfds[$i]->_aryField as $key => $val) {
                     $key = preg_replace('@[0-9]{1,2}$@', '', $key);
                     $sField[$i]->setField($key, $val);
                 }
@@ -50,9 +54,9 @@ class ACMS_POST_Schedule extends ACMS_POST
         $SQL->addWhereOpr('schedule_month', '00');
         $row    = $DB->query($SQL->get(dsn()), 'row');
 
-        foreach ( $row as $key => $val ) {
+        foreach ($row as $key => $val) {
             $vars[str_replace('schedule_', '', $key)] = $val;
-        } 
+        }
         return $vars;
     }
 }

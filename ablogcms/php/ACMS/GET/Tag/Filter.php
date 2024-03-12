@@ -2,7 +2,7 @@
 
 class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
 {
-    var $_scope = array(
+    public $_scope = array(
         'tag' => 'global',
     );
 
@@ -52,11 +52,11 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
         $SQL = SQL::newSelect('tag', 'tag0');
         $SQL->addSelect('tag_name', null, 'tag0');
         $SQL->addSelect('tag_name', 'tag_amount', 'tag0', 'count');
-        foreach ( $this->tags as $i => $tag ) {
-            $SQL->addLeftJoin('tag', 'tag_entry_id', 'tag_entry_id', 'tag'.($i+1), 'tag'.$i);
-            $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag'.($i+1));
+        foreach ($this->tags as $i => $tag) {
+            $SQL->addLeftJoin('tag', 'tag_entry_id', 'tag_entry_id', 'tag' . ($i + 1), 'tag' . $i);
+            $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag' . ($i + 1));
         }
-        foreach ( $this->tags as $tag ) {
+        foreach ($this->tags as $tag) {
             $SQL->addWhereOpr('tag_name', $tag, '<>', 'AND', 'tag0');
         }
 
@@ -65,7 +65,9 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
         $EntrySub->setSelect('entry_id');
         $EntrySub->addLeftJoin('category', 'entry_category_id', 'category_id');
         ACMS_Filter::entrySession($EntrySub);
-        if (!empty($this->Field)) { ACMS_Filter::entryField($EntrySub, $this->Field); }
+        if (!empty($this->Field)) {
+            ACMS_Filter::entryField($EntrySub, $this->Field);
+        }
 
         $CategorySub = null;
         if (!empty($this->cid)) {
@@ -73,7 +75,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
             $CategorySub->setSelect('category_id');
             if (is_int($this->cid)) {
                 ACMS_Filter::categoryTree($CategorySub, $this->cid, $this->categoryAxis());
-            } else if (strpos($this->cid, ',') !== false) {
+            } elseif (strpos($this->cid, ',') !== false) {
                 $CategorySub->addWhereIn('category_id', explode(',', $this->cid));
                 $multiId = true;
             }
@@ -93,7 +95,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
             } else {
                 ACMS_Filter::blogTree($BlogSub, $this->bid, $this->blogAxis());
             }
-        } else if (strpos($this->bid, ',') !== false) {
+        } elseif (strpos($this->bid, ',') !== false) {
             $BlogSub->addWhereIn('blog_id', explode(',', $this->bid));
         }
         ACMS_Filter::blogStatus($BlogSub);
@@ -104,7 +106,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
         ACMS_Filter::tagOrder($SQL, config('tag_filter_order'));
         $SQL->addGroup('tag_name', 'tag0');
         if (1 < ($tagThreshold = intval(config('tag_filter_threshold')))) {
-            $SQL->addHaving('tag_amount >= '.$tagThreshold);
+            $SQL->addHaving('tag_amount >= ' . $tagThreshold);
         }
         $SQL->setLimit(config('tag_filter_limit'));
         $q = $SQL->get(dsn());
@@ -136,4 +138,3 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
         return $Tpl->get();
     }
 }
-

@@ -12,7 +12,6 @@ class ACMS_POST_Entry_Lock_Unlock extends ACMS_POST_Entry
 
             $this->addMessage('「' . ACMS_RAM::entryTitle($eid) . '」のロックを解除しました');
         } catch (Exception $e) {
-
         }
         return $this->Post;
     }

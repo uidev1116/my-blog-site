@@ -3,6 +3,11 @@
 class ACMS_POST_Module_Export extends ACMS_POST_Config_Export
 {
     /**
+     * @var \Acms\Services\Config\ModuleExport $export
+     */
+    protected $export;
+
+    /**
      * run
      *
      * @return Field

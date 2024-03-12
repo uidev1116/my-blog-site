@@ -10,10 +10,10 @@ class ACMS_POST_Comment_Index_Status extends ACMS_POST_Comment
         $this->Post->setMethod('status', 'in', array('open', 'close', 'awaiting'));
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $targetCMIDs = [];
-            foreach ( $this->Post->getArray('checks') as $cmid ) {
+            foreach ($this->Post->getArray('checks') as $cmid) {
                 $SQL    = SQL::newUpdate('comment');
                 $SQL->setUpdate('comment_status', $this->Post->get('status'));
                 $SQL->addWhereOpr('comment_id', intval($cmid));

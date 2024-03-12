@@ -7,12 +7,7 @@
   </div>
 </header>
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
-  <span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
-  {error}
-</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <!-- BEGIN_MODULE Admin_Messages -->
 <!-- BEGIN message:loop -->
@@ -218,13 +213,13 @@
   </div>
 </div>
 
-<h2 class="acms-admin-admin-title2"><!--T-->キャッシュ・アクセスログ<!--/T--></h2>
+<h2 class="acms-admin-admin-title2"><!--T-->ページキャッシュ<!--/T--></h2>
 <div class="acms-admin-table-responsive acms-admin-margin-bottom-large">
   <table class="acms-admin-table-admin">
     <thead class="acms-admin-table-heading">
       <th class="acms-admin-table-nowrap"><!--T-->ブログID<!--/T--></th>
       <th class="acms-admin-table-nowrap"><!--T-->ルールID<!--/T--></th>
-      <th><!--T-->キャッシュ<!--/T--></th>
+      <th><!--T-->ページキャッシュ<!--/T--></th>
       <th><!--T-->POST時のキャッシュクリア<!--/T--></th>
       <th><!--T-->クリアの対象ブログ<!--/T--></th>
       <th class="acms-admin-admin-mini-table-action acms-admin-table-nowrap"><!--T-->編集<!--/T--></th>

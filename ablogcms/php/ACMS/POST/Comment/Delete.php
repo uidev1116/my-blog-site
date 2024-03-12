@@ -4,10 +4,12 @@ class ACMS_POST_Comment_Delete extends ACMS_POST_Comment
 {
     function post()
     {
-        if ( !CMID ) die();
+        if (!CMID) {
+            die();
+        }
         $DB = DB::singleton(dsn());
 
-        if ( !$this->validatePassword() ) {
+        if (!$this->validatePassword()) {
             return false;
         }
 
@@ -17,7 +19,7 @@ class ACMS_POST_Comment_Delete extends ACMS_POST_Comment
 
         $l  = ACMS_RAM::commentLeft(CMID);
         $r  = ACMS_RAM::commentRight(CMID);
-        $gap= $r - $l + 1;
+        $gap = $r - $l + 1;
 
         $SQL    = SQL::newDelete('comment');
         $SQL->addWhereOpr('comment_left', $l, '>=');
@@ -46,7 +48,7 @@ class ACMS_POST_Comment_Delete extends ACMS_POST_Comment
 
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);
-        } else if ( !empty($nextstep) ) {
+        } elseif (!empty($nextstep)) {
             $this->Post->set('step', $nextstep);
             $this->Post->set('action', 'delete');
             return $this->Post;

@@ -9,7 +9,7 @@ class ACMS_POST_Entry_Index_Trash extends ACMS_POST_Trash
 
         if (config('approval_contributor_edit_auth') !== 'on' && enableApproval(BID, CID)) {
             $this->Post->setMethod('entry', 'operative', sessionWithApprovalAdministrator(BID, CID));
-        } else if ( roleAvailableUser() ) {
+        } elseif (roleAvailableUser()) {
             $this->Post->setMethod('entry', 'operative', roleAuthorization('entry_delete', BID));
         } else {
             $this->Post->setMethod('entry', 'operative', sessionWithContribution());
@@ -25,7 +25,8 @@ class ACMS_POST_Entry_Index_Trash extends ACMS_POST_Trash
                 $bid    = $id[0];
                 $eid    = $id[1];
 
-                if ( 0
+                if (
+                    0
                     || !roleAvailableUser()
                     || ( roleAvailableUser() && roleAuthorization('entry_delete', $bid, $eid) )
                 ) {

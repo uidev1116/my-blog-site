@@ -73,12 +73,11 @@ abstract class Generator
      */
     protected function request($url, $info)
     {
-        $self = $this;
-        $request = React::createRequest($url, function($data, $code) use($self, $info) {
-            if ( !empty($data) && $code == '200' ) {
-                $data = $self->compiler->compile($data);
+        $request = React::createRequest($url, function ($data, $code) use ($info) {
+            if (!empty($data) && $code == '200') {
+                $data = $this->compiler->compile($data);
             }
-            $self->callback($data, $code, $info);
+            $this->callback($data, $code, $info);
         });
         $this->queue->push($request);
     }

@@ -2,12 +2,12 @@
 
 class ACMS_GET_Calendar_Month extends ACMS_GET
 {
-    var $_axis  = array(
+    public $_axis  = array(
         'bid'   => 'self',
         'cid'   => 'self',
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'date'  => 'global',
         'start' => 'global',
         'end'   => 'global',
@@ -17,7 +17,9 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
     {
         $ym = substr($this->start, 0, 7);
 
-        if ( '1000-01' == $ym ) $ym = date('Y-m', requestTime());
+        if ('1000-01' == $ym) {
+            $ym = date('Y-m', requestTime());
+        }
         list($y, $m)    = explode('-', $ym);
 
         $DB     = DB::singleton(dsn());
@@ -34,19 +36,19 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
         ACMS_Filter::categoryTree($SQL, $this->cid, $this->categoryAxis());
         ACMS_Filter::categoryStatus($SQL);
         ACMS_Filter::entrySession($SQL);
-        ACMS_Filter::entrySpan($SQL, $ym.'-01 00:00:00', $ym.'-31 23:59:59');
+        ACMS_Filter::entrySpan($SQL, $ym . '-01 00:00:00', $ym . '-31 23:59:59');
         $q  = $SQL->get(dsn());
 
         $exists = array();
         $all    = $DB->query($q, 'all');
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $exists[]   = $row['entry_date'];
         }
 
         $beginW = intval(config('calendar_begin_week'));
         $endW   = (6 + $beginW) % 7;
         $label  = configArray('calendar_week_label');
-        for ( $i=0; $i<7; $i++ ) {
+        for ($i = 0; $i < 7; $i++) {
             $w  = ($beginW + $i) % 7;
             $Tpl->add('weekLabel:loop', array(
                 'w'     => $w,
@@ -56,10 +58,10 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
 
         //--------
         // spacer
-        $firstW     = intval(date('w', strtotime($ym.'-01')));
+        $firstW     = intval(date('w', strtotime($ym . '-01')));
 
-        if ( $span = ($firstW + (7 - $beginW)) % 7 ) {
-            for ( $i=0; $i<$span; $i++ ) {
+        if ($span = ($firstW + (7 - $beginW)) % 7) {
+            for ($i = 0; $i < $span; $i++) {
                 $Tpl->add('spacer');
                 $Tpl->add('day:loop');
             }
@@ -67,11 +69,11 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
 
         //-----
         // day
-        $lastDay    = intval(date('t', strtotime($ym.'-01')));
+        $lastDay    = intval(date('t', strtotime($ym . '-01')));
         $curW   = $firstW;
-        for ( $day=1; $day<=$lastDay; $day++ ) {
-            $date   = $ym.'-'.sprintf('%02d', $day);
-            if ( in_array($date, $exists) ) {
+        for ($day = 1; $day <= $lastDay; $day++) {
+            $date   = $ym . '-' . sprintf('%02d', $day);
+            if (in_array($date, $exists, true)) {
                 $Tpl->add('link', array(
                     'w'     => $curW,
                     'url'   => acmsLink(array(
@@ -91,15 +93,17 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
             }
             $Tpl->add('day:loop');
             $curW   = ($curW + 1) % 7;
-            if ( $beginW == $curW ) $Tpl->add('week:loop');
+            if ($beginW == $curW) {
+                $Tpl->add('week:loop');
+            }
         }
 
         //--------
         // spacer
         $lastW  = ($curW + 6) % 7;
 
-        if ( $span = 6 - ($lastW + (7 - $beginW)) % 7 ) {
-            for ( $i=0; $i<$span; $i++ ) {
+        if ($span = 6 - ($lastW + (7 - $beginW)) % 7) {
+            for ($i = 0; $i < $span; $i++) {
                 $Tpl->add('spacer');
                 $Tpl->add('day:loop');
             }
@@ -125,7 +129,7 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
                 'date'  => array(
-                    date('Y', $prevtime), 
+                    date('Y', $prevtime),
                     date('m', $prevtime),
                 ),
             )),
@@ -133,7 +137,7 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
                 'date'  => array(
-                    date('Y', $nexttime), 
+                    date('Y', $nexttime),
                     date('m', $nexttime),
                 ),
             )),

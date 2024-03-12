@@ -25,12 +25,18 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
         /**
          * build Labels
          */
-        for ( $i=0; $i<$rows; $i++ ) {
-            if ( empty($name[$i]) ) continue;
-            if ( empty($key[$i]) )  $key[$i] = uniqueString();
+        for ($i = 0; $i < $rows; $i++) {
+            if (empty($name[$i])) {
+                continue;
+            }
+            if (empty($key[$i])) {
+                $key[$i] = uniqueString();
+            }
 
             $_tmp   = array($name[$i], $key[$i]);
-            if ( !empty($class[$i]) ) $_tmp[] = $class[$i];
+            if (!empty($class[$i])) {
+                $_tmp[] = $class[$i];
+            }
 
             $fds[implode(config('schedule_label_separator'), $_tmp)] = $sort[$i];
 
@@ -46,7 +52,7 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
 
         // delete
         $SQL    = SQL::newDelete('config');
-        $SQL->addWhereOpr('config_key', 'schedule_label@'.$scid);
+        $SQL->addWhereOpr('config_key', 'schedule_label@' . $scid);
         $SQL->addWhereOpr('config_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
 
@@ -56,17 +62,17 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
         asort($fds);
         $cnt    = 1;
         $Config =& Field::singleton('config');
-        $Config->delete('schedule_label@'.$scid);
+        $Config->delete('schedule_label@' . $scid);
 
         $results = [];
-        foreach ( $fds as $label => $num ) {
+        foreach ($fds as $label => $num) {
             $SQL    = SQL::newInsert('config');
-            $SQL->addInsert('config_key', 'schedule_label@'.$scid);
+            $SQL->addInsert('config_key', 'schedule_label@' . $scid);
             $SQL->addInsert('config_value', $label);
             $SQL->addInsert('config_sort', $cnt++);
             $SQL->addInsert('config_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
-            $Config->add('schedule_label@'.$scid, $label);
+            $Config->add('schedule_label@' . $scid, $label);
 
             $results[] = $label;
         }

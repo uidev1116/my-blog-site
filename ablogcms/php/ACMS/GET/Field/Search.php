@@ -2,14 +2,14 @@
 
 class ACMS_GET_Field_Search extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'field' => 'global',
     );
 
     function get()
     {
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        if ( empty($this->Field) ) {
+        if (empty($this->Field)) {
             $Tpl->add();
             return $Tpl->get();
         }

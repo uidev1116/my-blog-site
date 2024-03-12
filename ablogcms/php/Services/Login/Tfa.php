@@ -2,7 +2,7 @@
 
 namespace Acms\Services\Login;
 
-use \RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\TwoFactorAuth;
 use DB;
 use SQL;
 use Common;
@@ -87,7 +87,7 @@ class Tfa
     {
         try {
             $this->tfa->ensureCorrectTime();
-        } catch (RobThree\Auth\TwoFactorAuthException $ex) {
+        } catch (\RobThree\Auth\TwoFactorAuthException $e) {
             return false;
         }
         return true;
@@ -164,5 +164,4 @@ class Tfa
         }
         return true;
     }
-
 }

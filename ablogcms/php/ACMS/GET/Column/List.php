@@ -8,12 +8,12 @@
  */
 class ACMS_GET_Column_List extends ACMS_GET_Unit_List
 {
-    var $_axis = array(
+    public $_axis = array(
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'cid'       => 'global',
         'eid'       => 'global',
         'start'     => 'global',

@@ -5,7 +5,7 @@ class ACMS_POST_NotProcess extends ACMS_POST
     /**
      * @var bool
      */
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * @var bool

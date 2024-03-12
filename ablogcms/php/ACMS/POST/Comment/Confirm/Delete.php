@@ -34,13 +34,12 @@ class ACMS_POST_Comment_Confirm_Delete extends ACMS_POST_Comment
         $Comment->setField('title', ACMS_RAM::commentTitle(CMID));
         $Comment->setField('body', ACMS_RAM::commentBody(CMID));
 
-        if ( !$this->validatePassword($Comment) ) {
+        if (!$this->validatePassword($Comment)) {
             return false;
         }
         $this->Post->set('action', 'delete');
         $this->Post->set('step', $this->Post->isValidAll() ?
-            $this->Post->get('nextstep') : $this->Post->get('step')
-        );
+            $this->Post->get('nextstep') : $this->Post->get('step'));
         return $this->Post;
     }
 }

@@ -4,19 +4,22 @@ class ACMS_GET_Admin_Blog_Fix extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( !sessionWithAdministration() ) return '';
-        if ( 0 !== ACMS_RAM::blogParent(BID) ) return '';
+        if (!sessionWithAdministration()) {
+            return '';
+        }
+        if (0 !== ACMS_RAM::blogParent(BID)) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
-        if ( !$this->Post->isValid() ) {
+        if (!$this->Post->isValid()) {
             $Tpl->add('error');
         } else {
-
-            if ( 'success' == $this->Post->get('delete') ) {
+            if ('success' == $this->Post->get('delete')) {
                 $Tpl->add('delete#success');
             }
-            if ( 'success' == $this->Post->get('align') ) {
+            if ('success' == $this->Post->get('align')) {
                 $Tpl->add('align#success');
             }
 
@@ -27,13 +30,13 @@ class ACMS_GET_Admin_Blog_Fix extends ACMS_GET_Admin
             $SQL->setHaving(SQL::newOpr(SQL::newFunction('blog_id', 'count'), 2, '>='));
             $SQL->setLimit(1);
 
-            if ( !!($bid = intval($DB->query($SQL->get(dsn()), 'one'))) ) {
+            if (!!($bid = intval($DB->query($SQL->get(dsn()), 'one')))) {
                 $SQL    = SQL::newSelect('blog');
                 $SQL->addWhereOpr('blog_id', $bid);
                 $i  = 1;
-                foreach ( $DB->query($SQL->get(dsn()), 'all') as $row ) {
-                    $Tpl->add('status:touch#'.$row['blog_status']);
-                    $Tpl->add('indexing:touch#'.$row['blog_indexing']);
+                foreach ($DB->query($SQL->get(dsn()), 'all') as $row) {
+                    $Tpl->add('status:touch#' . $row['blog_status']);
+                    $Tpl->add('indexing:touch#' . $row['blog_indexing']);
                     $Tpl->add('blog:loop', array(
                         'i'         => $i++,
                         'bid'       => $row['blog_id'],

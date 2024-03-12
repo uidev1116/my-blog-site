@@ -28,6 +28,5 @@ class BlogServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

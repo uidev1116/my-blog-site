@@ -112,18 +112,21 @@ class CopyEntryArchive
                 if (is_array($ary_path) && count($ary_path) > 0) {
                     $fieldIndex = 0;
                     foreach ($ary_path as $path) {
-                        if (1
+                        if (
+                            1
                             and Storage::isFile(ARCHIVES_DIR . $path)
                             and preg_match('@^(.*?)([^/]+)(\.[^.]+)$@', $path, $match)
                         ) {
-                            foreach (array(
+                            foreach (
+                                array(
                                          '' => '@path',
                                          'large-' => '@largePath',
                                          'tiny-' => '@tinyPath',
                                          'square-' => '@squarePath',
-                                     ) as $pfx => $name) {
-
-                                if (1
+                                     ) as $pfx => $name
+                            ) {
+                                if (
+                                    1
                                     and $path = $Field->get($_fd . $name, null, $fieldIndex)
                                     and Storage::isFile(ARCHIVES_DIR . $path)
                                 ) {

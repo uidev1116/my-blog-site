@@ -68,17 +68,19 @@ abstract class Facade
     public static function __callStatic($method, array $arguments)
     {
         $class = get_called_class();
-        if ( static::isCache() && property_exists($class, 'instance') && $class::$instance ) {
+        if (static::isCache() && property_exists($class, 'instance') && $class::$instance) {
             $instance = $class::$instance;
         } else {
             $instance = static::getServiceInstance(static::getServiceAlias());
         }
-        if ( static::isCache() ) {
+        if (static::isCache()) {
             $class::$instance = $instance;
         }
 
-        if ( is_callable(array($instance, $method)) ) {
+        if (is_callable(array($instance, $method))) {
             return call_user_func_array(array($instance, $method), $arguments);
         }
+
+        throw new \BadMethodCallException("Method {$method} does not exist on " . get_class($instance));
     }
 }

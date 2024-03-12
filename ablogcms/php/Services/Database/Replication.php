@@ -24,7 +24,7 @@ class Replication
 
     public function __construct($dsn = null)
     {
-        if ( empty($dsn) ) {
+        if (empty($dsn)) {
             $this->dsn = dsn();
         }
         $this->dbName = $this->dsn['name'];
@@ -42,7 +42,7 @@ class Replication
         $tables = DB::query($sql, 'all');
 
         $list = array();
-        foreach ( $tables as $key => $table ) {
+        foreach ($tables as $key => $table) {
             array_push($list, strtolower(reset($table)));
         }
 
@@ -57,7 +57,7 @@ class Replication
     public function dropAllTables()
     {
         $list = array();
-        foreach ( $this->getTableList() as $table ) {
+        foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
             array_push($list, '`' . $table . '`');
         }
@@ -77,9 +77,9 @@ class Replication
     public function renameAllTable()
     {
         $list = array();
-        foreach ( $this->getTableList() as $table ) {
+        foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
-            if ( !preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '*/', $table) ) {
+            if (!preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '.*/', $table)) {
                 array_push($list, $table . ' TO backup_acms_' . $table);
             }
         }
@@ -97,14 +97,14 @@ class Replication
     public function dropCashTable()
     {
         $list = array();
-        foreach ( $this->getTableList() as $table ) {
+        foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
-            if ( preg_match('/^backup_acms_.*/', $table) ) {
+            if (preg_match('/^backup_acms_.*/', $table)) {
                 array_push($list, '`' . $table . '`');
             }
         }
         $tables_str = implode(', ', $list);
-        if ( !empty($tables_str) ) {
+        if (!empty($tables_str)) {
             $sql = 'DROP TABLE ' . $tables_str;
             $sql2 = 'DROP TABLE ' . strtoupper($tables_str);
 
@@ -131,17 +131,17 @@ class Replication
     {
         $master = '';
         $list = array();
-        foreach ( $this->getTableList() as $table ) {
+        foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
-            if ( !preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '*/', $table) ) {
+            if (!preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '.*/', $table)) {
                 array_push($list, $table);
             }
         }
 
-        foreach ( $list as $key => $row ) {
+        foreach ($list as $key => $row) {
             $sql = 'SHOW CREATE TABLE ' . $row;
             $create = DB::query($sql, 'all');
-            foreach ( $create as $row ) {
+            foreach ($create as $row) {
                 $create_sql = $row['Create Table'];
                 $create_sql = str_replace(array("\r\n", "\n", "\r"), '', $create_sql);
                 $master .= $create_sql . ';' . PHP_EOL;
@@ -159,9 +159,9 @@ class Replication
      *
      * @return void
      */
-    public function buildInsertSql($table, & $handle)
+    public function buildInsertSql($table, &$handle)
     {
-        if ( preg_match('/^backup_acms_.*/', $table) ) {
+        if (preg_match('/^backup_acms_.*/', $table)) {
             return;
         }
         $db = DB::singleton(dsn());
@@ -183,9 +183,11 @@ class Replication
             $j = 0;
             foreach ($columnsType as $name => $type) {
                 $type = strtolower($type);
-                if ($j !== 0) $masterQuery .= ', ';
+                if ($j !== 0) {
+                    $masterQuery .= ', ';
+                }
                 $value = $row[$name];
-                if ($value === NULL) {
+                if ($value === null) {
                     $masterQuery .= 'NULL';
                 } else {
                     if (preg_match('/(blob|binary|point|geometry)/', $type) || false === detectEncode($value)) {
@@ -199,9 +201,9 @@ class Replication
             }
             $masterQuery .= ');' . PHP_EOL;
             $masterQuery = preg_replace('/' . DB_PREFIX . '/', 'DB_PREFIX_STR_', $masterQuery);
-            if ( 'UTF-8' <> DB_CHARSET ) {
+            if ('UTF-8' <> DB_CHARSET) {
                 $val = @mb_convert_encoding($masterQuery, "UTF-8", DB_CHARSET);
-                if ( $masterQuery === mb_convert_encoding($val, DB_CHARSET, 'UTF-8') ) {
+                if ($masterQuery === mb_convert_encoding($val, DB_CHARSET, 'UTF-8')) {
                     $masterQuery = $val;
                 }
             }
@@ -231,19 +233,19 @@ class Replication
         $table = 'TEMP_' . date('yMd_His');
         $new_table = 'R_' . $table;
 
-        if ( !DB::query('CREATE TABLE `' . $table . '` (test VARCHAR(1))', 'exec') ) {
+        if (!DB::query('CREATE TABLE `' . $table . '` (test VARCHAR(1))', 'exec')) {
             throw new \RuntimeException('CREATE TABLE権限がありません。 ' . implode(' ', DB::errorInfo()));
         }
 
-        if ( !DB::query('RENAME TABLE `' . $table . '` TO `' . $new_table . '`', 'exec') ) {
+        if (!DB::query('RENAME TABLE `' . $table . '` TO `' . $new_table . '`', 'exec')) {
             throw new \RuntimeException('RENAME TABLEする権限がありません。 ' . implode(' ', DB::errorInfo()));
         }
 
-        if ( !DB::query('DROP TABLE `' . $new_table . '`', 'exec') ) {
+        if (!DB::query('DROP TABLE `' . $new_table . '`', 'exec')) {
             throw new \RuntimeException('DROP TABLEする権限がありません。 ' . implode(' ', DB::errorInfo()));
         }
 
-        if ( !DB::query('SHOW TABLES FROM `' . DB_NAME . '`', 'exec') ) {
+        if (!DB::query('SHOW TABLES FROM `' . DB_NAME . '`', 'exec')) {
             throw new \RuntimeException('SHOW TABLESする権限がありません。 ' . implode(' ', DB::errorInfo()));
         }
     }

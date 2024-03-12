@@ -2,12 +2,12 @@
 
 class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
 {
-    var $_axis = array(
+    public $_axis = array(
         'bid' => 'self',
         'cid' => 'self',
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'eid' => 'global',
     );
 
@@ -73,19 +73,22 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
      */
     function get()
     {
-        if ( !$this->setConfig() ) return '';
+        if (!$this->setConfig()) {
+            return '';
+        }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->getReferencePoint();
 
-        if ( 1
+        if (
+            1
             && $this->config['referencePoint'] === 'url_query_string'
             && (!$this->lat || !$this->lng)
         ) {
             $Tpl->add('notFoundGeolocation');
             return $Tpl->get();
         }
-        if ( !$this->lat || !$this->lng ) {
-            if ( $this->buildNotFound($Tpl) ) {
+        if (!$this->lat || !$this->lng) {
+            if ($this->buildNotFound($Tpl)) {
                 return $Tpl->get();
             } else {
                 return '';
@@ -102,18 +105,18 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
      */
     function getReferencePoint()
     {
-        if ( $this->config['referencePoint'] === 'url_context' && $this->eid ) {
+        if ($this->config['referencePoint'] === 'url_context' && $this->eid) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newSelect('geo', 'geo');
             $SQL->addSelect('geo_geometry', 'lat', 'geo', POINT_Y);
             $SQL->addSelect('geo_geometry', 'lng', 'geo', POINT_X);
             $SQL->addWhereOpr('geo_eid', $this->eid);
             $SQL->addWhereOpr('geo_blog_id', BID);
-            if ( $data = $DB->query($SQL->get(dsn()), 'row') ) {
+            if ($data = $DB->query($SQL->get(dsn()), 'row')) {
                 $this->lat = $data['lat'];
                 $this->lng = $data['lng'];
             }
-        } else if ( $this->config['referencePoint'] === 'url_query_string' ) {
+        } elseif ($this->config['referencePoint'] === 'url_query_string') {
             $this->lat = $this->Get->get('lat');
             $this->lng = $this->Get->get('lng');
         }
@@ -139,13 +142,13 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
         $SQL->addSelect('geo_geometry', 'latitude', null, POINT_Y);
         $SQL->addGeoDistance('geo_geometry', $this->lng, $this->lat, 'distance');
 
-        if ( $this->config['referencePoint'] === 'url_context' && $this->eid ) {
+        if ($this->config['referencePoint'] === 'url_context' && $this->eid) {
             $SQL->addWhereOpr('geo_eid', $this->eid, '<>');
         }
 
-        if ( $within > 0 ) {
+        if ($within > 0) {
             $within = $within * 1000;
-            $SQL->addHaving('distance < '.$within);
+            $SQL->addHaving('distance < ' . $within);
         }
 
         $this->filterQuery($SQL);
@@ -178,7 +181,7 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
      * @param SQL_Select & $SQL
      * @return bool
      */
-    function entryFilterQuery(& $SQL)
+    function entryFilterQuery(&$SQL)
     {
         return false;
     }

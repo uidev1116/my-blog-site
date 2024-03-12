@@ -26,6 +26,5 @@ class ApprovalServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

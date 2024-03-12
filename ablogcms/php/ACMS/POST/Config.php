@@ -21,9 +21,15 @@ class ACMS_POST_Config extends ACMS_POST
      */
     function post()
     {
-        if ( !$rid = idval($this->Post->get('rid')) ) $rid = null;
-        if ( !$mid = idval($this->Post->get('mid')) ) $mid = null;
-        if ( !$setid = idval($this->Post->get('setid'))) $setid = null;
+        if (!$rid = idval($this->Post->get('rid'))) {
+            $rid = null;
+        }
+        if (!$mid = idval($this->Post->get('mid'))) {
+            $mid = null;
+        }
+        if (!$setid = idval($this->Post->get('setid'))) {
+            $setid = null;
+        }
 
         $Config = $this->extract('config');
         $Config = Config::setValide($Config, $rid, $mid, $setid);
@@ -58,7 +64,7 @@ class ACMS_POST_Config extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function resetConfig(& $Config, $bid=BID, $rid=null, $mid=null, $setid=null)
+    function resetConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
         Config::resetConfig($Config, $bid, $rid, $mid, $setid);
     }
@@ -66,7 +72,7 @@ class ACMS_POST_Config extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveConfig(& $Config, $bid=BID, $rid=null, $mid=null, $setid=null)
+    function saveConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
         return Config::saveConfig($Config, $bid, $rid, $mid, $setid);
     }
@@ -82,7 +88,7 @@ class ACMS_POST_Config extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function setValide(&$Config, $rid=null, $mid=null, $setid=null)
+    function setValide(&$Config, $rid = null, $mid = null, $setid = null)
     {
         $Config = Config::setValide($Config, $rid, $mid, $setid);
     }

@@ -26,14 +26,14 @@ class LoggerServiceProvider extends ServiceProvider
     {
         $logger = new Logger('acms-logger');
 
-        $logger->pushProcessor(new WebProcessor);
-        $logger->pushProcessor(new MemoryUsageProcessor);
-        $logger->pushProcessor(new MemoryPeakUsageProcessor);
+        $logger->pushProcessor(new WebProcessor());
+        $logger->pushProcessor(new MemoryUsageProcessor());
+        $logger->pushProcessor(new MemoryPeakUsageProcessor());
 
         // Rotating file handler
         if (defined('ERROR_LOG_FILE') && ERROR_LOG_FILE) {
             $path = SCRIPT_DIR . ERROR_LOG_FILE;
-            $maxFiles = env('LOGGER_ROTATING_MAX_FILES', 60);
+            $maxFiles = intval(env('LOGGER_ROTATING_MAX_FILES', '60'));
             $this->setHandler($logger, new RotatingFileHandler($path, $maxFiles, Logger::NOTICE));
         }
 
@@ -61,7 +61,6 @@ class LoggerServiceProvider extends ServiceProvider
      */
     public function init(): void
     {
-
     }
 
     /**

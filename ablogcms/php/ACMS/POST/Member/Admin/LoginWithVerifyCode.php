@@ -57,7 +57,7 @@ class ACMS_POST_Member_Admin_LoginWithVerifyCode extends ACMS_POST_Member_Admin_
             generateSession($uid);
             $this->removeVerifyCode($email);
 
-            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid). '」が管理ログインしました', [
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid) . '」が管理ログインしました', [
                 'id' => $uid,
             ]);
 
@@ -65,11 +65,9 @@ class ACMS_POST_Member_Admin_LoginWithVerifyCode extends ACMS_POST_Member_Admin_
 
             // リダイレクト処理
             Login::loginRedirect(ACMS_RAM::user($uid), '');
-
         } catch (BadRequestException $e) {
             $loginField->setMethod('code', 'request', false);
             AcmsLogger::notice('不正な確認コードのため、確認コードによる管理ログインに失敗しました', Common::exceptionArray($e, $data));
-
         } catch (ExpiredException $e) {
             $loginField->setMethod('code', 'expired', false);
             AcmsLogger::notice('有効期限切れの確認コードのため、確認コードによる管理ログインに失敗しました', Common::exceptionArray($e, $data));

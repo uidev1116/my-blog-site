@@ -2,7 +2,7 @@
 
 class ACMS_GET_Touch_SessionWithContribution extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'bid'   => 'global',
     );
 

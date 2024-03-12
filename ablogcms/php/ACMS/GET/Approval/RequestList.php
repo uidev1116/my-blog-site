@@ -4,7 +4,9 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
 {
     function get()
     {
-        if ( !enableApproval() ) return false;
+        if (!enableApproval()) {
+            return false;
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
@@ -18,20 +20,27 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
 
         $Pager  = new SQL_Select($SQL);
         $Pager->setSelect('*', 'approval_amount', null, 'count');
-        if ( !$pageAmount = intval($DB->query($Pager->get(dsn()), 'one')) ) {
+        if (!$pageAmount = intval($DB->query($Pager->get(dsn()), 'one'))) {
             $Tpl->add('index#notFound');
             $Tpl->add(null, $vars);
             return $Tpl->get();
         }
 
-        $vars   += $this->buildPager(PAGE, $limit, $pageAmount
-            , config('admin_pager_delta'), config('admin_pager_cur_attr'), $Tpl, array(), array('admin' => ADMIN)
+        $vars   += $this->buildPager(
+            PAGE,
+            $limit,
+            $pageAmount,
+            config('admin_pager_delta'),
+            config('admin_pager_cur_attr'),
+            $Tpl,
+            array(),
+            array('admin' => ADMIN)
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
         $all = $DB->query($SQL->get(dsn()), 'all');
 
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             //-----------
             // 承認フロー
             $SQL    = SQL::newSelect('approval');
@@ -40,9 +49,11 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
             $SQL->addWhereOpr('approval_blog_id', $row['approval_blog_id']);
             $SQL->addWhereOpr('approval_type', 'comment', '<>');
             $SQL->setOrder('approval_datetime', 'DESC');
-            if ( !($history = $DB->query($SQL->get(dsn()), 'all')) ) return '';
+            if (!($history = $DB->query($SQL->get(dsn()), 'all'))) {
+                return '';
+            }
 
-            foreach ( $history as $row2 ) {
+            foreach ($history as $row2) {
                 //--------------
                 // 操作ユーザ情報
                 $reqUserField   = loadUser($row2['approval_request_user_id']);
@@ -52,11 +63,11 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
 
                 //------------------
                 // 担当者 承認依頼のみ
-                if ( $row2['approval_type'] === 'request' ) {
+                if ($row2['approval_type'] === 'request') {
                     $receive = null;
-                    if ( !!$row2['approval_receive_user_id'] ) {
+                    if (!!$row2['approval_receive_user_id']) {
                         $receive['userOrGroupp'] = ACMS_RAM::userName($row2['approval_receive_user_id']);
-                    } else if ( !!$row2['approval_receive_usergroup_id'] ) {
+                    } elseif (!!$row2['approval_receive_usergroup_id']) {
                         $SQL    = SQL::newSelect('usergroup');
                         $SQL->addSelect('usergroup_name');
                         $SQL->addWhereOpr('usergroup_id', $row2['approval_receive_usergroup_id']);
@@ -71,7 +82,7 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                 //---------
                 // 承認情報
                 $approvalField  = new Field();
-                foreach ( $row2 as $key => $val ) {
+                foreach ($row2 as $key => $val) {
                     $key_       = substr($key, strlen('approval_'));
                     $approvalField->add($key_, $val);
                 }
@@ -81,8 +92,8 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                 $SQL->addWhereOpr('entry_rev_id', $row['approval_revision_id']);
                 $SQL->addWhereOpr('entry_id', $row['approval_entry_id']);
                 $SQL->addWhereOpr('entry_blog_id', $row['approval_blog_id']);
-                if ( $revStatus = $DB->query($SQL->get(dsn()), 'one') ) {
-                    if ( $approvalField->get('type') === 'request' && $revStatus === 'trash' ) {
+                if ($revStatus = $DB->query($SQL->get(dsn()), 'one')) {
+                    if ($approvalField->get('type') === 'request' && $revStatus === 'trash') {
                         $approvalField->set('type', 'trash');
                     }
                 }
@@ -94,7 +105,7 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
             //-------------
             // last status
             $last = array_shift($history);
-            $Tpl->add('type:touch#'.$last['approval_type']);
+            $Tpl->add('type:touch#' . $last['approval_type']);
 
             $loop = [];
 

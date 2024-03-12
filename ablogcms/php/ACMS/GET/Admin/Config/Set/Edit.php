@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Config_Set_Edit extends ACMS_GET_Admin_Edit
 {
-    function edit(& $Tpl)
+    function edit(&$Tpl)
     {
         $configSet =& $this->Post->getChild('config_set');
 

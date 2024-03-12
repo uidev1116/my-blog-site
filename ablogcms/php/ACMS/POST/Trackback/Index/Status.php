@@ -10,9 +10,9 @@ class ACMS_POST_Trackback_Index_Status extends ACMS_POST
         $this->Post->setMethod('status', 'in', array('open', 'close', 'awaiting'));
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
-            foreach ( $this->Post->getArray('checks') as $cmid ) {
+            foreach ($this->Post->getArray('checks') as $cmid) {
                 $SQL    = SQL::newUpdate('trackback');
                 $SQL->setUpdate('trackback_status', $this->Post->get('status'));
                 $SQL->addWhereOpr('trackback_id', intval($cmid));

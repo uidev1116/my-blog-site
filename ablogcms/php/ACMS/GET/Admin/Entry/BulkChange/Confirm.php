@@ -48,7 +48,8 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
     /**
      * Validator
      *
-     * @return bool
+     * @return void
+     * @throws \RuntimeException
      */
     protected function validate()
     {
@@ -61,7 +62,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
         if (empty($this->entryActions) && empty($this->fieldActions)) {
             throw new \RuntimeException('Process empty.');
         }
-        if (!in_array($this->Post->get('step'), array('3', '4'))) {
+        if (!in_array($this->Post->get('step'), array('3', '4'), true)) {
             throw new \RuntimeException('Access denied.');
         }
     }
@@ -104,11 +105,12 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
                 'url' => acmsLink(array('eid' => $eid)),
                 'code' => $row['entry_code'],
                 'datetime' => $row['entry_datetime'],
-                'title' => addPrefixEntryTitle($row['entry_title']
-                    , $row['entry_status']
-                    , $row['entry_start_datetime']
-                    , $row['entry_end_datetime']
-                    , $row['entry_approval']
+                'title' => addPrefixEntryTitle(
+                    $row['entry_title'],
+                    $row['entry_status'],
+                    $row['entry_start_datetime'],
+                    $row['entry_end_datetime'],
+                    $row['entry_approval']
                 ),
                 'categoryName' => $row['category_name'],
                 'userIcon' => loadUserIcon($uid),
@@ -135,7 +137,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
         foreach ($this->entryActions as $action) {
             $method = Common::camelize($action);
             if (method_exists($this, $method)) {
-                $value = $this->{$method}($entry);
+                $value = $this->{$method}($entry); // @phpstan-ignore-line
             } else {
                 $value = $entry->get($action);
             }

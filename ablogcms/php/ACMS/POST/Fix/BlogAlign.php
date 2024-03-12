@@ -11,20 +11,20 @@ class ACMS_POST_Fix_BlogAlign extends ACMS_POST
         ));
         $this->Post->validate();
 
-        if ( $this->Post->isValid() ) {
+        if ($this->Post->isValid()) {
             @set_time_limit(0);
             $DB = DB::singleton(dsn());
 
             $que    = array(0);    // FIFO
             $aryPid = array();
-            while ( true ) {
+            while (true) {
                 $pid    = array_shift($que);
 
                 $pos    = 0;
-                if ( !empty($pid) ) {
+                if (!empty($pid)) {
                     $SQL    = SQL::newSelect('blog');
                     $SQL->addWhereOpr('blog_id', $pid);
-                    if ( !!($row = $DB->query($SQL->get(dsn()), 'row')) ) {
+                    if (!!($row = $DB->query($SQL->get(dsn()), 'row'))) {
                         $pos    = intval($row['blog_left']);// - 1;
                     } else {
                         continue;
@@ -37,12 +37,11 @@ class ACMS_POST_Fix_BlogAlign extends ACMS_POST
                 $SQL->setOrder('blog_sort');
 
                 $cnt    = 0;
-                if ( !!($all = $DB->query($SQL->get(dsn()), 'all')) ) {
-
-                    foreach ( $DB->query($SQL->get(dsn()), 'all') as $row ) {
+                if (!!($all = $DB->query($SQL->get(dsn()), 'all'))) {
+                    foreach ($DB->query($SQL->get(dsn()), 'all') as $row) {
                         $cnt++;
                         $bid    = intval($row['blog_id']);
-                        $right  = ($cnt*2) + $pos;
+                        $right  = ($cnt * 2) + $pos;
                         $left   = $right - 1;
 
                         $SQL    = SQL::newUpdate('blog');
@@ -55,7 +54,7 @@ class ACMS_POST_Fix_BlogAlign extends ACMS_POST
                         array_push($que, $bid);
                     }
 
-                    if ( !empty($aryPid) ) {
+                    if (!empty($aryPid)) {
                         $SQL    = SQL::newUpdate('blog');
                         $SQL->setUpdate('blog_left', SQL::newOpr('blog_left', ($cnt * 2), '+'));
                         $SQL->addWhereOpr('blog_left', $pos, '>');
@@ -70,7 +69,9 @@ class ACMS_POST_Fix_BlogAlign extends ACMS_POST
                     }
                     array_push($aryPid, $pid);
                 }
-                if ( empty($que) ) break;
+                if (empty($que)) {
+                    break;
+                }
             }
             AcmsLogger::info('ブログの親子構造を修復しました');
         }

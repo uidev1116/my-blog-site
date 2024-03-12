@@ -113,7 +113,7 @@ class Export extends ExportBase
      *
      * @return void
      */
-    protected function fix(& $record, $table)
+    protected function fix(&$record, $table)
     {
         if ($table === 'column' && 'text' === $record['column_type']) {
             $txt = $record['column_field_1'];
@@ -176,7 +176,8 @@ class Export extends ExportBase
                             if (!in_array($val, $this->targetMediaIds)) {
                                 $this->targetMediaIds[] = $val;
                             }
-                        } elseif ( 0
+                        } elseif (
+                            0
                             || strpos($fd, '@path')
                             || strpos($fd, '@tinyPath')
                             || strpos($fd, '@largePath')
@@ -201,7 +202,8 @@ class Export extends ExportBase
         while ($row = DB::fetch($q)) {
             $fd = $row['field_key'];
             // image or file
-            if ( 0
+            if (
+                0
                 or strpos($fd, '@path')
                 or strpos($fd, '@tinyPath')
                 or strpos($fd, '@largePath')
@@ -261,21 +263,21 @@ class Export extends ExportBase
             $original = $row['media_original'];
 
             if ($type === 'file') {
-                if (!empty($path) && !in_array($path, $this->storageFiles)) {
+                if (!empty($path) && !in_array($path, $this->storageFiles, true)) {
                     $this->storageFiles[] = $path;
                 }
-                if (!empty($thumbnail) && !in_array($thumbnail, $this->mediaFiles)) {
+                if (!empty($thumbnail) && !in_array($thumbnail, $this->mediaFiles, true)) {
                     $this->mediaFiles[] = $thumbnail;
                     $this->mediaFiles[] = otherSizeImagePath($thumbnail, 'large');
                     $this->mediaFiles[] = otherSizeImagePath($thumbnail, 'tiny');
                 }
             } else {
-                if (!empty($path) && !in_array($path, $this->mediaFiles)) {
+                if (!empty($path) && !in_array($path, $this->mediaFiles, true)) {
                     $this->mediaFiles[] = $path;
                     $this->mediaFiles[] = otherSizeImagePath($path, 'large');
                     $this->mediaFiles[] = otherSizeImagePath($path, 'tiny');
                 }
-                if (!empty($original) && !in_array($original, $this->mediaFiles)) {
+                if (!empty($original) && !in_array($original, $this->mediaFiles, true)) {
                     $this->mediaFiles[] = $original;
                     $this->mediaFiles[] = otherSizeImagePath($original, 'large');
                     $this->mediaFiles[] = otherSizeImagePath($original, 'tiny');

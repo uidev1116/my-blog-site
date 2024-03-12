@@ -21,8 +21,10 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
             $auth = $this->Post->get('auth');
             $targetUsers = [];
 
-            foreach ( $this->Post->getArray('checks') as $uid ) {
-                if ( !($uid = intval($uid)) ) continue;
+            foreach ($this->Post->getArray('checks') as $uid) {
+                if (!($uid = intval($uid))) {
+                    continue;
+                }
                 $SQL    = SQL::newUpdate('user');
                 $SQL->setUpdate('user_auth', $auth);
                 $SQL->addWhereOpr('user_id', $uid);
@@ -34,10 +36,18 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
             }
             if (!empty($targetUsers)) {
                 $authName = '';
-                if ($auth === 'subscriber') $authName = '読者';
-                if ($auth === 'contributor') $authName = '投稿者';
-                if ($auth === 'editor') $authName = '編集者';
-                if ($auth === 'administrator') $authName = '管理者';
+                if ($auth === 'subscriber') {
+                    $authName = '読者';
+                }
+                if ($auth === 'contributor') {
+                    $authName = '投稿者';
+                }
+                if ($auth === 'editor') {
+                    $authName = '編集者';
+                }
+                if ($auth === 'administrator') {
+                    $authName = '管理者';
+                }
                 AcmsLogger::info('選択したユーザーの権限を「' . $authName . '」に変更しました', $targetUsers);
             }
         }
@@ -45,10 +55,10 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
         return $this->Post;
     }
 
-    function isLimit($update=false)
+    function isLimit($update = false)
     {
         // 読者への変更であれば制限なし
-        if ( $this->Post->get('auth') === 'subscriber' ) {
+        if ($this->Post->get('auth') === 'subscriber') {
             return true;
         }
 

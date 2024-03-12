@@ -74,7 +74,6 @@ class DatabaseHandler
         DB::query($SQL->get(dsn()), 'exec');
 
         return (DB::affected_rows() > 0);
-
     }
 
     /**

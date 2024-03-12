@@ -16,7 +16,7 @@ class ACMS_POST_Entry_Update_Sort extends ACMS_POST_Entry_Update
 
             foreach ($utidList as $sort => $utid) {
                 $Q = clone $SQL;
-                $Q->addUpdate('column_sort', $sort+1);
+                $Q->addUpdate('column_sort', $sort + 1);
                 $Q->addWhereOpr('column_id', $utid);
                 $DB->query($Q->get(dsn()), 'exec');
             }
@@ -35,7 +35,7 @@ class ACMS_POST_Entry_Update_Sort extends ACMS_POST_Entry_Update
         } else {
             httpStatusCode('403 Forbidden');
         }
-        header(PROTOCOL.' '.httpStatusCode());
+        header(PROTOCOL . ' ' . httpStatusCode());
         die(httpStatusCode());
     }
 }

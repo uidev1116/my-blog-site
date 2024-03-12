@@ -6,7 +6,8 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 {
     function linkCheck($type)
     {
-        if (1
+        if (
+            1
             && strpos($type, '_') === false
             && $type !== 'checklist'
             && $type !== 'update'
@@ -43,20 +44,20 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
         }
     }
 
-    function roleAuth(& $Tpl)
+    function roleAuth(&$Tpl)
     {
         $Tpl->add('dashboard', array(
             'url'   => acmsLink(array('admin' => 'top', 'bid' => BID)),
             'stay'  => $this->linkCheck('top'),
         ));
 
-        if ( roleAuthorization('entry_edit', BID, EID) ) {
+        if (roleAuthorization('entry_edit', BID, EID)) {
             if (editionWithProfessional()) {
                 $approval = array(
                     'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
                     'stay'  => $this->linkCheck('approval_notification'),
                 );
-                if ( $badge = Approval::notificationCount() ) {
+                if ($badge = Approval::notificationCount()) {
                     $approval['badge'] = $badge;
                 }
                 $Tpl->add('approval#notification', $approval);
@@ -70,15 +71,17 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                 'url'   => acmsLink(array('admin' => 'entry_trash', 'bid' => BID)),
                 'stay'  => $this->linkCheck('entry_trash'),
             ));
-            if ( IS_LICENSED ) $Tpl->add('entry#insert');
+            if (IS_LICENSED) {
+                $Tpl->add('entry#insert');
+            }
         }
 
-        if ( roleAuthorization('category_edit', BID) ) {
+        if (roleAuthorization('category_edit', BID)) {
             $Tpl->add('category#index', array(
                 'url'   => acmsLink(array('admin' => 'category_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('category'),
             ));
-            if ( IS_LICENSED ) {
+            if (IS_LICENSED) {
                 $Tpl->add('category#insert', array(
                     'url'   => acmsLink(array('admin' => 'category_edit', 'bid' => BID)),
                     'stay'  => $this->linkCheck('category'),
@@ -86,15 +89,15 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             }
         }
 
-        if ( roleAuthorization('tag_edit', BID) ) {
+        if (roleAuthorization('tag_edit', BID)) {
             $Tpl->add('tag', array(
                 'url'   => acmsLink(array('admin' => 'tag_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('tag'),
             ));
         }
 
-        if ( roleAuthorization('media_upload', BID) || roleAuthorization('media_edit', BID) ) {
-            if ( config('media_library') === 'on' ) {
+        if (roleAuthorization('media_upload', BID) || roleAuthorization('media_edit', BID)) {
+            if (config('media_library') === 'on') {
                 $Tpl->add('media#index', array(
                     'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
                     'stay'  => $this->linkCheck('media'),
@@ -102,12 +105,12 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             }
         }
 
-        if ( roleAuthorization('rule_edit', BID) ) {
+        if (roleAuthorization('rule_edit', BID)) {
             $Tpl->add('rule#index', array(
                 'url'   => acmsLink(array('admin' => 'rule_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('rule'),
             ));
-            if ( IS_LICENSED ) {
+            if (IS_LICENSED) {
                 $Tpl->add('rule#insert', array(
                     'url'   => acmsLink(array('admin' => 'rule_edit', 'bid' => BID)),
                     'stay'  => $this->linkCheck('rule'),
@@ -115,12 +118,11 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             }
         }
 
-        if ( roleAuthorization('publish_edit', BID) || roleAuthorization('publish_exec', BID) ) {
+        if (roleAuthorization('publish_edit', BID) || roleAuthorization('publish_exec', BID)) {
             $Tpl->add('publish#index', array(
                 'url'   => acmsLink(array('bid' => BID, 'admin' => 'publish_index')),
                 'stay'  => $this->linkCheck('publish'),
             ));
-
         }
 
         if (roleAuthorization('config_edit', BID) && IS_LICENSED) {
@@ -138,12 +140,12 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             ));
         }
 
-        if ( roleAuthorization('module_edit', BID) ) {
+        if (roleAuthorization('module_edit', BID)) {
             $Tpl->add('module#index', array(
                 'url'   => acmsLink(array('admin' => 'module_index', 'bid' => BID)),
                 'stay'  => $this->linkCheck('module'),
             ));
-            if ( IS_LICENSED ) {
+            if (IS_LICENSED) {
                 $Tpl->add('module#insert', array(
                     'url'   => acmsLink(array('admin' => 'module_edit', 'bid' => BID)),
                     'stay'  => $this->linkCheck('module'),
@@ -151,21 +153,21 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             }
         }
 
-        if ( roleAuthorization('backup_export', BID) || roleAuthorization('backup_import', BID) ) {
+        if (roleAuthorization('backup_export', BID) || roleAuthorization('backup_import', BID)) {
             $Tpl->add('backup#index', array(
                 'url'   => acmsLink(array('bid' => BID, 'admin' => 'backup_index')),
                 'stay'  => $this->linkCheck('backup'),
             ));
         }
 
-        if ( roleAuthorization('form_view', BID) || roleAuthorization('form_edit', BID) ) {
+        if (roleAuthorization('form_view', BID) || roleAuthorization('form_edit', BID)) {
             $Tpl->add('form#index', array(
                 'url'   => acmsLink(array('bid' => BID, 'admin' => 'form_index')),
                 'stay'  => $this->linkCheck('form'),
             ));
         }
 
-        if ( roleAuthorization('admin_etc', BID) ) {
+        if (roleAuthorization('admin_etc', BID)) {
             $Tpl->add('comment', array(
                 'url'   => acmsLink(array('bid' => BID, 'admin' => 'comment_index')),
                 'stay'  => $this->linkCheck('comment'),
@@ -222,24 +224,18 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                 'url'   => acmsLink(array('bid' => BID, 'admin' => 'cart_menu')),
                 'stay'  => $this->linkCheck('cart_menu'),
             ));
-            if ( defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO ) {
-                $Tpl->add('shop#menu', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'shop_menu')),
-                    'stay'  => $this->linkCheck('shop'),
-                ));
-            }
             if (BID === RBID) {
                 $Tpl->add('audit_log', array(
                     'url' => acmsLink(array('bid' => BID, 'admin' => 'audit_log')),
                     'stay' => $this->linkCheck('audit_log'),
                 ));
             }
-            if ( IS_LICENSED ) {
+            if (IS_LICENSED) {
                 $Tpl->add('user#insert', array(
                     'url'   => acmsLink(array('admin' => 'user_edit', 'bid' => BID)),
                     'stay'  => $this->linkCheck('user#insert'),
                 ));
-                if ( isBlogGlobal(SBID) ) {
+                if (isBlogGlobal(SBID)) {
                     $Tpl->add('blog#insert', array(
                         'url'   => acmsLink(array(
                             'admin' => 'blog_edit',
@@ -252,7 +248,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
         }
     }
 
-    function normalAuth(& $Tpl)
+    function normalAuth(&$Tpl)
     {
         $Tpl->add('dashboard', array(
             'url'   => acmsLink(array('admin' => 'top', 'bid' => BID)),
@@ -261,13 +257,13 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
         //--------------
         // contribution
-        if ( sessionWithContribution() ) {
+        if (sessionWithContribution()) {
             if (editionWithProfessional()) {
                 $approval = array(
                     'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
                     'stay'  => $this->linkCheck('approval_notification'),
                 );
-                if ( $badge = Approval::notificationCount() ) {
+                if ($badge = Approval::notificationCount()) {
                     $approval['badge'] = $badge;
                 }
                 $Tpl->add('approval#notification', $approval);
@@ -281,17 +277,19 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                 'url'   => acmsLink(array('admin' => 'entry_trash', 'bid' => BID)),
                 'stay'  => $this->linkCheck('entry_trash'),
             ));
-            if ( config('media_library') === 'on' ) {
+            if (config('media_library') === 'on') {
                 $Tpl->add('media#index', array(
                     'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
                     'stay'  => $this->linkCheck('media'),
                 ));
             }
-            if ( IS_LICENSED ) $Tpl->add('entry#insert');
+            if (IS_LICENSED) {
+                $Tpl->add('entry#insert');
+            }
 
             //--------------
             // compilation
-            if ( sessionWithCompilation() ) {
+            if (sessionWithCompilation()) {
                 $Tpl->add('category#index', array(
                     'url'   => acmsLink(array('admin' => 'category_index', 'bid' => BID)),
                     'stay'  => $this->linkCheck('category'),
@@ -308,13 +306,13 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                     'url'   => acmsLink(array('bid' => BID, 'admin' => 'trackback_index')),
                     'stay'  => $this->linkCheck('trackback'),
                 ));
-                if ( IS_LICENSED ) {
+                if (IS_LICENSED) {
                     $Tpl->add('category#insert', array(
                         'url'   => acmsLink(array('admin' => 'category_edit', 'bid' => BID)),
                         'stay'  => $this->linkCheck('category'),
                     ));
                 }
-                if ( config('media_library') === 'on' ) {
+                if (config('media_library') === 'on') {
                     $Tpl->add('media#index', array(
                         'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
                         'stay'  => $this->linkCheck('media'),
@@ -331,7 +329,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
                 //----------------
                 // administration
-                if ( sessionWithAdministration() ) {
+                if (sessionWithAdministration()) {
                     $Tpl->add('blog#index', array(
                         'url'   => acmsLink(array('admin' => 'blog_index', 'bid' => BID)),
                         'stay'  => $this->linkCheck('blog_index'),
@@ -397,14 +395,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                         'stay'  => $this->linkCheck('fix'),
                     ));
 
-                    if ( defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO ) {
-                        $Tpl->add('shop#menu', array(
-                            'url'   => acmsLink(array('bid' => BID, 'admin' => 'shop_menu')),
-                            'stay'  => $this->linkCheck('shop'),
-                        ));
-                    }
-
-                    if ( IS_LICENSED ) {
+                    if (IS_LICENSED) {
                         $Tpl->add('user#insert', array(
                             'url'   => acmsLink(array('admin' => 'user_edit', 'bid' => BID)),
                             'stay'  => $this->linkCheck('user#insert'),
@@ -438,8 +429,8 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
                         ));
                     }
 
-                    if ( IS_LICENSED ) {
-                        if ( isBlogGlobal(SBID) ) {
+                    if (IS_LICENSED) {
+                        if (isBlogGlobal(SBID)) {
                             $Tpl->add('blog#insert', array(
                                 'url'   => acmsLink(array(
                                     'admin' => 'blog_edit',
@@ -456,14 +447,15 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
     function get()
     {
-        if ( !sessionWithSubscription(BID, false) ) {
+        if (!sessionWithSubscription(BID, false)) {
             page404();
         }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
         //--------
         // update
-        if ( 1
+        if (
+            1
             && BID === RBID
             && sessionWithAdministration()
             && config('system_update_range') !== 'none'
@@ -471,10 +463,10 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             $update = 0;
             $checkUpdateService = App::make('update.check');
             $range = CheckForUpdate::PATCH_VERSION;
-            if ( config('system_update_range') === 'minor' ) {
+            if (config('system_update_range') === 'minor') {
                 $range = CheckForUpdate::MINOR_VERSION;
             }
-            if ( $checkUpdateService->checkUseCache(phpversion(), $range) ) {
+            if ($checkUpdateService->checkUseCache(phpversion(), $range)) {
                 $update = 1;
             }
             $Tpl->add('update', array(
@@ -486,7 +478,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
         //--------------
         // subscription
-        if ( IS_LICENSED ) {
+        if (IS_LICENSED) {
             $Tpl->add('user#profile', array(
                 'url'   => acmsLink(array(
                     'bid'   => SBID,
@@ -499,8 +491,8 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
         //------------
         // enterprise
-        if ( sessionWithEnterpriseAdministration() ) {
-            if ( BID == RBID ) {
+        if (sessionWithEnterpriseAdministration()) {
+            if (BID == RBID) {
                 $Tpl->add('role#index', array(
                     'url'   => acmsLink(array('admin' => 'role_index', 'bid' => RBID)),
                     'stay'  => $this->linkCheck('role'),
@@ -520,7 +512,8 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
         //--------------
         // professional
-        if ( 1
+        if (
+            1
             && !sessionWithEnterpriseAdministration()
             && sessionWithProfessionalAdministration()
             && BID == RBID
@@ -540,7 +533,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             ));
         }
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->roleAuth($Tpl);
         } else {
             $this->normalAuth($Tpl);

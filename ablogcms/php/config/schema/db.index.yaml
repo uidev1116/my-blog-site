@@ -144,13 +144,6 @@
   - KEY address_user_id (address_primary, address_user_id)
 %{PREFIX}shop_cart:
   - UNIQUE KEY shop_cart (cart_session_id, cart_blog_id)
-%{PREFIX}shop_receipt:
-  - PRIMARY KEY (receipt_code)
-  - KEY receipt_user_id (receipt_user_id)
-  - KEY receipt_blog_id (receipt_blog_id)
-%{PREFIX}shop_receipt_detail:
-  - PRIMARY KEY (receipt_detail_id)
-  - KEY receipt_detail_parent_code (receipt_detail_parent_code)
 %{PREFIX}session_php:
   - PRIMARY KEY  (session_id)
   - KEY session_expire (session_expire)

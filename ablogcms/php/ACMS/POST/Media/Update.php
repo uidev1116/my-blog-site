@@ -30,7 +30,6 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
 
             if (isset($_FILES[$this->uploadFieldName])) {
                 $name = $Media->get('file_name');
-                $old = $Media->get('media_old');
                 Common::validateFileUpload($this->uploadFieldName);
 
                 $info = Media::getBaseInfo($_FILES[$this->uploadFieldName], $tags, $name);
@@ -43,8 +42,8 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                     if ($replaced) {
                         $data['original'] = otherSizeImagePath($data['path'], 'large');
                     }
-                    Media::deleteImageFile($old, $replaced);
-                } else if (Media::isSvgFile($type)) {
+                    Media::deleteImage($mid, $replaced);
+                } elseif (Media::isSvgFile($type)) {
                     $data = Media::uploadSvg($info['size'], $this->uploadFieldName);
                     Media::deleteFile($mid);
                 } else {
@@ -57,7 +56,7 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
             }
             // pdf thumbnail
             if (isset($_FILES['media_pdf_thumbnail'])) {
-                Media::deleteImageFile($data['thumbnail'], true);
+                Media::deleteThumbnail($mid);
                 $res = Media::uploadPdfThumbnail('media_pdf_thumbnail');
                 if (isset($res['path'])) {
                     $data['thumbnail'] = $res['path'];
@@ -97,7 +96,6 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
             ]);
 
             Common::responseJson($json);
-
         } catch (\Exception $e) {
             AcmsLogger::info('メディアの更新に失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 

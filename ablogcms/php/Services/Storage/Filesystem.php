@@ -145,7 +145,7 @@ class Filesystem extends Base implements FilesystemInterface
             $imageSize = getimagesize($path);
             $cache->put($cacheKey, $imageSize);
             return $imageSize;
-        } else if (preg_match('/^https?:\/\//', $path)) {
+        } elseif (preg_match('/^https?:\/\//', $path)) {
             $headers = get_headers($path);
             if (isset($headers[0]) && strpos($headers[0], '200 OK') !== false) {
                 $imageSize = getimagesize($path);
@@ -363,7 +363,7 @@ class Filesystem extends Base implements FilesystemInterface
             $list = array($root => $source);
         }
         $archive = $zippy->create($destination, $list, true);
-        foreach ( $exclude as $path ) {
+        foreach ($exclude as $path) {
             $archive->removeMembers($path);
         }
     }
@@ -393,15 +393,17 @@ class Filesystem extends Base implements FilesystemInterface
      */
     public function uniqueFilePath($original, $num = 0)
     {
-        if ( $num > 0 ) {
+        if ($num > 0) {
             $info = pathinfo($original);
             $path = $info['dirname'] . "/" . $info['filename'] . "_" . $num;
-            if ( isset($info['extension']) ) $path .= "." . $info['extension'];
+            if (isset($info['extension'])) {
+                $path .= "." . $info['extension'];
+            }
         } else {
             $path = $original;
         }
 
-        if ( $this->exists($path) ) {
+        if ($this->exists($path)) {
             $num++;
             return $this->uniqueFilePath($original, $num);
         } else {

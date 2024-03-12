@@ -68,7 +68,7 @@ class Engine
         $this->schema = new Database\Schema(dsn());
 
         $tables = $this->schema->listUp($this->schema->schema);
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->unusedColumn[$table] = $this->schema->unusedColumns($table);
         }
 
@@ -116,12 +116,12 @@ class Engine
         }
 
         // check permission of config.server.php
-        if ( !Storage::isWritable($this->configServerPath) ) {
+        if (!Storage::isWritable($this->configServerPath)) {
             throw new RuntimeException(gettext('config.server.php への書き込み権限がありません。'));
         }
 
         // check in alter table
-        if ( !$this->schema->checkAlterSystemTablePermission() ) {
+        if (!$this->schema->checkAlterSystemTablePermission()) {
             throw new RuntimeException(gettext('システムテーブルを変更する権限がありません。'));
         }
     }
@@ -161,8 +161,7 @@ class Engine
             Cache::flush('module');
 
             $this->databaseVersion = $this->systemVersion;
-
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -178,7 +177,7 @@ class Engine
             return false;
         }
         $tables = $this->schema->listUp($this->schema->schema);
-        foreach ( $tables as $tb ) {
+        foreach ($tables as $tb) {
             $res = $this->schema->compareColumns($tb);
             if (!empty($res['add'])) {
                 return false;
@@ -222,7 +221,7 @@ class Engine
     {
         $tables = $this->schema->listUp($this->schema->schema);
         foreach ($tables as $tb) {
-            if (in_array($tb, $this->createdTables)) {
+            if (in_array($tb, $this->createdTables, true)) {
                 continue;
             }
             $res = $this->schema->compareColumns($tb);
@@ -237,7 +236,7 @@ class Engine
     {
         $tables = $this->schema->listUp($this->schema->define);
         foreach ($tables as $tb) {
-            if (in_array($tb, $this->createdTables)) {
+            if (in_array($tb, $this->createdTables, true)) {
                 continue;
             }
             $res = $this->schema->compareIndex($tb);
@@ -250,7 +249,7 @@ class Engine
      */
     protected function updateConfigServerPhp()
     {
-        $config = new System\ConfigServer;
+        $config = new System\ConfigServer();
         $config->update($this->configServerPath);
     }
 
@@ -259,7 +258,7 @@ class Engine
      */
     protected function updateSepecificRule()
     {
-        $rule = new Database\Rule;
+        $rule = new Database\Rule();
         $rule->update($this->databaseVersion, $this->systemVersion);
     }
 
@@ -276,8 +275,8 @@ class Engine
         if (Storage::exists(CACHE_DIR)) {
             $path = CACHE_DIR . '*.php';
             $config_files = glob($path);
-            if ( is_array($config_files) ) {
-                foreach ( glob($path) as $val ) {
+            if (is_array($config_files)) {
+                foreach (glob($path) as $val) {
                     Storage::remove($val);
                 }
             }

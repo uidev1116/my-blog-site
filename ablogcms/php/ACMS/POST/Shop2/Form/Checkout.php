@@ -6,15 +6,15 @@ class ACMS_POST_Shop2_Form_Checkout extends ACMS_POST_Shop2
     {
         $this->initVars();
 
-        if ( !$this->inventoryCheck() ) {
+        if (!$this->inventoryCheck()) {
             return $this->Post;
         }
 
-        if ( $this->alreadySubmit() ) {
+        if ($this->alreadySubmit()) {
             $this->screenTrans();
         }
 
-        if ( !!ACMS_SID || $this->config->get('shop_order_login') != 'required' ) {
+        if (!!ACMS_SID || $this->config->get('shop_order_login') != 'required') {
             $this->Post->set('step', 'address');
             return $this->Post;
         } else {
@@ -27,8 +27,9 @@ class ACMS_POST_Shop2_Form_Checkout extends ACMS_POST_Shop2
     {
         $TEMP = $this->openCart(BID);
 
-        foreach ( $TEMP as $hash => $row ) {
-            if ( 0
+        foreach ($TEMP as $hash => $row) {
+            if (
+                0
                 or !isset($row[$this->item_price])
                 or !isset($row[$this->item_qty])
             ) {
@@ -37,8 +38,8 @@ class ACMS_POST_Shop2_Form_Checkout extends ACMS_POST_Shop2
 
             $efield = loadEntryField(intval($row[$this->item_id]));
             $item_stock = $efield->get($this->item_sku);
-            if( isset($item_stock) && ($item_stock > 0) ){
-                if( intval($item_stock) < intval($row[$this->item_qty]) ){
+            if (isset($item_stock) && ($item_stock > 0)) {
+                if (intval($item_stock) < intval($row[$this->item_qty])) {
                     return false;
                 }
             }

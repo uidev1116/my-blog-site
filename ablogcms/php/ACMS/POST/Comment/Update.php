@@ -19,7 +19,7 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
     /**
      * @return bool|Field
      */
-    function post()
+    public function post()
     {
         $nextstep   = $this->Post->get('nextstep');
         $redirect   = $this->Post->get('redirect');
@@ -29,7 +29,7 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
         $Comment->setMethod('@cmid_is_null', 'through', !!CMID);
         $Comment->validate(new ACMS_Validator_Comment());
 
-        if ( !$Comment->isValid() ) {
+        if (!$Comment->isValid()) {
             $this->Post->set('action', 'update');
             return $this->Post;
         }
@@ -53,12 +53,14 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
 
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);
-        } else if ( !empty($nextstep) ) {
+        }
+
+        if (!empty($nextstep)) {
             $this->Post->set('step', $nextstep);
             $this->Post->set('action', 'update');
             return $this->Post;
-        } else {
-            return true;
         }
+
+        return true;
     }
 }

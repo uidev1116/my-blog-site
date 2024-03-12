@@ -185,7 +185,8 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
      */
     protected function notify($field)
     {
-        if (1
+        if (
+            1
             and $subjectTpl = findTemplate('mail/restore/subject.txt')
             and $bodyTpl = findTemplate('mail/restore/body.txt')
         ) {

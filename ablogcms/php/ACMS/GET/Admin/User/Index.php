@@ -2,8 +2,7 @@
 
 class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
 {
-
-    var $_scope = array(
+    public $_scope = array(
         'field'     => 'global'
     );
 
@@ -74,13 +73,13 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
      * @param array $vars
      * @return void
      */
-    protected function refresh(Template $tpl, array & $vars): void
+    protected function refresh(Template $tpl, array &$vars): void
     {
         if ($this->Post->isNull()) {
             return;
         }
         // user limit error（権限の一括変更時）
-        if ( !$this->Post->isValid('user', 'limit') ) {
+        if (!$this->Post->isValid('user', 'limit')) {
             $tpl->add('user:validator#limit');
         } else {
             $tpl->add('refresh');
@@ -95,7 +94,7 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
      * @param array $vars
      * @return void
      */
-    protected function buildFilter(Template $tpl, array & $vars): void
+    protected function buildFilter(Template $tpl, array &$vars): void
     {
         // axis
         if (1 < ACMS_RAM::blogRight($this->targetBid) - ACMS_RAM::blogLeft($this->targetBid)) {
@@ -118,7 +117,8 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
         // order
         $order = ORDER ? ORDER : 'sort-asc';
         $vars['order:selected#' . $order] = config('attr_selected');
-        if ( 1
+        if (
+            1
             && $order === 'sort-asc'
             && !KEYWORD
             && empty($status)
@@ -136,7 +136,9 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
         $limit = intval($limit);
         foreach ($limits as $val) {
             $_vars = ['value' => $val];
-            if ($limit === intval($val)) $_vars['selected'] = config('attr_selected');
+            if ($limit === intval($val)) {
+                $_vars['selected'] = config('attr_selected');
+            }
             $tpl->add('limit:loop', $_vars);
         }
     }
@@ -187,7 +189,7 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
             $sql->addLeftJoin('fulltext', 'fulltext_uid', 'user_id');
             $keywords = preg_split(REGEX_SEPARATER, KEYWORD, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($keywords as $keyword) {
-                $sql->addWhereOpr('fulltext_value', '%'.$keyword.'%', 'LIKE');
+                $sql->addWhereOpr('fulltext_value', '%' . $keyword . '%', 'LIKE');
             }
         }
     }
@@ -258,7 +260,6 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
         $sql->setGroup('user_id');
         $sql->setLimit($limit, (PAGE - 1) * $limit);
         ACMS_Filter::userOrder($sql, $order);
-
     }
 
     /**
@@ -307,7 +308,7 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
             if (isRoleAvailableUser($uid)) {
                 $tpl->add('auth_default#' . $row['user_auth']);
             }
-            $tpl->add('status#'.$row['user_status']);
+            $tpl->add('status#' . $row['user_status']);
 
             $_vars = [
                 'uid' => $uid,
@@ -325,7 +326,8 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
             ];
 
             // switch user
-            if (1
+            if (
+                1
                 && $canSwitchUser
                 && SUID != $uid
                 && !(config('switch_user_same_level') !== 'on' && $row['user_auth'] === 'administrator')

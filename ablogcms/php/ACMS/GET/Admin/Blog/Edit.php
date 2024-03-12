@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Blog_Edit extends ACMS_GET_Admin_Edit
 {
-    function edit(& $Tpl)
+    function edit(&$Tpl)
     {
         $Blog =& $this->Post->getChild('blog');
         $Field =& $this->Post->getChild('field');
@@ -19,13 +19,12 @@ class ACMS_GET_Admin_Blog_Edit extends ACMS_GET_Admin_Edit
             }
         }
 
-        if ( $Blog->isNull() ) {
-            if ( 'insert' <> $this->edit ) {
+        if ($Blog->isNull()) {
+            if ('insert' <> $this->edit) {
                 $Blog->overload(loadBlog(BID));
                 $Field->overload(loadBlogField(BID));
                 $Config->overload(Config::loadBlogConfigSet(BID));
                 $Geo->overload(loadGeometry('bid', BID));
-
             } else {
                 //---------
                 // default
@@ -34,7 +33,7 @@ class ACMS_GET_Admin_Blog_Edit extends ACMS_GET_Admin_Edit
                 $Blog->set('indexing', 'on');
             }
         }
-        if ( $this->Post->get('import') === 'success' ) {
+        if ($this->Post->get('import') === 'success') {
             $Tpl->add('success');
         }
 

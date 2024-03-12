@@ -15,7 +15,6 @@ class ACMS_GET_Member_Sns extends ACMS_GET_Member
      */
     protected function init(): void
     {
-
     }
 
     /**
@@ -35,7 +34,7 @@ class ACMS_GET_Member_Sns extends ACMS_GET_Member
         if (SUID) {
             $user = loadUser(SUID);
         } else {
-            $user = new Field_Validation;
+            $user = new Field_Validation();
         }
         $this->google($user, $tpl);
         $this->twitter($user, $tpl);

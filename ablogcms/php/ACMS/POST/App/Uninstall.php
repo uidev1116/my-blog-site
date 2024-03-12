@@ -5,7 +5,9 @@ class ACMS_POST_App_Uninstall extends ACMS_POST
     public function post()
     {
         $appClassName = $this->Post->get('class_name');
-        if ( !sessionWithAdministration() || BID !== RBID  ) die;
+        if (!sessionWithAdministration() || BID !== RBID) {
+            die;
+        }
 
         /**
          * @var ACMS_App $App
@@ -30,7 +32,7 @@ class ACMS_POST_App_Uninstall extends ACMS_POST
             AcmsLogger::info('拡張アプリ「' . get_class($App) . '」をアンインストールしました', [
                 'version' => $App->version,
             ]);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->Post->set('uninstallFailed', true);
 
             AcmsLogger::info('拡張アプリ「' . get_class($App) . '」のアンインストールに失敗しました', Common::exceptionArray($e, ['version' => $App->version]));

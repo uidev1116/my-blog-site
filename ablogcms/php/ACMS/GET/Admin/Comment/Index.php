@@ -4,15 +4,19 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( 'comment_index' <> ADMIN ) return false;
-        if ( !sessionWithCompilation() ) return false;
+        if ('comment_index' <> ADMIN) {
+            return false;
+        }
+        if (!sessionWithCompilation()) {
+            return false;
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $Vars   = array();
 
         //---------
         // refresh
-        if ( !$this->Post->isNull() ) {
+        if (!$this->Post->isNull()) {
             $Vars['notice_mess'] = 'show';
             $Tpl->add('refresh');
         }
@@ -20,9 +24,9 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
         //------
         // axis
         $axis   = $this->Get->get('axis', 'descendant-or-self');
-        if ( 1 < ACMS_RAM::blogRight(BID) - ACMS_RAM::blogLeft(BID) ) {
+        if (1 < ACMS_RAM::blogRight(BID) - ACMS_RAM::blogLeft(BID)) {
             $Tpl->add('axis', array(
-                'axis:checked#'.$axis => config('attr_checked')
+                'axis:checked#' . $axis => config('attr_checked')
             ));
         } else {
             $axis   = 'self';
@@ -31,20 +35,22 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
         //--------
         // status
         $status = $this->Get->get('status');
-        $Vars['status:selected#'.$status] = config('attr_selected');
+        $Vars['status:selected#' . $status] = config('attr_selected');
 
         //-------
         // order
         $order  = $this->Q->get('order', 'datetime-desc');
-        $Vars['order:selected#'.$order] = config('attr_selected');
+        $Vars['order:selected#' . $order] = config('attr_selected');
 
         //--------
         // limit
         $aryLimit   = configArray('admin_limit_option');
         $limit      = $this->Q->get('limit', $aryLimit[config('admin_limit_default')]);
-        foreach ( $aryLimit as $val ) {
+        foreach ($aryLimit as $val) {
             $_vars  = array('value' => $val);
-            if ( $limit == $val ) $_vars['selected'] = config('attr_selected');
+            if ($limit == $val) {
+                $_vars['selected'] = config('attr_selected');
+            }
             $Tpl->add('limit:loop', $_vars);
         }
 
@@ -57,23 +63,33 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
 
         //--------
         // status
-        if ( in_array($status, array(
+        if (
+            in_array($status, array(
             'open', 'close', 'awaiting'
-        )) ) $SQL->addWhereOpr('comment_status', $status);
+            ))
+        ) {
+            $SQL->addWhereOpr('comment_status', $status);
+        }
 
         //-------
         // pager
         $Amount = new SQL_Select($SQL);
         $Amount->setSelect('*', 'comment_amount', null, 'count');
-        if ( !$pageAmount = $DB->query($Amount->get(dsn()), 'one') ) {
+        if (!$pageAmount = $DB->query($Amount->get(dsn()), 'one')) {
             $Vars['notice_mess'] = 'show';
             $Tpl->add('index#notFound');
             $Tpl->add(null, $Vars);
             return $Tpl->get();
         }
-        $Vars   += $this->buildPager(PAGE, $limit, $pageAmount
-            , config('admin_pager_delta'), config('admin_pager_cur_attr'), $Tpl, array()
-            , array('admin' => ADMIN,)
+        $Vars   += $this->buildPager(
+            PAGE,
+            $limit,
+            $pageAmount,
+            config('admin_pager_delta'),
+            config('admin_pager_cur_attr'),
+            $Tpl,
+            array(),
+            array('admin' => ADMIN,)
         );
 
         //-------
@@ -84,14 +100,14 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
 
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $bid    = intval($row['comment_blog_id']);
             $eid    = intval($row['comment_entry_id']);
             $cmid   = intval($row['comment_id']);
 
-            $Tpl->add('status#'.$row['comment_status']);
+            $Tpl->add('status#' . $row['comment_status']);
 
-            if ( $url = $row['comment_url'] ) {
+            if ($url = $row['comment_url']) {
                 $Tpl->add('url', $url);
                 $Tpl->add('url#rear');
             }
@@ -117,10 +133,12 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
                     'bid'   => $bid,
                     'eid'   => $eid,
                     'cmid'  => $cmid,
-                    'fragment'  => 'comment-'.$cmid,
+                    'fragment'  => 'comment-' . $cmid,
                 )),
             );
-            if ( BID <> $bid ) $vars['disabled']   = config('attr_disabled');
+            if (BID <> $bid) {
+                $vars['disabled']   = config('attr_disabled');
+            }
 
             $Tpl->add('comment:loop', $vars);
         }

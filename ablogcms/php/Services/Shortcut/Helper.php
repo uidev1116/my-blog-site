@@ -92,7 +92,7 @@ class Helper
                 continue;
             }
 
-            if (in_array($key, $acmsPathIds)) {
+            if (in_array($key, $acmsPathIds, true)) {
                 $url[$key] = $id;
             } else {
                 $query[$key] = $id;

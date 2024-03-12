@@ -33,16 +33,16 @@ class TopGenerator extends Generator
     protected function main()
     {
         $this->logger->start($this->getName(), $this->getTasks());
+        $url = acmsLink(array('bid' => BID), false);
         try {
-            $url = acmsLink(array('bid'=>BID), false);
             $this->request($url, 'index.html');
-            if (!in_array('rss2.xml', $this->exclusionList)) {
+            if (!in_array('rss2.xml', $this->exclusionList, true)) {
                 $this->request($url . 'rss2.xml', 'rss2.xml');
             }
-            if (!in_array('sitemap.xml', $this->exclusionList)) {
+            if (!in_array('sitemap.xml', $this->exclusionList, true)) {
                 $this->request($url . 'sitemap.xml', 'sitemap.xml');
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $url);
         }
     }
@@ -55,16 +55,16 @@ class TopGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $this->logger ) {
+        if ($this->logger) {
             $this->logger->processing();
         }
-        if ( empty($data) || $code != '200' ) {
+        if (empty($data) || $code != '200') {
             $this->logger->error('データの取得に失敗しました。', $info, $code);
             return;
         }
         try {
             Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $info, $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath() . 'index.html');
         }
     }

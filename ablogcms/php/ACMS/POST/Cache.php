@@ -2,11 +2,13 @@
 
 class ACMS_POST_Cache extends ACMS_POST
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     function post()
     {
-        if (!sessionWithCompilation()) { return false; }
+        if (!sessionWithCompilation()) {
+            return false;
+        }
 
         $targets = $this->Post->getArray('target');
         $this->clear($targets);
@@ -21,7 +23,7 @@ class ACMS_POST_Cache extends ACMS_POST
 
     /**
      * ページキャッシュを設定に従いクリア
-     * 
+     *
      * @param int $eid
      */
     public static function clearPageCache($bid = BID)
@@ -32,9 +34,9 @@ class ACMS_POST_Cache extends ACMS_POST
         if ($targetBlog === 'self') {
             $tagBid = 'bid-' . $bid;
             $pageCache->invalidateTags([$tagBid]);
-        } else if ($targetBlog === 'all') {
+        } elseif ($targetBlog === 'all') {
             $pageCache->flush();
-        } else if ($targetBlog === 'self-descendant' || $targetBlog = 'self-ancestor') {
+        } elseif ($targetBlog === 'self-descendant' || $targetBlog = 'self-ancestor') {
             $sql = SQL::newSelect('blog');
             $sql->setSelect('blog_id');
             if ($targetBlog === 'self-descendant') {
@@ -54,7 +56,7 @@ class ACMS_POST_Cache extends ACMS_POST
 
     /**
      * 指定されたエントリーのページキャッシュをクリア
-     * 
+     *
      * @param int $eid
      */
     public static function clearEntryPageCache($eid)
@@ -68,10 +70,10 @@ class ACMS_POST_Cache extends ACMS_POST
 
     /**
      * 指定されたキャッシュをクリア
-     * 
+     *
      * @param array $targets
      */
-    protected function clear(Array $targets)
+    protected function clear(array $targets)
     {
         foreach ($targets as $target) {
             if ($target === 'page') {

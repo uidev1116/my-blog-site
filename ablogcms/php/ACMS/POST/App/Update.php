@@ -15,8 +15,8 @@ class ACMS_POST_App_Update extends ACMS_POST
 
         $App = new $appClassName();
 
+        $className = get_class($App);
         try {
-            $className = get_class($App);
             if ($className) {
                 $App->update();
                 $DB = DB::singleton(dsn());
@@ -36,7 +36,7 @@ class ACMS_POST_App_Update extends ACMS_POST
                     'version' => $App->version,
                 ]);
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->Post->set('updateFailed', true);
 
             AcmsLogger::info('拡張アプリ「' . $className . '」のアップデートに失敗しました', Common::exceptionArray($e, ['version' => $App->version]));

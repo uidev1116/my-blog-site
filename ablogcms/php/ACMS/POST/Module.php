@@ -2,13 +2,13 @@
 
 class ACMS_POST_Module extends ACMS_POST
 {
-    function fix(& $Module)
+    function fix(&$Module)
     {
-        if ( $Module->get('eid') ) {
-            if ( $Module->get('eid') == strval(intval($Module->get('eid'))) ) {
-                if ( $bid = ACMS_RAM::entryBlog($Module->get('eid')) ) {
+        if ($Module->get('eid')) {
+            if ($Module->get('eid') == strval(intval($Module->get('eid')))) {
+                if ($bid = ACMS_RAM::entryBlog($Module->get('eid'))) {
                     $Module->setField('bid', $bid);
-                    if ( $cid = ACMS_RAM::entryCategory($Module->get('eid')) ) {
+                    if ($cid = ACMS_RAM::entryCategory($Module->get('eid'))) {
                         $Module->setField('cid', $cid);
                     } else {
                         $Module->setField('cid');
@@ -16,14 +16,14 @@ class ACMS_POST_Module extends ACMS_POST
                 } else {
                     $Module->setValidator('eid', 'exists', false);
                 }
-            } else if ( strpos($Module->get('eid'), ',') !== false ) {
+            } elseif (strpos($Module->get('eid'), ',') !== false) {
                 $aryBid = array();
                 $aryCid = array();
                 $Module->setField('cid');
-                foreach ( explode(',', $Module->get('eid')) as $_eid ) {
-                    if ( $_bid = ACMS_RAM::entryBlog($_eid) ) {
+                foreach (explode(',', $Module->get('eid')) as $_eid) {
+                    if ($_bid = ACMS_RAM::entryBlog($_eid)) {
                         $aryBid[] = $_bid;
-                        if ( $_cid = ACMS_RAM::entryCategory($_eid) ) {
+                        if ($_cid = ACMS_RAM::entryCategory($_eid)) {
                             $aryCid[] = $_cid;
                         }
                     } else {
@@ -32,8 +32,12 @@ class ACMS_POST_Module extends ACMS_POST
                 }
                 $aryBid = array_unique($aryBid);
                 $aryCid = array_unique($aryCid);
-                if ( !empty($aryBid) ) $Module->setField('bid', implode(',', $aryBid));
-                if ( !empty($aryCid) ) $Module->setField('cid', implode(',', $aryCid));
+                if (!empty($aryBid)) {
+                    $Module->setField('bid', implode(',', $aryBid));
+                }
+                if (!empty($aryCid)) {
+                    $Module->setField('cid', implode(',', $aryCid));
+                }
             }
         }
 
@@ -44,16 +48,16 @@ class ACMS_POST_Module extends ACMS_POST
             $Module->set('cid_axis', 'self');
         }
 
-        if ( $Module->get('start_date') and !$Module->get('end_date') ) {
+        if ($Module->get('start_date') and !$Module->get('end_date')) {
             $Module->set('end_date', '9999-12-31');
         }
-        if ( $Module->get('end_date') and !$Module->get('start_date') ) {
+        if ($Module->get('end_date') and !$Module->get('start_date')) {
             $Module->set('start_date', '1000-01-01');
         }
-        if ( $Module->get('start_date') and !$Module->get('start_time') ) {
+        if ($Module->get('start_date') and !$Module->get('start_time')) {
             $Module->set('start_time', '00:00:00');
         }
-        if ( $Module->get('end_date') and !$Module->get('end_time') ) {
+        if ($Module->get('end_date') and !$Module->get('end_time')) {
             $Module->set('end_time', '23:59:59');
         }
 
@@ -63,7 +67,7 @@ class ACMS_POST_Module extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function double($identifier, $mid, $scope, $bid=BID)
+    function double($identifier, $mid, $scope, $bid = BID)
     {
         return Module::double($identifier, $mid, $scope, $bid);
     }

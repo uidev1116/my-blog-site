@@ -10,11 +10,11 @@ use ImageOptimizer\OptimizerFactory;
 class Helper
 {
     protected $exts = array(
-        'image/gif'         => 'gif',
-        'image/png'         => 'png',
-        'image/vnd.wap.wbmp'=> 'bmp',
-        'image/xbm'         => 'xbm',
-        'image/jpeg'        => 'jpg',
+        'image/gif'          => 'gif',
+        'image/png'          => 'png',
+        'image/vnd.wap.wbmp' => 'bmp',
+        'image/xbm'          => 'xbm',
+        'image/jpeg'         => 'jpg',
     );
 
     /**
@@ -44,7 +44,8 @@ class Helper
             if ($this->optimizeTest($path)) {
                 $this->optimizer->optimize($path);
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -58,6 +59,7 @@ class Helper
         if ($this->optimizer === null) {
             return false;
         }
+        $test = null;
         try {
             if (Storage::isWritable($path)) {
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -72,7 +74,9 @@ class Helper
                 return true;
             }
         } catch (\Exception $e) {
-            Storage::remove($test);
+            if ($test !== null) {
+                Storage::remove($test);
+            }
         }
         return false;
     }
@@ -89,19 +93,27 @@ class Helper
      *
      * @return bool
      */
-    public function copyImage($from, $to, $width=null, $height=null, $size=null, $angle=null)
+    public function copyImage($from, $to, $width = null, $height = null, $size = null, $angle = null)
     {
-        if ( !($xy = Storage::getImageSize($from)) ) { return false; }
-        if ( !Storage::makeDirectory(dirname($to)) ) { return false; }
+        if (!($xy = Storage::getImageSize($from))) {
+            return false;
+        }
+        if (!Storage::makeDirectory(dirname($to))) {
+            return false;
+        }
 
         $xy['size'] = max($xy[0], $xy[1]);
 
         //----------------
         // fromExt, toExt
-        if ( !isset($this->exts[$xy['mime']]) ) { return false; }
+        if (!isset($this->exts[$xy['mime']])) {
+            return false;
+        }
         $fromExt = $this->exts[$xy['mime']];
         $toExt = $fromExt;
-        if ( preg_match('@\.([^.]+)$@u', $to, $match) ) { $toExt  = $match[1]; }
+        if (preg_match('@\.([^.]+)$@u', $to, $match)) {
+            $toExt  = $match[1];
+        }
 
         //--------
         // resize
@@ -119,17 +131,18 @@ class Helper
             'bmp'   => 'imagewbmp',
             'xbm'   => 'imagexbm',
         );
-        if ( 0
+        if (
+            0
             or !empty($width) and $width < $xy[0]
             or !empty($height) and $height < $xy[1]
             or !empty($size) and $size < $xy['size']
             or !empty($angle)
             or $fromExt <> $toExt
         ) {
-            if ( class_exists('Imagick') && config('image_magick') == 'on' ) {
+            if (class_exists('Imagick') && config('image_magick') == 'on') {
                 $this->editImageForImagick($from, $to, $width, $height, $size, $angle);
                 $this->createWebpWithImagick($to, $to . '.webp');
-            } else if (empty($toFunc[$toExt])) {
+            } elseif (empty($toFunc[$toExt])) {
                 $resource = $this->editImage($fromFunc[$fromExt]($from), $width, $height, $size, $angle);
                 $imageQuality = intval(config('image_jpeg_quality'));
                 imagejpeg($resource, $to, $imageQuality);
@@ -139,8 +152,8 @@ class Helper
                 $toFunc[$toExt]($resource, $to);
                 $this->createWebpWithGd($resource, $to . '.webp', intval(config('image_jpeg_quality')));
             }
-        //----------
-        // raw copy
+            //----------
+            // raw copy
         } else {
             if (empty($toFunc[$toExt])) {
                 imagejpeg(imagecreatefromjpeg($from), $to, config('image_jpeg_quality'));
@@ -153,7 +166,7 @@ class Helper
         $this->optimize($to);
         Storage::changeMod($to);
 
-        if ( HOOK_ENABLE ) {
+        if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
             $Hook->call('mediaCreate', $to);
         }
@@ -161,37 +174,49 @@ class Helper
     }
 
     /**
-     * @param $srcPath
-     * @param $distPath
-     * @param $ext
+     * @param string $srcPath
+     * @param string $distPath
+     * @param string $ext
      * @param null $width
      * @param null $height
      * @param null $size
      * @param null $angle
      * @throws \ImagickException
      */
-    public function resizeImg($srcPath, $distPath, $ext, $width=null, $height=null, $size=null, $angle=null)
+    public function resizeImg($srcPath, $distPath, $ext, $width = null, $height = null, $size = null, $angle = null)
     {
         $imageQuality = intval(config('image_jpeg_quality'));
 
         if (class_exists('Imagick') && config('image_magick') == 'on') {
             $this->editImageForImagick($srcPath, $distPath, $width, $height, $size, $angle);
             $this->createWebpWithImagick($distPath, $distPath . '.webp');
-        } else if ('gif' == $ext) {
+        } elseif ('gif' == $ext) {
             imagegif($this->editImage(
-                imagecreatefromgif($srcPath), $width, $height, $size, $angle
+                imagecreatefromgif($srcPath),
+                $width,
+                $height,
+                $size,
+                $angle
             ), $distPath);
-        } else if ('png' == $ext) {
+        } elseif ('png' == $ext) {
             $resource = $this->editImage(imagecreatefrompng($srcPath), $width, $height, $size, $angle);
             imagepng($resource, $distPath);
             $this->createWebpWithGd($resource, $distPath . '.webp');
-        } else if ('bmp' == $ext) {
+        } elseif ('bmp' == $ext) {
             imagewbmp($this->editImage(
-                imagecreatefromwbmp($srcPath), $width, $height, $size, $angle
+                imagecreatefromwbmp($srcPath),
+                $width,
+                $height,
+                $size,
+                $angle
             ), $distPath);
-        } else if ('xbm' == $ext) {
+        } elseif ('xbm' == $ext) {
             imagexbm($this->editImage(
-                imagecreatefromxbm($srcPath), $width, $height, $size, $angle
+                imagecreatefromxbm($srcPath),
+                $width,
+                $height,
+                $size,
+                $angle
             ), $distPath);
         } else {
             $resource = $this->editImage(imagecreatefromjpeg($srcPath), $width, $height, $size, $angle);
@@ -208,7 +233,9 @@ class Helper
     public function isAvailableWebpWithGd()
     {
         static $available = null;
-        if ($available !== null) return $available;
+        if ($available !== null) {
+            return $available;
+        }
 
         if (!function_exists('imagewebp')) {
             $available = false;
@@ -234,7 +261,9 @@ class Helper
     public function isAvailableWebpWithImagick()
     {
         static $available = null;
-        if ($available !== null) return $available;
+        if ($available !== null) {
+            return $available;
+        }
 
         if (!class_exists('Imagick')) {
             $available = false;
@@ -244,7 +273,7 @@ class Helper
             $available = false;
             return false;
         }
-        $formats = Imagick::queryformats();
+        $formats = Imagick::queryFormats();
         foreach ($formats as $format) {
             if (mb_strtolower($format) === 'webp') {
                 $available = true;
@@ -260,16 +289,17 @@ class Helper
      * @param $distPath
      * @param int $imageQuality
      */
-    public function createWebpWithGd($resource, $distPath, $imageQuality=75)
+    public function createWebpWithGd($resource, $distPath, $imageQuality = 75)
     {
         if (!$this->isAvailableWebpWithGd()) {
             return;
         }
-        if (is_resource($resource) && 'gd' === get_resource_type($resource)
+        if (
+            is_resource($resource) && 'gd' === get_resource_type($resource)
             || is_object($resource) && $resource instanceof \GdImage
         ) {
             imagewebp($resource, $distPath, $imageQuality);
-        } else if ($resource) {
+        } elseif ($resource) {
             $fromFunc = [
                 'gif' => 'imagecreatefromgif',
                 'png' => 'imagecreatefrompng',
@@ -293,7 +323,7 @@ class Helper
      * @param int $imageQuality
      * @throws \ImagickException
      */
-    public function createWebpWithImagick($srcPath, $distPath, $imageQuality=75)
+    public function createWebpWithImagick($srcPath, $distPath, $imageQuality = 75)
     {
         if (!$this->isAvailableWebpWithImagick()) {
             return;
@@ -309,15 +339,15 @@ class Helper
     /**
      * 画像のリサイズ（GD使用）
      *
-     * @param resource $rsrc
+     * @param resource|\GdImage $rsrc
      * @param int $width
      * @param int $height
      * @param int $size
      * @param int $angle
      *
-     * @return resource
+     * @return resource|\GdImage
      */
-    public function editImage($rsrc, $width=null, $height=null, $size=null, $angle=null)
+    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null)
     {
         $x          = imagesx($rsrc);
         $y          = imagesy($rsrc);
@@ -326,11 +356,11 @@ class Helper
         $coordinateX = 0;
         $coordinateY = 0;
 
-        if ( !empty($width) and !empty($height) and !empty($size) ) {
-            if ( $size < $longSide ) {
+        if (!empty($width) and !empty($height) and !empty($size)) {
+            if ($size < $longSide) {
                 $nx     = $size;
                 $ny     = $size;
-                if ( $x > $y ) {
+                if ($x > $y) {
                     $coordinateX = ceil(($x - $y) / 2);
                     $x = $y;
                 } else {
@@ -338,7 +368,7 @@ class Helper
                     $y = $x;
                 }
             } else {
-                if ( $x > $y ) {
+                if ($x > $y) {
                     $nx     = $y;
                     $ny     = $y;
                     $coordinateX = ceil(($x - $y) / 2);
@@ -350,22 +380,18 @@ class Helper
                     $y = $x;
                 }
             }
-
-        } else if ( !empty($width) and $width < $x ) {
+        } elseif (!empty($width) and $width < $x) {
             $ratio  = $width / $x;
             $nx     = $width;
             $ny     = ceil($y * $ratio);
-
-        } else if ( !empty($height) and $height < $y ) {
+        } elseif (!empty($height) and $height < $y) {
             $ratio  = $height / $y;
             $nx     = ceil($x * $ratio);
             $ny     = $height;
-
-        } else if ( !empty($size) and $size < $longSide ) {
+        } elseif (!empty($size) and $size < $longSide) {
             $ratio  = $size / $longSide;
             $nx     = ceil($x * $ratio);
             $ny     = ceil($y * $ratio);
-
         } else {
             $nx     = $x;
             $ny     = $y;
@@ -375,7 +401,7 @@ class Helper
         // tranceparent
         $nrsrc  = imagecreatetruecolor($nx, $ny);
 
-        if ( 0 <= ($idx = imagecolortransparent($rsrc)) ) {
+        if (0 <= ($idx = imagecolortransparent($rsrc))) {
             @imagetruecolortopalette($nrsrc, true, 256);
             $rgb    = @imagecolorsforindex($rsrc, $idx);
             $idx    = imagecolorallocate($nrsrc, $rgb['red'], $rgb['green'], $rgb['blue']);
@@ -412,17 +438,17 @@ class Helper
     /**
      * 画像のリサイズ（Image Magic使用）
      *
-     * @param resource $rsrc
+     * @param string $rsrc
      * @param string $file
      * @param int $width
      * @param int $height
      * @param int $size
      * @param int $angle
      *
-     * @return resource
+     * @return void
      * @throws
      */
-    public function editImageForImagick($rsrc, $file, $width=null, $height=null, $size=null, $angle=null)
+    public function editImageForImagick($rsrc, $file, $width = null, $height = null, $size = null, $angle = null)
     {
         $imagick    = new Imagick($rsrc);
         $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
@@ -439,27 +465,27 @@ class Helper
         $coordinateY = 0;
 
         // square image
-        if ( !empty($width) and !empty($height) and !empty($size) ) {
-            if ( $size < $longSide ) {
+        if (!empty($width) and !empty($height) and !empty($size)) {
+            if ($size < $longSide) {
                 $nx     = $size;
                 $ny     = $size;
                 // landscape
-                if ( $x > $y ) {
+                if ($x > $y) {
                     $coordinateX = ceil(($x - $y) / 2);
                     $x = $y;
-                // portrait
+                    // portrait
                 } else {
                     $coordinateY = ceil(($y - $x) / 2);
                     $y = $x;
                 }
             } else {
                 // landscape
-                if ( $x > $y ) {
+                if ($x > $y) {
                     $nx     = $y;
                     $ny     = $y;
                     $coordinateX = ceil(($x - $y) / 2);
                     $x = $y;
-                // protrait
+                    // protrait
                 } else {
                     $nx     = $x;
                     $ny     = $x;
@@ -467,22 +493,19 @@ class Helper
                     $y = $x;
                 }
             }
-        // normal, tiny, large
-        } else if ( !empty($width) and $width < $x ) {
+            // normal, tiny, large
+        } elseif (!empty($width) and $width < $x) {
             $ratio  = $width / $x;
             $nx     = $width;
             $ny     = ceil($y * $ratio);
-
-        } else if ( !empty($height) and $height < $y ) {
+        } elseif (!empty($height) and $height < $y) {
             $ratio  = $height / $y;
             $nx     = ceil($x * $ratio);
             $ny     = $height;
-
-        } else if ( !empty($size) and $size < $longSide ) {
+        } elseif (!empty($size) and $size < $longSide) {
             $ratio  = $size / $longSide;
             $nx     = ceil($x * $ratio);
             $ny     = ceil($y * $ratio);
-
         } else {
             $nx     = $x;
             $ny     = $y;
@@ -495,8 +518,8 @@ class Helper
 
         //--------
         // rotate
-        if ( $angle = intval($angle) ) {
-            $imagick->rotateImage('none', -1*$angle);
+        if ($angle = intval($angle)) {
+            $imagick->rotateImage('none', -1 * $angle);
         }
 
         $imagick->writeImages($file, true);
@@ -512,23 +535,25 @@ class Helper
      */
     public function deleteImageAllSize($path)
     {
-        if ( $dirname = dirname($path) ) { $dirname .= '/'; }
+        if ($dirname = dirname($path)) {
+            $dirname .= '/';
+        }
         $basename   = Storage::mbBasename($path);
-        Storage::remove($dirname.$basename);
-        Storage::remove($dirname.'tiny-'.$basename);
-        Storage::remove($dirname.'large-'.$basename);
-        Storage::remove($dirname.'square-'.$basename);
-        Storage::remove($dirname.'square64-'.$basename);
+        Storage::remove($dirname . $basename);
+        Storage::remove($dirname . 'tiny-' . $basename);
+        Storage::remove($dirname . 'large-' . $basename);
+        Storage::remove($dirname . 'square-' . $basename);
+        Storage::remove($dirname . 'square64-' . $basename);
 
-        Storage::remove($dirname.$basename.'.webp');
-        Storage::remove($dirname.'tiny-'.$basename.'.webp');
-        Storage::remove($dirname.'large-'.$basename.'.webp');
-        Storage::remove($dirname.'square-'.$basename.'.webp');
-        Storage::remove($dirname.'square64-'.$basename.'.webp');
+        Storage::remove($dirname . $basename . '.webp');
+        Storage::remove($dirname . 'tiny-' . $basename . '.webp');
+        Storage::remove($dirname . 'large-' . $basename . '.webp');
+        Storage::remove($dirname . 'square-' . $basename . '.webp');
+        Storage::remove($dirname . 'square64-' . $basename . '.webp');
 
-        $images = glob($dirname.'*-'.$basename.'*');
-        if ( is_array($images) ) {
-            foreach ( $images as $filename ) {
+        $images = glob($dirname . '*-' . $basename . '*');
+        if (is_array($images)) {
+            foreach ($images as $filename) {
                 Storage::remove($filename);
                 if (HOOK_ENABLE) {
                     $Hook = ACMS_Hook::singleton();
@@ -537,17 +562,17 @@ class Helper
             }
         }
 
-        if ( HOOK_ENABLE ) {
+        if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('mediaDelete', $dirname.$basename);
-            $Hook->call('mediaDelete', $dirname.'tiny-'.$basename);
-            $Hook->call('mediaDelete', $dirname.'large-'.$basename);
-            $Hook->call('mediaDelete', $dirname.'square-'.$basename);
+            $Hook->call('mediaDelete', $dirname . $basename);
+            $Hook->call('mediaDelete', $dirname . 'tiny-' . $basename);
+            $Hook->call('mediaDelete', $dirname . 'large-' . $basename);
+            $Hook->call('mediaDelete', $dirname . 'square-' . $basename);
 
-            $Hook->call('mediaDelete', $dirname.$basename.'.webp');
-            $Hook->call('mediaDelete', $dirname.'tiny-'.$basename.'.webp');
-            $Hook->call('mediaDelete', $dirname.'large-'.$basename.'.webp');
-            $Hook->call('mediaDelete', $dirname.'square-'.$basename.'.webp');
+            $Hook->call('mediaDelete', $dirname . $basename . '.webp');
+            $Hook->call('mediaDelete', $dirname . 'tiny-' . $basename . '.webp');
+            $Hook->call('mediaDelete', $dirname . 'large-' . $basename . '.webp');
+            $Hook->call('mediaDelete', $dirname . 'square-' . $basename . '.webp');
         }
     }
 
@@ -560,8 +585,8 @@ class Helper
      */
     public function detectImageExtenstion($target_mime)
     {
-        foreach ( $this->exts as $mime => $extension ) {
-            if ( $mime == $target_mime ) {
+        foreach ($this->exts as $mime => $extension) {
+            if ($mime == $target_mime) {
                 return $extension;
             }
         }

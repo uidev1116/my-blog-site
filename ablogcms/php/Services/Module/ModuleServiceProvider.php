@@ -26,6 +26,5 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

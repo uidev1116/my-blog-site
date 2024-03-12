@@ -71,7 +71,7 @@ class Import
             'rule', 'config', 'column', 'config_set',
             'dashboard', 'field', 'media', 'media_tag',
         );
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->insertData($table);
         }
         $this->updateBlogConfigSet();
@@ -87,13 +87,13 @@ class Import
         $DB = DB::singleton(dsn());
         foreach (array('category', 'entry') as $type) {
             $SQL = SQL::newSelect($type);
-            $SQL->addSelect($type.'_id');
-            $SQL->addWhereOpr($type.'_blog_id', $this->bid);
+            $SQL->addSelect($type . '_id');
+            $SQL->addWhereOpr($type . '_blog_id', $this->bid);
             $all = $DB->query($SQL->get(dsn()), 'all');
 
-            foreach ( $all as $row ) {
-                $id = $row[$type.'_id'];
-                switch ( $type ) {
+            foreach ($all as $row) {
+                $id = $row[$type . '_id'];
+                switch ($type) {
                     case 'category':
                         Common::saveFulltext('cid', $id, Common::loadCategoryFulltext($id));
                         break;
@@ -116,7 +116,7 @@ class Import
         }
         foreach ($this->yaml[$table] as $record) {
             $SQL = SQL::newInsert($table);
-            foreach ( $record as $field => $value ) {
+            foreach ($record as $field => $value) {
                 $value = $this->fix($table, $field, $value);
                 if (is_callable(array($this, $table . 'Fix'))) {
                     $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value, $record));
@@ -127,7 +127,7 @@ class Import
             }
             try {
                 DB::query($SQL->get(dsn()), 'exec');
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->errors[] = $e->getMessage();
             }
         }
@@ -195,23 +195,23 @@ class Import
         }
 
         $key = substr($field, strlen($table . '_'));
-        if ( $key === 'id' ) {
+        if ($key === 'id') {
             $value = $this->getNewID($table, $value);
-        } else if ( $key === 'category_id' ) {
+        } elseif ($key === 'category_id') {
             $value = $this->getNewID('category', $value);
-        } else if ( $key === 'user_id' ) {
+        } elseif ($key === 'user_id') {
             $value = $this->getNewID('user', $value);
-        } else if ( $key === 'entry_id' ) {
+        } elseif ($key === 'entry_id') {
             $value = $this->getNewID('entry', $value);
-        } else if ( $key === 'rule_id' ) {
+        } elseif ($key === 'rule_id') {
             $value = $this->getNewID('rule', $value);
-        } else if ( $key === 'module_id' ) {
+        } elseif ($key === 'module_id') {
             $value = $this->getNewID('module', $value);
-        } else if ( $key === 'media_id') {
+        } elseif ($key === 'media_id') {
             $value = $this->getNewID('media', $value);
-        } else if ( $key === 'set_id' || $key === 'config_set_id' || $key === 'theme_set_id' || $key === 'editor_set_id' ) {
+        } elseif ($key === 'set_id' || $key === 'config_set_id' || $key === 'theme_set_id' || $key === 'editor_set_id') {
             $value = $this->getNewID('config_set', $value);
-        } else if ( $key === 'blog_id' ) {
+        } elseif ($key === 'blog_id') {
             $value = $this->bid;
         }
 
@@ -242,11 +242,11 @@ class Import
      */
     private function entryFix($field, $value, $record)
     {
-        if ( $field === 'entry_current_rev_id' ) {
+        if ($field === 'entry_current_rev_id') {
             $value = 0;
-        } else if ( $field === 'entry_last_update_user_id' ) {
+        } elseif ($field === 'entry_last_update_user_id') {
             $value = $this->uid;
-        } else if ( $field === 'entry_primary_image' && !empty($value) ) {
+        } elseif ($field === 'entry_primary_image' && !empty($value)) {
             $value = $this->getNewID('column', $value);
         }
         return $value;
@@ -296,13 +296,15 @@ class Import
                 }
                 return acmsSerialize($data);
             }
-        } else if (1 &&
+        } elseif (
+            1 &&
             !is_null($value) &&
             strncmp($record['column_type'], 'media', 5) === 0 &&
             $field === 'column_field_1'
         ) {
             $value = $this->getNewID('media', $value);
-        } else if (1 &&
+        } elseif (
+            1 &&
             !is_null($value) &
             strncmp($record['column_type'], 'module', 5) === 0 &&
             $field === 'column_field_1'
@@ -360,13 +362,13 @@ class Import
      */
     private function moduleFix($field, $value, $record)
     {
-        if (!is_null($value) && $field === 'module_eid' ) {
+        if (!is_null($value) && $field === 'module_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if (!is_null($value) && $field === 'module_cid' ) {
+        } elseif (!is_null($value) && $field === 'module_cid') {
             $value = $this->getNewID('category', $value);
-        } else if (!is_null($value) && $field === 'module_uid' ) {
+        } elseif (!is_null($value) && $field === 'module_uid') {
             $value = $this->getNewID('user', $value);
-        } else if ( $field === 'module_bid' ) {
+        } elseif ($field === 'module_bid') {
             $value = empty($value) ? null : $value;
         }
         return $value;
@@ -399,11 +401,11 @@ class Import
     {
         if (!is_null($value) && $field === 'rule_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if (!is_null($value) && $field === 'rule_cid') {
+        } elseif (!is_null($value) && $field === 'rule_cid') {
             $value = $this->getNewID('category', $value);
-        } else if (!is_null($value) && $field === 'rule_uid') {
+        } elseif (!is_null($value) && $field === 'rule_uid') {
             $value = $this->getNewID('user', $value);
-        } else if (!is_null($value) && $field === 'rule_aid' ) {
+        } elseif (!is_null($value) && $field === 'rule_aid') {
             $value = $this->getNewID('alias', $value);
         }
         return $value;
@@ -420,15 +422,16 @@ class Import
     {
         if (!is_null($value) && $field === 'field_eid') {
             $value = $this->getNewID('entry', $value);
-        } else if (!is_null($value) && $field === 'field_cid') {
+        } elseif (!is_null($value) && $field === 'field_cid') {
             $value = $this->getNewID('category', $value);
-        } else if (!is_null($value) && $field === 'field_uid') {
+        } elseif (!is_null($value) && $field === 'field_uid') {
             $value = $this->getNewID('user', $value);
-        } else if (!is_null($value) && $field === 'field_mid') {
+        } elseif (!is_null($value) && $field === 'field_mid') {
             $value = $this->getNewID('module', $value);
-        } else if ( $field === 'field_bid' && !empty($value)) {
+        } elseif ($field === 'field_bid' && !empty($value)) {
             $value = $this->bid;
-        } else if (1 &&
+        } elseif (
+            1 &&
             !is_null($value) &&
             $field === 'field_value' &&
             preg_match('/@media$/', $record['field_key'])
@@ -452,7 +455,7 @@ class Import
      * @param string $table
      * @param int|string $id
      *
-     * @return int|string
+     * @return int|string|void
      */
     private function getNewID($table, $id)
     {
@@ -487,7 +490,7 @@ class Import
             'module', 'rule', 'media', 'config_set',
         );
 
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->registerNewID($table);
         }
     }
@@ -499,15 +502,15 @@ class Import
      */
     private function registerNewID($table)
     {
-        if ( !$this->existsYaml($table) ) {
+        if (!$this->existsYaml($table)) {
             return;
         }
-        foreach ( $this->yaml[$table] as $record ) {
-            if ( !isset($record[$table . '_id']) ) {
+        foreach ($this->yaml[$table] as $record) {
+            if (!isset($record[$table . '_id'])) {
                 continue;
             }
             $id = $record[$table . '_id'];
-            if ( isset($this->ids[$table][$id]) ) {
+            if (isset($this->ids[$table][$id])) {
                 continue;
             }
             $this->ids[$table][$id] = DB::query(SQL::nextval($table . '_id', dsn()), 'seq');
@@ -523,11 +526,11 @@ class Import
      */
     private function existsYaml($table)
     {
-        if ( !isset($this->yaml[$table]) ) {
+        if (!isset($this->yaml[$table])) {
             return false;
         }
         $data = $this->yaml[$table];
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             return false;
         }
         return true;
@@ -548,7 +551,7 @@ class Import
             'dashboard', 'module', 'layout_grid', 'rule', 'config', 'config_set',
         );
 
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->clearTable($table);
         }
     }
@@ -563,10 +566,10 @@ class Import
     private function clearTable($table)
     {
         $SQL = SQL::newDelete($table);
-        if ( preg_match('/^(.*)\_rev$/', $table, $match) ) {
-            $SQL->addWhereOpr($match[1].'_blog_id', $this->bid);
+        if (preg_match('/^(.*)\_rev$/', $table, $match)) {
+            $SQL->addWhereOpr($match[1] . '_blog_id', $this->bid);
         } else {
-            $SQL->addWhereOpr($table.'_blog_id', $this->bid);
+            $SQL->addWhereOpr($table . '_blog_id', $this->bid);
         }
         if ($table === 'field') {
             $SQL->addWhereOpr('field_uid', null);

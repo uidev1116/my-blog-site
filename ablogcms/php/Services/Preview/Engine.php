@@ -11,6 +11,16 @@ use SQL;
 class Engine implements Base
 {
     /**
+     * プレビュー共有ページのADMIN
+     */
+    protected const PREVIEW_SHARE_ADMIN = 'preview_share';
+
+    /**
+     * プレビュー共有ページのテンプレート
+     */
+    protected const PREVIEW_SHARE_TPL = 'admin/preview/share.html';
+
+    /**
      * PHPセッションラッパー
      *
      * @var \Session
@@ -202,7 +212,7 @@ class Engine implements Base
      *
      * @param string $fakeUserAgent
      * @param string $token
-     * @return bool
+     * @return void
      */
     public function startPreviewMode($fakeUserAgent, $token)
     {
@@ -221,7 +231,7 @@ class Engine implements Base
     /**
      * プレビューモードを終了
      *
-     * @return bool
+     * @return void
      */
     public function endPreviewMode()
     {
@@ -257,5 +267,22 @@ class Engine implements Base
             return $this->session;
         }
         return false;
+    }
+
+    /**
+     * @param string $admin
+     * @return bool
+     */
+    public function isPreviewShareAdmin(string $admin): bool
+    {
+        return $admin === self::PREVIEW_SHARE_ADMIN;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreviewShareTpl(): string
+    {
+        return self::PREVIEW_SHARE_TPL;
     }
 }

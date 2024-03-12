@@ -18,7 +18,7 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
     function post()
     {
         @set_time_limit(0);
-        if (!sessionWithCompilation() ) {
+        if (!sessionWithCompilation()) {
             return $this->Post;
         }
 
@@ -36,8 +36,7 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
             Common::backgroundRedirect(HTTP_REQUEST_URL);
             $this->run();
             die();
-
-        } catch ( Exception $e ) {
+        } catch (Exception $e) {
             $this->addError($e->getMessage());
             AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
         }
@@ -104,7 +103,7 @@ class ACMS_POST_Import_Csv extends ACMS_POST_Import
                 $logger->error($e->getMessage());
                 break;
             } catch (Exception $e) {
-                $logger->addProcessLog('CSV' . ($i+1) . '行目: ' . $e->getMessage(), 0);
+                $logger->addProcessLog('CSV' . ($i + 1) . '行目: ' . $e->getMessage(), 0);
                 $this->errorCount++;
 
                 AcmsLogger::notice('CSVインポートの' . ($i + 1) . '行目がエラーのため、この行は読み込みません', Common::exceptionArray($e, ['message' => $e->getMessage()]));

@@ -25,7 +25,7 @@ class ACMS_POST_Comment_Auth extends ACMS_POST_Comment
         $Comment->setMethod('pass', 'auth');
         $Comment->validate(new ACMS_Validator_Comment());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $row    = ACMS_RAM::comment(CMID);
             $Comment->setField('name', $row['comment_name']);
             $Comment->setField('mail', $row['comment_mail']);

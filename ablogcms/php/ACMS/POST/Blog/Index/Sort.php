@@ -4,7 +4,9 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
 
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('blog');
@@ -12,14 +14,26 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
         $SQL->addWhereOpr('blog_parent', BID);
         $SQL->setOrder('blog_sort', 'DESC');
         $SQL->setLimit(1);
-        if ( !$max = $DB->query($SQL->get(dsn()), 'one') ) die();
-        if ( (1 < $max) and !empty($_POST['checks']) and is_array($_POST['checks']) ) {
-            foreach ( $_POST['checks'] as $bid ) {
-                if ( !$bid = idval($bid) ) continue;
-                if ( !$toSort = idval($this->Post->get('sort-'.$bid)) ) continue;
-                if ( 1 > $toSort ) continue;
-                if ( $max < $toSort ) continue;
-                if ( BID <> ACMS_RAM::blogParent($bid) ) continue;
+        if (!$max = $DB->query($SQL->get(dsn()), 'one')) {
+            die();
+        }
+        if ((1 < $max) and !empty($_POST['checks']) and is_array($_POST['checks'])) {
+            foreach ($_POST['checks'] as $bid) {
+                if (!$bid = idval($bid)) {
+                    continue;
+                }
+                if (!$toSort = idval($this->Post->get('sort-' . $bid))) {
+                    continue;
+                }
+                if (1 > $toSort) {
+                    continue;
+                }
+                if ($max < $toSort) {
+                    continue;
+                }
+                if (BID <> ACMS_RAM::blogParent($bid)) {
+                    continue;
+                }
 
                 $SQL    = SQL::newSelect('blog');
                 $SQL->addSelect('blog_left');
@@ -27,7 +41,9 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
                 $SQL->addWhereOpr('blog_parent', BID);
                 $SQL->addWhereOpr('blog_sort', $toSort);
                 $SQL->setLimit(1);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die('toSort object is not found');
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die('toSort object is not found');
+                }
                 $toLeft     = intval($row['blog_left']);
                 $toRight    = intval($row['blog_right']);
 
@@ -36,7 +52,9 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
                 $SQL->addSelect('blog_right');
                 $SQL->addSelect('blog_sort');
                 $SQL->addWhereOpr('blog_id', $bid);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die('fromSort object is not found');
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die('fromSort object is not found');
+                }
                 $fromSort   = intval($row['blog_sort']);
                 $fromLeft   = intval($row['blog_left']);
                 $fromRight  = intval($row['blog_right']);
@@ -44,15 +62,15 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
                 $gap    = ($fromRight - $fromLeft) + 1;
 
                 $SQL    = SQL::newUpdate('blog');
-                if ( $fromRight > $toRight ) {
+                if ($fromRight > $toRight) {
                     //-------
                     // upper
                     $delta  = $fromLeft - $toLeft;
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_left', $delta, '-')
+                        SQL::newOprBw('blog_left', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_left', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_left', $fromLeft, '<');
@@ -63,8 +81,8 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_right', $delta, '-')
+                        SQL::newOprBw('blog_right', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_right', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_right', $fromLeft, '<');
@@ -85,7 +103,6 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
                     $Case->add($Where, SQL::newOpr('blog_sort', 1, '+'));
                     $Case->setElse(SQL::newField('blog_sort'));
                     $SQL->addUpdate('blog_sort', $Case);
-
                 } else {
                     //-------
                     // lower
@@ -93,8 +110,8 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_left', $delta, '+')
+                        SQL::newOprBw('blog_left', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_left', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_left', $fromRight, '>');
@@ -105,8 +122,8 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('blog_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('blog_right', $delta, '+')
+                        SQL::newOprBw('blog_right', $fromLeft, $fromRight),
+                        SQL::newOpr('blog_right', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('blog_right', $fromRight, '>');

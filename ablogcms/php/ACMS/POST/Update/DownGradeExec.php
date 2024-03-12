@@ -13,10 +13,18 @@ class ACMS_POST_Update_DownGradeExec extends ACMS_POST_Update_Base
 
     public function post()
     {
-        if (!sessionWithAdministration()) die();
-        if ('update' <> ADMIN) die();
-        if (RBID !== BID) die();
-        if (SBID !== BID) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if ('update' <> ADMIN) {
+            die();
+        }
+        if (RBID !== BID) {
+            die();
+        }
+        if (SBID !== BID) {
+            die();
+        }
 
         ignore_user_abort(true);
         set_time_limit(0);
@@ -25,7 +33,7 @@ class ACMS_POST_Update_DownGradeExec extends ACMS_POST_Update_Base
             $this->addError(gettext('ダウングレードを中止しました。すでにダウングレード中の可能性があります。変化がない場合は、cache/system-update-lock ファイルを削除してお試しください。'));
             return $this->Post;
         }
-        $this->newSetup= $this->Post->get('new_setup') === 'create';
+        $this->newSetup = $this->Post->get('new_setup') === 'create';
         Common::backgroundRedirect(HTTP_REQUEST_URL);
 
         AcmsLogger::info('ダウングレードを開始しました');

@@ -4,9 +4,15 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
 {
     function get()
     {
-        if ( 'approval_index' <> ADMIN ) return '';
-        if ( !enableApproval() ) return '';
-        if ( !sessionWithApprovalAdministrator() ) return '';
+        if ('approval_index' <> ADMIN) {
+            return '';
+        }
+        if (!enableApproval()) {
+            return '';
+        }
+        if (!sessionWithApprovalAdministrator()) {
+            return '';
+        }
 
         $order  = ORDER ? ORDER : 'desc';
         $limits = configArray('admin_limit_option');
@@ -23,27 +29,36 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
 
         //-------
         // order
-        $vars['order:selected#'.$order]  = config('attr_selected');
+        $vars['order:selected#' . $order]  = config('attr_selected');
 
         //-------
         // limit
-        foreach ( $limits as $val ) {
+        foreach ($limits as $val) {
             $_vars  = array('limit' => $val);
-            if ( $limit == $val ) $_vars['selected'] = config('attr_selected');
+            if ($limit == $val) {
+                $_vars['selected'] = config('attr_selected');
+            }
             $Tpl->add('limit:loop', $_vars);
         }
 
         $Pager  = new SQL_Select($SQL);
         $Pager->setSelect('*', 'entry_amount', null, 'count');
-        if ( !$pageAmount = intval($DB->query($Pager->get(dsn()), 'one')) ) {
+        if (!$pageAmount = intval($DB->query($Pager->get(dsn()), 'one'))) {
             $Tpl->add('index#notFound');
             $vars['notice_mess'] = 'show';
             $Tpl->add(null, $vars);
             return $Tpl->get();
         }
 
-        $vars   += $this->buildPager(PAGE, $limit, $pageAmount
-            , config('admin_pager_delta'), config('admin_pager_cur_attr'), $Tpl, array(), array('admin' => ADMIN)
+        $vars   += $this->buildPager(
+            PAGE,
+            $limit,
+            $pageAmount,
+            config('admin_pager_delta'),
+            config('admin_pager_cur_attr'),
+            $Tpl,
+            array(),
+            array('admin' => ADMIN)
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -52,7 +67,7 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
 
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $_vars  = array();
             $rvid   = $row['approval_revision_id'];
             $type   = $row['approval_type'];
@@ -64,10 +79,10 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
             $REV->addSelect('entry_title');
             $REV->addWhereOpr('entry_id', $eid);
             $REV->addWhereOpr('entry_rev_id', $rvid);
-            if ( !!$rev = $DB->query($REV->get(dsn()), 'row') ) {
+            if (!!$rev = $DB->query($REV->get(dsn()), 'row')) {
                 $_vars['title']         = $rev['entry_rev_memo'];
                 $_type                  = $rev['entry_status'];
-                if ( $_type === 'trash' && $type === 'request' ) {
+                if ($_type === 'trash' && $type === 'request') {
                     $type = $_type;
                 }
             }
@@ -95,7 +110,7 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
                     'eid'   => $eid,
                 )),
             );
-            $type = 'type#'.$type;
+            $type = 'type#' . $type;
             $Tpl->add(array($type, 'history:loop'));
             $Tpl->add('history:loop', $_vars);
         }

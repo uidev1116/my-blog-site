@@ -20,7 +20,7 @@ class SessionServiceProvider extends ServiceProvider
             'path' => '/',
             'domain' => getCookieHost(),
             'secure' => COOKIE_SECURE === 1,
-            'lifetime' => env('SESSION_COOKIE_LIFETIME', 259200),
+            'lifetime' => intval(env('SESSION_COOKIE_LIFETIME', '259200')),
             'httpOnly' => COOKIE_HTTPONLY === 1,
             'sameSite' => defined('COOKIE_SAME_SITE') ? COOKIE_SAME_SITE : 'Lax',
         ];
@@ -36,6 +36,5 @@ class SessionServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

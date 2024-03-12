@@ -13,7 +13,7 @@ class ACMS_POST_Entry_Delete extends ACMS_POST_Entry
     function post()
     {
         $this->Post->reset(true);
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->Post->setMethod('entry', 'operable', (1
                 and !!($eid = intval($this->Post->get('eid', EID)))
                 and !!($ebid = ACMS_RAM::entryBlog($eid))
@@ -46,19 +46,9 @@ class ACMS_POST_Entry_Delete extends ACMS_POST_Entry
 
             AcmsLogger::info('「' . $entryTitle . '」エントリーを削除しました');
 
-            // @todo issue: nextstep周りの実装は、プレビューが会った頃の古いコードと思われる．暫定でコメントアウト．v1.4.3リリースまでに消すこと
-
-//            $nextstep   = $this->Post->get('nextstep');
             if (!empty($redirect) && Common::isSafeUrl($redirect)) {
                 $this->redirect($redirect);
-            }
-//            else if ( !empty($nextstep) ) {
-//                $this->Post->set('step', $nextstep);
-//                $this->Post->set('action', 'delete');
-//                $this->Post->set('column', acmsSerialize($Column));
-//                return $this->Post;
-//            }
-            else {
+            } else {
                 $this->redirect(acmsLink(array(
                     'bid'   => BID,
                     'cid'   => CID,

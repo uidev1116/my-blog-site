@@ -8,6 +8,7 @@ use Acms\Services\Facades\Image;
 use Acms\Services\Facades\Config;
 use Acms\Services\Facades\Session;
 use Acms\Services\Facades\Login;
+use Acms\Services\Facades\Preview;
 use Acms\Services\Login\Exceptions\BadRequestException;
 use Acms\Services\Login\Exceptions\ExpiredException;
 use DB;
@@ -73,10 +74,9 @@ class Helper
     /**
      * ログイン判定後の処理
      *
-     * @param Field $queryParameter
      * @return void
      */
-    public function postLoginProcessing(Field $queryParameter): void
+    public function postLoginProcessing(): void
     {
         // ログアウトしていたら、ログイン中に追加されるCookieを削除（ログイン判定には使用しない）
         if (!SUID) {
@@ -91,10 +91,11 @@ class Helper
             redirect(BASE_URL);
         }
 
+        $isAuthRequiredPage = $this->isAuthRequiredPage();
+
         //--------------
         // session fail
-        $admin = $queryParameter->get('admin');
-        if (!!$admin && !SUID and $admin !== 'preview_share') {
+        if ($isAuthRequiredPage && !SUID) {
             httpStatusCode('403 Forbidden');
             setConfig('cache', 'off');
 
@@ -118,12 +119,26 @@ class Helper
 
         //--------------------------------------------------
         // 読者ユーザーの場合、特定の管理画面以外はアクセスさせない
-        if (SUID && !!$admin && isSessionSubscriber()) {
-            if (!in_array($admin, configArray('subscriber_access_admin_page'))) {
+        if (SUID && $isAuthRequiredPage && isSessionSubscriber()) {
+            if (!in_array(ADMIN, configArray('subscriber_access_admin_page'), true)) {
                 httpStatusCode('403 Forbidden');
                 setConfig('cache', 'off');
             }
         }
+    }
+
+    /**
+     * 現在のページが認証が必要なページかどうか判定
+     *
+     * @return bool
+     */
+    protected function isAuthRequiredPage(): bool
+    {
+        if (!!ADMIN && Preview::isPreviewShareAdmin(ADMIN) === false) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -149,7 +164,7 @@ class Helper
             }
         }
         if ($isAccessible) {
-            foreach ($config->getArray($blackListName) AS $ipband) {
+            foreach ($config->getArray($blackListName) as $ipband) {
                 if (in_ipband(REMOTE_ADDR, $ipband)) {
                     $isAccessible = false;
                     break;
@@ -236,10 +251,10 @@ class Helper
          * シークレットブログ・シークレットエントリー
          */
         if (ACMS_RAM::blogStatus(BID) === 'secret' || (CID && ACMS_RAM::categoryStatus(CID) === 'secret')) {
-            if (ADMIN !== 'preview_share' && !SUID && (!defined('IS_OTHER_LOGIN') || !IS_OTHER_LOGIN)) {
+            if (!Preview::isPreviewShareAdmin(ADMIN) && !SUID && (!defined('IS_OTHER_LOGIN') || !IS_OTHER_LOGIN)) {
                 if ($this->accessRestricted(false)) {
                     if (config('redirect_login_page') === 'signin') {
-                        return !!ADMIN ? tplConfig('tpl_login') : tplConfig('tpl_signin');
+                        return $this->isAuthRequiredPage() ? tplConfig('tpl_login') : tplConfig('tpl_signin');
                     } else {
                         return tplConfig('tpl_login');
                     }
@@ -470,6 +485,42 @@ class Helper
     }
 
     /**
+     * ログアウト時のリダイレクト先URLを取得
+     *
+     * @param int $userId
+     * @return string
+     */
+    public function getLogoutRedirectUrl(int $userId = SUID): string
+    {
+        $logoutRedirectPage = config('logout_redirect_page', 'top');
+
+        if ($logoutRedirectPage === 'top') {
+            return acmsLink([
+                'bid' => BID,
+            ]);
+        }
+
+        if ($logoutRedirectPage === 'auth') {
+            $auth = ACMS_RAM::userAuth($userId);
+            if (in_array($auth, $this->getSinginAuth(), true)) {
+                return acmsLink([
+                    'bid' => BID,
+                    'signin' => true,
+                ]);
+            };
+
+            return acmsLink([
+                'bid' => BID,
+                'login' => true,
+            ]);
+        }
+
+        return acmsLink([
+            'bid' => BID,
+        ]);
+    }
+
+    /**
      * ログイン許可端末のチェック
      *
      * @param array $user
@@ -477,7 +528,8 @@ class Helper
      */
     public function checkAllowedDevice(array $user): bool
     {
-        if (1
+        if (
+            1
             && $user['user_auth'] !== 'administrator'
             && isset($user['user_login_terminal_restriction'])
             && $user['user_login_terminal_restriction'] === 'on'
@@ -526,7 +578,8 @@ class Helper
     {
         $redirectBid = BID;
         $bid = intval($user['user_blog_id']);
-        if (1
+        if (
+            1
             && ('on' == $user['user_login_anywhere'] || roleAvailableUser())
             && !isBlogAncestor(BID, $bid, true)
         ) {

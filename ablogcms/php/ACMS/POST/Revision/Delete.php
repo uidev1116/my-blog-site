@@ -6,22 +6,22 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
     {
         try {
             if (!EID) {
-                throw new \RuntimeException ('エントリーが指定されていません');
+                throw new \RuntimeException('エントリーが指定されていません');
             }
             if (!RVID) {
-                throw new \RuntimeException ('バージョンが指定されていません');
+                throw new \RuntimeException('バージョンが指定されていません');
             }
             if (roleAvailableUser()) {
                 if (!roleAuthorization('entry_edit', BID, EID)) {
-                    throw new \RuntimeException ('権限がありません');
+                    throw new \RuntimeException('権限がありません');
                 }
             } else {
                 if (!sessionWithCompilation(BID, false)) {
                     if (!sessionWithContribution(BID, false)) {
-                        throw new \RuntimeException ('権限がありません');
+                        throw new \RuntimeException('権限がありません');
                     }
                     if (SUID != ACMS_RAM::entryUser(EID)) {
-                        throw new \RuntimeException ('権限がありません');
+                        throw new \RuntimeException('権限がありません');
                     }
                 }
             }
@@ -29,7 +29,6 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
                 if (!roleAuthorization('entry_edit', BID, EID)) {
                     die();
                 }
-
             } else {
                 if (!sessionWithCompilation(BID, false)) {
                     if (!sessionWithContribution(BID, false)) {
@@ -39,7 +38,6 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
                     if (SUID != ACMS_RAM::entryUser(EID)) {
                         die();
                     }
-
                 }
             }
             $DB = DB::singleton(dsn());
@@ -58,38 +56,40 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
             $SQL->addWhereOpr('column_rev_id', RVID);
             $SQL->addWhereOpr('column_blog_id', BID);
             $q = $SQL->get(dsn());
-            if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {do {
-                switch ($row['column_type']) {
-                    case 'image':
-                        if (empty($row['column_field_2'])) {
-                            break;
-                        }
+            if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+                do {
+                    switch ($row['column_type']) {
+                        case 'image':
+                            if (empty($row['column_field_2'])) {
+                                break;
+                            }
 
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ($oldAry as $old) {
-                            $path = ARCHIVES_DIR . $old;
-                            $large = otherSizeImagePath($path, 'large');
-                            $tiny = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-                            deleteFile($path);
-                            deleteFile($large);
-                            deleteFile($tiny);
-                            deleteFile($square);
-                        }
-                        break;
-                    case 'file':
-                        if (empty($row['column_field_2'])) {
+                            $oldAry = explodeUnitData($row['column_field_2']);
+                            foreach ($oldAry as $old) {
+                                $path = ARCHIVES_DIR . $old;
+                                $large = otherSizeImagePath($path, 'large');
+                                $tiny = otherSizeImagePath($path, 'tiny');
+                                $square = otherSizeImagePath($path, 'square');
+                                deleteFile($path);
+                                deleteFile($large);
+                                deleteFile($tiny);
+                                deleteFile($square);
+                            }
                             break;
-                        }
+                        case 'file':
+                            if (empty($row['column_field_2'])) {
+                                break;
+                            }
 
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ($oldAry as $old) {
-                            $path = ARCHIVES_DIR . $old;
-                            deleteFile($path);
-                        }
-                        break;
-                }
-            } while ($row = $DB->fetch($q));}
+                            $oldAry = explodeUnitData($row['column_field_2']);
+                            foreach ($oldAry as $old) {
+                                $path = ARCHIVES_DIR . $old;
+                                deleteFile($path);
+                            }
+                            break;
+                    }
+                } while ($row = $DB->fetch($q));
+            }
 
             // unit
             $SQL = SQL::newDelete('column_rev');
@@ -101,7 +101,8 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
             // field
             $Field = loadEntryField(EID, RVID);
             foreach ($Field->listFields() as $fd) {
-                if (1
+                if (
+                    1
                     and !strpos($fd, '@path')
                     and !strpos($fd, '@tinyPath')
                     and !strpos($fd, '@largePath')

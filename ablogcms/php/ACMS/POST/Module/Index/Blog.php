@@ -4,11 +4,13 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
 {
     function post()
     {
-        if ( !($bid = intval($this->Post->get('bid'))) ) $bid = null;
+        if (!($bid = intval($this->Post->get('bid')))) {
+            $bid = null;
+        }
         $this->Post->setMethod('checks', 'required');
-        if ( enableApproval($bid, null) ) {
+        if (enableApproval($bid, null)) {
             $this->Post->setMethod('module', 'operable', sessionWithApprovalAdministrator($bid, null));
-        } else if ( roleAvailableUser() ) {
+        } elseif (roleAvailableUser()) {
             $this->Post->setMethod('module', 'operable', roleAuthorization('admin_etc', $bid));
         } else {
             $this->Post->setMethod('module', 'operable', sessionWithAdministration($bid));
@@ -25,7 +27,9 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
             foreach (array_reverse($this->Post->getArray('checks')) as $mid) {
                 $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
                 $mid = $id[1];
-                if (!($mid = intval($mid))) continue;
+                if (!($mid = intval($mid))) {
+                    continue;
+                }
 
                 $Module = loadModule($mid);
                 $identifier = $Module->get('identifier');

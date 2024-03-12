@@ -6,7 +6,9 @@ class ACMS_POST_Unit_Remove extends ACMS_POST_Unit
     {
         $eid    = EID;
         $entry  = ACMS_RAM::entry($eid);
-        if (!roleEntryUpdateAuthorization(BID, $entry)) die();
+        if (!roleEntryUpdateAuthorization(BID, $entry)) {
+            die();
+        }
 
         $DB     = DB::singleton(dsn());
 
@@ -17,34 +19,40 @@ class ACMS_POST_Unit_Remove extends ACMS_POST_Unit
 
         $targetUnits = [];
 
-        if ( $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) { do {
-            $targetUnits[] = $row;
+        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+            do {
+                $targetUnits[] = $row;
 
-            switch ( $row['column_type'] ) {
-                case 'image':
-                    if ( empty($row['column_field_2']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_2']);
-                    foreach ( $oldAry as $old ) {
-                        $path   = ARCHIVES_DIR.$row['column_field_2'];
-                        $large  = otherSizeImagePath($path, 'large');
-                        $tiny   = otherSizeImagePath($path, 'tiny');
-                        $square = otherSizeImagePath($path, 'square');
-                        deleteFile($path);
-                        deleteFile($large);
-                        deleteFile($tiny);
-                        deleteFile($square);
-                    }
-                    break;
-                case 'file':
-                    if ( empty($row['column_field_2']) ) break;
-                    $oldAry = explodeUnitData($row['column_field_2']);
-                    foreach ( $oldAry as $old ) {
-                        $path   = ARCHIVES_DIR.$old;
-                        deleteFile($path);
-                    }
-                    break;
-            }
-        } while ( $row = $DB->fetch($q) ); }
+                switch ($row['column_type']) {
+                    case 'image':
+                        if (empty($row['column_field_2'])) {
+                            break;
+                        }
+                        $oldAry = explodeUnitData($row['column_field_2']);
+                        foreach ($oldAry as $old) {
+                            $path   = ARCHIVES_DIR . $row['column_field_2'];
+                            $large  = otherSizeImagePath($path, 'large');
+                            $tiny   = otherSizeImagePath($path, 'tiny');
+                            $square = otherSizeImagePath($path, 'square');
+                            deleteFile($path);
+                            deleteFile($large);
+                            deleteFile($tiny);
+                            deleteFile($square);
+                        }
+                        break;
+                    case 'file':
+                        if (empty($row['column_field_2'])) {
+                            break;
+                        }
+                        $oldAry = explodeUnitData($row['column_field_2']);
+                        foreach ($oldAry as $old) {
+                            $path   = ARCHIVES_DIR . $old;
+                            deleteFile($path);
+                        }
+                        break;
+                }
+            } while ($row = $DB->fetch($q));
+        }
 
         $SQL    = SQL::newDelete('column');
         $SQL->addWhereOpr('column_id', UTID);

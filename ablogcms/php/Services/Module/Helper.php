@@ -11,7 +11,7 @@ use Storage;
 
 class Helper
 {
-    const DEFAULT_ALLOWED_MULTIPLE_ARGUMENTS_MODULE_NAMES = [
+    private const DEFAULT_ALLOWED_MULTIPLE_ARGUMENTS_MODULE_NAMES = [
         'Entry_Body',
         'Entry_Summary',
         'Entry_List',
@@ -34,7 +34,7 @@ class Helper
      *
      * @return bool
      */
-    public function double($identifier, $mid, $scope, $bid=BID)
+    public function double($identifier, $mid, $scope, $bid = BID)
     {
         $DB = DB::singleton(dsn());
 
@@ -44,10 +44,10 @@ class Helper
         $SQL->addSelect('module_id');
         $SQL->addWhereOpr('module_identifier', $identifier);
         $SQL->addWhereOpr('module_blog_id', $bid);
-        if ( !empty($mid) ) {
+        if (!empty($mid)) {
             $SQL->addWhereOpr('module_id', $mid, '<>');
         }
-        if ( !!$DB->query($SQL->get(dsn()), 'one') ) {
+        if (!!$DB->query($SQL->get(dsn()), 'one')) {
             return false;
         }
 
@@ -59,10 +59,10 @@ class Helper
         $SQL->addSelect('module_id');
         $SQL->addWhereOpr('module_identifier', $identifier);
         $SQL->addWhereOpr('module_scope', 'global');
-        if ( !!$DB->query($SQL->get(dsn()), 'one') ) {
+        if (!!$DB->query($SQL->get(dsn()), 'one')) {
             return false;
         }
-        if ( 'local' == $scope ) {
+        if ('local' == $scope) {
             return true;
         }
 
@@ -101,21 +101,23 @@ class Helper
         $new = $DB->query(SQL::nextval('module_id', dsn()), 'seq');
 
         $base['module_id']          = $new;
-        $base['module_identifier'] .= config('module_identifier_duplicate_suffix').$new;
+        $base['module_identifier'] .= config('module_identifier_duplicate_suffix') . $new;
         $base['module_label']      .= config('module_label_duplicate_suffix');
 
         // if Banner Module
-        if ( $base['module_name'] == 'Banner' ) {
-            foreach ( $config as $i => $row ) {
-                if ( $row['config_key'] !== 'banner_img' || empty($row['config_value']) ) continue;
+        if ($base['module_name'] == 'Banner') {
+            foreach ($config as $i => $row) {
+                if ($row['config_key'] !== 'banner_img' || empty($row['config_value'])) {
+                    continue;
+                }
 
                 $from_path  = $row['config_value'];
 
                 $pathinfo   = pathinfo($from_path);
-                $extension  = '.'.$pathinfo['extension'];
-                $to_path    = sprintf('%03d', BID).'/'.date('Ym').'/'.uniqueString().$extension;
+                $extension  = '.' . $pathinfo['extension'];
+                $to_path    = sprintf('%03d', BID) . '/' . date('Ym') . '/' . uniqueString() . $extension;
 
-                Image::copyImage(ARCHIVES_DIR.$from_path, ARCHIVES_DIR.$to_path);
+                Image::copyImage(ARCHIVES_DIR . $from_path, ARCHIVES_DIR . $to_path);
                 $config[$i]['config_value'] = $to_path;
             }
         }
@@ -123,17 +125,17 @@ class Helper
         //-------
         // module
         $SQL = SQL::newInsert('module');
-        foreach ( $base as $key => $val ) {
+        foreach ($base as $key => $val) {
             $SQL->addInsert($key, $val);
         }
         $DB->query($SQL->get(dsn()), 'exec');
 
         //-------
         // config
-        foreach ( $config as $row ) {
+        foreach ($config as $row) {
             $row['config_module_id']    = $new;
             $SQL    = SQL::newInsert('config');
-            foreach ( $row as $key => $val ) {
+            foreach ($row as $key => $val) {
                 $SQL->addInsert($key, $val);
             }
             $DB->query($SQL->get(dsn()), 'exec');
@@ -142,8 +144,9 @@ class Helper
         //-------
         // field
         $Field = loadModuleField($mid);
-        foreach ( $Field->listFields() as $fd ) {
-            if ( 1
+        foreach ($Field->listFields() as $fd) {
+            if (
+                1
                 and !strpos($fd, '@path')
                 and !strpos($fd, '@tinyPath')
                 and !strpos($fd, '@largePath')
@@ -152,15 +155,17 @@ class Helper
                 continue;
             }
             $set = false;
-            foreach ( $Field->getArray($fd, true) as $i => $path ) {
-                if ( !Storage::isFile(ARCHIVES_DIR.$path) ) continue;
+            foreach ($Field->getArray($fd, true) as $i => $path) {
+                if (!Storage::isFile(ARCHIVES_DIR . $path)) {
+                    continue;
+                }
                 $info       = pathinfo($path);
-                $dirname    = empty($info['dirname']) ? '' : $info['dirname'].'/';
-                Storage::makeDirectory(ARCHIVES_DIR.$dirname);
-                $ext        = empty($info['extension']) ? '' : '.'.$info['extension'];
-                $newPath    = $dirname.uniqueString().$ext;
-                Storage::copy(ARCHIVES_DIR.$path, ARCHIVES_DIR.$newPath);
-                if ( !$set ) {
+                $dirname    = empty($info['dirname']) ? '' : $info['dirname'] . '/';
+                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
+                $ext        = empty($info['extension']) ? '' : '.' . $info['extension'];
+                $newPath    = $dirname . uniqueString() . $ext;
+                Storage::copy(ARCHIVES_DIR . $path, ARCHIVES_DIR . $newPath);
+                if (!$set) {
                     $Field->delete($fd);
                     $set = true;
                 }
@@ -187,6 +192,6 @@ class Helper
                 configArray('module_allow_multiple_arguments')
             )
         );
-        return in_array($Module->get('name'), $allowedMultipleArgsModuleNames);
+        return in_array($Module->get('name'), $allowedMultipleArgsModuleNames, true);
     }
 }

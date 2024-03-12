@@ -2,7 +2,7 @@
 
 class ACMS_POST_Search_GlobalVars extends ACMS_POST
 {
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     function post()
     {
@@ -14,7 +14,7 @@ class ACMS_POST_Search_GlobalVars extends ACMS_POST
             if (empty($tpl)) {
                 throw new \RuntimeException('Failed to get template.');
             }
-            if ( defined('I18N') ) {
+            if (defined('I18N')) {
                 $tpl = i18n($tpl);
             } else {
                 $tpl = preg_replace(
@@ -25,15 +25,15 @@ class ACMS_POST_Search_GlobalVars extends ACMS_POST
             }
             $json = setGlobalVars($tpl);
 
-            if ( HOOK_ENABLE ) {
+            if (HOOK_ENABLE) {
                 $obj = json_decode($json);
                 $Hook = ACMS_Hook::singleton();
                 $exVars = new Field();
                 $Hook->call('extendsGlobalVars', array(& $exVars));
 
-                if ( is_array($exVars->_aryField) ) {
-                    foreach ( $exVars->_aryField as $key => $val ) {
-                        $varname = '%{'.$key.'}';
+                if (is_array($exVars->_aryField)) {
+                    foreach ($exVars->_aryField as $key => $val) {
+                        $varname = '%{' . $key . '}';
                         if (isset($val[0])) {
                             array_unshift($obj->items, array(
                                 "bid" => BID,
@@ -46,7 +46,7 @@ class ACMS_POST_Search_GlobalVars extends ACMS_POST
                 }
                 $json = json_encode($obj);
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $json = '{"title": "<!--T-->グローバル変数<!--/T-->","enTitle": "Global vars","items": []}';
         }
 

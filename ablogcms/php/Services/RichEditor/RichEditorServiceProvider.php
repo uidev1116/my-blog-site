@@ -26,6 +26,5 @@ class RichEditorServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

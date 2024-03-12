@@ -10,7 +10,7 @@ interface Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isSubscriber($uid=SUID);
+    public function isSubscriber($uid = SUID);
 
     /**
      * 指定したユーザーが投稿者か
@@ -18,7 +18,7 @@ interface Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isContributor($uid=SUID);
+    public function isContributor($uid = SUID);
 
     /**
      * 指定したユーザーが変種者か
@@ -26,7 +26,7 @@ interface Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isEditor($uid=SUID);
+    public function isEditor($uid = SUID);
 
     /**
      * 指定したユーザーが管理者か
@@ -34,7 +34,7 @@ interface Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isAdministrator($uid=SUID);
+    public function isAdministrator($uid = SUID);
 
     /**
      *ログイン中のユーザーがそのブログにおいて読者以上の権限があるか
@@ -42,7 +42,7 @@ interface Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfSubscriber($bid=BID);
+    public function isPermissionOfSubscriber($bid = BID);
 
     /**
      * ログイン中のユーザーがそのブログにおいて投稿者以上の権限があるか
@@ -50,7 +50,7 @@ interface Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfContributor( $bid=BID);
+    public function isPermissionOfContributor($bid = BID);
 
     /**
      * ログイン中のユーザーがそのブログにおいて編集者以上の権限があるか
@@ -58,7 +58,7 @@ interface Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfEditor($bid=BID);
+    public function isPermissionOfEditor($bid = BID);
 
     /**
      * ログイン中のユーザーがそのブログにおいて管理者以上の権限があるか
@@ -66,7 +66,7 @@ interface Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfAdministrator($bid=BID);
+    public function isPermissionOfAdministrator($bid = BID);
 
     /**
      * 指定したユーザーがSNSログインを利用できるか
@@ -75,7 +75,7 @@ interface Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isPermissionOfSnsLogin($uid=SUID, $bid=BID);
+    public function isPermissionOfSnsLogin($uid = SUID, $bid = BID);
 
     /**
      * ログインしているユーザーが特定の管理ページで権限があるかチェック
@@ -100,4 +100,15 @@ interface Guard
      * @return array
      */
     public function getAuthorizedBlog($uid);
+
+    /**
+     * 各ロールの権限があるかチェック
+     *
+     * @param string $action
+     * @param int|null $bid
+     * @param int|null $eid
+     * @param int $uid
+     * @return bool
+     */
+    public function roleAuthorization($action, $bid = BID, $eid = 0, $uid = SUID);
 }

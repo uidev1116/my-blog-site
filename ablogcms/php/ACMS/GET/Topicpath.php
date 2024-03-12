@@ -2,12 +2,12 @@
 
 class ACMS_GET_Topicpath extends ACMS_GET
 {
-    var $_axis = array(
+    public $_axis = array( // phpcs:ignore
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
     );
 
-    var $_scope = array(
+    public $_scope = array( // phpcs:ignore
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -20,10 +20,8 @@ class ACMS_GET_Topicpath extends ACMS_GET
         'page'      => 'global',
     );
 
-    function get()
+    public function get()
     {
-        $this->self = true;
-
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
         $DB     = DB::singleton(dsn());
@@ -32,9 +30,11 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
         //------
         // blog
-        if ( '0' !== strval(config('mo_topicpath_blog_limit')) ) {
+        if ('0' !== strval(config('mo_topicpath_blog_limit'))) {
             $SQL    = SQL::newSelect('blog');
-            ACMS_Filter::blogTree($SQL, $this->bid, 
+            ACMS_Filter::blogTree(
+                $SQL,
+                $this->bid,
                 str_replace('descendant', 'ancestor', $this->blogAxis())
             );
             ACMS_Filter::blogStatus($SQL);
@@ -50,32 +50,33 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
             //-------
             // limit
-            if ( $blimit = intval(config('mo_topicpath_blog_limit')) ) {
+            if ($blimit = intval(config('mo_topicpath_blog_limit'))) {
                 $SQL->setLimit($blimit);
             }
 
             $all    = $DB->query($SQL->get(dsn()), 'all');
-            if ( 0
+            if (
+                0
                 or ( 1
-                    and 'top' == config('mo_topicpath_blog_base') 
+                    and 'top' == config('mo_topicpath_blog_base')
                     and 'desc' == config('mo_topicpath_blog_order')
                 )
                 or ( 1
-                    and 'bottom' == config('mo_topicpath_blog_base') 
+                    and 'bottom' == config('mo_topicpath_blog_base')
                     and 'asc' == config('mo_topicpath_blog_order')
                 )
             ) {
                 $all    = array_reverse($all);
             }
 
-            foreach ( $all as $i => $row ) {
-                if ( !empty($cnt) ) {
+            foreach ($all as $i => $row) {
+                if (!empty($cnt)) {
                     $Tpl->add(array('glue', 'blog:loop'));
-                } elseif ( !!($altLabel = config('mo_topicpath_root_label')) ) {
+                } elseif (!!($altLabel = config('mo_topicpath_root_label'))) {
                     $row['blog_name'] = $altLabel;
                 }
                 $bid    = intval($row['blog_id']);
-                if ( 'on' === config('mo_topicpath_blog_field') ) {
+                if ('on' === config('mo_topicpath_blog_field')) {
                     $Tpl->add(array('blogField', 'blog:loop'), $this->buildField(loadBlogField($bid), $Tpl));
                 }
                 $Tpl->add('blog:loop', array(
@@ -92,9 +93,11 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
         //----------
         // category
-        if ( !empty($this->cid) and '0' !== strval(config('mo_topicpath_category_limit')) ) {
+        if (!empty($this->cid) and '0' !== strval(config('mo_topicpath_category_limit'))) {
             $SQL    = SQL::newSelect('category');
-            ACMS_Filter::categoryTree($SQL, $this->cid, 
+            ACMS_Filter::categoryTree(
+                $SQL,
+                $this->cid,
                 str_replace('descendant', 'ancestor', $this->categoryAxis())
             );
             ACMS_Filter::categoryStatus($SQL);
@@ -103,7 +106,7 @@ class ACMS_GET_Topicpath extends ACMS_GET
             //----------
             // indexing
             $Case   = SQL::newCase();
-            if ( !empty($this->cid) ) {
+            if (!empty($this->cid)) {
                 $Case->add(SQL::newOpr('category_id', $this->cid), 1);
             }
             $Case->add(SQL::newOpr('category_indexing', 'on'), 1);
@@ -112,12 +115,13 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
             //-------
             // limit
-            if ( $climit = intval(config('mo_topicpath_category_limit')) ) {
+            if ($climit = intval(config('mo_topicpath_category_limit'))) {
                 $SQL->setLimit($climit);
             }
 
             $all    = $DB->query($SQL->get(dsn()), 'all');
-            if ( 0 
+            if (
+                0
                 or ( 1
                     and 'top' == config('mo_topicpath_category_base')
                     and 'desc' == config('mo_topicpath_category_order')
@@ -130,11 +134,13 @@ class ACMS_GET_Topicpath extends ACMS_GET
                 $all    = array_reverse($all);
             }
 
-            foreach ( $all as $i => $row ) {
-                if ( !empty($cnt) ) $Tpl->add(array('glue', 'category:loop'));
+            foreach ($all as $i => $row) {
+                if (!empty($cnt)) {
+                    $Tpl->add(array('glue', 'category:loop'));
+                }
 
                 $cid    = intval($row['category_id']);
-                if ( 'on' === config('mo_topicpath_category_field') ) {
+                if ('on' === config('mo_topicpath_category_field')) {
                     $Tpl->add(array('categoryField', 'category:loop'), $this->buildField(loadCategoryField($cid), $Tpl));
                 }
 
@@ -153,17 +159,19 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
         //-------
         // entry
-        if ( !empty($this->eid) and 'on' == config('mo_topicpath_entry') ) {
+        if (!empty($this->eid) and 'on' == config('mo_topicpath_entry')) {
             $SQL    = SQL::newSelect('entry');
             $SQL->addWhereOpr('entry_id', $this->eid);
             $row    = $DB->query($SQL->get(dsn()), 'row');
-            if ( empty($row['entry_code']) and 'on' == config('mo_topicpath_ignore_ecdempty') ) {
+            if (empty($row['entry_code']) and 'on' == config('mo_topicpath_ignore_ecdempty')) {
                 // ignore block
             } else {
-                if ( !empty($cnt) ) $Tpl->add(array('glue', 'entry'));
+                if (!empty($cnt)) {
+                    $Tpl->add(array('glue', 'entry'));
+                }
 
                 $eid    = intval($row['entry_id']);
-                if ( 'on' === config('mo_topicpath_entry_field') ) {
+                if ('on' === config('mo_topicpath_entry_field')) {
                     $Tpl->add(array('entryField', 'entry'), $this->buildField(loadEntryField($eid), $Tpl));
                 }
 

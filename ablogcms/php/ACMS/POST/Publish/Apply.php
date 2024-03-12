@@ -2,7 +2,7 @@
 
 class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
 {
-    var $pointer = null;
+    public $pointer = null;
 
     function post()
     {
@@ -71,10 +71,11 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
                 ];
                 continue;
             }
-            if (!$this->isExists($basePath . $theme . $path)) {
+            $fullpath = $basePath . $theme . $path;
+            if (!$this->isExists($fullpath)) {
                 $errorLog[] = [
                     'url' => $uri,
-                    'path' => $basePath . $theme . $path,
+                    'path' => $fullpath,
                     'message' => '書き込み権限がありません',
                 ];
                 continue;
@@ -95,7 +96,6 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
                 }
                 $body = $response->getResponseBody();
 
-                $fullpath = $basePath . $theme . $path;
                 if (!!($fp = fopen($fullpath, 'w'))) {
                     fwrite($fp, $body);
                     fclose($fp);
@@ -129,7 +129,7 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
         return $this->Post;
     }
 
-    function validateUri(& $uri)
+    function validateUri(&$uri)
     {
         $uri = setGlobalVars($uri);
         if (preg_match('@^(https|http|acms)://@', $uri, $match)) {

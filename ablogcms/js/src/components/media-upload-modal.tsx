@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import classNames from 'classnames'
+import * as DOMPurify from 'dompurify'
 import { Creatable } from './react-select-styled'
 import { ExtendedFile, MediaItem } from '../types/media'
 import DropZone from './drop-zone'
@@ -249,6 +250,17 @@ export default class MediaUploadModal extends Component<
                   },
                 )
               })
+          } else if (file.type.indexOf('svg') !== -1) {
+            file.text().then((text) => {
+              const clean = DOMPurify.sanitize(text, {
+                USE_PROFILES: { svg: true, svgFilters: true },
+              })
+              const reBlob = new Blob([clean], { type: 'image/svg+xml' })
+              this.upload(reBlob, label, name, item).then((uploadedItem) => {
+                this.setUploadedItem(item, uploadedItem)
+                resolve(uploadedItem)
+              })
+            })
           } else {
             this.upload(file, label, name, item).then((uploadedItem) => {
               this.setUploadedItem(item, uploadedItem)
@@ -375,7 +387,7 @@ export default class MediaUploadModal extends Component<
               </div>
             </div>
             {items.map((item) => (
-              <div className="acms-admin-media-upload-item">
+              <div className="acms-admin-media-upload-item" key={item.id}>
                 <div
                   className={classNames('acms-admin-media-upload-item-inner', {
                     '-progress': item.progress >= 0,

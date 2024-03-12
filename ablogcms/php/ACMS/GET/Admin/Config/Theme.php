@@ -2,19 +2,23 @@
 
 class ACMS_GET_Admin_Config_Theme extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $themesDir = opendir(SCRIPT_DIR.THEMES_DIR);
+        $themesDir = opendir(SCRIPT_DIR . THEMES_DIR);
         $index = 0;
 
         //-------------------
         // [CMS-1760]
         // Cookieによりテーマが設定されているとそのテーマが選択されてしまい
         // 本来のテーマ設定が分からない為、DBから直接取得
-        if ( !($rid = intval($this->Get->get('rid'))) ) { $rid = null; }
-        if ( !($setid = intval($this->Get->get('setid'))) ) { $setid = null; }
+        if (!($rid = intval($this->Get->get('rid')))) {
+            $rid = null;
+        }
+        if (!($setid = intval($this->Get->get('setid')))) {
+            $setid = null;
+        }
 
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('config');
@@ -26,7 +30,7 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
         $q      = $SQL->get(dsn());
         $config_theme = $DB->query($q, 'one');
 
-        if ( !$config_theme ) {
+        if (!$config_theme) {
             $SQL    = SQL::newSelect('config');
             $SQL->addSelect('config_value');
             $SQL->addWhereOpr('config_key', 'theme');
@@ -37,21 +41,22 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
             $config_theme = $DB->query($q, 'one');
         }
 
-        if ( !$config_theme ) {
+        if (!$config_theme) {
             $configDefaultArray = loadDefaultConfig();
             $config_theme       = $configDefaultArray['theme'];
         }
 
         $themesDirList = array();
-        while ( $theme = readdir($themesDir) ) {
+        while ($theme = readdir($themesDir)) {
             $themesDirList[] = $theme;
         }
 
         @sort($themesDirList);
 
-        foreach ( $themesDirList as $theme ) {
-            if ( 1
-                and Storage::isDirectory(SCRIPT_DIR.THEMES_DIR.$theme)
+        foreach ($themesDirList as $theme) {
+            if (
+                1
+                and Storage::isDirectory(SCRIPT_DIR . THEMES_DIR . $theme)
                 and $theme !== 'system'
                 and $theme !== '.'
                 and $theme !== '..'
@@ -65,10 +70,10 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
 
                 $selected = $config_theme === $theme ? '' : 'js-load_hide_box';
                 $TplSetting = array();
-                while ( !empty($theme) ) {
-                    if ( $_TplSetting = Config::yamlLoad(SCRIPT_DIR.THEMES_DIR.$theme.'/template.yaml') ) {
-                        foreach ( $_TplSetting as $key => $val ) {
-                            if ( !(isset($TplSetting[$key]) && !empty($TplSetting[$key])) ) {
+                while (!empty($theme)) {
+                    if ($_TplSetting = Config::yamlLoad(SCRIPT_DIR . THEMES_DIR . $theme . '/template.yaml')) {
+                        foreach ($_TplSetting as $key => $val) {
+                            if (!(isset($TplSetting[$key]) && !empty($TplSetting[$key]))) {
                                 $TplSetting[$key] = $val;
                             }
                         }
@@ -76,7 +81,7 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
                     $theme  = preg_replace('/^[^@]*?(@|$)/', '', $theme);
                 }
 
-                if ( !empty($TplSetting) ) {
+                if (!empty($TplSetting)) {
                     $TplSetting['js-load_hide_box'] = $selected;
                     $TplSetting['theme'] = $theme;
                     $TplSetting['key'] = $index;
@@ -93,40 +98,8 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
         }
         closedir($themesDir);
 
-        if ( sessionWithAdministration() ) {
-            if ( !empty($mid) ) {
-                $url    = acmsLink(array(
-                    'bid'   => BID,
-                    'admin' => 'module_index',
-                ));
-            } else if ( !empty($rid) ) {
-                $url    = acmsLink(array(
-                    'bid'   => BID,
-                    'admin' => 'config_index',
-                    'query' => array(
-                        'rid'   => $rid,
-                    ),
-                ));
-            } else if ( 'shop' == substr(ADMIN, 0, 4) ) {
-                $url    = acmsLink(array(
-                    'bid'   => BID,
-                    'admin' => 'shop_menu',
-                ));
-            } else {
-                $url    = acmsLink(array(
-                    'bid'   => BID,
-                    'admin' => 'config_index',
-                ));
-            }
-        } else {
-            $url    = acmsLink(array(
-                'bid'   => BID,
-                'admin' => 'top',
-            ));
-        }
         $Tpl->add(null, array(
-            'indexUrl'  => $url,
-            'theme'     => $config_theme,
+            'theme' => $config_theme,
         ));
 
         return $Tpl->get();

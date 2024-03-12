@@ -11,17 +11,17 @@ class CheckForUpdate
     /**
      * メジャーバージョン
      */
-    const MAJOR_VERSION = 1;
+    public const MAJOR_VERSION = 1;
 
     /**
      * マイナーバージョン
      */
-    const MINOR_VERSION = 2;
+    public const MINOR_VERSION = 2;
 
     /**
      * パッチバージョン
      */
-    const PATCH_VERSION = 3;
+    public const PATCH_VERSION = 3;
 
     /**
      * @var string
@@ -43,7 +43,7 @@ class CheckForUpdate
      */
     protected $jsonString;
     /**
-     * @var array
+     * @var \stdClass
      */
     protected $data;
 
@@ -106,7 +106,8 @@ class CheckForUpdate
 
         try {
             $this->finalCheckTime = Storage::lastModified($this->cache_path);
-        } catch ( \Exception $e ) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
@@ -206,11 +207,11 @@ class CheckForUpdate
      * @param int $type
      * @return bool|self
      */
-    public function check($php_version, $type=self::PATCH_VERSION)
+    public function check($php_version, $type = self::PATCH_VERSION)
     {
         $string = $this->request($this->endpoint);
 
-        if ( $this->checkForUpdate($string, $php_version, $type) ) {
+        if ($this->checkForUpdate($string, $php_version, $type)) {
             $this->finalCheckTime = REQUEST_TIME;
             return true;
         }
@@ -224,17 +225,17 @@ class CheckForUpdate
      * @param int $type
      * @return bool
      */
-    public function checkUseCache($php_version, $type=self::PATCH_VERSION)
+    public function checkUseCache($php_version, $type = self::PATCH_VERSION)
     {
         try {
             $string = Storage::get($this->cache_path);
             if (empty($string)) {
                 throw new \RuntimeException('empty');
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             return false;
         }
-        if ( $this->checkForUpdate($string, $php_version, $type) ) {
+        if ($this->checkForUpdate($string, $php_version, $type)) {
             return true;
         }
         return false;
@@ -277,7 +278,7 @@ class CheckForUpdate
             $this->decode($string);
 
             $update_version = $this->checkAcmsVersion($type);
-            if ( empty($update_version) ) {
+            if (empty($update_version)) {
                 return false;
             }
             $this->releaseNote = $this->createReleaseNote($update_version->version);
@@ -285,7 +286,7 @@ class CheckForUpdate
             $this->changelogUrl = $update_version->changelog->link;
             $this->changelogArray = $update_version->changelog->logs;
             $package = $this->checkPhpVersion($update_version->packages, $php_version);
-            if ( empty($package) ) {
+            if (empty($package)) {
                 return false;
             }
             $this->packageUrl = $package->download;
@@ -339,10 +340,11 @@ class CheckForUpdate
      */
     protected function checkPhpVersion($packages, $php_version)
     {
-        foreach ( $packages as $package ) {
+        foreach ($packages as $package) {
             $php_min_version = $package->php_min_version;
             $php_max_version = str_replace('x', '99999', $package->php_max_version);
-            if ( 1
+            if (
+                1
                 && version_compare($php_version, $php_min_version, '>=')
                 && version_compare($php_version, $php_max_version, '<=')
             ) {
@@ -355,13 +357,13 @@ class CheckForUpdate
     /**
      * a-blog cmsのバージョンチェック
      *
-     * @param int $type
+     * @param 1|2|3 $type
      * @return bool|object
      */
-    protected function checkAcmsVersion($type=self::PATCH_VERSION)
+    protected function checkAcmsVersion($type = self::PATCH_VERSION)
     {
         $current = strtolower(VERSION);
-        switch ( $type ) {
+        switch ($type) {
             case self::PATCH_VERSION:
                 $method = 'isPatchVersion';
                 break;
@@ -372,9 +374,9 @@ class CheckForUpdate
                 $method = 'isMajorVersion';
                 break;
         }
-        foreach ( $this->data->versions as $item ) {
+        foreach ($this->data->versions as $item) {
             $version = $item->version;
-            if ( call_user_func(array($this, $method), $version, $current) ) {
+            if (call_user_func(array($this, $method), $version, $current)) {
                 return $item;
             }
         }
@@ -413,7 +415,8 @@ class CheckForUpdate
         }
         $partOfNote = array();
         foreach ($allNote as $note) {
-            if (1
+            if (
+                1
                 && version_compare($note->version, strtolower(VERSION), '>')
                 && version_compare($note->version, $updateCmsVersion, '<=')
             ) {
@@ -438,7 +441,8 @@ class CheckForUpdate
         $current = "$licenseMajorVersion.$licenseMinorVersion.0";
         $next = $licenseMinorVersion + 1;
         $next = "$licenseMajorVersion.$next.0";
-        if ( 1
+        if (
+            1
             && version_compare($version, $current, '>')
             && version_compare($version, $next, '<')
             && intval($versionAry[1]) === $licenseMinorVersion
@@ -460,8 +464,9 @@ class CheckForUpdate
         $versionAry = preg_split('/[-+\.\_]/', $version);
         $currentAry = preg_split('/[-+\.\_]/', $current);
         $next = (intval($currentAry[1]) + 1);
-        $next = "${currentAry[0]}.${next}.0";
-        if ( 1
+        $next = "{$currentAry[0]}.{$next}.0";
+        if (
+            1
             && version_compare($version, $current, '>')
             && version_compare($version, $next, '<')
             && $versionAry[1] === $currentAry[1]
@@ -483,8 +488,9 @@ class CheckForUpdate
         $versionAry = preg_split('/[-+\.\_]/', $version);
         $currentAry = preg_split('/[-+\.\_]/', $current);
         $next = (intval($currentAry[0]) + 1);
-        $next = "${next}.0.0";
-        if ( 1
+        $next = "{$next}.0.0";
+        if (
+            1
             && version_compare($version, $current, '>')
             && version_compare($version, $next, '<')
             && $versionAry[0] === $currentAry[0]
@@ -505,8 +511,9 @@ class CheckForUpdate
     {
         $tmp = preg_split('/[-+\.\_]/', $current);
         $next = ++$tmp[0];
-        $next = "${next}.0.0";
-        if ( 1
+        $next = "{$next}.0.0";
+        if (
+            1
             && version_compare($version, $current, '>')
             && version_compare($version, $next, '>=')
         ) {
@@ -537,7 +544,9 @@ class CheckForUpdate
      */
     protected function request($endpoint)
     {
-        if (!defined('CURL_SSLVERSION_TLSv1_2')) define('CURL_SSLVERSION_TLSv1_2', 6);
+        if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+            define('CURL_SSLVERSION_TLSv1_2', 6); // phpcs:ignore
+        }
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $endpoint);

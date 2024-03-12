@@ -114,7 +114,7 @@ class Repository
             array_filter(
                 $this->findAll($blogId),
                 function (Entities\Shortcut $Shortcut) use ($authorities) {
-                    return in_array($Shortcut->getAuth(), $authorities);
+                    return in_array($Shortcut->getAuth(), $authorities, true);
                 }
             )
         );
@@ -256,7 +256,7 @@ class Repository
                    'scid' => $scid,
                 ] = $this->parseShortcutKey($row['dashboard_key']);
 
-                if (!in_array($key, array_column($shortcuts, 'key'))) {
+                if (!in_array($key, array_column($shortcuts, 'key'), true)) {
                     $shortcuts[] = [
                         'key' => $key,
                         'sort' => intval($row['dashboard_sort']),

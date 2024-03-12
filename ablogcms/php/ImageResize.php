@@ -5,15 +5,15 @@ use Acms\Services\Facades\Storage;
 
 class ImageResize
 {
-    const MIME_GIF = 1;
-    const MIME_PNG = 2;
-    const MIME_BMP = 3;
-    const MIME_XBM = 4;
-    const MIME_JPEG = 5;
+    public const MIME_GIF = 1;
+    public const MIME_PNG = 2;
+    public const MIME_BMP = 3;
+    public const MIME_XBM = 4;
+    public const MIME_JPEG = 5;
 
-    const SCALE_TO_FILL = 1;        // 出力サイズにめいっぱい広げる
-    const SCALE_ASPECT_FIT = 2;     // aspect比を維持して、ちょうど入るようにする
-    const SCALE_ASPECT_FILL = 3;    // aspect比を維持して、めいっぱい広げる
+    public const SCALE_TO_FILL = 1;        // 出力サイズにめいっぱい広げる
+    public const SCALE_ASPECT_FIT = 2;     // aspect比を維持して、ちょうど入るようにする
+    public const SCALE_ASPECT_FILL = 3;    // aspect比を維持して、めいっぱい広げる
 
     protected $engine;
 
@@ -45,7 +45,7 @@ class ImageResize
 
     protected $mode = self::SCALE_ASPECT_FILL;
 
-    public function __construct($path, $engine = 'gd')
+    public function __construct($path)
     {
         if (!$xy = Storage::getImageSize($path)) {
             AcmsLogger::warning('画像が読み込めないため、リサイズできませんでした', [
@@ -118,15 +118,29 @@ class ImageResize
             imagecolortransparent($this->destImg, $idx);
         } else {
             imagealphablending($this->destImg, false);
-            imagefill($this->destImg, 0, 0,
-                imagecolorallocatealpha($this->destImg, $this->colorR, $this->colorG, $this->colorB, 127));
+            imagefill(
+                $this->destImg,
+                0,
+                0,
+                imagecolorallocatealpha($this->destImg, $this->colorR, $this->colorG, $this->colorB, 127)
+            );
             imagesavealpha($this->destImg, true);
         }
         if (function_exists('imagepalettetotruecolor')) {
             imagepalettetotruecolor($this->destImg); // true color に変換
         }
-        imagecopyresampled($this->destImg, $this->srcImg, $this->destX, $this->destY, $this->srcX, $this->srcY,
-            $this->destW, $this->destH, $this->srcW, $this->srcH);
+        imagecopyresampled(
+            $this->destImg,
+            $this->srcImg,
+            $this->destX,
+            $this->destY,
+            $this->srcX,
+            $this->srcY,
+            $this->destW,
+            $this->destH,
+            $this->srcW,
+            $this->srcH
+        );
     }
 
     private function createDestImageForImagick($destPath)
@@ -224,7 +238,8 @@ class ImageResize
             $this->colorG = hexdec($matches[2]);
             $this->colorB = hexdec($matches[3]);
         }
-        if (0
+        if (
+            0
             || $this->colorR > 255 || $this->colorR < 0
             || $this->colorG > 255 || $this->colorG < 0
             || $this->colorB > 255 || $this->colorB < 0

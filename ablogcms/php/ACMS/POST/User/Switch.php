@@ -2,14 +2,12 @@
 
 class ACMS_POST_User_Switch extends ACMS_POST_User
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     /**
      * Run
-     *
-     * @return Field
      */
-    function post()
+    public function post()
     {
         $targetUid = intval($this->Post->get('uid'));
         if (!$this->validate(SUID, $targetUid)) {

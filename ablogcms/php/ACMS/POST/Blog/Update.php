@@ -14,13 +14,15 @@ class ACMS_POST_Blog_Update extends ACMS_POST_Blog
             $this->workflowData = $this->extractWorkflow();
         }
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
 
             $status = $Blog->get('status');
-            if ( 'open' <> $status ) {
+            if ('open' <> $status) {
                 $aryStatus  = array('open');
-                if ( 'close' == $status ) $aryStatus[]  = 'secret';
+                if ('close' == $status) {
+                    $aryStatus[]  = 'secret';
+                }
                 $SQL    = SQL::newUpdate('blog');
                 $SQL->setUpdate('blog_status', $status);
                 $SQL->addWhereIn('blog_status', $aryStatus);
@@ -84,7 +86,7 @@ class ACMS_POST_Blog_Update extends ACMS_POST_Blog
             // update RAM
             $SQL    = SQL::newSelect('blog');
             $SQL->addWhereOpr('blog_id', BID);
-            if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
+            if ($row = $DB->query($SQL->get(dsn()), 'row')) {
                 ACMS_RAM::blog(BID, $row);
             }
 

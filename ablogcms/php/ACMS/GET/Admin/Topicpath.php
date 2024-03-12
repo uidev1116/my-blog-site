@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( !SUID ) return '';
+        if (!SUID) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $blogs = array();
@@ -43,9 +45,11 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
         $i  = 0;
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $bid    = intval($row['blog_id']);
-            if ( !empty($i) ) $Tpl->add('glue');
+            if (!empty($i)) {
+                $Tpl->add('glue');
+            }
 
             $topics = array();
             if (isset($blogs[$bid]) && count($blogs[$bid]) > 0) {
@@ -73,50 +77,52 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         }
 
         $aryAdmin   = array();
-        if ( 'form_log' == ADMIN ) {
+        if ('form_log' == ADMIN) {
             $aryAdmin[] = 'form_index';
             $aryAdmin[] = 'form_edit';
             $aryAdmin[] = 'form_log';
-        } else if ( 'shop' == substr(ADMIN, 0, strlen('shop')) )  {
-            if ( 'shop_menu' != ADMIN ) $aryAdmin[] = 'shop_menu';
-            if ( preg_match('@_edit$@', ADMIN) ) {
+        } elseif ('shop' == substr(ADMIN, 0, strlen('shop'))) {
+            if ('shop_menu' != ADMIN) {
+                $aryAdmin[] = 'shop_menu';
+            }
+            if (preg_match('@_edit$@', ADMIN)) {
                 $aryAdmin[] = str_replace('_edit', '_index', ADMIN);
             }
             $aryAdmin[] = ADMIN;
-        } else if ( 'schedule' == substr(ADMIN, 0, strlen('schedule')) ) {
+        } elseif ('schedule' == substr(ADMIN, 0, strlen('schedule'))) {
             if ('schedule_index' != ADMIN) {
                 $aryAdmin[] = 'schedule_index';
             }
             $aryAdmin[] = ADMIN;
-        } else if ('config_set_theme' == substr(ADMIN, 0, strlen('config_set_theme'))) {
+        } elseif ('config_set_theme' == substr(ADMIN, 0, strlen('config_set_theme'))) {
             $aryAdmin[] = 'config_set_theme_index';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if ('config_set_editor' == substr(ADMIN, 0, strlen('config_set_editor'))) {
+        } elseif ('config_set_editor' == substr(ADMIN, 0, strlen('config_set_editor'))) {
             $aryAdmin[] = 'config_set_editor_index';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if ('config_set_base' === substr(ADMIN, 0, strlen('config_set_base'))) {
+        } elseif ('config_set_base' === substr(ADMIN, 0, strlen('config_set_base'))) {
             $aryAdmin[] = 'config_set_base_index';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if ('config_theme' === ADMIN) {
+        } elseif ('config_theme' === ADMIN) {
             $aryAdmin[] = 'config_set_theme_index';
             $aryAdmin[] = 'config_theme';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if ('config_editor' === ADMIN) {
+        } elseif ('config_editor' === ADMIN) {
             $aryAdmin[] = 'config_set_editor_index';
             $aryAdmin[] = 'config_editor';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
-        } else if (preg_match('/^config_(edit|unit|bulk-change)/', ADMIN)) {
+        } elseif (preg_match('/^config_(edit|unit|bulk-change)/', ADMIN)) {
             $aryAdmin[] = 'config_set_editor_index';
             $aryAdmin[] = 'config_editor';
             $aryAdmin[] = 'rule_index';
             $aryAdmin[] = 'rule_edit';
             $aryAdmin[] = ADMIN;
-        } else if ('config' === substr(ADMIN, 0, strlen('config'))) {
+        } elseif ('config' === substr(ADMIN, 0, strlen('config'))) {
             $aryAdmin[] = 'config_set_base_index';
             if (!in_array(ADMIN, array('config_set_index', 'config_set_edit'))) {
                 if ('config_import' !== ADMIN && 'config_export' !== ADMIN) {
@@ -131,39 +137,40 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             if ('config_set_edit' === ADMIN) {
                 $aryAdmin[] = ADMIN;
             }
-        } else if ('module' == substr(ADMIN, 0, strlen('module'))) {
+        } elseif ('module' == substr(ADMIN, 0, strlen('module'))) {
             $aryAdmin[] = 'module_index';
-            if ('module_import' !== ADMIN ) {
+            if ('module_import' !== ADMIN) {
                 $aryAdmin[] = 'rule_index';
                 $aryAdmin[] = 'rule_edit';
             }
-            if ( 'module_index' !== ADMIN ) {
+            if ('module_index' !== ADMIN) {
                 $aryAdmin[] = ADMIN;
             }
-        } else if ( 'fix' == substr(ADMIN, 0, strlen('fix')) ) {
-
+        } elseif ('fix' == substr(ADMIN, 0, strlen('fix'))) {
             $aryAdmin[] = 'fix_index';
-            if ( 'fix_index' <> ADMIN  ) {
+            if ('fix_index' <> ADMIN) {
                 $aryAdmin[] = ADMIN;
             }
-        } else if ( preg_match('@(\_edit|\_editor)$@', ADMIN) ) {
-            if ( !('user_edit' == ADMIN and !sessionWithContribution()) ) {
-                if ( 'blog_edit' !== ADMIN ) {
+        } elseif (preg_match('@(\_edit|\_editor)$@', ADMIN)) {
+            if (!('user_edit' == ADMIN and !sessionWithContribution())) {
+                if ('blog_edit' !== ADMIN) {
                     $aryAdmin[] = str_replace(array('_editor', '_edit'), array('_index', '_index'), ADMIN);
                 }
             }
             $aryAdmin[] = ADMIN;
-        } else if ( 'import' == substr(ADMIN, 0, strlen('import')) ) {
-            if ( 'import_index' != ADMIN ) $aryAdmin[] = 'import_index';
+        } elseif ('import' == substr(ADMIN, 0, strlen('import'))) {
+            if ('import_index' != ADMIN) {
+                $aryAdmin[] = 'import_index';
+            }
             $aryAdmin[] = ADMIN;
-        } else if ( ADMIN !== 'top' ) {
+        } elseif (ADMIN !== 'top') {
             $aryAdmin[] = ADMIN;
         }
 
-        foreach ( $aryAdmin as $admin ) {
+        foreach ($aryAdmin as $admin) {
             $Tpl->add('glue');
             $Tpl->add($admin);
-            if ( preg_match('@_edit$@', $admin) ) {
+            if (preg_match('@_edit$@', $admin)) {
                 $url = acmsLink(array(
                     'bid' => BID,
                     'uid' => UID,
@@ -173,7 +180,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                     'admin' => $admin,
                     'query' => Field::singleton('get'),
                 ));
-            } else if ($admin === 'config_set_default' || $admin === 'config_index' || $admin === 'rule_edit') {
+            } elseif ($admin === 'config_set_default' || $admin === 'config_index' || $admin === 'rule_edit') {
                 $url = acmsLink(array(
                     'bid' => BID,
                     'admin' => ADMIN,
@@ -278,7 +285,8 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    protected function getConfigSet($type = null, $name = 'このブログの初期コンフィグ') {
+    protected function getConfigSet($type = null, $name = 'このブログの初期コンフィグ')
+    {
         $SQL = SQL::newSelect('config_set');
         $SQL->addWhereOpr('config_set_type', $type);
         $SQL->addWhereOpr('config_set_blog_id', BID);
@@ -302,7 +310,8 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         return $result;
     }
 
-    protected function getRule() {
+    protected function getRule()
+    {
         $SQL = SQL::newSelect('rule');
         $SQL->addLeftJoin('blog', 'blog_id', 'rule_blog_id');
         ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');

@@ -4,7 +4,9 @@ class ACMS_POST_Fix_UnitGroup extends ACMS_POST_Fix
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('unit_group_target', 'required');
         $Fix->setMethod('unit_group_fix', 'required');

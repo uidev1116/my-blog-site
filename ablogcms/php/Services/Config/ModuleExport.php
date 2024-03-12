@@ -25,7 +25,7 @@ class ModuleExport extends Export
         $this->bid = $bid;
         $this->mid = $mid;
 
-        if ( empty($this->bid) || empty($this->mid) ) {
+        if (empty($this->bid) || empty($this->mid)) {
             return;
         }
 
@@ -52,7 +52,7 @@ class ModuleExport extends Export
         DB::query($q, 'fetch');
         $records = array();
 
-        while ( $r = DB::fetch($q) ) {
+        while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
             $records[] = $r;
         }
@@ -71,7 +71,7 @@ class ModuleExport extends Export
         DB::query($q, 'fetch');
         $records = array();
 
-        while ( $r = DB::fetch($q) ) {
+        while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
             $records[] = $r;
         }
@@ -90,4 +90,3 @@ class ModuleExport extends Export
         $this->setYaml($field, 'field');
     }
 }
-

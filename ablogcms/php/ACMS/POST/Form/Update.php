@@ -10,7 +10,7 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         $Form->setMethod('code', 'regex', '@[a-zA-Z0-9_-]@');
         $Form->setMethod('code', 'double', $this->double($Form->get('code'), $fmid, $Form->get('scope')));
         $Form->setMethod('name', 'required');
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $Form->setMethod('form', 'operative', roleAuthorization('form_edit', BID));
         } else {
             $Form->setMethod('form', 'operative', sessionWithFormAdministration());
@@ -19,18 +19,22 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         $Form->validate(new ACMS_Validator());
 
         $Mail = $this->extract('mail');
-        foreach ( $Mail->listFields() as $fd ) {
-            if (!in_array($fd, array(
+        foreach ($Mail->listFields() as $fd) {
+            if (
+                !in_array($fd, array(
                 'To', 'From', 'Cc', 'Bcc', 'Reply-To',
                 'AdminTo', 'AdminFrom', 'AdminCc', 'AdminBcc', 'AdminReply-To'
-            ))) {
+                ))
+            ) {
                 continue;
             }
             if ($val = $Mail->get($fd)) {
                 $aryVal = array();
                 foreach (explode(',', $val) as $_val) {
                     $_val = trim($_val);
-                    if ( empty($_val) ) continue;
+                    if (empty($_val)) {
+                        continue;
+                    }
                     $aryVal[] = $_val;
                 }
                 $Mail->set($fd, $aryVal);
@@ -43,9 +47,13 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         $aryFd  = array();
         $aryMd  = array();
         $aryVal = array();
-        foreach ( $Option->getArray('field') as $i => $fd ) {
-            if ( empty($fd) ) continue;
-            if ( !($md = $Option->get('method', '', $i)) ) continue;
+        foreach ($Option->getArray('field') as $i => $fd) {
+            if (empty($fd)) {
+                continue;
+            }
+            if (!($md = $Option->get('method', '', $i))) {
+                continue;
+            }
             $aryFd[]    = $fd;
             $aryMd[]    = $md;
             $aryVal[]   = $Option->get('value', '', $i);

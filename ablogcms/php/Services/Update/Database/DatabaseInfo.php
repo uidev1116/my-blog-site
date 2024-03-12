@@ -35,7 +35,7 @@ class DatabaseInfo
         $DB->query($q, 'fetch');
 
         $tables = array();
-        while ( $tb = $DB->fetch($q) ) {
+        while ($tb = $DB->fetch($q)) {
             $tables[] = implode($tb);
         }
         return $tables;
@@ -50,11 +50,11 @@ class DatabaseInfo
     public function getColumns($table)
     {
         $DB = DB::singleton($this->dsn);
-        $q = "SHOW COLUMNS FROM `${table}`";
+        $q = "SHOW COLUMNS FROM `{$table}`";
         $DB->query($q, 'fetch');
 
         $columns = array();
-        while ( $fd = $DB->fetch($q) ) {
+        while ($fd = $DB->fetch($q)) {
             $columns[$fd['Field']] = $fd;
         }
         return $columns;
@@ -69,11 +69,11 @@ class DatabaseInfo
     public function getIndex($table)
     {
         $DB = DB::singleton($this->dsn);
-        $q = "SHOW INDEX FROM `${table}`";
+        $q = "SHOW INDEX FROM `{$table}`";
         $DB->query($q, 'fetch');
 
         $index = array();
-        while ( $fd = $DB->fetch($q) ) {
+        while ($fd = $DB->fetch($q)) {
             $index[] = $fd['Key_name'];
         }
         $index = array_values(array_unique($index));
@@ -149,7 +149,7 @@ class DatabaseInfo
         $DB->query($q, 'fetch');
 
         $fds = array();
-        while ( $fd = $DB->fetch($q) ) {
+        while ($fd = $DB->fetch($q)) {
             $fds[] = $fd;
         }
 
@@ -181,17 +181,17 @@ class DatabaseInfo
                 break;
             case 'change':
                 // カラムのサイズ変更で現行サイズより小さい場合は処理をスキップ
-                if ( preg_match('/^[a-z]+\((\d+)\)/', $def['Type'], $match) ) {
+                if (preg_match('/^[a-z]+\((\d+)\)/', $def['Type'], $match)) {
                     $cq = "SHOW COLUMNS FROM " . $tb . " LIKE '" . $left . "'";
                     $DB = DB::singleton($this->dsn);
                     $DB->query($cq, 'fetch');
                     $size = $match[1];
 
-                    if ( $row = $DB->fetch($cq) ) {
+                    if ($row = $DB->fetch($cq)) {
                         $type = $row['Type'];
-                        if ( preg_match('/^[a-z]+\((\d+)\)/', $type, $match) ) {
+                        if (preg_match('/^[a-z]+\((\d+)\)/', $type, $match)) {
                             $csize = $match[1];
-                            if ( intval($size) < intval($csize) ) {
+                            if (intval($size) < intval($csize)) {
                                 break;
                             }
                         }
@@ -208,7 +208,7 @@ class DatabaseInfo
                 $q .= " ENGINE=";
                 $q .= $left;
                 break;
-            case 'drop'  :
+            case 'drop':
                 $q .= " DROP";
                 $q .= " `" . $left . "`";
         }
@@ -219,8 +219,8 @@ class DatabaseInfo
     /**
      * テーブルを作成する
      *
-     * @param $tables
-     * @param null $idx
+     * @param array $tables
+     * @param array|null $idx
      *
      * @throws \RuntimeException
      */
@@ -244,7 +244,7 @@ class DatabaseInfo
             if (is_array($idx) && !empty($idx) && isset($idx[$tb])) {
                 $keys = $idx[$tb];
                 if (is_array($keys) && !empty($keys)) {
-                    foreach ( $keys as $key ) {
+                    foreach ($keys as $key) {
                         $q .= $key . ",\r\n";
                     }
                 }

@@ -34,7 +34,9 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
      */
     public function post()
     {
-        if (!sessionWithAdministration()) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
 
         ignore_user_abort(true);
         set_time_limit(0);
@@ -90,7 +92,8 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
             $engine = App::make('static-export.engine');
             $destination = App::make('static-export.destination');
 
-            if (0
+            if (
+                0
                 || empty($document_root)
                 || empty($domain)
                 || empty($maxPublish)

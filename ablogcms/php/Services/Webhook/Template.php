@@ -17,7 +17,8 @@ class Template
         ob_start() && extract($args, EXTR_SKIP);
         try {
             @eval('?>' . $generated);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
         return ob_get_clean();
     }
 
@@ -45,11 +46,11 @@ class Template
             }
             return $data;
         }
-        $obj = new \stdClass;
-        foreach($data as $k => $v) {
-            if(strlen($k)) {
+        $obj = new \stdClass();
+        foreach ($data as $k => $v) {
+            if (strlen($k)) {
                 $k = $this->fixVarsKey($k);
-                if(is_array($v)) {
+                if (is_array($v)) {
                     $obj->{$k} = $this->arrayToObject($v);
                 } else {
                     $obj->{$k} = $v;
@@ -88,7 +89,9 @@ class Template
     {
         preg_match_all('/{% ?block ?(.*?) ?%}(.*?){% ?endblock ?%}/is', $code, $matches, PREG_SET_ORDER);
         foreach ($matches as $value) {
-            if (!array_key_exists($value[1], $this->blocks)) $this->blocks[$value[1]] = '';
+            if (!array_key_exists($value[1], $this->blocks)) {
+                $this->blocks[$value[1]] = '';
+            }
             if (strpos($value[2], '@parent') === false) {
                 $this->blocks[$value[1]] = $value[2];
             } else {
@@ -101,7 +104,7 @@ class Template
 
     protected function compileYield($code)
     {
-        foreach($this->blocks as $block => $value) {
+        foreach ($this->blocks as $block => $value) {
             $code = preg_replace('/{% ?yield ?' . $block . ' ?%}/', $value, $code);
         }
         $code = preg_replace('/{% ?yield ?(.*?) ?%}/i', '', $code);

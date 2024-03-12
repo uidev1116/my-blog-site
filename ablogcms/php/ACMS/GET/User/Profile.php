@@ -32,19 +32,23 @@ class ACMS_GET_User_Profile extends ACMS_GET
         $SQL->setGroup('user_id');
 
         // indexing
-        if ( 'on' === config('user_profile_indexing') ) {
+        if ('on' === config('user_profile_indexing')) {
             $SQL->addWhereOpr('user_indexing', 'on');
         }
 
         $aryAuth    = array();
-        foreach ( array(
+        foreach (
+            array(
             'administrator', 'editor', 'contributor', 'subscriber'
-        ) as $auth ) {
-            if ( 'on' == config('user_profile_'.$auth) ) $aryAuth[] = $auth;
+            ) as $auth
+        ) {
+            if ('on' == config('user_profile_' . $auth)) {
+                $aryAuth[] = $auth;
+            }
         }
         $SQL->addWhereIn('user_auth', $aryAuth);
 
-        if ( !!($uid = intval($this->uid)) ) {
+        if (!!($uid = intval($this->uid))) {
             $SQL->addWhereOpr('user_id', $uid);
             $SQL->setLimit(1);
         } else {
@@ -55,14 +59,14 @@ class ACMS_GET_User_Profile extends ACMS_GET
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
 
-        if ( !($all = $DB->query($SQL->get(dsn()), 'all')) ) {
+        if (!($all = $DB->query($SQL->get(dsn()), 'all'))) {
             $Tpl->add('notFound');
             return $Tpl->get();
         }
 
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $vars           = $this->buildField(loadUserField(intval($row['user_id'])), $Tpl);
-            foreach ( $row as $key => $val ) {
+            foreach ($row as $key => $val) {
                 if ($key === 'user_mail_magazine' || $key === 'user_mail_mobile_magazine') {
                     $val = $val === 'on' ? 'on' : 'off';
                 }

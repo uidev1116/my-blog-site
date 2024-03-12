@@ -2,7 +2,7 @@
 
 class ACMS_POST_Trackback_Status extends ACMS_POST
 {
-    var $_status    = 'open';
+    public $_status    = 'open';
 
     function post()
     {
@@ -10,7 +10,7 @@ class ACMS_POST_Trackback_Status extends ACMS_POST
         $this->Post->setMethod('trackback', 'tbidIsNull', !!TBID);
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValid() ) {
+        if ($this->Post->isValid()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newUpdate('trackback');
             $SQL->setUpdate('trackback_status', $this->_status);

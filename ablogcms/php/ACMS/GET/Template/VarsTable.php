@@ -8,12 +8,12 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
 
         preg_match_all('/<!--@doc([^>]*?)-->/sm', $this->tpl, $matches, PREG_SET_ORDER);
 
-        if ( empty($matches) ) {
+        if (empty($matches)) {
             $Tpl->add('notFound');
             return $Tpl->get();
         }
 
-        foreach ( $matches as $match ) {
+        foreach ($matches as $match) {
             $comment = $match[1];
 
             $id     = $this->getTemplateId($comment);
@@ -21,9 +21,9 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
             $text   = $this->getText($comment);
             $paramStr = ' ';
 
-            foreach ( $params as $param ) {
+            foreach ($params as $param) {
                 $Tpl->add(array('param:loop', 'comment:loop'), $param);
-                $paramStr .= $param['param'].'="" ';
+                $paramStr .= $param['param'] . '="" ';
             }
 
             $annotation = array(
@@ -34,17 +34,17 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
                 'snippet' => "<!-- GET_Template id=\"$id\"$paramStr-->",
             );
 
-            if ( $author = $this->getAuthor($comment) ) {
+            if ($author = $this->getAuthor($comment)) {
                 $annotation['author'] = $author;
             }
-            if ( $create = $this->getCreate($comment) ) {
+            if ($create = $this->getCreate($comment)) {
                 $annotation['create'] = $create;
             }
 
             $Tpl->add('comment:loop', $annotation);
             $Tpl->add('search:loop', array(
                 'label' => $id,
-                'link'  => '#'.$id,
+                'link'  => '#' . $id,
             ));
         }
 
@@ -53,8 +53,8 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
 
     function getAnnotation($annotation, $comment)
     {
-        $pattern = '/@'.$annotation.'(?:[\t 　]+)(.*)/i';
-        if ( preg_match($pattern, $comment, $match) ) {
+        $pattern = '/@' . $annotation . '(?:[\t 　]+)(.*)/i';
+        if (preg_match($pattern, $comment, $match)) {
             return $match[1];
         }
         return false;
@@ -64,7 +64,7 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
     {
         $comment = preg_replace('/^(.*)@(.*)$/m', '', $comment);
         $comment = preg_replace('/^[\t\s]*#[\t\s]*/m', '', $comment);
-        
+
         return $comment;
     }
 
@@ -87,8 +87,8 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
     {
         $params = array();
 
-        if ( preg_match_all('/@param(?:[\t 　]+)([^\|]*)(?:[\t\s]*)(?:\|?)(?:[\t\s]*)(.*)/i', $comment, $matches, PREG_SET_ORDER) ) {
-            foreach ( $matches as $match ) {
+        if (preg_match_all('/@param(?:[\t 　]+)([^\|]*)(?:[\t\s]*)(?:\|?)(?:[\t\s]*)(.*)/i', $comment, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
                 $params[] = array(
                     'param' => trim($match[1]),
                     'label' => trim($match[2]),

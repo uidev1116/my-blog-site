@@ -26,8 +26,7 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
         $Blog->setMethod('blog', 'operable', 1
             and sessionWithAdministration()
             and isBlogGlobal(SBID)
-            and IS_LICENSED
-        );
+            and IS_LICENSED);
         $Blog->validate(new ACMS_Validator());
         $Field = $this->extract('field', new ACMS_Validator());
         $Config = $this->extract('config', new ACMS_Validator());
@@ -36,7 +35,7 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
             $this->workflowData = $this->extractWorkflow();
         }
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             //-------
             // align
             $DB     = DB::singleton(dsn());
@@ -46,7 +45,7 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
             $SQL->addWhereOpr('blog_parent', BID);
             $SQL->setOrder('blog_right', 'DESC');
             $SQL->setLimit(1);
-            if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
+            if ($row = $DB->query($SQL->get(dsn()), 'row')) {
                 $l      = $row['blog_right'] + 1;
                 $r      = $l + 1;
                 $sort   = $row['blog_sort'] + 1;

@@ -24,6 +24,7 @@ interface Log {
   blogName: string
   message: string
   url: string
+  isManagedDomain: boolean
   ua: string
   referer: string
   ipAddress: string
@@ -269,9 +270,13 @@ const DetailLogModal = () => {
               <tr>
                 <th className="acms-admin-table-nowrap">URL</th>
                 <td>
-                  <a href={logInfo.url} target="_blank" rel="noreferrer">
-                    {logInfo.url}
-                  </a>
+                  {logInfo.isManagedDomain ? (
+                    <a href={logInfo.url} target="_blank" rel="noreferrer">
+                      {logInfo.url}
+                    </a>
+                  ) : (
+                    logInfo.url
+                  )}
                 </td>
               </tr>
               <tr>

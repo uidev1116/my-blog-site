@@ -11,9 +11,11 @@ class ACMS_GET_Js extends ACMS_GET
         $query = join('&', $jsModules);
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        if ( !empty($query) ) $Tpl->add(null, array(
-            'arguments' => '?'.$query,
-        ));
+        if (!empty($query)) {
+            $Tpl->add(null, array(
+            'arguments' => '?' . $query,
+            ));
+        }
         return $Tpl->get();
     }
 }

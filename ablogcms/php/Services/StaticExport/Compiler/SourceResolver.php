@@ -55,24 +55,24 @@ class SourceResolver extends Resolver
 
         $regex = $this->getRegex();
         $this->offset = 0;
-        while ( preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $this->offset) ) {
+        while (preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $this->offset)) {
             // 置き換え対象文字列の$html全体からみたときのオフセット文字数を取得
             $this->offset = $match[0][1] + strlen($match[0][0]);
 
             // マッチ箇所を1文字列チャンクあたり，5回まで検出する
             // マッチポイントが検出されたらbreakして，$mptはつぎのwhileループに持ち越す
-            for ( $mpt = 1; $mpt <= 6; $mpt++ ) {
-                if ( !empty($match[$mpt][0]) ) {
+            for ($mpt = 1; $mpt <= 6; $mpt++) {
+                if (!empty($match[$mpt][0])) {
                     break;
                 }
             }
-            $path = trim($match[$mpt][0], '\'"');
+            $path = trim($match[$mpt][0], '\'"'); // @phpstan-ignore-line
             $path = preg_replace('@(https?)?://' . $blogPath . '/?@', '/', $path);
-            $this->replacer($path, $html, $match, $mpt);
+            $this->replacer($path, $html, $match, $mpt); // @phpstan-ignore-line
         }
         $regex = '@<\s*(?:img|input|script|frame|iframe)(?:"[^"]*"|\'[^\']*\'|[^\'">])*data-src\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>@';
         $this->offset = 0;
-        while ( preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $this->offset) ) {
+        while (preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $this->offset)) {
             $this->offset = $match[0][1] + strlen($match[0][0]);
             $path = trim($match[1][0], '\'"');
             $path = preg_replace('@(https?)?://' . $blogPath . '/?@', '/', $path);
@@ -87,7 +87,7 @@ class SourceResolver extends Resolver
     protected function getRegex()
     {
         $extension = '(?:acms)';
-        if ( defined('REWRITE_PATH_EXTENSION') ) {
+        if (defined('REWRITE_PATH_EXTENSION')) {
             $extension = '(?:acms|' . REWRITE_PATH_EXTENSION . ')';
         }
         $regex = '@' .
@@ -116,29 +116,33 @@ class SourceResolver extends Resolver
      * @param array $match
      * @param int $mpt
      */
-    protected function replacer($path, & $html, $match, $mpt)
+    protected function replacer($path, &$html, $match, $mpt)
     {
         $path = trim($path);
         $_path = explode('?', $path);
         $_path = $_path[0];
 
         // 何らかのスキーマ http:// 等から始まっていたら次のマッチポイントへ
-        if ( is_int(strpos($path, '://')) || substr($path, 0, 2) === '//' ) {
+        if (is_int(strpos($path, '://')) || substr($path, 0, 2) === '//') {
             return;
         }
 
         // / をなくしたときに，何も残らなければ ただのルートパス指定とみなして次のマッチポイントへ
-        if ( !str_replace('/', '', $_path) ) {
+        if (!str_replace('/', '', $_path)) {
             return;
         }
 
-        if ( '/' == substr($path, 0, 1) ) {
+        if ('/' == substr($path, 0, 1)) {
             $path = substr($path, 1);
             $_path = explode('?', $path);
             $_path = $_path[0];
 
-            if ( $this->acmsJsReplace($path, $_path, $html, $match, $mpt) ) return;
-            if ( $this->matchingPath($path, $_path, $html, $match, $mpt) ) return;
+            if ($this->acmsJsReplace($path, $_path, $html, $match, $mpt)) {
+                return;
+            }
+            if ($this->matchingPath($path, $_path, $html, $match, $mpt)) {
+                return;
+            }
         }
     }
 
@@ -152,14 +156,14 @@ class SourceResolver extends Resolver
      * @param int $mpt
      * @return boolean
      */
-    protected function acmsJsReplace($path, $format_path, & $html, $match, $mpt)
+    protected function acmsJsReplace($path, $format_path, &$html, $match, $mpt)
     {
-        if ( $format_path === 'acms.js' ) {
+        if ($format_path === 'acms.js') {
             $offset = strlen($match[$mpt][0]);
             $path = preg_replace('/domains=([^&]+)/', 'domains=' . $this->destinationDomain, $path);
             if ($this->destinationOffsetDir) {
                 $path = preg_replace('/scriptRoot=([^&]+)/', 'scriptRoot=/' . $this->destinationOffsetDir, $path);
-                if (strpos($path,'offset=') === false) {
+                if (strpos($path, 'offset=') === false) {
                     $path .= '&offset=' . $this->destinationOffsetDir;
                 } else {
                     $path = preg_replace('/offset=([^&]+)/', 'offset=' . $this->destinationOffsetDir, $path);
@@ -182,21 +186,21 @@ class SourceResolver extends Resolver
      * @param int $mpt
      * @return boolean
      */
-    protected function matchingPath($path, $format_path, & $html, $match, $mpt)
+    protected function matchingPath($path, $format_path, &$html, $match, $mpt)
     {
         $_path = explode('?', $path);
         $query = isset($_path[1]) ? '?' . $_path[1] : '';
         $split_path = preg_split('@/@', $format_path, -1, PREG_SPLIT_NO_EMPTY);
 
         $rewrite = false;
-        while ( true ) {
+        while (true) {
             $tmp = join('/', $split_path);
 
             // 書き出し先にあったら
-            foreach (array('',  $this->destinationBlogCode) as  $bcd) {
-                if ( is_readable($this->destinationPath . $bcd . $tmp) ) {
+            foreach (array('',  $this->destinationBlogCode) as $bcd) {
+                if (is_readable($this->destinationPath . $bcd . $tmp)) {
                     $offset = strlen($match[$mpt][0]);
-                    if ( $mpt === 5  ) {
+                    if ($mpt === 5) {
                         $html = substr_replace($html, '/' . $this->destinationOffsetDir . $bcd . $tmp . $query . '', $match[$mpt][1], $offset);
                     } else {
                         $html = substr_replace($html, '"/' . $this->destinationOffsetDir . $bcd . $tmp . $query . '"', $match[$mpt][1], $offset);
@@ -206,9 +210,11 @@ class SourceResolver extends Resolver
                     break 2;
                 }
             }
-            if ( !(array_shift($split_path)) ) break;
+            if (!(array_shift($split_path))) {
+                break;
+            }
         }
-        if ( !$rewrite ) {
+        if (!$rewrite) {
             // ToDo: 書き換え失敗のエラーハンドリングをする
         }
 

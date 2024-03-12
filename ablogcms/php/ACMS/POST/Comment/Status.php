@@ -17,7 +17,7 @@ class ACMS_POST_Comment_Status extends ACMS_POST_Comment
         ));
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newUpdate('comment');
             $SQL->setUpdate('comment_status', $status);
@@ -32,11 +32,17 @@ class ACMS_POST_Comment_Status extends ACMS_POST_Comment
                 'cid'       => CID,
                 'eid'       => EID,
                 'cmid'      => CMID,
-                'fragment'  => 'comment-'.CMID,
+                'fragment'  => 'comment-' . CMID,
             )));
-            if ($status === 'awaiting') $statusName = '承認待ち';
-            if ($status === 'close') $statusName = '非公開';
-            if ($status === 'open') $statusName = '公開';
+            if ($status === 'awaiting') {
+                $statusName = '承認待ち';
+            }
+            if ($status === 'close') {
+                $statusName = '非公開';
+            }
+            if ($status === 'open') {
+                $statusName = '公開';
+            }
             AcmsLogger::info('コメントのステータスを「' . $statusName . '」に変更しました');
         }
 

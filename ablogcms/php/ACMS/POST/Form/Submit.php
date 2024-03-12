@@ -101,13 +101,14 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param int $fmid
      * @param Field & $Field
      */
-    function updateCount($fmid, & $Field)
+    function updateCount($fmid, &$Field)
     {
         if (!!$fmid) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newUpdate('form');
             $SQL->addWhereOpr('form_id', $fmid);
-            $SQL->setUpdate('form_current_serial',
+            $SQL->setUpdate(
+                'form_current_serial',
                 SQL::newFunction(SQL::newOpr('form_current_serial', 1, '+'), 'LAST_INSERT_ID')
             );
             $Field->set('serialNumber', $DB->query($SQL->get(dsn()), 'seq'));
@@ -174,10 +175,10 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param Field & $Field
      * @return array
      */
-    function sendAutoReply(& $Mail, & $Field)
+    protected function sendAutoReply(&$Mail, &$Field)
     {
         $to = $Mail->getArray('To');
-        $htmlBodyTpl = findTemplate($Mail->get('BodyHTMLTpl'));
+        $htmlBodyConfigPath = $Mail->get('BodyHTMLTpl');
         $subject = $this->getSubjectTemplate($Mail, $Field, 'Subject', 'SubjectTpl');
         $body = $this->getBodyTemplate($Mail, $Field, 'Body', 'BodyTpl');
         $info = $this->getBaseMailInfo($Mail);
@@ -201,12 +202,21 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
         // 基本設定を追加
         $this->addBaseMailParam($mailer, $info);
 
-        // HTMLメール
-        if ($htmlBodyTpl) {
-            $info['body-html'] = Common::getMailTxt($htmlBodyTpl, $Field);
-            $mailer->setHtml($info['body-html'], $info['body']);
-            // テキストメール
+        if (!empty($htmlBodyConfigPath)) {
+            // HTMLメール（本文HTMLファイルが設定されている場合）
+            $htmlBodyTplPath = findTemplate($htmlBodyConfigPath);
+            if ($htmlBodyTplPath !== false) {
+                $info['body-html'] = Common::getMailTxt($htmlBodyTplPath, $Field);
+                $mailer->setHtml($info['body-html'], $info['body']);
+            } else {
+                AcmsLogger::warning('HTMLメール本文のテンプレートが見つかりませんでした', [
+                    'path' => $htmlBodyConfigPath,
+                ]);
+                // 管理者宛HTMLメール本文のテンプレートが取得できなかった場合はテキストメール
+                $mailer->setBody($info['body']);
+            }
         } else {
+            // テキストメール
             $mailer->setBody($info['body']);
         }
         if ($Mail->get('FormSend') !== 'no') {
@@ -223,10 +233,10 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param Field & $Field
      * @return array
      */
-    function sendToAdministrator(& $Mail, & $Field)
+    protected function sendToAdministrator(&$Mail, &$Field)
     {
         $to = $Mail->getArray('AdminTo');
-        $htmlBodyTplPath = findTemplate($Mail->get('AdminBodyHTMLTpl'));
+        $htmlBodyConfigPath = $Mail->get('AdminBodyHTMLTpl');
         $attached_files = array();
         $subject = $this->getSubjectTemplate($Mail, $Field, 'AdminSubject', 'AdminSubjectTpl');
         $body = $this->getBodyTemplate($Mail, $Field, 'AdminBody', 'AdminBodyTpl');
@@ -264,12 +274,21 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             }
         }
 
-        // HTMLメール
-        if ($htmlBodyTplPath) {
-            $info['body-html'] = Common::getMailTxt($htmlBodyTplPath, $Field);
-            $mailer->setHtml($info['body-html'], $info['body']);
-            // テキストメール
+        if (!empty($htmlBodyConfigPath)) {
+            // HTMLメール（本文HTMLファイルが設定されている場合）
+            $htmlBodyTplPath = findTemplate($htmlBodyConfigPath);
+            if ($htmlBodyTplPath !== false) {
+                $info['body-html'] = Common::getMailTxt($htmlBodyTplPath, $Field);
+                $mailer->setHtml($info['body-html'], $info['body']);
+            } else {
+                AcmsLogger::warning('管理者宛HTMLメール本文のテンプレートが見つかりませんでした', [
+                    'path' => $htmlBodyConfigPath,
+                ]);
+                // テキストメール
+                $mailer->setBody($info['body']);
+            }
         } else {
+            // テキストメール
             $mailer->setBody($info['body']);
         }
         if ($Mail->get('AdminFormSend') !== 'no') {
@@ -309,7 +328,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param Acms\Services\Mailer\Engine & $FromMail
      * @param array $info
      */
-    function addBaseMailParam(Acms\Services\Mailer\Engine & $FormMail, $info)
+    function addBaseMailParam(Acms\Services\Mailer\Engine &$FormMail, $info)
     {
         $FormMail->setFrom($info['from'])
             ->setTo(implode(', ', $info['to']))
@@ -375,17 +394,29 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param string $path_field
      * @return string
      */
-    function getSubjectTemplate($mail, $field, $txt_field, $path_field)
+    protected function getSubjectTemplate($mail, $field, $txt_field, $path_field)
     {
         $subjectTpl = $mail->get($txt_field, false);
-        $subjectTplPath = findTemplate($mail->get($path_field));
 
         if (!empty($subjectTpl)) {
-            $subject = Common::getMailTxtFromTxt($subjectTpl, $field);
-        } else {
-            $subject = Common::getMailTxt($subjectTplPath, $field);
+            return Common::getMailTxtFromTxt($subjectTpl, $field);
         }
-        return $subject;
+
+        $configPath = $mail->get($path_field);
+        if (empty($configPath)) {
+            // 件名ファイル未設定の場合
+            return '';
+        }
+
+        $subjectTplPath = findTemplate($configPath);
+        if ($subjectTplPath === false) {
+            AcmsLogger::warning('メール件名のテンプレートが見つかりませんでした', [
+                'path' => $configPath,
+            ]);
+            return '';
+        }
+
+        return Common::getMailTxt($subjectTplPath, $field);
     }
 
     /**
@@ -397,16 +428,27 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param string $path_field
      * @return string
      */
-    function getBodyTemplate($mail, $field, $txt_field, $path_field)
+    protected function getBodyTemplate($mail, $field, $txt_field, $path_field)
     {
         $bodyTpl = $mail->get($txt_field, false);
-        $bodyTplPath = findTemplate($mail->get($path_field));
-
         if (!empty($bodyTpl)) {
-            $body = Common::getMailTxtFromTxt($bodyTpl, $field);
-        } else {
-            $body = Common::getMailTxt($bodyTplPath, $field);
+            return Common::getMailTxtFromTxt($bodyTpl, $field);
         }
-        return $body;
+
+        $configPath = $mail->get($path_field);
+        if (empty($configPath)) {
+            // 本文ファイル未設定の場合
+            return '';
+        }
+
+        $bodyTplPath = findTemplate($configPath);
+        if ($bodyTplPath === false) {
+            AcmsLogger::warning('メール本文のテンプレートが見つかりませんでした', [
+                'path' => $configPath,
+            ]);
+            return '';
+        }
+
+        return Common::getMailTxt($bodyTplPath, $field);
     }
 }

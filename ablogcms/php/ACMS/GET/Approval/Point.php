@@ -4,9 +4,15 @@ class ACMS_GET_Approval_Point extends ACMS_GET
 {
     function get()
     {
-        if ( !enableApproval() ) return false;
-        if ( !editionIsEnterprise() ) return false;
-        if ( !RVID ) return false;
+        if (!enableApproval()) {
+            return false;
+        }
+        if (!editionIsEnterprise()) {
+            return false;
+        }
+        if (!RVID) {
+            return false;
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
@@ -29,8 +35,8 @@ class ACMS_GET_Approval_Point extends ACMS_GET
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_rev_id', RVID);
         $SQL->addWhereOpr('entry_blog_id', BID);
-        if ( $entry = $DB->query($SQL->get(dsn()), 'row') ) {
-            foreach ( $entry as $key => $val ) {
+        if ($entry = $DB->query($SQL->get(dsn()), 'row')) {
+            foreach ($entry as $key => $val) {
                 $key = substr($key, strlen('entry_'));
                 $vars[$key] = $val;
             }

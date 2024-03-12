@@ -26,7 +26,6 @@ class Engine
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -48,7 +47,7 @@ class Engine
         }
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true); // Locationを辿る
         curl_setopt($this->curl, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER , array('Expect:'));
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Expect:'));
         curl_setopt($this->curl, CURLOPT_TIMEOUT, MAX_EXECUTION_TIME);
 
         $this->setCurlOption();
@@ -75,7 +74,7 @@ class Engine
      */
     public function setPostData($data = array())
     {
-        curl_setopt($this->curl,CURLOPT_POST, true);
+        curl_setopt($this->curl, CURLOPT_POST, true);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
 
         return $this;
@@ -146,13 +145,13 @@ class Engine
     {
         $headers = array();
 
-        foreach ( preg_split("/(\r|\n|\r\n)/", $header_string) as $i => $line ) {
-            if ( $i === 0 ) {
+        foreach (preg_split("/(\r|\n|\r\n)/", $header_string) as $i => $line) {
+            if ($i === 0) {
                 $headers['http_code'] = $line;
-                if ( preg_match('/HTTP\/[1|2]\.[0|1|x] ([0-9]{3})/', $line, $matches) ) {
+                if (preg_match('/HTTP\/[1|2]\.[0|1|x] ([0-9]{3})/', $line, $matches)) {
                     $headers['status_code'] = $matches[1];
                 }
-            } else if ( strpos($line, ':') !== false ) {
+            } elseif (strpos($line, ':') !== false) {
                 list ($key, $value) = explode(': ', $line);
                 $headers[strtolower($key)] = $value;
             }
@@ -161,7 +160,7 @@ class Engine
     }
 
     /**
-     * @return mixed
+     * @return void
      */
     protected function setCurlOption()
     {

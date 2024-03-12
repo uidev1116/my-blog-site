@@ -8,7 +8,9 @@ class ACMS_POST_Unit_Update extends ACMS_POST_Unit
         $eid    = $this->Post->get('eid');
         $entry  = ACMS_RAM::entry($eid);
 
-        if (!roleEntryUpdateAuthorization(BID, $entry)) die();
+        if (!roleEntryUpdateAuthorization(BID, $entry)) {
+            die();
+        }
 
         $Column = Entry::extractColumn();
         $Res = Entry::saveColumn($Column, $eid, $bid, true);
@@ -20,7 +22,7 @@ class ACMS_POST_Unit_Update extends ACMS_POST_Unit
             )
         );
 
-        if ( intval($primaryImageId) > 0 && intval($primaryImageId_p) === intval($primaryImageId) ) {
+        if (intval($primaryImageId) > 0 && intval($primaryImageId_p) === intval($primaryImageId)) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newUpdate('entry');
             $SQL->addUpdate('entry_primary_image', $primaryImageId);

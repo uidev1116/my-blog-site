@@ -12,13 +12,13 @@ class ACMS_GET_Admin_Schedule_Keys extends ACMS_GET_Admin
         $SQL->addGroup('schedule_id');
         $all    = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( empty($all) ) {
+        if (empty($all)) {
             $Tpl->add('notFound');
             return $Tpl->get();
         }
 
-        foreach ( $all as $row ) {
-            $Tpl->add('key:loop', array('name'=>$row['schedule_name'], 'id'=>$row['schedule_id']));
+        foreach ($all as $row) {
+            $Tpl->add('key:loop', array('name' => $row['schedule_name'], 'id' => $row['schedule_id']));
         }
 
         return $Tpl->get();

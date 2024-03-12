@@ -7,4 +7,3 @@ class ACMS_GET_Touch_ApprovalORsessionWithApprovalAdministrator extends ACMS_GET
         return (!enableApproval(BID, CID) || sessionWithApprovalAdministrator(BID, CID)) ? false : $this->tpl;
     }
 }
-

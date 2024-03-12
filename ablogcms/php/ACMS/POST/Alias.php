@@ -2,11 +2,11 @@
 
 class ACMS_POST_Alias extends ACMS_POST
 {
-    function checkScope($scope='local')
+    function checkScope($scope = 'local')
     {
         $DB = DB::singleton(dsn());
         do {
-            if ( $scope !== 'global' ) {
+            if ($scope !== 'global') {
                 return true;
             }
             //-----------
@@ -14,7 +14,7 @@ class ACMS_POST_Alias extends ACMS_POST
             $SQL = SQL::newSelect('blog');
             $SQL->addWhereOpr('blog_code', '');
             ACMS_Filter::blogTree($SQL, BID, 'descendant');
-            if ( $DB->query($SQL->get(dsn()), 'one') ) {
+            if ($DB->query($SQL->get(dsn()), 'one')) {
                 return false;
             }
 
@@ -25,13 +25,11 @@ class ACMS_POST_Alias extends ACMS_POST
             ACMS_Filter::blogTree($SQL, BID, 'descendant');
             $SQL->addGroup('blog_code');
             $SQL->addHaving('count(*)>1');
-            if ( $DB->query($SQL->get(dsn()), 'one') ) {
+            if ($DB->query($SQL->get(dsn()), 'one')) {
                 return false;
             }
+        } while (false);
 
-        } while( false );
-        
         return true;
     }
 }
-

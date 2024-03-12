@@ -95,7 +95,7 @@ class ACMS_GET_Admin_Module_Edit extends ACMS_GET_Admin_Edit
 
         $this->buildArgLabels($Module);
 
-        if (in_array($Module->get('name'), ['Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field'])) {
+        if (in_array($Module->get('name'), ['Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field'], true)) {
             $Module->delete('id');
         }
 

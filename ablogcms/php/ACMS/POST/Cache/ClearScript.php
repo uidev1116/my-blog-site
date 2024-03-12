@@ -9,13 +9,14 @@ class ACMS_POST_Cache_ClearScript extends ACMS_POST_Cache
     {
         try {
             $cron_key1 = Storage::get('private/cronkey');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             return false;
         }
 
         $cron_key2 = $this->Post->get('ACMS_POST_Cache_ClearScript');
 
-        if ( 1
+        if (
+            1
             && !!$cron_key1
             && !!$cron_key2
             && trim($cron_key1) === trim($cron_key2)
@@ -30,7 +31,7 @@ class ACMS_POST_Cache_ClearScript extends ACMS_POST_Cache
      */
     function post()
     {
-        if ( !$this->validate() ) {
+        if (!$this->validate()) {
             die("Forbidden: Access is denied.\n");
         }
         ACMS_POST_Cache::clearPageCache();

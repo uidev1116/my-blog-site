@@ -12,5 +12,4 @@ use Acms\Services\Facades\Webhook;
  */
 class Hook
 {
-
 }

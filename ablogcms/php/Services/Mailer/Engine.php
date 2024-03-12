@@ -84,7 +84,7 @@ class Engine implements MailerInterface
             $passwd = urlencode($config['smtp-pass']);
 
             $transport = Transport::fromDsn("smtp://$user:$passwd@$host:$port");
-        } else if (!empty($config['sendmail_path'])) {
+        } elseif (!empty($config['sendmail_path'])) {
             // sendmail
             $transport = Transport::fromDsn('native://default');
         }

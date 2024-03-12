@@ -30,6 +30,20 @@ abstract class ACMS_App
     public $desc;
 
     /**
+     * アプリがモジュールを提供するかどうか
+     * @deprecated 旧バージョンの互換性のために残している
+     * @var bool
+     */
+    public $module = false;
+
+    /**
+     * アプリがメニュー画面を提供するかどうか
+     * @var false|string
+     */
+    public $menu = false;
+
+
+    /**
      * インストール
      * @abstract
      */

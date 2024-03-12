@@ -29,12 +29,12 @@ class Compiler extends ContractsCompiler
         $domain = $this->destination->getDestinationDomain();
         $blog_code = $this->destination->getBlogCode();
 
-        foreach ( $this->resolver as $resolver => $obj ) {
+        foreach ($this->resolver as $resolver => $obj) {
             $class = 'Acms\\Services\\StaticExport\\Compiler\\' . ucfirst(strtolower($resolver)) . 'Resolver';
-            if ( !class_exists($class) ) {
+            if (!class_exists($class)) {
                 continue;
             }
-            $resolver = empty($obj) ? new $class : $obj;
+            $resolver = empty($obj) ? new $class() : $obj;
             $html = $resolver->resolve($html, $document_root, $offset_dir, $domain, $blog_code);
 
             $blogPath = \ACMS_RAM::blogDomain(BID);

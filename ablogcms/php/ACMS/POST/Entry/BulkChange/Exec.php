@@ -65,8 +65,8 @@ class ACMS_POST_Entry_BulkChange_Exec extends ACMS_POST_Entry_BulkChange_Confirm
         $sql = SQL::newUpdate('entry');
         foreach ($this->entryActions as $action) {
             $method = Common::camelize($action);
-            if ( method_exists($this, $method) ) {
-                $this->{$method}($sql, $entry);
+            if (method_exists($this, $method)) {
+                $this->{$method}($sql, $entry); // @phpstan-ignore-line
             } else {
                 $sql->addUpdate($action, $entry->get($action));
             }
@@ -110,7 +110,9 @@ class ACMS_POST_Entry_BulkChange_Exec extends ACMS_POST_Entry_BulkChange_Confirm
         if (!empty($tags)) {
             $tags = Common::getTagsFromString($tags);
             foreach ($tags as $sort => $tag) {
-                if (isReserved($tag)) continue;
+                if (isReserved($tag)) {
+                    continue;
+                }
                 $sql = SQL::newInsert('tag');
                 $sql->addInsert('tag_name', $tag);
                 $sql->addInsert('tag_sort', $sort + 1);
@@ -123,7 +125,5 @@ class ACMS_POST_Entry_BulkChange_Exec extends ACMS_POST_Entry_BulkChange_Confirm
                 }
             }
         }
-
     }
-
 }

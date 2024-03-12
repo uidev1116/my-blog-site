@@ -24,7 +24,6 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function saveCustomField($fieldName, $eid, $Field)
     {
-
     }
 
     /**
@@ -49,8 +48,10 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 
         if (is_array($updatedResponse) && !empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->responseRedirect($redirect, $ajax);
-        } else if (is_array($updatedResponse)) {
-            $Session =& Field::singleton('session');
+        }
+
+        if (is_array($updatedResponse)) {
+            $Session = &Field::singleton('session');
             $Session->add('entry_action', 'update');
             $info = [
                 'bid' => BID,
@@ -75,9 +76,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
                 $this->responseRedirect($redirect, $ajax);
             }
             $this->responseRedirect(acmsLink($info), $ajax);
-        } else {
-            return $this->responseGet($ajax);
         }
+        return $this->responseGet($ajax);
     }
 
     /**
@@ -86,7 +86,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      * @param mixed $exceptField
      * @return array|bool
      */
-    function update($exceptField = false)
+    public function update($exceptField = false)
     {
         ACMS_RAM::entry(EID, null);
 
@@ -187,7 +187,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             } else {
                 $revision = Entry::getRevision(EID, $rvid);
                 if ($isNewVersion) {
-                    AcmsLogger::info('エントリーの新規バージョンを作成しました「' . $revision['entry_title'] . '（' .$revision['entry_rev_memo'] . '）」', [
+                    AcmsLogger::info('エントリーの新規バージョンを作成しました「' . $revision['entry_title'] . '（' . $revision['entry_rev_memo'] . '）」', [
                         'eid' => EID,
                         'rvid' => $rvid,
                     ]);
@@ -225,7 +225,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             $Hook = ACMS_Hook::singleton();
             $Hook->call('saveEntry', array(EID, $rvid));
             $events = array('entry:updated');
-            if (1
+            if (
+                1
                 && !$isNewVersion
                 && !$isApproved
                 && $preEntry['entry_status'] !== 'open'
@@ -299,17 +300,19 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function validate($postEntry)
     {
-        if (!($cid = $postEntry->get('category_id'))) $cid = null;
+        if (!($cid = $postEntry->get('category_id'))) {
+            $cid = null;
+        }
 
         $postEntry->setMethod('status', 'required');
         $postEntry->setMethod('status', 'in', array('open', 'close', 'draft', 'trash'));
         $postEntry->setMethod('status', 'category', true);
         $postEntry->setMethod('title', 'required');
         if (!!($code = strval($postEntry->get('code')))) {
-            if ( !config('entry_code_extension') ) {
+            if (!config('entry_code_extension')) {
                 $postEntry->setMethod('code', 'reserved', !isReserved($code, false));
             }
-            if ( config('check_duplicate_entry_code') === 'on'  ) {
+            if (config('check_duplicate_entry_code') === 'on') {
                 $postEntry->setMethod('code', 'double', !Entry::validEntryCodeDouble($code, BID, $cid, EID));
             }
         }
@@ -421,7 +424,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     {
         $code = trim(strval($postEntry->get('code')), '/');
         if (!empty($code) && !!config('entry_code_extension') && !strpos($code, '.')) {
-            $code .= ('.'.config('entry_code_extension'));
+            $code .= ('.' . config('entry_code_extension'));
         }
         return $code;
     }
@@ -456,7 +459,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             'entry_link' => strval($postEntry->get('link')),
             'entry_datetime' => $datetime,
             'entry_start_datetime' => $this->getFixPublicDate($postEntry, $datetime),
-            'entry_end_datetime' => $postEntry->get('end_date').' '.$postEntry->get('end_time'),
+            'entry_end_datetime' => $postEntry->get('end_date') . ' ' . $postEntry->get('end_time'),
             'entry_indexing' => $postEntry->get('indexing', 'on'),
             'entry_members_only' => $postEntry->get('members_only', 'on'),
             'entry_updated_datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
@@ -506,8 +509,10 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         DB::query($sql->get(dsn()), 'exec');
         if (!empty($tags)) {
             $tags = Common::getTagsFromString($tags);
-            foreach ( $tags as $sort => $tag ) {
-                if ( isReserved($tag) ) continue;
+            foreach ($tags as $sort => $tag) {
+                if (isReserved($tag)) {
+                    continue;
+                }
                 $sql = SQL::newInsert('tag');
                 $sql->addInsert('tag_name', $tag);
                 $sql->addInsert('tag_sort', $sort + 1);
@@ -554,14 +559,22 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function isOperable()
     {
-        if (!EID) return false;
+        if (!EID) {
+            return false;
+        }
 
         if (roleAvailableUser()) {
-            if (!roleAuthorization('entry_edit', BID, EID)) return false;
+            if (!roleAuthorization('entry_edit', BID, EID)) {
+                return false;
+            }
         } else {
             if (!sessionWithCompilation(BID, false)) {
-                if (!sessionWithContribution(BID, false)) return false;
-                if (SUID <> ACMS_RAM::entryUser(EID) && (config('approval_contributor_edit_auth') === 'on' || !enableApproval(BID, CID))) return false;
+                if (!sessionWithContribution(BID, false)) {
+                    return false;
+                }
+                if (SUID <> ACMS_RAM::entryUser(EID) && (config('approval_contributor_edit_auth') === 'on' || !enableApproval(BID, CID))) {
+                    return false;
+                }
             }
         }
         if (enableRevision(false) && RVID > 1) {

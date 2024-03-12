@@ -4,8 +4,12 @@ class ACMS_POST_Entry_Apply extends ACMS_POST_Entry
 {
     function post()
     {
-        if ( !IS_LICENSED ) die();
-        if ( !sessionWithContribution() ) die();
+        if (!IS_LICENSED) {
+            die();
+        }
+        if (!sessionWithContribution()) {
+            die();
+        }
         $Entry  = $this->extract('entry');
         $this->fix($Entry);
         $Field  = $this->extract('field');

@@ -2,7 +2,7 @@
 
 class ACMS_POST_2GET extends ACMS_POST
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     protected $isCSRF = false;
 

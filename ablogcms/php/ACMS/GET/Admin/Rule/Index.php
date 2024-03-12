@@ -4,17 +4,21 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('rule_edit', BID) ) return false;
+        if (roleAvailableUser()) {
+            if (!roleAuthorization('rule_edit', BID)) {
+                return false;
+            }
         } else {
-            if ( !sessionWithAdministration() ) return false;
+            if (!sessionWithAdministration()) {
+                return false;
+            }
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
         //---------
         // refresh
-        if ( !$this->Post->isNull() ) {
+        if (!$this->Post->isNull()) {
             $Tpl->add('refresh');
         }
 
@@ -31,31 +35,33 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
         $SQL->setOrder('rule_sort');
         $SQL->addOrder('rule_blog_id', 'DESC');
 
-        if ( !$all = $DB->query($SQL->get(dsn()), 'all') ) {
+        if (!$all = $DB->query($SQL->get(dsn()), 'all')) {
             $Tpl->add('index#notFound');
             $Tpl->add(null, array('notice_mess' => 'show'));
             return $Tpl->get();
         }
         $cnt    = count($all);
         $sort   = 1;
-        while ( $row = array_shift($all) ) {
+        while ($row = array_shift($all)) {
             $rid    = intval($row['rule_id']);
-            $Tpl->add('status#'.$row['rule_status']);
+            $Tpl->add('status#' . $row['rule_status']);
 
-            if ( BID !== intval($row['rule_blog_id']) ) {
+            if (BID !== intval($row['rule_blog_id'])) {
                 $row['rule_scope'] = 'parental';
                 $disabled              = config('attr_disabled');
             } else {
                 $disabled              = '';
             }
-            $Tpl->add('scope:touch#'.$row['rule_scope']);
+            $Tpl->add('scope:touch#' . $row['rule_scope']);
 
-            for ( $i=1; $i<=$cnt; $i++ ) {
+            for ($i = 1; $i <= $cnt; $i++) {
                 $vars   = array(
                     'value' => $i,
                     'label' => $i,
                 );
-                if ( $sort == $i ) $vars['selected'] = config('attr_selected');
+                if ($sort == $i) {
+                    $vars['selected'] = config('attr_selected');
+                }
                 $Tpl->add('sort:loop', $vars);
             }
 
@@ -68,9 +74,10 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
             );
 
             $rbid       = intval($row['rule_blog_id']);
-            if ( BID === $rbid ) {
+            if (BID === $rbid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $rid));
-            } else if ( 0
+            } elseif (
+                0
                 or ( roleAvailableUser() && roleAuthorization('rule_edit', $rbid) )
                 or sessionWithAdministration($rbid)
             ) {
@@ -84,7 +91,7 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
             $sort++;
         }
 
-        if ( !$this->Post->isNull() ) {
+        if (!$this->Post->isNull()) {
             $Tpl->add(null, array('notice_mess' => 'show'));
         }
 

@@ -2,9 +2,11 @@
 
 class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
 {
-    function edit(& $Tpl)
+    function edit(&$Tpl)
     {
-        if ( UID <> SUID and !sessionWithAdministration() ) { return true; }
+        if (UID <> SUID and !sessionWithAdministration()) {
+            return true;
+        }
 
         $User = loadUser(UID);
         $User->delete('pass');
@@ -57,14 +59,14 @@ class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
                 $User->set('tfa-secret', Tfa::getSecretForManual($secret));
             }
         }
-        if ( !!UID ) {
+        if (!!UID) {
             $User->set('oldPass', $User->get('oldPass'));
             $Geo->overload(loadGeometry('uid', UID));
         }
         if (GETTEXT_TYPE !== 'user') {
             $User->delete('locale');
         }
-        if ( !sessionWithAdministration() ) {
+        if (!sessionWithAdministration()) {
             $User->delete('status');
             $User->delete('auth');
             $User->delete('indexing');
@@ -74,22 +76,22 @@ class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
             $User->delete('login_expire');
             $User->delete('login_terminal_restriction');
 
-            if ( SUID !== UID ) {
+            if (SUID !== UID) {
                 $User->delete('locale');
             }
         } else {
-            if ( SUID == UID ) {
+            if (SUID == UID) {
                 $User->delete('status');
                 $User->delete('auth');
                 $User->delete('login_expire');
             }
 
-            if ( RBID <> SBID ) {
+            if (RBID <> SBID) {
                 $User->delete('login_anywhere');
                 $User->delete('global_auth');
             }
 
-            if ( ACMS_RAM::userAuth(UID) === 'administrator' ) {
+            if (ACMS_RAM::userAuth(UID) === 'administrator') {
                 $User->delete('login_terminal_restriction');
             }
         }
@@ -97,7 +99,7 @@ class ACMS_GET_Admin_User_Edit extends ACMS_GET_Admin_Edit
         $this->Post->addChild('user', $User);
 
         $Field  =& $this->Post->getChild('field');
-        if ( $Field->isNull() and !!UID ) {
+        if ($Field->isNull() and !!UID) {
             $Field->overload(loadUserField(UID));
         }
 

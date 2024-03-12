@@ -13,4 +13,3 @@ class ACMS_GET_Admin_Config_Set_IndexGlobalOnly extends ACMS_GET_Admin_Config_Se
         return $SQL;
     }
 }
-

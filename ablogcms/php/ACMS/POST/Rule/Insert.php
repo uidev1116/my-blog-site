@@ -5,7 +5,7 @@ class ACMS_POST_Rule_Insert extends ACMS_POST_Rule
     function post()
     {
         $Rule = $this->extract('rule');
-        if ( 'global' !== $Rule->get('scope') ) {
+        if ('global' !== $Rule->get('scope')) {
             $Rule->set('scope', 'local');
         }
         $Rule->setMethod('name', 'required');
@@ -14,13 +14,13 @@ class ACMS_POST_Rule_Insert extends ACMS_POST_Rule
         $Rule->validate(new ACMS_Validator());
         $this->fix($Rule);
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $Rule->setMethod('rule', 'operative', roleAuthorization('rule_edit', BID));
         } else {
             $Rule->setMethod('rule', 'operative', sessionWithAdministration());
         }
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
 
             $rid    = $DB->query(SQL::nextval('rule_id', dsn()), 'seq');
@@ -69,21 +69,25 @@ class ACMS_POST_Rule_Insert extends ACMS_POST_Rule
             $end    = null;
             $SQL->addInsert('rule_term_case', $Rule->isNull('term_case') ? null : $Rule->get('term_case'));
 
-            if ( !$Rule->isNull('term_case') ) {
+            if (!$Rule->isNull('term_case')) {
                 $typeAry = array_filter($Rule->getArray('term_type'));
                 $type = array_shift($typeAry);
                 $SQL->addInsert('rule_term_type', empty($type) ? null : $type);
 
                 $start  = '1000-01-01';
                 $time   = $Rule->isNull('term_start_time') ? '00:00:00' : $Rule->get('term_start_time');
-                if ( !$Rule->isNull('term_start_date') ) $start = $Rule->get('term_start_date');
-                $start  = $start.' '.$time;
+                if (!$Rule->isNull('term_start_date')) {
+                    $start = $Rule->get('term_start_date');
+                }
+                $start  = $start . ' ' . $time;
                 $SQL->addInsert('rule_term_start', $start);
 
                 $end    = '9999-12-31';
                 $time   = $Rule->isNull('term_end_time') ? '23:59:59' : $Rule->get('term_end_time');
-                if ( !$Rule->isNull('term_end_date') ) $end    = $Rule->get('term_end_date');
-                $end    = $end.' '.$time;
+                if (!$Rule->isNull('term_end_date')) {
+                    $end    = $Rule->get('term_end_date');
+                }
+                $end    = $end . ' ' . $time;
                 $SQL->addInsert('rule_term_end', $end);
             }
 

@@ -2033,10 +2033,10 @@ msgstr ""
 msgid "バックアップに失敗しました。"
 msgstr ""
 
-msgid "アクセスログとキャッシュ以外のテーブルをバックアップします。"
+msgid "キャッシュ以外のテーブルをバックアップします。"
 msgstr ""
 
-msgid "アクセスログとキャッシュ以外のテーブルをzip形式でバックアップします。よろしいですか？"
+msgid "キャッシュ以外のテーブルをzip形式でバックアップします。よろしいですか？"
 msgstr ""
 
 msgid "画像・ファイルのバックアップ"
@@ -2785,9 +2785,6 @@ msgstr ""
 msgid "画像の回転処理"
 msgstr ""
 
-msgid "アクセスログ"
-msgstr ""
-
 msgid "開始"
 msgstr ""
 
@@ -2818,7 +2815,7 @@ msgstr ""
 msgid "全体の件数"
 msgstr ""
 
-msgid "キャッシュ・アクセスログ"
+msgid "キャッシュ"
 msgstr ""
 
 msgid "ルールID"

@@ -9,7 +9,7 @@ class ACMS_POST_Config_Import extends ACMS_POST
     {
         @set_time_limit(0);
 
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
             return $this->Post;
         }
 
@@ -22,7 +22,7 @@ class ACMS_POST_Config_Import extends ACMS_POST
             $this->Post->set('import', 'success');
 
             AcmsLogger::info('コンフィグのインポートを実行しました');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
             AcmsLogger::info('コンフィグのインポートが失敗しました', Common::exceptionArray($e));
         }
@@ -37,8 +37,10 @@ class ACMS_POST_Config_Import extends ACMS_POST
      */
     protected function checkAuth()
     {
-        if ( !sessionWithAdministration() ) return false;
-        if ( empty($_FILES['file']['tmp_name']) ) {
+        if (!sessionWithAdministration()) {
+            return false;
+        }
+        if (empty($_FILES['file']['tmp_name'])) {
             $this->addError('No file was uploaded.');
             return false;
         }

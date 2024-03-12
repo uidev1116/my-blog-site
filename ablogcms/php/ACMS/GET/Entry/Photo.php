@@ -20,7 +20,7 @@ class ACMS_GET_Entry_Photo extends ACMS_GET_Entry_Summary
             'newtime'          => config('entry_photo_newtime'),
             'unit'             => config('entry_photo_unit'),
             'notfound'         => config('mo_entry_photo_notfound'),
-            'notfoundStatus404'=> config('entry_photo_notfound_status_404'),
+            'notfoundStatus404' => config('entry_photo_notfound_status_404'),
             'noimage'          => config('entry_photo_noimage'),
             'imageX'           => intval(config('entry_photo_image_x')),
             'imageY'           => intval(config('entry_photo_image_y')),

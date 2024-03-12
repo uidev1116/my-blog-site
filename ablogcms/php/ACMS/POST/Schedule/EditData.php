@@ -5,14 +5,14 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
     function post()
     {
         $Conf = $this->extract('schedule');
-        $Conf->setMethod('year',    'regex', '@^[0-9]{4}$@');
-        $Conf->setMethod('month',   'regex', '@^[0-9]{2}$@');
+        $Conf->setMethod('year', 'regex', '@^[0-9]{4}$@');
+        $Conf->setMethod('month', 'regex', '@^[0-9]{2}$@');
         $Conf->setMethod('schedule', 'operative', sessionWithScheduleAdministration());
         $Conf->validate(new ACMS_Validator());
 
         $year   = $Conf->get('year');
         $month  = $Conf->get('month');
-        $limit  = date('t', mktime(0,0,0,$month,1,$year)) + 1;
+        $limit  = date('t', mktime(0, 0, 0, $month, 1, $year)) + 1;
 
         $sche   = array();
         $sfds   = array();
@@ -20,9 +20,9 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
         $build  = $this->buildSchedule($sche, $sfds, $limit);
 
         // validation result & serialize
-        if ( !$Conf->isValid() || $build == false ) {
+        if (!$Conf->isValid() || $build == false) {
             $this->Post->set('step', 'reapply');
-            $this->Post->set('reapply', array('data'=> @unserialize($sche), 'field'=>@unserialize($sfds)));
+            $this->Post->set('reapply', array('data' => @unserialize($sche), 'field' => @unserialize($sfds)));
 
             AcmsLogger::info('スケジュールのデータ登録に失敗しました');
             return $this->Post;

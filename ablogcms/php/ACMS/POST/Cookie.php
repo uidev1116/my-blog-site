@@ -2,7 +2,7 @@
 
 class ACMS_POST_Cookie extends ACMS_POST
 {
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     function post()
     {

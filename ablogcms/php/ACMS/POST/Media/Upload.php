@@ -25,7 +25,7 @@ class ACMS_POST_Media_Upload extends ACMS_POST
             $type = mime_content_type($_FILES['file']['tmp_name']);
             if (Media::isImageFile($type)) {
                 $data = Media::uploadImage('file');
-            } else if (Media::isSvgFile($type)) {
+            } elseif (Media::isSvgFile($type)) {
                 $data = Media::uploadSvg($info['size'], 'file');
             } else {
                 $data = Media::uploadFile($info['size'], 'file');
@@ -56,7 +56,6 @@ class ACMS_POST_Media_Upload extends ACMS_POST
             ]);
 
             Common::responseJson($json);
-
         } catch (\Exception $e) {
             AcmsLogger::notice('メディアのアップロードに失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 

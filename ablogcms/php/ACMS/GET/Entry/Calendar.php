@@ -75,12 +75,12 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
      */
     protected $separateWeek;
 
-    var $_axis  = array(
+    public $_axis  = array(
         'bid'   => 'self',
         'cid'   => 'self'
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'date'  => 'global',
         'start' => 'global',
         'end'   => 'global'
@@ -273,7 +273,9 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
 
     function get()
     {
-        if (!$this->setConfig()) return '';
+        if (!$this->setConfig()) {
+            return '';
+        }
 
         $DB = DB::singleton(dsn());
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
@@ -477,7 +479,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
         $date = date('Y-m-d', strtotime($this->startDate . strval(($this->firstW + (7 - $this->beginW)) % 7) . 'day'));
 
         if ($this->config['dateOrder'] === 'desc') {
-            $date = date('Y-m-d', strtotime($date . strval($this->loopCount -1) . ' day'));
+            $date = date('Y-m-d', strtotime($date . strval($this->loopCount - 1) . ' day'));
         }
 
         for ($i = 0; $i < intval($this->loopCount); $i++) {
@@ -490,7 +492,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 'date'  => $date,
             );
 
-            if(date('Y-m-d', requestTime()) === $date){
+            if (date('Y-m-d', requestTime()) === $date) {
                 $vars += array(
                     'today' => $this->config['today']
                 );
@@ -592,8 +594,8 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
     {
         $weekTitle = array();
 
-        switch($this->config['mode']){
-            case "month" :
+        switch ($this->config['mode']) {
+            case "month":
                 $prevtime  = mktime(0, 0, 0, intval($this->m) - 1, 1, intval($this->y));
                 $nexttime  = mktime(0, 0, 0, intval($this->m) + 1, 1, intval($this->y));
                 list($py, $pm, $pd) = array(
@@ -609,7 +611,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
 
                 break;
 
-            case "week" :
+            case "week":
                 $prev = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), -7);
                 $next = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), 7);
                 list($py, $pm, $pd) = explode('-', $prev);
@@ -620,8 +622,8 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
 
                 break;
 
-            case "days" :
-            case "until_days" :
+            case "days":
+            case "until_days":
                 $prev = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), -$this->config['pagerCount']);
                 $next = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), $this->config['pagerCount']);
                 list($py, $pm, $pd) = explode('-', $prev);

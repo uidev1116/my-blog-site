@@ -8,24 +8,24 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         $overCount  = 0;
 
         $typeAry = $this->Post->getArray('type');
-        if ( empty($typeAry) ) {
+        if (empty($typeAry)) {
             return $Column;
         }
-        foreach ( $typeAry as $i => $type ) {
+        foreach ($typeAry as $i => $type) {
             $id = $this->Post->get('id', 0, $i);
 
             // text, textarea
-            if ( in_array($type, array('text', 'textarea')) ) {
+            if (in_array($type, array('text', 'textarea'))) {
                 $data   = array(
-                    'label'     => $this->Post->get($type.'_label_'.$id),
-                    'caption'   => $this->Post->get($type.'_caption_'.$id),
+                    'label'     => $this->Post->get($type . '_label_' . $id),
+                    'caption'   => $this->Post->get($type . '_caption_' . $id),
                 );
             // radio, select, checkbox
-            } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
-                $values = array_merge(array_diff($this->Post->getArray($type.'_value_'.$id), array("")));
+            } elseif (in_array($type, array('radio', 'select', 'checkbox'))) {
+                $values = array_merge(array_diff($this->Post->getArray($type . '_value_' . $id), array("")));
                 $data   = array(
-                    'label'             => $this->Post->get($type.'_label_'.$id),
-                    'caption'           => $this->Post->get($type.'_caption_'.$id),
+                    'label'             => $this->Post->get($type . '_label_' . $id),
+                    'caption'           => $this->Post->get($type . '_caption_' . $id),
                     'values'            => acmsSerialize($values),
                 );
             } else {
@@ -36,9 +36,9 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
                 'clid'              => $_POST['clid'][$i],
                 'type'              => $type,
                 'sort'              => @intval($_POST['sort'][$i]),
-                'validator'         => $_POST['column_validator_'.$id],
-                'validator-value'   => $_POST['column_validator-value_'.$id],
-                'validator-message' => $_POST['column_validator-message_'.$id],
+                'validator'         => $_POST['column_validator_' . $id],
+                'validator-value'   => $_POST['column_validator-value_' . $id],
+                'validator-message' => $_POST['column_validator-message_' . $id],
             );
 
             $Column[]   = $data + $baseCol;
@@ -46,12 +46,12 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         return $Column;
     }
 
-    function saveFormColumn(& $Column, $eid, $bid)
+    function saveFormColumn(&$Column, $eid, $bid)
     {
         $DB     = DB::singleton(dsn());
         $offset = 0;
 
-        if ( !empty($eid) && !empty($bid) ) {
+        if (!empty($eid) && !empty($bid)) {
             $SQL    = SQL::newDelete('column');
             $SQL->addWhereOpr('column_entry_id', $eid);
             $SQL->addWhereOpr('column_blog_id', $bid);
@@ -59,7 +59,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             $DB->query($SQL->get(dsn()), 'exec');
         }
 
-        foreach ( $Column as $data ) {
+        foreach ($Column as $data) {
             $id     = $data['id'];
             $type   = $data['type'];
 
@@ -80,25 +80,24 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
                 'column_field_8'    => acmsSerialize($valid),
             );
 
-            if ( empty($data['label']) ) {
+            if (empty($data['label'])) {
                 $offset++;
                 continue;
             }
 
             //----------------
             // text, textarea
-            if ( in_array($type, array('text', 'textarea')) ) {
-
+            if (in_array($type, array('text', 'textarea'))) {
             //-------------------------
             // radio, select, checkbox
-            } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
+            } elseif (in_array($type, array('radio', 'select', 'checkbox'))) {
                 $row['column_field_6']  = $data['values'];
             } else {
                 $offset++;
                 continue;
             }
 
-            if ( !empty($data['clid']) ) {
+            if (!empty($data['clid'])) {
                 $clid   = intval($data['clid']);
             } else {
                 $clid   = $DB->query(SQL::nextval('column_id', dsn()), 'seq');
@@ -110,7 +109,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             $SQL->addWhereOpr('column_sort', $sort);
             $SQL->addWhereOpr('column_entry_id', intval($eid));
             $SQL->addWhereOpr('column_blog_id', intval($bid));
-            if ( $DB->query($SQL->get(dsn()), 'one') ) {
+            if ($DB->query($SQL->get(dsn()), 'one')) {
                 $SQL    = SQL::newUpdate('column');
                 $SQL->setUpdate('column_sort', SQL::newOpr('column_sort', 1, '+'));
                 $SQL->addWhereOpr('column_sort', $sort, '>=');
@@ -120,7 +119,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             }
 
             $SQL    = SQL::newInsert('column');
-            foreach ( $row as $fd => $val ) {
+            foreach ($row as $fd => $val) {
                 $SQL->addInsert($fd, strval($val));
             }
             $SQL->addInsert('column_id', intval($clid));
@@ -133,7 +132,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         return true;
     }
 
-    function update($oldField=null)
+    function update($oldField = null)
     {
         $DB     = DB::singleton(dsn());
         $Form   = $this->extract('form');
@@ -163,7 +162,9 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             'entry_form_id'             => $Form->get('form_id'),
             'entry_form_status'         => $Form->get('form_status'),
         );
-        foreach ( $row as $key => $val ) $SQL->addUpdate($key, $val);
+        foreach ($row as $key => $val) {
+            $SQL->addUpdate($key, $val);
+        }
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
@@ -187,7 +188,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
 
         setCookieDelFlag();
 
-        if ( is_array($updatedResponse) ) {
+        if (is_array($updatedResponse)) {
             $this->redirect(acmsLink(array(
                 'bid'   => BID,
                 'cid'   => $updatedResponse['cid'],
@@ -200,11 +201,19 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
 
     function isOperable()
     {
-        if ( !EID ) return false;
-        if ( !IS_LICENSED ) return false;
-        if ( !sessionWithCompilation() ) {
-            if ( !sessionWithContribution() ) return false;
-            if ( SUID <> ACMS_RAM::entryUser(EID) ) return false;
+        if (!EID) {
+            return false;
+        }
+        if (!IS_LICENSED) {
+            return false;
+        }
+        if (!sessionWithCompilation()) {
+            if (!sessionWithContribution()) {
+                return false;
+            }
+            if (SUID <> ACMS_RAM::entryUser(EID)) {
+                return false;
+            }
         }
 
         return true;

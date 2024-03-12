@@ -34,7 +34,8 @@ class Request
     public function __construct(React\HttpClient\Request $request, $callback = null)
     {
         $this->request = $request;
-        $this->successCallback = is_callable($callback) ? $callback : function () {};
+        $this->successCallback = is_callable($callback) ? $callback : function () {
+        };
     }
 
     /**
@@ -44,22 +45,22 @@ class Request
      */
     public function run()
     {
-        $self = $this;
-        $this->request->on('response', function (React\HttpClient\Response $response) use ($self) {
-            $response->on('data', function ($data) use ($self) {
-                $self->responseData .= $data;
+        $this->request->on('response', function (React\HttpClient\Response $response) {
+            $response->on('data', function ($data) {
+                $this->responseData .= $data;
             });
-            $response->on('end', function ($error, $response) use ($self) {
+            $response->on('end', function ($error, $response) {
                 $header = $response->getHeaders();
-                if ( !isset($header['Content-Length']) ||
-                    strlen($self->responseData) == $header['Content-Length']
+                if (
+                    !isset($header['Content-Length']) ||
+                    strlen($this->responseData) == $header['Content-Length']
                 ) {
-                    call_user_func($self->updateQueue, $response->getCode());
-                    call_user_func($self->successCallback, $self->responseData, $response->getCode());
+                    call_user_func($this->updateQueue, $response->getCode());
+                    call_user_func($this->successCallback, $this->responseData, $response->getCode());
                 }
             });
-            $response->on('error', function ($error, $response) use ($self) {
-                call_user_func($self->successCallback, $self->responseData, $response->getCode());
+            $response->on('error', function ($error, $response) {
+                call_user_func($this->successCallback, $this->responseData, $response->getCode());
             });
         });
         $this->request->end();
@@ -71,8 +72,9 @@ class Request
      */
     public function updateQueue($callback)
     {
-        if ( !is_callable($callback) ) {
-            $callback = function ($code) {};
+        if (!is_callable($callback)) {
+            $callback = function ($code) {
+            };
         }
         $this->updateQueue = $callback;
     }

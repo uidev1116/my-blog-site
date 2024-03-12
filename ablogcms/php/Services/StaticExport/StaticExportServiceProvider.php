@@ -23,12 +23,12 @@ class StaticExportServiceProvider extends ServiceProvider
         $container->singleton('static-export.destination', 'Acms\Services\StaticExport\Destination');
         $container->singleton('static-export.engine', 'Acms\Services\StaticExport\Engine');
         $container->singleton('static-export.diff-engine', 'Acms\Services\StaticExport\DiffEngine');
-        $container->singleton('static-export.terminate-check', function() use($logger_path, $terminate_check_path) {
+        $container->singleton('static-export.terminate-check', function () use ($logger_path, $terminate_check_path) {
             $logger_path = str_replace('BID', BID, $logger_path);
             $terminate_check_path = str_replace('BID', BID, $terminate_check_path);
             return new TerminateCheck($logger_path, $terminate_check_path);
         });
-        $container->singleton('static-export.logger', function() use ($container, $logger_path) {
+        $container->singleton('static-export.logger', function () use ($container, $logger_path) {
             $logger = new Logger();
             $logger_path = str_replace('BID', BID, $logger_path);
             $logger->init($logger_path, $container->make('static-export.terminate-check'));

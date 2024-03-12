@@ -4,7 +4,9 @@ class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('unit_size_unit_type', 'required');
@@ -12,7 +14,7 @@ class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
         $Fix->setMethod('unit_size_target', 'required');
         $Fix->setMethod('unit_size_fix', 'required');
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             @set_time_limit(0);
             $DB = DB::singleton(dsn());
 
@@ -25,8 +27,8 @@ class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
             $SQL    = SQL::newUpdate('column');
 
             $column = 'column_size';
-            if ( $sizeType === 'display' ) {
-                switch ( $type ) {
+            if ($sizeType === 'display') {
+                switch ($type) {
                     case 'youtube':
                     case 'video':
                         $column = 'column_field_3';
@@ -42,7 +44,7 @@ class ACMS_POST_Fix_UnitSize extends ACMS_POST_Fix
                         break;
                 }
             }
-            $SQL->addUpdate($column, $criterion.$value);
+            $SQL->addUpdate($column, $criterion . $value);
             $SQL->addWhereOpr($column, $target);
             $SQL->addWhereOpr('column_type', $type);
             $SQL->addWhereOpr('column_blog_id', BID);

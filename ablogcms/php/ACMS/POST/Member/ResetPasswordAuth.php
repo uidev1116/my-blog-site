@@ -1,5 +1,9 @@
 <?php
 
+use Acms\Services\Cache\Exceptions\NotFoundException;
+use Acms\Services\Login\Exceptions\BadRequestException;
+use Acms\Services\Login\Exceptions\ExpiredException;
+
 class ACMS_POST_Member_ResetPasswordAuth extends ACMS_POST_Member
 {
     use Acms\Services\Login\Traits\ValidateAuthUrl;
@@ -37,7 +41,21 @@ class ACMS_POST_Member_ResetPasswordAuth extends ACMS_POST_Member
     {
         $user = $this->extract('user');
         $login = $this->extract('login');
-        $data = $this->validateAuthUrl();
+        try {
+            $data = $this->validateAuthUrl();
+        } catch (BadRequestException $e) {
+            AcmsLogger::notice('不正なURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e));
+            $login->setValidator('reset', 'badRequest', false);
+            return $this->Post;
+        } catch (ExpiredException $e) {
+            AcmsLogger::notice('有効期限切れのURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e));
+            $login->setValidator('reset', 'expired', false);
+            return $this->Post;
+        } catch (NotFoundException $e) {
+            AcmsLogger::notice('アカウントが存在しないため、パスワード再設定処理を中断しました', Common::exceptionArray($e));
+            $login->setValidator('reset', 'notFound', false);
+            return $this->Post;
+        }
         $uid = $this->findUser($data);
         $user->setMethod('reset', 'isOperable', !SUID && $uid > 0);
         $this->validate($user);
@@ -62,7 +80,6 @@ class ACMS_POST_Member_ResetPasswordAuth extends ACMS_POST_Member
 
             generateSession($uid); // セッション生成
             $login->set('reset', 'success');
-
         } else {
             if (!$user->isValid('pass', 'required')) {
                 AcmsLogger::info('パスワードが指定されていないため、パスワード再設定処理を中断しました', [
@@ -83,11 +100,10 @@ class ACMS_POST_Member_ResetPasswordAuth extends ACMS_POST_Member
                 ]);
             }
             if (!$user->isValid('reset', 'isOperable')) {
-                if (empty($context)) {
-                    AcmsLogger::notice('不正なURLまたは有効期限切れのURLのため、パスワード再設定処理を中断しました');
-                } else {
-                    AcmsLogger::notice('不正なURLまたは操作のため、パスワード再設定処理を中断しました', $context);
-                }
+                AcmsLogger::info('パスワードをリセットできる権限がないため、パスワード再設定処理を中断しました', [
+                    'uid' => $uid,
+                    'email' => ACMS_RAM::userMail($uid),
+                ]);
             }
         }
         return $this->Post;

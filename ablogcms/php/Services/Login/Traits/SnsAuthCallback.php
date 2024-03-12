@@ -154,7 +154,6 @@ trait SnsAuthCallback
         $session->delete('sns_login_request_type');
         $session->delete('sns_login_blog_id');
         $session->save();
-
     }
 
     /**
@@ -280,7 +279,8 @@ trait SnsAuthCallback
         $uid = intval($userData['user_id']);
         $bid = intval($userData['user_blog_id']);
 
-        if ( 1
+        if (
+            1
             && ('on' === $data['user_login_anywhere'] || roleAvailableUser())
             && !isBlogAncestor(BID, $bid, true)
         ) {
@@ -308,6 +308,7 @@ trait SnsAuthCallback
             $sql->addUpdate($this->getKeyName(), $sub);
             $sql->addWhereOpr('user_id', SUID);
             DB::query($sql->get(dsn()), 'exec');
+            ACMS_RAM::cacheDelete();
             ACMS_RAM::user(SUID, null);
 
             $this->success(SUID);

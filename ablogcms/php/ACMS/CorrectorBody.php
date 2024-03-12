@@ -50,6 +50,42 @@ class ACMS_CorrectorBody
         }
     }
 
+    /**
+     * 指定されたタグを削除する
+     * scriptやiframeなどの危険なタグを削除するなど
+     *
+     * @param string $txt
+     * @param array $notAllowedTags
+     * @return string
+     */
+    public function strip_select_tags($txt, $notAllowedTags = []): string
+    {
+        if (is_array($txt)) {
+            $txt = implode($txt);
+        }
+        if (empty($txt)) {
+            return strval($txt);
+        }
+        static $allowedAllTags = [];
+        if (empty($allowedAllTags)) {
+            $allowedAllTags = configArray('base_allowed_tags');
+            $allowedAllTags[] = '!DOCTYPE';
+        }
+        if (!isset($notAllowedTags[0])) {
+            $notAllowedTags = [];
+        }
+        $allowedTags = array_diff($allowedAllTags, $notAllowedTags);
+
+        $allowedTagsString = array_reduce(
+            $allowedTags,
+            function ($string, $tag) {
+                return $string . '<' . $tag . '>';
+            },
+            ''
+        );
+        return strip_tags($txt, $allowedTagsString);
+    }
+
     public function escvars($txt)
     {
         return str_replace(array('{', '}'), array('&#123;', '&#125;'), $txt);
@@ -105,7 +141,8 @@ class ACMS_CorrectorBody
         // overwrite
         $i = 0;
         $m = array();
-        foreach (array(
+        foreach (
+            array(
                      'column' => ',',
                      'row' => '[\r\n]+',
                      'enclosure' => '"',
@@ -116,7 +153,8 @@ class ACMS_CorrectorBody
                      'regex' => '@',
                      'rspan' => '\^\d+',
                      'cspan' => '\>\d+',
-                 ) as $key => $val) {
+                 ) as $key => $val
+        ) {
             $m[$key] = !empty($args[$i]) ? $args[$i] : $val;
             $i++;
         }
@@ -135,7 +173,8 @@ class ACMS_CorrectorBody
             . '((?:\t| |　|' . $m['rspan'] . '|' . $m['cspan'] . '|' . $m['head'] . '|' . $m['nowrapS'] . '|' . $m['align'] . ')*)'
             . '(?:(?:' . $m['enclosure'] . '((?:[^' . $m['enclosure'] . ']|' . $m['enclosure'] . $m['enclosure'] . ')*)' . $m['enclosure'] . ')|([^' . $m['column'] . ']*?))'
             . '(?=([[:blank:]' . $m['nowrapE'] . $m['align'] . ']*+)(?:' . $m['column'] . '|' . $m['row'] . '|$))'
-            . $m['regex'] . 'u';;
+            . $m['regex'] . 'u';
+        ;
 
         preg_match_all($ptn, $csv, $matches, PREG_SET_ORDER);
 
@@ -303,13 +342,19 @@ class ACMS_CorrectorBody
 
     public function symbolfont_path($txt)
     {
-        if (in_array($txt, array(
-            'Blog_Field',
-            'Category_Field',
-            'Entry_Field',
-            'User_Field',
-            'Module_Field',
-        ))) {
+        if (
+            in_array(
+                $txt,
+                [
+                    'Blog_Field',
+                    'Category_Field',
+                    'Entry_Field',
+                    'User_Field',
+                    'Module_Field',
+                ],
+                true
+            )
+        ) {
             return 'entry_body';
         }
 
@@ -325,6 +370,8 @@ class ACMS_CorrectorBody
         $ymd = date('Ymd', $dt);
         $y = substr($ymd, 0, 4);
 
+        $era = '';
+        $year = null;
         if ($ymd <= '19120729') {
             $era = '明治';
             $year = $y - 1867;
@@ -342,6 +389,13 @@ class ACMS_CorrectorBody
             $year = $y - 2018;
         }
 
+        if ($era === '') {
+            return $txt;
+        }
+
+        if (is_null($year)) {
+            return $txt;
+        }
         if (substr($year, 0, 1) == 0) {
             $year = preg_replace('@^0+@', '', $year);
         }
@@ -413,10 +467,7 @@ class ACMS_CorrectorBody
             $pfx .= 'w' . $width;
         }
         if (!empty($height)) {
-            if (!empty($pfx)) {
-                $pfx .= '_';
-            }
-            $pfx .= 'h' . $height;
+            $pfx .= '_h' . $height;
         }
         if ($color !== 'ffffff') {
             $pfx .= '_' . $color;
@@ -484,7 +535,8 @@ class ACMS_CorrectorBody
 
     public function br4alnum($txt, $args = array())
     {
-        if (0
+        if (
+            0
             or !isset($args[0])
             or !($len = intval($args[0]))
         ) {
@@ -555,6 +607,7 @@ class ACMS_CorrectorBody
     {
         if (!!($path = config('const_file_path')) && empty($this->const)) {
             include SCRIPT_DIR . $path;
+            // @phpstan-ignore-next-line
             $this->const = $const;
         }
         return str_replace(array_keys($this->const), '', $txt);

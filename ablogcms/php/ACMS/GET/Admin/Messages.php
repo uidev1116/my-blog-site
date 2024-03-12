@@ -10,7 +10,7 @@ class ACMS_GET_Admin_Messages extends ACMS_GET_Admin
         $messages = false;
         if ($this->Post->isChildExists('messages')) {
             $messages = $this->Post->getChild('messages');
-        } else if ($session->isChildExists('messages')) {
+        } elseif ($session->isChildExists('messages')) {
             $messages = $session->getChild('messages');
             $session->removeChild('messages');
         }

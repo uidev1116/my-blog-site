@@ -41,5 +41,6 @@ class ACMS_POST_User_UpdatePassword extends ACMS_POST_User_Update
         $SQL->addWhereOpr('user_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
         ACMS_RAM::user(UID, null);
+        ACMS_RAM::cacheDelete(); // loadUser関数のキャッシュを削除
     }
 }

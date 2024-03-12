@@ -2,7 +2,7 @@
 
 class ACMS_POST_Trash extends ACMS_POST_Entry
 {
-	function trash($eid=EID)
+    function trash($eid = EID)
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newUpdate('entry');
@@ -19,7 +19,7 @@ class ACMS_POST_Trash extends ACMS_POST_Entry
         Entry::deleteCacheControl($eid);
     }
 
-    function restore($eid=EID)
+    function restore($eid = EID)
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newUpdate('entry');

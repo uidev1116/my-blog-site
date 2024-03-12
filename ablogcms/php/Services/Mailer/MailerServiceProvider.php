@@ -6,7 +6,6 @@ use App;
 use Acms\Contracts\ServiceProvider;
 use Acms\Services\Container;
 
-
 class MailerServiceProvider extends ServiceProvider
 {
     /**

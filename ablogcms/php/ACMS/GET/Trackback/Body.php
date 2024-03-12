@@ -2,21 +2,26 @@
 
 class ACMS_GET_Trackback_Body extends ACMS_GET
 {
-    var $_scope    = array(
+    public $_scope    = array(
         'eid'   => 'global',
     );
 
     function get()
     {
-        if ( !$this->eid ) return '';
-        if ( 'on' <> config('trackback') ) return '';
+        if (!$this->eid) {
+            return '';
+        }
+        if ('on' <> config('trackback')) {
+            return '';
+        }
 
         $DB     = DB::singleton(dsn());
         $Tpl    = new Template($this->tpl);
 
         $BaseSQL    = SQL::newSelect('trackback');
         $BaseSQL->addWhereOpr('trackback_entry_id', $this->eid);
-        if ( 1
+        if (
+            1
             and !sessionWithCompilation()
             and SUID <> ACMS_RAM::entryUser($this->eid)
         ) {
@@ -27,7 +32,9 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
         // amount
         $SQL    = new SQL_Select($BaseSQL);
         $SQL->setSelect('*', 'trackback_amount', '', 'count');
-        if ( !($amount = intval($DB->query($SQL->get(dsn()), 'one'))) ) return '';
+        if (!($amount = intval($DB->query($SQL->get(dsn()), 'one')))) {
+            return '';
+        }
 
         $desc       = ('datetime-asc' <> config('trackback_body_order'));
         $limit      = config('trackback_body_limit');
@@ -39,13 +46,13 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
 
         //---------
         // forward
-        if ( TBID ) {
+        if (TBID) {
             $SQL    = new SQL_Select($BaseSQL);
             $SQL->setSelect('*', 'trackback_pos', '', 'count');
             $SQL->addWhereOpr('trackback_id', TBID, $desc ? '>=' : '<=');
             $pos    = intval($DB->query($SQL->get(dsn()), 'one'));
             $page   = intval(ceil($pos / $limit));
-            if ( 1 < $page ) {
+            if (1 < $page) {
                 $SQL    = new SQL_Select($BaseSQL);
                 $SQL->setSelect('trackback_id');
                 $SQL->setOrder('trackback_id', $desc ? 'DESC' : 'ASC');
@@ -56,7 +63,7 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
         } else {
             $page   = 1;
         }
-        if ( 1 == $page ) {
+        if (1 == $page) {
             $SQL   = new SQL_Select($BaseSQL);
             $SQL->setSelect('trackback_id');
             $SQL->setOrder('trackback_id', $desc ? 'DESC' : 'ASC');
@@ -70,8 +77,8 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
         $SQL    = new SQL_Select($BaseSQL);
         $SQL->setSelect('trackback_id');
         $SQL->setOrder('trackback_id', $desc ? 'DESC' : 'ASC');
-        $SQL->setLimit(1, $page*$limit);
-        if ( $backId = intval($DB->query($SQL->get(dsn()), 'one')) ) {
+        $SQL->setLimit(1, $page * $limit);
+        if ($backId = intval($DB->query($SQL->get(dsn()), 'one'))) {
             $isBack = true;
         } else {
             $SQL    = new SQL_Select($BaseSQL);
@@ -86,15 +93,19 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
         $SQL    = new SQL_Select($BaseSQL);
         $SQL->setOrder('trackback_id', ($desc and !$reverse) ? 'DESC' : 'ASC');
         $SQL->addWhereBw('trackback_id', min($forwardId, $backId), max($forwardId, $backId));
-        if ( $isBack ) $SQL->addWhereOpr('trackback_id', $backId, '<>');
-        if ( $isForward ) $SQL->addWhereOpr('trackback_id', $forwardId, '<>');
+        if ($isBack) {
+            $SQL->addWhereOpr('trackback_id', $backId, '<>');
+        }
+        if ($isForward) {
+            $SQL->addWhereOpr('trackback_id', $forwardId, '<>');
+        }
 
 
 
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
 
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $tbid   = intval($row['trackback_id']);
             $status = $row['trackback_status'];
             $vars   = $this->buildDate($row['trackback_datetime'], $Tpl, 'trackback:loop');
@@ -109,7 +120,8 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
 
             //----------
             // awaiting
-            if ( 1
+            if (
+                1
                 and 'awaiting' == $status
                 and !sessionWithCompilation()
                 and SUID <> ACMS_RAM::entryUser($this->eid)
@@ -122,41 +134,47 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
                 $Tpl->add('excerpt#awaiting');
             }
 
-            if ( sessionWithCompilation() ) {
-                if ( 'open' <> $status ) $Tpl->add('status#open');
-                if ( 'close' <> $status ) $Tpl->add('status#close');
-                if ( 'awaiting' <> $status ) $Tpl->add('status#awaiting');
+            if (sessionWithCompilation()) {
+                if ('open' <> $status) {
+                    $Tpl->add('status#open');
+                }
+                if ('close' <> $status) {
+                    $Tpl->add('status#close');
+                }
+                if ('awaiting' <> $status) {
+                    $Tpl->add('status#awaiting');
+                }
                 $vars['action'] = acmsLink(array(
                     'tbid'  => $tbid,
-                    'fragment'  => 'trackback-'.$tbid,
+                    'fragment'  => 'trackback-' . $tbid,
                 ));
             }
 
             $Tpl->add('trackback:loop', $vars);
         }
 
-        if ( $isBack ) {
+        if ($isBack) {
             $Tpl->add('backLink', array(
                 'url'   => acmsLink(array(
                     'tbid'      => $backId,
-                    'fragment'  => 'trackback-'.$backId,
+                    'fragment'  => 'trackback-' . $backId,
                 )),
             ));
         }
 
-        if ( $isForward ) {
+        if ($isForward) {
             $Tpl->add('forwardLink', array(
                 'url'   => acmsLink(array(
                     'tbid'      => $forwardId,
-                    'fragment'  => 'trackback-'.$forwardId,
+                    'fragment'  => 'trackback-' . $forwardId,
                 )),
             ));
         }
 
         $Tpl->add(null, array(
             'amount'    => $amount,
-            'from'      => ($page - 1)*$limit + 1,
-            'to'        => (($page*$limit) < $amount) ? ($page*$limit) : $amount,
+            'from'      => ($page - 1) * $limit + 1,
+            'to'        => (($page * $limit) < $amount) ? ($page * $limit) : $amount,
         ));
 
         return $Tpl->get();

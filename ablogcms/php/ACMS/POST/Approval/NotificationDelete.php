@@ -7,7 +7,8 @@ class ACMS_POST_Approval_NotificationDelete extends ACMS_POST_Approval
         $DB         = DB::singleton(dsn());
         $Approval   = $this->extract('approval');
 
-        if ( 0
+        if (
+            0
             || !($rvid  = $Approval->get('rvid'))
             || !($bid   = $Approval->get('bid'))
             || !($eid   = $Approval->get('eid'))
@@ -23,9 +24,9 @@ class ACMS_POST_Approval_NotificationDelete extends ACMS_POST_Approval
         $SQL->addWhereOpr('notification_blog_id', $bid);
         $SQL->addWhereOpr('notification_approval_id', $apid);
 
-        if ( $except = $DB->query($SQL->get(dsn()), 'row') ) {
+        if ($except = $DB->query($SQL->get(dsn()), 'row')) {
             $exceptAry = explode(',', $except['notification_except_user_ids']);
-            if ( !array_search(SUID, $exceptAry) ) {
+            if (!array_search(SUID, $exceptAry)) {
                 array_push($exceptAry, SUID);
                 $exceptAry = array_filter($exceptAry);
 

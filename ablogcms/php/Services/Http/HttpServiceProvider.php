@@ -26,6 +26,5 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

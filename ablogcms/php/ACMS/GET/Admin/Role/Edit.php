@@ -2,12 +2,14 @@
 
 class ACMS_GET_Admin_Role_Edit extends ACMS_GET_Admin_Edit
 {
-    function edit(& $Tpl)
+    function edit(&$Tpl)
     {
-        if ( BID !== 1 || !sessionWithEnterpriseAdministration() ) die(); 
+        if (BID !== 1 || !sessionWithEnterpriseAdministration()) {
+            die();
+        }
         $Role  =& $this->Post->getChild('role');
-        if ( $Role->isNull() ) {
-            if ( $rid = intval($this->Get->get('rid')) ) {
+        if ($Role->isNull()) {
+            if ($rid = intval($this->Get->get('rid'))) {
                 $Role->overload(loadRole($rid));
             } else {
                 $Role->set('entry_view', 'on');
@@ -23,7 +25,8 @@ class ACMS_GET_Admin_Role_Edit extends ACMS_GET_Admin_Edit
     {
         if ($Role->get('admin_etc') === 'on') {
             return 'administrator';
-        } else if (1
+        } elseif (
+            1
             && $Role->get('entry_edit') === 'on'
             && $Role->get('entry_edit_all') === 'on'
             && $Role->get('entry_delete') === 'on'
@@ -32,7 +35,8 @@ class ACMS_GET_Admin_Role_Edit extends ACMS_GET_Admin_Edit
             && $Role->get('tag_edit') === 'on'
         ) {
             return 'editor';
-        } else if (1
+        } elseif (
+            1
             && $Role->get('entry_edit') === 'on'
         ) {
             return 'contributor';

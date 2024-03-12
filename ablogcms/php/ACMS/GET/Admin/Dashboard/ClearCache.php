@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Dashboard_ClearCache extends ACMS_GET
 {
     function get()
     {
-        if (!sessionWithCompilation()) return '';
+        if (!sessionWithCompilation()) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $vars = array();

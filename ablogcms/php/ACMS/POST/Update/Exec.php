@@ -14,10 +14,18 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
 
     public function post()
     {
-        if (!sessionWithAdministration()) die();
-        if ('update' <> ADMIN) die();
-        if (RBID !== BID) die();
-        if (SBID !== BID) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if ('update' <> ADMIN) {
+            die();
+        }
+        if (RBID !== BID) {
+            die();
+        }
+        if (SBID !== BID) {
+            die();
+        }
 
         ignore_user_abort(true);
         set_time_limit(0);
@@ -26,7 +34,7 @@ class ACMS_POST_Update_Exec extends ACMS_POST_Update_Base
             $this->addError(gettext('アップデートを中止しました。すでにアップデート中の可能性があります。変化がない場合は、cache/system-update-lock ファイルを削除してお試しください。'));
             return $this->Post;
         }
-        $this->newSetup= $this->Post->get('new_setup') === 'create';
+        $this->newSetup = $this->Post->get('new_setup') === 'create';
         AcmsLogger::info('アップデートを開始しました');
 
         Common::backgroundRedirect(HTTP_REQUEST_URL);

@@ -54,7 +54,7 @@ class CategoryArchivesGenerator extends Generator
     public function setMonthRange($start)
     {
         $this->monthRange = array();
-        $start = (new \DateTime)->setTimestamp(strtotime($start));
+        $start = (new \DateTime())->setTimestamp(strtotime($start));
         $end = false;
 
         // そのカテゴリーの最後の日付のエントリーまでアーカイブを作る
@@ -70,17 +70,17 @@ class CategoryArchivesGenerator extends Generator
         }
         if ($last = DB::query($SQL->get(dsn()), 'one')) {
             $last = date('Y-m-31 23:23:59', strtotime($last));
-            $end = (new \DateTime)->setTimestamp(strtotime($last));
+            $end = (new \DateTime())->setTimestamp(strtotime($last));
         }
         if (empty($end)) {
-            $end = (new \DateTime)->setTimestamp(REQUEST_TIME);
+            $end = (new \DateTime())->setTimestamp(REQUEST_TIME);
         }
         $next_month = new \DateInterval('P1M');
 
-        while ( $start < $end ) {
+        while ($start < $end) {
             $year = $start->format('Y');
             $month = $start->format('m');
-            if ( array_search($year, $this->monthRange) === false ) {
+            if (array_search($year, $this->monthRange, true) === false) {
                 $this->monthRange[] = $year;
             }
             $this->monthRange[] = $year . '/' . $month;
@@ -101,16 +101,16 @@ class CategoryArchivesGenerator extends Generator
      */
     protected function main()
     {
-        if ( empty($this->monthRange) ) {
+        if (empty($this->monthRange)) {
             throw new \RuntimeException('no selected month.');
         }
-        if ( empty($this->maxPage) ) {
+        if (empty($this->maxPage)) {
             throw  new \RuntimeException('no selected max page.');
         }
 
         $this->logger->start($this->getName(), $this->getTasks());
 
-        foreach ( $this->monthRange as $ym ) {
+        foreach ($this->monthRange as $ym) {
             $info = array(
                 'bid' => BID,
                 'date' => $ym,
@@ -120,7 +120,7 @@ class CategoryArchivesGenerator extends Generator
             }
             $url = acmsLink($info, false);
             $this->request($url, $info);
-            for ( $page=2; $page<=$this->maxPage; $page++ ) {
+            for ($page = 2; $page <= $this->maxPage; $page++) {
                 $info['page'] = $page;
                 $url = acmsLink($info);
                 $this->request($url, $info);
@@ -136,28 +136,27 @@ class CategoryArchivesGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $code != '200' ) {
+        if ($code != '200') {
             return;
         }
         $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
         $page = isset($info['page']) ? intval($info['page']) : 1;
         $file = 'index.html';
-        if ( $page > 1 ) {
+        if ($page > 1) {
             $file = 'page' . $page . '.html';
-        } else if ( $this->logger ) {
+        } elseif ($this->logger) {
             $this->logger->processing();
         }
         unset($info['page']);
-        $blog_url = acmsLink(array('bid'=>BID));
+        $blog_url = acmsLink(array('bid' => BID));
         $archive_url = acmsLink($info);
         $dir = substr($archive_url, strlen($blog_url));
 
         try {
             Storage::makeDirectory($destination . $dir);
             Storage::put($destination . $dir . $file, $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $destination . $dir . $file);
         }
-
     }
 }

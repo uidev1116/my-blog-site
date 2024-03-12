@@ -8,7 +8,7 @@ use Acms\Services\Shortcut\Helper;
 
 class ACMS_POST_Shortcut_Delete extends ACMS_POST
 {
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * @var Repository
@@ -59,7 +59,6 @@ class ACMS_POST_Shortcut_Delete extends ACMS_POST
 
     /**
      * @param \Field_Validation $shortcut
-     * @return string
      */
     protected function validate(\Field_Validation $shortcut)
     {

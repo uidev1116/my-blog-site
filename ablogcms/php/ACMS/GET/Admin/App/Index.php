@@ -64,7 +64,6 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
             if (!$app instanceof ACMS_App) {
                 continue;
             }
-            $app->className = $provider;
             $apps[] = $app;
         }
         return $apps;
@@ -82,7 +81,6 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
         }
 
         foreach ($list as $fd) {
-
             if (Storage::isFile(AAPP_LIB_DIR . $fd)) {
                 $className = 'AAPP_' . str_replace('.php', '', $fd);
                 if (!class_exists($className)) {
@@ -92,7 +90,6 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
                 if (!$app instanceof ACMS_App) {
                     continue;
                 }
-                $app->className = $className;
                 $apps[] = $app;
             }
         }
@@ -101,14 +98,14 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
 
     /**
      * @param $Tpl
-     * @param $lists
+     * @param ACMS_App[] $lists
      */
     protected function build($Tpl, $lists)
     {
         $DB = DB::singleton(dsn());
 
         foreach ($lists as $app) {
-            $className = $app->className;
+            $className = get_class($app);
 
             $SQL = SQL::newSelect('app');
             $SQL->addWhereOpr('app_name', $className);
@@ -143,7 +140,7 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
             $this->isNotFound = false;
             $Tpl->add('status:touch#' . $status);
             $Tpl->add('action:touch#' . $status);
-            $Tpl->add('app:loop', (array)$app);
+            $Tpl->add('app:loop', array_merge((array)$app, ['className' => $className]));
         }
     }
 }

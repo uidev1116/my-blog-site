@@ -1,27 +1,25 @@
 <header>
-	<div>
-		@include("/admin/topicpath.html")
-	</div>
-	<div>
-		<h1 class="acms-admin-admin-title">
-			<i class="acms-admin-icon acms-admin-icon-exit"></i><!--T-->国際化<!--/T-->
-		</h1>
-	</div>
+  <div>
+    @include("/admin/topicpath.html")
+  </div>
+  <div>
+    <h1 class="acms-admin-admin-title">
+      <i class="acms-admin-icon acms-admin-icon-exit"></i><!--T-->国際化<!--/T-->
+    </h1>
+  </div>
 </header>
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger"><span class="acms-admin-icon-attention acms-admin-alert-icon-before"></span><button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>{error}</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <form action="" method="post" class="acms-admin-form">
-	<div class="acms-admin-form-group">
-		<input class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-margin-sp" type="submit" name="ACMS_POST_I18n_DownloadPot" value="<!--T-->POT ダウンロード<!--/T-->" />
-	</div>
+  <div class="acms-admin-form-group">
+    <input class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-margin-sp" type="submit" name="ACMS_POST_I18n_DownloadPot" value="<!--T-->POT ダウンロード<!--/T-->" />
+  </div>
 </form>
 
 <h2><!--T-->国際化について<!--/T--></h2>
 <p><!--T-->決められたルールでテンプレートを記述することで、指定した言語を別の言語に切り替えてページを表示できます。<!--/T-->
-	<!--T-->例えば英語圏のユーザには管理画面を英語で表示するといった用途があります。<!--/T--></p>
+  <!--T-->例えば英語圏のユーザには管理画面を英語で表示するといった用途があります。<!--/T--></p>
 
 <h2><!--T-->特定の文字列を翻訳可能にする方法<!--/T--></h2>
 <p><!--T-->a-blog cms で文字列を翻訳可能にするには元の文字列を以下のコメントで囲みます。<!--/T--></p>
@@ -99,11 +97,11 @@ msgstr "Dashboard"
 <h4><!--T-->言語と地域の例<!--/T--></h4>
 
 <table class="acms-admin-table" style="width:auto;">
-	<tr><td>説明（例）</td><td>言語</td><td>地域</td></tr>
-	<tr><td>日本語、日本</td><td>ja</td><td>JP</td></tr>
-	<tr><td>英語、米国</td><td>en</td><td>US</td></tr>
-	<tr><td>ロシア語、ロシア</td><td>ru</td><td>RU</td></tr>
-	<tr><td>韓国語、韓国</td><td>ko</td><td>KR</td></tr>
+  <tr><td>説明（例）</td><td>言語</td><td>地域</td></tr>
+  <tr><td>日本語、日本</td><td>ja</td><td>JP</td></tr>
+  <tr><td>英語、米国</td><td>en</td><td>US</td></tr>
+  <tr><td>ロシア語、ロシア</td><td>ru</td><td>RU</td></tr>
+  <tr><td>韓国語、韓国</td><td>ko</td><td>KR</td></tr>
 </table>
 
 <h2>config.server.php</h2>
@@ -118,58 +116,58 @@ define('GETTEXT_PATH', 'lang');
 </pre>
 
 <dl>
-	<dt>GETTEXT_TYPE</dt>
-	<dd>
-		<p>
-		<!--T-->fix: config.server.phpで指定した言語地域で固定します<!--/T--><br>
-		<!--T-->user: ユーザ毎に管理画面より言語地域を設定します。<!--/T--><br>
-		<!--T-->auto: ブラウザの言語地域の設定を反映します<!--/T--><br>
-		</p>
+  <dt>GETTEXT_TYPE</dt>
+  <dd>
+    <p>
+    <!--T-->fix: config.server.phpで指定した言語地域で固定します<!--/T--><br>
+    <!--T-->user: ユーザ毎に管理画面より言語地域を設定します。<!--/T--><br>
+    <!--T-->auto: ブラウザの言語地域の設定を反映します<!--/T--><br>
+    </p>
 
-		<p><!--T-->TYPEが"user"だった場合、ユーザ詳細ページのカスタマイズが必要になります。<!--/T--></p>
+    <p><!--T-->TYPEが"user"だった場合、ユーザ詳細ページのカスタマイズが必要になります。<!--/T--></p>
 
 <pre class="code PHP">
 &lt;!-- /独自テーマ/admin/user/field.html に用意 --&gt;
 &lt;tr&gt;
-	&lt;th&gt;ロケール&lt;i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="ユーザー毎のロケールを設定します。"&gt;&lt;/i&gt;&lt;/th&gt;
-	&lt;td&gt;
-		&lt;select name="locale"&gt;
-			&lt;option value="ja_JP.UTF-8"{locale:selected#ja_JP.UTF-8}&gt;日本語&lt;/option&gt;
-			&lt;option value="en_US.UTF-8"{locale:selected#en_US.UTF-8}&gt;English&lt;/option&gt;
-		&lt;/select&gt;
-		&lt;input type="hidden" name="user[]" value="locale" /&gt;
-	&lt;/td&gt;
+  &lt;th&gt;ロケール&lt;i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="ユーザー毎のロケールを設定します。"&gt;&lt;/i&gt;&lt;/th&gt;
+  &lt;td&gt;
+    &lt;select name="locale"&gt;
+      &lt;option value="ja_JP.UTF-8"{locale:selected#ja_JP.UTF-8}&gt;日本語&lt;/option&gt;
+      &lt;option value="en_US.UTF-8"{locale:selected#en_US.UTF-8}&gt;English&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;input type="hidden" name="user[]" value="locale" /&gt;
+  &lt;/td&gt;
 &lt;/tr&gt;
 </pre>
-	</dd>
+  </dd>
 
-	<dt>GETTEXT_APPLICATION_RANGE</dt>
-	<dd>
-		<p>
-		<!--T-->admin: adminディレクトリ以下（管理ページ）のみ翻訳します<!--/T--><br>
-		<!--T-->login: ログインしている時のみ翻訳します<!--/T--><br>
-		<!--T-->all: すべてのページを翻訳対象にします<!--/T-->
-		</p>
-	</dd>
+  <dt>GETTEXT_APPLICATION_RANGE</dt>
+  <dd>
+    <p>
+    <!--T-->admin: adminディレクトリ以下（管理ページ）のみ翻訳します<!--/T--><br>
+    <!--T-->login: ログインしている時のみ翻訳します<!--/T--><br>
+    <!--T-->all: すべてのページを翻訳対象にします<!--/T-->
+    </p>
+  </dd>
 
-	<dt>GETTEXT_DEFAULT_LOCALE</dt>
-	<dd>
-		<p>
-			<!--T-->基本の言語地域を設定します。GETTEXT_TYPEが固定だった場合やブラウザの言語地域のmoファイルが見つからない場合にこの言語地域が使用されます。<!--/T-->
-		</p>
-	</dd>
+  <dt>GETTEXT_DEFAULT_LOCALE</dt>
+  <dd>
+    <p>
+      <!--T-->基本の言語地域を設定します。GETTEXT_TYPEが固定だった場合やブラウザの言語地域のmoファイルが見つからない場合にこの言語地域が使用されます。<!--/T-->
+    </p>
+  </dd>
 
-	<dt>GETTEXT_DOMAIN</dt>
-	<dd>
-		<p>
-			<!--T-->gettextのグローバルドメインを設定します。（デフォルト: messages）<!--/T-->
-		</p>
-	</dd>
+  <dt>GETTEXT_DOMAIN</dt>
+  <dd>
+    <p>
+      <!--T-->gettextのグローバルドメインを設定します。（デフォルト: messages）<!--/T-->
+    </p>
+  </dd>
 
-	<dt>GETTEXT_PATH</dt>
-	<dd>
-		<p>
-			<!--T-->ドメインへのパスを設定します。（デフォルト: lang）<!--/T-->
-		</p>
-	</dd>
+  <dt>GETTEXT_PATH</dt>
+  <dd>
+    <p>
+      <!--T-->ドメインへのパスを設定します。（デフォルト: lang）<!--/T-->
+    </p>
+  </dd>
 </dl>

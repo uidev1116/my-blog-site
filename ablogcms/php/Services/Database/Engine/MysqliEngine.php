@@ -28,15 +28,19 @@ class MysqliEngine extends Base
             $charset = $this->getCharset($dsn);
             $db_name = '';
             $port = '3306';
-            if ( !empty($dsn['port']) ) $port = $dsn['port'];
-            if ( !empty($dsn['name']) ) $db_name = $dsn['name'];
+            if (!empty($dsn['port'])) {
+                $port = $dsn['port'];
+            }
+            if (!empty($dsn['name'])) {
+                $db_name = $dsn['name'];
+            }
             $this->connection = new mysqli($host, $dsn['user'], $dsn['pass'], $db_name, $port);
             $this->connection->set_charset($charset);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             throw $e;
         }
 
-        if ( $this->connection->connect_error ) {
+        if ($this->connection->connect_error) {
             throw new \RuntimeException('Connect Error (' . $this->connection->connect_errno . ') '
                 . $this->connection->connect_error);
         }
@@ -51,7 +55,7 @@ class MysqliEngine extends Base
 
     /**
      * @param $dsn
-     * @return mixed|void
+     * @return void
      */
     public function reconnect($dsn)
     {
@@ -107,18 +111,18 @@ class MysqliEngine extends Base
             $this->columnCount = $res ? $this->connection->field_count : 0;
             $this->statement = $res;
 
-            if ( $res === false ) {
+            if ($res === false) {
                 throw new \RuntimeException($this->connection->errno . ": " . $this->connection->error . " sql: " . $sql);
             }
 
             $method = strtolower($mode) . 'Mode';
-            if ( method_exists($this, $method) ) {
-                return $this->{$method}($sql, $res);
+            if (method_exists($this, $method)) {
+                return $this->{$method}($sql, $res); // @phpstan-ignore-line
             } else {
                 return $this->etcMode($sql, $res);
             }
-        } catch ( \Exception $e ) {
-            if ( $this->debug ) {
+        } catch (\Exception $e) {
+            if ($this->debug) {
                 throw $e;
             } else {
                 return false;
@@ -139,16 +143,18 @@ class MysqliEngine extends Base
     public function fetch($sql = null, $reset = false)
     {
         $id = !empty($sql) ? sha1($sql) : '';
-        if ( empty($this->fetch[$id]) ) {
-            if ( empty($id) ) {
-                if ( empty($this->fetch) ) return false;
+        if (empty($this->fetch[$id])) {
+            if (empty($id)) {
+                if (empty($this->fetch)) {
+                    return false;
+                }
                 $this->fetch[$id] = array_shift($this->fetch);
             } else {
                 return false;
             }
         }
 
-        if ( !$row = $this->fetch[$id]->fetch_assoc() ) {
+        if (!$row = $this->fetch[$id]->fetch_assoc()) {
             $this->fetch[$id]->free_result();
             unset($this->fetch[$id]);
             return false;
@@ -190,12 +196,12 @@ class MysqliEngine extends Base
     protected function allMode($sql, $response)
     {
         $all = array();
-        while ( $row = $response->fetch_assoc() ) {
-            if ( is_array($row) and 'UTF-8' <> $this->charset() ) {
-                foreach ( $row as $key => $val ) {
-                    if ( !is_null($val) ) {
+        while ($row = $response->fetch_assoc()) {
+            if (is_array($row) and 'UTF-8' <> $this->charset()) {
+                foreach ($row as $key => $val) {
+                    if (!is_null($val)) {
                         $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());
-                        if ( $val === mb_convert_encoding($_val, $this->charset(), 'UTF-8') ) {
+                        if ($val === mb_convert_encoding($_val, $this->charset(), 'UTF-8')) {
                             $row[$key] = $_val;
                         }
                     }
@@ -218,11 +224,11 @@ class MysqliEngine extends Base
     protected function listMode($sql, $response)
     {
         $list = array();
-        while ( $row = $response->fetch_assoc() ) {
+        while ($row = $response->fetch_assoc()) {
             $one = array_shift($row);
-            if ( !is_null($one) ) {
+            if (!is_null($one)) {
                 $_one = mb_convert_encoding($one, 'UTF-8', $this->charset());
-                if ( $one === mb_convert_encoding($_one, $this->charset(), 'UTF-8') ) {
+                if ($one === mb_convert_encoding($_one, $this->charset(), 'UTF-8')) {
                     $one = $_one;
                 }
             }
@@ -242,13 +248,15 @@ class MysqliEngine extends Base
      */
     protected function oneMode($sql, $response)
     {
-        if ( !$row = $response->fetch_assoc() ) return false;
+        if (!$row = $response->fetch_assoc()) {
+            return false;
+        }
         $one = array_shift($row);
 
-        if ( 'UTF-8' <> $this->charset() ) {
-            if ( !is_null($one) ) {
+        if ('UTF-8' <> $this->charset()) {
+            if (!is_null($one)) {
                 $_one = mb_convert_encoding($one, 'UTF-8', $this->charset());
-                if ( $one === mb_convert_encoding($_one, $this->charset(), 'UTF-8') ) {
+                if ($one === mb_convert_encoding($_one, $this->charset(), 'UTF-8')) {
                     $one = $_one;
                 }
             }
@@ -268,11 +276,11 @@ class MysqliEngine extends Base
     protected function rowMode($sql, $response)
     {
         $row = $response->fetch_assoc();
-        if ( is_array($row) and 'UTF-8' <> $this->charset() ) {
-            foreach ( $row as $key => $val ) {
-                if ( !is_null($val) ) {
+        if (is_array($row) and 'UTF-8' <> $this->charset()) {
+            foreach ($row as $key => $val) {
+                if (!is_null($val)) {
                     $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());
-                    if ( $val === mb_convert_encoding($_val, $this->charset(), 'UTF-8') ) {
+                    if ($val === mb_convert_encoding($_val, $this->charset(), 'UTF-8')) {
                         $row[$key] = $_val;
                     }
                 }
@@ -293,5 +301,40 @@ class MysqliEngine extends Base
     public function columnMeta($column)
     {
         return $this->statement->getColumnMeta($column);
+    }
+
+    /**
+     * データベースサーバーへの接続チェック
+     *
+     * @return bool
+     */
+    public function checkConnection($dsn)
+    {
+        try {
+            $dsn['name'] = '';
+            $this->connect($dsn);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * データベースへの接続チェック
+     *
+     * @return bool
+     */
+    public function checkConnectDatabase($dsn)
+    {
+        if (empty($dsn['name'])) {
+            return false;
+        }
+        try {
+            $this->connect($dsn);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 }

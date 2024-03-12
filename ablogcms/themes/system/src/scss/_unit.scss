@@ -1,5 +1,5 @@
-@use "sass:math";
-@use "global/common" as global;
+@use 'sass:math';
+@use 'global/common' as global;
 
 /* ------------------------------
  ユニットグループ
@@ -23,25 +23,22 @@
 .entryFormOption {
 }
 
-
 /* ------------------------------
  エントリー内 主な要素
 ------------------------------ */
-$text-unit-tags      : 'h2','h3','h4','h5','h6','dl','p'!default;
-$unit-type           : 'image','file','map','yolp','street-view','youtube','video','eximage','media','quote','module';
-$align               : 'left','right','center','auto'!default;
-$unit-gutter         : 20px!default;
-$_unit-margin-bottom : $unit-gutter!default;
+$text-unit-tags: 'h2', 'h3', 'h4', 'h5', 'h6', 'dl', 'p' !default;
+$unit-type: 'image', 'file', 'map', 'yolp', 'street-view', 'youtube', 'video', 'eximage', 'media', 'quote', 'module';
+$align: 'left', 'right', 'center', 'auto' !default;
+$unit-gutter: 20px !default;
+$_unit-margin-bottom: $unit-gutter !default;
 
-$_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
-
+$_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !default;
 
 .#{global.$entry-class} {
-  [class*=#{global.$grid-column-name}] {
+  [class*='#{global.$grid-column-name}'] {
     padding: 0;
   }
 }
-
 
 /* ------------------------------
  テキストユニットの設定
@@ -64,191 +61,190 @@ $_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
 各種ユニットの設定
 ------------------------------ */
 
-  @each $unit in $unit-type {
-    .#{global.$entry-class} [class*="column-#{$unit}"] {
-      @if $unit == 'map' {
-        border-right: math.div($unit-gutter, 2) solid transparent;
-        border-left: math.div($unit-gutter, 2) solid transparent;
-        box-sizing: border-box;
-      } @else if $unit == 'quote' {
-        margin-right: math.div($unit-gutter, 2);
-        margin-left: math.div($unit-gutter, 2);
-      } @else if $unit == 'street-view' {
-        &:not(.column-street-view-inner) {
-          padding-right: math.div($unit-gutter, 2);
-          padding-left: math.div($unit-gutter, 2);
-        }
-      } @else {
-        padding-left: math.div($unit-gutter, 2);
+@each $unit in $unit-type {
+  .#{global.$entry-class} [class*='column-#{$unit}'] {
+    @if $unit == 'map' {
+      border-right: math.div($unit-gutter, 2) solid transparent;
+      border-left: math.div($unit-gutter, 2) solid transparent;
+      box-sizing: border-box;
+    } @else if $unit == 'quote' {
+      margin-right: math.div($unit-gutter, 2);
+      margin-left: math.div($unit-gutter, 2);
+    } @else if $unit == 'street-view' {
+      &:not(.column-street-view-inner) {
         padding-right: math.div($unit-gutter, 2);
-        box-sizing: border-box;
+        padding-left: math.div($unit-gutter, 2);
       }
+    } @else {
+      padding-left: math.div($unit-gutter, 2);
+      padding-right: math.div($unit-gutter, 2);
+      box-sizing: border-box;
     }
   }
+}
 
-  @each $unit in $unit-type {
-    [class*="column-#{$unit}"] {
-      margin-bottom: $_unit-margin-bottom;
-    }
+@each $unit in $unit-type {
+  [class*='column-#{$unit}'] {
+    margin-bottom: $_unit-margin-bottom;
+  }
+}
+
+/* 画像・メディア・画像URLの共通設定 */
+[class*='column-image'],
+[class*='column-media'],
+[class*='column-eximage'] {
+  display: block;
+
+  &.caption {
+    margin-bottom: math.div($-unit-margin-bottom, 2);
   }
 
-  /* 画像・メディア・画像URLの共通設定 */
-  [class*="column-image"],
-  [class*="column-media"],
-  [class*="column-eximage"] {
+  a {
     display: block;
-
-    &.caption {
-      margin-bottom: math.div($-unit-margin-bottom, 2);
-    }
-
-    a {
-      display: block;
-    }
-
-    & img {
-      max-width: 100%;
-      height: auto;
-      vertical-align: top;
-    }
-    .caption {
-      margin: 5px 0 0 0;
-    }
   }
 
-  /* 画像ユニットの設定 */
-  [class*="column-image"] {
-    &[style*="width"] {
-      max-width: 100%;
-    }
+  & img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  .caption {
+    margin: 5px 0 0 0;
+  }
+}
+
+/* 画像ユニットの設定 */
+[class*='column-image'] {
+  &[style*='width'] {
+    max-width: 100%;
+  }
+}
+
+/* メディアの種類がファイルだった時の設定 */
+[class*='column-media'] {
+  a[href*='media-download'] {
+    display: inline-block;
+    width: 100%;
+  }
+}
+
+/* 地図・Yahooo!地図の共通設定 */
+[class*='column-map'],
+[class*='column-yolp'] {
+  > img {
+    max-width: 100%;
+  }
+  // 地図ユニットのアイコンの調整
+  img {
+    width: auto;
+    height: auto;
+  }
+}
+
+[class*='column-map'] {
+  > div {
+    max-width: 100%;
+  }
+}
+
+[class*='column-yolp'] {
+  width: auto !important;
+}
+
+[class*='column-quote'] {
+  blockquote {
+    padding: 20px 10px 20px 20px;
+  }
+  /* 引用ユニット画像 */
+  .quoteImageContainer {
+    position: relative;
+    float: left;
+    max-width: 154px;
+    margin-right: 25px;
   }
 
-  /* メディアの種類がファイルだった時の設定 */
-  [class*="column-media"] {
-    a[href*="media-download"] {
-      display: inline-block;
-      width: 100%;
-    }
+  .quoteImage {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+  /* 引用ユニットテキスト */
+  .quoteTitle {
+    margin: 0 0 5px 0;
+    padding: 0;
+    line-height: 1.4;
+    @include global.font-size(18);
   }
 
-  /* 地図・Yahooo!地図の共通設定 */
-  [class*="column-map"],
-  [class*="column-yolp"] {
-    > img {
-      max-width: 100%;
-    }
-    // 地図ユニットのアイコンの調整
-    img {
-      width: auto;
-      height: auto;
-    }
+  .quoteTitleLink {
+    color: global.$acms-color-link-text;
   }
 
-  [class*="column-map"] {
-    > div {
-      max-width: 100%;
-    }
+  .quoteSiteName {
+    margin: 0 0 10px 0;
+    padding: 0;
+    color: global.$acms-color-gray90;
+    @include global.font-size(11);
   }
 
-  [class*="column-yolp"] {
-    width: auto !important;
+  .quoteDescription {
+    margin: 0;
+    padding: 0;
+    color: global.$acms-color-black;
+    line-height: 1.6;
+    @include global.font-size(12);
   }
+}
 
-  [class*="column-quote"] {
-    blockquote {
-      padding: 20px 10px 20px 20px;
-    }
-    /* 引用ユニット画像 */
-    .quoteImageContainer {
-      position: relative;
-      float: left;
-      max-width: 154px;
-      margin-right: 25px;
-    }
-
-    .quoteImage {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-    /* 引用ユニットテキスト */
-    .quoteTitle {
-      margin: 0 0 5px 0;
-      padding: 0;
-      line-height: 1.4;
-      @include global.font-size(18);
-    }
-
-    .quoteTitleLink {
-      color: global.$acms-color-link-text;
-    }
-
-    .quoteSiteName {
-      margin: 0 0 10px 0;
-      padding: 0;
-      color: global.$acms-color-gray90;
-      @include global.font-size(11);
-    }
-
-    .quoteDescription {
-      margin: 0;
-      padding: 0;
-      color: global.$acms-color-black;
-      line-height: 1.6;
-      @include global.font-size(12);
-    }
-  }
-
-
-  @each $unit in $unit-type {
-    /* 配置のスタイル */
-    @each $align-name in $align {
-      .column-#{$unit}-#{$align-name} {
-        @if $unit == 'file' {
+@each $unit in $unit-type {
+  /* 配置のスタイル */
+  @each $align-name in $align {
+    .column-#{$unit}-#{$align-name} {
+      @if $unit == 'file' {
+        text-align: #{$align-name};
+        & + .caption {
           text-align: #{$align-name};
-          & + .caption {
-            text-align: #{$align-name};
-          }
-        } @else if $unit == 'media' {
-          :not([href*="media-download"]):not([href*="storage"]) + .caption {
-            /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
-            text-align: center;
-          }
         }
-
-        @if $align-name == left {
-          float: left;
-          text-align: left;
-        }
-
-        @if $align-name == right {
-          float: right;
-          text-align: right;
-        }
-
-        @if $align-name == center {
-          display: block;
-          float: none;
-          margin-right: auto;
-          margin-left: auto;
+      } @else if $unit == 'media' {
+        :not([href*='media-download']):not([href*='storage']) + .caption {
+          /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
           text-align: center;
         }
+      }
 
-        @if $align-name == auto {
-          float: none;
-        }
+      @if $align-name == left {
+        float: left;
+        text-align: left;
+      }
+
+      @if $align-name == right {
+        float: right;
+        text-align: right;
+      }
+
+      @if $align-name == center {
+        display: block;
+        float: none;
+        margin-right: auto;
+        margin-left: auto;
+        text-align: center;
+      }
+
+      @if $align-name == auto {
+        float: none;
       }
     }
   }
+}
 
 /* .acms-entry-unit-fullの設定 */
 @each $unit in $unit-type {
   @if $unit == 'youtube' or $unit == 'video' {
-    .acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-#{$unit}"] {
+    .acms-entry-unit-full:not(.acms-unit-size-inherit) [class*='column-#{$unit}'] {
       width: 100% !important;
     }
   } @else {
-    .acms-entry-unit-full:not(.acms-unit-size-inherit) [class*="column-#{$unit}"] {
+    .acms-entry-unit-full:not(.acms-unit-size-inherit) [class*='column-#{$unit}'] {
       width: auto !important;
       max-width: 100%;
     }
@@ -257,15 +253,14 @@ $_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
 
 // acms-col-クラスで表示サイズが指定されているときは
 // 配置が右の時の要素の回り込みを防ぐ
-@media (max-width : global.$breakpoint-sm-min)  {
-  [class*="acms-col-"][class*="-right"] {
+@media (max-width: global.$breakpoint-sm-min) {
+  [class*='acms-col-'][class*='-right'] {
     float: left;
   }
-  [class*="acms-col-"][class*="-right"] + * {
+  [class*='acms-col-'][class*='-right'] + * {
     clear: both;
   }
 }
-
 
 /* ------------------------------
  共通の要素
@@ -288,13 +283,12 @@ $_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
 }
 
 /* YouTube動画をレスポンシブ対応させるための記述 */
-.column-youtube,
 .column-iframe {
   position: relative;
   width: 100%;
   height: 100%;
   padding-top: 30px;
-  padding-bottom: math.div(9, 16) *100%;
+  padding-bottom: math.div(9, 16) * 100%;
   overflow: hidden;
 
   iframe,
@@ -308,7 +302,6 @@ $_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
   }
 }
 
-
 /* ------------------------------
  検索
 ------------------------------ */
@@ -317,7 +310,6 @@ $_hightlight-colors  : #FFFF66,#a0FFFF,#99FF99,#FF9999,#FF66FF,#880000!default;
 ------------------------------ */
 @for $i from 1 to 6 {
   .highlight#{$i} {
-
   }
 }
 

@@ -17,20 +17,20 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
 
         try {
             $response = $this->getJsonCache($uri);
-            if ( empty($response) ) {
+            if (empty($response)) {
                 $response = $this->getContents($uri);
                 $this->saveCache($uri, $response);
             }
             $vars = json_decode($response, true);
-            if ( is_array($vars) && $this->is_vector($vars) ) {
+            if (is_array($vars) && $this->is_vector($vars)) {
                 $vars = array(
                     'root' => $vars,
                 );
             }
-            if ( is_array($vars) ) {
+            if (is_array($vars)) {
                 return $Tpl->render($vars);
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             AcmsLogger::critical('「Json_2Tpl」モジュールで「' . $uri . '」から情報を取得できませんでした', [
                 'detail' => $e->getMessage(),
             ]);
@@ -48,7 +48,8 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
      * @param array $ary
      * @return boolean
      */
-    protected function is_vector($ary) {
+    protected function is_vector($ary)
+    {
         return array_values($ary) === $ary;
     }
 
@@ -66,10 +67,10 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
             if (empty($contents)) {
                 throw new \RuntimeException('Empty contents.');
             }
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             return '';
         }
-        if ( $charset = mb_detect_encoding($contents, 'UTF-8, EUC-JP, SJIS-win, SJIS') and 'UTF-8' <> $charset ) {
+        if ($charset = mb_detect_encoding($contents, 'UTF-8, EUC-JP, SJIS-win, SJIS') and 'UTF-8' <> $charset) {
             $contents = mb_convert_encoding($contents, 'UTF-8', $charset);
         }
         return $contents;

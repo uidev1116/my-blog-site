@@ -21,12 +21,7 @@
 </p>
 <!-- END_MODULE Touch_Debug -->
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
-  <span class="acms-admin-alert-icon-before acms-admin-icon-attention"></span>
-  {error}
-</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <!-- BEGIN_MODULE Admin_Messages -->
 <!-- BEGIN message:loop -->
@@ -241,25 +236,17 @@
     @endsection
 
     @section("dashboard-ping-update")
-    <!-- BEGIN pingUpdate:veil -->
     <h2 class="acms-admin-admin-title2"><!--T-->Ping送信<!--/T--></h2>
     <table class="acms-admin-admin-mini-table">
       <tr>
         <th>Ping送信</th>
         <td>
-          <form action="" method="post"><!-- BEGIN ping_weblog_updates_endpoint:loop -->
-            <input type="hidden" name="ping_weblog_updates_endpoint[]" value="{ping_weblog_updates_endpoint}" /><!-- END ping_weblog_updates_endpoint:loop -->
-            <input type="hidden" name="pingUpdate[]" value="ping_weblog_updates_endpoint" /><!-- BEGIN ping_weblog_updates_extended_endpoint:loop -->
-            <input type="hidden" name="ping_weblog_updates_extended_endpoint[]" value="{ping_weblog_updates_extended_endpoint}" /><!-- END ping_weblog_updates_extended_endpoint:loop -->
-            <input type="hidden" name="pingUpdate[]" value="ping_weblog_updates_extended_endpoint" />
-            <input type="hidden" name="pingUpdateTpl" value="/rpc/weblog-updates-ping.xml" />
-            <input type="hidden" name="pingUpdate[]" value="pingUpdateTpl" />
+          <form action="" method="post">
             <input type="submit" name="ACMS_POST_PingWeblogUpdate" value="<!--T-->Ping送信<!--/T-->" class="acms-admin-btn" />
           </form>
         </td>
       </tr>
     </table>
-    <!-- END pingUpdate:veil -->
     @endsection
   </div>
 

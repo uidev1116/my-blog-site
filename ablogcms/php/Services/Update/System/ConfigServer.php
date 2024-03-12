@@ -20,21 +20,22 @@ class ConfigServer
         $EOL = "\r\n";
         $string = '<?php' . $EOL . $EOL;
 
-        foreach ( $definition as $def => $val ) {
-            if (in_array($def, $ignore)) {
+        foreach ($definition as $def => $val) {
+            if (in_array($def, $ignore, true)) {
                 continue;
             }
-            if ( $val === 'BR' ) {
+            if ($val === 'BR') {
                 $string .= $EOL;
-            } else if ( preg_match('/^COMMENT_\d/', $def) ) {
+            } elseif (preg_match('/^COMMENT_\d/', $def)) {
                 $string .= '// ' . $val . $EOL;
             } else {
-                if ( !defined($def) ) define($def, $val);               // use default
+                if (!defined($def)) {
+                    define($def, $val);               // use default
+                }
                 $const = constant($def);                                // get constant
-                if ( is_bool($const) ) {
+                if (is_bool($const)) {
                     $const = $const ? 1 : 0;
                 }
-                if ( !empty($replace[$def]) ) $const = $replace[$def];  // exe replace
                 $const = is_string($const) ? "'$const'" : $const;       // fix strings
                 $const = $const === null ? 'null' : $const;             // fix null
                 $string .= "define('$def', $const);" . $EOL;            // add row

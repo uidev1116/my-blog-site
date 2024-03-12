@@ -4,8 +4,6 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
 {
     /**
      * エントリーを作成
-     *
-     * @return Field
      */
     public function post()
     {
@@ -19,7 +17,9 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
 
         if (is_array($insertedResponse) && !empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->responseRedirect($redirect, $ajax);
-        } else if (is_array($insertedResponse)) {
+        }
+
+        if (is_array($insertedResponse)) {
             $Session = &Field::singleton('session');
             $Session->add('entry_action', 'update');
             $info = array(
@@ -36,9 +36,9 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
                 $info['query'] += array('success' => $insertedResponse['success']);
             }
             $this->responseRedirect(acmsLink($info), $ajax);
-        } else {
-            return $this->responseGet($ajax);
         }
+
+        return $this->responseGet($ajax);
     }
 
     /**
@@ -145,7 +145,8 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
             $Hook = ACMS_Hook::singleton();
             $Hook->call('saveEntry', array(intval($eid), null));
             $events = array('entry:created');
-            if (1
+            if (
+                1
                 && !(enableApproval() && !sessionWithApprovalAdministrator())
                 && $entryData['entry_status'] === 'open'
                 && strtotime($entryData['entry_start_datetime']) <= REQUEST_TIME

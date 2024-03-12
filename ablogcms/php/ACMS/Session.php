@@ -9,7 +9,7 @@ class ACMS_Session
     public static function singleton($config = array())
     {
         if (!self::$instance) {
-            $obj = new self;
+            $obj = new self();
             self::$instance = $obj;
         }
         return self::$instance;

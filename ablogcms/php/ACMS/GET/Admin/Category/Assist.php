@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
 {
-    var $_scope = array(
+    public $_scope = array(
         'cid' => 'global',
         'eid' => 'global',
         'keyword' => 'global',
@@ -68,7 +68,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
     {
         $list = array();
         $DB = DB::singleton(dsn());
-        if ( !!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q)) ) {
+        if (!!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q))) {
             $all = array();
             $parent = array();
             do {
@@ -92,7 +92,9 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                 $_pid = $cid;
                 while ($_pid = $parent[$_pid]) {
                     array_unshift($blocks, $category[$_pid]);
-                    if ( empty($parent[$_pid]) ) break;
+                    if (empty($parent[$_pid])) {
+                        break;
+                    }
                 }
                 $blocks[] = $row;
                 $label = '';

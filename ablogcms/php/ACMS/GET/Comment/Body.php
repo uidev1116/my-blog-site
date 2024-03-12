@@ -2,19 +2,35 @@
 
 class ACMS_GET_Comment_Body extends ACMS_GET
 {
-    var $map    = array();
-    var $score  = array();
-    var $status = array();
+    public $map = array();
+    public $score = array();
+    public $status = array();
 
-    function get()
+    /**
+     *
+     * @var int
+     */
+    public $current = 0;
+
+    /**
+     *
+     * @var int
+     */
+    public $limit = 0;
+
+    public function get()
     {
-        if ( !EID ) return false;
-        if ( ADMIN ) return false;
+        if (!EID) {
+            return '';
+        }
+        if (ADMIN) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
 
-        if ( ALT or !$this->Post->isNull() ) {
+        if (ALT or !$this->Post->isNull()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('comment');
             $SQL->addSelect('comment_id');
@@ -32,34 +48,35 @@ class ACMS_GET_Comment_Body extends ACMS_GET
             $SQL->addSelect('user_url');
             $SQL->addWhereOpr('comment_id', CMID);
             $q  = $SQL->get(dsn());
-            if ( !$row = $DB->query($q, 'row') ) return '';
+            if (!$row = $DB->query($q, 'row')) {
+                return '';
+            }
 
             $Tpl->add('div#front');
             $Tpl->add('div#rear');
             $this->buildComment($Tpl, array(), $row);
-        } else if ( 'thread' == config('comment_body_display') ) {
+        } elseif ('thread' == config('comment_body_display')) {
             $this->buildThread($Tpl);
         } else {
             $this->buildList($Tpl);
         }
 
         return $Tpl->get();
-
     }
 
-    function buildComment(& $Tpl, $vars, $row)
+    function buildComment(&$Tpl, $vars, $row)
     {
         $cmid   = $row['comment_id'];
         $status = $row['comment_status'];
 
-        if ( !sessionWithAdministration() and 'awaiting' == $row['comment_status'] ) {
+        if (!sessionWithAdministration() and 'awaiting' == $row['comment_status']) {
             $Tpl->add('awaiting#header');
             $Tpl->add('awaiting#body');
         } else {
             $vars['title']  = $row['comment_title'];
             $vars['body']   = $row['comment_body'];
 
-            if ( !empty($row['comment_user_id']) ) {
+            if (!empty($row['comment_user_id'])) {
                 $name   = $row['user_name'];
                 $mail   = $row['user_mail'];
                 $url    = $row['user_url'];
@@ -70,11 +87,11 @@ class ACMS_GET_Comment_Body extends ACMS_GET
             }
 
             $vars['posterName']   = $name;
-            if ( !empty($url) ) {
+            if (!empty($url)) {
                 $Tpl->add('posterLink#front', array('url' => $url));
                 $Tpl->add('posterLink#rear');
             }
-            if ( !empty($mail) ) {
+            if (!empty($mail)) {
                 $Tpl->add('posterMail#front', array('mail' => $mail));
                 $Tpl->add('posterMail#rear');
             }
@@ -87,15 +104,16 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         // date
         $vars   += $this->buildDate($row['comment_datetime'], $Tpl, 'comment:loop');
 
-        if ( $this->Post->isNull() ) {
+        if ($this->Post->isNull()) {
             $vars   += array(
                 'target'    => acmsLink(array(
                     'eid'       => EID,
                     'cmid'      => $cmid,
-                    'fragment'  => 'comment-'.$cmid,
+                    'fragment'  => 'comment-' . $cmid,
                 )),
             );
-            if ( 1
+            if (
+                1
                 and !!SUID
                 and sessionWithContribution()
                 and ( 0
@@ -105,12 +123,18 @@ class ACMS_GET_Comment_Body extends ACMS_GET
                 )
             ) {
                 $pstatus    = 'open';
-                if ( ($pid = intval($row['comment_parent'])) and isset($this->status[$pid]) ) {
+                if (($pid = intval($row['comment_parent'])) and isset($this->status[$pid])) {
                     $pstatus    = $this->status[$pid];
                 }
-                if ( 'open' <> $status and 'open' == $pstatus ) $Tpl->add('status#open');
-                if ( 'close' <> $status and 'open' == $pstatus ) $Tpl->add('status#close');
-                if ( 'awaiting' <> $status and 'open' == $pstatus ) $Tpl->add('status#awaiting');
+                if ('open' <> $status and 'open' == $pstatus) {
+                    $Tpl->add('status#open');
+                }
+                if ('close' <> $status and 'open' == $pstatus) {
+                    $Tpl->add('status#close');
+                }
+                if ('awaiting' <> $status and 'open' == $pstatus) {
+                    $Tpl->add('status#awaiting');
+                }
             }
         }
 
@@ -119,14 +143,14 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         return true;
     }
 
-    function tree(& $Tpl, $list)
+    function tree(&$Tpl, $list)
     {
         $Tpl->add(array('div#front', 'comment:loop'));
         $Tpl->add('comment:loop');
 
-        foreach ( $list as $row ) {
+        foreach ($list as $row) {
             $this->current++;
-            if ( $this->current > $this->limit ) {
+            if ($this->current > $this->limit) {
                 break;
             }
             $Tpl->add(array('item#front', 'comment:loop'));
@@ -140,7 +164,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
                 )),
             ), $row);
 
-            if ( $child = $this->getChild($row['comment_id']) ) {
+            if ($child = $this->getChild($row['comment_id'])) {
                 $this->tree($Tpl, $child);
             }
             $Tpl->add(array('item#rear', 'comment:loop'));
@@ -157,31 +181,33 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $SQL->addLeftJoin('user', 'user_id', 'comment_user_id');
         $SQL->addWhereOpr('comment_entry_id', EID);
         $SQL->addWhereOpr('comment_parent', $pid);
-        if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+        if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
             $SQL->addWhereOpr('comment_status', 'close', '<>');
         }
         $SQL->addOrder('comment_left', 'ASC');
 
-        if ( $all = $DB->query($SQL->get(dsn()), 'all') ) {
+        if ($all = $DB->query($SQL->get(dsn()), 'all')) {
             return $all;
         } else {
             return false;
         }
     }
 
-    function buildThread(& $Tpl)
+    function buildThread(&$Tpl)
     {
-        $this->limit = config('comment_body_limit');
+        $this->limit = intval(config('comment_body_limit'));
         $this->current = 0;
         $DB = DB::singleton(dsn());
 
         $SQL = SQL::newSelect('comment');
         $SQL->addSelect('*', 'comment_amount', null, 'COUNT');
         $SQL->addWhereOpr('comment_entry_id', EID);
-        if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+        if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
             $SQL->addWhereOpr('comment_status', 'close', '<>');
         }
-        if ( !$amount = $DB->query($SQL->get(dsn()), 'one') ) return false;
+        if (!$amount = $DB->query($SQL->get(dsn()), 'one')) {
+            return false;
+        }
 
         $root = $this->getChild(0);
         $this->tree($Tpl, $root);
@@ -193,11 +219,11 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         return true;
     }
 
-    function buildList(& $Tpl)
+    function buildList(&$Tpl)
     {
         $DB     = DB::singleton(dsn());
 
-        $limit  = config('comment_body_limit');
+        $limit  = intval(config('comment_body_limit'));
 
         list($kipple, $order) = explode('-', config('comment_body_order'));
         $desc   = 'DESC' == strtoupper($order) ? true : false;
@@ -206,19 +232,21 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $SQL    = SQL::newSelect('comment');
         $SQL->addSelect('*', 'comment_amount', null, 'count');
         $SQL->addWhereOpr('comment_entry_id', EID);
-        if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+        if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
             $SQL->addWhereOpr('comment_status', 'close', '<>');
         }
-        if ( !$amount = $DB->query($SQL->get(dsn()), 'one') ) return false;
+        if (!$amount = $DB->query($SQL->get(dsn()), 'one')) {
+            return false;
+        }
 
         $from   = 0;
         $page   = 1;
-        if ( CMID ) {
+        if (CMID) {
             $SQL    = SQL::newSelect('comment');
             $SQL->addSelect('*', 'comment_amount', null, 'COUNT');
             $SQL->addWhereOpr('comment_id', CMID, $desc ? '>=' : '<=');
             $SQL->addWhereOpr('comment_entry_id', EID);
-            if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+            if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
                 $SQL->addWhereOpr('comment_status', 'close', '<>');
             }
             $SQL->addOrder('comment_id', $desc ? 'DESC' : 'ASC');
@@ -229,44 +257,46 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $from   = ($page - 1) * $limit;
 
         $leftPos    = $from - 1;
-        if ( 0 < $leftPos ) {
+        $leftCmid = null;
+        if (0 < $leftPos) {
             $SQL    = SQL::newSelect('comment');
             $SQL->addSelect('comment_id');
             $SQL->addWhereOpr('comment_entry_id', EID);
-            if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+            if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
                 $SQL->addWhereOpr('comment_status', 'close', '<>');
             }
             $SQL->setLimit(1, $leftPos);
             $SQL->addOrder('comment_id', $desc ? 'DESC' : 'ASC');
-            $leftCmid = $DB->query($SQL->get(dsn()), 'one');
+            $leftCmid = intval($DB->query($SQL->get(dsn()), 'one'));
         }
 
         $rightPos   = $from + $limit;
-        if ( $amount > $rightPos ) {
+        $rightCmid = null;
+        if ($amount > $rightPos) {
             $SQL    = SQL::newSelect('comment');
             $SQL->addSelect('comment_id');
             $SQL->addWhereOpr('comment_entry_id', EID);
-            if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+            if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
                 $SQL->addWhereOpr('comment_status', 'close', '<>');
             }
             $SQL->setLimit(1, $rightPos);
             $SQL->addOrder('comment_id', $desc ? 'DESC' : 'ASC');
-            $rightCmid   = $DB->query($SQL->get(dsn()), 'one');
+            $rightCmid = intval($DB->query($SQL->get(dsn()), 'one'));
             $to = $rightPos;
         } else {
             $to = $amount;
         }
 
-        if ( isset($leftCmid) ) {
+        if (!is_null($leftCmid) && $leftCmid > 0) {
             $Tpl->add($desc ? 'forwardLink' : 'backLink', array('url' => acmsLink(array(
                 'cmid'      => $leftCmid,
-                'fragment'  => 'comment-'.$leftCmid,
+                'fragment'  => 'comment-' . $leftCmid,
             ))));
         }
-        if ( isset($rightCmid) ) {
-            $Tpl->add($desc ? 'backLink' : 'forwardLink' , array('url' => acmsLink(array(
+        if (!is_null($rightCmid) && $rightCmid > 0) {
+            $Tpl->add($desc ? 'backLink' : 'forwardLink', array('url' => acmsLink(array(
                 'cmid'      => $rightCmid,
-                'fragment'  => 'comment-'.$rightCmid,
+                'fragment'  => 'comment-' . $rightCmid,
             ))));
         }
 
@@ -284,19 +314,25 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $SQL->addSelect('user_name');
         $SQL->addSelect('user_url');
         $SQL->addWhereOpr('comment_entry_id', EID);
-        if ( !sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID) ) {
+        if (!sessionWithCompilation() and (ACMS_RAM::entryUser(EID) <> SUID)) {
             $SQL->addWhereOpr('comment_status', 'close', '<>');
         }
-        if ( isset($rightCmid) ) $SQL->addWhereOpr('comment_id', $rightCmid, $desc ? '>' : '<');
-        if ( isset($leftCmid) ) $SQL->addWhereOpr('comment_id', $leftCmid, $desc ? '<' : '>');
+        if (!is_null($rightCmid) && $rightCmid > 0) {
+            $SQL->addWhereOpr('comment_id', $rightCmid, $desc ? '>' : '<');
+        }
+        if (!is_null($leftCmid) && $leftCmid > 0) {
+            $SQL->addWhereOpr('comment_id', $leftCmid, $desc ? '<' : '>');
+        }
         $SQL->setLimit($limit);
 
         $SQL->addOrder('comment_id', (($rev ? !$desc : $desc) ? 'DESC' : 'ASC'));
         $q  = $SQL->get(dsn());
 
-        if ( !$DB->query($q, 'fetch') ) return false;
+        if (!$DB->query($q, 'fetch')) {
+            return false;
+        }
         $i  = 1;
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             $Tpl->add('div#front');
             $Tpl->add('div#rear');
 
@@ -310,7 +346,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
             $i++;
         }
 
-        if ( $desc ) {
+        if ($desc) {
             $pageFrom   = $amount - $to + 1;
             $pageTo     = $amount - $from;
         } else {

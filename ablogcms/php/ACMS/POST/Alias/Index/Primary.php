@@ -7,13 +7,15 @@ class ACMS_POST_Alias_Index_Primary extends ACMS_POST
         $this->Post->reset(true);
         $this->Post->setMethod('primary', 'required');
 
-        if ( !($aid = intval($this->Post->get('primary'))) ) { $aid = null; }
+        if (!($aid = intval($this->Post->get('primary')))) {
+            $aid = null;
+        }
         $this->Post->setMethod('alias', 'operable', sessionWithAdministration());
         $this->Post->setMethod('alias', 'status', 'open' == ($aid ? ACMS_RAM::aliasStatus($aid) : ACMS_RAM::blogAliasStatus(BID)));
 
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newUpdate('blog');
             $SQL->addUpdate('blog_alias_primary', $aid);
@@ -33,4 +35,3 @@ class ACMS_POST_Alias_Index_Primary extends ACMS_POST
         return $this->Post;
     }
 }
-

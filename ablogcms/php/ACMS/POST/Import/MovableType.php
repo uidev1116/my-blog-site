@@ -11,12 +11,12 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         $this->uploadFiledName = 'mt_import_file';
         $this->importCid = intval($this->Post->get('category_id'));
 
-        if ( intval($this->importCid) == 0 ) {
+        if (intval($this->importCid) == 0) {
             $this->importCid = null;
-        } else if ( intval($this->importCid) == -1 ) {
+        } elseif (intval($this->importCid) == -1) {
             $this->Post->set('categoryName', 'MTカテゴリー');
         } else {
-            $this->Post->set('categoryName', ACMS_RAM::categoryName($this->importCid).'カテゴリー');
+            $this->Post->set('categoryName', ACMS_RAM::categoryName($this->importCid) . 'カテゴリー');
         }
     }
 
@@ -31,9 +31,9 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         $handle = @fopen($path, "r");
         @rewind($handle);
 
-        if ( $handle ) {
-            while ( ($buffer = fgets($handle)) !== false ) {
-                if ( preg_match('@^--------$@m', $buffer) ) {
+        if ($handle) {
+            while (($buffer = fgets($handle)) !== false) {
+                if (preg_match('@^--------$@m', $buffer)) {
                     $this->buildEntryBlock($entryBlock);
                     $entryBlock = '';
                 } else {
@@ -47,10 +47,10 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
     function validate($path)
     {
         $handle = @fopen($path, "r");
-        if ( $handle ) {
-            while ( fgets($handle) !== false ) {
+        if ($handle) {
+            while (fgets($handle) !== false) {
             }
-            if ( !feof($handle) ) {
+            if (!feof($handle)) {
                 throw new RuntimeException('ファイルが壊れている可能性があります。');
             }
             @fclose($handle);
@@ -73,9 +73,9 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         /**
         * get meta data
         */
-        foreach ( preg_split('@[\x0D\x0A|\x0D|\x0A]@', $meta[0]) as $row ) {
+        foreach (preg_split('@[\x0D\x0A|\x0D|\x0A]@', $meta[0]) as $row) {
             preg_match($meta_regex, $row, $match);
-            if ( !empty($match) ) {
+            if (!empty($match)) {
                 $key    = $match[1];
                 $val    = $match[2];
                 $entry[$key]    = $val;
@@ -85,9 +85,9 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         /**
         * get body data
         */
-        foreach ( $body as $row ) {
+        foreach ($body as $row) {
             preg_match($body_regex, $row, $match);
-            if ( !empty($match) ) {
+            if (!empty($match)) {
                 $key = $match[1];
                 $val = preg_replace($body_regex, '', $row);
                 $entry[$key]    = $val;
@@ -105,23 +105,23 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
 
         $date   = $this->convertMtDate($entry['DATE']);
         $status = $this->convertMtStatus($entry['STATUS']);
-        if ( isset($entry['TAGS']) and !empty($entry['TAGS']) ) {
+        if (isset($entry['TAGS']) and !empty($entry['TAGS'])) {
             $tags   = $this->convertMtTags($entry['TAGS']);
         }
         $content[]  = $entry['BODY'];
-        if ( isset($entry['EXTENDED BODY']) && strlen($entry['EXTENDED BODY']) > 1 ) {
+        if (isset($entry['EXTENDED BODY']) && strlen($entry['EXTENDED BODY']) > 1) {
             $content[]  = $entry['EXTENDED BODY'];
         }
-        if ( isset($entry['PRIMARY CATEGORY']) and !empty($entry['PRIMARY CATEGORY']) ) {
+        if (isset($entry['PRIMARY CATEGORY']) and !empty($entry['PRIMARY CATEGORY'])) {
             $category   = $entry['PRIMARY CATEGORY'];
-        } else if ( isset($entry['CATEGORY']) and !empty($entry['CATEGORY']) ) {
+        } elseif (isset($entry['CATEGORY']) and !empty($entry['CATEGORY'])) {
             $category   = $entry['CATEGORY'];
         }
-        if ( isset($entry['BASENAME']) and !empty($entry['BASENAME']) ) {
+        if (isset($entry['BASENAME']) and !empty($entry['BASENAME'])) {
             $ecode   = $entry['BASENAME'];
         }
 
-        if ( intval($this->importCid) != -1 ) {
+        if (intval($this->importCid) != -1) {
             $category = null;
         }
 
@@ -147,14 +147,14 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
     {
         $status = strtoupper($status);
 
-        switch ( $status ) {
+        switch ($status) {
             case 'PUBLISH':
                 $status  = 'open';
                 break;
             case 'DRAFT':
                 $status = 'draft';
                 break;
-            default :
+            default:
                 $status = 'close';
                 break;
         }

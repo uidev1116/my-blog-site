@@ -4,10 +4,14 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
 {
     function get()
     {
-        if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('module_edit', BID) ) return false;
+        if (roleAvailableUser()) {
+            if (!roleAuthorization('module_edit', BID)) {
+                return false;
+            }
         } else {
-            if ( !sessionWithAdministration() ) return false;
+            if (!sessionWithAdministration()) {
+                return false;
+            }
         }
 
         $order  = ORDER ? ORDER : 'name-asc';
@@ -19,13 +23,14 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
 
-        if ( 1
+        if (
+            1
             && !$this->Post->isNull()
             && $this->Post->get('refreshed') === 'refreshed'
         ) {
             $Tpl->add('refreshed');
-        } else if ( $error = $this->Post->get('error') ) {
-            $Tpl->add('error#'.$error);
+        } elseif ($error = $this->Post->get('error')) {
+            $Tpl->add('error#' . $error);
         }
 
         $SQL    = SQL::newSelect('module');
@@ -36,7 +41,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         $Where->addWhereOpr('module_blog_id', BID, '=', 'OR');
         $Where->addWhereOpr('module_scope', 'global', '=', 'OR');
         $SQL->addWhereOpr('module_label', 'crm-module-indexing-hidden', '<>');
-        if ( !ADMIN ) {
+        if (!ADMIN) {
             $SQL->addWhereOpr('module_status', 'open');
         }
 
@@ -44,28 +49,28 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
 
         //---------------
         // layout module
-        if ( ADMIN !== 'module_index' ) {
+        if (ADMIN !== 'module_index') {
             $SQL->addWhereOpr('module_layout_use', '1');
         }
 
         //--------
         // module
-        if ( !empty($module) ) {
+        if (!empty($module)) {
             $SQL->addWhereOpr('module_name', $module);
-            $filter['name:selected#'.$module]    = config('attr_selected');
+            $filter['name:selected#' . $module]    = config('attr_selected');
         }
 
         //-------
         // order
-        $filter['order:selected#'.$order]  = config('attr_selected');
+        $filter['order:selected#' . $order]  = config('attr_selected');
         $opr    = explode('-', $order);
         $SQL->addOrder('module_blog_id', 'ASC');
-        $SQL->addOrder('module_'.$opr[0], ucwords($opr[1]));
+        $SQL->addOrder('module_' . $opr[0], ucwords($opr[1]));
         $SQL->addOrder('module_id', ucwords($opr[1]));
 
         $q = $SQL->get(dsn());
 
-        if ( !$DB->query($q, 'fetch') or !($row = $DB->fetch($q)) ) {
+        if (!$DB->query($q, 'fetch') or !($row = $DB->fetch($q))) {
             $Tpl->add('index#notFound');
             $Tpl->add(null, $filter);
             return $Tpl->get();
@@ -74,7 +79,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         $themes         = array();
         $theme          = config('theme');
         $tplModuleDir   = 'include/module/template/';
-        while ( !empty($theme) ) {
+        while (!empty($theme)) {
             array_unshift($themes, $theme);
             $theme  = preg_replace('/^[^@]*?(@|$)/', '', $theme);
         }
@@ -85,26 +90,27 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
             $name       = $row['module_name'];
             $identifier = $row['module_identifier'];
 
-            $Tpl->add('status#'.$row['module_status']);
+            $Tpl->add('status#' . $row['module_status']);
 
-            if ( BID !== intval($row['module_blog_id']) ) {
+            if (BID !== intval($row['module_blog_id'])) {
                 $row['module_scope'] = 'parental';
             }
-            $Tpl->add('scope:touch#'.$row['module_scope']);
+            $Tpl->add('scope:touch#' . $row['module_scope']);
 
             $mbid   = intval($row['module_blog_id']);
             $vars   = array(
                 'mid'       => $mid,
                 'bid'       => $mbid,
-                'identifier'=> $identifier,
+                'identifier' => $identifier,
                 'label'     => $row['module_label'],
                 'name'      => $name,
                 'scope'     => $row['module_scope'],
             );
 
-            if ( BID === $mbid ) {
+            if (BID === $mbid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $row));
-            } else if ( 0
+            } elseif (
+                0
                 or ( roleAvailableUser() && roleAuthorization('module_edit', $mbid) )
                 or sessionWithAdministration($mbid)
             ) {
@@ -118,22 +124,23 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
             $tplAry     = array();
             $tplLabels  = array();
             $fix        = false;
-            foreach ( $themes as $theme ) {
-                $dir = SCRIPT_DIR.THEMES_DIR.$theme.'/'.$tplModuleDir.$name.'/';
-                if ( Storage::isDirectory($dir) ) {
+            foreach ($themes as $theme) {
+                $dir = SCRIPT_DIR . THEMES_DIR . $theme . '/' . $tplModuleDir . $name . '/';
+                if (Storage::isDirectory($dir)) {
                     $templateDir    = opendir($dir);
-                    while ( $tpl = readdir($templateDir) ) {
-                        preg_match('/(?:.*)\/(.*)(?:\.([^.]+$))/', $dir.$tpl, $info);
-                        if ( !isset($info[1]) || !isset($info[2]) ) {
+                    while ($tpl = readdir($templateDir)) {
+                        preg_match('/(?:.*)\/(.*)(?:\.([^.]+$))/', $dir . $tpl, $info);
+                        if (!isset($info[1]) || !isset($info[2])) {
                             continue;
                         }
-                        $pattern = '/^('.$info[1].'|'.$info[1].config('module_identifier_duplicate_suffix').'.*)$/';
-                        if ( preg_match($pattern, $identifier) ) {
+                        $pattern = '/^(' . $info[1] . '|' . $info[1] . config('module_identifier_duplicate_suffix') . '.*)$/';
+                        if (preg_match($pattern, $identifier)) {
                             $tplAry = array();
                             $fix    = true;
                             break;
                         }
-                        if ( 0
+                        if (
+                            0
                             || strncasecmp($tpl, '.', 1) === 0
                             || $info[2] === 'yaml'
                         ) {
@@ -141,18 +148,17 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                         }
                         $tplAry[] = $tpl;
                     }
-                    if ( $labelAry = Config::yamlLoad($dir.'label.yaml') ) {
+                    if ($labelAry = Config::yamlLoad($dir . 'label.yaml')) {
                         $tplLabels += $labelAry;
                     }
-
                 }
             }
             $tplAry = array_unique($tplAry);
 
             $tplSort = array();
-            foreach ( $tplLabels as $tpl => $label) {
+            foreach ($tplLabels as $tpl => $label) {
                 $key = array_search($tpl, $tplAry);
-                if ( $key !== false ) {
+                if ($key !== false) {
                     $tplSort[] = array(
                         'template' => $tpl,
                         'tplLabel' => $label,
@@ -160,14 +166,15 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                     unset($tplAry[$key]);
                 }
             }
-            foreach ( $tplAry as $tpl ) {
+            foreach ($tplAry as $tpl) {
                 $tplSort[] = array(
                     'template' => $tpl,
                     'tplLabel' => $tpl,
                 );
             }
-            foreach ( $tplSort as $loop ) {
-                if ( 1
+            foreach ($tplSort as $loop) {
+                if (
+                    1
                     && $mid === $cmid
                     && $ctpl === $loop['template']
                 ) {
@@ -175,15 +182,15 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                 }
                 $Tpl->add(array('template:loop', 'module:loop'), $loop);
             }
-            if ( empty($tplSort) ) {
-                if ( $fix ) {
+            if (empty($tplSort)) {
+                if ($fix) {
                     $Tpl->add(array('fixTmpl', 'module:loop'));
                 } else {
                     $Tpl->add(array('notEmptyTmpl', 'module:loop'));
                 }
             }
             $Tpl->add('module:loop', $vars);
-        } while ( $row = $DB->fetch($q) );
+        } while ($row = $DB->fetch($q));
 
         $Tpl->add(null, $filter);
 
@@ -220,10 +227,10 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                 ),
             )),
         );
-        if ( !in_array($name, array('Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field', 'Module_Field')) ) {
+        if (!in_array($name, array('Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field', 'Module_Field'))) {
             $linkVars['configUrl'] = acmsLink(array(
                 'bid'   => $bid,
-                'admin' => 'config_'.strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $name)),
+                'admin' => 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $name)),
                 'query' => array(
                     'mid'   => $mid,
                     'rid'   => $rid,

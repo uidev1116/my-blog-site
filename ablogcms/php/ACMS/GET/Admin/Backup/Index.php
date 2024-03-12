@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Backup_Index extends ACMS_GET_Admin
 {
     public function get()
     {
-        if ( 'backup_index' <> ADMIN ) return false;
+        if ('backup_index' <> ADMIN) {
+            return false;
+        }
 
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         $logger = App::make('db.logger');

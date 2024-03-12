@@ -87,17 +87,19 @@ function appConfig()
  */
 function autoload($name)
 {
-    if ($name === 'ACMS_APP') $name = 'ACMS_App'; // Ver. 2.8.0 未満の対応
+    if ($name === 'ACMS_APP') {
+        $name = 'ACMS_App'; // Ver. 2.8.0 未満の対応
+    }
     $classPath = implode(DIRECTORY_SEPARATOR, explode('_', $name)) . '.php';
 
     $filePath = LIB_DIR . $classPath;
 
-    if ( is_readable($filePath) ) {
+    if (is_readable($filePath)) {
         require_once $filePath;
     } else {
         // LIB_DIRから見つからなければPEAR内を再度探索
         $pearPath = LIB_DIR . 'PEAR' . DIRECTORY_SEPARATOR . $classPath;
-        if ( is_readable($pearPath) ) {
+        if (is_readable($pearPath)) {
             require_once $pearPath;
         }
     }
@@ -114,12 +116,23 @@ function setPath($script_file, $script_name = false)
     define('DIR_OFFSET', substr(SCRIPT_DIR, strlen(DOCUMENT_ROOT)));
     chdir(SCRIPT_DIR);
 
-    if (!defined('REWRITE_ENABLE')) define('REWRITE_ENABLE', (isset($_SERVER['rewrite']) or REWRITE_FORCE)); // 使ってない
-    if (!defined('LIB_DIR')) define('LIB_DIR', '/' == substr(PHP_DIR, 0, 1) ? PHP_DIR : SCRIPT_DIR . PHP_DIR);
-    if (!defined('ACMS_LIB_DIR')) define('ACMS_LIB_DIR', LIB_DIR . 'ACMS/');
-    if (!defined('AAPP_LIB_DIR')) define('AAPP_LIB_DIR', LIB_DIR . 'AAPP/');
-    if (!defined('PLUGIN_DIR')) define('PLUGIN_DIR', '/extension/plugins/');
-    if (!defined('PLUGIN_LIB_DIR')) define('PLUGIN_LIB_DIR',  SCRIPT_DIR . 'extension/plugins/');
+    if (!defined('REWRITE_ENABLE')) {
+        define('REWRITE_ENABLE', (isset($_SERVER['rewrite']) or REWRITE_FORCE)); // 使ってない
+    }
+    if (!defined('LIB_DIR')) {
+        define('LIB_DIR', '/' == substr(PHP_DIR, 0, 1) ? PHP_DIR : SCRIPT_DIR . PHP_DIR);
+    }
+    if (!defined('ACMS_LIB_DIR')) {
+        define('ACMS_LIB_DIR', LIB_DIR . 'ACMS/');
+    }
+    if (!defined('AAPP_LIB_DIR')) {
+        define('AAPP_LIB_DIR', LIB_DIR . 'AAPP/');
+    }
+    if (!defined('PLUGIN_DIR')) {
+        define('PLUGIN_DIR', '/extension/plugins/');
+    }
+    if (!defined('PLUGIN_LIB_DIR')) {
+        define('PLUGIN_LIB_DIR', SCRIPT_DIR . 'extension/plugins/');
+    }
     ini_set('include_path', LIB_DIR . 'PEAR/');
-
 }

@@ -66,4 +66,3 @@ class ACMS_POST_Config_Set_Insert extends ACMS_POST
         return 'コンフィグセット';
     }
 }
-

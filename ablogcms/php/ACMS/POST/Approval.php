@@ -2,7 +2,6 @@
 
 class ACMS_POST_Approval extends ACMS_POST_Entry
 {
-
 }
 
 class ACMS_Validator_Approval extends ACMS_Validator

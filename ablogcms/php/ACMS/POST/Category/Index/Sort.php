@@ -8,17 +8,27 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
             AcmsLogger::warning('権限がないため、指定されたカテゴリーの並び順変更に失敗しました');
             die();
         }
-        if ( !empty($_POST['checks']) and is_array($_POST['checks']) ) {
+        if (!empty($_POST['checks']) and is_array($_POST['checks'])) {
             $DB = DB::singleton(dsn());
             $targetCIDs = [];
-            foreach ( $_POST['checks'] as $cid ) {
-                if ( !$cid = idval($cid) ) continue;
-                if ( BID <> ACMS_RAM::categoryBlog($cid) ) continue;
-                if ( !$toSort = idval($this->Post->get('sort-'.$cid)) ) continue;
-                if ( 1 > $toSort ) continue;
+            foreach ($_POST['checks'] as $cid) {
+                if (!$cid = idval($cid)) {
+                    continue;
+                }
+                if (BID <> ACMS_RAM::categoryBlog($cid)) {
+                    continue;
+                }
+                if (!$toSort = idval($this->Post->get('sort-' . $cid))) {
+                    continue;
+                }
+                if (1 > $toSort) {
+                    continue;
+                }
 
                 $pid = ACMS_RAM::categoryParent($cid);
-                if ( is_null($pid) ) continue;
+                if (is_null($pid)) {
+                    continue;
+                }
 
                 $SQL    = SQL::newSelect('category');
                 $SQL->setSelect('category_sort');
@@ -27,8 +37,12 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                 $SQL->setOrder('category_sort', 'DESC');
                 $SQL->setLimit(1);
                 $max    = $DB->query($SQL->get(dsn()), 'one');
-                if ( 1 >= $max ) continue;
-                if ( $max < $toSort ) continue;
+                if (1 >= $max) {
+                    continue;
+                }
+                if ($max < $toSort) {
+                    continue;
+                }
 
                 $SQL    = SQL::newSelect('category');
                 $SQL->addSelect('category_left');
@@ -37,7 +51,9 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                 $SQL->addWhereOpr('category_parent', $pid);
                 $SQL->addWhereOpr('category_blog_id', BID);
                 $SQL->setLimit(1);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die('toSort object is not found');
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die('toSort object is not found');
+                }
                 $toLeft     = intval($row['category_left']);
                 $toRight    = intval($row['category_right']);
 
@@ -47,7 +63,9 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                 $SQL->addSelect('category_sort');
                 $SQL->addWhereOpr('category_id', $cid);
                 $SQL->addWhereOpr('category_blog_id', BID);
-                if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die('fromSort object is not found');
+                if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                    die('fromSort object is not found');
+                }
                 $fromSort   = intval($row['category_sort']);
                 $fromLeft   = intval($row['category_left']);
                 $fromRight  = intval($row['category_right']);
@@ -57,15 +75,15 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                 $SQL    = SQL::newUpdate('category');
                 //$SQL->addWhereOpr('category_parent', $pid);
                 $SQL->addWhereOpr('category_blog_id', BID);
-                if ( $fromRight > $toRight ) {
+                if ($fromRight > $toRight) {
                     //---------
                     // upper
                     $delta  = $fromLeft - $toLeft;
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('category_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('category_left', $delta, '-')
+                        SQL::newOprBw('category_left', $fromLeft, $fromRight),
+                        SQL::newOpr('category_left', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('category_left', $fromLeft, '<');
@@ -76,8 +94,8 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('category_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('category_right', $delta, '-')
+                        SQL::newOprBw('category_right', $fromLeft, $fromRight),
+                        SQL::newOpr('category_right', $delta, '-')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('category_right', $fromLeft, '<');
@@ -98,7 +116,6 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
                     $Case->add($Where, SQL::newOpr('category_sort', 1, '+'));
                     $Case->setElse(SQL::newField('category_sort'));
                     $SQL->addUpdate('category_sort', $Case);
-
                 } else {
                     //-------
                     // lower
@@ -106,8 +123,8 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('category_left', $fromLeft, $fromRight)
-                        , SQL::newOpr('category_left', $delta, '+')
+                        SQL::newOprBw('category_left', $fromLeft, $fromRight),
+                        SQL::newOpr('category_left', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('category_left', $fromRight, '>');
@@ -118,8 +135,8 @@ class ACMS_POST_Category_Index_Sort extends ACMS_POST
 
                     $Case   = SQL::newCase();
                     $Case->add(
-                        SQL::newOprBw('category_right', $fromLeft, $fromRight)
-                        , SQL::newOpr('category_right', $delta, '+')
+                        SQL::newOprBw('category_right', $fromLeft, $fromRight),
+                        SQL::newOpr('category_right', $delta, '+')
                     );
                     $Where  = SQL::newWhere();
                     $Where->addWhereOpr('category_right', $fromRight, '>');

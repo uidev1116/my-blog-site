@@ -18,11 +18,11 @@ class WebhookServiceProvider extends ServiceProvider
     public function register(Container $container)
     {
         $container->bind('webhook', function () {
-            $payload = new Payload;
+            $payload = new Payload();
             return new Engine($payload);
         });
         $hook = HookFactory::singleton();
-        $hook->attach('Webhook', new Hook);
+        $hook->attach('Webhook', new Hook());
     }
 
     /**
@@ -32,6 +32,5 @@ class WebhookServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

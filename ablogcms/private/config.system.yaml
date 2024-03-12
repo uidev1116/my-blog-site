@@ -18,6 +18,8 @@ allow_tpl_path: [include/summary.html] # forbid_tpl_inheritance_when_path_unreso
 
 image_magick: off
 
+system_update_repository: http://www.a-blogcms.jp/api/update-edge.json
+
 ## V2_Entry_Body
 v2_entry_body_limit: 5
 v2_entry_body_order: datetime-desc

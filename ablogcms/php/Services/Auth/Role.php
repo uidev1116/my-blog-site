@@ -22,9 +22,9 @@ class Role extends General
      * @param array $args
      * @return mixed
      */
-    protected function cacheMethod($method, $args=array())
+    protected function cacheMethod($method, $args = array())
     {
-        $key = $method .'_' . md5(serialize($args));
+        $key = $method . '_' . md5(serialize($args));
 
         if (isset($this->cache[$key])) {
             return $this->cache[$key];
@@ -55,17 +55,20 @@ class Role extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isSubscriber($uid=SUID)
+    public function isSubscriber($uid = SUID)
     {
         $args = func_get_args();
-        if (!$uid) return false;
+        if (!$uid) {
+            return false;
+        }
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, $args);
         }
         if ('subscriber' === \ACMS_RAM::userAuth($uid)) {
             return true;
         }
-        if ( 1
+        if (
+            1
             and !$this->isAdministrator($uid)
             and !$this->isEditor($uid)
             and !$this->isContributor($uid)
@@ -81,14 +84,17 @@ class Role extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isContributor($uid=SUID)
+    public function isContributor($uid = SUID)
     {
         $args = func_get_args();
-        if (!$uid) return false;
+        if (!$uid) {
+            return false;
+        }
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, $args);
         }
-        if ( 1
+        if (
+            1
             and !$this->isAdministrator($uid)
             and !$this->isEditor($uid)
             and $this->roleAuthorization('entry_edit', BID, false, $uid)
@@ -104,14 +110,17 @@ class Role extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isEditor($uid=SUID)
+    public function isEditor($uid = SUID)
     {
         $args = func_get_args();
-        if (!$uid) return false;
+        if (!$uid) {
+            return false;
+        }
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, $args);
         }
-        if ( 1
+        if (
+            1
             and !$this->isAdministrator($uid)
             and $this->roleAuthorization('entry_edit', BID, false, $uid)
             and $this->roleAuthorization('entry_edit_all', BID, false, $uid)
@@ -131,14 +140,16 @@ class Role extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isAdministrator($uid=SUID)
+    public function isAdministrator($uid = SUID)
     {
         $args = func_get_args();
-        if (!$uid) return false;
+        if (!$uid) {
+            return false;
+        }
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, $args);
         }
-        if ( $this->roleAuthorization('admin_etc', BID, false, $uid) ) {
+        if ($this->roleAuthorization('admin_etc', BID, false, $uid)) {
             return true;
         }
         return false;
@@ -150,13 +161,16 @@ class Role extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfContributor($bid=BID)
+    public function isPermissionOfContributor($bid = BID)
     {
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
-        if ( !$this->isControlBlog($bid) ) return false;
-        if ( 0
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
+        if (
+            0
             or $this->roleAuthorization('entry_edit', BID, false)
             or $this->roleAuthorization('admin_etc', BID)
         ) {
@@ -171,13 +185,16 @@ class Role extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfEditor($bid=BID)
+    public function isPermissionOfEditor($bid = BID)
     {
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
-        if ( !$this->isControlBlog($bid) ) return false;
-        if ( 1
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
+        if (
+            1
             and $this->roleAuthorization('entry_edit', BID, false)
             and $this->roleAuthorization('entry_edit_all', BID)
             and $this->roleAuthorization('entry_delete', BID, false)
@@ -196,12 +213,14 @@ class Role extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfAdministrator($bid=BID)
+    public function isPermissionOfAdministrator($bid = BID)
     {
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
-        if ( !$this->isControlBlog($bid) ) return false;
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
         return $this->isAdministrator();
     }
 
@@ -217,7 +236,7 @@ class Role extends General
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
         $userGroups = $this->getUserGroup($uid);
-        if (empty($userGroups) ) {
+        if (empty($userGroups)) {
             return array();
         }
         $authorizedBlog = array();
@@ -251,15 +270,9 @@ class Role extends General
     }
 
     /**
-     * 各ロールの権限があるかチェック
-     *
-     * @param string $action
-     * @param int|null $bid
-     * @param int|null $eid
-     * @param int $uid
-     * @return bool
+     * @inheritdoc
      */
-    public function roleAuthorization($action, $bid=BID, $eid=0, $uid=SUID)
+    public function roleAuthorization($action, $bid = BID, $eid = 0, $uid = SUID)
     {
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, func_get_args());
@@ -267,13 +280,14 @@ class Role extends General
         $check = false;
         $usergroups = $this->getUserGroup($uid);
 
-        if ( !$usergroups ) {
+        if (!$usergroups) {
             return false;
         }
-        foreach ( $usergroups as $ugid ) {
+        foreach ($usergroups as $ugid) {
             $ugid = $ugid['usergroup_id'];
             $role = $this->getRole($ugid);
-            if ( 1
+            if (
+                1
                 && $this->isControlBlogByRole($role, $bid)
                 && $this->isAuthAction($role, $action, $eid)
             ) {
@@ -287,9 +301,9 @@ class Role extends General
      * ログイン中ユーザーの所属ユーザーグループの取得
      *
      * @param int $uid
-     * @return bool
+     * @return false|array
      */
-    protected function getUserGroup($uid=SUID)
+    protected function getUserGroup($uid = SUID)
     {
         $args = func_get_args();
         if (empty($uid)) {
@@ -303,10 +317,10 @@ class Role extends General
         $SQL->addSelect('usergroup_id');
         $SQL->addWhereOpr('user_id', $uid);
 
-        if ( !$usergroups = $DB->query($SQL->get(dsn()), 'all') ) {
+        if (!$usergroups = $DB->query($SQL->get(dsn()), 'all')) {
             return false;
         }
-        if ( !is_array($usergroups) ) {
+        if (!is_array($usergroups)) {
             return false;
         }
         return $usergroups;
@@ -330,7 +344,7 @@ class Role extends General
         $SQL->addSelect('usergroup_role_id');
         $SQL->addWhereOpr('usergroup_id', $ugid);
 
-        if ( $id = $DB->query($SQL->get(dsn()), 'one') ) {
+        if ($id = $DB->query($SQL->get(dsn()), 'one')) {
             $SQL = SQL::newSelect('role');
             $SQL->addWhereOpr('role_id', $id);
             $role = $DB->query($SQL->get(dsn()), 'row');
@@ -359,13 +373,14 @@ class Role extends General
         $SQL->addSelect('blog_id');
         $SQL->addWhereOpr('role_id', $roleid);
         $all    = $DB->query($SQL->get(dsn()), 'all');
-        foreach ( $all as $blog ) {
+        foreach ($all as $blog) {
             $blogs[] = $blog['blog_id'];
         }
 
-        if ( $role['role_blog_axis'] === 'descendant' ) {
-            foreach ( $blogs as $rbid ) {
-                if ( 1
+        if ($role['role_blog_axis'] === 'descendant') {
+            foreach ($blogs as $rbid) {
+                if (
+                    1
                     && \ACMS_RAM::blogLeft($rbid) <= \ACMS_RAM::blogLeft($bid)
                     && \ACMS_RAM::blogRight($rbid) >= \ACMS_RAM::blogRight($bid)
                 ) {
@@ -374,8 +389,8 @@ class Role extends General
                 }
             }
         } else {
-            foreach ( $blogs as $rbid ) {
-                if ( intval($rbid) === intval($bid) ) {
+            foreach ($blogs as $rbid) {
+                if (intval($rbid) === intval($bid)) {
                     $check = true;
                     break;
                 }
@@ -397,16 +412,21 @@ class Role extends General
         if (!$this->cacheAttached(__FUNCTION__)) {
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
-        $action = 'role_'.$action;
-        if ( !isset($role[$action]) ) return false;
+        $action = 'role_' . $action;
+        if (!isset($role[$action])) {
+            return false;
+        }
 
-        if ( 1
-            && in_array($action, array('role_entry_edit', 'role_entry_delete'))
+        if (
+            1
+            && in_array($action, array('role_entry_edit', 'role_entry_delete'), true)
             && $eid
             && $role['role_entry_edit_all'] !== 'on'
         ) {
-            if ( SUID == \ACMS_RAM::entryUser($eid) && $role[$action] === 'on' ) return true;
-        } else if ( $role[$action] === 'on' ) {
+            if (SUID == \ACMS_RAM::entryUser($eid) && $role[$action] === 'on') {
+                return true;
+            }
+        } elseif ($role[$action] === 'on') {
             return true;
         }
         return false;

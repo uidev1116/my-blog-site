@@ -2,32 +2,33 @@
 
 class ACMS_GET_Admin_Fix_Tag extends ACMS_GET_Admin_Fix
 {
-    function fix(& $Tpl, $block)
+    function fix(&$Tpl, $block)
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix =& $this->Post->getChild('fix');
 
         $threshold      = $Fix->get('threshold');
         $certainly      = $Fix->get('certainly');
 
-        if ( $Fix->isNull() ) {
+        if ($Fix->isNull()) {
             $Fix->set('threshold', '3');
             $Fix->set('certainly', 'on');
         }
-        
-        if ( $this->Post->get('preview') === 'on' ) {
+
+        if ($this->Post->get('preview') === 'on') {
             $words = $this->Post->getArray('word');
-            if ( empty($words) ) {
+            if (empty($words)) {
                 $Tpl->add(array_merge(array('notFound', 'preview'), $block));
             }
-            foreach ( $words as $i => $word ) {
+            foreach ($words as $i => $word) {
+                $Entries = $this->Post->getChild('data' . $i);
 
-                $Entries = $this->Post->getChild('data'.$i);
-
-                foreach ( $Entries->getArray('title') as $j => $title ) {
+                foreach ($Entries->getArray('title') as $j => $title) {
                     $fulltext = $Entries->get('fulltext', '', $j);
-                    $fulltext = preg_replace('@('.$word.')@' ,'<strong class="highlight">$1</strong>', $fulltext);
+                    $fulltext = preg_replace('@(' . $word . ')@', '<strong class="highlight">$1</strong>', $fulltext);
 
                     $Tpl->add(array_merge(array('entry:loop', 'word:loop', 'preview'), $block), array(
                         'title'     => $title,

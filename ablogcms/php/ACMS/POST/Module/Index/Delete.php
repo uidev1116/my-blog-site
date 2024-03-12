@@ -7,9 +7,9 @@ class ACMS_POST_Module_Index_Delete extends ACMS_POST_Module_Delete
         $this->Post->reset(true);
         $this->Post->setMethod('checks', 'required');
 
-        if ( enableApproval(BID, CID) ) {
+        if (enableApproval(BID, CID)) {
             $this->Post->setMethod('module', 'operative', sessionWithApprovalAdministrator(BID, CID));
-        } else if ( roleAvailableUser() ) {
+        } elseif (roleAvailableUser()) {
             $this->Post->setMethod('module', 'operative', roleAuthorization('module_edit', BID));
         } else {
             $this->Post->setMethod('module', 'operative', sessionWithContribution());
@@ -20,7 +20,7 @@ class ACMS_POST_Module_Index_Delete extends ACMS_POST_Module_Delete
 
         if ($this->Post->isValidAll()) {
             @set_time_limit(0);
-            foreach ( $this->Post->getArray('checks') as $mid ) {
+            foreach ($this->Post->getArray('checks') as $mid) {
                 $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
                 $mid = $id[1];
                 $module = loadModule($mid);

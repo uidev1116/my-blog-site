@@ -7,11 +7,17 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
         $DB = DB::singleton(dsn());
         $Approval = $this->extract('approval');
 
-        if ( !($rvid = $Approval->get('rvid')) ) return false;
-        if ( !editionIsEnterprise() ) return false;
+        if (!($rvid = $Approval->get('rvid'))) {
+            return false;
+        }
+        if (!editionIsEnterprise()) {
+            return false;
+        }
         $workflow = loadWorkflow(BID, CID);
         $type = $workflow->get('workflow_type');
-        if ($type !== 'parallel') return false;
+        if ($type !== 'parallel') {
+            return false;
+        }
         $workflowPoint = approvalWorkflowRejectPoint(BID, CID);
         $currentPoint = approvalRevisionRejectPoint(EID, $rvid);
         $point = approvalUserPoint(BID);
@@ -24,7 +30,7 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
         }
         $Approval->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $comment    = $Approval->get('request_comment');
             $rec_user   = null;
 
@@ -52,7 +58,7 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
             $SQL    = SQL::newUpdate('entry_rev');
             $SQL->addUpdate('entry_rev_status', 'in_review');
             // 並列承認
-            if ( $type == 'parallel' ) {
+            if ($type == 'parallel') {
                 $POINT  = SQL::newSelect('entry_rev');
                 $POINT->addSelect('entry_approval_reject_point');
                 $POINT->addWhereOpr('entry_id', EID);
@@ -77,7 +83,7 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
             $SQL->addWhereOpr('notification_entry_id', EID);
             $SQL->addWhereOpr('notification_blog_id', BID);
             $all    = $DB->query($SQL->get(dsn()), 'all');
-            foreach ( $all as $row ) {
+            foreach ($all as $row) {
                 $exceptUser[] = $row['notification_request_user_id'];
             }
             $SQL    = SQL::newUpdate('approval_notification');

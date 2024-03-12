@@ -21,7 +21,7 @@ class ACMS_POST_Alias_Insert extends ACMS_POST_Alias
 
         $Alias->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
 
             //-----
@@ -70,4 +70,3 @@ class ACMS_POST_Alias_Insert extends ACMS_POST_Alias
         return $this->Post;
     }
 }
-

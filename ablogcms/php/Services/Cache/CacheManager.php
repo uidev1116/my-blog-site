@@ -135,7 +135,7 @@ class CacheManager
     public function flush($type)
     {
         if (method_exists($this, $type)) {
-            $cache = $this->{$type}();
+            $cache = $this->{$type}(); // @phpstan-ignore-line
             $cache->flush();
         }
     }
@@ -159,7 +159,7 @@ class CacheManager
     public function prune($type)
     {
         if (method_exists($this, $type)) {
-            $cache = $this->{$type}();
+            $cache = $this->{$type}(); // @phpstan-ignore-line
             $cache->prune();
         }
     }
@@ -233,7 +233,7 @@ class CacheManager
         foreach ($drivers as $driver) {
             $method = 'can' . ucwords($driver) . 'Driver';
             if (method_exists($this, $method)) {
-                if ($this->{$method}()) {
+                if ($this->{$method}()) { // @phpstan-ignore-line
                     $useDriver = $driver;
                     break;
                 }
@@ -244,7 +244,7 @@ class CacheManager
         }
         $createMethod = 'create' . ucwords($useDriver) . 'Driver';
         if (method_exists($this, $createMethod)) {
-            return $this->{$createMethod}($namespace, $lifetime);
+            return $this->{$createMethod}($namespace, $lifetime); // @phpstan-ignore-line
         }
         throw new NotFoundException('Cache driver is not found.');
     }
@@ -264,7 +264,7 @@ class CacheManager
         foreach ($drivers as $driver) {
             $method = 'can' . ucwords($driver) . 'TagDriver';
             if (method_exists($this, $method)) {
-                if ($this->{$method}()) {
+                if ($this->{$method}()) { // @phpstan-ignore-line
                     $useDriver = $driver;
                     break;
                 }
@@ -275,7 +275,7 @@ class CacheManager
         }
         $createMethod = 'create' . ucwords($useDriver) . 'TagDriver';
         if (method_exists($this, $createMethod)) {
-            return $this->{$createMethod}($namespace);
+            return $this->{$createMethod}($namespace); // @phpstan-ignore-line
         }
         throw new NotFoundException('Cache driver is not found.');
     }

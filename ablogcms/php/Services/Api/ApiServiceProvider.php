@@ -26,6 +26,5 @@ class ApiServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

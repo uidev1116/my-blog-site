@@ -23,7 +23,7 @@ class ACMS_GET_Member_Update_Profile extends ACMS_GET_Member
     protected function buildTpl(Template $tpl): void
     {
         $vars = [];
-        $user = loadUser(SUID, true);
+        $user = loadUser(SUID);
 
         $user->delete('pass');
         $user->delete('status');
@@ -60,7 +60,7 @@ class ACMS_GET_Member_Update_Profile extends ACMS_GET_Member
             if ($this->Post->get('updated') === 'success') {
                 $tpl->add('success');
             }
-        } else if (!$this->Post->isNull()) {
+        } elseif (!$this->Post->isNull()) {
             $tpl->add('notSuccessful');
         }
         $vars += $this->buildField($this->Post, $tpl);

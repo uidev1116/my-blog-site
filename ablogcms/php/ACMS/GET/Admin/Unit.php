@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Unit extends ACMS_GET_Admin_Entry
 {
-    function buildUnit($data, & $Tpl, $rootBlock = array(), $buildColumn = array())
+    function buildUnit($data, &$Tpl, $rootBlock = array(), $buildColumn = array())
     {
         return $this->buildColumn($data, $Tpl, $rootBlock, $buildColumn);
     }
@@ -15,12 +15,7 @@ class ACMS_GET_Admin_Unit extends ACMS_GET_Admin_Entry
 
 class ACMS_Model
 {
-    var $fields;
-
-    function __construct()
-    {
-        return true;
-    }
+    public $fields;
 
     /**
      * get
@@ -33,7 +28,7 @@ class ACMS_Model
      */
     function get($key, $default = false)
     {
-        if ( !empty($this->fields[$key]) ) {
+        if (!empty($this->fields[$key])) {
             return $this->fields[$key];
         } else {
             return $default;
@@ -67,8 +62,7 @@ class ACMS_Model_Unit extends ACMS_Model
      */
     function __construct($utid = null)
     {
-        if ( $utid != null && is_integer($utid) )
-        {
+        if ($utid != null && is_integer($utid)) {
             $this->load($utid);
         }
     }
@@ -88,7 +82,7 @@ class ACMS_Model_Unit extends ACMS_Model
         $SQL->addWhereOpr('column_id', $utid);
         $row    = $DB->query($SQL->get(dsn()), 'row');
 
-        if ( !empty($row) ) {
+        if (!empty($row)) {
             $this->fields = $row;
             return true;
         } else {
@@ -124,10 +118,12 @@ class ACMS_Model_Unit extends ACMS_Model
         $SQL->addWhereOpr('column_entry_id', $eid);
         $all    = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( empty($all) ) return false;
+        if (empty($all)) {
+            return false;
+        }
 
         $units  = array();
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $Unit = new ACMS_Model_Unit();
             $Unit->setFields($row);
             $units[] = $Unit;
@@ -146,18 +142,18 @@ class ACMS_Model_Unit extends ACMS_Model
      */
     function getTypeOfData($type)
     {
-        switch ( $type ) {
-            case 'text'     :
+        switch ($type) {
+            case 'text':
                 return array(
                     'text'          => $this->get('column_field_1'),
                     'tag'           => $this->get('column_field_2'),
                     'extend_tag'    => $this->get('column_field_3'),
                 );
-            case 'table'    :
+            case 'table':
                 return array(
                     'table'     => $this->get('column_field_1'),
                 );
-            case 'image'    :
+            case 'image':
                 return array(
                     'caption'   => $this->get('column_field_1'),
                     'path'      => $this->get('column_field_2'),
@@ -165,28 +161,28 @@ class ACMS_Model_Unit extends ACMS_Model
                     'alt'       => $this->get('column_field_4'),
                     'exif'      => $this->get('column_field_6'),
                 );
-            case 'file'     :
+            case 'file':
                 return array(
                     'caption'   => $this->get('column_field_1'),
                     'path'      => $this->get('column_field_2'),
                 );
             case 'osmap':
-            case 'map'      :
+            case 'map':
                 return array(
                     'msg'   => $this->get('column_field_1'),
                     'lat'   => $this->get('column_field_2'),
                     'lng'   => $this->get('column_field_3'),
                     'zoom'  => $this->get('column_field_4'),
                 );
-            case 'youtube'  :
+            case 'youtube':
                 return array(
                     'youtube_id'    => $this->get('column_field_2'),
                 );
-            case 'video'  :
+            case 'video':
                 return array(
                     'video_id'      => $this->get('column_field_2'),
                 );
-            case 'eximage'  :
+            case 'eximage':
                 return array(
                     'caption'   => $this->get('column_field_1'),
                     'normal'    => $this->get('column_field_2'),
@@ -194,7 +190,7 @@ class ACMS_Model_Unit extends ACMS_Model
                     'link'      => $this->get('column_field_4'),
                     'alt'       => $this->get('column_field_5'),
                 );
-            case 'quote'  :
+            case 'quote':
                 return array(
                     'quote_url' => $this->get('column_field_6'),
                     'html'      => $this->get('column_field_7'),
@@ -204,7 +200,7 @@ class ACMS_Model_Unit extends ACMS_Model
                     'description' => $this->get('collmn_field_4'),
                     'image'     => $this->get('collmn_field_5'),
                 );
-            case 'media'  :
+            case 'media':
                 return array(
                     'media_id' => $this->get('column_field_1'),
                     'caption' => $this->get('column_field_2'),
@@ -212,20 +208,20 @@ class ACMS_Model_Unit extends ACMS_Model
                     'enlarged' => $this->get('column_field_4'),
                     'use_icon' => $this->get('column_field_5'),
                 );
-            case 'module'  :
+            case 'module':
                 return array(
                     'mid'       => $this->get('column_field_1'),
                     'tpl'       => $this->get('column_field_2'),
                 );
-            case 'custom'  :
+            case 'custom':
                 return array(
                     'field'     => $this->get('column_field_6'),
                 );
-            case 'rich-editor' :
+            case 'rich-editor':
                 return array(
                     'json' => $this->get('column_field_1')
                 );
-            default    :
+            default:
                 return array();
         }
     }

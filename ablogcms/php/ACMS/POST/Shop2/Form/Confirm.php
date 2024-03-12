@@ -11,12 +11,11 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         $Order->setMethod('deliver', 'required', true);
         $Order->validate(new ACMS_Validator());
 
-        if ( $this->alreadySubmit() ) {
+        if ($this->alreadySubmit()) {
             $this->screenTrans();
         }
 
-        if ( $this->Post->isValidAll() ) {
-
+        if ($this->Post->isValidAll()) {
             $SESSION =& $this->openSession();
             $SESSION->set('payment', $Order->get('payment'));
             $SESSION->set('deliver', $Order->get('deliver'));
@@ -40,165 +39,145 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             $tax_rate = array();
 
             $tax_rate_array = configArray('shop_tax_rate_array');
-            foreach ( $tax_rate_array as $rate ) {
-                $amount['tax-omit'.$rate] = 0;
-                $amount['tax-only'.$rate] = 0;
+            foreach ($tax_rate_array as $rate) {
+                $amount['tax-omit' . $rate] = 0;
+                $amount['tax-only' . $rate] = 0;
             }
-            foreach ( $TEMP as $row ) {
+            foreach ($TEMP as $row) {
                 $price  = $row[$this->item_price];
                 $qty    = $row[$this->item_qty];
-                $sum    = $row[$this->item_price.'#sum'];
-                $rate   = $row[$this->item_price.'#rate'];
+                $sum    = $row[$this->item_price . '#sum'];
+                $rate   = $row[$this->item_price . '#rate'];
 
-                array_push ($tax_rate, $rate);
+                array_push($tax_rate, $rate);
 
                 $tax = 0;
-                if (isset($row[$this->item_price.'#tax'])) {
-                    $tax = $row[$this->item_price.'#tax'];
+                if (isset($row[$this->item_price . '#tax'])) {
+                    $tax = $row[$this->item_price . '#tax'];
                 }
 
                 @$amount['amount'] += $qty;
 
-                if (!isset($amount['tax-omit'.$rate])) {
-                    $amount['tax-omit'.$rate] = 0;
+                if (!isset($amount['tax-omit' . $rate])) {
+                    $amount['tax-omit' . $rate] = 0;
                 }
-                if (!isset($amount['tax-only'.$rate])) {
-                    $amount['tax-only'.$rate] = 0;
+                if (!isset($amount['tax-only' . $rate])) {
+                    $amount['tax-only' . $rate] = 0;
                 }
-                if ( config('shop_tax_calc_method') == 'pileup') {
-
+                if (config('shop_tax_calc_method') == 'pileup') {
                     // 商品毎に消費税を計算
 
-                    if ( config('shop_tax_calculate') == 'extax' ) {
-
+                    if (config('shop_tax_calculate') == 'extax') {
                         @$amount['subtotal'] += $sum + $tax;
                         @$amount['tax-omit'] += $sum;
                         @$amount['tax-only'] += $tax;
 
-                        @$amount['tax-omit'.$rate] += $sum;
-                        @$amount['tax-only'.$rate] += $tax;
-
+                        @$amount['tax-omit' . $rate] += $sum;
+                        @$amount['tax-only' . $rate] += $tax;
                     } else {
-
                         @$amount['subtotal'] += $sum;
-                        @$amount['tax-omit'] += $sum -$tax;
+                        @$amount['tax-omit'] += $sum - $tax;
                         @$amount['tax-only'] += $tax;
 
-                        @$amount['tax-omit'.$rate] += $sum -$tax;
-                        @$amount['tax-only'.$rate] += $tax;
+                        @$amount['tax-omit' . $rate] += $sum - $tax;
+                        @$amount['tax-only' . $rate] += $tax;
                     }
-
-
                 } else {
-
                     // 小計毎に消費税を計算
 
                     @$amount['subtotal'] += $sum; // 外税時には再計算
 
-                    @$amount['tax-omit'.$rate] += $sum;
-                    @$amount['tax-only'.$rate] += $tax;
+                    @$amount['tax-omit' . $rate] += $sum;
+                    @$amount['tax-only' . $rate] += $tax;
                 }
 
-                if ( !empty($row[$this->item_except]) && empty($except_flg) ){
-                    $except_flg = ($row[$this->item_except] == 'on') ? true: false;
+                if (!empty($row[$this->item_except]) && empty($except_flg)) {
+                    $except_flg = ($row[$this->item_except] == 'on') ? true : false;
                 }
             }
 
             $tax_rate = array_unique($tax_rate);
 
-            if ( config('shop_tax_calc_method') == 'rebate' ) {
-
+            if (config('shop_tax_calc_method') == 'rebate') {
                 // 小計毎に消費税を計算
 
                 $amount['tax-omit'] = 0;
                 $amount['tax-only'] = 0;
 
-                if ( config('shop_tax_calculate') == 'intax' ) {
-
+                if (config('shop_tax_calculate') == 'intax') {
                     //内税 intax
 
-                    foreach ( $tax_rate as $rate ) {
-
+                    foreach ($tax_rate as $rate) {
                         $rate_num = $rate / 100 + 1;
-                        $sum = $amount['tax-omit'.$rate];
+                        $sum = $amount['tax-omit' . $rate];
 
-                        if ( config('shop_tax_rounding') == 'ceil' ) {
+                        if (config('shop_tax_rounding') == 'ceil') {
                             // 切り上げ
-                            $tax = intval(ceil( $sum - ( $sum / $rate_num )));
-
-                        } elseif ( config('shop_tax_rounding') == 'round' ) {
+                            $tax = intval(ceil($sum - ( $sum / $rate_num )));
+                        } elseif (config('shop_tax_rounding') == 'round') {
                             // 四捨五入
-                            $tax = intval(round( $sum - ( $sum / $rate_num )));
-
+                            $tax = intval(round($sum - ( $sum / $rate_num )));
                         } else {
                             // 切り捨て
-                            $tax = intval(floor( $sum - ( $sum / $rate_num )));
+                            $tax = intval(floor($sum - ( $sum / $rate_num )));
                         }
 
-                        if (!isset($amount['tax-omit'.$rate])) {
-                            $amount['tax-omit'.$rate] = 0;
+                        if (!isset($amount['tax-omit' . $rate])) {
+                            $amount['tax-omit' . $rate] = 0;
                         }
-                        if (!isset($amount['tax-only'.$rate])) {
-                            $amount['tax-only'.$rate] = 0;
+                        if (!isset($amount['tax-only' . $rate])) {
+                            $amount['tax-only' . $rate] = 0;
                         }
 
-                        @$amount['tax-omit'.$rate] = $sum - $tax;
-                        @$amount['tax-only'.$rate] = $tax;
+                        @$amount['tax-omit' . $rate] = $sum - $tax;
+                        @$amount['tax-only' . $rate] = $tax;
 
-                        @$amount['tax-omit'] += $amount['tax-omit'.$rate];
-                        @$amount['tax-only'] += $amount['tax-only'.$rate];
-
+                        @$amount['tax-omit'] += $amount['tax-omit' . $rate];
+                        @$amount['tax-only'] += $amount['tax-only' . $rate];
                     }
-
                 } else {
-
                     //外税 extax
                     $amount['subtotal'] = 0;
 
-                    foreach ( $tax_rate as $rate ) {
-
+                    foreach ($tax_rate as $rate) {
                         $rate_num = $rate / 100;
-                        $sum = $amount['tax-omit'.$rate];
+                        $sum = $amount['tax-omit' . $rate];
 
-                        if ( config('shop_tax_rounding') == 'ceil' ) {
+                        if (config('shop_tax_rounding') == 'ceil') {
                             // 切り上げ
-                            $tax = intval(ceil( $sum * $rate_num ));
-
-                        } elseif ( config('shop_tax_rounding') == 'round' ) {
+                            $tax = intval(ceil($sum * $rate_num));
+                        } elseif (config('shop_tax_rounding') == 'round') {
                             // 四捨五入
-                            $tax = intval(round( $sum * $rate_num ));
-
+                            $tax = intval(round($sum * $rate_num));
                         } else {
                             // 切り捨て
-                            $tax = intval(floor( $sum * $rate_num ));
+                            $tax = intval(floor($sum * $rate_num));
                         }
 
-                        if (!isset($amount['tax-omit'.$rate])) {
-                            $amount['tax-omit'.$rate] = 0;
+                        if (!isset($amount['tax-omit' . $rate])) {
+                            $amount['tax-omit' . $rate] = 0;
                         }
-                        if (!isset($amount['tax-only'.$rate])) {
-                            $amount['tax-only'.$rate] = 0;
+                        if (!isset($amount['tax-only' . $rate])) {
+                            $amount['tax-only' . $rate] = 0;
                         }
 
-                        @$amount['tax-omit'.$rate] = $sum;
-                        @$amount['tax-only'.$rate] = $tax;
+                        @$amount['tax-omit' . $rate] = $sum;
+                        @$amount['tax-only' . $rate] = $tax;
 
-                        @$amount['tax-omit'] += $amount['tax-omit'.$rate];
-                        @$amount['tax-only'] += $amount['tax-only'.$rate];
+                        @$amount['tax-omit'] += $amount['tax-omit' . $rate];
+                        @$amount['tax-only'] += $amount['tax-only' . $rate];
 
                         @$amount['subtotal'] += $sum + $tax;
                     }
-
                 }
-
             }
 
             /*
             * detect exception item
             */
-            if ( !empty($except_flg) ) {
+            if (!empty($except_flg)) {
                 $SESSION->set($this->item_except, 'on');
-            } elseif ( !$SESSION->isNull($this->item_except) ) {
+            } elseif (!$SESSION->isNull($this->item_except)) {
                 $SESSION->delete($this->item_except);
             }
 
@@ -218,8 +197,10 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             $involve = explode('-', config('shop_total_involve'));
             $amount['total-owner'] = $amount['subtotal'];
 
-            foreach ( $involve as $row ) {
-                if ( $row != ('deliver'||'payment'||'others') ) continue;
+            foreach ($involve as $row) {
+                if ($row != ('deliver' || 'payment' || 'others')) {
+                    continue;
+                }
                 $amount['total-owner'] += $charge[$row];
             }
 
@@ -238,15 +219,15 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
 
             $chargeTax = $amount['charge#deliver-tax'] + $amount['charge#payment-tax'] + $amount['charge#others-tax'];
 
-            if (!isset($amount['tax-omit'.$rate])) {
-                $amount['tax-omit'.$rate] = 0;
+            if (!isset($amount['tax-omit' . $rate])) {
+                $amount['tax-omit' . $rate] = 0;
             }
-            if (!isset($amount['tax-only'.$rate])) {
-                $amount['tax-only'.$rate] = 0;
+            if (!isset($amount['tax-only' . $rate])) {
+                $amount['tax-only' . $rate] = 0;
             }
 
-            @$amount['tax-omit'.$rate] += $amount['charge#deliver'] + $amount['charge#payment'] + $amount['charge#others'] - $chargeTax;
-            @$amount['tax-only'.$rate] += $chargeTax;
+            @$amount['tax-omit' . $rate] += $amount['charge#deliver'] + $amount['charge#payment'] + $amount['charge#others'] - $chargeTax;
+            @$amount['tax-only' . $rate] += $chargeTax;
 
 
             // 設定をセッションに入れておく
@@ -255,17 +236,14 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             $amount['shop_tax_rounding'] = config('shop_tax_rounding');
             $amount['shop_tax_no'] = config('shop_tax_no');
 
-            foreach ( $amount as $key => $val ) {
+            foreach ($amount as $key => $val) {
                 $SESSION->set($key, $val);
             }
             $this->closeSession($SESSION);
 
             $step = 'confirm';
-
         } else {
-
             $step = 'deliver';
-
         }
 
         $this->Post->set('step', $step);
@@ -277,8 +255,8 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         $labels = configArray('shop_order_request_others_label');
         $charge = configArray('shop_order_request_others_charge');
 
-        foreach ( $labels as $key => $label ) {
-            if ( $request == $label ) {
+        foreach ($labels as $key => $label) {
+            if ($request == $label) {
                 return @$charge[$key];
             }
         }
@@ -291,7 +269,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         $labels = configArray('shop_order_deliver_label');
         $charge = configArray('shop_order_deliver_charge');
 
-        foreach ( $labels as $key => $label ) {
+        foreach ($labels as $key => $label) {
             if ($deliver == $label) {
                 if (!isset($charge[$key])) {
                     continue;
@@ -311,8 +289,8 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         $labels = configArray('shop_order_payment_label');
         $charge = configArray('shop_order_payment_charge');
 
-        foreach ( $labels as $key => $label ) {
-            if ( $payment == $label ) {
+        foreach ($labels as $key => $label) {
+            if ($payment == $label) {
                 return intval(@$charge[$key]);
             }
         }
@@ -333,8 +311,8 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         $labels = configArray('shop_order_shipping_label');
         $charge = configArray('shop_order_shipping_charge');
 
-        foreach ( $labels as $key => $label ) {
-            if ( $prefecture == $label ) {
+        foreach ($labels as $key => $label) {
+            if ($prefecture == $label) {
                 return @$charge[$key];
             }
         }
@@ -344,17 +322,15 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
     {
         $rate = config('shop_tax_rate') + 1;
 
-        if ( config('shop_tax_rounding') == 'ceil' ) {
+        if (config('shop_tax_rounding') == 'ceil') {
             // 切り上げ
-            $tax = intval(ceil( $amount - ( $amount / $rate )));
-
-        } elseif ( config('shop_tax_rounding') == 'round' ) {
+            $tax = intval(ceil($amount - ( $amount / $rate )));
+        } elseif (config('shop_tax_rounding') == 'round') {
             // 四捨五入
-            $tax = intval(round( $amount - ( $amount / $rate )));
-
+            $tax = intval(round($amount - ( $amount / $rate )));
         } else {
             // 切り捨て
-            $tax = intval(floor( $amount - ( $amount / $rate )));
+            $tax = intval(floor($amount - ( $amount / $rate )));
         }
         return $tax;
     }

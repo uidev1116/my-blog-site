@@ -69,7 +69,6 @@ class ACMS_GET_Member_Signin extends ACMS_GET_Member
             'lockTime' => config('login_lock_time', 5),
         ];
         if ($this->Post->isNull()) {
-
         } else {
             if ($this->Post->isValidAll()) {
                 // メール認証メール送信成功
@@ -119,7 +118,7 @@ class ACMS_GET_Member_Signin extends ACMS_GET_Member
             generateSession($uid);
             $this->removeToken();
 
-            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid). '」がサインインしました', [
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid) . '」がサインインしました', [
                 'id' => $uid,
             ]);
 

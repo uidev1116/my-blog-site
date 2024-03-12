@@ -75,10 +75,10 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
         $aryStatus = $Config->getArray('banner_status');
         $amount = count($aryStatus) + 2;
 
-        foreach ( $aryStatus as $i => $status ) {
+        foreach ($aryStatus as $i => $status) {
             $id = uniqueString();
-            if ( $img = $Config->get('banner_img', '', $i) ) {
-                $xy = Storage::getImageSize(ARCHIVES_DIR.$img);
+            if ($img = $Config->get('banner_img', '', $i)) {
+                $xy = Storage::getImageSize(ARCHIVES_DIR . $img);
                 $Tpl->add('banner#img', array(
                     'banner#img_id'    => $id,
                     'banner@img_id'   => $id,
@@ -93,7 +93,7 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
                     'timestart' => $Config->get('banner_timestart', '', $i),
                     'dateend' => $Config->get('banner_dateend', '', $i),
                     'timeend' => $Config->get('banner_timeend', '', $i),
-                    'target:checked#'.$Config->get('banner_target', '', $i) => config('attr_checked'),
+                    'target:checked#' . $Config->get('banner_target', '', $i) => config('attr_checked'),
                 ));
             } else {
                 $Tpl->add('banner#src', array(
@@ -106,42 +106,48 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
                 ));
             }
 
-            for ( $j=1; $j<=$amount; $j++ ) {
+            for ($j = 1; $j <= $amount; $j++) {
                 $vars   = array(
                     'value' => $j,
                     'label' => $j,
                 );
-                if ( ($i + 1) == $j ) $vars['selected'] = config('attr_selected');
+                if (($i + 1) == $j) {
+                    $vars['selected'] = config('attr_selected');
+                }
                 $Tpl->add('sort:loop', $vars);
             }
 
             $vars   = array('id' => $id);
-            if ( 'open' == $status ) $vars['status:checked#open'] = config('attr_checked');
+            if ('open' == $status) {
+                $vars['status:checked#open'] = config('attr_checked');
+            }
             $Tpl->add('banner:loop', $vars);
         }
 
-        foreach ( array('src', 'img') as $i => $type ) {
+        foreach (array('src', 'img') as $i => $type) {
             $id = uniqueString();
-            for ( $j=1; $j<=$amount; $j++ ) {
+            for ($j = 1; $j <= $amount; $j++) {
                 $vars   = array(
                     'value' => $j,
                     'label' => $j,
                 );
-                if ( ($amount-2 + $i+1) == $j ) $vars['selected'] = config('attr_selected');
+                if (($amount - 2 + $i + 1) == $j) {
+                    $vars['selected'] = config('attr_selected');
+                }
                 $Tpl->add('sort:loop', $vars);
             }
 
             $vars = array(
-                'banner#'.$type.'_id' => $id,
+                'banner#' . $type . '_id' => $id,
                 'datestart' => '1000-01-01',
                 'timestart' => '00:00:00',
                 'dateend' => '9999-12-31',
                 'timeend' => '23:59:59',
             );
-            if ( 'img' == $type ) {
+            if ('img' == $type) {
                 $vars['target:checked#_blank']   = config('attr_checked');
             }
-            $Tpl->add('banner#'.$type, $vars);
+            $Tpl->add('banner#' . $type, $vars);
             $Tpl->add('banner:loop', array(
                 'status:checked#open' => config('attr_checked'),
                 'id' => $id,
@@ -159,13 +165,13 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
             )
         ));
 
-        if ( sessionWithAdministration() ) {
-            if ( !empty($mid) ) {
+        if (sessionWithAdministration()) {
+            if (!empty($mid)) {
                 $url    = acmsLink(array(
                     'bid'   => BID,
                     'admin' => 'module_index',
                 ));
-            } else if ( !empty($rid) ) {
+            } elseif (!empty($rid)) {
                 $url    = acmsLink(array(
                     'bid'   => BID,
                     'admin' => 'config_index',
@@ -173,7 +179,7 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
                         'rid'   => $rid,
                     ),
                 ));
-            } else if ( 'shop' == substr(ADMIN, 0, 4) ) {
+            } elseif ('shop' == substr(ADMIN, 0, 4)) {
                 $url    = acmsLink(array(
                     'bid'   => BID,
                     'admin' => 'shop_menu',
@@ -197,16 +203,16 @@ class ACMS_GET_Admin_Config_Banner extends ACMS_GET_Admin
         $ary_vars['banner_size_large'] = $Config->get('banner_size_large');
 
         $order = $Config->get('banner_order');
-        if( strlen($order) > 0 ) {
-            $ary_vars[ 'banner_order:selected#'.$order ] = config('attr_selected');
+        if (strlen($order) > 0) {
+            $ary_vars[ 'banner_order:selected#' . $order ] = config('attr_selected');
         }
 
         $criterion = $Config->get('banner_size_large_criterion');
-        if( strlen($criterion) > 0) {
-            $ary_vars['banner_size_large_criterion:selected#'.$criterion] = config('attr_selected');
+        if (strlen($criterion) > 0) {
+            $ary_vars['banner_size_large_criterion:selected#' . $criterion] = config('attr_selected');
         }
 
-        $Tpl->add(null, $ary_vars );
+        $Tpl->add(null, $ary_vars);
 
         return $Tpl->get();
     }

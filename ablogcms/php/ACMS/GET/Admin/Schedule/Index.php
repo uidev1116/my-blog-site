@@ -4,8 +4,12 @@ class ACMS_GET_Admin_Schedule_Index extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( 'schedule_index' <> ADMIN ) return false;
-        if ( !sessionWithScheduleAdministration() ) return false;
+        if ('schedule_index' <> ADMIN) {
+            return false;
+        }
+        if (!sessionWithScheduleAdministration()) {
+            return false;
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
@@ -15,12 +19,12 @@ class ACMS_GET_Admin_Schedule_Index extends ACMS_GET_Admin
         $SQL->setGroup('schedule_id');
         $all    = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( empty($all) ) {
+        if (empty($all)) {
             $Tpl->add('notFound');
             $Tpl->add(null, array('notice_mess' => 'show'));
         } else {
-            foreach ( $all as $row ) {
-                foreach ( $row as  $key => $val ) {
+            foreach ($all as $row) {
+                foreach ($row as $key => $val) {
                     $vars[str_replace('schedule_', '', $key)] = $val;
                 }
                 $vars   += array(

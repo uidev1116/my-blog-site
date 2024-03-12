@@ -16,7 +16,7 @@ class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
         $preAlign   = null;
 
         // if Add
-        if ( empty($utid) ) {
+        if (empty($utid)) {
             $sort = $this->Get->get('sort');
             $DB = DB::singleton(dsn());
             $SQL = SQL::newSelect('column');
@@ -26,20 +26,20 @@ class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
             $utid = $DB->query($SQL->get(dsn()), 'one');
         }
 
-        if ( $Column = array_reverse(loadColumn($eid)) ) {
-            foreach ( $Column as $i => $row ) {
-                if ( $seeked !== false ) {
+        if ($Column = array_reverse(loadColumn($eid))) {
+            foreach ($Column as $i => $row) {
+                if ($seeked !== false) {
                     $preAlign = $row['align'];
                     $seeked   = false;
                 }
-                if ( is_array($ary_utid) && ( count($ary_utid) > 0 ) ) {
-                    if ( in_array($row['clid'],$ary_utid) === FALSE ) {
+                if (is_array($ary_utid) && ( count($ary_utid) > 0 )) {
+                    if (in_array($row['clid'], $ary_utid) === false) {
                         unset($Column[$i]);
                     } else {
                         $seeked = true;
                     }
                 } else {
-                    if ( $row['clid'] != $utid ) {
+                    if ($row['clid'] != $utid) {
                         unset($Column[$i]);
                     } else {
                         $seeked = true;

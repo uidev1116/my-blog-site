@@ -13,7 +13,7 @@ class Singleton
      * @static
      * @return object
      */
-    static public function singleton()
+    public static function singleton()
     {
         $called = get_called_class();
         if (!isset(self::$instance[$called])) {

@@ -102,6 +102,7 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
         $sql->addWhereOpr('user_id', SUID);
         DB::query($sql->get(dsn()), 'exec');
 
+        ACMS_RAM::cacheDelete();
         ACMS_RAM::user(SUID, null);
         $this->saveGeometry('uid', SUID, $this->extract('geometry'));
     }

@@ -11,7 +11,7 @@ class ACMS_POST_Entry_Index_Duplicate extends ACMS_POST_Entry_Duplicate
 
         if ($this->Post->isValidAll()) {
             $targetEIDs = [];
-            foreach ( $this->Post->getArray('checks') as $eid ) {
+            foreach ($this->Post->getArray('checks') as $eid) {
                 $id = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
                 $eid = $id[1];
                 if (!$this->validate($eid)) {

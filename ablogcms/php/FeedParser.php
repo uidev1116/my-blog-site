@@ -64,7 +64,7 @@ class FeedParser
 
     public function setKind($kind)
     {
-        if (array_search($kind, array('rss20', 'atom10')) !== false) {
+        if (array_search($kind, array('rss20', 'atom10'), true) !== false) {
             $this->kind = $kind;
             return true;
         }
@@ -118,7 +118,8 @@ class FeedParser
             foreach ($item_elem as $element) {
                 $res['items'][$i][$element] = preg_match(
                     "@<$element.*?>(.*?)</$element>@si",
-                    $row, $match
+                    $row,
+                    $match
                 ) ? str_replace(array('<![CDATA[', ']]>', '\r\n', '	'), '', $match[1]) : null;
 
                 if (empty($res['items'][$i][$element])) {

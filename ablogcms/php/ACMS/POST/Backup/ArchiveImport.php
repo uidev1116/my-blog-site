@@ -4,7 +4,7 @@ use Acms\Services\Facades\Storage;
 
 class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
 {
-    function post()
+    public function post()
     {
         try {
             AcmsLogger::info('アーカイブのインポートを実行しました');
@@ -21,11 +21,11 @@ class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
             Common::backgroundRedirect(acmsLink(array('bid' => RBID)));
             $this->run($file_name);
             die();
-
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
             AcmsLogger::warning('アーカイブのインポート中にエラーが発生しました。', Common::exceptionArray($e));
         }
+        return $this->Post;
     }
 
     /**

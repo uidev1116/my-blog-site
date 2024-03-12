@@ -65,7 +65,7 @@ class ACMS_POST_Approval_Public extends ACMS_POST_Approval
                     }
                     $To = $mail_;
                 }
-            } else if (editionIsProfessional()) {
+            } elseif (editionIsProfessional()) {
                 $SQL = SQL::newSelect('approval');
                 $SQL->addSelect('approval_request_user_id');
                 $SQL->addWhereOpr('approval_revision_id', $rvid);
@@ -79,7 +79,8 @@ class ACMS_POST_Approval_Public extends ACMS_POST_Approval
 
             //-----------
             // Send Mail
-            if (1
+            if (
+                1
                 and $To
                 and $subjectTpl = findTemplate(config('mail_approval_tpl_subject'))
                 and $bodyTpl = findTemplate(config('mail_approval_tpl_body'))

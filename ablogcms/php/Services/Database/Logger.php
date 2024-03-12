@@ -22,7 +22,7 @@ class Logger
      */
     public function __construct($path)
     {
-        if ( !is_writable(dirname($path)) ) {
+        if (!is_writable(dirname($path))) {
             throw new \RuntimeException($path . ' is not writable.');
         }
         $this->destinationPath = $path;
@@ -43,7 +43,7 @@ class Logger
      */
     public function init()
     {
-        if ( is_writable($this->destinationPath) ) {
+        if (is_writable($this->destinationPath)) {
             Storage::remove($this->destinationPath);
         }
         $this->json = new \stdClass();
@@ -98,7 +98,7 @@ class Logger
             'message' => $message,
             'status' => empty($status) ? 'ng' : 'ok',
         );
-        if ( $this->json->percentage > 100) {
+        if ($this->json->percentage > 100) {
             $this->json->percentage = 100;
         }
         $this->build();
@@ -132,7 +132,7 @@ class Logger
     public function addPercentage($percentage = 0)
     {
         $this->json->percentage += $percentage;
-        if ( $this->json->percentage > 100) {
+        if ($this->json->percentage > 100) {
             $this->json->percentage = 100;
         }
         $this->build();
@@ -143,7 +143,7 @@ class Logger
      */
     protected function build()
     {
-        if ( !is_writable($this->destinationPath) ) {
+        if (!is_writable($this->destinationPath)) {
             return;
         }
         $json = json_encode($this->json);

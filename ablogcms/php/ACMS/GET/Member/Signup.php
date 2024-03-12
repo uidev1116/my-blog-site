@@ -67,11 +67,14 @@ class ACMS_GET_Member_Signup extends ACMS_GET_Member
                 $data = $this->validateAuthUrl();
                 $uid = $this->findAccount($data);
                 Login::subscriberActivation($uid);
-                generateSession($uid);
-
                 $this->removeToken(); // 使用済みトークンを削除
 
-                $tpl->add('enableAccount');
+                if (ACMS_RAM::userStatus($uid) === 'open') {
+                    generateSession($uid);
+                    $tpl->add('enableAccount');
+                } else {
+                    $tpl->add('applicationCompleted');
+                }
 
                 AcmsLogger::info('メールアドレス認証によって、アカウントを有効化しました', [
                     'uid' => $uid,

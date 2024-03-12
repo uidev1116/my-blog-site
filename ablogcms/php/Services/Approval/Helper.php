@@ -17,19 +17,16 @@ class Helper
     {
         $SQL = $this->buildSql();
 
-        if (empty($SQL)) {
+        if (!($all = DB::query($SQL->get(dsn()), 'all'))) {
             return 0;
         }
-        if ( !($all = DB::query($SQL->get(dsn()), 'all')) ) {
-            return 0;
-        }
-        $count  = 0;
-        foreach ( $all as $row ) {
+        $count = 0;
+        foreach ($all as $row) {
             $exceptUsers = explode(',', $row['notification_except_user_ids']);
-            if ( in_array(strval(SUID), $exceptUsers) ) {
+            if (in_array(strval(SUID), $exceptUsers, true)) {
                 continue;
             }
-            if ( $row['notification_type'] == 'reject' ) {
+            if ($row['notification_type'] == 'reject') {
                 $SQL    = SQL::newSelect('approval');
                 $SQL->addWhereOpr('approval_type', 'request');
                 $SQL->addWhereOpr('approval_revision_id', $row['notification_rev_id']);
@@ -37,7 +34,8 @@ class Helper
                 $SQL->addWhereOpr('approval_request_user_id', SUID);
                 $SQL->addWhereOpr('approval_datetime', $row['notification_datetime'], '<');
 
-                if ( 0
+                if (
+                    0
                     || !DB::query($SQL->get(dsn()), 'row')
                     || ACMS_RAM::entryStatus($row['notification_entry_id']) === 'close'
                     || ACMS_RAM::entryStatus($row['notification_entry_id']) === 'trash'
@@ -53,7 +51,7 @@ class Helper
     /**
      * 通知の絞り込み
      *
-     * @return SQL
+     * @return SQL_Select
      */
     public function buildSql()
     {
@@ -63,7 +61,7 @@ class Helper
         $SQL->addWhereOpr('notification_entry_id', SQL::newField('entry_id'));
         $WHERE = SQL::newWhere();
 
-        if ( editionIsEnterprise() ) {
+        if (editionIsEnterprise()) {
             $groupsList = $this->getGroupList(SUID);
             // reject
             $W = SQL::newWhere();
@@ -81,9 +79,8 @@ class Helper
             $W3->addWhereIn('notification_receive_usergroup_id', $groupsList, 'AND');
             $WHERE->addWhere($W3, 'OR');
             $WHERE->addWhereOpr('notification_receive_user_id', SUID, '=', 'OR');
-
-        } else if ( editionIsProfessional() ) {
-            if ( isSessionContributor(false) ) {
+        } elseif (editionIsProfessional()) {
+            if (isSessionContributor(false)) {
                 $SQL->addWhereOpr('notification_type', 'request', '<>');
             }
             $W = SQL::newWhere();
@@ -115,7 +112,8 @@ class Helper
         $SQL->addWhereOpr('user_id', $uid);
         $groups = DB::query($SQL->get(dsn()), 'all');
         foreach ($groups as $val) {
-            $groupsList[] = $val['usergroup_id'];;
+            $groupsList[] = $val['usergroup_id'];
+            ;
         }
         return $groupsList;
     }

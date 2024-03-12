@@ -8,7 +8,7 @@ class ACMS_POST_Module_Delete extends ACMS_POST_Module
         $Module->reset();
         $this->Post->setMethod('module', 'midIsNull', ($mid = idval($this->Get->get('mid'))));
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->Post->setMethod('module', 'operative', roleAuthorization('module_edit', BID));
         } else {
             $this->Post->setMethod('module', 'operative', sessionWithAdministration());

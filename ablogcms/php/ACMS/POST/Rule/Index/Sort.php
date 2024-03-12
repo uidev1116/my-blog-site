@@ -53,9 +53,11 @@ class ACMS_POST_Rule_Index_Sort extends ACMS_POST_Rule
         $SQL->addSelect('rule_id');
         $SQL->addWhereOpr('rule_blog_id', BID);
 
-        foreach ( $DB->query($SQL->get(dsn()), 'all') as $rule ) {
+        foreach ($DB->query($SQL->get(dsn()), 'all') as $rule) {
             $rid = $rule['rule_id'];
-            if ( !($sort = intval($this->Post->get('sort-current'.$rid))) ) { continue; }
+            if (!($sort = intval($this->Post->get('sort-current' . $rid)))) {
+                continue;
+            }
             $this->fromList[$rid] = $sort;
 
             $SQL = SQL::newUpdate('rule');
@@ -70,15 +72,23 @@ class ACMS_POST_Rule_Index_Sort extends ACMS_POST_Rule
 
     protected function sort()
     {
-        foreach ( $this->Post->getArray('checks') as $rid ) {
-            if ( !isset($this->fromList[$rid]) ) { continue; }
+        foreach ($this->Post->getArray('checks') as $rid) {
+            if (!isset($this->fromList[$rid])) {
+                continue;
+            }
 
             $from = $this->fromList[$rid];
-            $to = $this->Post->get('sort-'.$rid);
+            $to = $this->Post->get('sort-' . $rid);
 
-            if ( !$from ) { continue; }
-            if ( !$to ) { continue; }
-            if ( $from == $to ) { continue; }
+            if (!$from) {
+                continue;
+            }
+            if (!$to) {
+                continue;
+            }
+            if ($from == $to) {
+                continue;
+            }
 
             $this->move($to, $rid);
         }

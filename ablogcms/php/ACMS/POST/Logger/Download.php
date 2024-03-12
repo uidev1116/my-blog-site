@@ -33,13 +33,12 @@ class ACMS_POST_Logger_Download extends ACMS_POST_Logger_Info
                 } else {
                     fwrite($fp, ",\n");
                 }
-                fwrite($fp, json_encode($this->buildData($log), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+                fwrite($fp, json_encode($this->buildData($log), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
             fwrite($fp, "\n]");
             fclose($fp);
 
             Common::download($path, $tempFile, false, true);
-
         } catch (\Exception $e) {
             AcmsLogger::error($e->getMessage());
         }

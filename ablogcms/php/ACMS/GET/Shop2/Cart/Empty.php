@@ -9,13 +9,13 @@ class ACMS_GET_Shop2_Cart_Empty extends ACMS_GET_Shop2
         $step   = $this->Post->get('step', 'apply');
         $bid    = BID;
 
-        if ( $step == 'result' ) {
-            $cart = $this->session->get($this->cname.$bid);
-            if ( !empty($cart) ) {
-                $this->session->delete($this->cname.$bid);
+        if ($step == 'result') {
+            $cart = $this->session->get($this->cname . $bid);
+            if (!empty($cart)) {
+                $this->session->delete($this->cname . $bid);
                 $this->session->save();
             }
-            if ( !!ACMS_SID ) {
+            if (!!ACMS_SID) {
                 $DB     = DB::singleton(dsn());
                 $SQL    = SQL::newDelete('shop_cart');
                 $SQL->addWhereOpr('cart_session_id', ACMS_SID);

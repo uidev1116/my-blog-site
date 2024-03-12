@@ -88,7 +88,9 @@ class Schema
         $this->engineDefine = Config::getDataBaseSchemaInfo('engine');
         $this->indexDefine = Config::getDataBaseSchemaInfo('index');
 
-        if ( !empty($this->define[0]) ) unset($this->define[0]);
+        if (!empty($this->define[0])) {
+            unset($this->define[0]);
+        }
     }
 
     /**
@@ -102,8 +104,8 @@ class Schema
         $def_tbs = $this->listUp($this->define);
 
         $haystack = array();
-        foreach ( $def_tbs as $tb ) {
-            if ( array_search($tb, $now_tbs) === false ) {
+        foreach ($def_tbs as $tb) {
+            if (array_search($tb, $now_tbs, true) === false) {
                 $haystack[] = $tb;
             }
         }
@@ -124,10 +126,10 @@ class Schema
         $addRam = array();
         $changeRam = array();
 
-        if ( isset($this->schema[$table]) ) {
+        if (isset($this->schema[$table])) {
             $now = $this->schema[$table];
         }
-        if ( isset($this->define[$table]) ) {
+        if (isset($this->define[$table])) {
             $def = $this->define[$table];
         }
 
@@ -140,12 +142,12 @@ class Schema
 
         $defineFields = $this->listUp($def);
 
-        foreach ( $defineFields as $key ) {
+        foreach ($defineFields as $key) {
             /**
              * ALTER TABLE ADD
              * is not exists living list
              */
-            if ( empty($now[$key]) ) {
+            if (empty($now[$key])) {
                 $addRam[] = $key;
                 continue;
             }
@@ -159,7 +161,7 @@ class Schema
             unset($now[$key]['key']);
             unset($def[$key]['key']);
 
-            if ( $now[$key] != $def[$key] ) {
+            if ($now[$key] != $def[$key]) {
                 $changeRam[] = $key;
                 continue;
             }
@@ -235,18 +237,18 @@ class Schema
      */
     public function resolveRenames()
     {
-        if ( empty($this->renameDefine) ) {
+        if (empty($this->renameDefine)) {
             return;
         }
 
-        foreach ( $this->renameDefine as $table => $field ) {
-            if ( empty($table) || empty($field) ) {
+        foreach ($this->renameDefine as $table => $field) {
+            if (empty($table) || empty($field)) {
                 continue;
             }
             $rename = $this->listUp($this->schema[$table]);
 
-            foreach ( $field as $k => $v ) {
-                if ( in_array($k, $rename) ) {
+            foreach ($field as $k => $v) {
+                if (in_array($k, $rename, true)) {
                     $val = $this->define[$table][$v];
                     $this->dbInfo->rename($table, $k, $val, $v);
                 }
@@ -261,11 +263,11 @@ class Schema
      */
     public function resolveEngines()
     {
-        if ( empty($this->engineDefine) ) {
+        if (empty($this->engineDefine)) {
             return;
         }
         foreach ($this->engineDefine as $table => $engine) {
-            if ( empty($table) || empty($engine) ) {
+            if (empty($table) || empty($engine)) {
                 continue;
             }
             $this->dbInfo->changeEngine($table, $engine);
@@ -282,7 +284,7 @@ class Schema
     public function resolveColumns($table, $add, $change)
     {
         $def = null;
-        if ( isset($this->define[$table]) ) {
+        if (isset($this->define[$table])) {
             $def = $this->define[$table];
         }
 
@@ -291,9 +293,9 @@ class Schema
         /**
          * ADD
          */
-        if ( !empty($add) ) {
-            foreach ( $add as $key ) {
-                $after = array_slice($list, 0, (array_search($key, $list)));
+        if (!empty($add)) {
+            foreach ($add as $key) {
+                $after = array_slice($list, 0, (array_search($key, $list, true)));
                 $after = end($after);
                 $this->dbInfo->add($table, $key, $def[$key], $after);
             }
@@ -302,8 +304,8 @@ class Schema
         /**
          * CHANGE
          */
-        if ( !empty($change) ) {
-            foreach ( $change as $key ) {
+        if (!empty($change)) {
+            foreach ($change as $key) {
                 $this->dbInfo->change($table, $key, $def[$key]);
             }
         }
@@ -319,21 +321,21 @@ class Schema
         $now = null;
         $def = null;
 
-        if ( isset($this->schema[$table]) ) {
+        if (isset($this->schema[$table])) {
             $now = $this->schema[$table];
         }
-        if ( isset($this->define[$table]) ) {
+        if (isset($this->define[$table])) {
             $def = $this->define[$table];
         }
 
         $columns = $this->listUp($now);
         $unused = array();
-        foreach ( $columns as $key ) {
+        foreach ($columns as $key) {
             /**
              * ALTER TABLE DROP ( TEMP )
              * is not exists defined list
              */
-            if ( empty($def[$key]) ) {
+            if (empty($def[$key])) {
                 $unused[] = $key;
                 continue;
             }
@@ -349,17 +351,17 @@ class Schema
     public function clearIndex($table)
     {
         $index = $this->dbInfo->showIndex($table);
-        if ( empty($index) ) {
+        if (empty($index)) {
             return;
         }
 
         $ary = array();
-        foreach ( $index as $idx ) {
+        foreach ($index as $idx) {
             $name = $idx['Key_name'];
             $ary[$name] = $name;
         }
 
-        foreach ( $ary as $key ) {
+        foreach ($ary as $key) {
             $DB = DB::singleton($this->dsn);
             $q = "ALTER TABLE `$table` DROP INDEX `$key`";
             $DB->query($q, 'exec');
@@ -394,7 +396,9 @@ class Schema
      */
     public function listUp($ary)
     {
-        if ( empty($ary) ) return array();
+        if (empty($ary)) {
+            return array();
+        }
 
         return array_merge(array_diff(array_keys($ary), array('')));
     }
@@ -415,12 +419,12 @@ class Schema
     protected function getDatabaseDefinitionCurrent()
     {
         $tables = $this->dbInfo->getTables();
-        if ( !is_array($tables) ) {
+        if (!is_array($tables)) {
             return array();
         }
 
         $def = array();
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $columns = $this->dbInfo->getColumns($table);
             $def[$table] = $columns;
         }
@@ -435,12 +439,12 @@ class Schema
     protected function getDatabaseIndexCurrent()
     {
         $tables = $this->dbInfo->getTables();
-        if ( !is_array($tables) ) {
+        if (!is_array($tables)) {
             return array();
         }
 
         $def = array();
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $columns = $this->dbInfo->getIndex($table);
             $def[$table] = $columns;
         }
@@ -457,5 +461,4 @@ class Schema
     {
         return Config::yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $yaml));
     }
-
 }

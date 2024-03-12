@@ -5,15 +5,15 @@ class ACMS_POST_Revision_Change extends ACMS_POST_Entry
     function post()
     {
         try {
-            if (!EID)  {
+            if (!EID) {
                 throw new \RuntimeException('エントリーが指定されていません');
             }
             if (enableApproval(BID, CID)) {
                 if (!sessionWithApprovalAdministrator(BID, CID)) {
                     throw new \RuntimeException('権限がありません');
                 }
-            } else if (roleAvailableUser()) {
-                if ( !roleAuthorization('entry_edit', BID, EID) ) {
+            } elseif (roleAvailableUser()) {
+                if (!roleAuthorization('entry_edit', BID, EID)) {
                     throw new \RuntimeException('権限がありません');
                 }
             } else {

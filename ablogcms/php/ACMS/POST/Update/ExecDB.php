@@ -9,10 +9,18 @@ class ACMS_POST_Update_ExecDB extends ACMS_POST_Update_Exec
      */
     protected function run()
     {
-        if (!sessionWithAdministration()) die();
-        if ('update' <> ADMIN) die();
-        if (RBID !== BID) die();
-        if (SBID !== BID) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if ('update' <> ADMIN) {
+            die();
+        }
+        if (RBID !== BID) {
+            die();
+        }
+        if (SBID !== BID) {
+            die();
+        }
 
         set_time_limit(0);
 
@@ -29,9 +37,9 @@ class ACMS_POST_Update_ExecDB extends ACMS_POST_Update_Exec
 
             $logger->success();
             AcmsLogger::info('データベースのアップデートしました');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $message = $e->getMessage();
-            if ( !empty($message) ) {
+            if (!empty($message)) {
                 $logger->error($e->getMessage());
             }
             AcmsLogger::warning('データベースのアップデートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));

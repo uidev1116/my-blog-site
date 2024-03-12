@@ -4,19 +4,23 @@ class ACMS_GET_Admin_Form2_Add extends ACMS_GET_Admin_Entry
 {
     function get()
     {
-        if ( 'entry-add' <> substr(ADMIN, 0, 9) ) return '';
-        if ( !sessionWithContribution() ) return '';
+        if ('entry-add' <> substr(ADMIN, 0, 9)) {
+            return '';
+        }
+        if (!sessionWithContribution()) {
+            return '';
+        }
 
         $addType    = substr(ADMIN, 10);
 
         $aryTypeLabel    = array();
-        foreach ( configArray('column_form_add_type') as $i => $type ) {
+        foreach (configArray('column_form_add_type') as $i => $type) {
             $aryTypeLabel[$type]    = config('column_form_add_type_label', '', $i);
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
-        if ( !!EID ) {
+        if (!!EID) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('column');
             $SQL->addSelect('*', null, null, 'count');
@@ -35,18 +39,20 @@ class ACMS_GET_Admin_Form2_Add extends ACMS_GET_Admin_Entry
 
         //------
         // sort
-        for ( $j=1; $j<=$cnt; $j++ ) {
+        for ($j = 1; $j <= $cnt; $j++) {
             $_vars  = array(
                 'value' => $j,
                 'label' => $j,
             );
-            if ( ($i + 1 + $offset) == $j ) $_vars['selected']  = config('attr_selected');
+            if (($i + 1 + $offset) == $j) {
+                $_vars['selected']  = config('attr_selected');
+            }
             $Tpl->add('sort:loop', $_vars);
         }
 
         //--------
         // option
-        for ( $i=0; $i<3; $i++ ) {
+        for ($i = 0; $i < 3; $i++) {
             $Tpl->add(array('option:loop'), array(
                 'id'    => $data['id'],
                 'unique' => 'new-' . ($i + 1),

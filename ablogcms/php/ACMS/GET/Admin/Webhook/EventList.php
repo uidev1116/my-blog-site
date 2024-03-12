@@ -9,11 +9,12 @@ class ACMS_GET_Admin_Webhook_EventList extends ACMS_GET
         $webhookEventValue = configArray("webhook_event_{$webhookType}");
         $webhookEventLabel = configArray("webhook_event_{$webhookType}_label");
 
-        if (0
+        if (
+            0
             || empty($webhookEventValue)
             || empty($webhookEventLabel)
-            || count($webhookEventValue) !== count($webhookEventLabel))
-        {
+            || count($webhookEventValue) !== count($webhookEventLabel)
+        ) {
             Common::responseJson($json);
         }
         foreach ($webhookEventValue as $i => $value) {

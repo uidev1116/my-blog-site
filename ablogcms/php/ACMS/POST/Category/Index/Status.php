@@ -15,10 +15,10 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
         ));
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $targetCIDs = [];
-            while ( !!($cid = intval(array_shift($aryCid))) ) {
+            while (!!($cid = intval(array_shift($aryCid)))) {
                 if (!!$status && $status !== 'open') {
                     // cid collection
                     $SQL    = SQL::newSelect('category');
@@ -27,11 +27,15 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                     $SQL->addWhereOpr('category_left', ACMS_RAM::categoryLeft($cid), '>=');
                     $SQL->addWhereOpr('category_right', ACMS_RAM::categoryRight($cid), '<=');
 
-                    if ( !!($all = $DB->query($SQL->get(dsn()), 'all')) ) {
+                    if (!!($all = $DB->query($SQL->get(dsn()), 'all'))) {
                         $_aryCid = array();
-                        foreach ( $all as $row ) {
-                            if ( !($_cid = intval($row['category_id'])) ) continue;
-                            if ( !is_bool($key = array_search($_cid, $aryCid)) ) unset($aryCid[$key]);
+                        foreach ($all as $row) {
+                            if (!($_cid = intval($row['category_id']))) {
+                                continue;
+                            }
+                            if (!is_bool($key = array_search($_cid, $aryCid))) {
+                                unset($aryCid[$key]);
+                            }
                             $_aryCid[]  = $_cid;
                         }
                         // catetory
@@ -40,7 +44,6 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                         $SQL->addWhereIn('category_id', $_aryCid);
                         $DB->query($SQL->get(dsn()), 'exec');
                     }
-
                 } else {
                     // check parent status
                     $SQL    = SQL::newSelect('category');
@@ -50,7 +53,9 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                     $SQL->addWhereOpr('category_right', ACMS_RAM::categoryRight($cid), '>');
                     $SQL->addWhereOpr('category_status', 'close');
                     $SQL->setLimit(1);
-                    if ( $DB->query($SQL->get(dsn()), 'one') ) continue;
+                    if ($DB->query($SQL->get(dsn()), 'one')) {
+                        continue;
+                    }
                     // update
                     $SQL    = SQL::newUpdate('category');
                     $SQL->addUpdate('category_status', $status);
@@ -60,14 +65,19 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                 }
                 $targetCIDs[] = $cid;
             }
-            if ($status === 'open') $status = '公開';
-            if ($status === 'close') $status = '非公開';
-            if ($status === 'secret') $status = 'シークレット';
+            if ($status === 'open') {
+                $status = '公開';
+            }
+            if ($status === 'close') {
+                $status = '非公開';
+            }
+            if ($status === 'secret') {
+                $status = 'シークレット';
+            }
             AcmsLogger::info('指定されたカテゴリーのステータスを「' . $status . '」に変更', [
                 'targetCIDs' => implode(',', $targetCIDs),
             ]);
         } else {
-
         }
         Cache::flush('temp');
 
@@ -108,6 +118,5 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
         }
         return $this->Post;
 */
-
     }
 }

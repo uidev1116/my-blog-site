@@ -123,7 +123,7 @@ class DiffEngine extends Engine
     protected function processExportAssets($themes)
     {
         $this->copyThemeRequireItems(THEMES_DIR . 'system/');
-        foreach ( $themes as $theme ) {
+        foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
             $this->copyThemeRequireItems($path);
         }
@@ -145,4 +145,3 @@ class DiffEngine extends Engine
         }
     }
 }
-

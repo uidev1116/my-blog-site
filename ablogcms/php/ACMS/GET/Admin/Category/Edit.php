@@ -4,15 +4,19 @@ class ACMS_GET_Admin_Category_Edit extends ACMS_GET_Admin_Edit
 {
     function auth()
     {
-        if ( roleAvailableUser() ) {
-            if ( !roleAuthorization('category_edit', BID) ) return false;
+        if (roleAvailableUser()) {
+            if (!roleAuthorization('category_edit', BID)) {
+                return false;
+            }
         } else {
-            if ( !sessionWithCompilation() ) return false;
+            if (!sessionWithCompilation()) {
+                return false;
+            }
         }
         return true;
     }
 
-    function edit(& $Tpl)
+    function edit(&$Tpl)
     {
         $Category   =& $this->Post->getChild('category');
         $Field      =& $this->Post->getChild('field');
@@ -28,8 +32,8 @@ class ACMS_GET_Admin_Category_Edit extends ACMS_GET_Admin_Edit
             }
         }
 
-        if ( $Category->isNull() ) {
-            if ( CID ) {
+        if ($Category->isNull()) {
+            if (CID) {
                 $Category->overload(loadCategory(CID));
                 $Field->overload(loadCategoryField(CID));
                 $Geo->overload(loadGeometry('cid', CID));
@@ -42,7 +46,7 @@ class ACMS_GET_Admin_Category_Edit extends ACMS_GET_Admin_Edit
                 }
             }
         }
-        if ( !!($pid = $Category->get('parent')) && $pid != 0 ) {
+        if (!!($pid = $Category->get('parent')) && $pid != 0) {
             $Category->set('parent_name', ACMS_RAM::categoryName($pid));
             $Category->set('parent_code', ACMS_RAM::categoryCode($pid));
         }

@@ -11,7 +11,7 @@ class ACMS_Namespace
      * @static
      * @return ACMS_Namespace
      */
-    static public function singleton()
+    public static function singleton()
     {
         if (self::$_INSTANCE === null) {
             self::$_INSTANCE = new self();

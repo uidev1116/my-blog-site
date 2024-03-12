@@ -6,11 +6,6 @@ use Acms\Services\Facades\Media;
 class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
 {
     /**
-     * @var string
-     */
-    protected $order;
-
-    /**
      * @var int
      */
     protected $limit;
@@ -26,6 +21,11 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
     protected $tagList;
 
     /**
+     * @var string[]
+     */
+    protected $extList;
+
+    /**
      * @var int
      */
     protected $amount;
@@ -33,7 +33,7 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
     /**
      * @var array
      */
-    public $_scope = array(
+    public $_scope = array( // phpcs:ignore
         'tag' => 'global',
     );
 
@@ -46,9 +46,9 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
             if (!Media::validate()) {
                 throw new \RuntimeException('You are not authorized to upload media.');
             }
-            $this->order  = ORDER ? ORDER : 'last_modified-desc';
+            $this->order = ORDER ? ORDER : 'last_modified-desc';
             $limits = configArray('admin_limit_option');
-            $this->limit  = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
+            $this->limit = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
 
             $sql = $this->buildSql();
             $this->archiveList = Media::getMediaArchiveList($sql);
@@ -64,7 +64,6 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
             $json = $this->buildJson($q);
             $json['status'] = 'success';
             Common::responseJson($json);
-
         } catch (\Exception $e) {
             AcmsLogger::notice('メディア一覧のJSON取得に失敗しました', Common::exceptionArray($e));
 
@@ -139,7 +138,7 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
         return $sql;
     }
 
-    protected function addMediaTagInfo(& $sql)
+    protected function addMediaTagInfo(&$sql)
     {
         $sql->addSelect(' *');
         $sql->addSelect('media_tag_name', 'tag_name', 'media_tag_list', 'GROUP_CONCAT');
@@ -150,13 +149,13 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
     /**
      * @param \SQL_Select $sql
      */
-    protected function filter(& $sql)
+    protected function filter(&$sql)
     {
         if (!empty($this->tags)) {
             Media::filterTag($sql, $this->tags);
         }
         if (KEYWORD) {
-            $sql->addWhereOpr('media_file_name', '%'. KEYWORD . '%', 'LIKE');
+            $sql->addWhereOpr('media_file_name', '%' . KEYWORD . '%', 'LIKE');
         }
         if (DATE) {
             $date = str_replace('/', '-', DATE) . '-01';
@@ -164,9 +163,9 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
             $start = date('Y-m-01 00:00:00', $time);
             $end = date('Y-m-t 23:59:59', $time);
             $sql->addWhereBw('media_upload_date', $start, $end);
-        } else if ($this->Get->get('year')) {
+        } elseif ($this->Get->get('year')) {
             $sql->addWhereOpr('YEAR(media_upload_date)', $this->Get->get('year'));
-        } else if ($this->Get->get('month')) {
+        } elseif ($this->Get->get('month')) {
             $sql->addWhereOpr('MONTH(media_upload_date)', $this->Get->get('month'));
         }
         if ($this->Get->get('owner') === 'true') {

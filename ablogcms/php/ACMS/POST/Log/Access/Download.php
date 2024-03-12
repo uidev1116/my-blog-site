@@ -4,13 +4,17 @@ class ACMS_POST_Log_Access_Download extends ACMS_POST
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) die();
-        if ( !IS_LICENSED ) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
+        if (!IS_LICENSED) {
+            die();
+        }
 
         // term selected?
         $start  = $this->Post->get('target_span_start');
         $end    = $this->Post->get('target_span_end');
-        if ( empty($start) || empty($end) ) {
+        if (empty($start) || empty($end)) {
             $this->Post->set('term_not_selected', true);
             return $this->Post;
         }
@@ -59,24 +63,24 @@ class ACMS_POST_Log_Access_Download extends ACMS_POST
         $q  = $SQL->get(dsn());
 
         // 書き込み可能？
-        if ( !Storage::isWritable(ARCHIVES_DIR) ) {
+        if (!Storage::isWritable(ARCHIVES_DIR)) {
             $this->Post->set('archives_not_writable');
             return $this->Post;
         }
 
         // ファイルを作成
-        $file   = 'log_access_'.date('Ymd', strtotime($start)).'-'.date('Ymd', strtotime($end)).'.csv';
-        $path   = ARCHIVES_DIR.$file;
+        $file   = 'log_access_' . date('Ymd', strtotime($start)) . '-' . date('Ymd', strtotime($end)) . '.csv';
+        $path   = ARCHIVES_DIR . $file;
         $fh     = fopen($path, 'w');
 
         // 最初の1行目
-        $strRow = mb_convert_encoding('"'.implode('","', $fds).'"'."\x0d\x0a", 'SJIS-win', 'auto');
+        $strRow = mb_convert_encoding('"' . implode('","', $fds) . '"' . "\x0d\x0a", 'SJIS-win', 'auto');
         fwrite($fh, $strRow);
 
         // 全行取得して書き込み
         $DB->query($q, 'fetch');
-        while ( $row = $DB->fetch($q) ) {
-            $strRow = mb_convert_encoding('"'.implode('","', $row).'"'."\x0d\x0a", 'SJIS-win', 'auto');
+        while ($row = $DB->fetch($q)) {
+            $strRow = mb_convert_encoding('"' . implode('","', $row) . '"' . "\x0d\x0a", 'SJIS-win', 'auto');
             fwrite($fh, $strRow);
         }
 

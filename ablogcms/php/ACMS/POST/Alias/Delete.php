@@ -4,13 +4,15 @@ class ACMS_POST_Alias_Delete extends ACMS_POST_Alias
 {
     function post()
     {
-        $this->Post->setMethod('alias', 'operable',
+        $this->Post->setMethod(
+            'alias',
+            'operable',
             ($aid = intval($this->Get->get('aid'))) and sessionWithAdministration()
         );
         $this->Post->setMethod('alias', 'primary', ACMS_RAM::blogAliasPrimary(BID) <> $aid);
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() and $sort = ACMS_RAM::aliasSort($aid) ) {
+        if ($this->Post->isValidAll() and $sort = ACMS_RAM::aliasSort($aid)) {
             $DB = DB::singleton(dsn());
             $name = ACMS_RAM::aliasName($aid);
 
@@ -24,7 +26,7 @@ class ACMS_POST_Alias_Delete extends ACMS_POST_Alias
             //-----------
             // blog sort
             $blogAliasSort  = ACMS_RAM::blogAliasSort(BID);
-            if ( $sort < $blogAliasSort ) {
+            if ($sort < $blogAliasSort) {
                 $SQL    = SQL::newUpdate('blog');
                 $SQL->setUpdate('blog_alias_sort', $blogAliasSort - 1);
                 $SQL->addWhereOpr('blog_id', BID);

@@ -51,29 +51,37 @@ class ACMS_GET_Member_ResetPasswordAuth extends ACMS_GET_Member
                 $tpl->add(['tfa-off', 'success']);
             }
             $tpl->add('success');
+            return;
+        }
 
-        } else {
-            try {
-                $data = $this->validateAuthUrl();
-                $this->findAccount($data);
-                if ($message = config('password_validator_message')) {
-                    $vars['passwordPolicyMessage'] = $message;
-                }
-                $vars += $this->buildField($this->Post, $tpl);
-                $tpl->add('form', $vars);
-            } catch (BadRequestException $e) {
-                AcmsLogger::notice('不正なURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
-                $tpl->add('badRequest');
-            } catch (ExpiredException $e) {
-                AcmsLogger::notice('有効期限切れのURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
-                $tpl->add('expired');
-            } catch (NotFoundException $e) {
-                AcmsLogger::notice('アカウントが存在しないため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
-                $tpl->add('notFound');
-            }
+
+        if ($message = config('password_validator_message')) {
+            $vars['passwordPolicyMessage'] = $message;
+        }
+        $vars += $this->buildField($this->Post, $tpl);
+
+        try {
+            $data = $this->validateAuthUrl();
+            $this->findAccount($data);
+            $tpl->add('form', $vars);
+            $tpl->add(null, $vars);
+        } catch (BadRequestException $e) {
+            AcmsLogger::notice('不正なURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
+            $tpl->add('badRequest');
+            $tpl->add('notSuccessful');
+        } catch (ExpiredException $e) {
+            AcmsLogger::notice('有効期限切れのURLのため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
+            $tpl->add('expired');
+            $tpl->add('notSuccessful');
+        } catch (NotFoundException $e) {
+            AcmsLogger::notice('アカウントが存在しないため、パスワード再設定処理を中断しました', Common::exceptionArray($e, $data));
+            $tpl->add('notFound');
             $tpl->add('notSuccessful');
         }
-        $tpl->add(null, $vars);
+
+        if ($this->Post->isValidAll() === false) {
+            $tpl->add('notSuccessful');
+        }
     }
 
     /**

@@ -1874,10 +1874,10 @@ msgid "データベースのバックアップ"
 msgstr "Backup the database."
 
 msgid ""
-"アクセスログとキャッシュ以外のテーブルをzip形式でダウンロードします。解凍はし"
+"キャッシュ以外のテーブルをzip形式でダウンロードします。解凍はし"
 "ないでください。"
 msgstr ""
-"Download the database table except access log and caches as a zip format. "
+"Download the database table except caches as a zip format. "
 "Please not to unzip."
 
 msgid "データベースのデータを一括ダウンロードします。よろしいですか？"
@@ -2541,9 +2541,6 @@ msgstr ""
 "Check if you have the write permission for the files under the themes/system/"
 "images."
 
-msgid "アクセスログ"
-msgstr "Access Log"
-
 msgid "開始"
 msgstr "Start"
 
@@ -2622,8 +2619,8 @@ msgstr "Facebook API Module"
 msgid "画像の回転処理"
 msgstr "Image Rotating"
 
-msgid "キャッシュ・アクセスログ"
-msgstr "Cache Access log"
+msgid "キャッシュ"
+msgstr "Cache"
 
 msgid "ルールID"
 msgstr "Rule ID"
@@ -10520,8 +10517,8 @@ msgstr "Only include lower categories’s content."
 #~ msgstr "Export Database"
 
 #~ msgid ""
-#~ "アクセスログとキャッシュ以外のテーブルをzip形式でダウンロードします。"
-#~ msgstr "Download tables aside from access logs and caches as zip format."
+#~ "キャッシュ以外のテーブルをzip形式でダウンロードします。"
+#~ msgstr "Download tables aside from caches as zip format."
 
 #~ msgid "アーカイブをエクスポート"
 #~ msgstr "Export Archives"

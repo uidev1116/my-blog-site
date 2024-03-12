@@ -3,6 +3,7 @@
 namespace Acms\Services\StaticExport;
 
 use Acms\Services\Facades\Storage;
+use AcmsLogger;
 
 class Logger
 {
@@ -53,7 +54,7 @@ class Logger
      */
     public function init($path, $terminate_flag)
     {
-        if ( !is_writable(dirname($path)) ) {
+        if (!is_writable(dirname($path))) {
             throw new \RuntimeException($path . ' is not writable.');
         }
         $this->destinationPath = $path;
@@ -96,7 +97,7 @@ class Logger
         $data = $this->build();
 
         $json = json_encode($data);
-        Storage::put($this->destinationPath , $json);
+        Storage::put($this->destinationPath, $json);
 
         $this->terminateFlag->check();
     }
@@ -114,7 +115,7 @@ class Logger
         AcmsLogger::debug('静的書き出しログ', $data);
 
         $json = json_encode($data);
-        Storage::put($this->destinationPath , $json);
+        Storage::put($this->destinationPath, $json);
     }
 
     protected function build()
@@ -123,7 +124,7 @@ class Logger
             "inProcess" => $this->processingName,
             "max" => $this->max,
             "count" => $this->count,
-            'percentage' => ($this->count > 0 && $this->max > 0) ?intval($this->count / $this->max * 100) : 0,
+            'percentage' => ($this->count > 0 && $this->max > 0) ? intval($this->count / $this->max * 100) : 0,
             'processList' => $this->processList,
             'current' => $this->current,
             'errorList' => $this->errors,

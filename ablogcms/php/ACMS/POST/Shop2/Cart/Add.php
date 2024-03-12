@@ -17,8 +17,7 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
 
         $bid = $Cart->isNull('cart_bid') ? BID : intval($Cart->get('cart_bid', BID));
 
-        if ( $this->Post->isValidAll() ) {
-
+        if ($this->Post->isValidAll()) {
             $TEMP = $this->openCart($bid);
 
             $DB = DB::singleton(dsn());
@@ -32,12 +31,12 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
 
             $fds = $DB->query($SQL->get(dsn()), 'all');
 
-            if ( !empty($fds) ) {
+            if (!empty($fds)) {
                 // レパートリーの指定を取得する
                 $repertories = $Cart->getArray('item_repertory_fields');
 
                 // カート内の商品情報フィールドに配列型は転写できない（efdに選択肢として配列を登録することはできる）
-                foreach ( $fds as $fd ) {
+                foreach ($fds as $fd) {
                     $item[$fd['field_key']] = $fd['field_value'];
                 }
 
@@ -60,57 +59,54 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
                 $Cart->delete($this->item_id);
                 $Cart->delete('item_repertory_fields'); // レパートリーの定義も不要なので破棄する
                 $fds = $Cart->listFields();
-                foreach ( $fds as $fd ) {
+                foreach ($fds as $fd) {
                     $item[$fd] = $Cart->get($fd);
                 }
 
                 //　既存のカート内商品の走査
-                if( ! is_array( $TEMP ) )$TEMP = array();
+                if (! is_array($TEMP)) {
+                    $TEMP = array();
+                }
 
-                if ( isset ($item['item_tax'] )) {
+                if (isset($item['item_tax'])) {
                     $tax_rate = $item['item_tax']; // 商品毎の消費税を適用
                 } else {
                     $tax_rate = config('shop_tax_rate'); // 標準設定の消費税
                 }
-                @$item[$this->item_price.'#rate'] = $tax_rate * 100;
+                @$item[$this->item_price . '#rate'] = $tax_rate * 100;
 
 
-                foreach ( $TEMP as $p => $inItem ) {
+                foreach ($TEMP as $p => $inItem) {
                     // レパートリー含めて同じ商品があれば，既存の記録を破棄して，数量だけマージ
-                    if ( $this->isSameItem($inItem, $item, $repertories) )
-                    {
+                    if ($this->isSameItem($inItem, $item, $repertories)) {
                         $item[$this->item_qty] += $inItem[$this->item_qty];
                         unset($TEMP[$p]);
                     }
                 }
 
-                @$item[$this->item_price.'#sum'] = intval($item[$this->item_price] * $item[$this->item_qty] );
+                @$item[$this->item_price . '#sum'] = intval($item[$this->item_price] * $item[$this->item_qty]);
 
 
-                if ( config('shop_tax_calc_method') == 'pileup') {
-
+                if (config('shop_tax_calc_method') == 'pileup') {
                     // 商品毎に消費税を計算
 
-                    if ( config('shop_tax_calculate') == 'extax' ) {
-
+                    if (config('shop_tax_calculate') == 'extax') {
                         // 外税
                         $tax = $item[$this->item_price] * $item[$this->item_qty] * $tax_rate ;
-
                     } else {
-
                         // 内税
                         $tax = ( $item[$this->item_price] * $item[$this->item_qty] ) - ( $item[$this->item_price] * $item[$this->item_qty] / ( 1 + $tax_rate )) ;
                     }
 
-                    if ( config('shop_tax_rounding') == 'ceil' ) {
+                    if (config('shop_tax_rounding') == 'ceil') {
                         // 切り上げ
-                        $item[$this->item_price.'#tax'] = intval(ceil($tax));
-                    } elseif ( config('shop_tax_rounding') == 'round' ) {
+                        $item[$this->item_price . '#tax'] = intval(ceil($tax));
+                    } elseif (config('shop_tax_rounding') == 'round') {
                         // 四捨五入
-                        $item[$this->item_price.'#tax'] = intval(round($tax));
+                        $item[$this->item_price . '#tax'] = intval(round($tax));
                     } else {
                         // 切り捨て
-                        $item[$this->item_price.'#tax'] = intval(floor($tax));
+                        $item[$this->item_price . '#tax'] = intval(floor($tax));
                     }
                 }
 
@@ -120,7 +116,7 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
             $this->closeCart($TEMP, $bid);
 
             // redirect to target location
-            if ( config('shop_cart_elevate') == 'on' ) {
+            if (config('shop_cart_elevate') == 'on') {
                 $this->screenTrans($this->addedTpl, null, $bid);
             } else {
                 $this->screenTrans($this->addedTpl);
@@ -134,17 +130,25 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
     function isSameItem($old, $new, $repertories)
     {
         // エントリーIDが異なれば，違う商品とみなす
-        if ( $old[$this->item_id] !== $new[$this->item_id] ) return false;
+        if ($old[$this->item_id] !== $new[$this->item_id]) {
+            return false;
+        }
 
         // エントリーIDが異なることが確認された上で，レパートリーの定義がなければ，同じ商品とみなす
-        if ( empty($repertories) ) return true;
+        if (empty($repertories)) {
+            return true;
+        }
 
-        foreach ( $repertories as $repertory ) {
+        foreach ($repertories as $repertory) {
             // もしもいずれかでレパートリーが未定義であれば，違う商品とみなす
-            if ( !isset($old[$repertory]) || !isset($new[$repertory]) ) return false;
+            if (!isset($old[$repertory]) || !isset($new[$repertory])) {
+                return false;
+            }
 
             // 何らかのレパートリーが異なれば，違う商品とみなす
-            if ( $old[$repertory] !== $new[$repertory] ) return false;
+            if ($old[$repertory] !== $new[$repertory]) {
+                return false;
+            }
         }
 
         // すべてのレパートリーに一致が見られれば，同じ商品とみなす

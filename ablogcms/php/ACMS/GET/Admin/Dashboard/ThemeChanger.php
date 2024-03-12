@@ -6,16 +6,16 @@ class ACMS_GET_Admin_Dashboard_ThemeChanger extends ACMS_GET
     {
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $vars   = array();
-        
-        $thmPath = SCRIPT_DIR.THEMES_DIR;
+
+        $thmPath = SCRIPT_DIR . THEMES_DIR;
         $curThm = config('theme');
-        
-        if ( Storage::isDirectory($thmPath) ) {
+
+        if (Storage::isDirectory($thmPath)) {
             $dh = opendir($thmPath);
             while (false != ($dir = readdir($dh))) {
                 $vars = array('theme' => $dir, 'label' => $dir);
-                
-                if (!Storage::isDirectory($thmPath.$dir)) {
+
+                if (!Storage::isDirectory($thmPath . $dir)) {
                     continue;
                 } elseif ($dir == 'system') {
                     continue;
@@ -24,11 +24,11 @@ class ACMS_GET_Admin_Dashboard_ThemeChanger extends ACMS_GET
                 } elseif ($dir == $curThm) {
                     $vars['selected'] = 'selected="selected"';
                 }
-                
-                $Tpl->add('theme:loop',$vars);
+
+                $Tpl->add('theme:loop', $vars);
             }
         }
-        
+
         return $Tpl->get();
     }
 }

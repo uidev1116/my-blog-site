@@ -15,7 +15,7 @@ class HookFactory extends Factory
         if (!is_array($params)) {
             $params = array($params);
         }
-        foreach ( $this->_collection as $Hook ) {
+        foreach ($this->_collection as $Hook) {
             if (method_exists($Hook, $timingMethod)) {
                 $rv[] = get_class($Hook);
                 call_user_func_array(array($Hook, $timingMethod), $params);
@@ -30,7 +30,7 @@ class HookFactory extends Factory
      */
     public function getHook($ns)
     {
-        if ( isset($this->_collection[$ns]) ) {
+        if (isset($this->_collection[$ns])) {
             return $this->_collection[$ns];
         } else {
             return false;

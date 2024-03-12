@@ -21,7 +21,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
 
         //----------------------
         // category create auth
-        if (0
+        if (
+            0
             || !roleAvailableUser()
             || (roleAvailableUser() && roleAuthorization('category_create', BID))
         ) {
@@ -29,7 +30,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         }
 
         $layered = true;
-        if (0
+        if (
+            0
             || config('admin_category_layered') === 'on'
             || TPL === 'ajax/arg/cid-reference.html'
         ) {
@@ -107,8 +109,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         if (!!KEYWORD) {
             $SQL->addLeftJoin('fulltext', 'fulltext_cid', 'category_id', 'ft', 'master');
             $keywords = preg_split(REGEX_SEPARATER, KEYWORD, -1, PREG_SPLIT_NO_EMPTY);
-            foreach ( $keywords as $keyword ) {
-                $SQL->addWhereOpr('fulltext_value', '%'.$keyword.'%', 'LIKE');
+            foreach ($keywords as $keyword) {
+                $SQL->addWhereOpr('fulltext_value', '%' . $keyword . '%', 'LIKE');
             }
         }
 
@@ -197,7 +199,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         $stack = array();
         if ($layered) {
             $stack = isset($all[$_cid]) ? $all[$_cid] : array();
-        } else if (isset($all[0])) {
+        } elseif (isset($all[0])) {
             $stack = $all[0];
         }
         unset($all[0]);
@@ -266,7 +268,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                     ))
                 ));
             } else {
-                if (0
+                if (
+                    0
                     or (roleAvailableUser() && roleAuthorization('category_edit', $cbid))
                     or sessionWithAdministration($cbid)
                 ) {
@@ -286,7 +289,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
             // field
             $cvars += $this->buildField(loadCategoryField($cid), $Tpl, 'category:loop');
 
-            if (1
+            if (
+                1
                 && $layered
                 && isset($childCategories[$cid])
                 && $childCategories[$cid] > 0

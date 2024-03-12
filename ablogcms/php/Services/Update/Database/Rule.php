@@ -29,22 +29,22 @@ class Rule
         $this->toVersion = $toVersion;
 
         // v1.4.0以前
-        if ( version_compare($this->fromVersion, '1.4.0', '<') ) {
+        if (version_compare($this->fromVersion, '1.4.0', '<')) {
             $this->update140();
         }
 
         // v1.4.2以前
-        if ( version_compare($this->fromVersion, '1.4.2', '<') ) {
+        if (version_compare($this->fromVersion, '1.4.2', '<')) {
             $this->update142();
         }
 
         // v1.5.0以前
-        if ( version_compare($this->fromVersion, '1.5.0', '<') ) {
+        if (version_compare($this->fromVersion, '1.5.0', '<')) {
             $this->update150();
         }
 
         // v2.10.0以前
-        if ( version_compare($this->fromVersion, '2.10.0', '<')) {
+        if (version_compare($this->fromVersion, '2.10.0', '<')) {
             $this->update2100();
         }
     }
@@ -54,21 +54,21 @@ class Rule
      *
      * @param string $group
      * @param array $vals
+     * @param null|int $bid
      * @param null|int $rid
      * @param null|int $mid
-     * @param string $bid
      */
-    protected function addGroupConfig($group, $vals, $rid = null, $mid = null, $bid)
+    protected function addGroupConfig($group, $vals, $bid, $rid = null, $mid = null)
     {
         $DB = DB::singleton(dsn());
-        foreach ( $vals as $val ) {
+        foreach ($vals as $val) {
             $SQL = SQL::newInsert('config');
             $SQL->addInsert('config_key', $group);
             $SQL->addInsert('config_value', $val);
             $SQL->addInsert('config_sort', '0');
-            if ( !empty($mid) ) {
+            if (!empty($mid)) {
                 $SQL->addInsert('config_module_id', $mid);
-            } else if ( !empty($rid) ) {
+            } elseif (!empty($rid)) {
                 $SQL->addInsert('config_rule_id', $rid);
             }
             $SQL->addInsert('config_blog_id', $bid);
@@ -79,12 +79,12 @@ class Rule
     /**
      * navigation_publish = on を追加
      *
+     * @param int $bid
      * @param null|int $rid
      * @param null|int $mid
-     * @param int $bid
-     * @return bool
      */
-    protected function addNavigationPublish($rid = null, $mid = null, $bid) {
+    protected function addNavigationPublish($bid, $rid = null, $mid = null)
+    {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('config');
         $SQL->addWhereOpr('config_key', 'navigation_target');
@@ -95,13 +95,13 @@ class Rule
         $SQL->addSelect('config_sort', 'max_sort', null, 'MAX');
         $res = $DB->query($SQL->get(dsn()), 'row');
 
-        if ( empty($res) ) {
-            return false;
+        if (empty($res)) {
+            return;
         }
 
         $range = range($res['max_sort'] + 1, $res['max_sort'] + $res['row_amount']);
 
-        foreach ( $range as $sort ) {
+        foreach ($range as $sort) {
             $SQL = SQL::newInsert('config');
             $SQL->addInsert('config_key', 'navigation_publish');
             $SQL->addInsert('config_value', 'on');
@@ -126,29 +126,77 @@ class Rule
         $SQL->addWhereOpr('module_name', 'Links');
         $mods = $DB->query($SQL->get(dsn()), 'all');
 
-        foreach ( $mods as $mod ) {
+        foreach ($mods as $mod) {
             $mid = $mod['module_id'];
             $bid = $mod['module_blog_id'];
 
-            $this->addGroupConfig('@linkgroup', array('links_value', 'links_label'), null, $mid, $bid);
+            $this->addGroupConfig('@linkgroup', ['links_value', 'links_label'], $bid, null, $mid);
         }
 
         // ルールを探索
         $SQL = SQL::newSelect('rule');
         $rules = $DB->query($SQL->get(dsn()), 'all');
 
-        foreach ( $rules as $rule ) {
+        foreach ($rules as $rule) {
             $rid = $rule['rule_id'];
             $bid = $rule['rule_blog_id'];
 
-            $this->addGroupConfig('@linkgroup', array('links_value', 'links_label'), $rid, null, $bid);
-            $this->addGroupConfig('@addtype_group', array('addtype_mimetype', 'addtype_extension'), $rid, null, $bid);
-            $this->addGroupConfig('@column_text_tag_group', array('column_text_tag', 'column_text_tag_label'), $rid, null, $bid);
-            $this->addGroupConfig('@column_image_size_group', array('column_image_size', 'column_image_size_label'), $rid, null, $bid);
-            $this->addGroupConfig('@column_map_size_group', array('column_map_size', 'column_map_size_label'), $rid, null, $bid);
-            $this->addGroupConfig('@column_youtube_size_group', array('column_youtube_size', 'column_youtube_size_label'), $rid, null, $bid);
-            $this->addGroupConfig('@column_eximage_size_group', array('column_eximage_size', 'column_eximage_size_label'), $rid, null, $bid);
-            $this->addGroupConfig('@column_add_type_group', array('column_add_type', 'column_add_type_label'), $rid, null, $bid);
+            $this->addGroupConfig(
+                '@linkgroup',
+                ['links_value', 'links_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@addtype_group',
+                ['addtype_mimetype', 'addtype_extension'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_text_tag_group',
+                ['column_text_tag', 'column_text_tag_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_image_size_group',
+                ['column_image_size', 'column_image_size_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_map_size_group',
+                ['column_map_size', 'column_map_size_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_youtube_size_group',
+                ['column_youtube_size', 'column_youtube_size_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_eximage_size_group',
+                ['column_eximage_size', 'column_eximage_size_label'],
+                $bid,
+                $rid,
+                null
+            );
+            $this->addGroupConfig(
+                '@column_add_type_group',
+                ['column_add_type', 'column_add_type_label'],
+                $bid,
+                $rid,
+                null
+            );
         }
     }
 
@@ -175,7 +223,7 @@ class Rule
         $q = $SQL->get(dsn());
         $DB->query($q, 'fetch');
 
-        while ( $row = $DB->fetch($q) ) {
+        while ($row = $DB->fetch($q)) {
             // user
             $user = array(
                 $row['user_name'],
@@ -195,10 +243,10 @@ class Rule
             $SQL->addWhereOpr('field_uid', $uid);
             $_q = $SQL->get(dsn());
 
-            if ( $DB->query($_q, 'fetch') and ($_row = $DB->fetch($_q)) ) {
+            if ($DB->query($_q, 'fetch') and ($_row = $DB->fetch($_q))) {
                 do {
                     $meta[] = $_row['field_value'];
-                } while ( $_row = $DB->fetch($_q) );
+                } while ($_row = $DB->fetch($_q));
             }
 
             // merge
@@ -233,12 +281,12 @@ class Rule
         $SQL->addWhereOpr('module_name', 'Navigation');
         $mods = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( !empty($mods) ) {
-            foreach ( $mods as $mod ) {
+        if (!empty($mods)) {
+            foreach ($mods as $mod) {
                 $mid = $mod['module_id'];
                 $bid = $mod['module_blog_id'];
 
-                $this->addNavigationPublish(null, $mid, $bid);
+                $this->addNavigationPublish($bid, null, $mid);
             }
         }
 
@@ -246,12 +294,12 @@ class Rule
         $SQL = SQL::newSelect('rule');
         $rules = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( !empty($mods) ) {
-            foreach ( $rules as $rule ) {
+        if (!empty($mods)) {
+            foreach ($rules as $rule) {
                 $rid = $rule['rule_id'];
                 $bid = $rule['rule_blog_id'];
 
-                $this->addNavigationPublish($rid, null, $bid);
+                $this->addNavigationPublish($bid, $rid, null);
             }
         }
 
@@ -259,11 +307,11 @@ class Rule
         $SQL = SQL::newSelect('blog');
         $blogs = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( !empty($blogs) ) {
-            foreach ( $blogs as $blog ) {
+        if (!empty($blogs)) {
+            foreach ($blogs as $blog) {
                 $bid = $blog['blog_id'];
 
-                $this->addNavigationPublish(null, null, $bid);
+                $this->addNavigationPublish($bid, null, null);
             }
         }
     }
@@ -309,6 +357,5 @@ class Rule
             $SQL->addWhereOpr('workflow_category_id', null);
             $DB->query($SQL->get(dsn()), 'exec');
         }
-
     }
 }

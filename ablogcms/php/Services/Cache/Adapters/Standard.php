@@ -7,21 +7,22 @@ use Acms\Services\Cache\Contracts\AdapterInterface;
 class Standard implements AdapterInterface
 {
     /**
-     * Symfony\Component\Cache\Adapter\AbstractAdapter;
+     * @var \Symfony\Component\Cache\Adapter\AdapterInterface;
      */
     protected $adapter = null;
 
     /**
      * Construct
+     * @param \Symfony\Component\Cache\Adapter\AdapterInterface $adapter
      */
-    public function __construct($adapter)
+    public function __construct(\Symfony\Component\Cache\Adapter\AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
     /**
      * キャッシュがあるか確認
-     * 
+     *
      * @param string $key
      * @return boolean
      */
@@ -33,7 +34,7 @@ class Standard implements AdapterInterface
 
     /**
      * キャッシュを取得
-     * 
+     *
      * @param string $key
      * @return any
      */
@@ -46,7 +47,7 @@ class Standard implements AdapterInterface
     /**
      * キャッシュを設定
      * $lifetimeを指定しない場合はデフォルト値を設定
-     * 
+     *
      * @param string $key
      * @param any $value
      * @param array $tags
@@ -64,7 +65,7 @@ class Standard implements AdapterInterface
 
     /**
      * キャッシュを削除
-     * 
+     *
      * @param string $key
      */
     public function forget($key)
@@ -77,7 +78,6 @@ class Standard implements AdapterInterface
      */
     public function remember($key, $callback, $lifetime = 0)
     {
-
     }
 
     /**

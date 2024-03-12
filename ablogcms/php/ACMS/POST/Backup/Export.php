@@ -135,7 +135,7 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
             $tables = $this->replication->getTableList();
             $filteredTables = array();
             foreach ($tables as $table) {
-                if (!preg_match('/^' . DB_PREFIX . '*/', $table)) {
+                if (!preg_match('/^' . DB_PREFIX . '.*/', $table)) {
                     continue;
                 }
                 foreach ($except_table as $regex) {

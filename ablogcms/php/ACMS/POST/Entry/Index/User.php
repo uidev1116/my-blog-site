@@ -4,9 +4,9 @@ class ACMS_POST_Entry_Index_User extends ACMS_POST
 {
     function post()
     {
-        if ( enableApproval(BID, CID) ) {
+        if (enableApproval(BID, CID)) {
             $this->Post->setMethod('entry', 'operative', sessionWithApprovalAdministrator(BID, CID));
-        } else if ( roleAvailableUser() ) {
+        } elseif (roleAvailableUser()) {
             $this->Post->setMethod('entry', 'operative', roleAuthorization('entry_edit', BID));
         } else {
             $this->Post->setMethod('entry', 'operative', sessionWithCompilation());
@@ -16,8 +16,7 @@ class ACMS_POST_Entry_Index_User extends ACMS_POST
             and !!($uid = intval($this->Post->get('uid')))
             and !!($bid = ACMS_RAM::userBlog($uid))
             and ACMS_RAM::blogLeft($bid) <= ACMS_RAM::blogLeft(BID)
-            and ACMS_RAM::blogRight($bid) >= ACMS_RAM::blogRight(BID)
-        );
+            and ACMS_RAM::blogRight($bid) >= ACMS_RAM::blogRight(BID));
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {
@@ -27,8 +26,12 @@ class ACMS_POST_Entry_Index_User extends ACMS_POST
                 $id = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
                 $bid = $id[0];
                 $eid = $id[1];
-                if (!($bid = intval($bid))) continue;
-                if (!($eid = intval($eid))) continue;
+                if (!($bid = intval($bid))) {
+                    continue;
+                }
+                if (!($eid = intval($eid))) {
+                    continue;
+                }
                 $SQL    = SQL::newUpdate('entry');
                 $SQL->setUpdate('entry_user_id', $uid);
                 $SQL->addWhereOpr('entry_id', $eid);

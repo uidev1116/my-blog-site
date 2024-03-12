@@ -26,6 +26,5 @@ class TemplateServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

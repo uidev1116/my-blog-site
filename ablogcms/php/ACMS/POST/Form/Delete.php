@@ -5,7 +5,7 @@ class ACMS_POST_Form_Delete extends ACMS_POST_Form
     function post()
     {
         $this->Post->setMethod('form', 'fmidIsNull', ($fmid = intval($this->Get->get('fmid'))));
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->Post->setMethod('form', 'operative', roleAuthorization('form_edit', BID));
         } else {
             $this->Post->setMethod('form', 'operative', sessionWithFormAdministration());

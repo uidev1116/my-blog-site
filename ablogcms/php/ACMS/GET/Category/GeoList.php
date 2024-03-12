@@ -2,7 +2,7 @@
 
 class ACMS_GET_Category_GeoList extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'cid' => 'global',
     );
 
@@ -53,18 +53,21 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
      */
     function get()
     {
-        if ( !$this->setConfig() ) return '';
+        if (!$this->setConfig()) {
+            return '';
+        }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->getReferencePoint();
 
-        if ( 1
+        if (
+            1
             && $this->config['referencePoint'] === 'url_query_string'
             && (!$this->lat || !$this->lng)
         ) {
             $Tpl->add('notFoundGeolocation');
             return $Tpl->get();
         }
-        if ( !$this->lat || !$this->lng ) {
+        if (!$this->lat || !$this->lng) {
             return '';
         }
 
@@ -92,15 +95,15 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function filterQuery(& $SQL)
+    protected function filterQuery(&$SQL)
     {
         $SQL->addWhereOpr('category_parent', $this->cid);
         $SQL->addWhereOpr('blog_indexing', 'on');
         ACMS_Filter::categoryStatus($SQL);
-        if ( !empty($this->keyword) ) {
+        if (!empty($this->keyword)) {
             ACMS_Filter::categoryKeyword($SQL, $this->keyword);
         }
-        if ( !empty($this->Field) ) {
+        if (!empty($this->Field)) {
             ACMS_Filter::categoryField($SQL, $this->Field);
         }
     }
@@ -111,7 +114,7 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function limitQuery(& $SQL)
+    protected function limitQuery(&$SQL)
     {
         $SQL->setLimit($this->config['limit']);
     }
@@ -121,7 +124,7 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
      *
      * @param $Tpl
      */
-    protected function build(& $Tpl)
+    protected function build(&$Tpl)
     {
         $loopClass = $this->config['loop_class'];
 
@@ -132,7 +135,7 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
             //-------
             // field
             $Field = loadCategoryField($cid);
-            foreach ( $row as $key => $val ) {
+            foreach ($row as $key => $val) {
                 $Field->setField(preg_replace('/category\_/', '', $key), $val);
             }
             $Field->set('url', acmsLink(array(
@@ -143,7 +146,7 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
 
             //------
             // glue
-            if ( $i !== $j ) {
+            if ($i !== $j) {
                 $Tpl->add('glue');
             }
             $vars = $this->buildField($Field, $Tpl);
@@ -168,17 +171,17 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
      */
     protected function getReferencePoint()
     {
-        if ( $this->config['referencePoint'] === 'url_context' && $this->cid ) {
+        if ($this->config['referencePoint'] === 'url_context' && $this->cid) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newSelect('geo', 'geo');
             $SQL->addSelect('geo_geometry', 'lat', 'geo', POINT_Y);
             $SQL->addSelect('geo_geometry', 'lng', 'geo', POINT_X);
             $SQL->addWhereOpr('geo_cid', $this->cid);
-            if ( $data = $DB->query($SQL->get(dsn()), 'row') ) {
+            if ($data = $DB->query($SQL->get(dsn()), 'row')) {
                 $this->lat = $data['lat'];
                 $this->lng = $data['lng'];
             }
-        } else if ( $this->config['referencePoint'] === 'url_query_string' ) {
+        } elseif ($this->config['referencePoint'] === 'url_query_string') {
             $this->lat = $this->Get->get('lat');
             $this->lng = $this->Get->get('lng');
         }
@@ -199,13 +202,13 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
         $SQL->addSelect('geo_geometry', 'latitude', null, POINT_Y);
         $SQL->addGeoDistance('geo_geometry', $this->lng, $this->lat, 'distance');
 
-        if ( $this->config['referencePoint'] === 'url_context' && $this->bid ) {
+        if ($this->config['referencePoint'] === 'url_context' && $this->bid) {
             $SQL->addWhereOpr('geo_cid', $this->cid, '<>');
         }
         $within = $this->config['within'];
-        if ( $within > 0 ) {
+        if ($within > 0) {
             $within = $within * 1000;
-            $SQL->addHaving('distance < '.$within);
+            $SQL->addHaving('distance < ' . $within);
         }
 
         $this->filterQuery($SQL);

@@ -67,7 +67,7 @@ class Export extends ExportBase
      *
      * @return void
      */
-    protected function fix(& $record, $table)
+    protected function fix(&$record, $table)
     {
         if ($table === 'column' && 'text' === $record['column_type']) {
             $txt = $record['column_field_1'];
@@ -86,7 +86,7 @@ class Export extends ExportBase
      *
      * @param $record
      */
-    private function fixFulltext(& $record)
+    private function fixFulltext(&$record)
     {
         if (!empty($record['fulltext_uid'])) {
             $record = false;
@@ -100,9 +100,10 @@ class Export extends ExportBase
      *
      * @param $record
      */
-    private function fixSchedule(& $record)
+    private function fixSchedule(&$record)
     {
-        if (1
+        if (
+            1
             and $record['schedule_year'] == 0000
             and $record['schedule_month'] == 00
         ) {

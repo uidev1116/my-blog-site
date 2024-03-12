@@ -5,9 +5,40 @@
  */
 class ACMS_Http_File extends ACMS_Http
 {
+    /**
+     * フォームで送信されたデータのキー
+     * @var string
+     */
+    protected $key;
+
+    /**
+     * ファイルサイズ
+     * @var int
+     */
+    protected $size;
+
+    /**
+     * ファイル名
+     * @var string
+     */
     protected $name;
+
+    /**
+     * ファイルタイプ
+     * @var string
+     */
     protected $type;
+
+    /**
+     * ファイルパス
+     * @var string
+     */
     protected $path;
+
+    /**
+     * ファイル拡張子
+     * @var string
+     */
     protected $extension;
 
     public function __construct($name)
@@ -66,7 +97,7 @@ class ACMS_Http_File extends ACMS_Http
         }
 
         // $_FILES['upfile']['error'] の値を確認
-        switch ( $_FILES[$this->key]['error'] ) {
+        switch ($_FILES[$this->key]['error']) {
             case UPLOAD_ERR_OK:
                 break;
             case UPLOAD_ERR_NO_FILE:
@@ -85,10 +116,10 @@ class ACMS_Http_File extends ACMS_Http
      *
      * @param array $mimeTypes
      */
-    public function validateFormat($mimeTypes=array())
+    public function validateFormat($mimeTypes = array())
     {
         // 許可ファイル拡張子をまとめておく
-        if ( empty($mimeTypes) ) {
+        if (empty($mimeTypes)) {
             $mimeTypes = array_merge(
                 configArray('file_extension_document'),
                 configArray('file_extension_archive'),
@@ -98,11 +129,9 @@ class ACMS_Http_File extends ACMS_Http
         }
 
         // MIMEタイプに対応する拡張子を自前で取得する
-        if ( array_search(
-            mime_content_type($_FILES[$this->key]['tmp_name']),
-            $mimeTypes,
-            true
-        ) === FALSE ) {
+        $mimeType = mime_content_type($_FILES[$this->key]['tmp_name']);
+
+        if (!in_array($mimeType, $mimeTypes, true)) {
             throw new RuntimeException(gettext('ファイル形式が不正です'));
         }
     }
@@ -124,7 +153,7 @@ class ACMS_Http_File extends ACMS_Http
             $temp->rewind();
 
             return $temp;
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             return new SplTempFileObject();
         }
     }
@@ -142,8 +171,8 @@ class ACMS_Http_File extends ACMS_Http
         $csv = $this->convertEncoding($path);
         $csv->setFlags(
             SplFileObject::READ_CSV |
-            SplFileObject::READ_AHEAD |
-            SplFileObject::SKIP_EMPTY
+                SplFileObject::READ_AHEAD |
+                SplFileObject::SKIP_EMPTY
         );
 
         return $csv;

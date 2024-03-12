@@ -26,12 +26,16 @@ class Export
     protected $bid;
 
     /**
+     * @var string
+     */
+    protected $metaTargetIds;
+
+    /**
      * Export constructor.
      */
     public function __construct()
     {
         $this->yaml = array();
-        $this->meta = array();
         $this->metaTargetIds = '/^(.*)_(bid|uid|cid|eid|aid)$/';
     }
 
@@ -41,7 +45,7 @@ class Export
     public function exportPartsConfig($field)
     {
         $config = array();
-        foreach ( $field->listFields() as $fd ) {
+        foreach ($field->listFields() as $fd) {
             $val = $field->getArray($fd);
             $config[$fd] = (1 == count($val)) ? $val[0] : $val;
         }
@@ -59,7 +63,7 @@ class Export
     {
         $this->bid = $bid;
 
-        if ( empty($this->bid) ) {
+        if (empty($this->bid)) {
             return;
         }
 
@@ -99,7 +103,7 @@ class Export
         $Config = Config::load($bid, null, null, null);
 
         $config = array();
-        foreach ( $Config->listFields() as $fd ) {
+        foreach ($Config->listFields() as $fd) {
             $val = $Config->getArray($fd);
             $config[$fd] = (1 == count($val)) ? $val[0] : $val;
         }
@@ -152,7 +156,7 @@ class Export
         DB::query($q, 'fetch');
         $records = array();
 
-        while ( $r = DB::fetch($q) ) {
+        while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
             $records[] = $r;
         }
@@ -164,17 +168,13 @@ class Export
      */
     protected function buildRuleYaml()
     {
-        if ( !empty($mid) ) {
-            return;
-        }
-
         $SQL = SQL::newSelect('rule');
         $SQL->addWhereOpr('rule_blog_id', $this->bid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
         $records = array();
 
-        while ( $r = DB::fetch($q) ) {
+        while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
             $records[] = $r;
         }
@@ -192,7 +192,7 @@ class Export
         DB::query($q, 'fetch');
         $records = array();
 
-        while ( $r = DB::fetch($q) ) {
+        while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
             $records[] = $r;
         }
@@ -218,10 +218,10 @@ class Export
      */
     protected function extractMetaIds($record)
     {
-        foreach ( $record as $key => $data ) {
-            if ( !!$data && preg_match($this->metaTargetIds, $key, $matches) ) {
+        foreach ($record as $key => $data) {
+            if (!!$data && preg_match($this->metaTargetIds, $key, $matches)) {
                 $type = $matches[2];
-                if ( is_numeric($data) ) {
+                if (is_numeric($data)) {
                     $this->yaml['meta'][$type][$data] = $this->getCode($type, $data);
                 }
             }
@@ -238,7 +238,7 @@ class Export
      */
     protected function getCode($type, $id)
     {
-        switch ( $type ) {
+        switch ($type) {
             case 'bid':
                 return ACMS_RAM::blogCode($id);
                 break;
@@ -270,11 +270,10 @@ class Export
      */
     protected function setYaml($records, $table)
     {
-        if ( isset($this->yaml[$table]) ) {
+        if (isset($this->yaml[$table])) {
             $this->yaml[$table] = array_merge($this->yaml[$table], $records);
         } else {
             $this->yaml[$table] = $records;
         }
     }
 }
-

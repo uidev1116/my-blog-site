@@ -20,7 +20,7 @@ class ACMS_POST_Alias_Update extends ACMS_POST_Alias
 
         $Alias->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newUpdate('alias');
             $SQL->addUpdate('alias_status', $Alias->get('status'));
@@ -58,4 +58,3 @@ class ACMS_POST_Alias_Update extends ACMS_POST_Alias
         return $this->Post;
     }
 }
-

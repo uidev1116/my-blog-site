@@ -1,7 +1,8 @@
 <?php
+
 class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
 {
-    var $_scope = array(
+    public $_scope = array(
         'page' => 'global',
     );
 
@@ -18,7 +19,6 @@ class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
             $this->buildMembersOnlyUnit($tpl, EID, RVID, $entry, $summaryRange);
 
             return $tpl->get();
-
         } catch (\Exception $e) {
         }
         return '';

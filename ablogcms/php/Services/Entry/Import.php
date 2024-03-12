@@ -235,7 +235,7 @@ class Import
             $sql->setSelect('entry_id');
             $sql->addWhereOpr('entry_code', $value);
             $sql->addWhereOpr('entry_blog_id', $this->bid);
-            if (DB::query($sql->get(dsn()),'one')) {
+            if (DB::query($sql->get(dsn()), 'one')) {
                 $explodeCode = explode('.', $value);
                 $length = count($explodeCode);
                 if ($length > 1) {
@@ -275,7 +275,8 @@ class Import
                                 if ($val = $this->getNewID('media', $val)) {
                                     $fixMediaField[$sourceFd][] = $val;
                                 }
-                            } elseif ( 0
+                            } elseif (
+                                0
                                 or strpos($fd, '@path')
                                 or strpos($fd, '@tinyPath')
                                 or strpos($fd, '@largePath')
@@ -353,7 +354,8 @@ class Import
                         'sort' => $record['field_sort'],
                     );
                 }
-            } elseif (0
+            } elseif (
+                0
                 || preg_match('/@path$/', $record['field_key'])
                 || preg_match('/@tinyPath$/', $record['field_key'])
                 || preg_match('/@largePath$/', $record['field_key'])
@@ -388,7 +390,7 @@ class Import
      * @param string $table
      * @param int|string $id
      *
-     * @return int|bool|string
+     * @return int|bool|string|void
      */
     private function getNewID($table, $id)
     {

@@ -2,19 +2,20 @@
 
 class ACMS_POST_Logout extends ACMS_POST
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
-    function post()
+    public function post()
     {
         if (SUID) {
+            $redirectUrl = Login::getLogoutRedirectUrl();
             AcmsLogger::info('ユーザー「' . ACMS_RAM::userName(SUID) . '」がログアウト処理をしました', [
                 'suid' => SUID,
             ]);
             logout();
+
+            $this->redirect($redirectUrl);
         }
 
-        $this->redirect(acmsLink(array(
-            'bid' => BID,
-        ), false), false);
+        return $this->Post;
     }
 }

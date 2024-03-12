@@ -72,7 +72,8 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
                     ],
                 ]);
 
-                if (1
+                if (
+                    1
                     && $rvid !== 1
                     && $currentRvid !== $rvid
                     && $reserveRvid !== $rvid

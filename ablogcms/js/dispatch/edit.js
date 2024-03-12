@@ -434,7 +434,9 @@ ACMS.Dispatch.Edit._sortable = function ($unit) {
       })
       if ('wysiwyg' === $(':input[name^="text_tag_"]', ui.item).val()) {
         $('textarea[name^="text_text_"]', ui.item).each(function () {
-          ACMS.Dispatch.wysiwyg.init(this)
+          if (!ACMS.Dispatch.wysiwyg.isAdapted(this)) {
+            ACMS.Dispatch.wysiwyg.init(this)
+          }
         })
       }
       if ($(ui.item).is(ACMS.Config.Edit.itemMark)) {

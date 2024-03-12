@@ -80,12 +80,12 @@ class Engine
         $this->config = $config;
 
         try {
-            if ( !is_writable($this->destination->getDestinationPath()) ) {
+            if (!is_writable($this->destination->getDestinationPath())) {
                 $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath());
             }
             $this->compiler = App::make('static-export.compiler');
             $this->compiler->setDestination($this->destination);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -163,7 +163,7 @@ class Engine
     {
         $this->copyThemeItems(THEMES_DIR . 'system/');
         $this->copyThemeRequireItems(THEMES_DIR . 'system/');
-        foreach ( $themes as $theme ) {
+        foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
             $this->copyThemeItems($path);
             $this->copyThemeRequireItems($path);
@@ -178,7 +178,7 @@ class Engine
     protected function processResolvCssPath($themes)
     {
         $this->resolvePathInCss(THEMES_DIR . 'system/');
-        foreach ( $themes as $theme ) {
+        foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
             $this->resolvePathInCss($path);
         }
@@ -191,7 +191,7 @@ class Engine
      */
     protected function processExportTheme($themes)
     {
-        foreach ( $themes as $theme ) {
+        foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
             $themeGenerator = new ThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
             $themeGenerator->setSourceTheme($path);
@@ -369,7 +369,7 @@ class Engine
                 $this->logger->processing();
                 Storage::makeDirectory($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_dir_path);
                 Storage::copy($theme . $relative_file_path, $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), $file->getRelativePathname());
             }
         }
@@ -409,7 +409,7 @@ class Engine
                         $this->logger->processing();
                         Storage::makeDirectory($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_dir_path);
                         Storage::copy($theme . $relative_file_path, $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path);
-                    } catch ( \Exception $e ) {
+                    } catch (\Exception $e) {
                         $this->logger->error($e->getMessage(), $file->getRelativePathname());
                     }
                 }
@@ -443,12 +443,12 @@ class Engine
 
         $this->logger->start('CSSのURL属性を解決 ( ' . $theme . ' )', iterator_count($iterator));
 
-        foreach ( $iterator as $file ) {
+        foreach ($iterator as $file) {
             $relative_file_path = $file->getRelativePathname();
             $this->logger->processing($relative_file_path);
-            if ( $file->isReadable() ) {
+            if ($file->isReadable()) {
                 $data = Storage::get($theme . $relative_file_path);
-                if ( $data = $this->compiler->compile($data) ) {
+                if ($data = $this->compiler->compile($data)) {
                     Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path, $data);
                 }
             }
@@ -490,7 +490,7 @@ class Engine
         $iterator->files();
         $this->logger->start('古いファイルを削除', iterator_count($iterator));
 
-        foreach ( $iterator as $file ) {
+        foreach ($iterator as $file) {
             $this->logger->processing();
             $path = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $file->getRelativePathname();
             $this->logger->error('削除', $path, '204');
@@ -508,7 +508,7 @@ class Engine
     {
         $theme = trim($theme, '@');
         $themes[] = $theme;
-        while ( $pos = strpos($theme, '@') ) {
+        while ($pos = strpos($theme, '@')) {
             $theme = substr($theme, $pos + 1);
             $themes[] = $theme;
         }
@@ -526,4 +526,3 @@ class Engine
         return $default;
     }
 }
-

@@ -2,12 +2,12 @@
 
 class ACMS_POST_Search_Items extends ACMS_POST
 {
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * @var array
      */
-    var $_scope = array(
+    public $_scope = array(
         'keyword' => 'global',
     );
 
@@ -29,7 +29,8 @@ class ACMS_POST_Search_Items extends ACMS_POST
         $json = array();
         $this->keyword = $this->Post->get('word');
 
-        if (1
+        if (
+            1
             && !empty($this->keyword)
             && !!SUID
         ) {

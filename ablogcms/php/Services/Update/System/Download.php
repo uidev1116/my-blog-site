@@ -34,7 +34,7 @@ class Download
 
         $filename = basename($url);
         $path = $dest_path . $filename;
-        $fp = fopen ($path, 'w+');
+        $fp = fopen($path, 'w+');
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -48,7 +48,7 @@ class Download
         $error = curl_error($curl);
         curl_close($curl);
 
-        if ( $status !== 200 ) {
+        if ($status !== 200) {
             throw new \RuntimeException('Failed to download the package. ' . $status . ':' . $error);
         }
 

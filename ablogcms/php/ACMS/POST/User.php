@@ -2,9 +2,11 @@
 
 class ACMS_POST_User extends ACMS_POST
 {
-    function isLimit($update=false)
+    function isLimit($update = false)
     {
-        if ( !IS_LICENSED ) return false;
+        if (!IS_LICENSED) {
+            return false;
+        }
         $amount = $this->countOfLimitedAuthUsers();
 
         return $update ? (LICENSE_BLOG_LIMIT >= $amount) : (LICENSE_BLOG_LIMIT > $amount);
@@ -22,10 +24,10 @@ class ACMS_POST_User extends ACMS_POST
 
 class ACMS_Validator_User extends ACMS_Validator
 {
-    function doubleCode($code, $uid=null)
+    function doubleCode($code, $uid = null)
     {
         $bid    = BID;
-        if ( is_array($uid) ) {
+        if (is_array($uid)) {
             $uid    = !empty($uid['uid']) ? $uid['uid'] : null;
             $bid    = !empty($uid['bid']) ? $uid['bid'] : null;
         }
@@ -34,21 +36,23 @@ class ACMS_Validator_User extends ACMS_Validator
         $SQL    = SQL::newSelect('user');
         $SQL->setSelect('user_id');
         $SQL->addWhereOpr('user_code', $code);
-        if ( !empty($bid) ) { 
+        if (!empty($bid)) {
             $anywhereOrBid  = SQL::newWhere();
             $anywhereOrBid->addWhereOpr('user_login_anywhere', 'on', '=', 'OR');
             $anywhereOrBid->addWhereOpr('user_blog_id', $bid, '=', 'OR');
             $SQL->addWhere($anywhereOrBid);
         }
-        if ( !empty($uid) ) { $SQL->addWhereOpr('user_id', $uid, '<>'); }
+        if (!empty($uid)) {
+            $SQL->addWhereOpr('user_id', $uid, '<>');
+        }
         $SQL->setLimit(1);
         return !$DB->query($SQL->get(dsn()), 'one');
     }
 
-    function doubleMail($mail, $uid=null)
+    function doubleMail($mail, $uid = null)
     {
         $bid    = BID;
-        if ( is_array($uid) ) {
+        if (is_array($uid)) {
             $uid    = !empty($uid['uid']) ? $uid['uid'] : null;
             $bid    = !empty($uid['bid']) ? $uid['bid'] : null;
         }
@@ -57,20 +61,24 @@ class ACMS_Validator_User extends ACMS_Validator
         $SQL    = SQL::newSelect('user');
         $SQL->setSelect('user_id');
         $SQL->addWhereOpr('user_mail', $mail);
-        if ( !empty($bid) ) {
+        if (!empty($bid)) {
             $anywhereOrBid  = SQL::newWhere();
             $anywhereOrBid->addWhereOpr('user_login_anywhere', 'on', '=', 'OR');
             $anywhereOrBid->addWhereOpr('user_blog_id', $bid, '=', 'OR');
             $SQL->addWhere($anywhereOrBid);
         }
-        if ( !empty($uid) ) { $SQL->addWhereOpr('user_id', $uid, '<>'); }
+        if (!empty($uid)) {
+            $SQL->addWhereOpr('user_id', $uid, '<>');
+        }
         $SQL->setLimit(1);
         return !$DB->query($SQL->get(dsn()), 'one');
     }
 
     function oldPass($pass, $uid)
     {
-        if (empty($uid)) return false;
+        if (empty($uid)) {
+            return false;
+        }
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('user');
         $SQL->addWhereOpr('user_blog_id', BID);

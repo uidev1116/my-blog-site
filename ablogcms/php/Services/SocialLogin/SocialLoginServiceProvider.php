@@ -25,7 +25,7 @@ class SocialLoginServiceProvider extends ServiceProvider
             );
         });
 
-        $container->singleton('line-login', function() {
+        $container->singleton('line-login', function () {
             $config = Config::loadBlogConfigSet(BID);
             return new Line(
                 $config->get('line_app_id'),
@@ -33,7 +33,7 @@ class SocialLoginServiceProvider extends ServiceProvider
             );
         });
 
-        $container->singleton('twitter-login', function() {
+        $container->singleton('twitter-login', function () {
             $config = Config::loadBlogConfigSet(BID);
             return new Twitter(
                 $config->get('twitter_sns_login_consumer_key'),
@@ -41,7 +41,7 @@ class SocialLoginServiceProvider extends ServiceProvider
             );
         });
 
-        $container->singleton('facebook-login', function() {
+        $container->singleton('facebook-login', function () {
             $config = Config::loadBlogConfigSet(BID);
             return new Facebook(
                 $config->get('facebook_app_id'),
@@ -59,6 +59,5 @@ class SocialLoginServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

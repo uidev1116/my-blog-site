@@ -27,19 +27,33 @@ class LinkResolver extends Resolver
             $blogPath .= '/' . DIR_OFFSET;
         }
 
-        while ( preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $offset) ) {
+        while (preg_match($regex, $html, $match, PREG_OFFSET_CAPTURE, $offset)) {
             $offset = $match[0][1] + strlen($match[0][0]);
-            for ( $mpt=1; $mpt <= 2; $mpt++ ) if ( !empty($match[$mpt][0]) ) break;
-            $path = trim($match[$mpt][0], '\'"');
+            for ($mpt = 1; $mpt <= 2; $mpt++) {
+                if (!empty($match[$mpt][0])) {
+                    break;
+                }
+            }
+            $path = trim($match[$mpt][0], '\'"'); // @phpstan-ignore-line
             $path = preg_replace('@(https?)?://' . $blogPath . '/?@', '/', $path);
 
-            if ( empty($path) ) continue;
-            if ( '//' === substr($path, 0, 2) ) continue;
-            if ( is_int(strpos($path, '://')) ) continue;
-            if ( '#' === substr($path, 0, 1) ) continue;
-            if ( '/' !== substr($path, 0, 1) ) continue;
+            if (empty($path)) {
+                continue;
+            }
+            if ('//' === substr($path, 0, 2)) {
+                continue;
+            }
+            if (is_int(strpos($path, '://'))) {
+                continue;
+            }
+            if ('#' === substr($path, 0, 1)) {
+                continue;
+            }
+            if ('/' !== substr($path, 0, 1)) {
+                continue;
+            }
             if (defined('REWRITE_PATH_EXTENSION')) {
-                $extensionRegex  = '/\.(?:acms|'.REWRITE_PATH_EXTENSION.')/';
+                $extensionRegex  = '/\.(?:acms|' . REWRITE_PATH_EXTENSION . ')/';
                 if (preg_match($extensionRegex, $path)) {
                     continue; // ファイルリンクだった場合は書き換えない
                 }
@@ -54,8 +68,8 @@ class LinkResolver extends Resolver
             $path = '/' . $offset_dir . $path;
             $path = preg_replace('/page\/([\d]+)\/?/', 'page$1.html', $path);
 
-            $html = substr_replace($html, '"'.$path.'"', $match[$mpt][1], strlen($match[$mpt][0]));
-            $offset -= (strlen($match[$mpt][0]) - strlen($path));
+            $html = substr_replace($html, '"' . $path . '"', $match[$mpt][1], strlen($match[$mpt][0])); // @phpstan-ignore-line
+            $offset -= (strlen($match[$mpt][0]) - strlen($path)); // @phpstan-ignore-line
         }
         return $html;
     }
@@ -65,11 +79,11 @@ class LinkResolver extends Resolver
      */
     protected function getRegex()
     {
-        $regex  = '@'.
+        $regex  = '@' .
             // a要素のhref属性
-            '<\s*a(?:"[^"]*"|\'[^\']*\'|[^\'">])*href\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>|'.
+            '<\s*a(?:"[^"]*"|\'[^\']*\'|[^\'">])*href\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>|' .
             // form要素のaction属性
-            '<\s*form(?:"[^"]*"|\'[^\']*\'|[^\'">])*action\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>'.
+            '<\s*form(?:"[^"]*"|\'[^\']*\'|[^\'">])*action\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>' .
             '@';
         return $regex;
     }

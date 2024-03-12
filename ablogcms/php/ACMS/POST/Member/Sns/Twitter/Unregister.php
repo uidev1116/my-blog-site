@@ -16,6 +16,7 @@ class ACMS_POST_Member_Sns_Twitter_Unregister extends ACMS_POST_Member
         $SQL->addUpdate('user_twitter_id', '');
         $SQL->addWhereOpr('user_id', SUID);
         DB::query($SQL->get(dsn()), 'exec');
+        ACMS_RAM::cacheDelete();
         ACMS_RAM::user(SUID, null);
 
         $session = Session::handle();

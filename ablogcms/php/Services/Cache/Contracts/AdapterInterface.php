@@ -6,7 +6,7 @@ interface AdapterInterface
 {
     /**
      * キャッシュがあるか確認
-     * 
+     *
      * @param string $key
      * @return boolean
      */
@@ -14,7 +14,7 @@ interface AdapterInterface
 
     /**
      * キャッシュを取得
-     * 
+     *
      * @param string $key
      * @return any
      */
@@ -23,7 +23,7 @@ interface AdapterInterface
     /**
      * キャッシュを設定
      * $lifetimeを指定しない場合はデフォルト値を設定
-     * 
+     *
      * @param string $key
      * @param $value
      * @param int $lifetime
@@ -32,7 +32,7 @@ interface AdapterInterface
 
     /**
      * キャッシュを削除
-     * 
+     *
      * @param string $key
      */
     public function forget($key);

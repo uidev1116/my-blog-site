@@ -11,7 +11,7 @@ class ACMS_POST_Config_DefaultExport extends ACMS_POST_Config_Export
     {
         @set_time_limit(0);
 
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
             return $this->Post;
         }
 
@@ -26,7 +26,7 @@ class ACMS_POST_Config_DefaultExport extends ACMS_POST_Config_Export
             $this->download();
 
             AcmsLogger::info('デフォルトコンフィグのエクスポートをしました');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
 

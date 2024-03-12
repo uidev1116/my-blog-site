@@ -1,12 +1,12 @@
 <?php
 
 class ACMS_POST_Shop2_Form_Backstep extends ACMS_POST_Shop2
-{   
+{
     function post()
     {
         $this->initVars();
 
-        switch ( $this->Post->get('step') ) {
+        switch ($this->Post->get('step')) {
             case 'address':
                 $this->Get->set('step', '');
                 break;
@@ -16,7 +16,7 @@ class ACMS_POST_Shop2_Form_Backstep extends ACMS_POST_Shop2
             case 'confirm':
                 $this->Get->set('step', 'deliver');
                 break;
-            default       :
+            default:
                 break;
         }
 

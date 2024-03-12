@@ -82,7 +82,7 @@ class EntryGenerator extends Generator
                     $this->copyArchiveEngine->copy($eid);
                 }
                 $this->request($url, $info);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), $url);
             }
         }
@@ -96,10 +96,10 @@ class EntryGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $this->logger ) {
+        if ($this->logger) {
             $this->logger->processing();
         }
-        if ( empty($data) || $code != '200' ) {
+        if (empty($data) || $code != '200') {
             $this->logger->error('データの取得に失敗しました。', acmsLink($info), $code);
             return;
         }
@@ -109,13 +109,13 @@ class EntryGenerator extends Generator
         $file = substr($url, strlen($blog_url));
         $file = $destination . $file;
 
-        if ( is_dir($file) ) {
+        if (is_dir($file)) {
             $file = $file . 'index.html';
         }
         try {
             Storage::makeDirectory(dirname($file));
             Storage::put($file, $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $file);
         }
     }

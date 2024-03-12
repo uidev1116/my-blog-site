@@ -2,7 +2,7 @@
 
 class ACMS_GET_User_Search extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'uid' => 'global',
         'field' => 'global',
         'page' => 'global',
@@ -78,12 +78,14 @@ class ACMS_GET_User_Search extends ACMS_GET
      * @param $Tpl
      * @return array
      */
-    protected function buildUserPager(& $Tpl)
+    protected function buildUserPager(&$Tpl)
     {
         if (empty($this->uid)) {
             $itemsAmount = intval(DB::query($this->amount->get(dsn()), 'one'));
-            return $this->buildPager($this->page,
-                $this->config['limit'], $itemsAmount,
+            return $this->buildPager(
+                $this->page,
+                $this->config['limit'],
+                $itemsAmount,
                 $this->config['pager_delta'],
                 $this->config['pager_cur_attr'],
                 $Tpl
@@ -97,7 +99,7 @@ class ACMS_GET_User_Search extends ACMS_GET
      *
      * @param $Tpl
      */
-    protected function build(& $Tpl)
+    protected function build(&$Tpl)
     {
         // entry list config
         $entry_list_enable = $this->config['entry_list_enable'] === 'on';
@@ -196,7 +198,7 @@ class ACMS_GET_User_Search extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function filterQuery(& $SQL)
+    protected function filterQuery(&$SQL)
     {
         $SQL->addWhereOpr('user_pass', '', '<>');
 
@@ -228,7 +230,7 @@ class ACMS_GET_User_Search extends ACMS_GET
                     $openStatusWhere->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=', 'AND');
                     $openStatusWhere->addWhereOpr('user_status', 'open', '=', 'AND');
                     $statusWhere->addWhere($openStatusWhere, 'OR');
-                } else if ($status === 'close') {
+                } elseif ($status === 'close') {
                     $closeStatusWhere = SQL::newWhere();
                     $closeStatusWhere->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '<', 'OR');
                     $closeStatusWhere->addWhereOpr('user_status', 'close', '=', 'OR');
@@ -278,7 +280,7 @@ class ACMS_GET_User_Search extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function orderQuery(& $SQL)
+    protected function orderQuery(&$SQL)
     {
         if (empty($this->uid)) {
             ACMS_Filter::userOrder($SQL, $this->config['order']);
@@ -292,7 +294,7 @@ class ACMS_GET_User_Search extends ACMS_GET
      * @param SQL_Select & $SQL
      * @return void
      */
-    protected function limitQuery(& $SQL)
+    protected function limitQuery(&$SQL)
     {
         if ($this->uid) {
             $SQL->setLimit(1);
@@ -309,14 +311,16 @@ class ACMS_GET_User_Search extends ACMS_GET
      * @param Template & $Tpl
      * @return bool
      */
-    protected function buildNotFound(& $Tpl)
+    protected function buildNotFound(&$Tpl)
     {
-        if ( !empty($this->users) ) return false;
+        if (!empty($this->users)) {
+            return false;
+        }
         $Tpl->add('notFound');
         return true;
     }
 
-    protected function loadUserEntry(& $Tpl, $uid, $block = array())
+    protected function loadUserEntry(&$Tpl, $uid, $block = array())
     {
         $DB = DB::singleton(dsn());
 
@@ -357,7 +361,8 @@ class ACMS_GET_User_Search extends ACMS_GET
                 );
                 $Tpl->add(array_merge(array('url#rear', 'entry:loop'), $block));
             }
-            $vars['title'] = addPrefixEntryTitle($entry['entry_title'],
+            $vars['title'] = addPrefixEntryTitle(
+                $entry['entry_title'],
                 $entry['entry_status'],
                 $entry['entry_start_datetime'],
                 $entry['entry_end_datetime'],

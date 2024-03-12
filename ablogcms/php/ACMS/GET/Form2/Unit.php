@@ -6,13 +6,15 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        if ( 'form-edit' == ADMIN ) return false;
+        if ('form-edit' == ADMIN) {
+            return false;
+        }
 
         $eid = (!!$this->eid) ? $this->eid : EID;
-        if ( empty($eid) ) {
+        if (empty($eid)) {
             $eid  = $this->Post->get('eid');
         }
-        if ( !defined('FORM_ENTRY_ID') && !!$eid ) {
+        if (!defined('FORM_ENTRY_ID') && !!$eid) {
             define('FORM_ENTRY_ID', $eid);
         }
 
@@ -22,9 +24,9 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
         return $Tpl->get();
     }
 
-    function buildFormUnit(& $Unit, & $Tpl, $eid)
+    function buildFormUnit(&$Unit, &$Tpl, $eid)
     {
-        foreach ( $Unit as $i => $data ) {
+        foreach ($Unit as $i => $data) {
             $type   = $data['type'];
             $sort   = $data['sort'];
             $utid   = $data['clid'];
@@ -38,19 +40,22 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
 
             //----------------
             // text, textarea
-            if ( in_array($type, array('text', 'textarea')) ) {
-                if ( empty($data['label']) ) continue;
+            if (in_array($type, array('text', 'textarea'))) {
+                if (empty($data['label'])) {
+                    continue;
+                }
             //-------------------------
             // radio, select, checkbox
-            } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
-                if ( 1
+            } elseif (in_array($type, array('radio', 'select', 'checkbox'))) {
+                if (
+                    1
                     && isset($data['values'])
                     && $values = acmsUnserialize($data['values'])
                 ) {
-                    if ( is_array($values) ) {
-                        foreach ( $values as $i => $val ) {
-                            if ( !empty($val) ) {
-                                $Tpl->add(array($type.'#val:loop', $type, 'column:loop'), array(
+                    if (is_array($values)) {
+                        foreach ($values as $i => $val) {
+                            if (!empty($val)) {
+                                $Tpl->add(array($type . '#val:loop', $type, 'column:loop'), array(
                                     'i'     => ++$i,
                                     'value' => $val,
                                     'utid'  => $utid,
@@ -82,15 +87,19 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
             }
 
             $required   = false;
-            foreach ( $validator as $key => $val ) {
-                if ( empty($key) ) continue;
-                if ( $key === 'converter' ) {
+            foreach ($validator as $key => $val) {
+                if (empty($key)) {
+                    continue;
+                }
+                if ($key === 'converter') {
                     $Tpl->add(array('converter:loop', $type, 'column:loop'), array(
                         'vutid' => $utid,
                         'val'   => $val,
                     ));
                 } else {
-                    if ( $key === 'required' ) $required = true;
+                    if ($key === 'required') {
+                        $required = true;
+                    }
                     $Tpl->add(array('validator:loop', $type, 'column:loop'), array(
                         'vutid' => $utid,
                         'valid' => $key,
@@ -98,9 +107,13 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
                     ));
                 }
             }
-            if ( $required ) $Tpl->add(array('required', $type, 'column:loop'));
-            foreach ( $validatorMess as $key => $val ) {
-                if ( empty($key) ) continue;
+            if ($required) {
+                $Tpl->add(array('required', $type, 'column:loop'));
+            }
+            foreach ($validatorMess as $key => $val) {
+                if (empty($key)) {
+                    continue;
+                }
                 $Tpl->add(array('validatorMessage:loop', $type, 'column:loop'), array(
                     'vutid'     => $utid,
                     'valid'     => $key,

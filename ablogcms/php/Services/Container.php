@@ -69,18 +69,18 @@ class Container implements Contracts\ContainerInterface
      */
     public function make($alias)
     {
-        if ( !$this->exists($alias) ) {
+        if (!$this->exists($alias)) {
             throw new \RuntimeException('Container does not register ' . $alias);
         }
         $info = $this->aliases[$alias];
 
-        if ( !($info->class instanceof \Closure) && !class_exists($info->class) ) {
+        if (!($info->class instanceof \Closure) && !class_exists($info->class)) {
             throw new \RuntimeException("Container missing class '" . $info->class . "'.");
         }
-        if ( is_callable(array($this, $info->type . 'Make')) ) {
+        if (is_callable(array($this, $info->type . 'Make'))) {
             $instance = call_user_func(array($this, $info->type . 'Make'), $alias);
 
-            if ( isset($this->bootstrap[$alias]) ) {
+            if (isset($this->bootstrap[$alias])) {
                 $this->bootstrap[$alias]($instance);
             }
 
@@ -136,7 +136,7 @@ class Container implements Contracts\ContainerInterface
      */
     public function bootstrap($alias, $callback)
     {
-        if ( !$callback instanceof \Closure ) {
+        if (!$callback instanceof \Closure) {
             return;
         }
 
@@ -166,7 +166,7 @@ class Container implements Contracts\ContainerInterface
      */
     public function singletonMake($alias)
     {
-        if ( isset($this->resolvedInstance[$alias]) ) {
+        if (isset($this->resolvedInstance[$alias])) {
             return $this->resolvedInstance[$alias];
         }
 
@@ -185,7 +185,7 @@ class Container implements Contracts\ContainerInterface
      */
     public function newInstance($class, array $arguments = array())
     {
-        if ( $class instanceof \Closure ) {
+        if ($class instanceof \Closure) {
             $obj = $class($this);
             return $obj;
         }
@@ -220,11 +220,11 @@ class Container implements Contracts\ContainerInterface
      */
     protected function getMethodArguments($class, $method)
     {
-        if ( is_object($class) ) {
+        if (is_object($class)) {
             $class = get_class($class);
         }
         $reflection = new \ReflectionClass($class);
-        if ( $function = $reflection->getMethod($method) ) {
+        if ($function = $reflection->getMethod($method)) {
             return $function->getParameters();
         }
 
@@ -242,11 +242,11 @@ class Container implements Contracts\ContainerInterface
      */
     protected function getConstructorArguments($class)
     {
-        if ( is_object($class) ) {
+        if (is_object($class)) {
             $class = get_class($class);
         }
         $reflection = new \ReflectionClass($class);
-        if ( $constructor = $reflection->getConstructor() ) {
+        if ($constructor = $reflection->getConstructor()) {
             return $constructor->getParameters();
         }
 
@@ -264,17 +264,17 @@ class Container implements Contracts\ContainerInterface
     {
         $objects = array();
 
-        foreach ( $arguments as $arg ) {
+        foreach ($arguments as $arg) {
             $name = $arg->name;
             $class = $arg->getClass();
-            if ( !$class ) {
+            if (!$class) {
                 continue;
             }
             $class = $class->name;
             $reflection = new \ReflectionClass($class);
-            if ( $this->exists($class) ) {
+            if ($this->exists($class)) {
                 $objects[$name] = $this->make($class);
-            } else if ( $reflection->isInstantiable() ) {
+            } elseif ($reflection->isInstantiable()) {
                 $objects[$name] = $this->newInstance($class);
             }
         }
@@ -296,12 +296,12 @@ class Container implements Contracts\ContainerInterface
     {
         $reflection = new \ReflectionClass($class);
 
-        if ( empty($arguments) ) {
-            $obj = new $class;
+        if (empty($arguments)) {
+            $obj = new $class();
         } else {
             $obj = $reflection->newInstanceArgs($arguments);
         }
-        if ( !$obj ) {
+        if (!$obj) {
             throw new \RuntimeException('Failed to make instance');
         }
 
@@ -319,13 +319,13 @@ class Container implements Contracts\ContainerInterface
     {
         $arguments = array();
 
-        foreach ( $args as $param ) {
+        foreach ($args as $param) {
             try {
                 $val = $param->getDefaultValue();
                 $arguments[$param->name] = $val;
-            } catch ( \ReflectionException $e ) {
+            } catch (\ReflectionException $e) {
                 $arguments[$param->name] = null;
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 continue;
             }
         }

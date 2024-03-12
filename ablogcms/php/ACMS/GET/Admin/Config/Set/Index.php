@@ -65,7 +65,7 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
         return $SQL;
     }
 
-    protected function build(& $Tpl, $all)
+    protected function build(&$Tpl, $all)
     {
         $cnt = count($all);
         $sort = 1;
@@ -103,7 +103,8 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
             if (BID === $setbid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $setid));
             } else {
-                if (0
+                if (
+                    0
                     or (roleAvailableUser() && roleAuthorization('rule_edit', $setbid))
                     or sessionWithAdministration($setbid)
                 ) {
@@ -140,4 +141,3 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
         );
     }
 }
-

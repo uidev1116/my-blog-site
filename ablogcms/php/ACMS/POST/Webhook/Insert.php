@@ -43,7 +43,7 @@ class ACMS_POST_Webhook_Insert extends ACMS_POST_Module
 
             $this->addMessage('Webhookを作成しました');
 
-            AcmsLogger::info('Webhook「' . $input->get('name') .'」を作成しました', [
+            AcmsLogger::info('Webhook「' . $input->get('name') . '」を作成しました', [
                 'id' => $id,
                 'data' => $input->_aryField,
             ]);

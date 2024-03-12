@@ -2,7 +2,6 @@
 
 namespace Acms\Services\Database\Engine;
 
-use App;
 use ACMS_Hook;
 
 abstract class Base
@@ -36,6 +35,13 @@ abstract class Base
      * @var int
      */
     protected $columnCount;
+
+    /**
+     * new static()でインスタンスを作成するようにするため、constructorを上書きできないようにする
+     */
+    final public function __construct()
+    {
+    }
 
     /**
      * connect mysql server
@@ -164,25 +170,15 @@ abstract class Base
     abstract public function checkConnectDatabase($dsn);
 
     /**
-     * constructor.
-     *
-     * @param array $dsn
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
      * クエリ書き換え用Hook
      *
      * @param string $sql
      */
     public function hook(&$sql)
     {
-        if ( HOOK_ENABLE ) {
+        if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('query', array(& $sql));
+            $Hook->call('query', array(&$sql));
         }
     }
 
@@ -209,7 +205,7 @@ abstract class Base
         static $connections = array();
 
         $id = sha1(serialize($dsn));
-        if ( !isset($connections[$id]) ) {
+        if (!isset($connections[$id])) {
             $obj = new static();
             $obj->connect($dsn);
             $connections[$id] = $obj;
@@ -228,20 +224,20 @@ abstract class Base
     public function subQuery($query = null, $subquery = false)
     {
         $version = $this->getVersion();
-        if ( version_compare($this->getVersion(), '5.6.0', '>=') ) {
+        if (version_compare($this->getVersion(), '5.6.0', '>=')) {
             return $query;
         }
         if (strpos(strtolower($version), 'mariadb') !== false) {
             return $query;
         }
-        if ( $subquery ) {
+        if ($subquery) {
             $DB = self::singleton(dsn());
-            $Amount = new SQL_Select($query);
+            $Amount = new \SQL_Select($query);
             $Amount->setSelect('*', 'amount', null, 'COUNT');
             $q = $Amount->get(dsn());
             $amount = intval($DB->query($q, 'one'));
 
-            if ( $amount > 300 ) {
+            if ($amount > 300) {
                 return $query;
             }
         }
@@ -281,33 +277,37 @@ abstract class Base
      * @param string $sql
      * @param int $time
      *
-     * @return array|int
+     * @return array|int|void
      */
     public static function time($sql = null, $time = null)
     {
         static $arySql = array();
         static $aryTime = array();
 
-        if ( is_int($sql) ) {
+        if (is_int($sql)) {
             $res = array();
-            foreach ( $aryTime as $i => $time ) {
+            foreach ($aryTime as $i => $time) {
                 $res[strval($time)] = $arySql[$i];
             }
             krsort($res);
             $_res = $res;
             $res = array();
             $i = 0;
-            foreach ( $_res as $key => $val ) {
+            foreach ($_res as $key => $val) {
                 $res[$key] = $val;
-                if ( ++$i >= $sql ) break;
+                if (++$i >= $sql) {
+                    break;
+                }
             }
             return $res;
-        } else if ( is_null($sql) ) {
-            return array_sum($aryTime);
-        } else {
-            $arySql[] = $sql;
-            $aryTime[] = $time;
         }
+
+        if (is_null($sql)) {
+            return array_sum($aryTime);
+        }
+
+        $arySql[] = $sql;
+        $aryTime[] = $time;
     }
 
     /**
@@ -382,7 +382,7 @@ abstract class Base
     protected function fetchMode($sql, $response)
     {
         $this->hook($sql);
-        $this->fetch[sha1($sql)] =& $response;
+        $this->fetch[sha1($sql)] = &$response;
 
         return true;
     }
@@ -409,14 +409,14 @@ abstract class Base
     {
         $charset = isset($dsn['charset']) ? $dsn['charset'] : 'UTF-8';
 
-        if ( preg_match('@^[shiftj]+$@i', $charset) ) {
+        if (preg_match('@^[shiftj]+$@i', $charset)) {
             $charset = 'sjis';
-        } else if ( preg_match('@^[eucjp_\-]+$@i', $charset) ) {
+        } elseif (preg_match('@^[eucjp_\-]+$@i', $charset)) {
             $charset = 'ujis';
         } else {
             $charset = 'utf8';
         }
-        if ( defined('DB_CONNECTION_CHARSET') && !!DB_CONNECTION_CHARSET ) {
+        if (defined('DB_CONNECTION_CHARSET') && !!DB_CONNECTION_CHARSET) {
             $charset = DB_CONNECTION_CHARSET;
         }
         return $charset;
@@ -431,7 +431,7 @@ abstract class Base
      */
     protected function saveProcessingTime($sql, $time)
     {
-        if ( empty($this->dsn['debug']) ) {
+        if (empty($this->dsn['debug'])) {
             return;
         }
         $this->hook($sql);

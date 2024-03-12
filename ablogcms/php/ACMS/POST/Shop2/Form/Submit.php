@@ -12,17 +12,17 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
         $TEMP    = $this->openCart();
 
         // 在庫数チェック
-        if ( 'on' == config('shop_stock_change') ) {
-            $flg_valid = TRUE;
-            foreach ( $TEMP as $key => $item ) {
-                $entryField = loadEntryField( intval( $item['item_id'] ) );
+        if ('on' == config('shop_stock_change')) {
+            $flg_valid = true;
+            foreach ($TEMP as $key => $item) {
+                $entryField = loadEntryField(intval($item['item_id']));
                 $int_stock = intval($entryField->get($this->item_sku));
-                if ( !($int_stock >= intval($item[$this->item_qty])) ) {
-                    $flg_valid = FALSE;
-                    $TEMP[$key][$this->item_qty.':v#max'] = 'over';
+                if (!($int_stock >= intval($item[$this->item_qty]))) {
+                    $flg_valid = false;
+                    $TEMP[$key][$this->item_qty . ':v#max'] = 'over';
                 }
             }
-            if ( !$flg_valid ) {
+            if (!$flg_valid) {
                 $this->Get->set('step', '');
                 $this->screenTrans($this->orderTpl, $this->Get->get('step'));
                 return $this->Post;
@@ -42,14 +42,15 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
          * store: session
          */
         $list = $SESSION->listFields();
-        foreach ( $list as $key ) {
+        foreach ($list as $key) {
             $FIELD->set($key, $SESSION->get($key));
         }
 
         /**
          * validation
          */
-        if ( 0
+        if (
+            0
             or empty($TEMP)
             or empty($ADDRESS)
             or !$SESSION->get('total')
@@ -73,23 +74,22 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
          * store: address
          */
         $fds = $PRIMARY->listFields();
-        foreach ( $fds as $fd ) {
-            $FIELD->set($fd.'#1', $PRIMARY->get($fd));
+        foreach ($fds as $fd) {
+            $FIELD->set($fd . '#1', $PRIMARY->get($fd));
         }
         $fds = $ADDRESS->listFields();
-        foreach ( $fds as $fd ) {
-            $FIELD->set($fd.'#2', $ADDRESS->get($fd));
+        foreach ($fds as $fd) {
+            $FIELD->set($fd . '#2', $ADDRESS->get($fd));
         }
 
         // すでに送信していれば2重で記録等をしない
-        if ( !$this->alreadySubmit() ) {
+        if (!$this->alreadySubmit()) {
             /**
              * build: item:loop
              */
             $cartTpl    = findTemplate($this->cartTpl);
             $Tpl        = new Template(setGlobalVars(Storage::get($cartTpl)), new ACMS_Corrector());
-            foreach ( $TEMP as $item ) {
-
+            foreach ($TEMP as $item) {
                 /*
                 if ( config('shop_tax_calculate') != 'extax' ) {
                     $item[$this->item_price] += $item[$this->item_price.'#tax'];
@@ -114,8 +114,8 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
             /**
              * Update Item Stock Keeping Unit
              */
-            if ( 'on' == config('shop_stock_change') ) {
-                foreach ( $TEMP as $item ) {
+            if ('on' == config('shop_stock_change')) {
+                foreach ($TEMP as $item) {
                     $sku = $this->getSku($item[$this->item_id]);
                     $sku = ($sku <= $item[$this->item_qty]) ? '' : $sku - $item[$this->item_qty];
 
@@ -131,7 +131,7 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
                     unset($sku);
                 }
             }
-            $code   = date('Ymd-His').sprintf("-%03d", mt_rand(0, 999));
+            $code   = date('Ymd-His') . sprintf("-%03d", mt_rand(0, 999));
             $SESSION->set('code', $code);
 
             /**
@@ -143,7 +143,7 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
             /**
              * Form_Submitをインスタンス化して実行する
              */
-            $Submit = new ACMS_POST_Form_Submit;
+            $Submit = new ACMS_POST_Form_Submit();
 
             $Submit->Q      = $this->Q;
             $Submit->Get    = $this->Get;
@@ -151,7 +151,6 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
 
             setConfig('form_csrf_enable', 'off');
             $Submit->post();
-
         } else {
             $SESSION->set('submitted', true);
         }

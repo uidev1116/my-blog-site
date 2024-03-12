@@ -116,7 +116,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $q = $SQL->get(dsn());
 
         if ($row = $DB->query($q, 'row')) {
-            if (array_search('user_id', $this->labels) === false || $row['user_id'] != $this->data['user_id'] ) {
+            if (array_search('user_id', $this->labels) === false || $row['user_id'] != $this->data['user_id']) {
                 throw new RuntimeException('既に存在するユーザーが含まれています。');
             }
         }
@@ -158,7 +158,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $DB = DB::singleton(dsn());
 
         $SQL = SQL::newInsert('user');
-        foreach ( $this->user as $key => $val ) {
+        foreach ($this->user as $key => $val) {
             $SQL->addInsert($key, $val);
         }
         $DB->query($SQL->get(dsn()), 'exec');
@@ -177,9 +177,9 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         if (!empty($this->fields)) {
             Common::deleteField('uid', $uid);
 
-            foreach ( $this->fields as $fval ) {
+            foreach ($this->fields as $fval) {
                 $SQL    = SQL::newInsert('field');
-                foreach ( $fval as $key => $val ) {
+                foreach ($fval as $key => $val) {
                     $SQL->addInsert($key, $val);
                 }
                 $SQL->addInsert('field_uid', $uid);
@@ -199,7 +199,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $DB = DB::singleton(dsn());
         $uid = $this->csvId;
         $SQL = SQL::newUpdate('user');
-        foreach ( $this->user as $key => $val ) {
+        foreach ($this->user as $key => $val) {
             $SQL->addUpdate($key, $val);
         }
         $SQL->addWhereOpr('user_id', $uid);
@@ -218,13 +218,13 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $DB = DB::singleton(dsn());
         $uid = $this->csvId;
 
-        if ( !empty($this->fields) ) {
+        if (!empty($this->fields)) {
             $fkey = array();
             $SQL    = SQL::newDelete('field');
             $SQL->addWhereOpr('field_uid', $uid);
-            foreach ( $this->fields as $dval ) {
-                foreach ( $dval as $key => $val ) {
-                    if ( $key === 'field_key' ) {
+            foreach ($this->fields as $dval) {
+                foreach ($dval as $key => $val) {
+                    if ($key === 'field_key') {
                         $fkey[] = $val;
                     }
                 }
@@ -233,9 +233,9 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
             $DB->query($SQL->get(dsn()), 'exec');
             Common::deleteFieldCache('uid', $uid);
 
-            foreach ( $this->fields as $fval ) {
+            foreach ($this->fields as $fval) {
                 $SQL    = SQL::newInsert('field');
-                foreach ( $fval as $key => $val ) {
+                foreach ($fval as $key => $val) {
                     $SQL->addInsert($key, $val);
                 }
                 $SQL->addInsert('field_uid', $uid);
@@ -255,12 +255,12 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $this->user = $this->userBase();
         $field = $this->fieldBase();
 
-        foreach ( $this->data as $key => $value ) {
+        foreach ($this->data as $key => $value) {
             if ($key === 'user_id' && $this->isUpdate) {
                 $this->user['user_id'] = $this->csvId;
                 $field['field_uid'] = $this->csvId;
             }
-            if ( array_key_exists($key, $this->user) ) {
+            if (array_key_exists($key, $this->user)) {
                 $this->buildUser($key, $value);
             } else {
                 $this->buildField($field, $key, $value);
@@ -272,9 +272,9 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
             unset($this->user['user_pass_generation']);
         }
         // アップデートの場合は余分なベース情報を削除
-        if ( $this->isUpdate ) {
-            foreach ( $this->user as $key => $value ) {
-                if ( !isset($this->data[$key]) ) {
+        if ($this->isUpdate) {
+            foreach ($this->user as $key => $value) {
+                if (!isset($this->data[$key])) {
                     unset($this->user[$key]);
                 }
             }
@@ -308,15 +308,15 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
      */
     function buildUser($key, $value)
     {
-        switch ( $key ) {
+        switch ($key) {
             case 'user_updated_datetime':
             case 'user_generated_datetime':
-                if ( preg_match('@^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$@', $value) ) {
+                if (preg_match('@^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$@', $value)) {
                     $this->user[$key] = $value;
                 }
                 break;
             case 'user_expire':
-                if ( preg_match('@^\d{4}-\d{2}-\d{2}$@', $value) ) {
+                if (preg_match('@^\d{4}-\d{2}-\d{2}$@', $value)) {
                     $this->user[$key] = $value;
                 }
                 break;
@@ -337,7 +337,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
             case 'user_path_reset':
             case 'user_sort':
                 break;
-            default :
+            default:
                 $this->user[$key] = $value;
         }
     }
@@ -353,7 +353,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
     function buildField($field, $key, $value)
     {
         $sort   = 1;
-        if ( preg_match('@\[\d+\]$@', $key, $matchs) ) {
+        if (preg_match('@\[\d+\]$@', $key, $matchs)) {
             $sort   = intval(preg_replace('@\[|\]@', '', $matchs[0]));
             $key    = preg_replace('@\[\d+\]$@', '', $key);
         }
@@ -373,11 +373,11 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
     {
         $base = array(
             'user_id'               => $this->nextId,
-            'user_code'             => 'user-'.$this->nextId,
+            'user_code'             => 'user-' . $this->nextId,
             'user_status'           => 'open',
             'user_sort'             => $this->nextSortId(),
-            'user_name'             => 'user-'.$this->nextId,
-            'user_mail'             => 'user-'.$this->nextId.'@example.com',
+            'user_name'             => 'user-' . $this->nextId,
+            'user_mail'             => 'user-' . $this->nextId . '@example.com',
             'user_mail_magazine'    => 'off',
             'user_mail_mobile'      => '',
             'user_mail_mobile_magazine' => 'off',
@@ -395,8 +395,8 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
             'user_blog_id'          => BID,
         );
 
-        if ( !$this->isUpdate  ) {
-            $base['user_pass'] = acmsUserPasswordHash('user-'.$this->nextId);
+        if (!$this->isUpdate) {
+            $base['user_pass'] = acmsUserPasswordHash('user-' . $this->nextId);
             $base['user_pass_generation'] = PASSWORD_ALGORITHM_GENERATION;
         }
 

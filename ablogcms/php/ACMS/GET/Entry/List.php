@@ -20,7 +20,7 @@ class ACMS_GET_Entry_List extends ACMS_GET_Entry_Summary
             'newtime'          => config('entry_list_newtime'),
             'unit'             => config('entry_list_unit'),
             'notfound'         => config('mo_entry_list_notfound'),
-            'notfoundStatus404'=> config('entry_list_notfound_status_404'),
+            'notfoundStatus404' => config('entry_list_notfound_status_404'),
             'noimage'          => config('entry_list_noimage'),
             'imageX'           => intval(config('entry_list_image_x')),
             'imageY'           => intval(config('entry_list_image_y')),

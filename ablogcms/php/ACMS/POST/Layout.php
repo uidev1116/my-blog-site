@@ -2,9 +2,9 @@
 
 class ACMS_POST_Layout extends ACMS_POST
 {
-    function save($data, $preview=false)
+    function save($data, $preview = false)
     {
-        if ( empty($data) ) {
+        if (empty($data)) {
             return false;
         }
 
@@ -19,7 +19,7 @@ class ACMS_POST_Layout extends ACMS_POST
         $SQL->addInsert('layout_grid_mid', $data['mid']);
         $SQL->addInsert('layout_grid_tpl', $data['tpl']);
         $SQL->addInsert('layout_grid_blog_id', BID);
-        if ( $preview ) {
+        if ($preview) {
             $SQL->addInsert('layout_grid_preview', 1);
         }
 

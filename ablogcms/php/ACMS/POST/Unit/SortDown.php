@@ -7,7 +7,9 @@ class ACMS_POST_Unit_SortDown extends ACMS_POST_Unit
         $utid   = UTID;
         $eid    = EID;
         $entry  = ACMS_RAM::entry($eid);
-        if (!roleEntryUpdateAuthorization(BID, $entry)) die();
+        if (!roleEntryUpdateAuthorization(BID, $entry)) {
+            die();
+        }
 
         $DB     = DB::singleton(dsn());
 
@@ -22,7 +24,9 @@ class ACMS_POST_Unit_SortDown extends ACMS_POST_Unit
         $SQL->addWhereOpr('column_entry_id', $eid);
         $max    = $DB->query($SQL->get(dsn()), 'one');
 
-        if ( $sort == $max ) return $this->Post;
+        if ($sort == $max) {
+            return $this->Post;
+        }
 
         $below  = $sort + 1;
 

@@ -11,7 +11,9 @@ class ACMS_Validator_Category extends ACMS_Validator
      */
     function double($ccd, $arg)
     {
-        if (empty($ccd)) return true;
+        if (empty($ccd)) {
+            return true;
+        }
 
         $scope = isset($arg[0]) ? $arg[0] : 'local';
         $pcid = isset($arg[1]) ? intval($arg[1]) : 0;
@@ -27,7 +29,9 @@ class ACMS_Validator_Category extends ACMS_Validator
             $SQL->addWhereOpr('blog_domain', $domain);
             $SQL->addWhereOpr('blog_code', $ccd);
             $SQL->setSelect(1);
-            if ($DB->query($SQL->get(dsn()), 'one')) return false;
+            if ($DB->query($SQL->get(dsn()), 'one')) {
+                return false;
+            }
         }
 
         //-------------
@@ -72,21 +76,25 @@ class ACMS_Validator_Category extends ACMS_Validator
         return !$DB->query($SQL->get(dsn()), 'one');
     }
 
-    function _double($val, $cid=null)
+    function _double($val, $cid = null)
     {
-        if ( empty($val) ) return true;
+        if (empty($val)) {
+            return true;
+        }
         $DB     = DB::singleton(dsn());
 
         //------
         // blog
-        if ( !ACMS_RAM::blogCode(BID) ) {
+        if (!ACMS_RAM::blogCode(BID)) {
             $domain = ACMS_RAM::blogDomain(BID);
             $SQL    = SQL::newSelect('blog');
             $SQL->setSelect('blog_id');
             $SQL->addWhereOpr('blog_domain', $domain);
             $SQL->addWhereOpr('blog_code', $val);
             $SQL->setSelect(1);
-            if ( $DB->query($SQL->get(dsn()), 'one') ) return false;
+            if ($DB->query($SQL->get(dsn()), 'one')) {
+                return false;
+            }
         }
 
         //----------
@@ -95,7 +103,7 @@ class ACMS_Validator_Category extends ACMS_Validator
         $SQL->setSelect('category_id');
         $SQL->addWhereOpr('category_code', $val);
         $SQL->addWhereOpr('category_blog_id', BID);
-        if ( $cid = idval($cid) ) {
+        if ($cid = idval($cid)) {
             $SQL->addWhereOpr('category_id', $cid, '<>');
         }
 
@@ -104,9 +112,15 @@ class ACMS_Validator_Category extends ACMS_Validator
 
     function status($val)
     {
-        if ( empty($val) ) return true;
-        if ( !CID ) return true;
-        if ( 'open' <> $val ) return true;
+        if (empty($val)) {
+            return true;
+        }
+        if (!CID) {
+            return true;
+        }
+        if ('open' <> $val) {
+            return true;
+        }
 
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('category');
@@ -129,9 +143,15 @@ class ACMS_POST_Category extends ACMS_POST
 
     function changeParentCategory($cid, $toPid)
     {
-        if ( !$cid = idval($cid) ) return false;
-        if ( $toPid == $cid ) return false;
-        if ( BID <> ACMS_RAM::categoryBlog($cid) ) return false;
+        if (!$cid = idval($cid)) {
+            return false;
+        }
+        if ($toPid == $cid) {
+            return false;
+        }
+        if (BID <> ACMS_RAM::categoryBlog($cid)) {
+            return false;
+        }
 
         $DB = DB::singleton(dsn());
 
@@ -144,7 +164,9 @@ class ACMS_POST_Category extends ACMS_POST
         $SQL->addSelect('category_sort');
         $SQL->addWhereOpr('category_id', $cid);
         $SQL->addWhereOpr('category_blog_id', BID);
-        if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die();
+        if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+            die();
+        }
         $fromLeft   = intval($row['category_left']);
         $fromRight  = intval($row['category_right']);
         $fromPid    = intval($row['category_parent']);
@@ -152,21 +174,27 @@ class ACMS_POST_Category extends ACMS_POST
 
         //-------------
         // same parent
-        if ( $toPid == $fromPid ) return false;
+        if ($toPid == $fromPid) {
+            return false;
+        }
 
         //------------------------
         // to: left, right, sort
-        if ( !empty($toPid) ) {
+        if (!empty($toPid)) {
             $SQL    = SQL::newSelect('category');
             $SQL->addSelect('category_left');
             $SQL->addSelect('category_right');
             $SQL->addWhereOpr('category_id', $toPid);
             $SQL->addWhereOpr('category_blog_id', BID);
-            if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die();
+            if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                die();
+            }
             $toLeft     = $row['category_left'];
             $toRight    = $row['category_right'];
 
-            if ( $toLeft > $fromLeft and $toRight < $fromRight ) return false;
+            if ($toLeft > $fromLeft and $toRight < $fromRight) {
+                return false;
+            }
 
             //-------
             // toSort
@@ -177,19 +205,20 @@ class ACMS_POST_Category extends ACMS_POST
             $SQL->setOrder('category_sort', 'DESC');
             $SQL->setLimit(1);
             $toSort = intval($DB->query($SQL->get(dsn()), 'one')) + 1;
-
         } else {
-
             $SQL    = SQL::newSelect('category');
             $SQL->addSelect('category_right');
             $SQL->addSelect('category_sort');
             $SQL->addWhereOpr('category_blog_id', BID);
             $SQL->setOrder('category_right', 'DESC');
             $SQL->setLimit(1);
-            if ( !$row = $DB->query($SQL->get(dsn()), 'row') ) die();
+            if (!$row = $DB->query($SQL->get(dsn()), 'row')) {
+                die();
+            }
             $toLeft     = intval($row['category_right']);
             $toRight    = $toLeft   + 1;
-            $toSort     = intval($row['category_sort']) + 1;;
+            $toSort     = intval($row['category_sort']) + 1;
+            ;
         }
 
         //-----
@@ -200,15 +229,15 @@ class ACMS_POST_Category extends ACMS_POST
         // align
         $SQL    = SQL::newUpdate('category');
         $SQL->addWhereOpr('category_blog_id', BID);
-        if ( $fromRight > $toRight ) {
+        if ($fromRight > $toRight) {
             //-------
             // upper
             $delta  = $fromLeft - $toRight;
 
             $Case   = SQL::newCase();
             $Case->add(
-                SQL::newOprBw('category_left', $fromLeft, $fromRight)
-                , SQL::newOpr('category_left', $delta, '-')
+                SQL::newOprBw('category_left', $fromLeft, $fromRight),
+                SQL::newOpr('category_left', $delta, '-')
             );
             $Where  = SQL::newWhere();
             $Where->addWhereOpr('category_left', $toRight, '>=');
@@ -219,8 +248,8 @@ class ACMS_POST_Category extends ACMS_POST
 
             $Case   = SQL::newCase();
             $Case->add(
-                SQL::newOprBw('category_right', $fromLeft, $fromRight)
-                , SQL::newOpr('category_right', $delta, '-')
+                SQL::newOprBw('category_right', $fromLeft, $fromRight),
+                SQL::newOpr('category_right', $delta, '-')
             );
             $Where  = SQL::newWhere();
             $Where->addWhereOpr('category_right', $toRight, '>=');
@@ -228,7 +257,6 @@ class ACMS_POST_Category extends ACMS_POST
             $Case->add($Where, SQL::newOpr('category_right', $gap, '+'));
             $Case->setElse(SQL::newField('category_right'));
             $SQL->addUpdate('category_right', $Case);
-
         } else {
             //------
             // lower
@@ -236,8 +264,8 @@ class ACMS_POST_Category extends ACMS_POST
 
             $Case   = SQL::newCase();
             $Case->add(
-                SQL::newOprBw('category_left', $fromLeft, $fromRight)
-                , SQL::newOpr('category_left', $delta, '+')
+                SQL::newOprBw('category_left', $fromLeft, $fromRight),
+                SQL::newOpr('category_left', $delta, '+')
             );
             $Where  = SQL::newWhere();
             $Where->addWhereOpr('category_left', $fromRight, '>');
@@ -248,8 +276,8 @@ class ACMS_POST_Category extends ACMS_POST
 
             $Case   = SQL::newCase();
             $Case->add(
-                SQL::newOprBw('category_right', $fromLeft, $fromRight)
-                , SQL::newOpr('category_right', $delta, '+')
+                SQL::newOprBw('category_right', $fromLeft, $fromRight),
+                SQL::newOpr('category_right', $delta, '+')
             );
             $Where  = SQL::newWhere();
             $Where->addWhereOpr('category_right', $fromRight, '>');
@@ -257,7 +285,6 @@ class ACMS_POST_Category extends ACMS_POST
             $Case->add($Where, SQL::newOpr('category_right', $gap, '-'));
             $Case->setElse(SQL::newField('category_right'));
             $SQL->addUpdate('category_right', $Case);
-
         }
         $DB->query($SQL->get(dsn()), 'exec');
 
@@ -281,5 +308,4 @@ class ACMS_POST_Category extends ACMS_POST
 
         ACMS_RAM::category($cid, null);
     }
-
 }

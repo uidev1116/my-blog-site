@@ -7,7 +7,7 @@ class ACMS_POST_Login_Check extends ACMS_POST
     /**
      * @var bool
      */
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * @var bool

@@ -10,7 +10,7 @@ class ACMS_GET_Admin_Errors extends ACMS_GET_Admin
         $errors = false;
         if ($this->Post->isChildExists('errors')) {
             $errors = $this->Post->getChild('errors');
-        } else if ($session->isChildExists('errors')) {
+        } elseif ($session->isChildExists('errors')) {
             $errors = $session->getChild('errors');
             $session->removeChild('errors');
         }

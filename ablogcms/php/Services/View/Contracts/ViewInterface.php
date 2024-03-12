@@ -12,7 +12,7 @@ interface ViewInterface
      *
      * @return bool
      */
-    public function init($txt, $Corrector=null);
+    public function init($txt, $Corrector = null);
 
     /**
      * テンプレートを文字列で取得する
@@ -36,7 +36,7 @@ interface ViewInterface
      * @param array|null $blocks
      * @param array $vars
      *
-     * @return bool
+     * @return false|void
      */
     public function add($blocks = array(), $vars = array());
 }

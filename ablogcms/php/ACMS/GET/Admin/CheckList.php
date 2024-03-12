@@ -5,24 +5,26 @@ use Acms\Services\Facades\Image;
 
 class ACMS_GET_Admin_CheckList extends ACMS_GET
 {
-    function get()
+    public function get()
     {
-        if ( !sessionWithSubscription() ) return '';
+        if (!sessionWithSubscription()) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
         $keyword = $this->Get->get('keyword');
 
-        if ( !empty($keyword) ) {
+        if (!empty($keyword)) {
             $SQL = SQL::newSelect('config');
             $SQL->addLeftJoin('module', 'config_module_id', 'module_id');
             $SQL->addLeftJoin('rule', 'config_rule_id', 'rule_id');
-            $SQL->addWhereOpr('config_key', '%'.$keyword.'%', 'LIKE', 'OR');
-            $SQL->addWhereOpr('config_value', '%'.$keyword.'%', 'LIKE', 'OR');
+            $SQL->addWhereOpr('config_key', '%' . $keyword . '%', 'LIKE', 'OR');
+            $SQL->addWhereOpr('config_value', '%' . $keyword . '%', 'LIKE', 'OR');
             $SQL->setLimit(300);
             $configAll = $DB->query($SQL->get(dsn()), 'all');
-            if ( is_array($configAll) && count($configAll) > 0 ) {
-                foreach ( $configAll as $config ) {
+            if (is_array($configAll) && count($configAll) > 0) {
+                foreach ($configAll as $config) {
                     $bid = $config['config_blog_id'];
                     $rid = $config['config_rule_id'];
                     $mid = $config['config_module_id'];
@@ -60,7 +62,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
             }
         }
 
-        if ( LICENSE_BLOG_LIMIT == 2147483647 ) {
+        if (LICENSE_BLOG_LIMIT == 2147483647) {
             $Tpl->add(array('userUnlimited', 'license'));
         } else {
             $Tpl->add(array('userLimited', 'license'), array(
@@ -86,7 +88,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
 
         //------------
         // 画像エンジン
-        if ( class_exists('Imagick') && config('image_magick') == 'on' ) {
+        if (class_exists('Imagick') && config('image_magick') == 'on') {
             $Tpl->add('imgLibrary', array(
                 'mode'  => 'ImageMagick',
             ));
@@ -107,14 +109,14 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         $SQL = SQL::newSelect('blog');
         $SQL->setOrder('blog_id');
 
-        foreach ( $DB->query($SQL->get(dsn()), 'all') as $blog ) {
+        foreach ($DB->query($SQL->get(dsn()), 'all') as $blog) {
             $bid = $blog['blog_id'];
             $this->addBlogInfo($Tpl, $bid);
 
             $SQL = SQL::newSelect('rule');
             $SQL->addSelect('rule_id');
             $SQL->addWhereOpr('rule_blog_id', $bid);
-            foreach ( $DB->query($SQL->get(dsn()), 'all') as $rule ) {
+            foreach ($DB->query($SQL->get(dsn()), 'all') as $rule) {
                 $rid = $rule['rule_id'];
                 $this->addBlogInfo($Tpl, $bid, $rid);
             }
@@ -127,8 +129,8 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         $SQL->addOrder('form_id');
         $formAll = $DB->query($SQL->get(dsn()), 'all');
 
-        if ( is_array($formAll) ) {
-            foreach ( $formAll as $form ) {
+        if (is_array($formAll)) {
+            foreach ($formAll as $form) {
                 $formField = unserialize($form['form_data']);
                 $formVars = $this->buildField($formField, $Tpl, array('formGeneral:loop'));
                 $formVars['bid']    = $form['form_blog_id'];
@@ -156,7 +158,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
                 $Tpl->add('formAdmin:loop', $formVars);
             }
         }
-        if ( !empty($keyword) ) {
+        if (!empty($keyword)) {
             $Tpl->add(null, array(
                 'keyword'   => $keyword,
             ));
@@ -165,7 +167,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         return $Tpl->get();
     }
 
-    function addBlogInfo(& $Tpl, $bid=0, $rid=null)
+    function addBlogInfo(&$Tpl, $bid = 0, $rid = null)
     {
         $blogConfig = array(
             'bid' => $bid,
@@ -194,7 +196,8 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
     function imgOptimizerCheck()
     {
         $format = array();
-        if ( 0
+        if (
+            0
             || !Storage::isWritable(THEMES_DIR . 'system/images/system/check.jpeg')
             || !Storage::isWritable(THEMES_DIR . 'system/images/system/check.png')
             || !Storage::isWritable(THEMES_DIR . 'system/images/system/check.gif')
@@ -214,7 +217,7 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         return $format;
     }
 
-    function config($key=null, $bid=1, $rid=null)
+    function config($key = null, $bid = 1, $rid = null)
     {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('config');

@@ -18,16 +18,14 @@ class ACMS_GET_Analytics_Mobile extends ACMS_GET
         $query  = $_SERVER["QUERY_STRING"];
         $path   = $_SERVER["REQUEST_URI"];
 
-        if ( empty($refer) )
-        {
-        $refer  = "-";
+        if (empty($refer)) {
+            $refer  = "-";
         }
 
         $url   .= "&utmr=" . urlencode($refer);
 
-        if ( !empty($path) )
-        {
-        $url   .= "&utmp=" . urlencode($path);
+        if (!empty($path)) {
+            $url   .= "&utmp=" . urlencode($path);
         }
 
         $url   .= "&guid=ON";

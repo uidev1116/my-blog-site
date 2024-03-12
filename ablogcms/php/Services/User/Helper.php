@@ -24,6 +24,7 @@ class Helper
         $sql->addWhereOpr('user_id', $uid);
         Database::query($sql->get(dsn()), 'exec');
         ACMS_RAM::user($uid, null);
+        ACMS_RAM::cacheDelete(); // loadUser関数のキャッシュを削除
 
         // 位置情報の削除
         $sql = SQL::newDelete('geo');
@@ -77,6 +78,7 @@ class Helper
         $sql->addWhereOpr('user_id', $uid);
         Database::query($sql->get(dsn()), 'exec');
         ACMS_RAM::user($uid, null);
+        ACMS_RAM::cacheDelete(); // loadUser関数のキャッシュを削除
 
         // ユーザーセッションから削除
         $session = Session::handle();

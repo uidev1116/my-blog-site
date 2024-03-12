@@ -6,7 +6,7 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
     {
         $Usergroup = $this->extract('usergroup');
 
-        $Usergroup->setMethod('usergroup', 'operable', $ugid = intval($this->Get->get('ugid')) and sessionWithEnterpriseAdministration() and BID === RBID );
+        $Usergroup->setMethod('usergroup', 'operable', $ugid = intval($this->Get->get('ugid')) and sessionWithEnterpriseAdministration() and BID === RBID);
         $Usergroup->setMethod('name', 'required');
         $Usergroup->setMethod('name', 'double', $ugid);
         $Usergroup->setMethod('role_id', 'required');
@@ -20,9 +20,9 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
             //-----------
             // usergroup
             $SQL    = SQL::newUpdate('usergroup');
-            foreach ( $Usergroup->listFields() as $key ) {
-                if ( $key !== 'user_list' ) {
-                    $SQL->addUpdate('usergroup_'.$key, $Usergroup->get($key));
+            foreach ($Usergroup->listFields() as $key) {
+                if ($key !== 'user_list') {
+                    $SQL->addUpdate('usergroup_' . $key, $Usergroup->get($key));
                 }
             }
             $SQL->addWhereOpr('usergroup_id', $ugid);
@@ -34,7 +34,7 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
             $SQL->addWhereOpr('usergroup_id', $ugid);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            foreach ($Usergroup->getArray('user_list') as $uid ) {
+            foreach ($Usergroup->getArray('user_list') as $uid) {
                 $SQL    = SQL::newInsert('usergroup_user');
                 $SQL->addInsert('usergroup_id', $ugid);
                 $SQL->addInsert('user_id', $uid);
@@ -56,4 +56,3 @@ class ACMS_POST_Usergroup_Update extends ACMS_POST_Usergroup
         return $this->Post;
     }
 }
-

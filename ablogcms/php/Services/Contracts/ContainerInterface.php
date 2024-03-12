@@ -2,7 +2,7 @@
 
 namespace Acms\Services\Contracts;
 
-Interface ContainerInterface
+interface ContainerInterface
 {
     /**
      * DIコンテナに登録されているか判定

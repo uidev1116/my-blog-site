@@ -2,7 +2,7 @@
 
 class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
 {
-    var $_scope = array(
+    public $_scope = array(
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -32,7 +32,7 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
             'newtime'          => config('entry_headline_newtime'),
             'unit'             => config('entry_headline_unit'),
             'notfound'         => config('mo_entry_headline_notfound'),
-            'notfoundStatus404'=> config('entry_headline_notfound_status_404'),
+            'notfoundStatus404' => config('entry_headline_notfound_status_404'),
             'noimage'          => config('entry_headline_noimage'),
             'imageX'           => intval(config('entry_headline_image_x')),
             'imageY'           => intval(config('entry_headline_image_y')),

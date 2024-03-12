@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
 {
     function get()
     {
-        if (!sessionWithAdministration()) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $id = $this->Get->get('id');
         $sql = SQL::newSelect('webhook');
@@ -99,7 +101,7 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
             $events = explode(',', $data->get('events'));
             $labels = array();
             foreach ($webhookEventValue as $i => $value) {
-                if (in_array($value, $events)) {
+                if (in_array($value, $events, true)) {
                     $labels[] = $webhookEventLabel[$i];
                 }
             }

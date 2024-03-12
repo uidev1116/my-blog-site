@@ -78,7 +78,7 @@ class ACMS_GET_Admin_Shortcut_Index extends ACMS_GET_Admin
     /**
      * NotFoundテンプレートの組み立て
      *
-     * @return array
+     * @return void
      */
     protected function buildNotFround(Template $Tpl)
     {

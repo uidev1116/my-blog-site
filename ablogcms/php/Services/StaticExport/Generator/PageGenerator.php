@@ -29,7 +29,7 @@ class PageGenerator extends Generator
             throw  new \RuntimeException('no selected max page.');
         }
 
-        for ( $page=2; $page<=$this->maxPage; $page++ ) {
+        for ($page = 2; $page <= $this->maxPage; $page++) {
             $info = array(
                 'bid' => BID,
                 'page' => $page,
@@ -47,7 +47,7 @@ class PageGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $code != '200' ) {
+        if ($code != '200') {
             return;
         }
         $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
@@ -55,7 +55,7 @@ class PageGenerator extends Generator
         try {
             Storage::makeDirectory($destination);
             Storage::put($destination . 'page' . $info['page'] . '.html', $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $destination . 'page' . $info['page'] . '.html');
         }
     }

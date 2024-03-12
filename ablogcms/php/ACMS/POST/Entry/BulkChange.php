@@ -24,7 +24,7 @@ class ACMS_POST_Entry_BulkChange extends ACMS_POST
     protected function validate()
     {
         if (!sessionWithAdministration()) {
-            throw new ACMS_POST_Entry_BulkChange_Exceptions_PermissionDenied;
+            throw new ACMS_POST_Entry_BulkChange_Exceptions_PermissionDenied();
         }
     }
 }

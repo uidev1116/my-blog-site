@@ -27,6 +27,5 @@ class CommonServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

@@ -29,6 +29,5 @@ class PreviewServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

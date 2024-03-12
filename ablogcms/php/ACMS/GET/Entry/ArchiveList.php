@@ -2,19 +2,32 @@
 
 class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
 {
-    var $_axis = array(
+    /**
+     *  @var string
+     */
+    protected $limit;
+
+    /**
+     *  @var 'month' | 'day' | 'year' | 'biz_year'
+     */
+    protected $chunk;
+
+    /**
+     * @inheritdoc
+     */
+    public $_axis = array( // phpcs:ignore
         'bid'   => 'self',
         'cid'   => 'self',
     );
 
-    function initVars()
+    public function initVars()
     {
         $this->order    = config('entry_archive_list_order');
-        $this->limit    = config('entry_archive_list_limit');
+        $this->limit    = intval(config('entry_archive_list_limit'));
         $this->chunk    = config('entry_archive_list_chunk');
     }
 
-    function get()
+    public function get()
     {
         $this->initVars();
 
@@ -28,23 +41,23 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
         * substring for datetime
         */
         switch ($this->chunk) {
-            case 'year' :
+            case 'year':
                 $substr = 4;
                 break;
-            case 'month' :
+            case 'month':
                 $substr = 7;
                 break;
-            case 'day' :
+            case 'day':
                 $substr = 10;
                 break;
-            case 'biz_year' :
+            case 'biz_year':
                 $substr = 7;
                 $biz_year = isset($date[0]) && !empty($date[0]) ? $date[0] : date('Y');
                 if (isset($date[1]) && !empty($date[1])) {
-                    $biz_year = date('Y', strtotime($date[0]. '-' .$date[1]. '-01 -3month'));
+                    $biz_year = date('Y', strtotime($date[0] . '-' . $date[1] . '-01 -3month'));
                 }
-                $this->start = $biz_year++.'-04-01 00:00:00';
-                $this->end   = $biz_year.'-03-31 23:59:59';
+                $this->start = $biz_year++ . '-04-01 00:00:00';
+                $this->end   = $biz_year . '-03-31 23:59:59';
                 $this->limit = 12;
                 break;
         }
@@ -67,13 +80,13 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
         ACMS_Filter::entrySession($SQL);
         ACMS_Filter::entrySpan($SQL, $this->start, $this->end);
 
-        if ( !empty($this->tags) ) {
+        if (!empty($this->tags)) {
             ACMS_Filter::entryTag($SQL, $this->tags);
         }
-        if ( !empty($this->keyword) ) {
+        if (!empty($this->keyword)) {
             ACMS_Filter::entryKeyword($SQL, $this->keyword);
         }
-        if ( !empty($this->Field) ) {
+        if (!empty($this->Field)) {
             ACMS_Filter::entryField($SQL, $this->Field);
         }
         $SQL->addWhereOpr('entry_indexing', 'on');
@@ -83,28 +96,28 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
 
         $all = $DB->query($SQL->get(dsn()), 'all');
 
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             switch ($this->chunk) {
-                case 'year' :
-                    $row['entry_date'] = $row['entry_date'].'-01-01 00:00:00';
+                case 'year':
+                    $row['entry_date'] = $row['entry_date'] . '-01-01 00:00:00';
                     $y = date('Y', strtotime($row['entry_date']));
                     $m = null;
                     $d = null;
                     break;
-                case 'month' :
-                    $row['entry_date'] = $row['entry_date'].'-01 00:00:00';
+                case 'month':
+                    $row['entry_date'] = $row['entry_date'] . '-01 00:00:00';
                     $y = date('Y', strtotime($row['entry_date']));
                     $m = date('m', strtotime($row['entry_date']));
                     $d = null;
                     break;
-                case 'day' :
-                    $row['entry_date'] = $row['entry_date'].' 00:00:00';
+                case 'day':
+                    $row['entry_date'] = $row['entry_date'] . ' 00:00:00';
                     $y = date('Y', strtotime($row['entry_date']));
                     $m = date('m', strtotime($row['entry_date']));
                     $d = date('d', strtotime($row['entry_date']));
                     break;
-                case 'biz_year' :
-                    $row['entry_date'] = $row['entry_date'].'-01 00:00:00';
+                case 'biz_year':
+                    $row['entry_date'] = $row['entry_date'] . '-01 00:00:00';
                     $y = date('Y', strtotime($row['entry_date']));
                     $m = date('m', strtotime($row['entry_date']));
                     $d = null;

@@ -19,7 +19,7 @@ class ModuleImport extends Import
         $tables = array(
             'module', 'config', 'field'
         );
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->insertData($table);
         }
     }
@@ -51,13 +51,13 @@ class ModuleImport extends Import
      */
     protected function dropData()
     {
-        if ( !isset($this->yaml['module']) ) {
+        if (!isset($this->yaml['module'])) {
             return;
         }
 
         $modules = $this->yaml['module'];
         $identifiers = array();
-        foreach ( $modules as $module ) {
+        foreach ($modules as $module) {
             $identifiers[] = $module['module_identifier'];
         }
 
@@ -67,7 +67,7 @@ class ModuleImport extends Import
         $SQL->addWhereOpr('module_blog_id', $this->bid);
         $midAry = DB::query($SQL->get(dsn()), 'list');
 
-        if ( empty($midAry) ) {
+        if (empty($midAry)) {
             return;
         }
 
@@ -96,4 +96,3 @@ class ModuleImport extends Import
         }
     }
 }
-

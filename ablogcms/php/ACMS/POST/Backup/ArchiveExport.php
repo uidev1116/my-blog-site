@@ -4,7 +4,12 @@ use Acms\Services\Facades\Storage;
 
 class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
 {
-    function post()
+    /**
+     * @var string
+     */
+    protected $lockFile;
+
+    public function post()
     {
         try {
             AcmsLogger::info('アーカイブのエクスポートを実行しました');
@@ -51,11 +56,15 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
             $storageTarget = SCRIPT_DIR . MEDIA_STORAGE_DIR;
             if ($dir = opendir($storageTarget)) {
                 while (($file = readdir($dir)) !== false) {
-                    if ($file != "." && $file != ".." && substr($file,0,1) !== '.') {
-                        if (in_array($file, array('backup_archives', 'backup_database'. 'backup_blog'))) {
+                    if ($file != "." && $file != ".." && substr($file, 0, 1) !== '.') {
+                        if (in_array($file, array('backup_archives', 'backup_database' . 'backup_blog'))) {
                             continue;
                         }
-                        Storage::compress(SCRIPT_DIR . MEDIA_STORAGE_DIR . $file, $dest, 'archives_tmp/storage/' . $file);
+                        Storage::compress(
+                            SCRIPT_DIR . MEDIA_STORAGE_DIR . $file,
+                            $dest,
+                            'archives_tmp/storage/' . $file
+                        );
                     }
                 }
                 closedir($dir);
@@ -64,7 +73,7 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
 
             $logger->addMessage('バックアップ完了', 10);
             $logger->success();
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             if ($message = $e->getMessage()) {
                 $logger->error($message);
 

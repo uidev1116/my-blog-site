@@ -7,7 +7,7 @@ class ACMS_POST_Blog_Reset extends ACMS_POST_Blog
         $this->Post->reset(true);
         $this->Post->setMethod('blog', 'operable', sessionWithAdministration());
         $this->Post->validate();
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newDelete('config');
             $SQL->addWhereOpr('config_blog_id', BID);

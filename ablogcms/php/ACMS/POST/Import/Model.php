@@ -14,17 +14,17 @@ class ACMS_POST_Import_Model extends ACMS_POST_Import
         $this->isUpdate = false;
         $this->labels = $labels;
 
-        foreach ( $labels as $i => $label ) {
-            if ( !isset($csv[$i] ) ) {
+        foreach ($labels as $i => $label) {
+            if (!isset($csv[$i])) {
                 throw new RuntimeException('CSVの項目が足りません。');
             }
-            if ( $label === $this->idLabel ) {
+            if ($label === $this->idLabel) {
                 $this->csvId = $csv[$i];
             }
             $this->data[$label] = $csv[$i];
         }
 
-        if ( $this->exist() ) {
+        if ($this->exist()) {
             $this->isUpdate = true;
         } else {
             $this->nextId();
@@ -35,7 +35,7 @@ class ACMS_POST_Import_Model extends ACMS_POST_Import
 
     function exist()
     {
-        if ( empty($this->csvId) ) {
+        if (empty($this->csvId)) {
             return false;
         }
 
@@ -47,11 +47,11 @@ class ACMS_POST_Import_Model extends ACMS_POST_Import
         $this->nextId = 0;
     }
 
-    function save($line=false)
+    function save($line = false)
     {
         $this->build();
 
-        if ( $this->isUpdate ) {
+        if ($this->isUpdate) {
             $this->update();
         } else {
             $this->insert();
@@ -60,21 +60,17 @@ class ACMS_POST_Import_Model extends ACMS_POST_Import
 
     function validate()
     {
-
     }
 
     function build()
     {
-
     }
 
     function insert()
     {
-
     }
 
     function update()
     {
-
     }
 }

@@ -12,13 +12,12 @@ class ACMS_GET_Shop2_Form_PaymentList extends ACMS_GET_Shop2
         $payments = $this->config->getArray('shop_order_payment_label');
         $charge   = $this->config->getArray('shop_order_payment_charge');
 
-        foreach ( $payments as $key => $payment ) {
-
+        foreach ($payments as $key => $payment) {
             $vars = array('payment' => $payment,
                           'charge'  => @$charge[$key],
                           );
 
-            if ( $SESSION->get('payment') == $payment ) {
+            if ($SESSION->get('payment') == $payment) {
                 $vars += array('selected' => config('attr_selected'),
                                'checked'  => config('attr_checked'),
                                );

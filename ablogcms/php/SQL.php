@@ -2,8 +2,8 @@
 
 class SQL_Field extends SQL
 {
-    var $_field         = null;
-    var $_scope         = null;
+    public $_field         = null;
+    public $_scope         = null;
 
     function setField($fd)
     {
@@ -27,13 +27,15 @@ class SQL_Field extends SQL
         return $this->_scope;
     }
 
-    function _field($dsn=null)
+    function _field($dsn = null)
     {
-        if ( empty($this->_field) ) return false;
-        return (!empty($this->_scope) ? $this->_scope.'.' : '').$this->_field;
+        if (empty($this->_field)) {
+            return false;
+        }
+        return (!empty($this->_scope) ? $this->_scope . '.' : '') . $this->_field;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->_field($dsn);
     }
@@ -41,8 +43,8 @@ class SQL_Field extends SQL
 
 class SQL_Field_Function extends SQL_Field
 {
-//    var $_function  = null;
-    var $_args  = null;
+//    public $_function  = null;
+    public $_args  = null;
 
     function setFunction($args)
     {
@@ -55,42 +57,49 @@ class SQL_Field_Function extends SQL_Field
         return $this->_args;
     }
 
-    function _function($dsn=null)
+    function _function($dsn = null)
     {
         $q  = SQL::isClass($this->_field, 'SQL_Field') ?
             $this->_field->get($dsn) :
         $this->_field($dsn);
 
-        if ( !empty($this->_args[0]) ) {
-            $func   = strtoupper($this->_args[0]);
-            switch ( $func ) {
-                case 'DISTINCT':
-                    $q  = 'DISTINCT '.$q;
-                    break;
+        if (!empty($this->_args[0])) {
+            switch (strtoupper($this->_args[0])) {
                 case 'SUBSTR':
-                    $q  = 'SUBSTRING('.$q;
-                    if ( array_key_exists(1, $this->_args) ) {
+                    $func = 'SUBSTRING';
+                    break;
+                case 'RANDOM':
+                    $func = 'RAND';
+                    break;
+                default:
+                    $func = strtoupper($this->_args[0]);
+            }
+            switch ($func) {
+                case 'DISTINCT':
+                    $q  = 'DISTINCT ' . $q;
+                    break;
+                case 'SUBSTRING':
+                    $q  = $func . '(' . $q;
+                    if (array_key_exists(1, $this->_args)) {
                         $arg    = intval($this->_args[1]) + 1;
-                        $q  .= ', '.$arg;
-                        if ( array_key_exists(2, $this->_args) ) {
+                        $q  .= ', ' . $arg;
+                        if (array_key_exists(2, $this->_args)) {
                             $arg    = intval($this->_args[2]);
-                            $q  .= ', '.$arg;
+                            $q  .= ', ' . $arg;
                         }
                     }
                     $q  .=  ')';
                     break;
-                case 'RANDOM':
-                    $func   = 'RAND';
                 default:
-                    $q  = $func.'('.$q;
-                    for ( $i=1; array_key_exists($i, $this->_args); $i++ ) {
+                    $q  = $func . '(' . $q;
+                    for ($i = 1; array_key_exists($i, $this->_args); $i++) {
                         $arg    = $this->_args[$i];
-                        if ( is_null($arg) ) {
+                        if (is_null($arg)) {
                             $arg    = 'NULL';
-                        } else if ( is_string($arg) ) {
+                        } elseif (is_string($arg)) {
                             $arg    = DB::quote($arg);
                         }
-                        $q  .= ', '.$arg;
+                        $q  .= ', ' . $arg;
                     }
                     $q  .= ')';
             }
@@ -99,7 +108,7 @@ class SQL_Field_Function extends SQL_Field
         return $q;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->_function($dsn);
     }
@@ -107,8 +116,8 @@ class SQL_Field_Function extends SQL_Field
 
 class SQL_Field_Operator extends SQL_Field_Function
 {
-    var $_value     = null;
-    var $_operator  = null;
+    public $_value     = null;
+    public $_operator  = null;
 
     function setValue($val)
     {
@@ -132,34 +141,38 @@ class SQL_Field_Operator extends SQL_Field_Function
         return $this->_operator;
     }
 
-    function _right($dsn=null)
+    function _right($dsn = null)
     {
         $val    = $this->_value;
         $opr    = $this->_operator;
 
-        if ( SQL::isClass($val, 'SQL') ) {
+        if (SQL::isClass($val, 'SQL')) {
             $val    = $val->get($dsn);
-        } else if ( null === $val ) {
+        } elseif (null === $val) {
             $val    = '';
             $opr    = ('=' == $opr) ? 'IS NULL' : 'IS NOT NULL';
-        } else if (is_string($val) && isset($dsn['charset'])) {
+        } elseif (is_string($val) && isset($dsn['charset'])) {
             $val  = DB::quote(mb_convert_encoding($val, $dsn['charset'], 'UTF-8'));
         }
 
-        return ' '.$opr.' '.$val;
+        return ' ' . $opr . ' ' . $val;
     }
 
-    function _operator($dsn=null)
+    function _operator($dsn = null)
     {
         $q  = '';
         $q  = SQL::isClass($this->_field, 'SQL_Field') ? $this->_field->get($dsn) : $this->_function($dsn);
-        if ( empty($q) ) return false;
+        if (empty($q)) {
+            return false;
+        }
 
-        if ( $right = $this->_right($dsn) ) $q .= $right;
+        if ($right = $this->_right($dsn)) {
+            $q .= $right;
+        }
         return $q;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->_operator($dsn);
     }
@@ -169,7 +182,7 @@ class SQL_Field_Operator_In extends SQL_Field_Operator
 {
 //    function
 
-    var $_not   = false;
+    public $_not   = false;
 
     function setNot($not)
     {
@@ -181,19 +194,19 @@ class SQL_Field_Operator_In extends SQL_Field_Operator
         return $this->_not;
     }
 
-    function _right($dsn=null)
+    function _right($dsn = null)
     {
         $q  = '';
         $ope    = $this->_not ? 'NOT IN' : 'IN';
-        if ( SQL::isClass($this->_value, 'SQL_Select') ) {
-            $q  = ' '.$ope.' ('."\n"
-                .$this->_value->get($dsn)
-            ."\n".')';
-        } else if ( !empty($this->_value) and is_array($this->_value) ) {
-            $q  = ' '.$ope.' (';
+        if (SQL::isClass($this->_value, 'SQL_Select')) {
+            $q  = ' ' . $ope . ' (' . "\n"
+                . $this->_value->get($dsn)
+            . "\n" . ')';
+        } elseif (!empty($this->_value) and is_array($this->_value)) {
+            $q  = ' ' . $ope . ' (';
             $isString   = is_string($this->_value[0]);
-            foreach ( $this->_value as $i => $val ) {
-                $q  .= (!empty($i) ? ', ' : '').($isString ? DB::quote(mb_convert_encoding($val, $dsn['charset'], 'UTF-8')) : $val);
+            foreach ($this->_value as $i => $val) {
+                $q  .= (!empty($i) ? ', ' : '') . ($isString ? DB::quote(mb_convert_encoding($val, $dsn['charset'], 'UTF-8')) : $val);
             }
             $q  .= ')';
         } else {
@@ -208,7 +221,7 @@ class SQL_Field_Operator_Exists extends SQL_Field_Operator
 {
 //    function
 
-    var $_not   = false;
+    public $_not   = false;
 
     function setNot($not)
     {
@@ -220,14 +233,14 @@ class SQL_Field_Operator_Exists extends SQL_Field_Operator
         return $this->_not;
     }
 
-    function _right($dsn=null)
+    function _right($dsn = null)
     {
         $q  = '';
         $ope    = $this->_not ? 'NOT EXISTS' : 'EXISTS';
-        if ( SQL::isClass($this->_value, 'SQL_Select') ) {
-            $q  = ' '.$ope.' ('."\n"
-                .$this->_value->get($dsn)
-            ."\n".')';
+        if (SQL::isClass($this->_value, 'SQL_Select')) {
+            $q  = ' ' . $ope . ' (' . "\n"
+                . $this->_value->get($dsn)
+            . "\n" . ')';
         } else {
             return false;
         }
@@ -235,19 +248,21 @@ class SQL_Field_Operator_Exists extends SQL_Field_Operator
         return $q;
     }
 
-    function _operator($dsn=null)
+    function _operator($dsn = null)
     {
         $q  = '';
 
-        if ( $right = $this->_right($dsn) ) $q .= $right;
+        if ($right = $this->_right($dsn)) {
+            $q .= $right;
+        }
         return $q;
     }
 }
 
 class SQL_Field_Operator_Between extends SQL_Field_Operator
 {
-    var $_a = null;
-    var $_b = null;
+    public $_a = null;
+    public $_b = null;
 
     function setBetween($a, $b)
     {
@@ -261,20 +276,22 @@ class SQL_Field_Operator_Between extends SQL_Field_Operator
         return array($this->_a, $this->_b);
     }
 
-    function _right($dsn=null)
+    function _right($dsn = null)
     {
-        if ( empty($this->_a) or empty($this->_b) ) return false;
+        if (empty($this->_a) or empty($this->_b)) {
+            return false;
+        }
         return  ( is_string($this->_a) or is_string($this->_b) ) ?
-            " BETWEEN ".DB::quote($this->_a)." AND ".DB::quote($this->_b):
-        ' BETWEEN '.$this->_a.' AND '.$this->_b;
+            " BETWEEN " . DB::quote($this->_a) . " AND " . DB::quote($this->_b) :
+        ' BETWEEN ' . $this->_a . ' AND ' . $this->_b;
     }
 }
 
 class SQL_Field_Case
 {
-    var $_cases     = array();
-    var $_simple    = null;
-    var $_else      = null;
+    public $_cases     = array();
+    public $_simple    = null;
+    public $_else      = null;
 
     function setSimple($exp)
     {
@@ -294,45 +311,49 @@ class SQL_Field_Case
         );
         return true;
     }
-    function set($when=null, $then=null)
+    function set($when = null, $then = null)
     {
         $this->_cases   = array();
-        if ( !empty($when) ) $this->add($when, $then);
+        if (!empty($when)) {
+            $this->add($when, $then);
+        }
         return true;
     }
 
-    function _case($dsn=null)
+    function _case($dsn = null)
     {
-        if ( empty($this->_cases) ) return false;
+        if (empty($this->_cases)) {
+            return false;
+        }
         $q  = "\n CASE";
-        if ( !empty($this->_simple) ) {
+        if (!empty($this->_simple)) {
             $exp    = $this->_simple;
             $exp    = SQL::isClass($exp, 'SQL') ? $exp->get($dsn) : (is_string($exp) ? DB::quote($exp) : $exp);
-            $q  .= ' '.strval($exp);
+            $q  .= ' ' . strval($exp);
         }
-        foreach ( $this->_cases as $case ) {
+        foreach ($this->_cases as $case) {
             $when   = $case['when'];
             $then   = $case['then'];
             $when    = SQL::isClass($when, 'SQL') ? $when->get($dsn) : (is_string($when) ? DB::quote($when) : $when);
             $then    = SQL::isClass($then, 'SQL') ? $then->get($dsn) : (is_string($then) ? DB::quote($then) : $then);
-            $q  .= "\n  WHEN ".strval($when).' THEN '.strval($then);
+            $q  .= "\n  WHEN " . strval($when) . ' THEN ' . strval($then);
         }
 
-        if ( !is_null($this->_else) ) {
+        if (!is_null($this->_else)) {
             $exp    = $this->_else;
-            if ( SQL::isClass($exp, 'SQL') ) {
+            if (SQL::isClass($exp, 'SQL')) {
                 $exp   = $exp->get($dsn);
-            } else if ( is_string($exp) ) {
+            } elseif (is_string($exp)) {
                 $exp    = 'NULL' == strtoupper($exp) ? 'NULL' : DB::quote($exp);
             }
-            $q      .= "\n  ELSE ".strval($exp);
+            $q      .= "\n  ELSE " . strval($exp);
         }
 
         $q  .= "\n END";
         return $q;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->_case($dsn);
     }
@@ -348,9 +369,9 @@ class SQL_Field_Case
  */
 class SQL_Where extends SQL
 {
-    var $_wheres    = array();
+    public $_wheres    = array();
 
-    function addWhere($w, $gl='AND')
+    function addWhere($w, $gl = 'AND')
     {
         $this->_wheres[]    = array(
             'where' => $w,
@@ -358,18 +379,20 @@ class SQL_Where extends SQL
         );
         return true;
     }
-    function setWhere($w, $gl='AND')
+    function setWhere($w, $gl = 'AND')
     {
         $this->_wheres  = array();
-        if ( !empty($w) ) $this->addWhere($w, $gl);
+        if (!empty($w)) {
+            $this->addWhere($w, $gl);
+        }
         return true;
     }
 
-    function getWhereOpr($fd, $val, $opr='=', $gl='AND', $scp=null, $func=null)
+    function getWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $F  = new SQL_Field_Function($fd);
             $F->setFunction($func);
         } else {
@@ -385,11 +408,11 @@ class SQL_Where extends SQL
         );
     }
 
-    function getWhereIn($fd, $vals, $gl='AND', $scp=null, $func=null)
+    function getWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $F  = new SQL_Field_Function($fd);
             $F->setFunction($func);
         } else {
@@ -405,11 +428,11 @@ class SQL_Where extends SQL
         );
     }
 
-    function getWhereNotIn($fd, $vals, $gl='AND', $scp=null, $func=null)
+    function getWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $F  = new SQL_Field_Function($fd);
             $F->setFunction($func);
         } else {
@@ -425,7 +448,7 @@ class SQL_Where extends SQL
         );
     }
 
-    function getWhereExists($vals, $gl='AND')
+    function getWhereExists($vals, $gl = 'AND')
     {
         return array(
             'where' => SQL::newOprExists($vals),
@@ -433,7 +456,7 @@ class SQL_Where extends SQL
         );
     }
 
-    function getWhereNotExists($vals, $gl='AND')
+    function getWhereNotExists($vals, $gl = 'AND')
     {
         return array(
             'where' => SQL::newOprNotExists($vals),
@@ -441,11 +464,11 @@ class SQL_Where extends SQL
         );
     }
 
-    function getWhereBw($fd, $a, $b, $gl='AND', $scp=null, $func=null)
+    function getWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $F  = new SQL_Field_Function($fd);
             $F->setFunction($func);
         } else {
@@ -474,7 +497,7 @@ class SQL_Where extends SQL
      * @param string|null $func
      * @return bool
      */
-    function addWhereOpr($fd, $val, $opr='=', $gl='AND', $scp=null, $func=null)
+    function addWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereOpr($fd, $val, $opr, $gl, $scp, $func);
         return true;
@@ -492,9 +515,9 @@ class SQL_Where extends SQL
      * @param string|null $func
      * @return bool
      */
-    function addWhereIn($fd, $vals, $gl='AND', $scp=null, $func=null)
+    function addWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
-        if ( empty($vals) ) {
+        if (empty($vals)) {
             $vals = array(-100);
         }
         $this->_wheres[]    = $this->getWhereIn($fd, $vals, $gl, $scp, $func);
@@ -513,7 +536,7 @@ class SQL_Where extends SQL
      * @param string|null $func
      * @return bool
      */
-    function addWhereNotIn($fd, $vals, $gl='AND', $scp=null, $func=null)
+    function addWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereNotIn($fd, $vals, $gl, $scp, $func);
         return true;
@@ -528,7 +551,7 @@ class SQL_Where extends SQL
      * @param string $gl
      * @return bool
      */
-    function addWhereExists($vals, $gl='AND')
+    function addWhereExists($vals, $gl = 'AND')
     {
         $this->_wheres[]    = $this->getWhereExists($vals, $gl);
         return true;
@@ -543,7 +566,7 @@ class SQL_Where extends SQL
      * @param string $gl
      * @return bool
      */
-    function addWhereNotExists($vals, $gl='AND')
+    function addWhereNotExists($vals, $gl = 'AND')
     {
         $this->_wheres[]    = $this->getWhereNotExists($vals, $gl);
         return true;
@@ -562,35 +585,35 @@ class SQL_Where extends SQL
      * @param string|null $func
      * @return bool
      */
-    function addWhereBw($fd, $a, $b, $gl='AND', $scp=null, $func=null)
+    function addWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereBw($fd, $a, $b, $gl, $scp, $func);
         return true;
     }
 
-    function where($dsn=null)
+    function where($dsn = null)
     {
         $q  = '';
-        if ( !empty($this->_wheres) ) {
+        if (!empty($this->_wheres)) {
             $q  = 'AND' == $this->_wheres[0]['glue'] ? '1' : '0';
-            foreach ( $this->_wheres as $where ) {
+            foreach ($this->_wheres as $where) {
                 $w  = $where['where'];
                 $gl = $where['glue'];
-                $q  .= "\n  ".$gl;
+                $q  .= "\n  " . $gl;
 
-                if ( SQL::isClass($w, 'SQL_Where') ) {
-                    $w  = '( '.$w->get($dsn)."\n  )";
-                } else if ( SQL::isClass($w, 'SQL') ) {
+                if (SQL::isClass($w, 'SQL_Where')) {
+                    $w  = '( ' . $w->get($dsn) . "\n  )";
+                } elseif (SQL::isClass($w, 'SQL')) {
                     $w  = $w->get($dsn);
                 }
-                $q  .= ' '.$w;
+                $q  .= ' ' . $w;
             }
         }
 
         return $q;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->where($dsn);
     }
@@ -605,20 +628,20 @@ class SQL_Where extends SQL
  */
 class SQL_Select extends SQL_Where
 {
-    var $_tables    = array();
-    var $_leftJoins = array();
-    var $_innerJoins= array();
-    var $_selects   = array();
-    var $_havings   = array();
-    var $_groups    = array();
-    var $_limit     = null;
-    var $_orders    = array();
-    var $_fdOrders  = null;
-    var $_where     = null;
-    var $_union     = array();
-    var $_straightJoin = false;
+    public $_tables = array();
+    public $_leftJoins = array();
+    public $_innerJoins = array();
+    public $_selects = array();
+    public $_havings = array();
+    public $_groups = array();
+    public $_limit = null;
+    public $_orders = array();
+    public $_fdOrders = null;
+    public $_where = null;
+    public $_union = array();
+    public $_straightJoin = false;
 
-    function addTable($tb, $als=null, $straight_join=false)
+    function addTable($tb, $als = null, $straight_join = false)
     {
         $this->_straightJoin = $straight_join;
         $this->_tables[] = array(
@@ -627,10 +650,12 @@ class SQL_Select extends SQL_Where
         );
         return true;
     }
-    function setTable($tb=null, $als=null, $straight_join=false)
+    function setTable($tb = null, $als = null, $straight_join = false)
     {
         $this->_tables  = array();
-        if ( !empty($tb) ) $this->addTable($tb, $als, $straight_join);
+        if (!empty($tb)) {
+            $this->addTable($tb, $als, $straight_join);
+        }
         return true;
     }
 
@@ -646,7 +671,7 @@ class SQL_Select extends SQL_Where
      * @param string $bScp
      * @return bool
      */
-    function addLeftJoin($tb, $a, $b, $aScp=null, $bScp=null, $where=null)
+    function addLeftJoin($tb, $a, $b, $aScp = null, $bScp = null, $where = null)
     {
         $A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         $B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
@@ -659,10 +684,10 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function setLeftJoin($tb=null, $a=null, $b=null, $aScp=null, $bScp=null, $where=null)
+    function setLeftJoin($tb = null, $a = null, $b = null, $aScp = null, $bScp = null, $where = null)
     {
         $this->_leftJoins   = array();
-        if ( !empty($tb) and !empty($a) and !empty($b) ) {
+        if (!empty($tb) and !empty($a) and !empty($b)) {
             $this->addLeftJoin($tb, $a, $b, $aScp, $bScp);
         }
         return true;
@@ -680,7 +705,7 @@ class SQL_Select extends SQL_Where
      * @param string $scp
      * @return bool
      */
-    function addInnerJoin($tb, $a, $b, $als=null, $scp=null, $where=null)
+    function addInnerJoin($tb, $a, $b, $als = null, $scp = null, $where = null)
     {
         //$A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         //$B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
@@ -695,10 +720,10 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function setInnerJoin($tb=null, $a=null, $b=null, $als=null, $scp=null)
+    function setInnerJoin($tb = null, $a = null, $b = null, $als = null, $scp = null)
     {
         $this->_innerJoins   = array();
-        if ( !empty($tb) and !empty($a) and !empty($b) ) {
+        if (!empty($tb) and !empty($a) and !empty($b)) {
             $this->addInnerJoin($tb, $a, $b, $als, $scp);
         }
         return true;
@@ -720,7 +745,7 @@ class SQL_Select extends SQL_Where
      * @param string $func
      * @return bool
      */
-    function addSelect($fd, $als=null, $scp=null, $func=null)
+    function addSelect($fd, $als = null, $scp = null, $func = null)
     {
 //        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
 //            $F  = $fd;
@@ -740,14 +765,16 @@ class SQL_Select extends SQL_Where
         );
         return true;
     }
-    function setSelect($fd=null, $als=null, $scp=null, $func=null)
+    function setSelect($fd = null, $als = null, $scp = null, $func = null)
     {
         $this->_selects = array();
-        if ( !empty($fd) ) $this->addSelect($fd, $als, $scp, $func);
+        if (!empty($fd)) {
+            $this->addSelect($fd, $als, $scp, $func);
+        }
         return true;
     }
 
-    function addGeoDistance($fd, $lat, $lng, $als=null, $scp=null)
+    function addGeoDistance($fd, $lat, $lng, $als = null, $scp = null)
     {
         $select = "ROUND(" . G_LENGTH . "(" . GEOM_FROM_TEXT . "(CONCAT('LineString($lat $lng, ', " . POINT_X . "($fd),  ' ', " . POINT_Y . "($fd),')'))) * 111000)";
         $this->addSelect($select, $als, $scp);
@@ -766,7 +793,7 @@ class SQL_Select extends SQL_Where
      * @param string $gl
      * @return bool
      */
-    function addHaving($h, $gl='AND')
+    function addHaving($h, $gl = 'AND')
     {
         $this->_havings[]   = array(
             'having'    => $h,
@@ -774,10 +801,12 @@ class SQL_Select extends SQL_Where
         );
         return true;
     }
-    function setHaving($h=null, $gl='AND')
+    function setHaving($h = null, $gl = 'AND')
     {
         $this->_havings = array();
-        if ( !empty($h) ) $this->addHaving($h, $gl);
+        if (!empty($h)) {
+            $this->addHaving($h, $gl);
+        }
         return true;
     }
 
@@ -790,17 +819,17 @@ class SQL_Select extends SQL_Where
      * @param string $scp
      * @return bool
      */
-    function addGroup($fd, $scp=null)
+    function addGroup($fd, $scp = null)
     {
         $this->_groups[]    =
             SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp)
         ;
         return true;
     }
-    function setGroup($fd=null, $scp=null)
+    function setGroup($fd = null, $scp = null)
     {
         $this->_groups  = array();
-        if ( !empty($fd) ) {
+        if (!empty($fd)) {
             $this->addGroup($fd, $scp);
         }
         return true;
@@ -815,7 +844,7 @@ class SQL_Select extends SQL_Where
      * @param int $off
      * @return bool
      */
-    function setLimit($lmt, $off=0)
+    function setLimit($lmt, $off = 0)
     {
         $this->_limit   = array(
             'limit'     => intval($lmt),
@@ -824,7 +853,7 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function addOrder($fd, $ord='ASC', $scp=null)
+    function addOrder($fd, $ord = 'ASC', $scp = null)
     {
         $this->_orders[]    = array(
             'order' => (strtoupper($ord) == 'ASC') ? 'ASC' : 'DESC',
@@ -842,16 +871,16 @@ class SQL_Select extends SQL_Where
      * @param int $off
      * @return bool
      */
-    function setOrder($fd=null, $ord='ASC', $scp=null)
+    function setOrder($fd = null, $ord = 'ASC', $scp = null)
     {
         $this->_orders  = array();
-        if ( !empty($fd) ) {
+        if (!empty($fd)) {
             $this->addOrder($fd, $ord, $scp);
         }
         return true;
     }
 
-    function setFieldOrder($fd=null, $values=array(), $scp=null)
+    function setFieldOrder($fd = null, $values = array(), $scp = null)
     {
         $this->_fdOrders    = array(
             'fd'        => SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp),
@@ -859,27 +888,29 @@ class SQL_Select extends SQL_Where
         );
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_tables) ) return false;
+        if (empty($this->_tables)) {
+            return false;
+        }
         $tbPfx   = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
         //--------
         // select
         $q  = 'SELECT';
-        if ( $this->_straightJoin ) {
+        if ($this->_straightJoin) {
             $q  .= ' STRAIGHT_JOIN ';
         }
         $_q = ' *';
-        if ( !empty($this->_selects) ) {
+        if (!empty($this->_selects)) {
             $_q = '';
-            foreach ( $this->_selects as $i => $s ) {
+            foreach ($this->_selects as $i => $s) {
                 $col = $s['field']->get($dsn);
-                if ( $col === '*' ) {
-                    $_q = '*'.(!empty($i) ? ', ' : ' ').$_q;
+                if ($col === '*') {
+                    $_q = '*' . (!empty($i) ? ', ' : ' ') . $_q;
                 } else {
-                    $_q .= (!empty($i) ? ', ' : ' ').$col
-                        .(!empty($s['alias']) ? ' AS '.$s['alias'] : '');
+                    $_q .= (!empty($i) ? ', ' : ' ') . $col
+                        . (!empty($s['alias']) ? ' AS ' . $s['alias'] : '');
                 }
             }
         }
@@ -888,66 +919,66 @@ class SQL_Select extends SQL_Where
         //-------
         // table
         $q  .= "\n FROM";
-        foreach ( $this->_tables as $i => $t ) {
+        foreach ($this->_tables as $i => $t) {
             $q  .= !empty($i) ? ', ' : '';
-            if ( SQL::isClass($t['table'], 'SQL_Select') ) {
+            if (SQL::isClass($t['table'], 'SQL_Select')) {
                 $q  .= " (\n";
                 $q  .= $t['table']->get($dsn);
                 $q  .= "\n)";
             } else {
-                $q  .= ' '.$tbPfx.$t['table'];
+                $q  .= ' ' . $tbPfx . $t['table'];
             }
-            if ( !empty($t['alias']) ) {
-                $q  .= ' AS '.$t['alias'];
+            if (!empty($t['alias'])) {
+                $q  .= ' AS ' . $t['alias'];
             }
         }
 
         //----------
         // leftJoin
-        if ( !empty($this->_leftJoins) ) {
-            foreach ( $this->_leftJoins as $i => $lj ) {
+        if (!empty($this->_leftJoins)) {
+            foreach ($this->_leftJoins as $i => $lj) {
                 $A  = $lj['a'];
                 $B  = $lj['b'];
                 $W  = $lj['where'];
                 $q .= "\n LEFT JOIN";
-                if ( SQL::isClass($lj['table'], 'SQL_Select') ) {
+                if (SQL::isClass($lj['table'], 'SQL_Select')) {
                     $q  .= " (\n";
                     $q  .= $lj['table']->get($dsn);
                     $q  .= "\n)";
                 } else {
-                    $q  .= ' '.$tbPfx.$lj['table'];
+                    $q  .= ' ' . $tbPfx . $lj['table'];
                 }
 
-                if ( $scp = $A->getScope() ) {
-                    $q  .= ' AS '.$scp;
+                if ($scp = $A->getScope()) {
+                    $q  .= ' AS ' . $scp;
                 }
-                $where = is_null($W) ? '' : ' AND '.$W->get($dsn);
-                $q  .= ' ON '.$A->get($dsn).' = '.$B->get($dsn).$where;
+                $where = is_null($W) ? '' : ' AND ' . $W->get($dsn);
+                $q  .= ' ON ' . $A->get($dsn) . ' = ' . $B->get($dsn) . $where;
             }
         }
 
         //-----------
         // innerJoin
-        if ( !empty($this->_innerJoins) ) {
-            foreach ( $this->_innerJoins as $i => $data ) {
+        if (!empty($this->_innerJoins)) {
+            foreach ($this->_innerJoins as $i => $data) {
                 $q  .= "\n INNER JOIN";
-                if ( SQL::isClass($data['table'], 'SQL_Select') ) {
+                if (SQL::isClass($data['table'], 'SQL_Select')) {
                     $q  .= " (\n";
                     $q  .= $data['table']->get($dsn);
                     $q  .= "\n)";
                 } else {
-                    $q  .= ' '.$tbPfx.$data['table'];
+                    $q  .= ' ' . $tbPfx . $data['table'];
                 }
 
-                if ( !empty($data['als']) ) {
-                    $q  .= ' AS '.$data['als'];
+                if (!empty($data['als'])) {
+                    $q  .= ' AS ' . $data['als'];
                 }
-                $where = is_null($data['where']) ? '' : ' AND '.$data['where']->get($dsn);
+                $where = is_null($data['where']) ? '' : ' AND ' . $data['where']->get($dsn);
                 $q  .= ' ON '
-                    .(!empty($data['als']) ? $data['als'].'.' : '').$data['a']
-                    .' = '
-                    .(!empty($data['scp']) ? $data['scp'].'.' : '').$data['b']
-                    .$where;
+                    . (!empty($data['als']) ? $data['als'] . '.' : '') . $data['a']
+                    . ' = '
+                    . (!empty($data['scp']) ? $data['scp'] . '.' : '') . $data['b']
+                    . $where;
                 ;
             }
         }
@@ -955,8 +986,8 @@ class SQL_Select extends SQL_Where
         //----------
         // union
         $q  .= "\n ";
-        foreach ( $this->_union as $val ) {
-            if ( SQL::isClass($val, 'SQL_Select') ) {
+        foreach ($this->_union as $val) {
+            if (SQL::isClass($val, 'SQL_Select')) {
                 $q .= "UNION (\n" . $val->get($dsn);
                 $q .= "\n)";
             }
@@ -964,58 +995,58 @@ class SQL_Select extends SQL_Where
 
         //-------
         // where
-        if ( !empty($this->_wheres) ) {
-            $q  .= "\n WHERE ".$this->where($dsn);
+        if (!empty($this->_wheres)) {
+            $q  .= "\n WHERE " . $this->where($dsn);
         }
 
         //-------
         // group
-        if ( !empty($this->_groups) ) {
+        if (!empty($this->_groups)) {
             $q  .= "\n GROUP BY";
-            foreach ( $this->_groups as $i => $g ) {
-                $q  .= (!empty($i) ? ', ' : ' ').$g->get($dsn);
+            foreach ($this->_groups as $i => $g) {
+                $q  .= (!empty($i) ? ', ' : ' ') . $g->get($dsn);
             }
         }
 
         //--------
         // having
-        if ( !empty($this->_havings) ) {
+        if (!empty($this->_havings)) {
             $q  .= "\n HAVING ( ";
             $q  .= ('AND' == $this->_havings[0]['glue'] ? '1' : '0');
-            foreach ( $this->_havings as $having ) {
+            foreach ($this->_havings as $having) {
                 $h  = $having['having'];
                 $gl = $having['glue'];
-                $q  .= "\n  ".$gl;
-                if ( SQL::isClass($h, 'SQL_Where') ) {
-                    $h  = '( 1'.$h->get($dsn)."\n  )";
-                } else if ( SQL::isClass($h, 'SQL') ) {
+                $q  .= "\n  " . $gl;
+                if (SQL::isClass($h, 'SQL_Where')) {
+                    $h  = '( 1' . $h->get($dsn) . "\n  )";
+                } elseif (SQL::isClass($h, 'SQL')) {
                     $h  = $h->get($dsn);
                 }
-                $q  .= ' '.$h;
+                $q  .= ' ' . $h;
             }
             $q  .= "\n )";
         }
 
         //-------
         // order
-        if ( !empty($this->_orders) ) {
+        if (!empty($this->_orders)) {
             $q  .= "\n ORDER BY";
-            foreach ( $this->_orders as $i => $order ) {
+            foreach ($this->_orders as $i => $order) {
                 $ord    = $order['order'];
                 $F      = $order['field'];
-                $q  .= (!empty($i) ? ', ' : ' ').$F->get($dsn).' '.$ord;
+                $q  .= (!empty($i) ? ', ' : ' ') . $F->get($dsn) . ' ' . $ord;
             }
-        } else if ( !empty($this->_fdOrders) ) {
+        } elseif (!empty($this->_fdOrders)) {
             $q  .= "\n ORDER BY FIELD(";
-            $q  .= $this->_fdOrders['fd']->get($dsn).', ';
+            $q  .= $this->_fdOrders['fd']->get($dsn) . ', ';
             $q  .= implode(', ', $this->_fdOrders['values']);
             $q  .= "\n )";
         }
 
         //-------
         // limit
-        if ( !empty($this->_limit) ) {
-            $q  .= "\n LIMIT ".$this->_limit['offset'].', '.$this->_limit['limit'];
+        if (!empty($this->_limit)) {
+            $q  .= "\n LIMIT " . $this->_limit['offset'] . ', ' . $this->_limit['limit'];
         }
 
         return $q;
@@ -1032,8 +1063,9 @@ class SQL_Select extends SQL_Where
  */
 class SQL_Insert extends SQL
 {
-    var $_insert    = null;
-    var $_table     = null;
+    public $_insert    = null;
+    public $_table     = null;
+
     /**
      * 指定されたfieldにINSERT句を生成する。<br>
      * $SQL->addInsert('entry_code', 'abc');<br>
@@ -1045,20 +1077,24 @@ class SQL_Insert extends SQL
      */
     function addInsert($fd, $val)
     {
-        if ( !is_string($fd) ) return false;
+        if (!is_string($fd)) {
+            return false;
+        }
         $this->_insert[$fd] = $val;
         return true;
     }
-    function setInsert($fd=null, $val=null)
+    function setInsert($fd = null, $val = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Select') ) {
+        if (SQL::isClass($fd, 'SQL_Select')) {
             $this->_insert = $fd;
-        } else if ( !is_string($fd) ) {
+        } elseif (!is_string($fd)) {
             return false;
         }
 
         $this->_insert = array();
-        if ( !empty($fd) ) $this->addInsert($fd, $val);
+        if (!empty($fd)) {
+            $this->addInsert($fd, $val);
+        }
         return true;
     }
 
@@ -1067,36 +1103,40 @@ class SQL_Insert extends SQL
         $this->_table   = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_table) ) return false;
-        if ( empty($this->_insert) ) return false;
+        if (empty($this->_table)) {
+            return false;
+        }
+        if (empty($this->_insert)) {
+            return false;
+        }
         $tbPfx  = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
-        $q  = 'INSERT INTO '.$tbPfx.$this->_table;
-        if ( SQL::isClass($this->_insert, 'SQL_Select') ) {
-            $q  .= ' '.$this->_insert->get($dsn);
-        } else if ( !is_array($this->_insert) ) {
+        $q  = 'INSERT INTO ' . $tbPfx . $this->_table;
+        if (SQL::isClass($this->_insert, 'SQL_Select')) {
+            $q  .= ' ' . $this->_insert->get($dsn);
+        } elseif (!is_array($this->_insert)) {
             return false;
         } else {
             $fds   = array();
             $vals   = array();
-            foreach ( $this->_insert as $fd => $val ) {
+            foreach ($this->_insert as $fd => $val) {
                 $fds[] = $fd;
-                if ( is_null($val) ) {
+                if (is_null($val)) {
                     $val    = 'NULL';
-                } else if ( is_string($val) ) {
+                } elseif (is_string($val)) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                     $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ?
-                        DB::quote($_val) : '0x'.bin2hex($val)
+                        DB::quote($_val) : '0x' . bin2hex($val)
                     ;
-                } else if ( SQL::isClass($val, 'SQL_Field_Function') ) {
+                } elseif (SQL::isClass($val, 'SQL_Field_Function')) {
                     $val = $val->get($dsn);
                 }
                 $vals[] = $val;
             }
-            $q  .= ' ('.join(', ', $fds).') '
-                ."\n".' VALUES ('.join(', ', $vals).')'
+            $q  .= ' (' . join(', ', $fds) . ') '
+                . "\n" . ' VALUES (' . join(', ', $vals) . ')'
             ;
         }
 
@@ -1114,8 +1154,9 @@ class SQL_Insert extends SQL
  */
 class SQL_Replace extends SQL
 {
-    var $_replace    = null;
-    var $_table     = null;
+    public $_replace    = null;
+    public $_table     = null;
+
     /**
      * 指定されたfieldにREPLACE句を生成する。<br>
      * $SQL->addRepace('entry_code', 'abc');<br>
@@ -1127,20 +1168,24 @@ class SQL_Replace extends SQL
      */
     function addReplace($fd, $val)
     {
-        if ( !is_string($fd) ) return false;
+        if (!is_string($fd)) {
+            return false;
+        }
         $this->_replace[$fd] = $val;
         return true;
     }
-    function setReplace($fd=null, $val=null)
+    function setReplace($fd = null, $val = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Select') ) {
-            $this->_replacce = $fd;
-        } else if ( !is_string($fd) ) {
+        if (SQL::isClass($fd, 'SQL_Select')) {
+            $this->_replace = $fd;
+        } elseif (!is_string($fd)) {
             return false;
         }
 
         $this->_replace = array();
-        if ( !empty($fd) ) $this->addReplace($fd, $val);
+        if (!empty($fd)) {
+            $this->addReplace($fd, $val);
+        }
         return true;
     }
 
@@ -1149,34 +1194,38 @@ class SQL_Replace extends SQL
         $this->_table   = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_table) ) return false;
-        if ( empty($this->_replace) ) return false;
+        if (empty($this->_table)) {
+            return false;
+        }
+        if (empty($this->_replace)) {
+            return false;
+        }
         $tbPfx  = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
-        $q  = 'REPLACE INTO '.$tbPfx.$this->_table;
-        if ( SQL::isClass($this->_replace, 'SQL_Select') ) {
-            $q  .= ' '.$this->_replace->get($dsn);
-        } else if ( !is_array($this->_replace) ) {
+        $q  = 'REPLACE INTO ' . $tbPfx . $this->_table;
+        if (SQL::isClass($this->_replace, 'SQL_Select')) {
+            $q  .= ' ' . $this->_replace->get($dsn);
+        } elseif (!is_array($this->_replace)) {
             return false;
         } else {
             $fds   = array();
             $vals   = array();
-            foreach ( $this->_replace as $fd => $val ) {
+            foreach ($this->_replace as $fd => $val) {
                 $fds[] = $fd;
-                if ( is_null($val) ) {
+                if (is_null($val)) {
                     $val    = 'NULL';
-                } else if ( is_string($val) ) {
+                } elseif (is_string($val)) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                     $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ?
-                        DB::quote($_val) : '0x'.bin2hex($val)
+                        DB::quote($_val) : '0x' . bin2hex($val)
                     ;
                 }
                 $vals[] = $val;
             }
-            $q  .= ' ('.join(', ', $fds).') '
-                ."\n".' VALUES ('.join(', ', $vals).')'
+            $q  .= ' (' . join(', ', $fds) . ') '
+                . "\n" . ' VALUES (' . join(', ', $vals) . ')'
             ;
         }
 
@@ -1194,8 +1243,8 @@ class SQL_Replace extends SQL
  */
 class SQL_Update extends SQL_Where
 {
-    var $_update    = array();
-    var $_table     = null;
+    public $_update    = array();
+    public $_table     = null;
 
     /**
      * 指定されたfieldにUPDATE句を生成する。<br>
@@ -1208,15 +1257,19 @@ class SQL_Update extends SQL_Where
      */
     function addUpdate($fd, $val)
     {
-        if ( !is_string($fd) ) return false;
+        if (!is_string($fd)) {
+            return false;
+        }
         $this->_update[$fd] = $val;
         return true;
     }
 
-    function setUpdate($fd=null, $val=null)
+    function setUpdate($fd = null, $val = null)
     {
         $this->_update  = array();
-        if ( !empty($fd) ) $this->addUpdate($fd, $val);
+        if (!empty($fd)) {
+            $this->addUpdate($fd, $val);
+        }
         return true;
     }
 
@@ -1225,33 +1278,37 @@ class SQL_Update extends SQL_Where
         $this->_table   = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_table) ) return false;
-        if ( empty($this->_update) ) return false;
+        if (empty($this->_table)) {
+            return false;
+        }
+        if (empty($this->_update)) {
+            return false;
+        }
         $tbPfx  = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
-        $q  = 'UPDATE '.$tbPfx.$this->_table.' SET';
+        $q  = 'UPDATE ' . $tbPfx . $this->_table . ' SET';
         $i  = 0;
-        foreach ( $this->_update as $fd => $val ) {
+        foreach ($this->_update as $fd => $val) {
             $q  .= !empty($i) ? "\n, " : "\n ";
-            if ( is_null($val) ) {
+            if (is_null($val)) {
                 $val    = 'NULL';
-            } else if ( SQL::isClass($val, 'SQL') ) {
-                $val    = "(\n".$val->get($dsn)."\n)";
-            } else if ( is_string($val) ) {
+            } elseif (SQL::isClass($val, 'SQL')) {
+                $val    = "(\n" . $val->get($dsn) . "\n)";
+            } elseif (is_string($val)) {
                 $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                 $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ?
-                    DB::quote($_val) : '0x'.bin2hex($val)
+                    DB::quote($_val) : '0x' . bin2hex($val)
                 ;
             }
-            $q  .= $fd.' = '.$val;
+            $q  .= $fd . ' = ' . $val;
             $i++;
         }
 
         //-------
         // where
-        if ( !empty($this->_wheres) ) {
-            $q  .= "\n WHERE ".$this->where($dsn);
+        if (!empty($this->_wheres)) {
+            $q  .= "\n WHERE " . $this->where($dsn);
         }
 
         return $q;
@@ -1268,9 +1325,9 @@ class SQL_Update extends SQL_Where
  */
 class SQL_InsertOrUpdate extends SQL_Insert
 {
-    var $_insert    = null;
-    var $_update    = null;
-    var $_table     = null;
+    public $_insert    = null;
+    public $_update    = null;
+    public $_table     = null;
 
     /**
      * 指定されたfieldにON DUPLICATE KEY UPDATE句を生成する。<br>
@@ -1283,15 +1340,19 @@ class SQL_InsertOrUpdate extends SQL_Insert
      */
     function addUpdate($fd, $val)
     {
-        if ( !is_string($fd) ) return false;
+        if (!is_string($fd)) {
+            return false;
+        }
         $this->_update[$fd] = $val;
         return true;
     }
 
-    function setUpdate($fd=null, $val=null)
+    function setUpdate($fd = null, $val = null)
     {
         $this->_update  = array();
-        if ( !empty($fd) ) $this->addUpdate($fd, $val);
+        if (!empty($fd)) {
+            $this->addUpdate($fd, $val);
+        }
         return true;
     }
 
@@ -1300,53 +1361,59 @@ class SQL_InsertOrUpdate extends SQL_Insert
         $this->_table   = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_table) ) return false;
-        if ( empty($this->_insert) ) return false;
+        if (empty($this->_table)) {
+            return false;
+        }
+        if (empty($this->_insert)) {
+            return false;
+        }
         $tbPfx  = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
-        $q  = 'INSERT INTO '.$tbPfx.$this->_table;
-        if ( SQL::isClass($this->_insert, 'SQL_Select') ) {
-            $q  .= ' '.$this->_insert->get($dsn);
-        } else if ( !is_array($this->_insert) ) {
+        $q  = 'INSERT INTO ' . $tbPfx . $this->_table;
+        if (SQL::isClass($this->_insert, 'SQL_Select')) {
+            $q  .= ' ' . $this->_insert->get($dsn);
+        } elseif (!is_array($this->_insert)) {
             return false;
         } else {
             $fds   = array();
             $vals   = array();
-            foreach ( $this->_insert as $fd => $val ) {
+            foreach ($this->_insert as $fd => $val) {
                 $fds[] = $fd;
-                if ( is_null($val) ) {
+                if (is_null($val)) {
                     $val    = 'NULL';
-                } else if ( is_string($val) ) {
+                } elseif (is_string($val)) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
-                    $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ? DB::quote($_val) : '0x'.bin2hex($val)
+                    $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ? DB::quote($_val) : '0x' . bin2hex($val)
                     ;
                 }
                 $vals[] = $val;
             }
-            $q  .= ' ('.join(', ', $fds).') '
-                ."\n".' VALUES ('.join(', ', $vals).')'
+            $q  .= ' (' . join(', ', $fds) . ') '
+                . "\n" . ' VALUES (' . join(', ', $vals) . ')'
             ;
 
-            if ( empty($this->_update) ) return $q;
+            if (empty($this->_update)) {
+                return $q;
+            }
 
 
             $q  .= ' ON DUPLICATE KEY UPDATE ';
             $i  = 0;
-            foreach ( $this->_update as $fd => $val ) {
+            foreach ($this->_update as $fd => $val) {
                 $q  .= !empty($i) ? "\n, " : "\n ";
-                if ( is_null($val) ) {
+                if (is_null($val)) {
                     $val    = 'NULL';
-                } else if ( SQL::isClass($val, 'SQL') ) {
-                    $val    = "(\n".$val->get($dsn)."\n)";
-                } else if ( is_string($val) ) {
+                } elseif (SQL::isClass($val, 'SQL')) {
+                    $val    = "(\n" . $val->get($dsn) . "\n)";
+                } elseif (is_string($val)) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                     $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ?
-                        DB::quote($_val) : '0x'.bin2hex($val)
+                        DB::quote($_val) : '0x' . bin2hex($val)
                     ;
                 }
-                $q  .= $fd.' = '.$val;
+                $q  .= $fd . ' = ' . $val;
                 $i++;
             }
         }
@@ -1365,24 +1432,26 @@ class SQL_InsertOrUpdate extends SQL_Insert
  */
 class SQL_Delete extends SQL_Where
 {
-    var $_table  = null;
+    public $_table  = null;
 
     function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_table) ) return false;
+        if (empty($this->_table)) {
+            return false;
+        }
         $tbPfx  = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
-        $q  = 'DELETE FROM '.$tbPfx.$this->_table;
+        $q  = 'DELETE FROM ' . $tbPfx . $this->_table;
 
         //-------
         // where
-        if ( !empty($this->_wheres) ) {
-            $q  .= "\n WHERE ".$this->where($dsn);
+        if (!empty($this->_wheres)) {
+            $q  .= "\n WHERE " . $this->where($dsn);
         }
 
         return $q;
@@ -1398,14 +1467,14 @@ class SQL_Delete extends SQL_Where
  */
 class SQL_ShowTable extends SQL
 {
-    var $_table  = null;
+    public $_table  = null;
 
     function setTable($tb)
     {
         $this->_table = $tb;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         $tbPfx = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
@@ -1427,10 +1496,10 @@ class SQL_ShowTable extends SQL
  */
 class SQL_Sequence extends SQL
 {
-    var $_method    = 'nextval';
-    var $_sequence  = null;
-    var $_value     = null;
-    var $_plugin    = false;
+    public $_method    = 'nextval';
+    public $_sequence  = null;
+    public $_value     = null;
+    public $_plugin    = false;
 
     function setSequence($seq)
     {
@@ -1456,14 +1525,16 @@ class SQL_Sequence extends SQL
         return true;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
-        if ( empty($this->_sequence) ) return false;
+        if (empty($this->_sequence)) {
+            return false;
+        }
         $tb = ($this->_plugin) ? 'sequence_plugin' : 'sequence';
-        $fd = 'sequence_'.$this->_sequence;
+        $fd = 'sequence_' . $this->_sequence;
 
         $q  = '';
-        switch ( $this->_method ) {
+        switch ($this->_method) {
             case 'optimize':
                 $table = substr($this->_sequence, 0, -3);
                 $SUB = SQL::newSelect($table);
@@ -1471,7 +1542,7 @@ class SQL_Sequence extends SQL
                 $SUB->setLimit(1);
                 $SUB->setOrder($this->_sequence, 'DESC');
                 $SQL = SQL::newUpdate($tb);
-                if ( $this->_plugin ) {
+                if ($this->_plugin) {
                     $SQL->addUpdate('sequence_plugin_value', $SUB);
                     $SQL->addWhereOpr('sequence_plugin_key', $fd);
                 } else {
@@ -1481,7 +1552,7 @@ class SQL_Sequence extends SQL
                 break;
             case 'currval':
                 $SQL    = SQL::newSelect($tb);
-                if ( $this->_plugin ) {
+                if ($this->_plugin) {
                     $SQL->setSelect('sequence_plugin_value');
                     $SQL->addWhereOpr('sequence_plugin_key', $fd);
                 } else {
@@ -1491,7 +1562,7 @@ class SQL_Sequence extends SQL
                 break;
             case 'setval':
                 $SQL    = SQL::newUpdate($tb);
-                if ( $this->_plugin ) {
+                if ($this->_plugin) {
                     $SQL->addUpdate('sequence_plugin_value', $this->_value);
                     $SQL->addWhereOpr('sequence_plugin_key', $fd);
                 } else {
@@ -1502,12 +1573,14 @@ class SQL_Sequence extends SQL
             case 'nextval':
             default:
                 $SQL    = SQL::newUpdate($tb);
-                if ( $this->_plugin ) {
+                if ($this->_plugin) {
                     $SQL->addUpdate('sequence_plugin_value', SQL::newFunction(SQL::newOpr('sequence_plugin_value', 1, '+'), 'LAST_INSERT_ID'));
                     $SQL->addWhereOpr('sequence_plugin_key', $fd);
                 } else {
-                    $SQL->setUpdate($fd, //SQL::newOpr($fd, 1, '+')
-                    SQL::newFunction(SQL::newOpr($fd, 1, '+'), 'LAST_INSERT_ID'));
+                    $SQL->setUpdate(
+                        $fd, //SQL::newOpr($fd, 1, '+')
+                        SQL::newFunction(SQL::newOpr($fd, 1, '+'), 'LAST_INSERT_ID')
+                    );
                 }
                 $q  = $SQL->get($dsn);
                 break;
@@ -1519,9 +1592,9 @@ class SQL_Sequence extends SQL
 
 class SQL_Binary
 {
-    var $_value = null;
+    public $_value = null;
 
-    function __construct($val=null)
+    function __construct($val = null)
     {
         $this->set($val);
     }
@@ -1532,7 +1605,7 @@ class SQL_Binary
         return true;
     }
 
-    function get($dsn=null)
+    function get($dsn = null)
     {
         return $this->_value;
     }
@@ -1547,16 +1620,16 @@ class SQL_Binary
  */
 class SQL
 {
-    public function __construct($SQL=null)
+    public function __construct($SQL = null)
     {
-        if ( SQL::isClass($SQL, 'SQL') ) {
-            foreach ( get_object_vars($SQL) as $key => $value ) {
-                $this->$key = $value;
+        if (SQL::isClass($SQL, 'SQL')) {
+            foreach (get_object_vars($SQL) as $key => $value) {
+                $this->$key = $value; // @phpstan-ignore-line
             }
         }
     }
 
-    public static function isClass(& $obj, $className)
+    public static function isClass(&$obj, $className)
     {
         return (1
             and 'object' == gettype($obj)
@@ -1564,7 +1637,7 @@ class SQL
         );
     }
 
-    public static function newSeq($seq, $method='nextval', $val=null)
+    public static function newSeq($seq, $method = 'nextval', $val = null)
     {
         $Obj    = new SQL_Sequence();
         $Obj->setSequence($seq);
@@ -1579,20 +1652,22 @@ class SQL
      * UPDATE acms_sequence SET sequence_entry_id = ( LAST_INSERT_ID(sequence_entry_id + 1) )
      *
      * @static
-     * @param string $seq
+     * @param string|SQL_Sequence $seq
      * @param null $dsn
      * @param bool $plugin
      * @return int
      */
-    public static function optimizeSeq($seq, $dsn=null, $plugin=false)
+    public static function optimizeSeq($seq, $dsn = null, $plugin = false)
     {
-        if ( SQL::isClass($seq, 'SQL_Sequence') ) {
+        if (SQL::isClass($seq, 'SQL_Sequence')) {
             $Seq = $seq;
             $Seq->setMethod('optimize');
         } else {
             $Seq = SQL::newSeq($seq, 'optimize');
         }
-        if ( $plugin ) $Seq->setPluginFlag($plugin);
+        if ($plugin) {
+            $Seq->setPluginFlag($plugin);
+        }
         return $Seq->get($dsn);
     }
 
@@ -1602,19 +1677,21 @@ class SQL
      * UPDATE acms_sequence SET sequence_entry_id = ( LAST_INSERT_ID(sequence_entry_id + 1) )
      *
      * @static
-     * @param string $seq
+     * @param string|SQL_Sequence $seq
      * @param null $dsn
      * @return int
      */
-    public static function nextval($seq, $dsn=null, $plugin=false)
+    public static function nextval($seq, $dsn = null, $plugin = false)
     {
-        if ( SQL::isClass($seq, 'SQL_Sequence') ) {
+        if (SQL::isClass($seq, 'SQL_Sequence')) {
             $Seq    = $seq;
             $Seq->setMethod('nextval');
         } else {
             $Seq    = SQL::newSeq($seq, 'nextval');
         }
-        if ( $plugin ) $Seq->setPluginFlag($plugin);
+        if ($plugin) {
+            $Seq->setPluginFlag($plugin);
+        }
         return $Seq->get($dsn);
     }
 
@@ -1624,19 +1701,21 @@ class SQL
      * SELECT sequence_entry_id FROM acms_sequence
      *
      * @static
-     * @param string $seq
+     * @param string|SQL_Sequence $seq
      * @param null $dsn
      * @return int
      */
-    public static function currval($seq, $dsn=null, $plugin=false)
+    public static function currval($seq, $dsn = null, $plugin = false)
     {
-        if ( SQL::isClass($seq, 'SQL_Sequence') ) {
+        if (SQL::isClass($seq, 'SQL_Sequence')) {
             $Seq    = $seq;
             $Seq->setMethod('currval');
         } else {
             $Seq    = SQL::newSeq($seq, 'currval');
         }
-        if ( $plugin ) $Seq->setPluginFlag($plugin);
+        if ($plugin) {
+            $Seq->setPluginFlag($plugin);
+        }
         return $Seq->get($dsn);
     }
 
@@ -1646,24 +1725,26 @@ class SQL
      * UPDATE acms_sequence SET sequence_entry_id = 10
      *
      * @static
-     * @param string $seq
+     * @param string|SQL_Sequence $seq
      * @param null $dsn
      * @return int
      */
-    public static function setval($seq, $val, $dsn=null, $plugin=false)
+    public static function setval($seq, $val, $dsn = null, $plugin = false)
     {
-        if ( SQL::isClass($seq, 'SQL_Sequence') ) {
+        if (SQL::isClass($seq, 'SQL_Sequence')) {
             $Seq    = $seq;
             $Seq->setMethod('setval');
             $Seq->setValue($val);
         } else {
             $Seq    = SQL::newSeq($seq, 'setval', $val);
         }
-        if ( $plugin ) $Seq->setPluginFlag($plugin);
+        if ($plugin) {
+            $Seq->setPluginFlag($plugin);
+        }
         return $Seq->get($dsn);
     }
 
-    public static function newField($fd, $scp=null)
+    public static function newField($fd, $scp = null)
     {
         $Obj    = new SQL_Field();
         $Obj->setField($fd);
@@ -1671,7 +1752,7 @@ class SQL
         return $Obj;
     }
 
-    public static function newFunction($fd, $func=null, $scp=null)
+    public static function newFunction($fd, $func = null, $scp = null)
     {
         $Obj    = new SQL_Field_Function();
         $Obj->setField($fd);
@@ -1680,9 +1761,9 @@ class SQL
         return $Obj;
     }
 
-    public static function newGeometry($lat, $lng, $scp=null)
+    public static function newGeometry($lat, $lng, $scp = null)
     {
-        $fd     = '\'POINT('.$lng.' '.$lat.')\'';
+        $fd     = '\'POINT(' . $lng . ' ' . $lat . ')\'';
         $Obj    = new SQL_Field_Function();
         $Obj->setField($fd);
         $Obj->setFunction(GEOM_FROM_TEXT);
@@ -1690,11 +1771,11 @@ class SQL
         return $Obj;
     }
 
-    public static function newOpr($fd, $val=null, $opr='=', $scp=null, $func=null)
+    public static function newOpr($fd, $val = null, $opr = '=', $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $Obj    = new SQL_Field_Operator($fd);
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $Obj    = new SQL_Field_Operator($fd);
             $Obj->setFunction($func);
         } else {
@@ -1709,11 +1790,11 @@ class SQL
         return $Obj;
     }
 
-    public static function newOprIn($fd, $val, $scp=null, $func=null)
+    public static function newOprIn($fd, $val, $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $Obj    = new SQL_Field_Operator_In($fd);
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $Obj    = new SQL_Field_Operator_In($fd);
             $Obj->setFunction($func);
         } else {
@@ -1727,11 +1808,11 @@ class SQL
         return $Obj;
     }
 
-    public static function newOprNotIn($fd, $val, $scp=null, $func=null)
+    public static function newOprNotIn($fd, $val, $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $Obj    = new SQL_Field_Operator_In($fd);
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $Obj    = new SQL_Field_Operator_In($fd);
             $Obj->setFunction($func);
         } else {
@@ -1746,7 +1827,7 @@ class SQL
         return $Obj;
     }
 
-    public static function newOprExists($val, $scp=null)
+    public static function newOprExists($val, $scp = null)
     {
         $Obj = new SQL_Field_Operator_Exists();
         $Obj->setScope($scp);
@@ -1755,7 +1836,7 @@ class SQL
         return $Obj;
     }
 
-    public static function newOprNotExists($val, $scp=null)
+    public static function newOprNotExists($val, $scp = null)
     {
         $Obj = new SQL_Field_Operator_Exists();
         $Obj->setValue($val);
@@ -1764,11 +1845,11 @@ class SQL
         return $Obj;
     }
 
-    public static function newOprBw($fd, $a, $b, $scp=null, $func=null)
+    public static function newOprBw($fd, $a, $b, $scp = null, $func = null)
     {
-        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
+        if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $Obj    = new SQL_Field_Operator_Between($fd);
-        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
+        } elseif (SQL::isClass($fd, 'SQL_Field')) {
             $Obj    = new SQL_Field_Operator_Between($fd);
             $Obj->setFunction($func);
         } else {
@@ -1782,7 +1863,7 @@ class SQL
         return $Obj;
     }
 
-    public static function newCase($simple=null)
+    public static function newCase($simple = null)
     {
         $Obj    = new SQL_Field_Case();
         $Obj->setSimple($simple);
@@ -1803,10 +1884,12 @@ class SQL
      * @param string|null $als
      * @return SQL_Select
      */
-    public static function newSelect($tb=null, $als=null, $straight_join=false)
+    public static function newSelect($tb = null, $als = null, $straight_join = false)
     {
         $Obj    = new SQL_Select();
-        if ( !empty($tb) ) $Obj->setTable($tb, $als, $straight_join);
+        if (!empty($tb)) {
+            $Obj->setTable($tb, $als, $straight_join);
+        }
         return $Obj;
     }
 
@@ -1817,10 +1900,12 @@ class SQL
      * @param string|null $tb
      * @return SQL_Insert
      */
-    public static function newInsert($tb=null)
+    public static function newInsert($tb = null)
     {
         $Obj    = new SQL_Insert();
-        if ( !empty($tb) ) $Obj->setTable($tb);
+        if (!empty($tb)) {
+            $Obj->setTable($tb);
+        }
         return $Obj;
     }
 
@@ -1831,10 +1916,12 @@ class SQL
      * @param string|null $tb
      * @return SQL_Replace
      */
-    public static function newReplace($tb=null)
+    public static function newReplace($tb = null)
     {
         $Obj    = new SQL_Replace();
-        if ( !empty($tb) ) $Obj->setTable($tb);
+        if (!empty($tb)) {
+            $Obj->setTable($tb);
+        }
         return $Obj;
     }
 
@@ -1845,10 +1932,12 @@ class SQL
      * @param string|null $tb
      * @return SQL_Update
      */
-    public static function newUpdate($tb=null)
+    public static function newUpdate($tb = null)
     {
         $Obj    = new SQL_Update();
-        if ( !empty($tb) ) $Obj->setTable($tb);
+        if (!empty($tb)) {
+            $Obj->setTable($tb);
+        }
         return $Obj;
     }
 
@@ -1858,12 +1947,14 @@ class SQL
      * @static
      * @param string|null $tb
      * @param string|null $als
-     * @return SQL_Select
+     * @return SQL_InsertOrUpdate
      */
-    public static function newInsertOrUpdate($tb=null, $als=null)
+    public static function newInsertOrUpdate($tb = null, $als = null)
     {
         $Obj    = new SQL_InsertOrUpdate();
-        if ( !empty($tb) ) $Obj->setTable($tb, $als);
+        if (!empty($tb)) {
+            $Obj->setTable($tb, $als);
+        }
         return $Obj;
     }
 
@@ -1874,21 +1965,25 @@ class SQL
      * @param string|null $tb
      * @return SQL_Delete
      */
-    public static function newDelete($tb=null)
+    public static function newDelete($tb = null)
     {
         $Obj    = new SQL_Delete();
-        if ( !empty($tb) ) $Obj->setTable($tb);
+        if (!empty($tb)) {
+            $Obj->setTable($tb);
+        }
         return $Obj;
     }
 
-    public static function delete($tb, $w=null, $dsn=null)
+    public static function delete($tb, $w = null, $dsn = null)
     {
         $Obj    = SQL::newDelete($tb);
-        if ( !empty($w) ) $Obj->setWhere($w);
+        if (!empty($w)) {
+            $Obj->setWhere($w);
+        }
         return $Obj->get($dsn);
     }
 
-    public static function showTable($tb=null)
+    public static function showTable($tb = null)
     {
         $obj = new SQL_ShowTable();
         if (!empty($tb)) {

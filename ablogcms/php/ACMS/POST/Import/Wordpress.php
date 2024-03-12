@@ -95,7 +95,7 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
                                 'key' => $key,
                                 'value' => $value,
                             );
-                        } else if ($key === '_thumbnail_id') {
+                        } elseif ($key === '_thumbnail_id') {
                             // アイキャッチの画像IDを保存
                             $fields[] = array(
                                 'key' => 'wp_thumbnail_id',

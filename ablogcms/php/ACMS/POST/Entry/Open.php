@@ -23,10 +23,10 @@ class ACMS_POST_Entry_Open extends ACMS_POST_Entry
         ));
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $SQL    = SQL::newUpdate('entry');
             $SQL->addUpdate('entry_status', 'open');
-            if ( 'draft' == ACMS_RAM::entryStatus($eid) && config('update_datetime_as_entry_open') !== 'off' ) {
+            if ('draft' == ACMS_RAM::entryStatus($eid) && config('update_datetime_as_entry_open') !== 'off') {
                 $SQL->addUpdate('entry_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
             }
             $SQL->addWhereOpr('entry_id', $eid);

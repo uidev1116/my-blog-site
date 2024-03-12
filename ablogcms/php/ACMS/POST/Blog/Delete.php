@@ -9,8 +9,7 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
             and !!BID
             and !!sessionWithAdministration()
             and !!isBlogGlobal(SBID)
-            and BID !== SBID
-        );
+            and BID !== SBID);
         $this->Post->validate();
 
         if ($this->Post->isValidAll()) {
@@ -48,13 +47,15 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
             $SQL->addWhereOpr('blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            foreach ( array(
+            foreach (
+                array(
                 'alias', 'category', 'column', 'comment', 'config', 'config_set', 'dashboard',
                 'entry', 'field', 'form', 'fulltext', 'log_form',
                 'module', 'rule', 'tag', 'trackback', 'user',
-            ) as $tb ) {
+                ) as $tb
+            ) {
                 $SQL    = SQL::newDelete($tb);
-                $SQL->addWhereOpr($tb.'_blog_id', BID);
+                $SQL->addWhereOpr($tb . '_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
             }
 

@@ -9,17 +9,23 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
         $this->Post->setMethod('alias', 'operable', sessionWithAdministration());
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $fromAry = $this->fix();
 
             $DB     = DB::singleton(dsn());
             $aids   = $this->Post->getArray('checks');
 
-            foreach ( $aids as $aid ) {
+            foreach ($aids as $aid) {
                 $aid    = intval($aid);
-                if ( !($to = intval($this->Post->get('sort-'.$aid))) ) { continue; }
-                if ( $aid == 0 || !($from = $fromAry[$aid]) ) { continue; }
-                if ( $to === $from ) { continue; }
+                if (!($to = intval($this->Post->get('sort-' . $aid)))) {
+                    continue;
+                }
+                if ($aid == 0 || !($from = $fromAry[$aid])) {
+                    continue;
+                }
+                if ($to === $from) {
+                    continue;
+                }
 
                 //------------
                 // alias sort
@@ -39,7 +45,7 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::blog(BID, null);
 
-                if ( $aid ) {
+                if ($aid) {
                     $SQL    = SQL::newUpdate('alias');
                     $SQL->setUpdate('alias_sort', $to);
                     $SQL->addWhereOpr('alias_id', $aid);
@@ -78,9 +84,11 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
 
         $fromAry = array();
 
-        foreach ( $DB->query($SQL->get(dsn()), 'all') as $alias ) {
+        foreach ($DB->query($SQL->get(dsn()), 'all') as $alias) {
             $aid = $alias['alias_id'];
-            if ( !($sort = intval($this->Post->get('sort-current-'.$aid))) ) { continue; }
+            if (!($sort = intval($this->Post->get('sort-current-' . $aid)))) {
+                continue;
+            }
             $fromAry[$aid] = $sort;
 
             $SQL = SQL::newUpdate('alias');
@@ -94,4 +102,3 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
         return $fromAry;
     }
 }
-

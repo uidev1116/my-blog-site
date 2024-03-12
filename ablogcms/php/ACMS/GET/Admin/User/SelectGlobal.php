@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_User_SelectGlobal extends ACMS_GET_Admin
 {
-    var $_scope = array(
+    public $_scope = array(
         'uid'   => 'global',
     );
     function get()
@@ -22,17 +22,19 @@ class ACMS_GET_Admin_User_SelectGlobal extends ACMS_GET_Admin
 
     function get2()
     {
-        if ( !sessionWithContribution() || (!ADMIN && !is_ajax()) ) return '';
+        if (!sessionWithContribution() || (!ADMIN && !is_ajax())) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $target_bid = $this->Get->get('_bid', $this->bid);
-        if ( !$target_bid ) {
+        if (!$target_bid) {
             $target_bid = BID;
         }
 
         $order  = 'sort-asc';
         $order2 = config('category_select_global_order');
-        if ( !empty($order2) ) {
+        if (!empty($order2)) {
             $order  = $order2;
         }
 

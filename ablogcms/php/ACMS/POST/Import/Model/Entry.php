@@ -41,7 +41,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $this->updateKey();
         $this->build();
 
-        if ( $this->isUpdate ) {
+        if ($this->isUpdate) {
             return $this->update();
         } else {
             return $this->insert();
@@ -92,7 +92,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     function updateKey()
     {
         // プロ版以上限定
-        if ( !editionWithProfessional() ) {
+        if (!editionWithProfessional()) {
             return false;
         }
         $updateKey = null;
@@ -102,25 +102,25 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $SQL->addSelect('field_eid');
         $SQL->addWhereOpr('field_blog_id', $this->importBid);
 
-        foreach ( $this->labels as $key ) {
-            if ( strpos($key, 'unit@') === 0 ) {
+        foreach ($this->labels as $key) {
+            if (strpos($key, 'unit@') === 0) {
                 continue;
             }
-            if ( preg_match('/^\*/', $key) ) {
+            if (preg_match('/^\*/', $key)) {
                 $updateKey = ltrim($key, '*');
                 break;
             }
         }
-        if ( isset($this->data['*'.$updateKey]) ) {
+        if (isset($this->data['*' . $updateKey])) {
             $SQL->addWhereOpr('field_key', $updateKey);
-            $SQL->addWhereOpr('field_value', $this->data['*'.$updateKey]);
+            $SQL->addWhereOpr('field_value', $this->data['*' . $updateKey]);
             $all = $DB->query($SQL->get(dsn()), 'all');
 
-            if ( count($all) === 1 ) {
+            if (count($all) === 1) {
                 $eid = $all[0]['field_eid'];
                 $this->csvId = $eid;
                 $this->isUpdate = true;
-            } else if ( count($all) > 1 ) {
+            } elseif (count($all) > 1) {
                 throw new RuntimeException('重複するキーがあったためこのエントリーのインポートを中止しました。');
             }
         }
@@ -172,7 +172,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $DB = DB::singleton(dsn());
         $eid = $this->csvId;
 
-        if ( !ACMS_RAM::entryStatus($eid) ) {
+        if (!ACMS_RAM::entryStatus($eid)) {
             throw new RuntimeException('Not Found Entry.');
         }
 
@@ -185,9 +185,9 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             $this->entry['entry_blog_id']
         );
 
-        if ( !empty($this->entry) ) {
+        if (!empty($this->entry)) {
             $SQL    = SQL::newUpdate('entry');
-            foreach ( $this->entry as $key => $val ) {
+            foreach ($this->entry as $key => $val) {
                 $SQL->addUpdate($key, $val);
             }
             $SQL->addWhereOpr('entry_id', $eid);
@@ -257,11 +257,11 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     {
         $DB = DB::singleton(dsn());
 
-        if ( !empty($this->units) ) {
-            foreach ( $this->units as $cval ) {
+        if (!empty($this->units)) {
+            foreach ($this->units as $cval) {
                 $SQL    = SQL::newInsert('column');
-                foreach ( $cval as $key => $val) {
-                    if ( $key === 'column_id' ) {
+                foreach ($cval as $key => $val) {
+                    if ($key === 'column_id') {
                         $val = intval($DB->query(SQL::nextval('column_id', dsn()), 'seq'));
                     }
                     $SQL->addInsert($key, $val);
@@ -276,15 +276,15 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $DB = DB::singleton(dsn());
         $eid = $this->csvId;
 
-        if ( !empty($this->units) ) {
+        if (!empty($this->units)) {
             $SQL    = SQL::newDelete('column');
             $SQL->addWhereOpr('column_entry_id', $eid);
             $SQL->addWhereOpr('column_type', 'text');
             $DB->query($SQL->get(dsn()), 'exec');
 
-            foreach ( $this->units as $cval ) {
+            foreach ($this->units as $cval) {
                 $SQL    = SQL::newInsert('column');
-                foreach ( $cval as $key => $val) {
+                foreach ($cval as $key => $val) {
                     if ($key === 'column_id') {
                         $val = intval($DB->query(SQL::nextval('column_id', dsn()), 'seq'));
                     }
@@ -307,9 +307,9 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         if (!empty($this->fields)) {
             Common::deleteField('eid', $eid);
 
-            foreach ( $this->fields as $fval ) {
+            foreach ($this->fields as $fval) {
                 $SQL    = SQL::newInsert('field');
-                foreach ( $fval as $key => $val ) {
+                foreach ($fval as $key => $val) {
                     $SQL->addInsert($key, $val);
                 }
                 $DB->query($SQL->get(dsn()), 'exec');
@@ -326,9 +326,9 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             $fkey = array();
             $SQL = SQL::newDelete('field');
             $SQL->addWhereOpr('field_eid', $eid);
-            foreach ( $this->fields as $dval ) {
-                foreach ( $dval as $key => $val ) {
-                    if ( $key === 'field_key' ) {
+            foreach ($this->fields as $dval) {
+                foreach ($dval as $key => $val) {
+                    if ($key === 'field_key') {
                         $fkey[] = $val;
                     }
                 }
@@ -337,9 +337,9 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             $DB->query($SQL->get(dsn()), 'exec');
             Common::deleteFieldCache('eid', $eid);
 
-            foreach ( $this->fields as $fval ) {
+            foreach ($this->fields as $fval) {
                 $SQL    = SQL::newInsert('field');
-                foreach ( $fval as $key => $val ) {
+                foreach ($fval as $key => $val) {
                     $SQL->addInsert($key, $val);
                 }
                 $SQL->addInsert('field_eid', $eid);
@@ -364,21 +364,21 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $unit = $this->unitBase();
         $field = $this->fieldBase();
 
-        foreach ( $this->data as $key => $value ) {
-            if ( $key === 'entry_id' && $this->isUpdate ) {
+        foreach ($this->data as $key => $value) {
+            if ($key === 'entry_id' && $this->isUpdate) {
                 $this->entry['entry_id'] = $this->csvId;
                 $unit['column_entry_id'] = $this->csvId;
                 $field['field_eid'] = $this->csvId;
             }
             if (array_key_exists($key, $this->entry)) {
                 $this->buildEntry($key, $value);
-            } else if ($key === 'entry_sub_category') {
+            } elseif ($key === 'entry_sub_category') {
                 $this->buildSubCategory($value);
-            } else if ($key === 'entry_tag') {
+            } elseif ($key === 'entry_tag') {
                 $this->buildTag($value);
-            } else if (strpos($key, 'unit@') === 0) {
+            } elseif (strpos($key, 'unit@') === 0) {
                 $this->buildUnit($unit, $key, $value);
-            } else if (in_array($key, array('geo_lat', 'geo_lng', 'geo_zoom'))) {
+            } elseif (in_array($key, array('geo_lat', 'geo_lng', 'geo_zoom'))) {
                 $this->buildGeo($key, $value);
             } else {
                 $this->buildField($field, $key, $value);
@@ -386,9 +386,9 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         }
 
         // アップデートの場合は余分なベース情報を削除
-        if ( $this->isUpdate ) {
-            foreach ( $this->entry as $key => $value ) {
-                if ( !isset($this->data[$key]) ) {
+        if ($this->isUpdate) {
+            foreach ($this->entry as $key => $value) {
+                if (!isset($this->data[$key])) {
                     unset($this->entry[$key]);
                 }
             }
@@ -397,7 +397,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
 
     function buildEntry($key, $value)
     {
-        switch ( $key ) {
+        switch ($key) {
             case 'entry_id':
             case 'entry_blog_id':
                 break;
@@ -414,20 +414,20 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
                 $this->entry[$key] = $value . $this->getExtension();
                 break;
             case 'entry_posted_datetime':
-                if ( preg_match('@^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$@', $value) ) {
+                if (preg_match('@^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$@', $value)) {
                     $this->entry[$key] = $value;
-                    $this->entry['entry_hash'] = md5(SYSTEM_GENERATED_DATETIME.$value);
+                    $this->entry['entry_hash'] = md5(SYSTEM_GENERATED_DATETIME . $value);
                 }
                 break;
             case 'entry_category_id':
                 $ccode = ACMS_RAM::categoryCode($value);
-                if ( empty($ccode) ) {
+                if (empty($ccode)) {
                     $this->entry[$key] = null;
                 } else {
                     $this->entry[$key] = $value;
                 }
                 break;
-            default :
+            default:
                 $this->entry[$key] = $value;
         }
     }
@@ -477,7 +477,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     {
         $type   = substr($key, strlen('unit@'));
         $sort   = 1;
-        if ( preg_match('@\[\d+\]$@', $type, $matchs) ) {
+        if (preg_match('@\[\d+\]$@', $type, $matchs)) {
             $sort   = intval(preg_replace('@\[|\]@', '', $matchs[0]));
             $type    = preg_replace('@\[\d+\]$@', '', $type);
         }
@@ -487,9 +487,11 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
 
         $id = '';
         $class  = '';
-        while ( $mark = array_shift($tokens) ) {
-            if ( !$val = array_shift($tokens) ) continue;
-            if ( '#' == $mark ) {
+        while ($mark = array_shift($tokens)) {
+            if (!$val = array_shift($tokens)) {
+                continue;
+            }
+            if ('#' == $mark) {
                 $id = $val;
             } else {
                 $class  = $val;
@@ -497,9 +499,15 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         }
 
         $attr   = '';
-        if ( !empty($id) ) $attr .= ' id="'.$id.'"';
-        if ( !empty($class) ) $attr .= ' class="'.$class.'"';
-        if ( !empty($attr) ) $unit['column_attr'] = $attr;
+        if (!empty($id)) {
+            $attr .= ' id="' . $id . '"';
+        }
+        if (!empty($class)) {
+            $attr .= ' class="' . $class . '"';
+        }
+        if (!empty($attr)) {
+            $unit['column_attr'] = $attr;
+        }
 
         $unit['column_sort']      = $sort;
         $unit['column_field_1']   = $value;
@@ -510,7 +518,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     function buildField($field, $key, $value)
     {
         $sort   = 1;
-        if ( preg_match('@\[\d+\]$@', $key, $matchs) ) {
+        if (preg_match('@\[\d+\]$@', $key, $matchs)) {
             $sort   = intval(preg_replace('@\[|\]@', '', $matchs[0]));
             $key    = preg_replace('@\[\d+\]$@', '', $key);
         }
@@ -527,19 +535,19 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
 
         return array(
             'entry_id'              => $this->nextId,
-            'entry_code'            => config('entry_code_prefix').$this->nextId . $this->getExtension(),
+            'entry_code'            => config('entry_code_prefix') . $this->nextId . $this->getExtension(),
             'entry_status'          => 'open',
             'entry_sort'            => $this->getNextSort(self::SORT_ENTRY),
             'entry_user_sort'       => $this->getNextSort(self::SORT_USER),
             'entry_category_sort'   => $this->getNextSort(self::SORT_CATEGORY),
-            'entry_title'           => 'CSV_IMPORT-'.$this->nextId,
+            'entry_title'           => 'CSV_IMPORT-' . $this->nextId,
             'entry_link'            => '',
             'entry_datetime'        => $posted_datetime,
             'entry_start_datetime'  => '1000-01-01 00:00:00',
             'entry_end_datetime'    => '9999-12-31 23:59:59',
             'entry_posted_datetime' => $posted_datetime,
-            'entry_updated_datetime'=> $posted_datetime,
-            'entry_hash'            => md5(SYSTEM_GENERATED_DATETIME.$posted_datetime),
+            'entry_updated_datetime' => $posted_datetime,
+            'entry_hash'            => md5(SYSTEM_GENERATED_DATETIME . $posted_datetime),
             'entry_summary_range'   => null,
             'entry_indexing'        => 'on',
             'entry_members_only'    => 'off',

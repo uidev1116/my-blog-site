@@ -12,7 +12,8 @@ class ACMS_GET_Admin_Preview_Share extends ACMS_GET
             return $tpl->render(array(
                 'url' => $url,
             ));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         return $tpl->get();
     }

@@ -2,17 +2,19 @@
 
 class ACMS_GET_Admin_Category_SelectGlobal extends ACMS_GET_Admin
 {
-    var $_scope  = array(
+    public $_scope  = array(
         'cid' => 'global',
         'eid' => 'global',
     );
 
     function get()
     {
-        if ( !sessionWithContribution() || (!ADMIN && !is_ajax()) ) return '';
+        if (!sessionWithContribution() || (!ADMIN && !is_ajax())) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        if (in_array(ADMIN, array('entry-edit', 'entry_editor', 'entry-add'))) {
+        if (in_array(ADMIN, array('entry-edit', 'entry_editor', 'entry-add'), true)) {
             $target_bid = $this->bid;
         } else {
             $target_bid = $this->Get->get('_bid', $this->bid);
@@ -23,7 +25,7 @@ class ACMS_GET_Admin_Category_SelectGlobal extends ACMS_GET_Admin
 
         $order  = 'sort-asc';
         $order2 = config('category_select_global_order');
-        if ( !empty($order2) ) {
+        if (!empty($order2)) {
             $order  = $order2;
         }
         $cid = $this->cid;

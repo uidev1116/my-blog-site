@@ -74,7 +74,6 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
             ]);
 
             $this->download();
-
         } catch (\Exception $e) {
             $this->Post->set('error', $e->getMessage());
             Storage::removeDirectory($this->srcPath);

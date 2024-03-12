@@ -26,7 +26,7 @@ class RequireThemeGenerator extends ThemeGenerator
      */
     protected function main()
     {
-        if ( !$this->sourceTheme ) {
+        if (!$this->sourceTheme) {
             throw new \RuntimeException('no selected source theme.');
         }
         $includeList = array();
@@ -47,9 +47,9 @@ class RequireThemeGenerator extends ThemeGenerator
 
             foreach ($iterator as $file) {
                 try {
-                    $url = acmsLink(array('bid'=>BID), false) . $file->getRelativePathname();
+                    $url = acmsLink(array('bid' => BID), false) . $file->getRelativePathname();
                     $this->request($url, $file);
-                } catch ( \Exception $e ) {
+                } catch (\Exception $e) {
                     $this->logger->error($e->getMessage(), $file->getRelativePathname());
                 }
             }

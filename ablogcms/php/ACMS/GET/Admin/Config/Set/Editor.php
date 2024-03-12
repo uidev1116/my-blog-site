@@ -22,4 +22,3 @@ class ACMS_GET_Admin_Config_Set_Editor extends ACMS_GET_Admin_Config_Set_Index
      */
     protected $configPage = 'config_editor';
 }
-

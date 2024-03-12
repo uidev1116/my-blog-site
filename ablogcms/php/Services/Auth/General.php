@@ -17,9 +17,11 @@ class General implements Contracts\Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isSubscriber($uid=SUID)
+    public function isSubscriber($uid = SUID)
     {
-        if ( !$uid ) return false;
+        if (!$uid) {
+            return false;
+        }
         return 'subscriber' === ACMS_RAM::userAuth($uid);
     }
 
@@ -29,9 +31,11 @@ class General implements Contracts\Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isContributor($uid=SUID)
+    public function isContributor($uid = SUID)
     {
-        if ( !$uid ) return false;
+        if (!$uid) {
+            return false;
+        }
         return 'contributor' === ACMS_RAM::userAuth($uid);
     }
 
@@ -41,9 +45,11 @@ class General implements Contracts\Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isEditor($uid=SUID)
+    public function isEditor($uid = SUID)
     {
-        if ( !$uid ) return false;
+        if (!$uid) {
+            return false;
+        }
         return 'editor' === ACMS_RAM::userAuth($uid);
     }
 
@@ -53,9 +59,11 @@ class General implements Contracts\Guard
      * @param int|null $uid
      * @return bool
      */
-    public function isAdministrator($uid=SUID)
+    public function isAdministrator($uid = SUID)
     {
-        if ( !$uid ) return false;
+        if (!$uid) {
+            return false;
+        }
         return 'administrator' === ACMS_RAM::userAuth($uid);
     }
 
@@ -65,11 +73,13 @@ class General implements Contracts\Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfSubscriber($bid=BID)
+    public function isPermissionOfSubscriber($bid = BID)
     {
-        if ( !$this->isControlBlog($bid) ) return false;
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
 
-        switch ( ACMS_RAM::userAuth(SUID) ) {
+        switch (ACMS_RAM::userAuth(SUID)) {
             case 'administrator':
             case 'editor':
             case 'contributor':
@@ -87,11 +97,13 @@ class General implements Contracts\Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfContributor($bid=BID)
+    public function isPermissionOfContributor($bid = BID)
     {
-        if ( !$this->isControlBlog($bid) ) return false;
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
 
-        switch ( ACMS_RAM::userAuth(SUID) ) {
+        switch (ACMS_RAM::userAuth(SUID)) {
             case 'administrator':
             case 'editor':
             case 'contributor':
@@ -108,10 +120,12 @@ class General implements Contracts\Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfEditor($bid=BID)
+    public function isPermissionOfEditor($bid = BID)
     {
-        if ( !$this->isControlBlog($bid) ) return false;
-        switch ( ACMS_RAM::userAuth(SUID) ) {
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
+        switch (ACMS_RAM::userAuth(SUID)) {
             case 'administrator':
             case 'editor':
                 break;
@@ -127,9 +141,11 @@ class General implements Contracts\Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfAdministrator($bid=BID)
+    public function isPermissionOfAdministrator($bid = BID)
     {
-        if ( !$this->isControlBlog($bid) ) return false;
+        if (!$this->isControlBlog($bid)) {
+            return false;
+        }
         return $this->isAdministrator();
     }
 
@@ -140,22 +156,30 @@ class General implements Contracts\Guard
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfSnsLogin($uid=SUID, $bid=BID)
+    public function isPermissionOfSnsLogin($uid = SUID, $bid = BID)
     {
         $Config = Config::loadBlogConfigSet($bid);
 
-        if ( $Config->get('snslogin') !== 'on' ) { return false; }
+        if ($Config->get('snslogin') !== 'on') {
+            return false;
+        }
         $auth = ACMS_RAM::userAuth($uid);
 
-        switch ( $Config->get('snslogin_auth') ) {
+        switch ($Config->get('snslogin_auth')) {
             case 'subscriber':
-                if ( in_array($auth, array('contributor', 'editor', 'administrator')) ) { return false; }
+                if (in_array($auth, array('contributor', 'editor', 'administrator'), true)) {
+                    return false;
+                }
                 break;
             case 'contributor':
-                if ( in_array($auth, array('editor', 'administrator')) ) { return false; }
+                if (in_array($auth, array('editor', 'administrator'), true)) {
+                    return false;
+                }
                 break;
             case 'editor':
-                if ( in_array($auth, array('administrator')) ) { return false; }
+                if (in_array($auth, array('administrator'), true)) {
+                    return false;
+                }
                 break;
             case 'administrator':
                 break;
@@ -183,17 +207,20 @@ class General implements Contracts\Guard
      */
     protected function isControlBlog($bid)
     {
-        if ( 1
+        if (
+            1
             and ACMS_RAM::userGlobalAuth(SUID) !== 'on'
             and SBID !== intval($bid)
         ) {
             return false;
         }
 
-        if ( !(1
+        if (
+            !(1
             and ACMS_RAM::blogLeft(SBID) <= ACMS_RAM::blogLeft($bid)
             and ACMS_RAM::blogRight(SBID) >= ACMS_RAM::blogRight($bid)
-        ) ) {
+            )
+        ) {
             return false;
         }
 
@@ -218,5 +245,13 @@ class General implements Contracts\Guard
             $SQL->addWhereOpr('blog_status', 'close', '<>');
         }
         return DB::query($SQL->get(dsn()), 'list');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function roleAuthorization($action, $bid = BID, $eid = 0, $uid = SUID)
+    {
+        return false;
     }
 }

@@ -75,8 +75,7 @@ class Import
             $this->registerNewIDs();
             $this->import();
             $this->fixException();
-
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -126,7 +125,7 @@ class Import
         $SQL->addWhereOpr('module_blog_id', $this->bid);
         $all = DB::query($SQL->get(dsn()), 'all');
 
-        foreach ( $all as $module ) {
+        foreach ($all as $module) {
             $this->oldModules[$module['module_id']] = $module['module_identifier'];
         }
     }
@@ -139,7 +138,7 @@ class Import
      */
     protected function getNewModuleId($old_mid)
     {
-        if ( !isset($this->oldModules[$old_mid]) ) {
+        if (!isset($this->oldModules[$old_mid])) {
             return $old_mid;
         }
         $identifier = $this->oldModules[$old_mid];
@@ -149,7 +148,7 @@ class Import
         $SQL->addWhereOpr('module_identifier', $identifier);
         $SQL->addWhereOpr('module_blog_id', $this->bid);
 
-        if ( $new = DB::query($SQL->get(dsn()), 'one') ) {
+        if ($new = DB::query($SQL->get(dsn()), 'one')) {
             return $new;
         }
         return $old_mid;
@@ -168,7 +167,7 @@ class Import
         $SQL->addWhereOpr('config_module_id', null, '<>');
         $SQL->addWhereOpr('config_blog_id', $this->bid);
         $mids = DB::query($SQL->get(dsn()), 'list');
-        foreach ( $mids as $mid ) {
+        foreach ($mids as $mid) {
             $SQL = SQL::newUpdate('config');
             $SQL->addUpdate('config_module_id', $this->getNewModuleId($mid));
             $SQL->addWhereOpr('config_module_id', $mid);
@@ -184,7 +183,7 @@ class Import
         $SQL->addWhereOpr('field_blog_id', $this->bid);
         $SQL->addWhereOpr('field_mid', null, '<>');
         $mids = DB::query($SQL->get(dsn()), 'list');
-        foreach ( $mids as $mid ) {
+        foreach ($mids as $mid) {
             $SQL = SQL::newUpdate('field');
             $SQL->addUpdate('field_mid', $this->getNewModuleId($mid));
             $SQL->addWhereOpr('field_mid', $mid);
@@ -197,7 +196,7 @@ class Import
         // Layout Module
         $SQL = SQL::newSelect('layout_grid');
         $all = DB::query($SQL->get(dsn()), 'all');
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $SQL = SQL::newUpdate('layout_grid');
             $SQL->addUpdate('layout_grid_mid', $this->getNewModuleId($row['layout_grid_mid']));
             $SQL->addWhereOpr('layout_grid_parent', $row['layout_grid_parent']);
@@ -210,7 +209,7 @@ class Import
         $SQL = SQL::newSelect('column');
         $SQL->addWhereOpr('column_type', 'module%', 'LIKE');
         $all = DB::query($SQL->get(dsn()), 'all');
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $SQL = SQL::newUpdate('column');
             $SQL->addUpdate('column_field_1', $this->getNewModuleId($row['column_field_1']));
             $SQL->addWhereOpr('column_id', $row['column_id']);
@@ -220,7 +219,7 @@ class Import
         $SQL = SQL::newSelect('column_rev');
         $SQL->addWhereOpr('column_type', 'module%', 'LIKE');
         $all = DB::query($SQL->get(dsn()), 'all');
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $SQL = SQL::newUpdate('column_rev');
             $SQL->addUpdate('column_field_1', $this->getNewModuleId($row['column_field_1']));
             $SQL->addWhereOpr('column_id', $row['column_id']);
@@ -236,13 +235,13 @@ class Import
      */
     protected function valid()
     {
-        if ( !isset($this->yaml['meta']) ) {
+        if (!isset($this->yaml['meta'])) {
             return;
         }
 
-        foreach ( $this->yaml['meta'] as $type => $item ) {
-            foreach ( $item as $id => $code ) {
-                if ( $new_id = $this->getIdFromCode($type, $code) ) {
+        foreach ($this->yaml['meta'] as $type => $item) {
+            foreach ($item as $id => $code) {
+                if ($new_id = $this->getIdFromCode($type, $code)) {
                     $this->meta[$type][$id] = $new_id;
                 }
             }
@@ -264,7 +263,7 @@ class Import
         }
 
         // config
-        if ( isset($this->yaml['config']) ) {
+        if (isset($this->yaml['config'])) {
             $SQL = SQL::newSelect('module');
             $SQL->addSelect('module_id');
             $SQL->addWhereOpr('module_name', 'Banner');
@@ -281,21 +280,21 @@ class Import
         }
 
         // rule
-        if ( isset($this->yaml['rule']) ) {
+        if (isset($this->yaml['rule'])) {
             $SQL = SQL::newDelete('rule');
             $SQL->addWhereOpr('rule_blog_id', $this->bid);
             DB::query($SQL->get(dsn()), 'exec');
         }
 
         // module
-        if ( isset($this->yaml['module']) ) {
+        if (isset($this->yaml['module'])) {
             $SQL = SQL::newDelete('module');
             $SQL->addWhereOpr('module_blog_id', $this->bid);
             DB::query($SQL->get(dsn()), 'exec');
         }
 
         // module field
-        if ( isset($this->yaml['field']) ) {
+        if (isset($this->yaml['field'])) {
             $SQL = SQL::newDelete('field');
             $SQL->addWhereOpr('field_key', '%@%', 'NOT LIKE');
             $SQL->addWhereOpr('field_blog_id', $this->bid);
@@ -316,7 +315,7 @@ class Import
             'config_set', 'rule', 'module'
         );
 
-        foreach ( $tables as $table ) {
+        foreach ($tables as $table) {
             $this->registerNewID($table);
         }
     }
@@ -328,15 +327,15 @@ class Import
      */
     protected function registerNewID($table)
     {
-        if ( !$this->existsYaml($table) ) {
+        if (!$this->existsYaml($table)) {
             return;
         }
-        foreach ( $this->yaml[$table] as $record ) {
-            if ( !isset($record[$table . '_id']) ) {
+        foreach ($this->yaml[$table] as $record) {
+            if (!isset($record[$table . '_id'])) {
                 continue;
             }
             $id = $record[$table . '_id'];
-            if ( isset($this->newIDs[$table][$id]) ) {
+            if (isset($this->newIDs[$table][$id])) {
                 continue;
             }
             $this->newIDs[$table][$id] = DB::query(SQL::nextval($table . '_id', dsn()), 'seq');
@@ -350,36 +349,36 @@ class Import
      */
     protected function insertData($table)
     {
-        if ( !$this->existsYaml($table) ) {
+        if (!$this->existsYaml($table)) {
             return;
         }
-        foreach ( $this->yaml[$table] as $record ) {
+        foreach ($this->yaml[$table] as $record) {
             $SQL = SQL::newInsert($table);
             $id = 0;
-            foreach ( $record as $field => $value ) {
-                if ( is_callable(array($this, $table . 'Fix')) ) {
+            foreach ($record as $field => $value) {
+                if (is_callable(array($this, $table . 'Fix'))) {
                     $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value));
                 }
-                if ( $value !== false ) {
+                if ($value !== false) {
                     $SQL->addInsert($field, $value);
                 }
-                if ( substr($field, strlen($table . '_')) === 'id' ) {
+                if (substr($field, strlen($table . '_')) === 'id') {
                     $id = $value;
                 }
             }
-            if ( $table === 'field' && preg_match('/[^@]+@[^@]+/', $record['field_key']) ) {
+            if ($table === 'field' && preg_match('/[^@]+@[^@]+/', $record['field_key'])) {
                 continue; // モジュールフィールドのファイル、画像はインポートしない
             }
-            if ( $table === 'config' ) {
+            if ($table === 'config') {
                 $mid = $record['config_module_id'];
-                if ( !empty($mid) && isset($this->yaml['meta']['banner']) && in_array($mid, $this->yaml['meta']['banner']) ) {
+                if (!empty($mid) && isset($this->yaml['meta']['banner']) && in_array($mid, $this->yaml['meta']['banner'])) {
                     continue; // バナーモジュールのコンテンツはインポートしない
                 }
             }
-            if ( $table === 'module' ) {
+            if ($table === 'module') {
                 $identifier = isset($record['module_identifier']) ? $record['module_identifier'] : '';
                 $scope = isset($record['module_scope']) ? $record['module_scope'] : 'local';
-                if ( !Module::double($identifier, $id, $scope) ) {
+                if (!Module::double($identifier, $id, $scope)) {
                     $this->failedContents[] = array(
                         'table' => 'module',
                         'type' => 'overlap',
@@ -390,7 +389,7 @@ class Import
                     continue;
                 }
             }
-            if ( !empty($this->failedMeta) ) {
+            if (!empty($this->failedMeta)) {
                 $this->failedContents[] = array(
                     'table' => $table,
                     'type' => 'conversion',
@@ -416,7 +415,7 @@ class Import
     {
         if ($field === 'config_set_id') {
             $value = $this->getNewID('config_set', $value);
-        } else if ($field === 'config_set_blog_id') {
+        } elseif ($field === 'config_set_blog_id') {
             $value = $this->bid;
         }
         return $value;
@@ -432,13 +431,13 @@ class Import
      */
     protected function configFix($field, $value)
     {
-        if ( $field === 'config_set_id' ) {
+        if ($field === 'config_set_id') {
             $value = $this->getNewID('config_set', $value);
-        } else if ( $field === 'config_rule_id' ) {
+        } elseif ($field === 'config_rule_id') {
             $value = $this->getNewID('rule', $value);
-        } else if ( $field === 'config_module_id' ) {
+        } elseif ($field === 'config_module_id') {
             $value = $this->getNewID('module', $value);
-        } else if ( $field === 'config_blog_id' ) {
+        } elseif ($field === 'config_blog_id') {
             $value = $this->bid;
         }
         return $value;
@@ -454,17 +453,17 @@ class Import
      */
     protected function ruleFix($field, $value)
     {
-        if ( $field === 'rule_id' ) {
+        if ($field === 'rule_id') {
             $value = $this->getNewID('rule', $value);
-        } else if ( $field === 'rule_uid' ) {
+        } elseif ($field === 'rule_uid') {
             $value = $this->getCurrentID('uid', $value);
-        } else if ( $field === 'rule_cid' ) {
+        } elseif ($field === 'rule_cid') {
             $value = $this->getCurrentID('cid', $value);
-        } else if ( $field === 'rule_eid' ) {
+        } elseif ($field === 'rule_eid') {
             $value = $this->getCurrentID('eid', $value);
-        } else if ( $field === 'rule_aid' ) {
+        } elseif ($field === 'rule_aid') {
             $value = $this->getCurrentID('aid', $value);
-        } else if ( $field === 'rule_blog_id' ) {
+        } elseif ($field === 'rule_blog_id') {
             $value = $this->bid;
         }
         return $value;
@@ -480,17 +479,17 @@ class Import
      */
     protected function moduleFix($field, $value)
     {
-        if ( $field === 'module_id' ) {
+        if ($field === 'module_id') {
             $value = $this->getNewID('module', $value);
-        } else if ( $field === 'module_bid' ) {
+        } elseif ($field === 'module_bid') {
             $value = $this->getCurrentID('bid', $value);
-        } else if ( $field === 'module_uid' ) {
+        } elseif ($field === 'module_uid') {
             $value = $this->getCurrentID('uid', $value);
-        } else if ( $field === 'module_cid' ) {
+        } elseif ($field === 'module_cid') {
             $value = $this->getCurrentID('cid', $value);
-        } else if ( $field === 'module_eid' ) {
+        } elseif ($field === 'module_eid') {
             $value = $this->getCurrentID('eid', $value);
-        } else if ( $field === 'module_blog_id' ) {
+        } elseif ($field === 'module_blog_id') {
             $value = $this->bid;
         }
         return $value;
@@ -506,9 +505,9 @@ class Import
      */
     protected function fieldFix($field, $value)
     {
-        if ( $field === 'field_mid' ) {
+        if ($field === 'field_mid') {
             $value = $this->getNewID('module', $value);
-        } else if ( $field === 'field_blog_id' ) {
+        } elseif ($field === 'field_blog_id') {
             $value = $this->bid;
         }
         return $value;
@@ -523,11 +522,11 @@ class Import
      */
     protected function existsYaml($table)
     {
-        if ( !isset($this->yaml[$table]) ) {
+        if (!isset($this->yaml[$table])) {
             return false;
         }
         $data = $this->yaml[$table];
-        if ( !is_array($data) ) {
+        if (!is_array($data)) {
             return false;
         }
         return true;
@@ -541,10 +540,10 @@ class Import
      */
     protected function getNewID($table, $id)
     {
-        if ( empty($id) ) {
+        if (empty($id)) {
             return null;
         }
-        if ( !isset($this->newIDs[$table][$id]) ) {
+        if (!isset($this->newIDs[$table][$id])) {
             return $id;
         }
         return $this->newIDs[$table][$id];
@@ -558,13 +557,13 @@ class Import
      */
     protected function getCurrentID($type, $id)
     {
-        if ( !is_numeric($id) ) {
+        if (!is_numeric($id)) {
             return $id;
         }
-        if ( empty($id) ) {
+        if (empty($id)) {
             return null;
         }
-        if ( !isset($this->meta[$type][$id]) ) {
+        if (!isset($this->meta[$type][$id])) {
             $code = isset($this->yaml['meta'][$type][$id]) ? $this->yaml['meta'][$type][$id] : 'unknown';
             $this->failedMeta[] = array(
                 'type' => $type,
@@ -584,10 +583,10 @@ class Import
      *
      * @return int | bool
      */
-    protected function getIdFromCode($type, $code, $hierarchy=false)
+    protected function getIdFromCode($type, $code, $hierarchy = false)
     {
         $SQL = false;
-        switch ( $type ) {
+        switch ($type) {
             case 'bid':
                 $SQL = SQL::newSelect('blog');
                 $SQL->setSelect('blog_id');
@@ -597,7 +596,7 @@ class Import
                 $SQL = SQL::newSelect('user');
                 $SQL->setSelect('user_id');
                 $SQL->addWhereOpr('user_code', $code);
-                if ( !$hierarchy ) {
+                if (!$hierarchy) {
                     $SQL->addWhereOpr('user_blog_id', $this->bid);
                 }
                 break;
@@ -605,7 +604,7 @@ class Import
                 $SQL = SQL::newSelect('category');
                 $SQL->setSelect('category_id');
                 $SQL->addWhereOpr('category_code', $code);
-                if ( !$hierarchy ) {
+                if (!$hierarchy) {
                     $SQL->addWhereOpr('category_blog_id', $this->bid);
                 }
                 break;
@@ -613,7 +612,7 @@ class Import
                 $SQL = SQL::newSelect('entry');
                 $SQL->setSelect('entry_id');
                 $SQL->addWhereOpr('entry_code', $code);
-                if ( !$hierarchy ) {
+                if (!$hierarchy) {
                     $SQL->addWhereOpr('entry_blog_id', $this->bid);
                 }
                 break;
@@ -622,7 +621,7 @@ class Import
                 $SQL->setSelect('alias_id');
                 $SQL->addWhereOpr('alias_domain', $code);
                 $SQL->addWhereOpr('alias_code', $code);
-                if ( !$hierarchy ) {
+                if (!$hierarchy) {
                     $SQL->addWhereOpr('alias_blog_id', $this->bid);
                 }
                 break;
@@ -632,14 +631,14 @@ class Import
         }
 
         $ids = DB::query($SQL->get(dsn()), 'all');
-        if ( count($ids) > 1 ) {
+        if (count($ids) > 1) {
             return false;
         }
-        if ( $id = DB::query($SQL->get(dsn()), 'one') ) {
+        if ($id = DB::query($SQL->get(dsn()), 'one')) {
             return $id;
         }
         // idが見つからなかった場合、その他のブログから検索
-        if ( !$hierarchy ) {
+        if (!$hierarchy) {
             return $this->getIdFromCode($type, $code, true);
         }
         return false;

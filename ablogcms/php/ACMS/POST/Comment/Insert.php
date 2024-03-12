@@ -20,7 +20,7 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
      * @return bool|Field
      * @throws Exception
      */
-    function post()
+    public function post()
     {
         $nextstep   = $this->Post->get('nextstep');
         $redirect   = $this->Post->get('redirect');
@@ -28,7 +28,7 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
         //------
         // bug
         $Comment = $this->extract('comment');
-        if ( !$Comment->isValid() ) {
+        if (!$Comment->isValid()) {
             $this->Post->set('action', 'insert');
             return $this->Post;
         }
@@ -41,7 +41,7 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
 
         //-------------
         // save cookie
-        if ( 'on' == $Comment->get('persistent') ) {
+        if ('on' == $Comment->get('persistent')) {
             $expire = strtotime(date('Y-m-d H:i:s', REQUEST_TIME)) + config('comment_cookie_lifetime');
             acmsSetCookie('acms_comment_name', $name, $expire, '/');
             acmsSetCookie('acms_comment_mail', $mail, $expire, '/');
@@ -58,8 +58,10 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
         //-------
         // align
         $DB = DB::singleton(dsn());
-        if ( !empty($replyId) ) {
-            if ( !$pt = ACMS_RAM::commentRight($replyId) ) die();
+        if (!empty($replyId)) {
+            if (!$pt = ACMS_RAM::commentRight($replyId)) {
+                die();
+            }
             $pid    = $replyId;
 
             $SQL    = SQL::newUpdate('comment');
@@ -75,7 +77,6 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
             $SQL->addWhereOpr('comment_entry_id', EID);
             $SQL->addWhereOpr('comment_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
-
         } else {
             $SQL    = SQL::newSelect('comment');
             $SQL->setSelect('comment_right');
@@ -114,10 +115,11 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
             'cid'       => ACMS_RAM::entryCategory(EID),
             'eid'       => EID,
             'cmid'      => $cmid,
-            'fragment'  => 'comment-'.$cmid,
+            'fragment'  => 'comment-' . $cmid,
         ), false));
 
-        if ( 1
+        if (
+            1
             and $to = configArray('mail_comment_to')
             and $subjectTpl = findTemplate(config('mail_comment_tpl_subject'))
             and $bodyTpl = findTemplate(config('mail_comment_tpl_body'))
@@ -142,7 +144,6 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
                     $mailer = $mailer->setHtml($bodyHtml);
                 }
                 $mailer->send();
-
             } catch (Exception $e) {
                 AcmsLogger::warning('コメントの通知メール送信に失敗しました', Common::exceptionArray($e));
             }
@@ -154,12 +155,14 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
 
         if (!empty($redirect) && Common::isSafeUrl($redirect)) {
             $this->redirect($redirect);
-        } else if ( !empty($nextstep) ) {
+        }
+
+        if (!empty($nextstep)) {
             $this->Post->set('step', $nextstep);
             $this->Post->set('action', 'insert');
             return $this->Post;
-        } else {
-            return true;
         }
+
+        return true;
     }
 }

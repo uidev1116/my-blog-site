@@ -26,6 +26,5 @@ class ImageServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

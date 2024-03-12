@@ -87,7 +87,7 @@ class Destination
     public function setDestinationOffsetDir($destinationOffsetDir)
     {
         $this->destinationOffsetDir = trim($destinationOffsetDir, '/') . '/';
-        if ( $this->destinationOffsetDir === '/' ) {
+        if ($this->destinationOffsetDir === '/') {
             $this->destinationOffsetDir = '';
         }
     }
@@ -125,7 +125,7 @@ class Destination
     public function setBlogCode($code)
     {
         $this->blogCode = trim($code, '/') . '/';
-        if ( $this->blogCode === '/' ) {
+        if ($this->blogCode === '/') {
             $this->blogCode = '';
         }
     }

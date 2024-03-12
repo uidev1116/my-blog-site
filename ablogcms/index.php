@@ -15,14 +15,23 @@ if (preg_match('@(.*?)([^/]+)$@', $_SERVER['SCRIPT_FILENAME'], $match)) {
         Dotenv\Dotenv::createImmutable($scriptDir)->load();
     }
 }
-function env($key, $default = '') {
+
+/**
+ * 環境変数の取得
+ *
+ * @param string $key
+ * @param string $default
+ * @return string
+ */
+function env(string $key, string $default = ''): string
+{
     return isset($_ENV[$key]) ? $_ENV[$key] : $default;
 }
 
 /**
  * config.server.php
  */
-if ( !is_file('config.server.php') ) {
+if (!is_file('config.server.php')) {
     die('config.server.php is missing');
 }
 require_once 'config.server.php';
@@ -63,12 +72,13 @@ try {
     /**
      * setup
      */
-    if ( is_file(SCRIPT_DIR . 'setup/index.php') ) {
-        die(header('Location: ' . BASE_URL . 'setup/index.php'));
+    if (is_file(SCRIPT_DIR . 'setup/index.php')) {
+        header('Location: ' . BASE_URL . 'setup/index.php');
+        die();
     }
     require_once LIB_DIR . 'main.php';
 
     $acms_application->checkException();
-} catch ( Exception $e ) {
+} catch (Exception $e) {
     $acms_application->showError($e);
 }

@@ -10,7 +10,7 @@ class ACMS_POST_Member_SigninRedirect extends ACMS_POST_Member
      *
      * @var bool
      */
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * CSRF対策

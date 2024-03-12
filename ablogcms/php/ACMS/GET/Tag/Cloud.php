@@ -2,7 +2,7 @@
 
 class ACMS_GET_Tag_Cloud extends ACMS_GET
 {
-    var $_axis  = array(
+    public $_axis  = array(
         'bid'   => 'self',
         'cid'   => 'self'
     );
@@ -21,8 +21,12 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
 
         ACMS_Filter::entrySession($EntrySub);
         ACMS_Filter::entrySpan($EntrySub, $this->start, $this->end);
-        if ( !empty($this->Field) ) { ACMS_Filter::entryField($EntrySub, $this->Field); }
-        if ( !empty($this->eid) ) { $EntrySub->addWhereOpr('entry_id', $this->eid); }
+        if (!empty($this->Field)) {
+            ACMS_Filter::entryField($EntrySub, $this->Field);
+        }
+        if (!empty($this->eid)) {
+            $EntrySub->addWhereOpr('entry_id', $this->eid);
+        }
 
         $CategorySub = null;
         if (!empty($this->cid)) {
@@ -30,7 +34,7 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
             $CategorySub->setSelect('category_id');
             if (is_int($this->cid)) {
                 ACMS_Filter::categoryTree($CategorySub, $this->cid, $this->categoryAxis());
-            } else if (strpos($this->cid, ',') !== false) {
+            } elseif (strpos($this->cid, ',') !== false) {
                 $CategorySub->addWhereIn('category_id', explode(',', $this->cid));
                 $multiId = true;
             }
@@ -50,7 +54,7 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
             } else {
                 ACMS_Filter::blogTree($BlogSub, $this->bid, $this->blogAxis());
             }
-        } else if (strpos($this->bid, ',') !== false) {
+        } elseif (strpos($this->bid, ',') !== false) {
             $BlogSub->addWhereIn('blog_id', explode(',', $this->bid));
         }
         ACMS_Filter::blogStatus($BlogSub);
@@ -59,8 +63,8 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
         $SQL->addWhereIn('tag_blog_id', $DB->subQuery($BlogSub));
 
         $SQL->addGroup('tag_name');
-        if ( 1 < ($tagThreshold = idval(config('tag_cloud_threshold'))) ) {
-            $SQL->addHaving('tag_amount >= '.$tagThreshold);
+        if (1 < ($tagThreshold = idval(config('tag_cloud_threshold')))) {
+            $SQL->addHaving('tag_amount >= ' . $tagThreshold);
         }
         $SQL->setLimit(config('tag_cloud_limit'));
         ACMS_Filter::tagOrder($SQL, config('tag_cloud_order'));
@@ -94,7 +98,9 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
             config('tag_cloud_link_category_context') === 'on'
         );
         foreach ($tags as $tag => $amount) {
-            if ( !empty($i) ) $Tpl->add('glue');
+            if (!empty($i)) {
+                $Tpl->add('glue');
+            }
             $context['tag'] = $tag;
             $Tpl->add('tag:loop', array(
                 'level'     => ceil(sqrt($amount) * $c) - $x + 1,
@@ -123,7 +129,7 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
             if ($includeCategoryContext) {
                 if ($this->cid && is_int($this->cid)) {
                     $context['cid'] = $this->cid;
-                } else if (CID) {
+                } elseif (CID) {
                     $context['cid'] = CID;
                 }
             }

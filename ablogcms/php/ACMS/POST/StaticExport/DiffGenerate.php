@@ -34,7 +34,9 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
      */
     public function post()
     {
-        if (!sessionWithAdministration()) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
 
         ignore_user_abort(true);
         set_time_limit(0);
@@ -90,7 +92,8 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
             $destination = App::make('static-export.destination');
             $fromDatetime = $this->Post->get('diff_date') . ' ' . $this->Post->get('diff_time');
 
-            if (0
+            if (
+                0
                 || empty($document_root)
                 || empty($domain)
                 || empty($maxPublish)
@@ -122,7 +125,7 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
 
     protected function saveExportDatetime($date, $time)
     {
-        $field = new Field;
+        $field = new Field();
         $field->set('static-export-last-time-date', $date);
         $field->set('static-export-last-time-time', $time);
 

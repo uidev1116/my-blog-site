@@ -4,15 +4,17 @@ class ACMS_GET_Admin_Indexing extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( !sessionWithContribution() ) return '';
+        if (!sessionWithContribution()) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        if ( !!EID ) {
+        if (!!EID) {
             $this->addBlock($Tpl, ACMS_RAM::entryIndexing(EID), 'entry');
         }
 
-        if ( !!CID ) {
+        if (!!CID) {
             $this->addBlock($Tpl, ACMS_RAM::categoryIndexing(CID), 'category');
         }
 
@@ -20,12 +22,12 @@ class ACMS_GET_Admin_Indexing extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    function addBlock(& $Tpl, $indexing, $block)
+    function addBlock(&$Tpl, $indexing, $block)
     {
-        if ( $indexing === 'on' ) {
-            $Tpl->add('index:'.$block);
+        if ($indexing === 'on') {
+            $Tpl->add('index:' . $block);
         } else {
-            $Tpl->add('not_index:'.$block);
+            $Tpl->add('not_index:' . $block);
         }
     }
 }

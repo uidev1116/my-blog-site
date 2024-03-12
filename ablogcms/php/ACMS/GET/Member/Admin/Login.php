@@ -44,7 +44,7 @@ class ACMS_GET_Member_Admin_Login extends ACMS_GET_Member_Signin
             generateSession($uid);
             $this->removeToken();
 
-            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid). '」が管理ログインしました', [
+            AcmsLogger::info('ユーザー「' . ACMS_RAM::userName($uid) . '」が管理ログインしました', [
                 'id' => $uid,
             ]);
 

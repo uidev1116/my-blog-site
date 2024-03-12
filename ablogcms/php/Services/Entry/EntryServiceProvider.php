@@ -35,6 +35,5 @@ class EntryServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

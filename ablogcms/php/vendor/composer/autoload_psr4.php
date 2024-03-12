@@ -30,6 +30,7 @@ return array(
     'Symfony\\Component\\Cache\\' => array($vendorDir . '/symfony/cache'),
     'RobThree\\Auth\\' => array($vendorDir . '/robthree/twofactorauth/lib'),
     'RingCentral\\Psr7\\' => array($vendorDir . '/ringcentral/psr7/src'),
+    'Rhukster\\DomSanitizer\\' => array($vendorDir . '/rhukster/dom-sanitizer/src'),
     'React\\Stream\\' => array($vendorDir . '/react/stream/src'),
     'React\\Socket\\' => array($vendorDir . '/react/socket/src'),
     'React\\SocketClient\\' => array($vendorDir . '/react/socket-client/src'),

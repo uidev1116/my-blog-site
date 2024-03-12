@@ -11,7 +11,7 @@ class ACMS_POST_Config_PartExport extends ACMS_POST_Config_Export
     {
         @set_time_limit(0);
 
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
             return $this->Post;
         }
 
@@ -28,7 +28,7 @@ class ACMS_POST_Config_PartExport extends ACMS_POST_Config_Export
             $this->download();
 
             AcmsLogger::info('コンフィグの部分エクスポートをしました');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
 

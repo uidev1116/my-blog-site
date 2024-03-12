@@ -5,7 +5,7 @@ class ACMS_POST_Download extends ACMS_POST
     /**
      * @var bool
      */
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     /**
      * @var bool
@@ -38,7 +38,8 @@ class ACMS_POST_Download extends ACMS_POST
             $contents = $response->getResponseBody();
             $contentType = isset($responseHeaders['Content-Type']) ? $responseHeaders['Content-Type'] : '';
             $contentType = isset($responseHeaders['content-type']) ? $responseHeaders['content-type'] : '';
-            if ( 1
+            if (
+                1
                 and $contentType
                 and preg_match('@^text/[^;]+; charset=(.*)$@', $contentType, $match)
             ) {
@@ -47,7 +48,7 @@ class ACMS_POST_Download extends ACMS_POST
             if ($toCharset = $this->Post->get('charset')) {
                 $contents = mb_convert_encoding($contents, $toCharset, 'UTF-8');
             }
-            header('Content-Length: '.strlen($contents));
+            header('Content-Length: ' . strlen($contents));
             if (strpos(UA, 'MSIE')) {
                 header('Content-Type: text/download');
             } else {
@@ -55,7 +56,6 @@ class ACMS_POST_Download extends ACMS_POST
                 header('Content-Type: application/octet-stream');
             }
             die($contents);
-
         } catch (\Exception $e) {
             AcmsLogger::warning('ダウンロードに失敗しました', Common::exceptionArray($e, ['url' => $url]));
             echo $e->getMessage();

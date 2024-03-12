@@ -34,7 +34,7 @@ class Engine
             if (!property_exists($this, $key)) {
                 continue;
             }
-            $this->$key = $val;
+            $this->$key = $val; // @phpstan-ignore-line
         }
         if (defined('PHP_SESSION_USE_DB') && PHP_SESSION_USE_DB) {
             $this->useDatabase();
@@ -227,14 +227,16 @@ class Engine
     protected function useDatabase()
     {
         $handler = new DatabaseHandler();
-        if (session_set_save_handler(
-            array($handler, 'open'),
-            array($handler, 'close'),
-            array($handler, 'read'),
-            array($handler, 'write'),
-            array($handler, 'destroy'),
-            array($handler, 'gc')
-        )) {
+        if (
+            session_set_save_handler(
+                array($handler, 'open'),
+                array($handler, 'close'),
+                array($handler, 'read'),
+                array($handler, 'write'),
+                array($handler, 'destroy'),
+                array($handler, 'gc')
+            )
+        ) {
             register_shutdown_function('session_write_close');
         }
     }

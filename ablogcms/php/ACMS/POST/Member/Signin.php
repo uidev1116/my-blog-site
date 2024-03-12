@@ -17,9 +17,9 @@ class ACMS_POST_Member_Signin extends ACMS_POST_Member
     /**
      * Run
      *
-     * @return null|Field_Validation
+     * @return void|Field_Validation
      */
-    public function post(): ?Field_Validation
+    public function post()
     {
         $loginField = $this->extract('login');
         $inputId = preg_replace("/(\s|　)/", "", $loginField->get('mail'));

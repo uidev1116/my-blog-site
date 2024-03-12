@@ -51,7 +51,7 @@ class ThemeGenerator extends Generator
      */
     protected function main()
     {
-        if ( !$this->sourceTheme ) {
+        if (!$this->sourceTheme) {
             throw new \RuntimeException('no selected source theme.');
         }
         $finder = new Finder();
@@ -76,7 +76,7 @@ class ThemeGenerator extends Generator
 
         foreach ($iterator as $file) {
             try {
-                $url = acmsLink(array('bid'=>BID), false) . $file->getRelativePathname();
+                $url = acmsLink(array('bid' => BID), false) . $file->getRelativePathname();
                 $this->request($url, $file);
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), $file->getRelativePathname());
@@ -92,17 +92,17 @@ class ThemeGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $this->logger ) {
+        if ($this->logger) {
             $this->logger->processing($info->getRelativePathname());
         }
-        if ( empty($data) || $code != '200' ) {
+        if (empty($data) || $code != '200') {
             $this->logger->error('データの取得に失敗しました。', $info->getRelativePathname(), $code);
         } else {
             try {
                 $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
                 Storage::makeDirectory($destination . $info->getRelativePath());
                 Storage::put($destination . $info->getRelativePathname(), $data);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error('データの書き込みに失敗しました。', $info->getRelativePathname());
             }
         }

@@ -4,11 +4,19 @@ class ACMS_POST_Entry_Close extends ACMS_POST_Entry
 {
     function post()
     {
-        if ( !$eid = idval($this->Post->get('eid')) ) die();
-        if ( !IS_LICENSED ) die();
-        if ( !sessionWithCompilation() ) {
-            if ( !sessionWithContribution() ) die();
-            if ( SUID <> ACMS_RAM::entryUser($eid) ) die();
+        if (!$eid = idval($this->Post->get('eid'))) {
+            die();
+        }
+        if (!IS_LICENSED) {
+            die();
+        }
+        if (!sessionWithCompilation()) {
+            if (!sessionWithContribution()) {
+                die();
+            }
+            if (SUID <> ACMS_RAM::entryUser($eid)) {
+                die();
+            }
         }
 
         $DB     = DB::singleton(dsn());

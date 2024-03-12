@@ -1,15 +1,15 @@
 <header>
-	<div>
-		@include("/admin/topicpath.html")
-	</div>
-	<div>
+  <div>
+    @include("/admin/topicpath.html")
+  </div>
+  <div>
     @include("/admin/config/parts/header.html", {"title": "<!--T-->コンフィグの部分インポート<!--/T-->"})
-	</div>
+  </div>
 </header>
 
 <!-- BEGIN_MODULE Admin_Config_Import -->
 <div class="js-acms_fix_marker acms_fix_bg">
-	<div class="acms_fix_bg_index">
+  <div class="acms_fix_bg_index">
     <form method="post" action="">
       <input type="hidden" name="bid" value="%{BID}" />
       <input type="hidden" name="admin" value="config_index" />
@@ -24,11 +24,11 @@
       <button type="submit" name="ACMS_POST_2GET" class="js-submit acms-admin-btn-admin acms-admin-inline-btn"><!--T-->一覧<!--/T--></button>
     </form>
 
-		<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-		<a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i
-			class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a>
-		<!-- END_MODULE Touch_SessionWithAdministration -->
-	</div>
+    <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+    <a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i
+      class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a>
+    <!-- END_MODULE Touch_SessionWithAdministration -->
+  </div>
 </div>
 
 
@@ -81,19 +81,13 @@
 </table>
 
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
-	<span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
-	{error}
-	<button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
-</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <!-- BEGIN success -->
 <p class="acms-admin-alert acms-admin-alert-info acms-admin-alert-icon">
-	<span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
-	<!--T-->インポートが完了しました。<!--/T-->
-	<button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
+  <span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
+  <!--T-->インポートが完了しました。<!--/T-->
+  <button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
 </p>
 <!-- END success -->
 <!-- END_MODULE Admin_Config_Import -->

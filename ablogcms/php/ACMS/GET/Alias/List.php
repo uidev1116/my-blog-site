@@ -36,20 +36,26 @@ class ACMS_GET_Alias_List extends ACMS_GET
 
         $map    = array();
         $sort   = array();
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $aid        = intval($row['alias_id']);
             $map[$aid]  = $row;
-            $sort[$aid] = $row['alias_'.$key];
+            $sort[$aid] = $row['alias_' . $key];
         }
-        if ( 'desc' == $order ) { arsort($sort); } else { asort($sort); }
+        if ('desc' == $order) {
+            arsort($sort);
+        } else {
+            asort($sort);
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
-        
+
         $i  = 0;
         $limit  = config('alias_list_limit');
-        foreach ( $sort as $aid => $kipple ) {
-            if ( $limit <= $i++ ) { break; } 
+        foreach ($sort as $aid => $kipple) {
+            if ($limit <= $i++) {
+                break;
+            }
             $row    = $map[$aid];
             $Tpl->add('alias:loop', array(
                 'id'        => $aid,
@@ -66,6 +72,5 @@ class ACMS_GET_Alias_List extends ACMS_GET
         }
 
         return $Tpl->get();
-    }  
+    }
 }
-

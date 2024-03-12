@@ -2,12 +2,12 @@
 
 class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 {
-    var $_axis = array(
+    public $_axis = array(
         'bid'   => 'self',
         'cid'   => 'self',
     );
 
-    var $_endGluePoint = null;
+    public $_endGluePoint = null;
 
     protected function initVars()
     {
@@ -45,7 +45,9 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
             'blogInfoOn'                => 'on',
             'blogFieldOn'               => config('category_entry_summary_blog_field_on'),
         );
-        if(!empty($this->order)){$config['order'] = $this->order;}
+        if (!empty($this->order)) {
+            $config['order'] = $this->order;
+        }
 
         return $config;
     }
@@ -94,12 +96,14 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
         $limit  = $this->_config['limit'];
         $offset = intval($this->_config['offset']);
-        if ( 1 > $limit ) return '';
+        if (1 > $limit) {
+            return '';
+        }
 
         $sortFd = ACMS_Filter::entryOrder($SQL, $this->_config['order'], $this->uid, $cid);
         $SQL->setLimit($limit, $offset);
 
-        if ( !empty($sortFd) ) {
+        if (!empty($sortFd)) {
             $SQL->setGroup($sortFd);
         }
         $SQL->addGroup('entry_id');
@@ -122,10 +126,18 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
         $categoryIds = array();
 
         foreach ($this->entries as $entry) {
-            if (!empty($entry['entry_id'])) $entryIds[] = $entry['entry_id'];
-            if (!empty($entry['entry_blog_id'])) $blogIds[] = $entry['entry_blog_id'];
-            if (!empty($entry['entry_user_id'])) $userIds[] = $entry['entry_user_id'];
-            if (!empty($entry['entry_category_id'])) $categoryIds[] = $entry['entry_category_id'];
+            if (!empty($entry['entry_id'])) {
+                $entryIds[] = $entry['entry_id'];
+            }
+            if (!empty($entry['entry_blog_id'])) {
+                $blogIds[] = $entry['entry_blog_id'];
+            }
+            if (!empty($entry['entry_user_id'])) {
+                $userIds[] = $entry['entry_user_id'];
+            }
+            if (!empty($entry['entry_category_id'])) {
+                $categoryIds[] = $entry['entry_category_id'];
+            }
         }
 
         // メイン画像のEagerLoading
@@ -187,10 +199,10 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
                 }
             }
         }
-        if ( $uid = intval($this->uid) ) {
+        if ($uid = intval($this->uid)) {
             $SQL->addWhereOpr('entry_user_id', $uid);
         }
-        if ( !empty($this->eid) ) {
+        if (!empty($this->eid)) {
             $SQL->addWhereOpr('entry_id', $this->eid);
         }
         ACMS_Filter::entrySpan($SQL, $this->start, $this->end);
@@ -202,29 +214,29 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
             ACMS_Filter::categoryStatus($SQL);
         }
 
-        if ( !empty($this->tags) ) {
+        if (!empty($this->tags)) {
             ACMS_Filter::entryTag($SQL, $this->tags);
         }
-        if ( !empty($this->keyword) ) {
+        if (!empty($this->keyword)) {
             ACMS_Filter::entryKeyword($SQL, $this->keyword);
         }
-        if ( !empty($this->Field) ) {
-            if ( config('category_entry_summary_field_search') == 'entry' ) {
+        if (!empty($this->Field)) {
+            if (config('category_entry_summary_field_search') == 'entry') {
                 ACMS_Filter::entryField($SQL, $this->Field);
             } else {
                 ACMS_Filter::categoryField($SQL, $this->Field);
             }
         }
-        if ( 'on' == $this->_config['indexing'] ) {
+        if ('on' == $this->_config['indexing']) {
             $SQL->addWhereOpr('entry_indexing', 'on');
         }
-        if ( 'on' <> $this->_config['noimage'] ) {
+        if ('on' <> $this->_config['noimage']) {
             $SQL->addWhereOpr('entry_primary_image', null, '<>');
         }
 
         //-------------------------
         // filter (blog, category)
-        if ( $BlogSub ) {
+        if ($BlogSub) {
             $SQL->addWhereIn('entry_blog_id', DB::subQuery($BlogSub));
         }
 

@@ -27,13 +27,14 @@ class Helper
      */
     protected function buildInputTextValue($data, $Tpl, $block = array())
     {
-        if ( !is_array($block) ) $block = array($block);
+        if (!is_array($block)) {
+            $block = array($block);
+        }
         $vars   = array();
-        foreach ( $data as $key => $val ) {
-            if ( is_array($val) ) {
-                foreach ( $val as $i => $v ) {
-
-                    if ( empty($i) ) {
+        foreach ($data as $key => $val) {
+            if (is_array($val)) {
+                foreach ($val as $i => $v) {
+                    if (empty($i)) {
                         $vars[$key] = $v;
                         if (!empty($Tpl)) {
                             if (!isApiBuild()) {
@@ -42,9 +43,11 @@ class Helper
                         }
                     }
 
-                    $sfx    = '['.$i.']';
-                    if ( $v !== '' ) { $vars[$key.$sfx] = $v; }
-                    if ( !empty($Tpl) ) {
+                    $sfx    = '[' . $i . ']';
+                    if ($v !== '') {
+                        $vars[$key . $sfx] = $v;
+                    }
+                    if (!empty($Tpl)) {
                         if (!isApiBuild()) {
                             if (!empty($i)) {
                                 $Tpl->add(array_merge(array('glue', $key . ':loop'), $block));
@@ -55,11 +58,9 @@ class Helper
                     }
                 }
             } else {
-
                 //--------
                 // legacy?
                 $vars[$key] = $val;
-
             }
         }
         return $vars;
@@ -76,18 +77,24 @@ class Helper
      */
     protected function buildInputCheckboxChecked($data, $Tpl, $block = array())
     {
-        if ( !is_array($block) ) $block = array($block);
+        if (!is_array($block)) {
+            $block = array($block);
+        }
         $vars   = array();
-        foreach ( $data as $key => $vals ) {
-            if ( !is_array($vals) ) $vals   = array($vals);
-            foreach ( $vals as $i => $val ) {
-                if ( !is_array($val) ) {
-                    foreach ( array(
-                        $key.':checked#'.$val,
-                        $key.'['.$i.']'.':checked#'.$val,
-                    ) as $name ) {
+        foreach ($data as $key => $vals) {
+            if (!is_array($vals)) {
+                $vals   = array($vals);
+            }
+            foreach ($vals as $i => $val) {
+                if (!is_array($val)) {
+                    foreach (
+                        array(
+                        $key . ':checked#' . $val,
+                        $key . '[' . $i . ']' . ':checked#' . $val,
+                        ) as $name
+                    ) {
                         $vars[$name]    = config('attr_checked');
-                        if ( !empty($Tpl) ) {
+                        if (!empty($Tpl)) {
                             $Tpl->add(array_merge(array($name), $block));
                         }
                     }
@@ -108,18 +115,24 @@ class Helper
      */
     protected function buildSelectSelected($data, $Tpl, $block = array())
     {
-        if ( !is_array($block) ) $block = array($block);
+        if (!is_array($block)) {
+            $block = array($block);
+        }
         $vars   = array();
-        foreach ( $data as $key => $vals ) {
-            if ( !is_array($vals) ) $vals   = array($vals);
-            foreach ( $vals as $i => $val ) {
-                if ( !is_array($val) ) {
-                    foreach ( array(
-                        $key.':selected#'.$val,
-                        $key.'['.$i.']'.':selected#'.$val,
-                    ) as $name ) {
+        foreach ($data as $key => $vals) {
+            if (!is_array($vals)) {
+                $vals   = array($vals);
+            }
+            foreach ($vals as $i => $val) {
+                if (!is_array($val)) {
+                    foreach (
+                        array(
+                        $key . ':selected#' . $val,
+                        $key . '[' . $i . ']' . ':selected#' . $val,
+                        ) as $name
+                    ) {
                         $vars[$name]    = config('attr_selected');
-                        if ( !empty($Tpl) ) {
+                        if (!empty($Tpl)) {
                             $Tpl->add(array_merge(array($name), $block));
                         }
                     }
@@ -140,7 +153,7 @@ class Helper
      */
     public function buildModuleField($Tpl, $mid = null, $show = false)
     {
-        if ( $mid && $show ) {
+        if ($mid && $show) {
             $vars = $this->buildField(loadModuleField($mid), $Tpl, 'moduleField');
             $Tpl->add('moduleField', $vars);
         }
@@ -158,13 +171,15 @@ class Helper
      */
     public function buildDate($datetime, $Tpl, $block = array(), $prefix = 'date#')
     {
-        if ( !is_numeric($datetime) ) $datetime = strtotime($datetime);
+        if (!is_numeric($datetime)) {
+            $datetime = strtotime($datetime);
+        }
 
         $block  = empty($block) ? array() : (is_array($block) ? $block : array($block));
         $w  = date('w', $datetime);
         $weekPrefix = $prefix === 'date#' ? 'week#'
                                           : str_replace('date', 'week', $prefix);
-        $Tpl->add(array_merge(array($weekPrefix.$w), $block));
+        $Tpl->add(array_merge(array($weekPrefix . $w), $block));
 
         $formats = array(
             'd', 'D', 'j', 'l', 'N', 'S', 'w', 'z',
@@ -182,13 +197,13 @@ class Helper
         // format
         $combined   = implode('__', $formats);
         $formatted  = explode('__', date($combined, $datetime));
-        foreach ( $formatted as $p => $val ) {
+        foreach ($formatted as $p => $val) {
             $c = $formats[$p];
-            $vars[$prefix.$c] = $val;
+            $vars[$prefix . $c] = $val;
         }
         $vars[$prefix]  = date('Y-m-d H:i:s', $datetime);
 
-        $vars[$prefix.'week']   = config('week_label', '', intval($w));
+        $vars[$prefix . 'week']   = config('week_label', '', intval($w));
         return $vars;
     }
 
@@ -251,7 +266,7 @@ class Helper
      *
      * @return array
      */
-    public function buildField($Field, $Tpl, $block = array(), $scp = null, $loop_vars=array())
+    public function buildField($Field, $Tpl, $block = array(), $scp = null, $loop_vars = array())
     {
         $block  = !empty($block) ? (is_array($block) ? $block : array($block)) : array();
         $vars   = array();
@@ -264,19 +279,19 @@ class Helper
         //-------
         // group
         $mapGroup   = array();
-        foreach ( $Field->listFields() as $fd ) {
+        foreach ($Field->listFields() as $fd) {
             if (preg_match('/^@(.*)$/', $fd, $match)) {
                 $groupName = $match[1];
                 $mapGroup[$groupName] = $Field->getArray($fd);
             }
         }
-        foreach ( $mapGroup as $groupName => $aryFd ) {
+        foreach ($mapGroup as $groupName => $aryFd) {
             $data   = array();
-            for ( $i=0; true; $i++ ) {
+            for ($i = 0; true; $i++) {
                 $row        = array();
                 $isExists   = false;
                 $hasValidator = false;
-                foreach ( $aryFd as $fd ) {
+                foreach ($aryFd as $fd) {
                     $isExists |= $Field->isExists($fd, $i);
                     $row[$fd] = $Field->get($fd, '', $i);
                     if ($Field->isExists($fd . '@media', $i)) {
@@ -285,38 +300,42 @@ class Helper
                             $row[$fdMedia] = $Field->get($fdMedia, '', $i);
                         }
                     }
-                    if ($Field->isExists($fd. '@html', $i)) {
-                        $row[$fd. '@html'] = $Field->get($fd. '@html', '', $i);
+                    if ($Field->isExists($fd . '@html', $i)) {
+                        $row[$fd . '@html'] = $Field->get($fd . '@html', '', $i);
                     }
-                    if ($Field->isExists($fd. '@title', $i)) {
-                        $row[$fd. '@title'] = $Field->get($fd. '@title', '', $i);
+                    if ($Field->isExists($fd . '@title', $i)) {
+                        $row[$fd . '@title'] = $Field->get($fd . '@title', '', $i);
                     }
-                    if ( !$hasValidator && method_exists($Field, 'isValid') ) {
+                    if (!$hasValidator && method_exists($Field, 'isValid')) {
                         $validator = $Field->getMethods($fd);
                         $hasValidator |= !empty($validator);
                     }
                 }
-                if ( !$isExists ) { break; }
+                if (!$isExists) {
+                    break;
+                }
                 // 空の行を削除するかどうか
                 if (!$hasValidator) {
-                    if ( !join('', $row) ) { continue; }
+                    if (!join('', $row)) {
+                        continue;
+                    }
                 }
                 $data[] = $row;
             }
 
-            foreach ( $data as $i => $row ) {
+            foreach ($data as $i => $row) {
                 $_vars      = $loop_vars;
-                $loopblock  = array_merge(array($groupName.':loop'), $block);
+                $loopblock  = array_merge(array($groupName . ':loop'), $block);
 
                 //-----------
                 // validator
                 if (!isApiBuild()) {
-                    if ( method_exists($Field, 'isValid') ) {
-                        foreach ( $row as $fd => $kipple ) {
-                            foreach ( $Field->getMethods($fd) as $method ) {
-                                if ( !$val = intval($Field->isValid($fd, $method, $i)) ) {
-                                    foreach ( array('validator', 'v') as $v ) {
-                                        $key    = $fd.':'.$v.'#'.$method;
+                    if (method_exists($Field, 'isValid')) {
+                        foreach ($row as $fd => $kipple) {
+                            foreach ($Field->getMethods($fd) as $method) {
+                                if (!$val = intval($Field->isValid($fd, $method, $i))) {
+                                    foreach (array('validator', 'v') as $v) {
+                                        $key    = $fd . ':' . $v . '#' . $method;
                                         $_vars[$key] = $val;
                                         $Tpl->add(array_merge(array($key), $loopblock), array($key => $val));
                                     }
@@ -327,7 +346,7 @@ class Helper
                 }
                 //-------
                 // value
-                foreach ( $row as $key => $value ) {
+                foreach ($row as $key => $value) {
                     if ($value !== '') {
                         $_vars[$key] = $value;
                         if (!isApiBuild()) {
@@ -336,7 +355,7 @@ class Helper
                         }
                     }
                     if (!isApiBuild() && !empty($i)) {
-                        $Tpl->add(array_merge(array($key.':glue'), $loopblock));
+                        $Tpl->add(array_merge(array($key . ':glue'), $loopblock));
                     }
                 }
                 //---
@@ -437,10 +456,10 @@ class Helper
             $vars += $this->buildInputCheckboxChecked($data, $Tpl, $block);
             $vars += $this->buildSelectSelected($data, $Tpl, $block);
             if (!is_null($scp)) {
-                $vars[(!empty($scp) ? $scp.':' : '').'takeover'] = acmsSerialize($Field);
+                $vars[(!empty($scp) ? $scp . ':' : '') . 'takeover'] = acmsSerialize($Field);
             }
         }
-        foreach ( $Field->listChildren() as $child ) {
+        foreach ($Field->listChildren() as $child) {
             $vars += $this->buildField($Field->getChild($child), $Tpl, $block, $child);
         }
 
@@ -461,7 +480,7 @@ class Helper
      *
      * @return array
      */
-    public function buildPager($page, $limit, $amount, $delta, $curAttr, $Tpl, $block = array(), $Q=array())
+    public function buildPager($page, $limit, $amount, $delta, $curAttr, $Tpl, $block = array(), $Q = array())
     {
         $vars   = array();
         $block  = is_array($block) ? $block : array($block);
@@ -474,7 +493,7 @@ class Helper
 
         $from   = ($page - 1) * $limit;
         $to     = $from + $limit;// - 1;
-        if ( $amount < $to ) {
+        if ($amount < $to) {
             $to = $amount;
         }
         $vars   += array(
@@ -483,17 +502,17 @@ class Helper
             'itemsTo'        => $to,
         );
         $delta = intval($delta);
-        $lastPage = ceil($amount/$limit);
+        $lastPage = ceil($amount / $limit);
         $fromPage = 1 > ($page - $delta) ? 1 : ($page - $delta);
         $toPage = $lastPage < ($page + $delta) ? $lastPage : ($page + $delta);
 
-        if ( $lastPage > 1 ) {
-            for ( $curPage=$fromPage; $curPage<=$toPage; $curPage++ ) {
+        if ($lastPage > 1) {
+            for ($curPage = $fromPage; $curPage <= $toPage; $curPage++) {
                 $_vars  = array('page' => $curPage);
-                if ( $curPage <> $toPage ) {
+                if ($curPage <> $toPage) {
                     $Tpl->add(array_merge(array('glue', 'page:loop'), $block));
                 }
-                if ( PAGE == $curPage ) {
+                if (PAGE == $curPage) {
                     $_vars['pageCurAttr']    = $curAttr;
                 } else {
                     $Tpl->add(array_merge(array('link#front', 'page:loop'), $block), array(
@@ -507,7 +526,7 @@ class Helper
             }
         }
 
-        if ( $toPage <> $lastPage ) {
+        if ($toPage <> $lastPage) {
             $vars   += array(
                 'lastPageUrl'   => acmsLink($Q + array(
                     'page'      => $lastPage,
@@ -516,7 +535,7 @@ class Helper
             );
         }
 
-        if ( 1 < $fromPage ) {
+        if (1 < $fromPage) {
             $vars   += array(
                 'firstPageUrl'   => acmsLink($Q + array(
                     'page'      => 1,
@@ -525,7 +544,7 @@ class Helper
             );
         }
 
-        if ( 1 < $page ) {
+        if (1 < $page) {
             $Tpl->add(array_merge(array('backLink'), $block), array(
                 'url' => acmsLink($Q + array(
                     'page'      => ($page > 2) ? $page - 1 : false,
@@ -534,9 +553,11 @@ class Helper
                 'backPage'  => ($page > 1) ? $page - 1 : false,
             ));
         }
-        if ( $page <> $lastPage ) {
+        if ($page <> $lastPage) {
             $forwardNum = $amount - ($from + $limit);
-            if ( $limit < $forwardNum ) $forwardNum = $limit;
+            if ($limit < $forwardNum) {
+                $forwardNum = $limit;
+            }
             $Tpl->add(array_merge(array('forwardLink'), $block), array(
                 'url' => acmsLink($Q + array(
                     'page'      => $page + 1,
@@ -600,7 +621,9 @@ class Helper
 
         if (isset($eagerLoadingData[$eid]) && is_array($eagerLoadingData[$eid])) {
             foreach ($eagerLoadingData[$eid] as $unit) {
-                if ($unit['column_align'] === 'hidden') continue;
+                if ($unit['column_align'] === 'hidden') {
+                    continue;
+                }
                 $type = detectUnitTypeSpecifier($unit['column_type']);
                 if ('text' === $type) {
                     $_text  = $unit['column_field_1'];
@@ -617,21 +640,21 @@ class Helper
                     $data = explodeUnitData($text);
                     foreach ($data as $i => $txt) {
                         if (isset($textData[$i])) {
-                            $textData[$i] .= $txt.' ';
+                            $textData[$i] .= $txt . ' ';
                         } else {
-                            $textData[] = $txt.' ';
+                            $textData[] = $txt . ' ';
                         }
                     }
-                } else if ('rich-editor' === $type) {
+                } elseif ('rich-editor' === $type) {
                     $_text  = $unit['column_field_1'];
                     $html = RichEditor::render($_text);
                     $text = strip_tags($html);
                     $data = explodeUnitData($text);
                     foreach ($data as $i => $txt) {
                         if (isset($textData[$i])) {
-                            $textData[$i] .= $txt.' ';
+                            $textData[$i] .= $txt . ' ';
                         } else {
-                            $textData[] = $txt.' ';
+                            $textData[] = $txt . ' ';
                         }
                     }
                 }
@@ -727,7 +750,9 @@ class Helper
         if (isset($eagerLoadingData[$eid]) && is_array($eagerLoadingData[$eid])) {
             $length = count($eagerLoadingData[$eid]);
             foreach ($eagerLoadingData[$eid] as $i => $tag) {
-                if ($length > ($i + 1)) $tpl->add(array_merge(array('tagGlue', 'tag:loop'), $blocks));
+                if ($length > ($i + 1)) {
+                    $tpl->add(array_merge(array('tagGlue', 'tag:loop'), $blocks));
+                }
                 $tpl->add(array_merge(array('tag:loop'), $blocks), array(
                     'name'  => $tag['tag_name'],
                     'url'   => acmsLink(array(
@@ -778,7 +803,7 @@ class Helper
                 $paths = explodeUnitData($unit['column_field_2']);
                 $alt = explodeUnitData($unit['column_field_4']);
                 $caption = explodeUnitData($unit['column_field_1']);
-            } else if ($type === 'media') {
+            } elseif ($type === 'media') {
                 $paths = explodeUnitData($unit['column_field_1']);
                 $alt = explodeUnitData($unit['column_field_3']);
                 $caption = explodeUnitData($unit['column_field_2']);
@@ -819,6 +844,9 @@ class Helper
         $vars = array();
         $squareSize = config('image_size_square');
         $unitType = 'image';
+        $align = '';
+        $alt = '';
+        $caption = '';
 
         if ($pimageId && isset($eagerLoadingData['unit'][$pimageId])) {
             $unit = $eagerLoadingData['unit'][$pimageId];
@@ -840,9 +868,12 @@ class Helper
                 'y' => $config['imageY'],
             );
         }
-        foreach ( $pathAry as $i => $path ) {
-            if ($i == 0) $fx = '';
-            else $fx = ++$i;
+        foreach ($pathAry as $i => $path) {
+            if ($i == 0) {
+                $fx = '';
+            } else {
+                $fx = ++$i;
+            }
 
             $vars['focalX' . $fx] = 0;
             $vars['focalY' . $fx] = 0;
@@ -874,14 +905,14 @@ class Helper
             $y = 0;
             if ($mediaSize) {
                 list($tempX, $tempY) = explode('x', $mediaSize);
-                $x = intVal(trim($tempX));
-                $y = intVal(trim($tempY));
-            } else if (Storage::isReadable($path)) {
+                $x = intval(trim($tempX));
+                $y = intval(trim($tempY));
+            } elseif (Storage::isReadable($path)) {
                 list($x, $y) = Storage::getImageSize($path);
             }
             if ($x > 0 && $y > 0) {
                 if (max($config['imageX'], $config['imageY']) > max($x, $y)) {
-                    $_path = preg_replace('@(.*?)([^/]+)$@', '$1large-$2',  $path);
+                    $_path = preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $path);
                     if ($xy = Storage::getImageSize($_path)) {
                         $path = $_path;
                         $x = $xy[0];
@@ -889,11 +920,11 @@ class Helper
                     }
                 }
                 $vars += array(
-                    'path'.$fx => Media::urlencode($path),
+                    'path' . $fx => Media::urlencode($path),
                 );
-                if ( 'on' == $config['imageTrim'] ) {
-                    if ( $x > $config['imageX'] and $y > $config['imageY'] ) {
-                        if ( ($x / $config['imageX']) < ($y / $config['imageY']) ) {
+                if ('on' == $config['imageTrim']) {
+                    if ($x > $config['imageX'] and $y > $config['imageY']) {
+                        if (($x / $config['imageX']) < ($y / $config['imageY'])) {
                             $imgX = $config['imageX'];
                             if ($config['imageX'] > 0 && ($x / $config['imageX']) > 0) {
                                 $imgY = round($y / ($x / $config['imageX']));
@@ -909,14 +940,14 @@ class Helper
                             }
                         }
                     } else {
-                        if ( $x < $config['imageX'] ) {
+                        if ($x < $config['imageX']) {
                             $imgX = $config['imageX'];
                             if ($config['imageX'] > 0 && $x > 0) {
                                 $imgY = round($y * ($config['imageX'] / $x));
                             } else {
                                 $imgY = 0;
                             }
-                        } else if ( $y < $config['imageY'] ) {
+                        } elseif ($y < $config['imageY']) {
                             $imgY = $config['imageY'];
                             if ($config['imageY'] > 0 && $y > 0) {
                                 $imgX = round($x * ($config['imageY'] / $y));
@@ -924,7 +955,7 @@ class Helper
                                 $imgX = 0;
                             }
                         } else {
-                            if ( ($config['imageX'] - $x) > ($config['imageY'] - $y) ) {
+                            if (($config['imageX'] - $x) > ($config['imageY'] - $y)) {
                                 $imgX = $config['imageX'];
                                 if ($config['imageX'] > 0 && $x > 0) {
                                     $imgY = round($y * ($config['imageX'] / $x));
@@ -943,9 +974,9 @@ class Helper
                     }
                     $config['imageCenter']  = 'on';
                 } else {
-                    if ( $x > $config['imageX'] ) {
-                        if ( $y > $config['imageY'] ) {
-                            if ( ($x - $config['imageX']) < ($y - $config['imageY']) ) {
+                    if ($x > $config['imageX']) {
+                        if ($y > $config['imageY']) {
+                            if (($x - $config['imageX']) < ($y - $config['imageY'])) {
                                 $imgY   = $config['imageY'];
                                 if ($config['imageY'] > 0 && ($y / $config['imageY']) > 0) {
                                     $imgX = round($x / ($y / $config['imageY']));
@@ -964,12 +995,12 @@ class Helper
                             $imgX   = $config['imageX'];
                             $imgY   = round($y / ($x / $config['imageX']));
                         }
-                    } else if ( $y > $config['imageY'] ) {
+                    } elseif ($y > $config['imageY']) {
                         $imgY   = $config['imageY'];
                         $imgX   = round($x / ($y / $config['imageY']));
                     } else {
-                        if ( 'on' == $config['imageZoom'] ) {
-                            if ( ($config['imageX'] - $x) > ($config['imageY'] - $y) ) {
+                        if ('on' == $config['imageZoom']) {
+                            if (($config['imageX'] - $x) > ($config['imageY'] - $y)) {
                                 $imgY   = $config['imageY'];
                                 $imgX   = round($x * ($config['imageY'] / $y));
                             } else {
@@ -984,13 +1015,13 @@ class Helper
                 }
                 //-------
                 // align
-                if ( 'on' == $config['imageCenter'] ) {
-                    if ( $imgX > $config['imageX'] ) {
+                if ('on' == $config['imageCenter']) {
+                    if ($imgX > $config['imageX']) {
                         $left   = round((-1 * ($imgX - $config['imageX'])) / 2);
                     } else {
                         $left   = round(($config['imageX'] - $imgX) / 2);
                     }
-                    if ( $imgY > $config['imageY'] ) {
+                    if ($imgY > $config['imageY']) {
                         $top    = round((-1 * ($imgY - $config['imageY'])) / 2);
                     } else {
                         $top    = round(($config['imageY'] - $imgY) / 2);
@@ -1001,48 +1032,45 @@ class Helper
                 }
 
                 $vars += array(
-                    'imgX'.$fx  => $imgX,
-                    'imgY'.$fx  => $imgY,
-                    'left'.$fx  => $left,
-                    'top'.$fx   => $top,
-                    'alt'.$fx   => $alt,
-                    'caption'.$fx => $caption
+                    'imgX' . $fx  => $imgX,
+                    'imgY' . $fx  => $imgY,
+                    'left' . $fx  => $left,
+                    'top' . $fx   => $top,
+                    'alt' . $fx   => $alt,
+                    'caption' . $fx => $caption
                 );
                 //------
                 // tiny
-                $tiny = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
+                $tiny = $storageDir . preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
                 if ($mediaSize) {
-
-                } else if ($xy = Storage::getImageSize($tiny)) {
+                } elseif ($xy = Storage::getImageSize($tiny)) {
                     $vars += array(
-                        'tinyPath'.$fx => $tiny,
-                        'tinyX'.$fx => $xy[0],
-                        'tinyY'.$fx => $xy[1],
+                        'tinyPath' . $fx => $tiny,
+                        'tinyX' . $fx => $xy[0],
+                        'tinyY' . $fx => $xy[1],
                     );
                 }
                 //--------
                 // square
-                $square = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1square-$2', $filename);
+                $square = $storageDir . preg_replace('@(.*?)([^/]+)$@', '$1square-$2', $filename);
                 if (Storage::isFile($square)) {
                     $vars += array(
-                        'squarePath'.$fx => $square,
-                        'squareX'.$fx => $squareSize,
-                        'squareY'.$fx => $squareSize,
+                        'squarePath' . $fx => $square,
+                        'squareX' . $fx => $squareSize,
+                        'squareY' . $fx => $squareSize,
                     );
                 }
                 //--------
                 // large
-                $large = $storageDir.preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $filename);
+                $large = $storageDir . preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $filename);
                 if ($mediaSize) {
-
-                } else if ($xy = Storage::getImageSize($large)) {
+                } elseif ($xy = Storage::getImageSize($large)) {
                     $vars += array(
-                        'largePath'.$fx => $large,
-                        'largeX'.$fx => $xy[0],
-                        'largeY'.$fx => $xy[1],
+                        'largePath' . $fx => $large,
+                        'largeX' . $fx => $xy[0],
+                        'largeY' . $fx => $xy[1],
                     );
                 }
-
             } else {
                 $Tpl->add('noimage', array(
                     'noImgX'  => $config['imageX'],
@@ -1050,8 +1078,8 @@ class Helper
                 ));
             }
             $vars   += array(
-                'x'.$fx => $config['imageX'],
-                'y'.$fx => $config['imageY'],
+                'x' . $fx => $config['imageX'],
+                'y' . $fx => $config['imageY'],
             );
         }
         return $vars;
@@ -1131,7 +1159,7 @@ class Helper
             'imageCenter' => 'off',
         );
 
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $bid    = intval($row['entry_blog_id']);
             $cid    = intval($row['entry_category_id']);
             $eid    = intval($row['entry_id']);
@@ -1152,11 +1180,12 @@ class Helper
                     $vars['related.' . $key] = $val;
                 }
             }
-            $title  = addPrefixEntryTitle($row['entry_title']
-                , $row['entry_status']
-                , $row['entry_start_datetime']
-                , $row['entry_end_datetime']
-                , $row['entry_approval']
+            $title  = addPrefixEntryTitle(
+                $row['entry_title'],
+                $row['entry_status'],
+                $row['entry_start_datetime'],
+                $row['entry_end_datetime'],
+                $row['entry_approval']
             );
             $vars['related.title']  = $title;
             $link   = $row['entry_link'];
@@ -1165,7 +1194,7 @@ class Helper
                 'cid'   => $cid,
                 'eid'   => $eid,
             ));
-            if ( $link != '#' ) {
+            if ($link != '#') {
                 $vars['related.url']  = !empty($link) ? $link : $url;
             }
             if (isset($eagerLoadField[$eid])) {
@@ -1191,8 +1220,10 @@ class Helper
      */
     function buildSummary($Tpl, $row, $count, $gluePoint, $config, $extraVars = array(), $page = 1, $eagerLoadingData = array())
     {
-        if ( $row && isset($row['entry_id']) ) {
-            if ( !IS_LICENSED ) $row['entry_title'] = '[test]'.$row['entry_title'];
+        if ($row && isset($row['entry_id'])) {
+            if (!IS_LICENSED) {
+                $row['entry_title'] = '[test]' . $row['entry_title'];
+            }
 
             $bid    = intval($row['entry_blog_id']);
             $uid    = intval($row['entry_user_id']);
@@ -1216,18 +1247,27 @@ class Helper
                 'cid'   => $cid,
                 'eid'   => $eid,
             ));
-            $title  = addPrefixEntryTitle($row['entry_title']
-                , $status
-                , $row['entry_start_datetime']
-                , $row['entry_end_datetime']
-                , $row['entry_approval']
+            $title  = addPrefixEntryTitle(
+                $row['entry_title'],
+                $status,
+                $row['entry_start_datetime'],
+                $row['entry_end_datetime'],
+                $row['entry_approval']
             );
 
-            if ( $count % 2 == 0 ) {
+            if ($count % 2 == 0) {
                 $oddOrEven  = 'even';
             } else {
                 $oddOrEven  = 'odd';
             }
+
+            $blogName = '';
+            $blogCode = '';
+            $blogUrl = '';
+
+            $categoryName = '';
+            $categoryCode = '';
+            $categoryUrl = '';
 
             $vars   = array(
                 'permalink'     => $permalink,
@@ -1250,14 +1290,14 @@ class Helper
                 'entry:loop.class' => isset($config['loop_class']) ? $config['loop_class'] : '',
             );
 
-            if ( $link != '#' ) {
+            if ($link != '#') {
                 $vars += array(
                     'url' => !empty($link) ? $link : $url,
                 );
                 $Tpl->add(array('url#rear', 'entry:loop'));
             }
 
-            if ( !isset($config['blogInfoOn']) or $config['blogInfoOn'] === 'on' ) {
+            if (!isset($config['blogInfoOn']) or $config['blogInfoOn'] === 'on') {
                 $blogName   = $row['blog_name'];
                 $blogCode   = $row['blog_code'];
                 $blogUrl    = acmsLink(array(
@@ -1270,7 +1310,7 @@ class Helper
                 );
             }
 
-            if ( !empty($cid) and (!isset($config['categoryInfoOn']) or $config['categoryInfoOn'] === 'on')) {
+            if (!empty($cid) and (!isset($config['categoryInfoOn']) or $config['categoryInfoOn'] === 'on')) {
                 $categoryName   = $row['category_name'];
                 $categoryCode   = $row['category_code'];
                 $categoryUrl    = acmsLink(array(
@@ -1294,7 +1334,7 @@ class Helper
 
             //-----
             // new
-            if ( requestTime() <= strtotime($row['entry_datetime']) + intval($config['newtime']) ) {
+            if (requestTime() <= strtotime($row['entry_datetime']) + intval($config['newtime'])) {
                 $Tpl->add(array('new', 'entry:loop'));
             }
 
@@ -1322,7 +1362,8 @@ class Helper
             // fulltext
             if (isset($eagerLoadingData['fullText'])) {
                 $vars = $this->buildSummaryFulltext($vars, $eid, $eagerLoadingData['fullText']);
-                if ( 1
+                if (
+                    1
                     && isset($vars['summary'])
                     && isset($config['fulltextWidth'])
                     && !empty($config['fulltextWidth'])
@@ -1336,7 +1377,7 @@ class Helper
             //------
             // date
             $vars += $this->buildDate($row['entry_datetime'], $Tpl, 'entry:loop');
-            if ( !isset($config['detailDateOn']) or $config['detailDateOn'] === 'on' ) {
+            if (!isset($config['detailDateOn']) or $config['detailDateOn'] === 'on') {
                 $vars += $this->buildDate($row['entry_updated_datetime'], $Tpl, 'entry:loop', 'udate#');
                 $vars += $this->buildDate($row['entry_posted_datetime'], $Tpl, 'entry:loop', 'pdate#');
                 $vars += $this->buildDate($row['entry_start_datetime'], $Tpl, 'entry:loop', 'sdate#');
@@ -1424,22 +1465,22 @@ class Helper
 
             //-----
             // tag
-            if (isset($eagerLoadingData['tag']) ) {
+            if (isset($eagerLoadingData['tag'])) {
                 $this->buildTag($Tpl, $eid, $eagerLoadingData['tag'], array('entry:loop'));
             }
 
             //------
             // glue
             $addend = ($count === $gluePoint);
-            if ( !$addend ) {
+            if (!$addend) {
                 $Tpl->add(array_merge(array('glue', 'entry:loop')));
             }
             $Tpl->add('entry:loop', $vars);
 
-            if ( $addend ) {
+            if ($addend) {
                 $Tpl->add('unit:loop');
-            } else if ( $count != 0 && $config['unit'] > 0 ) {
-                if ( !($count % $config['unit']) ) {
+            } elseif ($count != 0 && $config['unit'] > 0) {
+                if (!($count % $config['unit'])) {
                     $Tpl->add('unit:loop');
                 }
             }
@@ -1457,22 +1498,22 @@ class Helper
      */
     public function getAdminColumnDefinition($mode, $type, $i)
     {
-        $pfx    = 'column_def_'.$mode.'_';
+        $pfx    = 'column_def_' . $mode . '_';
 
         // 特定指定子を除外した、一般名のユニット種別
         $type = detectUnitTypeSpecifier($type);
 
-        if ( 'text' == $type ) {
+        if ('text' == $type) {
             return array(
                 'text' => config($pfx . 'field_1', '', $i),
                 'tag' => config($pfx . 'field_2', '', $i),
                 'extend_tag' => '',
             );
-        } else if ( 'table' == $type ) {
+        } elseif ('table' == $type) {
             return array(
                 'table' => config($pfx . 'field_1', '', $i),
             );
-        } else if ( 'image' == $type ) {
+        } elseif ('image' == $type) {
             return array(
                 'caption' => config($pfx . 'field_1', '', $i),
                 'path' => config($pfx . 'field_2', '', $i),
@@ -1480,77 +1521,77 @@ class Helper
                 'alt' => config($pfx . 'field_4', '', $i),
                 'exif' => config($pfx . 'field_6', '', $i),
             );
-        } else if ( 'table' == $type ) {
+        } elseif ('table' == $type) {
             return array(
-                'table' => config($pfx.'field_1', '', $i),
+                'table' => config($pfx . 'field_1', '', $i),
             );
-        } else if ( 'file' == $type ) {
+        } elseif ('file' == $type) {
             return array(
-                'caption'   => config($pfx.'field_1', '', $i),
-                'path'      => config($pfx.'field_2', '', $i),
+                'caption'   => config($pfx . 'field_1', '', $i),
+                'path'      => config($pfx . 'field_2', '', $i),
             );
-        } else if ( 'osmap' == $type || 'map' == $type ) {
+        } elseif ('osmap' == $type || 'map' == $type) {
             return array(
-                'msg'   => config($pfx.'field_1', '', $i),
-                'lat'   => config($pfx.'field_2', '35.185574', $i),
-                'lng'   => config($pfx.'field_3', '136.899066', $i),
-                'zoom'  => config($pfx.'field_4', '10', $i),
+                'msg'   => config($pfx . 'field_1', '', $i),
+                'lat'   => config($pfx . 'field_2', '35.185574', $i),
+                'lng'   => config($pfx . 'field_3', '136.899066', $i),
+                'zoom'  => config($pfx . 'field_4', '10', $i),
                 'view_activate' => '',
                 'view_pitch' => '',
                 'view_heading' => '',
                 'view_zoom' => '',
             );
-        } else if ( 'youtube' == $type ) {
+        } elseif ('youtube' == $type) {
             return array(
-                'youtube_id'    => config($pfx.'field_2', '', $i),
+                'youtube_id'    => config($pfx . 'field_2', '', $i),
             );
-        } else if ( 'video' == $type ) {
+        } elseif ('video' == $type) {
             return array(
-                'video_id'    => config($pfx.'field_2', '', $i),
+                'video_id'    => config($pfx . 'field_2', '', $i),
             );
-        } else if ( 'eximage' == $type ) {
+        } elseif ('eximage' == $type) {
             return array(
-                'caption'   => config($pfx.'field_1', '', $i),
-                'normal'    => config($pfx.'field_2', '', $i),
-                'large'     => config($pfx.'field_3', '', $i),
-                'link'      => config($pfx.'field_4', '', $i),
-                'alt'       => config($pfx.'field_5', '', $i),
+                'caption'   => config($pfx . 'field_1', '', $i),
+                'normal'    => config($pfx . 'field_2', '', $i),
+                'large'     => config($pfx . 'field_3', '', $i),
+                'link'      => config($pfx . 'field_4', '', $i),
+                'alt'       => config($pfx . 'field_5', '', $i),
             );
-        } else if ( 'quote' == $type ) {
+        } elseif ('quote' == $type) {
             return array(
-                'quote_url' => config($pfx.'field_6', '', $i),
-                'html'      => config($pfx.'field_7', '', $i),
-                'site_name' => config($pfx.'field_1', '', $i),
-                'author'    => config($pfx.'field_2', '', $i),
-                'title'     => config($pfx.'field_3', '', $i),
-                'description' => config($pfx.'field_4', '', $i),
-                'image'     => config($pfx.'field_5', '', $i),
+                'quote_url' => config($pfx . 'field_6', '', $i),
+                'html'      => config($pfx . 'field_7', '', $i),
+                'site_name' => config($pfx . 'field_1', '', $i),
+                'author'    => config($pfx . 'field_2', '', $i),
+                'title'     => config($pfx . 'field_3', '', $i),
+                'description' => config($pfx . 'field_4', '', $i),
+                'image'     => config($pfx . 'field_5', '', $i),
             );
-        } else if ( 'media' == $type ) {
+        } elseif ('media' == $type) {
             return array(
-                'media_id' => config($pfx.'field_1', '', $i),
-                'caption' => config($pfx.'field_2', '', $i),
-                'alt' => config($pfx.'field_3', '', $i),
-                'enlarged' => config($pfx.'field_4', '', $i),
-                'use_icon' => config($pfx.'field_5', '', $i),
-                'link' => config($pfx.'field_7', '', $i),
+                'media_id' => config($pfx . 'field_1', '', $i),
+                'caption' => config($pfx . 'field_2', '', $i),
+                'alt' => config($pfx . 'field_3', '', $i),
+                'enlarged' => config($pfx . 'field_4', '', $i),
+                'use_icon' => config($pfx . 'field_5', '', $i),
+                'link' => config($pfx . 'field_7', '', $i),
             );
-        } else if ( 'rich-editor' == $type ) {
+        } elseif ('rich-editor' == $type) {
             return array(
-                'json' => config($pfx.'field_1', '', $i)
+                'json' => config($pfx . 'field_1', '', $i)
             );
-        } else if ( 'break' == $type ) {
+        } elseif ('break' == $type) {
             return array(
-                'label' => config($pfx.'field_1', '', $i),
+                'label' => config($pfx . 'field_1', '', $i),
             );
-        } else if ( 'module' == $type ) {
+        } elseif ('module' == $type) {
             return array(
-                'mid'   => config($pfx.'field_1', '', $i),
-                'tpl'   => config($pfx.'field_2', '', $i),
+                'mid'   => config($pfx . 'field_1', '', $i),
+                'tpl'   => config($pfx . 'field_2', '', $i),
             );
-        } else if ( 'custom' == $type ) {
+        } elseif ('custom' == $type) {
             return array(
-                'field' => config($pfx.'field_6', '', $i),
+                'field' => config($pfx . 'field_6', '', $i),
             );
         } else {
             return array();
@@ -1583,19 +1624,23 @@ class Helper
 
         //------
         // text
-        if ( 'text' == $type ) {
+        if ('text' == $type) {
             $suffix = '';
-            if ( preg_match('@(?:id="([^"]+)"|class="([^"]+)")@', $data['attr'], $match) ) {
-                if ( !empty($match[1]) ) $suffix .= '#' . $match[1];
-                if ( !empty($match[2]) ) $suffix .= '.' . $match[2];
+            if (preg_match('@(?:id="([^"]+)"|class="([^"]+)")@', $data['attr'], $match)) {
+                if (!empty($match[1])) {
+                    $suffix .= '#' . $match[1];
+                }
+                if (!empty($match[2])) {
+                    $suffix .= '.' . $match[2];
+                }
             }
-            foreach ( configArray('column_text_tag') as $i => $tag ) {
+            foreach (configArray('column_text_tag') as $i => $tag) {
                 $vars = array(
                     'value' => $tag,
                     'label' => config('column_text_tag_label', '', $i),
                     'extend' => config('column_text_tag_extend_label', '', $i),
                 );
-                if ( $data['tag'] . $suffix === $tag ) {
+                if ($data['tag'] . $suffix === $tag) {
                     $vars['selected'] = config('attr_selected');
                 }
                 $Tpl->add(array_merge(array('textTag:loop', $type), $rootBlock), $vars);
@@ -1609,7 +1654,7 @@ class Helper
 
         //-------
         // table
-        } else if ( 'table' == $type ) {
+        } elseif ('table' == $type) {
             $vars = array(
                 'id' => $id,
             );
@@ -1617,14 +1662,14 @@ class Helper
             $Tpl->add(array_merge(array($type), $rootBlock), $vars);
         //-------
         // image
-        } else if ( 'image' == $type ) {
-            foreach ( configArray('column_image_size_label') as $i => $_label ) {
+        } elseif ('image' == $type) {
+            foreach (configArray('column_image_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'     => config('column_image_size', '', $i),
                     'label'     => config('column_image_size_label', '', $i),
                     'display'   => config('column_image_display_size', '', $i),
                 );
-                if ( $size == config('column_image_size', '', $i) ) {
+                if ($size == config('column_image_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                 }
 
@@ -1649,25 +1694,25 @@ class Helper
             buildUnitData($vars['alt'], $vars, 'alt');
             buildUnitData($data['path'], $vars, 'old');
 
-            if ( isset($data['edit']) ) {
+            if (isset($data['edit'])) {
                 $edit = $data['edit'];
-                $vars['edit:selected#'.$edit] = config('attr_selected');
+                $vars['edit:selected#' . $edit] = config('attr_selected');
             }
 
             //----------------
             // tiny and large
-            if ( !empty($data['path']) ) {
+            if (!empty($data['path'])) {
                 $nXYAry     = array();
                 $tXYAry     = array();
                 $tinyAry    = array();
                 $lXYAry     = array();
 
-                foreach ( explodeUnitData($data['path']) as $normal ) {
-                    $nXY   = Storage::getImageSize(ARCHIVES_DIR.$normal);
+                foreach (explodeUnitData($data['path']) as $normal) {
+                    $nXY   = Storage::getImageSize(ARCHIVES_DIR . $normal);
                     $tiny  = preg_replace('@[^/]+$@', 'tiny-$0', $normal);
                     $large = preg_replace('@[^/]+$@', 'large-$0', $normal);
-                    $tXY   = Storage::getImageSize(ARCHIVES_DIR.$tiny);
-                    if ( $lXY = Storage::getImageSize(ARCHIVES_DIR.$large) ) {
+                    $tXY   = Storage::getImageSize(ARCHIVES_DIR . $tiny);
+                    if ($lXY = Storage::getImageSize(ARCHIVES_DIR . $large)) {
                         $lXYAry['x'][]  = $lXY[0];
                         $lXYAry['y'][]  = $lXY[1];
                     } else {
@@ -1684,7 +1729,7 @@ class Helper
                 }
 
                 $popup = otherSizeImagePath($data['path'], 'large');
-                if ( !Storage::getImageSize(ARCHIVES_DIR.$popup) ) {
+                if (!Storage::getImageSize(ARCHIVES_DIR . $popup)) {
                     $popup = $data['path'];
                 }
 
@@ -1707,12 +1752,11 @@ class Helper
                 buildUnitData($vars['largeX'], $vars, 'largeX');
                 buildUnitData($vars['largeY'], $vars, 'largeY');
 
-                foreach ( $vars as $key => $val ) {
-                    if ( $val == '' ) {
+                foreach ($vars as $key => $val) {
+                    if ($val == '') {
                         unset($vars[$key]);
                     }
                 }
-
             } else {
                 $Tpl->add(array_merge(array('preview#none', $type), $rootBlock));
             }
@@ -1725,20 +1769,23 @@ class Helper
 
             //-------
             // rotate
-            if ( function_exists('imagerotate') ) {
+            if (function_exists('imagerotate')) {
                 $count = count(explodeUnitData($data['path']));
-                for ( $i=0; $i<$count; $i++ ) {
-                    if ( empty($i) ) $n = '';
-                    else $n = $i + 1;
-                    $Tpl->add(array_merge(array('rotate'.$n, $type), $rootBlock));
+                for ($i = 0; $i < $count; $i++) {
+                    if (empty($i)) {
+                        $n = '';
+                    } else {
+                        $n = $i + 1;
+                    }
+                    $Tpl->add(array_merge(array('rotate' . $n, $type), $rootBlock));
                 }
             }
 
             //---------------
             // primary image
-            if ( array_key_exists('primaryImage', $data) ) {
+            if (array_key_exists('primaryImage', $data)) {
                 $vars['primaryImageId'] = $id;
-                if ( !empty($clid) and $data['primaryImage'] == $clid ) {
+                if (!empty($clid) and $data['primaryImage'] == $clid) {
                     $vars['primaryImageChecked']    = config('attr_checked');
                 }
             }
@@ -1747,43 +1794,46 @@ class Helper
 
         //------
         // file
-        } else if ( 'file' == $type ) {
+        } elseif ('file' == $type) {
             $vars  = array(
                 'id'        => $id,
             );
-            if ( !empty($data['path']) ) {
+            if (!empty($data['path'])) {
                 $vars['old']      = $data['path'];
                 $length = count(explodeUnitData($data['path']));
                 buildUnitData($vars['old'], $vars, 'old');
 
-                for ( $i=0; $i<$length; $i++ ) {
-                    if ( empty($i) ) $fx = '';
-                    else $fx = $i + 1;
+                for ($i = 0; $i < $length; $i++) {
+                    if (empty($i)) {
+                        $fx = '';
+                    } else {
+                        $fx = $i + 1;
+                    }
 
-                    if ( !isset($vars['old'.$fx]) ) {
+                    if (!isset($vars['old' . $fx])) {
                         continue;
                     }
-                    $path   = $vars['old'.$fx];
-                    $vars['basename'.$fx] = Storage::mbBasename($path);
+                    $path   = $vars['old' . $fx];
+                    $vars['basename' . $fx] = Storage::mbBasename($path);
 
                     $e    = preg_replace('@.*\.(?=[^.]+$)@', '', $path);
                     $t   = null;
-                    if ( in_array($e, configArray('file_extension_document')) ) {
+                    if (in_array($e, configArray('file_extension_document'), true)) {
                         $t   = 'document';
-                    } else if ( in_array($e, configArray('file_extension_archive')) ) {
+                    } elseif (in_array($e, configArray('file_extension_archive'), true)) {
                         $t   = 'archive';
-                    } else if ( in_array($e, configArray('file_extension_movie')) ) {
+                    } elseif (in_array($e, configArray('file_extension_movie'), true)) {
                         $t   = 'movie';
-                    } else if ( in_array($e, configArray('file_extension_audio')) ) {
+                    } elseif (in_array($e, configArray('file_extension_audio'), true)) {
                         $t   = 'audio';
                     }
                     $cwd    = getcwd();
-                    Storage::changeDir(THEMES_DIR.'system/'.IMAGES_DIR.'fileicon/');
-                    $icon   = glob($e.'.*') ? $e : $t;
+                    Storage::changeDir(THEMES_DIR . 'system/' . IMAGES_DIR . 'fileicon/');
+                    $icon   = glob($e . '.*') ? $e : $t;
                     Storage::changeDir($cwd);
 
-                    $vars['icon'.$fx]   = $icon;
-                    $vars['type'.$fx]   = $icon;
+                    $vars['icon' . $fx]   = $icon;
+                    $vars['type' . $fx]   = $icon;
                 }
 
                 $vars['caption']  = $data['caption'];
@@ -1795,14 +1845,14 @@ class Helper
 
         //-----
         // map
-        } else if ( 'map' === $type ) {
-            foreach ( configArray('column_map_size_label') as $i => $_label ) {
+        } elseif ('map' === $type) {
+            foreach (configArray('column_map_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'   => config('column_map_size', '', $i),
                     'label'   => config('column_map_size_label', '', $i),
                     'display' => config('column_map_display_size', '', $i),
                 );
-                if ( $data['size'] == config('column_map_size', '', $i) ) {
+                if ($data['size'] == config('column_map_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                 }
 
@@ -1816,20 +1866,19 @@ class Helper
                 'msg'   => $data['msg'],
                 'id'    => $id,
                 'view_activate' => isset($data['view_activate']) ? $data['view_activate'] : '',
-                'view_activate:checked#true' => (isset($data['view_activate']) && $data['view_activate'] === 'true') ? ' checked': '',
+                'view_activate:checked#true' => (isset($data['view_activate']) && $data['view_activate'] === 'true') ? ' checked' : '',
                 'view_pitch' => isset($data['view_pitch']) ? $data['view_activate'] : '',
                 'view_heading' => isset($data['view_heading']) ? $data['view_activate'] : '',
                 'view_zoom' => isset($data['view_zoom']) ? $data['view_activate'] : '',
             ));
-
-        } else if ( 'osmap' === $type ) {
-            foreach ( configArray('column_map_size_label') as $i => $_label ) {
+        } elseif ('osmap' === $type) {
+            foreach (configArray('column_map_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'   => config('column_map_size', '', $i),
                     'label'   => config('column_map_size_label', '', $i),
                     'display' => config('column_map_display_size', '', $i),
                 );
-                if ( $data['size'] == config('column_map_size', '', $i) ) {
+                if ($data['size'] == config('column_map_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                 }
                 $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $vars);
@@ -1844,14 +1893,14 @@ class Helper
             ));
         //---------
         // youtube
-        } else if ( 'youtube' == $type ) {
-            foreach ( configArray('column_youtube_size_label') as $i => $_label ) {
+        } elseif ('youtube' == $type) {
+            foreach (configArray('column_youtube_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'   => config('column_youtube_size', '', $i),
                     'label'   => config('column_youtube_size_label', '', $i),
                     'display' => config('column_youtube_display_size', '', $i),
                 );
-                if ( $data['size'] == config('column_youtube_size', '', $i) ) {
+                if ($data['size'] == config('column_youtube_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                 }
                 $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $vars);
@@ -1863,14 +1912,14 @@ class Helper
 
         //---------
         // video
-        } else if ( 'video' == $type ) {
-            foreach ( configArray('column_video_size_label') as $i => $_label ) {
+        } elseif ('video' == $type) {
+            foreach (configArray('column_video_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'   => config('column_video_size', '', $i),
                     'label'   => config('column_video_size_label', '', $i),
                     'display' => config('column_video_display_size', '', $i),
                 );
-                if ( $data['size'] == config('column_video_size', '', $i) ) {
+                if ($data['size'] == config('column_video_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                 }
                 $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $vars);
@@ -1882,21 +1931,21 @@ class Helper
 
         //---------
         // eximage
-        } else if ( 'eximage' == $type ) {
-            if ( !empty($size) and ($xy = explode('x', $size)) ) {
+        } elseif ('eximage' == $type) {
+            if (!empty($size) and ($xy = explode('x', $size))) {
                 $x  = intval($xy[0]);
                 $y  = intval(ite($xy, 1));
                 $size   = max($x, $y);
             }
 
             $match  = false;
-            foreach ( configArray('column_eximage_size_label') as $i => $_label ) {
+            foreach (configArray('column_eximage_size_label') as $i => $_label) {
                 $vars  = array(
                     'value'   => config('column_eximage_size', '', $i),
                     'label'   => config('column_eximage_size_label', '', $i),
                     'display' => config('column_eximage_display_size', '', $i),
                 );
-                if ( $size == config('column_eximage_size', '', $i) ) {
+                if ($size == config('column_eximage_size', '', $i)) {
                     $vars['selected']  = config('attr_selected');
                     $match  = true;
                 }
@@ -1910,9 +1959,13 @@ class Helper
                 'alt'       => $data['alt'],
                 'id'        => $id,
             );
-            if ( !empty($data['normal']) ) $vars['normal']  = $data['normal'];
+            if (!empty($data['normal'])) {
+                $vars['normal']  = $data['normal'];
+            }
 
-            if ( !$match ) $vars['size:selected#none'] = config('attr_selected');
+            if (!$match) {
+                $vars['size:selected#none'] = config('attr_selected');
+            }
 
             buildUnitData($data['caption'], $vars, 'caption');
             buildUnitData($data['normal'], $vars, 'normal');
@@ -1924,7 +1977,7 @@ class Helper
 
         //---------
         // quote
-        } else if ( 'quote' == $type ) {
+        } elseif ('quote' == $type) {
             $vars = array(
                 'quote_url' => $data['quote_url'],
                 'html'      => isset($data['html']) ? $data['html'] : '',
@@ -1947,16 +2000,19 @@ class Helper
 
         //---------
         // media
-        } else if ( 'media' == $type ) {
+        } elseif ('media' == $type) {
             $DB     = DB::singleton(dsn());
 
             $midAry = explodeUnitData($data['media_id']);
             $vars   = array('type' => 'image');
             $mediaType = false;
-            foreach ( $midAry as $i => $mid ) {
+            foreach ($midAry as $i => $mid) {
                 $mid = intval($mid);
-                if ( empty($i) ) $fx = '';
-                else $fx = $i + 1;
+                if (empty($i)) {
+                    $fx = '';
+                } else {
+                    $fx = $i + 1;
+                }
 
                 if (isset($mediaData[$mid])) {
                     $media = $mediaData[$mid];
@@ -1980,10 +2036,10 @@ class Helper
                 }
                 if (isset($media['media_type']) && Media::isImageFile($media['media_type'])) {
                     $mediaType = true;
-                } else if (isset($media['media_type']) && Media::isSvgFile($media['media_type'])) {
-                    $vars['type'.$fx] = 'svg';
-                } else if ($media) {
-                    $vars['type'.$fx] = 'file';
+                } elseif (isset($media['media_type']) && Media::isSvgFile($media['media_type'])) {
+                    $vars['type' . $fx] = 'svg';
+                } elseif ($media) {
+                    $vars['type' . $fx] = 'file';
                 }
                 $path = Media::urlencode($media['media_path']);
                 $ext = ite(pathinfo($path), 'extension');
@@ -1995,25 +2051,25 @@ class Helper
                 }
                 $vars += array(
                     'id'            => $id,
-                    'media_id'.$fx  => $mid,
-                    'caption'.$fx => $media['media_field_1'],
-                    'link'.$fx      => $media['media_field_2'],
-                    'alt'.$fx       => $media['media_field_3'],
-                    'title'.$fx     => $media['media_field_4'],
-                    'type'.$fx      => $media['media_type'],
-                    'name'.$fx      => $media['media_file_name'],
-                    'path'.$fx      => $path,
-                    'tiny'.$fx      => otherSizeImagePath($path, 'tiny'),
-                    'landscape'.$fx     => $landscape,
-                    'media_pdf'.$fx => 'no',
-                    'use_icon'.$fx => 'false',
+                    'media_id' . $fx  => $mid,
+                    'caption' . $fx => $media['media_field_1'],
+                    'link' . $fx      => $media['media_field_2'],
+                    'alt' . $fx       => $media['media_field_3'],
+                    'title' . $fx     => $media['media_field_4'],
+                    'type' . $fx      => $media['media_type'],
+                    'name' . $fx      => $media['media_file_name'],
+                    'path' . $fx      => $path,
+                    'tiny' . $fx      => otherSizeImagePath($path, 'tiny'),
+                    'landscape' . $fx     => $landscape,
+                    'media_pdf' . $fx => 'no',
+                    'use_icon' . $fx => 'false',
                 );
-                if ( !empty($ext) ) {
-                    $vars['icon'.$fx] = pathIcon($ext);
+                if (!empty($ext)) {
+                    $vars['icon' . $fx] = pathIcon($ext);
                 }
-                if ( !empty($media['media_thumbnail']) ) {
-                    $vars['thumbnail'.$fx] = Media::getPdfThumbnail($media['media_thumbnail']);
-                    $vars['media_pdf'.$fx] = 'yes';
+                if (!empty($media['media_thumbnail'])) {
+                    $vars['thumbnail' . $fx] = Media::getPdfThumbnail($media['media_thumbnail']);
+                    $vars['media_pdf' . $fx] = 'yes';
                     buildUnitData($data['use_icon'], $vars, 'use_icon');
                 }
             }
@@ -2023,13 +2079,13 @@ class Helper
             buildUnitData($data['caption'], $vars, 'override-caption');
             buildUnitData($data['alt'], $vars, 'override-alt');
 
-            foreach ( configArray('column_media_size_label') as $i => $_label ) {
+            foreach (configArray('column_media_size_label') as $i => $_label) {
                 $sizeAry  = array(
                     'value'   => config('column_media_size', '', $i),
                     'label'   => config('column_media_size_label', '', $i),
                     'display' => config('column_media_display_size', '', $i),
                 );
-                if ( $data['size'] == config('column_media_size', '', $i) ) {
+                if ($data['size'] == config('column_media_size', '', $i)) {
                     $sizeAry['selected']  = config('attr_selected');
                 }
                 $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $sizeAry);
@@ -2039,13 +2095,12 @@ class Helper
             // primary image
             if ($mediaType && array_key_exists('primaryImage', $data)) {
                 $vars['primaryImageId'] = $id;
-                if ( !empty($clid) and $data['primaryImage'] == $clid ) {
+                if (!empty($clid) and $data['primaryImage'] == $clid) {
                     $vars['primaryImageChecked']    = config('attr_checked');
                 }
             }
             $Tpl->add(array_merge(array($type), $rootBlock), $vars);
-
-        } else if ( 'rich-editor' == $type ) {
+        } elseif ('rich-editor' == $type) {
             $vars = array('id' => $id);
             if (!empty($data['json'])) {
                 buildUnitData(RichEditor::render($data['json']), $vars, 'html');
@@ -2055,7 +2110,7 @@ class Helper
             $Tpl->add(array_merge(array($type), $rootBlock), $vars);
         //-------
         // break
-        } else if ( 'break' == $type ) {
+        } elseif ('break' == $type) {
             $vars = array('id' => $id);
             buildUnitData($data['label'], $vars, 'label');
 
@@ -2063,7 +2118,7 @@ class Helper
 
         //--------
         // module
-        } else if ( 'module' == $type ) {
+        } elseif ('module' == $type) {
             $mid    = $data['mid'];
             $tpl    = $data['tpl'];
             $vars   = array(
@@ -2071,7 +2126,7 @@ class Helper
                 'tpl'   => $tpl,
                 'id'    => $id,
             );
-            if ( !empty($mid) ) {
+            if (!empty($mid)) {
                 $module     = loadModule($mid);
                 $name       = $module->get('name');
                 $identifier = $module->get('identifier');
@@ -2081,20 +2136,21 @@ class Helper
 
         //--------
         // custom
-        } else if ( 'custom' == $type ) {
-            if ( !empty($data['field']) ) {
+        } elseif ('custom' == $type) {
+            if (!empty($data['field'])) {
                 $Field  = acmsUnserialize($data['field']);
-                if ( !method_exists($Field, 'listFields') ) $Field = null;
+                if (!method_exists($Field, 'listFields')) {
+                    $Field = null;
+                }
             }
             $block      = array_merge(array($typeS), $rootBlock);
             $vars       = array('id' => $id);
-            if ( isset($Field) ) {
+            if (isset($Field)) {
                 $this->injectMediaField($Field, true);
                 $this->injectRichEditorField($Field, true);
                 $vars += $this->buildField($Field, $Tpl, $block, null, array('id' => $id));
             }
             $Tpl->add($block, $vars);
-
         } else {
             return false;
         }
@@ -2121,19 +2177,19 @@ class Helper
 
         //----------------
         // text, textarea
-        if ( in_array($type, array('text', 'textarea')) ) {
-
+        if (in_array($type, array('text', 'textarea'), true)) {
         //-------------------------
         // radio, select, checkbox
-        } else if ( in_array($type, array('radio', 'select', 'checkbox')) ) {
-            if ( 1
+        } elseif (in_array($type, array('radio', 'select', 'checkbox'), true)) {
+            if (
+                1
                 && isset($data['values'])
                 && $values = acmsUnserialize($data['values'])
             ) {
-                if ( is_array($values) ) {
-                    foreach ( $values as $val ) {
-                        if ( !empty($val) ) {
-                            $Tpl->add(array_merge(array($type.'_value:loop'), $rootBlock), array(
+                if (is_array($values)) {
+                    foreach ($values as $val) {
+                        if (!empty($val)) {
+                            $Tpl->add(array_merge(array($type . '_value:loop'), $rootBlock), array(
                                 'value' => $val,
                                 'id'    => $id,
                             ));
@@ -2163,9 +2219,9 @@ class Helper
         ));
         //------------
         // validator
-        if ( isset($data['validatorSet']) ) {
+        if (isset($data['validatorSet'])) {
             $validatorSet   = acmsUnserialize($data['validatorSet']);
-            if ( is_array($validatorSet) ) {
+            if (is_array($validatorSet)) {
                 $validator      = $validatorSet['validator'];
                 $validator_val  = $validatorSet['validator-value'];
                 $validator_mess = $validatorSet['validator-message'];
@@ -2180,11 +2236,11 @@ class Helper
             $validator_mess = $data['validator-message'];
         }
 
-        foreach ( $validator as $j => $val ) {
-            if ( !empty($val) ) {
+        foreach ($validator as $j => $val) {
+            if (!empty($val)) {
                 $Tpl->add(array_merge(array('option:loop'), $rootBlock), array(
                     'validator'                 => $val,
-                    'validator:selected#'.$val  => config('attr_selected'),
+                    'validator:selected#' . $val  => config('attr_selected'),
                     'validator-value'           => $validator_val[$j],
                     'validator-message'         => $validator_mess[$j],
                     'id'                        => $id,
@@ -2207,24 +2263,25 @@ class Helper
      */
     public function spreadModule($moduleName, $moduleID, $moduleTpl, $onlyLayout = false)
     {
-        $tpl = 'include/module/template/'.$moduleName.'.html';
-        if ( !empty($moduleTpl) ) {
-            $tpl = 'include/module/template/'.$moduleName.'/'.$moduleTpl;
+        $tpl = 'include/module/template/' . $moduleName . '.html';
+        if (!empty($moduleTpl)) {
+            $tpl = 'include/module/template/' . $moduleName . '/' . $moduleTpl;
         } else {
-            $modShort = preg_replace('/'.config('module_identifier_duplicate_suffix').'.*/', '', $moduleID);
-            $def = 'include/module/template/'.$moduleName.'/'.$modShort.'.html';
-            if ( findTemplate($def) ) {
+            $modShort = preg_replace('/' . config('module_identifier_duplicate_suffix') . '.*/', '', $moduleID);
+            $def = 'include/module/template/' . $moduleName . '/' . $modShort . '.html';
+            if (findTemplate($def)) {
                 $tpl = $def;
             }
         }
 
-        if ( $path = findTemplate($tpl) ) {
-            $mTpl   = resolvePath('<!--#include file="'.$tpl.'" vars=""-->', config('theme'), '/');
+        if ($path = findTemplate($tpl)) {
+            $mTpl   = resolvePath('<!--#include file="' . $tpl . '" vars=""-->', config('theme'), '/');
             if ($mTpl = spreadTemplate($mTpl, false)) {
                 $mTpl = setGlobalVars($mTpl);
-                $opt = ' id="'.$moduleID.'"';
+                $opt = ' id="' . $moduleID . '"';
 
-                if ( 1
+                if (
+                    1
                     && LAYOUT_EDIT
                     && !LAYOUT_PREVIEW
                     && preg_match('/<!--[\t 　]*BEGIN[\t 　]+layout\#display[^>]*?-->/i', $mTpl)
@@ -2233,23 +2290,27 @@ class Helper
                 } else {
                     \ACMS_GET_Layout::formatBlock($mTpl, 'display');
 
-                    if ( $onlyLayout ) {
-                        if ( $moduleName === 'Entry_Body' ) {
-                            $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body'.$opt.' -->', $mTpl);
+                    if ($onlyLayout) {
+                        if ($moduleName === 'Entry_Body') {
+                            $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
                             $mTpl   = build($mTpl, Field_Validation::singleton('post'));
                         } else {
                             $mTpl   = preg_replace(
                                 '/<!--[\t 　]*(BEGIN|END)_MODULE+[\t 　]+([^\t 　]+)([^>]*?)[\t 　]*-->/',
-                                '', $mTpl);
-                            $mTpl   = '<!-- BEGIN_MODULE '.$moduleName.$opt.' -->'.$mTpl.'<!-- END_MODULE '.$moduleName.' -->';
+                                '',
+                                $mTpl
+                            );
+                            $mTpl   = '<!-- BEGIN_MODULE ' . $moduleName . $opt . ' -->' . $mTpl . '<!-- END_MODULE ' . $moduleName . ' -->';
                         }
-                    } else if ( $moduleName === 'Entry_Body' ) {
-                        $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body'.$opt.' -->', $mTpl);
+                    } elseif ($moduleName === 'Entry_Body') {
+                        $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
                         $mTpl   = build($mTpl, Field_Validation::singleton('post'));
                     } else {
                         $mTpl   = preg_replace(
                             '/<!--[\t 　]*(BEGIN|END)_MODULE+[\t 　]+([^\t 　]+)([^>]*?)[\t 　]*-->/',
-                            '', $mTpl);
+                            '',
+                            $mTpl
+                        );
                         $sql = SQL::newSelect('module');
                         $sql->addWhereOpr('module_identifier', $moduleID);
                         $sql->addWhereOpr('module_name', $moduleName);
@@ -2259,7 +2320,7 @@ class Helper
                     }
                 }
                 if (isDebugMode()) {
-                    $mTpl = includeCommentBegin($path).$mTpl.includeCommentEnd($path);
+                    $mTpl = includeCommentBegin($path) . $mTpl . includeCommentEnd($path);
                 }
                 return $mTpl;
             }

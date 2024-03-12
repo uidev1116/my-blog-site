@@ -25,7 +25,7 @@ class ACMS_POST_Schedule_Delete extends ACMS_POST_Schedule
         $DB->query($SQL->get(dsn()), 'exec');
 
         $SQL    = SQL::newDelete('config');
-        $SQL->addWhereOpr('config_key', 'schedule_label@'.$scid);
+        $SQL->addWhereOpr('config_key', 'schedule_label@' . $scid);
         $SQL->addWhereOpr('config_blog_id', BID);
         $DB->query($SQL->get(dsn()), 'exec');
 

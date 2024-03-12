@@ -7,22 +7,22 @@ class ACMS_POST
     /**
      * @var bool
      */
-    var $isCacheDelete = true;
+    public $isCacheDelete = true;
 
     /**
      * @var Field
      */
-    var $Q;
+    public $Q;
 
     /**
      * @var Field
      */
-    var $Get;
+    public $Get;
 
     /**
      * @var \Field_Validation
      */
-    var $Post;
+    public $Post;
 
     /**
      * @var bool
@@ -143,7 +143,7 @@ class ACMS_POST
         $session->addChild('messages', $this->messages);
     }
 
-    function fire()
+    public function fire()
     {
         $app = App::getInstance();
         $this->Q =& $app->getQueryParameter();
@@ -247,17 +247,17 @@ class ACMS_POST
         return $res;
     }
 
-    function post()
+    public function post()
     {
         return false;
     }
 
-    function redirect($url = null, $sid = null, $auth = false)
+    public function redirect($url = null, $sid = null, $auth = false)
     {
         redirect($url);
     }
 
-    function moduleCacheSensitivity()
+    public function moduleCacheSensitivity()
     {
         $axis = 'self';
         if ($mid = $this->Post->get('mid')) {
@@ -276,7 +276,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function archivesDir()
+    public function archivesDir()
     {
         return Storage::archivesDir();
     }
@@ -284,7 +284,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function setupDir($path, $mod)
+    public function setupDir($path, $mod)
     {
         return Storage::makeDirectory($path);
     }
@@ -292,7 +292,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function removeDir($dir)
+    public function removeDir($dir)
     {
         Storage::removeDirectory($dir);
     }
@@ -300,7 +300,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function copyImage($from, $to, $width = null, $height = null, $size = null, $angle = null)
+    public function copyImage($from, $to, $width = null, $height = null, $size = null, $angle = null)
     {
         return Image::copyImage($from, $to, $width, $height, $size, $angle);
     }
@@ -308,7 +308,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function editImageForImagick($rsrc, $file, $width = null, $height = null, $size = null, $angle = null)
+    public function editImageForImagick($rsrc, $file, $width = null, $height = null, $size = null, $angle = null)
     {
         return Image::editImageForImagick($rsrc, $file, $width, $height, $size, $angle);
     }
@@ -316,7 +316,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null)
+    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null)
     {
         return Image::editImage($rsrc, $width, $height, $size, $angle);
     }
@@ -324,7 +324,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function deleteImageAllSize($path)
+    public function deleteImageAllSize($path)
     {
         Image::deleteImageAllSize($path);
     }
@@ -332,7 +332,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function detectImageExtenstion($mime)
+    public function detectImageExtenstion($mime)
     {
         return Image::detectImageExtenstion($mime);
     }
@@ -340,7 +340,7 @@ class ACMS_POST
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
      */
-    function extract($scp = 'field', $V = null, & $deleteField = null): Field_Validation
+    public function extract($scp = 'field', $V = null, &$deleteField = null): Field_Validation
     {
         $field = Common::extract($scp, $V, $deleteField);
         $deleteField = Common::getDeleteField();
@@ -351,7 +351,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function getUriObject($Post)
+    public function getUriObject($Post)
     {
         return Common::getUriObject($Post);
     }
@@ -359,7 +359,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function genPass($len)
+    public function genPass($len)
     {
         return Common::genPass($len);
     }
@@ -367,7 +367,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function mailConfig($argConfig = array())
+    public function mailConfig($argConfig = array())
     {
         return Common::mailConfig($argConfig);
     }
@@ -375,7 +375,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function getMailTxt($tplFile, $Field = null, $charset = null)
+    public function getMailTxt($tplFile, $Field = null, $charset = null)
     {
         return Common::getMailTxt($tplFile, $Field, $charset);
     }
@@ -383,7 +383,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function loadEntryFulltext($eid)
+    public function loadEntryFulltext($eid)
     {
         return Common::loadEntryFulltext($eid);
     }
@@ -391,7 +391,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function loadUserFulltext($uid)
+    public function loadUserFulltext($uid)
     {
         return Common::loadUserFulltext($uid);
     }
@@ -399,7 +399,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function loadCategoryFulltext($cid)
+    public function loadCategoryFulltext($cid)
     {
         return Common::loadCategoryFulltext($cid);
     }
@@ -407,7 +407,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function loadBlogFulltext($bid)
+    public function loadBlogFulltext($bid)
     {
         return Common::loadBlogFulltext($bid);
     }
@@ -415,12 +415,12 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function loadPluginFulltext($cuid)
+    public function loadPluginFulltext($cuid)
     {
         return Common::loadPluginFulltext($cuid);
     }
 
-    function saveGeometry($type, $id, $Field = null, $rvid = null)
+    public function saveGeometry($type, $id, $Field = null, $rvid = null)
     {
         if (empty($type) || empty($id)) {
             return false;
@@ -458,7 +458,7 @@ class ACMS_POST
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
-    function saveField($type, $id, $Field = null, $deleteField = null, $rvid = null)
+    public function saveField($type, $id, $Field = null, $deleteField = null, $rvid = null)
     {
         return Common::saveField($type, $id, $Field, $deleteField, $rvid);
     }
@@ -466,7 +466,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveFulltext($type, $id, $fulltext = null)
+    public function saveFulltext($type, $id, $fulltext = null)
     {
         Common::saveFulltext($type, $id, $fulltext);
         return true;
@@ -475,7 +475,7 @@ class ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function savePluginFulltext($type, $id, $fulltext = null)
+    public function savePluginFulltext($type, $id, $fulltext = null)
     {
         Common::savePluginFulltext($type, $id, $fulltext);
         return true;
@@ -543,7 +543,8 @@ class ACMS_POST
 
         $SQL = SQL::newInsert('workflow');
         foreach ($workflow->listFields() as $key) {
-            if (1
+            if (
+                1
                 && $key !== 'workflow_route_group'
                 && $key !== 'route_approval_number'
                 && $key !== '@workflowGroup'
@@ -584,11 +585,11 @@ class ACMS_POST
         $this->Post->set('edit', 'update');
     }
 
-    protected function checkScope($scope='local')
+    protected function checkScope($scope = 'local')
     {
         $DB = DB::singleton(dsn());
         do {
-            if ( $scope !== 'global' ) {
+            if ($scope !== 'global') {
                 return true;
             }
             //-----------
@@ -596,7 +597,7 @@ class ACMS_POST
             $SQL = SQL::newSelect('blog');
             $SQL->addWhereOpr('blog_code', '');
             ACMS_Filter::blogTree($SQL, BID, 'descendant');
-            if ( $DB->query($SQL->get(dsn()), 'one') ) {
+            if ($DB->query($SQL->get(dsn()), 'one')) {
                 return false;
             }
             //-------------------
@@ -606,11 +607,10 @@ class ACMS_POST
             ACMS_Filter::blogTree($SQL, BID, 'descendant');
             $SQL->addGroup('blog_code');
             $SQL->addHaving('count(*)>1');
-            if ( $DB->query($SQL->get(dsn()), 'one') ) {
+            if ($DB->query($SQL->get(dsn()), 'one')) {
                 return false;
             }
-
-        } while( false );
+        } while (false);
 
         return true;
     }

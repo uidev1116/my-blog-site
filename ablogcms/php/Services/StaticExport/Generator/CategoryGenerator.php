@@ -55,7 +55,7 @@ class CategoryGenerator extends Generator
             $url = acmsLink($info);
             try {
                 $this->request($url, array($info, 'index.html'));
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage(), $url);
             }
         }
@@ -69,22 +69,22 @@ class CategoryGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $this->logger ) {
+        if ($this->logger) {
             $this->logger->processing();
         }
-        if ( empty($data) || $code != '200' ) {
+        if (empty($data) || $code != '200') {
             $this->logger->error('データの取得に失敗しました。', acmsLink($info[0]), $code);
             return;
         }
         $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-        $blog_url = acmsLink(array('bid'=>BID));
+        $blog_url = acmsLink(array('bid' => BID));
         $url = acmsLink($info[0]);
         $dir = substr($url, strlen($blog_url));
 
         try {
             Storage::makeDirectory($destination . $dir);
             Storage::put($destination . $dir . $info[1], $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $destination . $dir . 'index.html');
         }
     }

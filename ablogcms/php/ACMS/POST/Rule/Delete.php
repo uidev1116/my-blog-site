@@ -4,19 +4,23 @@ class ACMS_POST_Rule_Delete extends ACMS_POST_Rule
 {
     function post()
     {
-        if ( roleAvailableUser() ) {
-            $this->Post->setMethod('rule', 'operative',
+        if (roleAvailableUser()) {
+            $this->Post->setMethod(
+                'rule',
+                'operative',
                 ($rid = idval($this->Get->get('rid'))) and roleAuthorization('rule_edit', BID)
             );
         } else {
-            $this->Post->setMethod('rule', 'operative',
+            $this->Post->setMethod(
+                'rule',
+                'operative',
                 ($rid = idval($this->Get->get('rid'))) and sessionWithAdministration()
             );
         }
 
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $Rule = loadRule($rid);
 

@@ -64,7 +64,9 @@ class Helper
         $SQL->addWhereOpr('config_rule_id', $rid);
         $SQL->addWhereOpr('config_module_id', $mid);
         $SQL->addWhereOpr('config_set_id', $setid);
-        if (!empty($bid)) $SQL->addWhereOpr('config_blog_id', $bid);
+        if (!empty($bid)) {
+            $SQL->addWhereOpr('config_blog_id', $bid);
+        }
         $SQL->setOrder('config_sort');
         $q = $SQL->get(dsn());
 
@@ -101,7 +103,9 @@ class Helper
 
         foreach ($fds as $fd) {
             $vals = $Config->getArray($fd, true);
-            if (!count($vals)) $vals[0] = null;
+            if (!count($vals)) {
+                $vals[0] = null;
+            }
 
             foreach ($vals as $val) {
                 $SQL = SQL::newInsert('config');
@@ -194,7 +198,9 @@ class Helper
         if ($this->cache->has($cacheKey) && !$this->needToLoadDefaultConfig()) {
             return $this->cache->get($cacheKey);
         }
-        if (!($config = $this->yamlLoad(CONFIG_DEFAULT_FILE))) die('config is broken');
+        if (!($config = $this->yamlLoad(CONFIG_DEFAULT_FILE))) {
+            die('config is broken');
+        }
         if ($configUser = $this->yamlLoad(CONFIG_FILE)) {
             $config = array_merge($config, $configUser);
         }
@@ -322,7 +328,7 @@ class Helper
         if ($configSetId = $this->getAncestorBlogConfigSet($bid, 'theme')) {
             return $this->loadConfigSetField($configSetId);
         }
-        return new Field;
+        return new Field();
     }
 
     /**
@@ -336,7 +342,7 @@ class Helper
         if ($configSetId = $this->getAncestorBlogConfigSet($bid, 'editor')) {
             return $this->loadConfigSetField($configSetId);
         }
-        return new Field;
+        return new Field();
     }
 
     /**
@@ -511,9 +517,11 @@ class Helper
     }
 
     /**
-     * 指定されたidに該当するルールのコンフィグセットを考慮したFieldを返す
+     * 指定されたルールidに該当するルールのコンフィグセットを考慮したFieldを返す
+     * @param int $rid
+     * @return \Field|false
      */
-    public function loadRuleConfigSet($rid)
+    public function loadRuleConfigSet(int $rid)
     {
         if (empty($rid)) {
             return false;
@@ -523,6 +531,40 @@ class Helper
             $configSetId = null;
         }
         return $this->loadRuleConfig($rid, $configSetId);
+    }
+
+    /**
+     * 指定されたルールidに該当するルールの編集画面セットを考慮したFieldを返す
+     * @param int $rid
+     * @return \Field|false
+     */
+    public function loadRuleEditorSet(int $rid)
+    {
+        if (empty($rid)) {
+            return false;
+        }
+        $editorSetId = $this->getCurrentEditorSetId();
+        if (empty($editorSetId)) {
+            $editorSetId = null;
+        }
+        return $this->loadRuleConfig($rid, $editorSetId);
+    }
+
+    /**
+     * 指定されたルールidに該当するルールのテーマセットを考慮したFieldを返す
+     * @param int $rid
+     * @return \Field|false
+     */
+    public function loadRuleThemeSet(int $rid)
+    {
+        if (empty($rid)) {
+            return false;
+        }
+        $themeSetId = $this->getCurrentThemeSetId();
+        if (empty($themeSetId)) {
+            $themeSetId = null;
+        }
+        return $this->loadRuleConfig($rid, $themeSetId);
     }
 
     /**
@@ -687,7 +729,7 @@ class Helper
             // action
             if ($mid) {
                 $action = 'module_edit';
-            } else if (ADMIN === 'publish_index') {
+            } elseif (ADMIN === 'publish_index') {
                 $action = 'publish_edit';
             }
             if (roleAuthorization($action, BID)) {
@@ -722,11 +764,11 @@ class Helper
      */
     public function getDataBaseSchemaInfo($type)
     {
-        $defaultYaml = Storage::get(SCRIPT_DIR . PHP_DIR . "config/schema/db.${type}.yaml");
+        $defaultYaml = Storage::get(SCRIPT_DIR . PHP_DIR . "config/schema/db.{$type}.yaml");
         $config = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $defaultYaml));
 
-        if (Storage::exists(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
-            if ($extendYaml = Storage::get(SCRIPT_DIR . "extension/schema/db.${type}.yaml")) {
+        if (Storage::exists(SCRIPT_DIR . "extension/schema/db.{$type}.yaml")) {
+            if ($extendYaml = Storage::get(SCRIPT_DIR . "extension/schema/db.{$type}.yaml")) {
                 if ($extendConfig = $this->yamlParse(str_replace('%{PREFIX}', DB_PREFIX, $extendYaml))) {
                     $config = array_merge($config, $extendConfig);
                 }
@@ -809,7 +851,9 @@ class Helper
         if ($criterions = $Config->getArray('column_image_size_criterion')) {
             $sizes = $Config->getArray('column_image_size');
             foreach ($criterions as $i => $criterion) {
-                if (empty($criterion) || empty($sizes[$i])) continue;
+                if (empty($criterion) || empty($sizes[$i])) {
+                    continue;
+                }
                 $sizes[$i] = $criterion . $sizes[$i];
             }
             $Config->set('column_image_size', $sizes);
@@ -868,7 +912,9 @@ class Helper
             $all = array();
             $Sort = array();
             foreach ($Config->getArray('navigation@sort', true) as $i => $sort) {
-                if (!$label = $Config->get('navigation_label', 0, $i)) continue;
+                if (!$label = $Config->get('navigation_label', 0, $i)) {
+                    continue;
+                }
                 $pid = intval($Config->get('navigation_parent', 0, $i));
                 $id = intval($i + 1);
                 // 自分自身を親として参照されたときは，親の設定を解除する
@@ -991,7 +1037,9 @@ class Helper
                 $Config->deleteField('banner-' . $id . '@dateend');
                 $Config->deleteField('banner-' . $id . '@timeend');
 
-                if (empty($src) and empty($img)) continue;
+                if (empty($src) and empty($img)) {
+                    continue;
+                }
 
                 $aryBanner[$id] = array(
                     'banner_status' => $status,
@@ -1084,10 +1132,18 @@ class Helper
     protected function getCacheTags($bid, $rid, $mid, $setid)
     {
         $cacheTags = [];
-        if (!empty($bid)) $cacheTags[] = "config-bid-$bid";
-        if (!empty($rid)) $cacheTags[] = "config-rid-$rid";
-        if (!empty($mid)) $cacheTags[] = "config-mid-$mid";
-        if (!empty($setid)) $cacheTags[] = "config-setid-$setid";
+        if (!empty($bid)) {
+            $cacheTags[] = "config-bid-$bid";
+        }
+        if (!empty($rid)) {
+            $cacheTags[] = "config-rid-$rid";
+        }
+        if (!empty($mid)) {
+            $cacheTags[] = "config-mid-$mid";
+        }
+        if (!empty($setid)) {
+            $cacheTags[] = "config-setid-$setid";
+        }
 
         return $cacheTags;
     }

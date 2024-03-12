@@ -47,7 +47,6 @@ class ACMS_POST_Member_Withdrawal extends ACMS_POST_Member
                 'query' => [],
             ]);
             redirect($url);
-
         } else {
             Logger::info('ユーザー「' . $preUser->get('name') . '」が退会に失敗しました', [
                 'uid' => SUID,

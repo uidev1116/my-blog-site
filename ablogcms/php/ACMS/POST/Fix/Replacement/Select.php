@@ -40,7 +40,9 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
 
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $this->Post->setMethod('checks', 'required');
 
@@ -85,10 +87,10 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
         $SQL = null;
         $eid = 0;
 
-        switch ( $this->target ) {
+        switch ($this->target) {
             case 'title':
                 $title = ACMS_RAM::entryTitle($id);
-                $title = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $title);
+                $title = preg_replace('@(' . $this->pattern . ')@iu', $this->replacement, $title);
                 $SQL = SQL::newUpdate('entry');
                 $SQL->addUpdate('entry_title', $title);
                 $SQL->addWhereOpr('entry_id', $id);
@@ -97,7 +99,7 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
                 break;
             case 'unit':
                 $unit = ACMS_RAM::unitField1($id);
-                $unit = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $unit);
+                $unit = preg_replace('@(' . $this->pattern . ')@iu', $this->replacement, $unit);
                 $SQL = SQL::newUpdate('column');
                 $SQL->addUpdate('column_field_1', $unit);
                 $SQL->addWhereOpr('column_id', $id);
@@ -106,7 +108,7 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
                 break;
             case 'field':
                 $ids = preg_split('/:/', $id, 3);
-                if ( count($ids) < 3 ) {
+                if (count($ids) < 3) {
                     return false;
                 }
                 list($eid, $sort, $key) = $ids;
@@ -116,23 +118,23 @@ class ACMS_POST_Fix_Replacement_Select extends ACMS_POST
                 $SELECT->addWhereOpr('field_eid', $eid);
                 $SELECT->addWhereOpr('field_sort', $sort);
                 $SELECT->addWhereOpr('field_key', $key);
-                if ( $this->filter ) {
+                if ($this->filter) {
                     $SELECT->addWhereOpr('field_key', $this->filter);
                 }
                 $field  = $DB->query($SELECT->get(dsn()), 'one');
 
-                if ( empty($field) ) {
+                if (empty($field)) {
                     return false;
                 }
 
-                $field  = preg_replace('@('.$this->pattern.')@iu', $this->replacement, $field);
+                $field  = preg_replace('@(' . $this->pattern . ')@iu', $this->replacement, $field);
 
                 $SQL    = SQL::newUpdate('field');
                 $SQL->addUpdate('field_value', $field);
                 $SQL->addWhereOpr('field_eid', $eid);
                 $SQL->addWhereOpr('field_sort', $sort);
                 $SQL->addWhereOpr('field_key', $key);
-                if ( $this->filter ) {
+                if ($this->filter) {
                     $SQL->addWhereOpr('field_key', $this->filter);
                 }
                 $SQL->addWhereIn('field_blog_id', $this->blogIds);

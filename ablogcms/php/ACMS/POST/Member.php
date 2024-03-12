@@ -7,7 +7,7 @@ class ACMS_POST_Member extends ACMS_POST
      *
      * @var bool
      */
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * CSRF対策
@@ -22,5 +22,4 @@ class ACMS_POST_Member extends ACMS_POST
      * @var bool
      */
     protected $checkDoubleSubmit = true;
-
 }

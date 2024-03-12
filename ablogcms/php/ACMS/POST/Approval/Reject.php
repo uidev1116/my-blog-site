@@ -7,21 +7,25 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
         $DB         = DB::singleton(dsn());
         $Approval   = $this->extract('approval');
 
-        if ( !sessionWithApprovalReject() ) return false;
-        if ( !($rvid    = $Approval->get('rvid')) ) return false;
+        if (!sessionWithApprovalReject()) {
+            return false;
+        }
+        if (!($rvid    = $Approval->get('rvid'))) {
+            return false;
+        }
 
         $Approval->setMethod('receiver', 'required');
 
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $comment    = $Approval->get('request_comment');
             $req_group  = $Approval->get('current_group');
             $rec_user   = null;
             $To         = '';
             $type       = 'series';
 
-            if ( editionIsEnterprise() ) {
+            if (editionIsEnterprise()) {
                 $workflow = loadWorkflow(BID, CID);
                 $type = $workflow->get('workflow_type');
                 $cid = $workflow->get('workflow_category_id');
@@ -45,7 +49,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 
                     $mail = $DB->query($SQL->get(dsn()), 'all');
                     $mail_ = array();
-                    foreach ( $mail as $addr ) {
+                    foreach ($mail as $addr) {
                         $mail_[] = $addr['user_mail'];
                     }
                     $To     = $mail_;
@@ -62,19 +66,19 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                     $SQL->addWhereOpr('approval_entry_id', EID);
                     $all    = $DB->query($SQL->get(dsn()), 'all');
                     $mail_  = array();
-                    foreach ( $all as $mail ) {
+                    foreach ($all as $mail) {
                         $mail_[] = $mail['user_mail'];
                     }
                     $To     = $mail_;
                 }
-            } else if ( editionIsProfessional() ) {
+            } elseif (editionIsProfessional()) {
                 $SQL    = SQL::newSelect('approval');
                 $SQL->addSelect('approval_request_user_id');
                 $SQL->addWhereOpr('approval_revision_id', $rvid);
                 $SQL->addWhereOpr('approval_entry_id', EID);
                 $SQL->addWhereOpr('approval_blog_id', BID);
                 $SQL->addWhereOpr('approval_type', 'request');
-                if ( $uid = $DB->query($SQL->get(dsn()), 'one') ) {
+                if ($uid = $DB->query($SQL->get(dsn()), 'one')) {
                     $To         = ACMS_RAM::userMail($uid);
                     $rec_user   = $uid;
                 }
@@ -82,7 +86,8 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 
             //-----------
             // Send Mail
-            if ( 1
+            if (
+                1
                 and $To
                 and $subjectTpl = findTemplate(config('mail_approval_tpl_subject'))
                 and $bodyTpl    = findTemplate(config('mail_approval_tpl_body'))
@@ -114,7 +119,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 $bcc = implode(', ', configArray('mail_approval_bcc'));
 
                 $send = true;
-                if ( HOOK_ENABLE ) {
+                if (HOOK_ENABLE) {
                     $data = array(
                         'type'      => 'reject',
                         'from'      => array($from),
@@ -127,7 +132,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                     $Hook   = ACMS_Hook::singleton();
                     $Hook->call('approvalNotification', array($data, & $send));
                 }
-                if ( $send !== false ) {
+                if ($send !== false) {
                     try {
                         $mailer = Mailer::init();
                         $mailer->setFrom($from)
@@ -140,7 +145,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                             $mailer = $mailer->setHtml($bodyHtml);
                         }
                         $mailer->send();
-                    } catch ( Exception $e  ) {
+                    } catch (Exception $e) {
                         AcmsLogger::warning('最終却下の通知メールの送信に失敗しました', Common::exceptionArray($e));
                     }
                 }
@@ -150,7 +155,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 $apid   = $DB->query(SQL::nextval('approval_id', dsn()), 'seq');
 
                 // 並列承認
-                if ( $type == 'parallel' ) {
+                if ($type == 'parallel') {
                     $rec_user   = null;
                     $req_group  = null;
                 }
@@ -175,7 +180,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 $SQL    = SQL::newUpdate('entry_rev');
                 $SQL->addUpdate('entry_rev_status', 'reject');
                 // 並列承認
-                if ( $type == 'parallel' ) {
+                if ($type == 'parallel') {
                     $POINT  = SQL::newSelect('entry_rev');
                     $POINT->addSelect('entry_approval_reject_point');
                     $POINT->addWhereOpr('entry_id', EID);

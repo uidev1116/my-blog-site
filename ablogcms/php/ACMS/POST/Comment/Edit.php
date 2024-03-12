@@ -7,13 +7,13 @@ class ACMS_POST_Comment_Edit extends ACMS_POST_Comment
         $Comment    =& $this->Post->getChild('comment');
         $Comment->setMethod('comment', 'cmidIsNull', !!CMID);
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             if (
                 $suid   = intval(SUID)
                 and ( 0
                     or sessionWithCompilation()
                     or ACMS_RAM::entryUser(EID) == $suid
-                    or ACMS_RAM::commentUser(CMID) == $suid 
+                    or ACMS_RAM::commentUser(CMID) == $suid
                 )
             ) {
                 $Comment->setField('name', ACMS_RAM::commentName(CMID));

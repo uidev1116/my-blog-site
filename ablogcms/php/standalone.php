@@ -9,6 +9,10 @@ define('START_TIME', microtime(true));
 require_once dirname(__FILE__) . '/../config.server.php';
 require_once dirname(__FILE__) . '/../php/config/app.php';
 require_once dirname(__FILE__) . '/../php/config/polyfill.php';
+if (file_exists(dirname(__FILE__) . '/../config.user.php')) {
+    require_once dirname(__FILE__) . '/../config.user.php';
+}
+
 setPath(realpath(dirname(__FILE__) . '/../index.php'));
 
 /**
@@ -24,7 +28,14 @@ if (file_exists(SCRIPT_DIR . '.env')) {
     Dotenv\Dotenv::createImmutable(SCRIPT_DIR)->load();
 }
 
-function env($key, $default = '')
+/**
+ * 環境変数の取得
+ *
+ * @param string $key
+ * @param string $default
+ * @return string
+ */
+function env(string $key, string $default = ''): string
 {
     return isset($_ENV[$key]) ? $_ENV[$key] : $default;
 }
@@ -36,13 +47,13 @@ if (!isset($_SERVER['REQUEST_METHOD'])) {
     $_SERVER['REQUEST_METHOD'] = 'GET';
 }
 if (!isset($_SERVER['HTTP_HOST'])) {
-    $_SERVER['HTTP_HOST'] = null;
+    $_SERVER['HTTP_HOST'] = '';
 }
 if (!isset($_SERVER['REQUEST_URI'])) {
-    $_SERVER['REQUEST_URI'] = null;
+    $_SERVER['REQUEST_URI'] = '';
 }
 if (!isset($_SERVER['QUERY_STRING'])) {
-    $_SERVER['QUERY_STRING'] = null;
+    $_SERVER['QUERY_STRING'] = '';
 }
 if (!defined('BID')) {
     define('BID', 1);

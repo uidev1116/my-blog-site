@@ -26,6 +26,5 @@ class CacheServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

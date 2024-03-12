@@ -2,12 +2,12 @@
 
 class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
 {
-    var $_axis = array(
+    public $_axis = array(
         'bid' => 'self',
         'cid' => 'self',
     );
 
-    var $_scope = array(
+    public $_scope = array(
         'eid' => 'global',
     );
 
@@ -124,7 +124,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
      * @param SQL_Select & $SQL
      * @return void
      */
-    function filterQuery(& $SQL)
+    function filterQuery(&$SQL)
     {
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
         ACMS_Filter::entrySession($SQL);
@@ -158,7 +158,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
      * @param SQL_Select & $SQL
      * @return void
      */
-    function orderQuery(& $SQL)
+    function orderQuery(&$SQL)
     {
         ACMS_Filter::entryOrder($SQL, $this->config['order'], $this->uid, $this->cid);
         if ($this->config['order'] === 'relationality') {
@@ -170,15 +170,23 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
     /**
      * テンプレートの組み立て
      *
-     * @param Template & $Tpl
-     * @return array
+     * @param Template &$Tpl
+     * @return void
      */
-    function buildEntries(& $Tpl)
+    public function buildEntries(&$Tpl)
     {
         $gluePoint = count($this->entries);
-        foreach ( $this->entries as $i => $row ) {
+        foreach ($this->entries as $i => $row) {
             $i++;
-            $this->buildSummary($Tpl, $row, $i, $gluePoint, $this->config, array('grade' => 'tag_similar_grade'), $this->eagerLoad());
+            $this->buildSummary(
+                $Tpl,
+                $row,
+                $i,
+                $gluePoint,
+                $this->config,
+                array('grade' => 'tag_similar_grade'),
+                $this->eagerLoad()
+            );
         }
     }
 

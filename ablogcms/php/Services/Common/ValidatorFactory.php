@@ -14,7 +14,7 @@ class ValidatorFactory extends Factory
         if (!is_array($params)) {
             $params = array($params);
         }
-        foreach ( $this->_collection as $validator ) {
+        foreach ($this->_collection as $validator) {
             if (is_callable(array($validator, $method))) {
                 return call_user_func_array(array($validator, $method), $params);
             }

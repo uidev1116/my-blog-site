@@ -33,10 +33,10 @@ class PdoEngine extends Base
         $connect_str = 'mysql:host=';
         $host = explode(':', $dsn['host']);
         $connect_str .= $host[0] . ';';
-        if ( !empty($dsn['name']) ) {
+        if (!empty($dsn['name'])) {
             $connect_str .= 'dbname=' . $dsn['name'] . ';';
         }
-        if ( !empty($dsn['port']) || isset($host[1]) ) {
+        if (!empty($dsn['port']) || isset($host[1])) {
             $port = empty($dsn['port']) ? $host[1] : $dsn['port'];
             $connect_str .= 'port=' . $port . ';';
         }
@@ -53,7 +53,7 @@ class PdoEngine extends Base
                 $options
             );
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch ( PDOException $e ) {
+        } catch (PDOException $e) {
             throw $e;
         }
 
@@ -89,7 +89,7 @@ class PdoEngine extends Base
         try {
             $dsn['name'] = '';
             $this->connect($dsn);
-        } catch ( PDOException $e ) {
+        } catch (PDOException $e) {
             return false;
         }
 
@@ -103,12 +103,12 @@ class PdoEngine extends Base
      */
     public function checkConnectDatabase($dsn)
     {
-        if ( empty($dsn['name']) ) {
+        if (empty($dsn['name'])) {
             return false;
         }
         try {
             $this->connect($dsn);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             return false;
         }
         return true;
@@ -189,12 +189,11 @@ class PdoEngine extends Base
 
             $method = strtolower($mode) . 'Mode';
             if (method_exists($this, $method)) {
-                $result = $this->{$method}($sql, $res);
+                $result = $this->{$method}($sql, $res); // @phpstan-ignore-line
             } else {
                 $result = $this->etcMode($sql, $res);
             }
             return $result;
-
         } catch (PDOException $e) {
             if ($auditLog) {
                 AcmsLogger::debug($e->getMessage(), [
@@ -267,7 +266,7 @@ class PdoEngine extends Base
      */
     protected function seqMode($sql, $response)
     {
-        if ( is_bool($response) ) {
+        if (is_bool($response)) {
             return $this->connection->lastInsertId();
         } else {
             $one = $this->query('select last_insert_id()', 'one');
@@ -287,12 +286,12 @@ class PdoEngine extends Base
     protected function allMode($sql, $response)
     {
         $all = array();
-        while ( $row = $response->fetch(\PDO::FETCH_ASSOC) ) {
-            if ( is_array($row) and 'UTF-8' <> $this->charset() ) {
-                foreach ( $row as $key => $val ) {
-                    if ( !is_null($val) ) {
+        while ($row = $response->fetch(\PDO::FETCH_ASSOC)) {
+            if (is_array($row) and 'UTF-8' <> $this->charset()) {
+                foreach ($row as $key => $val) {
+                    if (!is_null($val)) {
                         $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());
-                        if ( $val === mb_convert_encoding($_val, $this->charset(), 'UTF-8') ) {
+                        if ($val === mb_convert_encoding($_val, $this->charset(), 'UTF-8')) {
                             $row[$key] = $_val;
                         }
                     }
@@ -315,11 +314,11 @@ class PdoEngine extends Base
     protected function listMode($sql, $response)
     {
         $list = array();
-        while ( $row = $response->fetch(\PDO::FETCH_ASSOC) ) {
+        while ($row = $response->fetch(\PDO::FETCH_ASSOC)) {
             $one = array_shift($row);
-            if ( !is_null($one) ) {
+            if (!is_null($one)) {
                 $_one = mb_convert_encoding($one, 'UTF-8', $this->charset());
-                if ( $one === mb_convert_encoding($_one, $this->charset(), 'UTF-8') ) {
+                if ($one === mb_convert_encoding($_one, $this->charset(), 'UTF-8')) {
                     $one = $_one;
                 }
             }
@@ -339,14 +338,16 @@ class PdoEngine extends Base
      */
     protected function oneMode($sql, $response)
     {
-        if ( !$row = $response->fetch(\PDO::FETCH_ASSOC) ) return false;
+        if (!$row = $response->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
         $one = array_shift($row);
         $response->closeCursor();
 
-        if ( 'UTF-8' <> $this->charset() ) {
-            if ( !is_null($one) ) {
+        if ('UTF-8' <> $this->charset()) {
+            if (!is_null($one)) {
                 $_one = mb_convert_encoding($one, 'UTF-8', $this->charset());
-                if ( $one === mb_convert_encoding($_one, $this->charset(), 'UTF-8') ) {
+                if ($one === mb_convert_encoding($_one, $this->charset(), 'UTF-8')) {
                     $one = $_one;
                 }
             }
@@ -367,11 +368,11 @@ class PdoEngine extends Base
         $row = $response->fetch(\PDO::FETCH_ASSOC);
         $response->closeCursor();
 
-        if ( is_array($row) and 'UTF-8' <> $this->charset() ) {
-            foreach ( $row as $key => $val ) {
-                if ( !is_null($val) ) {
+        if (is_array($row) and 'UTF-8' <> $this->charset()) {
+            foreach ($row as $key => $val) {
+                if (!is_null($val)) {
                     $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());
-                    if ( $val === mb_convert_encoding($_val, $this->charset(), 'UTF-8') ) {
+                    if ($val === mb_convert_encoding($_val, $this->charset(), 'UTF-8')) {
                         $row[$key] = $_val;
                     }
                 }

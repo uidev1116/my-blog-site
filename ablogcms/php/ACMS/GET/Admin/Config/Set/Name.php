@@ -5,7 +5,7 @@ class ACMS_GET_Admin_Config_Set_Name extends ACMS_GET
     function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        if  ($mid = $this->Get->get('mid')) {
+        if ($mid = $this->Get->get('mid')) {
             return '';
         }
         if (!$setid = idval($this->Get->get('setid'))) {

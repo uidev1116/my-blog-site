@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
 {
     function get()
     {
-        if ( !sessionWithContribution() ) return '';
+        if (!sessionWithContribution()) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $vars   = array();
@@ -27,18 +29,27 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
                 $UID = UID;
             }
         }
-        if ($UID) $SQL->addWhereOpr('entry_user_id', $UID);
+        if ($UID) {
+            $SQL->addWhereOpr('entry_user_id', $UID);
+        }
 
         $Pager  = new SQL_Select($SQL);
         $Pager->setSelect('*', 'entry_amount', null, 'count');
-        if ( !$pageAmount = intval($DB->query($Pager->get(dsn()), 'one')) ) {
+        if (!$pageAmount = intval($DB->query($Pager->get(dsn()), 'one'))) {
             $Tpl->add('draft#notFound');
             $Tpl->add(null, $vars);
             return $Tpl->get();
         }
 
-        $vars   += $this->buildPager(PAGE, $limit, $pageAmount
-            , $pagerDelta, $pagerCurAttr, $Tpl, array(), array('admin' => ADMIN)
+        $vars   += $this->buildPager(
+            PAGE,
+            $limit,
+            $pageAmount,
+            $pagerDelta,
+            $pagerCurAttr,
+            $Tpl,
+            array(),
+            array('admin' => ADMIN)
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -46,7 +57,7 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
         $q = $SQL->get(dsn());
         $all = $DB->query($q, 'all');
 
-        foreach ( $all as $row) {
+        foreach ($all as $row) {
             $eid = $row['entry_id'];
             $cid    = $row['entry_category_id'];
             $uid    = $row['entry_user_id'];
@@ -67,7 +78,7 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
                 )),
             );
 
-            if ( $cid ) {
+            if ($cid) {
                 $_vars   += array(
                     'categoryName'  => ACMS_RAM::categoryName($cid),
                     'categoryUrl'   => acmsLink(array(

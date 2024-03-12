@@ -38,7 +38,7 @@ class ACMS_POST_Category_Delete extends ACMS_POST_Category
 
         $this->Post->reset(true);
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $this->Post->setMethod('category', 'operable', !!CID and !!roleAuthorization('category_edit', BID));
         } else {
             $this->Post->setMethod('category', 'operable', !!CID and !!sessionWithCompilation());
@@ -47,7 +47,7 @@ class ACMS_POST_Category_Delete extends ACMS_POST_Category
 
         $this->Post->validate();
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $this->entryUnsetCategory(CID);
 
             $SQL    = SQL::newUpdate('category');

@@ -20,7 +20,7 @@ class CorrectorFactory extends Factory
         if ($magic_call) {
             $argument = $params;
         }
-        foreach ( $this->_collection as $corrector ) {
+        foreach ($this->_collection as $corrector) {
             if (is_callable(array($corrector, $method))) {
                 return call_user_func_array(array($corrector, $method), $argument);
             }

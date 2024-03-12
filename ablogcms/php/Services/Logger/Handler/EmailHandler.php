@@ -35,7 +35,7 @@ class EmailHandler extends AbstractProcessingHandler
             if (!$this->suppressNotifications($lockFilePath, $countFilePath, $limit, $timeRange, $stopTime)) {
                 return; // メール通知は一時停止中
             }
-            $field = new Field;
+            $field = new Field();
             $field->addField('channel', $record['channel']);
             $field->addField('level', Level::getLevelNameJa(intval($record['level'])));
             $field->addField('message', $record['message']);
@@ -43,7 +43,7 @@ class EmailHandler extends AbstractProcessingHandler
             $field->addField('datetime', date('Y-m-d H:i:s', $record['datetime']->format('U')));
             if (defined('RBID')) {
                 $field->addField('rootBlogName', trim(ACMS_RAM::blogName(RBID)));
-            } else if (defined('DOMAIN')) {
+            } elseif (defined('DOMAIN')) {
                 $field->addField('rootBlogName', DOMAIN);
             }
             $field->addField('url', REQUEST_URL);
@@ -58,7 +58,6 @@ class EmailHandler extends AbstractProcessingHandler
             $subject = $this->buildMailTxt($subjectTpl, $field);
             $body = $this->buildMailTxt($bodyTpl, $field);
             $this->nofify($this->getMailTo(), $this->getMailFrom(), $this->getMailBcc(), $subject, $body);
-
         } catch (\Exception $e) {
         }
     }
@@ -139,11 +138,11 @@ class EmailHandler extends AbstractProcessingHandler
             if ($suppress) {
                 // Notify that notifications are suspended
 
-                $field = new Field;
+                $field = new Field();
                 $field->addField('datetime', date('Y-m-d H:i:s', time()));
                 if (defined('RBID')) {
                     $field->addField('rootBlogName', trim(ACMS_RAM::blogName(RBID)));
-                } else if (defined('DOMAIN')) {
+                } elseif (defined('DOMAIN')) {
                     $field->addField('rootBlogName', DOMAIN);
                 }
                 $field->addField('auditLogUrl', BASE_URL . 'bid/1/admin/audit_log/');

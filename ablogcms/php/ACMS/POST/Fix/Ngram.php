@@ -4,13 +4,15 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         @set_time_limit(0);
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('ngram', 'required');
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $ngram  = $Fix->get('ngram');
 
             $DB     = DB::singleton(dsn());
@@ -18,8 +20,7 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
             $SQL->addLeftJoin('fulltext', 'fulltext_eid', 'entry_id');
             $q  = $SQL->get(dsn());
             $DB->query($q, 'fetch');
-            while ( $row = $DB->fetch($q) ) {
-
+            while ($row = $DB->fetch($q)) {
                 $eid    = intval($row['entry_id']);
                 $bid    = intval($row['entry_blog_id']);
 
@@ -29,18 +30,18 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
 
                 $text   = '';
                 $meta   = '';
-                foreach ( $_all as $_row ) {
-                    if ( 'text' == $_row['column_type'] ) {
+                foreach ($_all as $_row) {
+                    if ('text' == $_row['column_type']) {
                         $_text  = $_row['column_field_1'];
-                        if ( 'markdown' == $_row['column_field_2'] ) {
+                        if ('markdown' == $_row['column_field_2']) {
                             $_text = Common::parseMarkdown($_text);
                         }
-                        $text   .= $_text.' ';
+                        $text   .= $_text . ' ';
                     } else {
-                        $meta   .= $_row['column_field_1'].' ';
+                        $meta   .= $_row['column_field_1'] . ' ';
                     }
                 }
-                $meta   .= $row['entry_title'].' ';
+                $meta   .= $row['entry_title'] . ' ';
 
                 //--------------------------------
                 // field expect fix markdown, tag
@@ -50,9 +51,11 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
                 $SQL->addWhereOpr('field_eid', $eid);
                 $SQL->addWhereOpr('field_blog_id', $bid);
                 $fQ = $SQL->get(dsn());
-                if ( $DB->query($fQ, 'fetch') ) { while ( $fRow = $DB->fetch($fQ) ) {
-                    $meta   .= $fRow['field_value'].' ';
-                } }
+                if ($DB->query($fQ, 'fetch')) {
+                    while ($fRow = $DB->fetch($fQ)) {
+                        $meta   .= $fRow['field_value'] . ' ';
+                    }
+                }
 
                 $SQL    = SQL::newDelete('fulltext');
                 $SQL->addWhereOpr('fulltext_eid', $eid);
@@ -60,13 +63,15 @@ class ACMS_POST_Fix_Ngram extends ACMS_POST
                 $DB->query($SQL->get(dsn()), 'exec');
 
                 $SQL    = SQL::newInsert('fulltext');
-                $SQL->addInsert('fulltext_value',
-                    preg_replace('@\s+@', ' ', strip_tags($text)).
-                    "\r\n\r\n".preg_replace('@\s+@', ' ', strip_tags($meta))
+                $SQL->addInsert(
+                    'fulltext_value',
+                    preg_replace('@\s+@', ' ', strip_tags($text)) .
+                    "\r\n\r\n" . preg_replace('@\s+@', ' ', strip_tags($meta))
                 );
-                if ( $ngram ) {
-                    $SQL->addInsert('fulltext_ngram',
-                        preg_replace('@(　|\s)+@', ' ', join(' ', ngram(strip_tags($text.' '.$meta), $ngram)))
+                if ($ngram) {
+                    $SQL->addInsert(
+                        'fulltext_ngram',
+                        preg_replace('@(　|\s)+@', ' ', join(' ', ngram(strip_tags($text . ' ' . $meta), $ngram)))
                     );
                 }
                 $SQL->addInsert('fulltext_eid', $eid);

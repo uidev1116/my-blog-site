@@ -79,7 +79,8 @@ class ACMS_POST_Approval_Comment extends ACMS_POST_Approval
     {
         //-----------
         // Send Mail
-        if (1
+        if (
+            1
             and $addresses
             and $subjectTpl = findTemplate(config('mail_approval_tpl_subject'))
             and $bodyTpl = findTemplate(config('mail_approval_tpl_body'))

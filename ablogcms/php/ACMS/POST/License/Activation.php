@@ -2,10 +2,7 @@
 
 class ACMS_POST_License_Activation extends ACMS_POST
 {
-    /**
-     * @return bool|Field
-     */
-    function post()
+    public function post()
     {
         if (!sessionWithAdministration()) {
             die('Permission denied.');

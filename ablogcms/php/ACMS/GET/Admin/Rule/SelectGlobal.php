@@ -4,7 +4,8 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( 1
+        if (
+            1
             && strpos(ADMIN, 'module_') === false
             && strpos(ADMIN, 'config_') === false
             && strpos(TPL, 'ajax/module') === false
@@ -20,7 +21,7 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
         $rid        = $this->Get->get('rid');
         $query      = parseQuery(QUERY);
 
-        if ( !empty($rid) ) {
+        if (!empty($rid)) {
             $rootVars['currentRule'] = ACMS_RAM::ruleName($rid);
         }
 
@@ -46,7 +47,7 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
         $all    = $DB->query($SQL->get(dsn()), 'all');
 
         $sort   = 1;
-        while ( $row = array_shift($all) ) {
+        while ($row = array_shift($all)) {
             $rid            = intval($row['rule_id']);
             $query['rid']   = $rid;
             $vars           = array(

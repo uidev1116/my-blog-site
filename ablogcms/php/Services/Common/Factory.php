@@ -27,7 +27,7 @@ class Factory extends Singleton
      */
     public function detach($ns)
     {
-        if ( isset($this->_collection[$ns]) ) {
+        if (isset($this->_collection[$ns])) {
             unset($this->_collection[$ns]);
         }
     }

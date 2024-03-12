@@ -30,9 +30,9 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
             Webhook::call(BID, 'user', ['user:updated'], UID);
 
-            if ( (editionIsProfessional() || editionIsEnterprise()) ) {
+            if ((editionIsProfessional() || editionIsEnterprise())) {
                 $this->old();
-                if ( $this->diff ) {
+                if ($this->diff) {
                     $this->send();
                 }
             }
@@ -50,14 +50,14 @@ class ACMS_POST_User_Update extends ACMS_POST_User
     {
         $targetColumn = array('name', 'code', 'mail', 'mail_mobile', 'url');
 
-        foreach ( $this->field->listFields() as $key ) {
-            if ( $this->field->get($key) !== $this->preField->get($key) ) {
+        foreach ($this->field->listFields() as $key) {
+            if ($this->field->get($key) !== $this->preField->get($key)) {
                 $this->field->setField('old_' . $key, $this->preField->get($key));
                 $this->diff = true;
             }
         }
-        foreach ( $targetColumn as $column ) {
-            if ( $this->user->get($column) !== $this->preUser->get($column) ) {
+        foreach ($targetColumn as $column) {
+            if ($this->user->get($column) !== $this->preUser->get($column)) {
                 $this->field->setField('old_' . $column, $this->preUser->get($column));
                 $this->diff = true;
             }
@@ -67,7 +67,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
     protected function send()
     {
-        if ( config('mail_update_user_enable') === 'on' ) {
+        if (config('mail_update_user_enable') === 'on') {
             $this->mail(
                 config('mail_update_user_tpl_subject'),
                 config('mail_update_user_tpl_body'),
@@ -78,7 +78,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
             );
         }
 
-        if ( config('mail_update_user_admin_enable') === 'on' ) {
+        if (config('mail_update_user_admin_enable') === 'on') {
             $this->mail(
                 config('mail_update_user_admin_tpl_subject'),
                 config('mail_update_user_admin_tpl_body'),
@@ -92,7 +92,8 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
     protected function mail($subject, $body, $html, $to, $from, $bcc)
     {
-        if (1
+        if (
+            1
             && $to
             && $subjectTpl = findTemplate($subject)
             && $bodyTpl = findTemplate($body)
@@ -118,8 +119,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
                     $mailer = $mailer->setHtml($bodyHtml);
                 }
                 $mailer->send();
-
-            } catch ( Exception $e  ) {
+            } catch (Exception $e) {
                 throw $e;
             }
         }
@@ -146,7 +146,8 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $this->user->setMethod('code', 'string', isValidCode($this->user->get('code')));
 
         // 現在、読者かつ読者以外に変更しようとしているときだけ、ユーザー数の制限チェックを行う
-        if ( 1
+        if (
+            1
             && 'subscriber' != $this->user->get('auth')
             && '' != $this->user->get('auth')
             && 'subscriber' == ACMS_RAM::userAuth(UID)
@@ -224,24 +225,26 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $SQL->addUpdate('user_mail_magazine', $this->user->get('mail_magazine'));
         $SQL->addUpdate('user_mail_mobile_magazine', $this->user->get('mail_mobile_magazine'));
 
-        if ( sessionWithAdministration() ) {
-            if ( !!$this->user->get('status') ) {
+        if (sessionWithAdministration()) {
+            if (!!$this->user->get('status')) {
                 $SQL->addUpdate('user_status', $this->user->get('status'));
             }
-            if ( !!$this->user->get('auth') ) {
+            if (!!$this->user->get('auth')) {
                 $SQL->addUpdate('user_auth', $this->user->get('auth'));
             }
-            if ( !!$this->user->get('indexing') ) {
+            if (!!$this->user->get('indexing')) {
                 $SQL->addUpdate('user_indexing', $this->user->get('indexing'));
             }
             $SQL->addUpdate('user_mode', $this->user->get('mode'));
-            if ( 1
+            if (
+                1
                 and $this->user->get('login_anywhere')
                 and SBID == RBID
             ) {
                 $SQL->addUpdate('user_login_anywhere', $this->user->get('login_anywhere'));
             }
-            if ( 1
+            if (
+                1
                 and $this->user->get('global_auth') === 'on'
                 and SBID == RBID
             ) {
@@ -249,14 +252,14 @@ class ACMS_POST_User_Update extends ACMS_POST_User
             } else {
                 $SQL->addUpdate('user_global_auth', 'off');
             }
-            if ( $this->user->get('login_terminal_restriction') ) {
+            if ($this->user->get('login_terminal_restriction')) {
                 $SQL->addUpdate('user_login_terminal_restriction', $this->user->get('login_terminal_restriction'));
             }
-            if ( !!$this->user->get('login_expire') ) {
+            if (!!$this->user->get('login_expire')) {
                 $SQL->addUpdate('user_login_expire', $this->user->get('login_expire'));
             }
         }
-        if ( $this->user->get('pass') ) {
+        if ($this->user->get('pass')) {
             $SQL->addUpdate('user_pass', acmsUserPasswordHash($this->user->get('pass')));
             $SQL->addUpdate('user_pass_generation', PASSWORD_ALGORITHM_GENERATION);
         }
@@ -269,6 +272,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $DB->query($SQL->get(dsn()), 'exec');
 
         ACMS_RAM::user(UID, null);
+        ACMS_RAM::cacheDelete(); // loadUser関数のキャッシュを削除
 
         //----------
         // geometry
@@ -287,7 +291,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         $SQL = SQL::newSelect('user');
         $SQL->addWhereOpr('user_id', UID);
         $SQL->addWhereOpr('user_blog_id', BID);
-        if ( !!($row = $DB->query($SQL->get(dsn()), 'row')) ) {
+        if (!!($row = $DB->query($SQL->get(dsn()), 'row'))) {
             ACMS_RAM::user(UID, $row);
         }
         Common::saveFulltext('uid', UID, Common::loadUserFulltext(UID));

@@ -89,9 +89,6 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             }
             $this->standardMenu('cart_menu');
             $this->standardMenu('fix_index', 'fix');
-            if (defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO) {
-                $this->standardMenu('shop_menu', 'shop');
-            }
             $this->standardMenu('user_edit', 'user');
             $this->standardMenu('config_set_base_index', 'config_set_base');
             $this->standardMenu('config_set_theme_index', 'config_set_theme');
@@ -168,9 +165,6 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
                 $this->standardMenu('audit_log');
             }
             $this->standardMenu('cart_menu');
-            if (defined('LICENSE_PLUGIN_SHOP_PRO') and LICENSE_PLUGIN_SHOP_PRO) {
-                $this->standardMenu('shop_menu', 'shop');
-            }
             if (IS_LICENSED) {
                 $this->standardMenu('user_edit', 'user');
             }
@@ -192,7 +186,8 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
             $this->standardMenu('usergroup_index', 'usergroup');
             $this->standardMenu('approval_index', 'approval_index');
         }
-        if (1
+        if (
+            1
             && BID == RBID
             && !sessionWithEnterpriseAdministration()
             && sessionWithProfessionalAdministration()
@@ -226,7 +221,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
      *
      * @param $Tpl
      */
-    protected function build(& $Tpl)
+    protected function build(&$Tpl)
     {
         foreach ($this->categories as $id => $category) {
             $hasMenu = false;

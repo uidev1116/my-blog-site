@@ -22,7 +22,7 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
         $Category->setMethod('editor_set_id', 'value', $this->checkConfigSetScope($Category->get('editor_set_id')));
         $Category->setMethod('editor_set_scope', 'in', ['local', 'global']);
 
-        if ( roleAvailableUser() ) {
+        if (roleAvailableUser()) {
             $Category->setMethod('category', 'operable', roleAuthorization('category_create', BID) and IS_LICENSED);
         } else {
             $Category->setMethod('category', 'operable', sessionWithCompilation() and IS_LICENSED);
@@ -33,20 +33,22 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
         }
 
         // parentを指定時に、scopeがparentと同じに設定されていなければinvalid
-        $Category->setMethod('scope', 'tree',
+        $Category->setMethod(
+            'scope',
+            'tree',
             !($pid = $Category->get('parent')) ? true : $Category->get('scope') == ACMS_RAM::categoryScope($pid)
         );
 
         $Category->validate(new ACMS_Validator_Category());
         $Field = $this->extract('field', new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('category');
             $SQL->addWhereOpr('category_blog_id', BID);
             $SQL->setOrder('category_right', true);
             $SQL->setLimit(1);
-            if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
+            if ($row = $DB->query($SQL->get(dsn()), 'row')) {
                 $sort   = $row['category_sort'] + 1;
                 $left   = $row['category_right'] + 1;
                 $right  = $row['category_right'] + 2;

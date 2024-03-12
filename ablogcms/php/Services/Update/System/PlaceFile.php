@@ -82,8 +82,8 @@ class PlaceFile
         $this->logger->addMessage(gettext('アップデートの検証中...'), 0);
         $validate = true;
         // backup
-        foreach ( $this->moveList as $item => $to ) {
-            if ( $item === 'setup' ) {
+        foreach ($this->moveList as $item => $to) {
+            if ($item === 'setup') {
                 continue;
             }
             $path = $backup_dir . $item;
@@ -95,7 +95,7 @@ class PlaceFile
         }
 
         // place file
-        foreach ( $this->moveList as $from => $to ) {
+        foreach ($this->moveList as $from => $to) {
             if (!Storage::exists($to)) {
                 $to = dirname($to);
             }
@@ -104,7 +104,7 @@ class PlaceFile
                 $this->logger->error(gettext('書き込み権限がありません。') . ' ' . $to);
             }
         }
-        foreach ( $this->exclusionMoveFile as $item ) {
+        foreach ($this->exclusionMoveFile as $item) {
             if (!Storage::isWritable($item)) {
                 $validate = false;
                 $this->logger->error(gettext('書き込み権限がありません。') . ' ' . $item);
@@ -136,7 +136,6 @@ class PlaceFile
             }
             $this->backup($backup_dir);
             $this->updateFiles($new_path, $backup_dir);
-
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $this->rollback($backup_dir);
@@ -193,15 +192,15 @@ class PlaceFile
     {
         $this->logger->error(gettext('ロールバック中...'));
 
-        foreach ( $this->moveList as $item => $to ) {
-            if ( $item === 'setup' ) {
+        foreach ($this->moveList as $item => $to) {
+            if ($item === 'setup') {
                 continue;
             }
             try {
                 Storage::makeDirectory(dirname($backup_dir . 'rollback/' . $to));
                 Storage::move($to, $backup_dir . 'rollback/' . $to);
                 Storage::move($backup_dir . $item, $item);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
         }
@@ -227,7 +226,8 @@ class PlaceFile
         foreach ($lists as $item) {
             try {
                 Storage::removeDirectory($item);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
     }
 
@@ -253,7 +253,7 @@ class PlaceFile
                 if (!Storage::copyDirectory($from, $to)) {
                     throw new \RuntimeException('Could not be copied from ' . $from . ' to ' . $to . '.');
                 }
-            } else if (Storage::exists($from)) {
+            } elseif (Storage::exists($from)) {
                 if (!Storage::copy($from, $to)) {
                     throw new \RuntimeException('Could not be copied from ' . $from . ' to ' . $to . '.');
                 }

@@ -14,17 +14,16 @@ class ACMS_GET_Shop2_Form_DeliverList extends ACMS_GET_Shop2
         $charge = $this->config->getArray('shop_order_deliver_charge');
         $common = $this->config->get('shop_order_shipping_common');
 
-        foreach ( $delivers as $key => $deliver ) {
-
+        foreach ($delivers as $key => $deliver) {
             $vars = array('deliver' => $deliver);
 
             /**
              * detect shipping
              */
-            if ( isset($charge[$key]) && is_numeric($charge[$key]) ) {
+            if (isset($charge[$key]) && is_numeric($charge[$key])) {
                 $vars += array('charge' => @$charge[$key]);
             } else {
-                if ( is_numeric($common) ) {
+                if (is_numeric($common)) {
                     $vars += array(
                         'charge' => intval($this->config->get('shop_order_shipping_common')),
                         'prefecture' => '全国一律',
@@ -37,7 +36,7 @@ class ACMS_GET_Shop2_Form_DeliverList extends ACMS_GET_Shop2
                 }
             }
 
-            if ( $SESSION->get('deliver') == $deliver ) {
+            if ($SESSION->get('deliver') == $deliver) {
                 $vars += array('selected' => config('attr_selected'),
                     'checked' => config('attr_checked'),
                 );
@@ -54,11 +53,10 @@ class ACMS_GET_Shop2_Form_DeliverList extends ACMS_GET_Shop2
         $labels = $this->config->getArray('shop_order_shipping_label');
         $charge = $this->config->getArray('shop_order_shipping_charge');
 
-        foreach ( $labels as $key => $label ) {
-            if ( $prefecture == $label ) {
+        foreach ($labels as $key => $label) {
+            if ($prefecture == $label) {
                 return @$charge[$key];
             }
         }
     }
-
 }

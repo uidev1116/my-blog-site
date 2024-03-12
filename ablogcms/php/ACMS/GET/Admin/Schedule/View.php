@@ -2,20 +2,22 @@
 
 class ACMS_GET_Admin_Schedule_View extends ACMS_GET_Plugin_Schedule
 {
-    function get()
+    protected $plan;
+
+    public function get()
     {
         $config = Config::loadDefaultField();
         $config->overload(Config::loadBlogConfig(BID));
         $this->unit = config('schedule_unit');
 
         // POSTから年月日を取得
-        if ( !empty($_POST['dateArgs']) ) {
+        if (!empty($_POST['dateArgs'])) {
             $dateArgs = explode('-', $_POST['dateArgs']);
-        } elseif ( !empty($_POST['yearArg']) && !empty($_POST['monthArg']) ) {
+        } elseif (!empty($_POST['yearArg']) && !empty($_POST['monthArg'])) {
             $dateArgs = array();
             $dateArgs[0] = $_POST['yearArg'];
             $dateArgs[1] = $_POST['monthArg'];
-        } elseif ( !empty($_POST['year']) && !empty($_POST['month']) ) {
+        } elseif (!empty($_POST['year']) && !empty($_POST['month'])) {
             $dateArgs = array();
             $dateArgs[0] = $_POST['year'];
             $dateArgs[1] = $_POST['month'];
@@ -39,7 +41,7 @@ class ACMS_GET_Admin_Schedule_View extends ACMS_GET_Plugin_Schedule
         $this->formatD  = $config->get('schedule_formatD');
         $this->formatW  = $config->get('schedule_formatW');
         $this->key      = $this->Get->get('scid');
-        $this->labels   = $config->getArray('schedule_label@'.$this->key);
+        $this->labels   = $config->getArray('schedule_label@' . $this->key);
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 

@@ -2,12 +2,12 @@
 
 class ACMS_GET_Field_ValueList extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'bid'   => 'global',
         'field' => 'global',
     );
 
-    var $_axis = array(
+    public $_axis = array(
         'bid'   => 'self',
     );
 
@@ -31,7 +31,7 @@ class ACMS_GET_Field_ValueList extends ACMS_GET
 
         $q  = $SQL->get(dsn());
 
-        if ( $DB->query($q, 'fetch') and ($row = $DB->fetch($q)) ) {
+        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
             $i      = 0;
             $j      = $DB->affected_rows();
             do {
@@ -41,12 +41,12 @@ class ACMS_GET_Field_ValueList extends ACMS_GET
 
                 //------
                 // glue
-                if ( $i !== $j ) {
+                if ($i !== $j) {
                     $Tpl->add('glue');
                 }
 
                 $Tpl->add('value:loop', array('value' => $value));
-            } while ( !!($row = $DB->fetch($q)) );
+            } while (!!($row = $DB->fetch($q)));
         }
 
         return $Tpl->get();

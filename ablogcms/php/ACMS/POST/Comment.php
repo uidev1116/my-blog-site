@@ -4,18 +4,26 @@ class ACMS_Validator_Comment extends ACMS_Validator
 {
     function auth($val)
     {
-        if ( empty($val) ) return false;
+        if (empty($val)) {
+            return false;
+        }
         return (ACMS_RAM::commentPass(CMID) == $val);
     }
 
     function blackList($val)
     {
-        if ( empty($val) ) return true;
+        if (empty($val)) {
+            return true;
+        }
         $flag   = true;
-        if ( $blacklist = config('comment_black_list') ) {
-            foreach ( preg_split(REGEXP_SEPARATER, $blacklist, -1, PREG_SPLIT_NO_EMPTY) as $word ) {
-                if ( !$word = trim($word) ) continue;
-                if ( !is_int(strpos($val, $word)) ) continue;
+        if ($blacklist = config('comment_black_list')) {
+            foreach (preg_split(REGEXP_SEPARATER, $blacklist, -1, PREG_SPLIT_NO_EMPTY) as $word) {
+                if (!$word = trim($word)) {
+                    continue;
+                }
+                if (!is_int(strpos($val, $word))) {
+                    continue;
+                }
                 $flag   = false;
                 break;
             }
@@ -25,22 +33,24 @@ class ACMS_Validator_Comment extends ACMS_Validator
 
     function passCheck($val)
     {
-        if ( !CMID ) return false;
+        if (!CMID) {
+            return false;
+        }
         $DB     = DB::singleton(dsn());
 
-        if ( sessionWithCompilation() ) {
+        if (sessionWithCompilation()) {
             return true;
-        } else if ( !!SUID && ACMS_RAM::entryUser(EID) == SUID ) {
+        } elseif (!!SUID && ACMS_RAM::entryUser(EID) == SUID) {
             return true;
-        } else if ( !!SUID && ACMS_RAM::commentUser(CMID) == SUID ) {
+        } elseif (!!SUID && ACMS_RAM::commentUser(CMID) == SUID) {
             return true;
-        } else if ( !empty($val) ) {
+        } elseif (!empty($val)) {
             $SQL    = SQL::newSelect('comment');
             $SQL->setSelect('comment_id');
             $SQL->addWhereOpr('comment_pass', $val);
             $SQL->addWhereOpr('comment_id', CMID);
             return !!$DB->query($SQL->get(dsn()), 'one');
-        } else if ( !!SUID && $suid = intval(SUID) ) {
+        } elseif (!!SUID && $suid = intval(SUID)) {
             $SQL    = SQL::newSelect('comment');
             $SQL->setSelect('comment_id');
             $SQL->addWhereOpr('comment_user_id', $suid);
@@ -70,14 +80,14 @@ class ACMS_POST_Comment extends ACMS_POST
         return $Comment;
     }
 
-    function validatePassword($Comment=null)
+    function validatePassword($Comment = null)
     {
-        if ( $Comment === null ) {
+        if ($Comment === null) {
             $Comment = $this->extract('comment');
         }
         $key = !!$Comment->get('old_pass') ? 'old_pass' : 'pass';
         $pass = $Comment->get($key);
-        
+
         $Validation = new Field_Validation();
         $Validation->setField($key, $pass);
         $Validation->setMethod($key, 'passCheck');

@@ -52,7 +52,7 @@ class ACMS_GET_Admin_Webhook_Edit extends ACMS_GET_Admin_Edit
             $events = explode(',', $data->get('events'));
             $labels = array();
             foreach ($webhookEventValue as $i => $value) {
-                if (in_array($value, $events)) {
+                if (in_array($value, $events, true)) {
                     $labels[] = $webhookEventLabel[$i];
                 }
             }

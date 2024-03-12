@@ -29,19 +29,13 @@
   子ブログのカテゴリーをグローバル（共有）カテゴリーではないものに変更することはできません。<!--/T--></p>
 <!-- END errorMessage -->
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-danger">
-  <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-  <button class="js-acms-alert-close acms-admin-alert-icon-after">×</button>
-  {error}
-</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <!-- BEGIN_MODULE Admin_Messages -->
 <!-- BEGIN message:loop -->
 <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
-	<span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
-	{message}
+  <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+  {message}
 </p>
 <!-- END message:loop -->
 <!-- END_MODULE Admin_Messages -->

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import * as DOMPurify from 'dompurify'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Creatable } from './react-select-styled'
 import ResizeImage from '../lib/resize-image/util'
@@ -396,7 +397,14 @@ export default class MediaModal extends Component<
       } else {
         nextState.blob = blob
       }
-    } else {
+    } else if (type === 'svg') {
+      const textData = await file.text()
+      const clean = DOMPurify.sanitize(textData, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+      })
+      const reBlob = new Blob([clean], { type: 'image/svg+xml' })
+      nextState.file = new File([reBlob], file.name, { type: reBlob.type })
+    } else if (type === 'file') {
       nextState.file = file
       this.createPdfThumbnail(file).then((image) => {
         item.media_thumbnail = image
@@ -589,6 +597,12 @@ export default class MediaModal extends Component<
                               </tr>
                               <tr>
                                 <th className="acms-admin-table-nowrap">
+                                  {ACMS.i18n('media.media_id')}
+                                </th>
+                                <td>{item.media_id}</td>
+                              </tr>
+                              <tr>
+                                <th className="acms-admin-table-nowrap">
                                   {ACMS.i18n('media.upload_date')}
                                 </th>
                                 <td>
@@ -728,7 +742,9 @@ export default class MediaModal extends Component<
                                     <i
                                       className="acms-admin-icon-tooltip js-acms-tooltip-hover"
                                       data-acms-position="top"
-                                      data-acms-tooltip="管理用のラベルです。"
+                                      data-acms-tooltip={ACMS.i18n(
+                                        'media.status_settings',
+                                      )}
                                     />
                                   </th>
                                   <td>
@@ -975,14 +991,8 @@ export default class MediaModal extends Component<
                         value={item.media_ext.toUpperCase()}
                       />
                     )}
-                    <input
-                      type="hidden"
-                      name="media_old"
-                      value={item.media_path}
-                    />
                     <input type="hidden" name="type" value={item.media_type} />
                     <input type="hidden" name="media[]" value="extension" />
-                    <input type="hidden" name="media[]" value="media_old" />
                     <input type="hidden" name="media[]" value="type" />
                     <input
                       type="hidden"

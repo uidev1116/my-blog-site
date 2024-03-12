@@ -32,7 +32,7 @@ class UpdateServiceProvider extends ServiceProvider
         $this->repositorySchema = $schema;
 
         $container->singleton('update.logger', function () {
-           return new Logger(CACHE_DIR . 'update-process.json');
+            return new Logger(CACHE_DIR . 'update-process.json');
         });
         $container->singleton('update.check', function () use ($cache, $schema) {
             return new System\CheckForUpdate(config('system_update_repository'), $cache, $schema);
@@ -52,6 +52,5 @@ class UpdateServiceProvider extends ServiceProvider
      */
     public function init()
     {
-
     }
 }

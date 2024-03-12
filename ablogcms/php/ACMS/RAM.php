@@ -24,11 +24,11 @@ class ACMS_RAM
      * @param array $args
      * @return mixed
      */
-    public static function cacheMethod($method, $args=array())
+    public static function cacheMethod($method, $args = array())
     {
-        $key = $method.'_'.md5(serialize($args));
+        $key = $method . '_' . md5(serialize($args));
 
-        if ( isset(self::$funcCache[$key]) ) {
+        if (isset(self::$funcCache[$key])) {
             return self::$funcCache[$key];
         }
 
@@ -43,10 +43,10 @@ class ACMS_RAM
 
     public static function cacheAttached($method)
     {
-        if ( timemachineMode() ) {
+        if (timemachineMode()) {
             return true;
         }
-        if ( isset(self::$cacheAttached[$method]) ) {
+        if (isset(self::$cacheAttached[$method])) {
             return self::$cacheAttached[$method];
         }
         return false;
@@ -65,7 +65,7 @@ class ACMS_RAM
      * @param null $val
      * @return bool|null
      */
-    public static function _mapping($key, $id, $val=null)
+    public static function _mapping($key, $id, $val = null)
     {
         static $table = array();
 
@@ -99,8 +99,12 @@ class ACMS_RAM
             }
             return true;
         } else {
-            if (!isset($table[$type])) $table[$type] = array();
-            if (!isset($table[$type][$id])) $table[$type][$id] = array();
+            if (!isset($table[$type])) {
+                $table[$type] = array();
+            }
+            if (!isset($table[$type][$id])) {
+                $table[$type][$id] = array();
+            }
             if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
                 if (self::$cache->has($cacheKey)) {
                     $table[$type][$id] = self::$cache->get($cacheKey);
@@ -109,8 +113,10 @@ class ACMS_RAM
                     try {
                         $SQL = new SQL_Select();
                         $SQL->setTable($type);
-                        $SQL->addWhereOpr($type.'_id', $id);
-                        if (!$row = DB::query($SQL->get(dsn()), 'row')) return null;
+                        $SQL->addWhereOpr($type . '_id', $id);
+                        if (!$row = DB::query($SQL->get(dsn()), 'row')) {
+                            return null;
+                        }
                         $table[$type][$id] = $row;
                         if ($nocache) {
                             self::$cache->put($cacheKey, $row);
@@ -138,7 +144,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function blog($bid, $val=null)
+    public static function blog($bid, $val = null)
     {
         if ($val !== null && isset($val['blog_domain']) && isUnregisteredDomain()) {
             $val['blog_domain'] = HTTP_HOST;
@@ -397,7 +403,7 @@ class ACMS_RAM
      * @param null $row
      * @return array|bool
      */
-    public static function rule($rid, $row=null)
+    public static function rule($rid, $row = null)
     {
         return is_null($row) ? ACMS_RAM::_mapping('rule', $rid) : ACMS_RAM::_mapping('rule', $rid, $row);
     }
@@ -425,7 +431,7 @@ class ACMS_RAM
      * @param null $row
      * @return array|bool
      */
-    public static function alias($aid, $row=null)
+    public static function alias($aid, $row = null)
     {
         return is_null($row) ? ACMS_RAM::_mapping('alias', $aid) : ACMS_RAM::_mapping('alias', $aid, $row);
     }
@@ -513,7 +519,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function user($uid, $val=null)
+    public static function user($uid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('user', $uid) : ACMS_RAM::_mapping('user', $uid, $val);
     }
@@ -710,7 +716,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function category($cid, $val=null)
+    public static function category($cid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('category', $cid) : ACMS_RAM::_mapping('category', $cid, $val);
     }
@@ -882,7 +888,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function entry($eid, $val=null)
+    public static function entry($eid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('entry', $eid) : ACMS_RAM::_mapping('entry', $eid, $val);
     }
@@ -1114,7 +1120,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function unit($utid, $val=null)
+    public static function unit($utid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('column', $utid) : ACMS_RAM::_mapping('column', $utid, $val);
     }
@@ -1274,7 +1280,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function comment($cmid, $val=null)
+    public static function comment($cmid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('comment', $cmid) : ACMS_RAM::_mapping('comment', $cmid, $val);
     }
@@ -1461,7 +1467,7 @@ class ACMS_RAM
      * @param null $val
      * @return array|bool
      */
-    public static function trackback($tbid, $val=null)
+    public static function trackback($tbid, $val = null)
     {
         return is_null($val) ? ACMS_RAM::_mapping('trackback', $tbid) : ACMS_RAM::_mapping('trackback', $tbid, $val);
     }

@@ -40,16 +40,16 @@ class TemplateGenerator extends Generator
      */
     protected function main()
     {
-        if ( !$this->path ) {
+        if (!$this->path) {
             throw new \RuntimeException('no selected path.');
         }
 
         $this->logger->start($this->getName(), $this->getTasks());
 
+        $url = acmsLink(array('bid' => BID), false);
         try {
-            $url = acmsLink(array('bid' => BID), false);
             $this->request($url . $this->path, $this->path);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $url);
         }
     }
@@ -62,16 +62,16 @@ class TemplateGenerator extends Generator
      */
     protected function callback($data, $code, $info)
     {
-        if ( $this->logger ) {
+        if ($this->logger) {
             $this->logger->processing();
         }
-        if ( empty($data) || $code != '200' ) {
+        if (empty($data) || $code != '200') {
             $this->logger->error('データの取得に失敗しました。', $info, $code);
             return;
         }
         try {
             Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $info, $data);
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath() . $info);
         }
     }

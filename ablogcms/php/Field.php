@@ -1,50 +1,58 @@
 <?php
 
+/**
+ * PHP8.2対応以前にシリアライズされたFieldオブジェクトをデシリアライズすると、
+ * PHP8.2以上の環境でエラーが発生するため、
+ * #[\AllowDynamicProperties] を付与している。
+ */
+#[\AllowDynamicProperties]
 class Field
 {
-    var $_aryField  = array();
-    var $_aryChild  = array();
-    var $_aryMeta   = array();
+    public $_aryField  = array(); // phpcs:ignore
+    public $_aryChild  = array(); // phpcs:ignore
+    public $_aryMeta   = array(); // phpcs:ignore
 
-    function __construct($Field=null, $isDeep=false)
+    function __construct($Field = null, $isDeep = false)
     {
         $this->overload($Field, $isDeep);
     }
 
     function parse($query)
     {
-        foreach ( preg_split('@/\s*and\s*/@i', $query, -1, PREG_SPLIT_NO_EMPTY) as $data ) {
+        foreach (preg_split('@/\s*and\s*/@i', $query, -1, PREG_SPLIT_NO_EMPTY) as $data) {
             $s      = preg_split('@/@i', $data, -1, PREG_SPLIT_NO_EMPTY);
             $key    = array_shift($s);
-            while ( $val = array_shift($s) ) {
+            while ($val = array_shift($s)) {
                 $this->addField($key, $val);
             }
         }
     }
 
-    function overload($Field, $isDeep=false)
+    function overload($Field, $isDeep = false)
     {
-        if ( is_object($Field) and 'FIELD' == substr(strtoupper(get_class($Field)), 0, 5) ) {
-            foreach ( $Field->listFields() as $fd ) {
+        if (is_object($Field) and 'FIELD' == substr(strtoupper(get_class($Field)), 0, 5)) {
+            foreach ($Field->listFields() as $fd) {
                 $this->setField($fd, $Field->getArray($fd, true));
             }
-            if ( $isDeep ) {
-                foreach ( $Field->listChildren() as $child ) {
+            if ($isDeep) {
+                foreach ($Field->listChildren() as $child) {
                     $Child  =& $Field->getChild($child);
                     $class  = get_class($Child);
                     $Child  = new $class($Child, $isDeep);
                     $this->addChild($child, $Child);
                 }
             }
-        } else if ( is_array($Field) ) {
-            foreach ( $Field as $key => $val ) {
-                if ( is_object($val) ) {
-                    if ( 'FIELD' != substr(strtoupper(get_class($val)), 0, 5) ) continue;
+        } elseif (is_array($Field)) {
+            foreach ($Field as $key => $val) {
+                if (is_object($val)) {
+                    if ('FIELD' != substr(strtoupper(get_class($val)), 0, 5)) {
+                        continue;
+                    }
                     $this->addChild($key, $val);
                 } else {
-                    if ( is_array($val) ) {
+                    if (is_array($val)) {
                         reset($val);
-                        if ( 0 !== key($val) ) {
+                        if (0 !== key($val)) {
                             $f = new Field($val);
                             $this->addChild($key, $f);
                             continue;
@@ -55,7 +63,7 @@ class Field
                     $this->setField($key, $val);
                 }
             }
-        } else if ( is_string($Field) and '' !== $Field ) {
+        } elseif (is_string($Field) and '' !== $Field) {
             $this->parse($Field);
         }
     }
@@ -63,14 +71,14 @@ class Field
     /**
      * @static
      * @param string $key
-     * @param null $Field
+     * @param null|Field $Field
      * @return Field
      */
-    public static function & singleton($key, $Field=null)
+    public static function & singleton($key, $Field = null)
     {
         static $aryField  = array();
 
-        if ( !isset($aryField[$key]) or !empty($Field) ) {
+        if (!isset($aryField[$key]) || $Field !== null) {
             $aryField[$key] = new Field($Field);
         }
 
@@ -81,15 +89,15 @@ class Field
     {
         $res    = '';
 
-        foreach ( $this->listFields() as $fd ) {
-            if ( $vals = $this->getArray($fd) ) {
-                $res    .= '/and/'.$fd.'/'.join('/', $vals);
+        foreach ($this->listFields() as $fd) {
+            if ($vals = $this->getArray($fd)) {
+                $res    .= '/and/' . $fd . '/' . join('/', $vals);
             }
         }
         return substr($res, 5);
     }
 
-    function isNull($fd=null, $i=0)
+    function isNull($fd = null, $i = 0)
     {
         return is_null($fd) ? !count($this->_aryField) : !isset($this->_aryField[$fd][$i]);
     }
@@ -99,20 +107,20 @@ class Field
         return false;
     }
 
-    function isExists($fd, $i=null)
+    function isExists($fd, $i = null)
     {
-        if ( !array_key_exists($fd, $this->_aryField) ) {
+        if (!array_key_exists($fd, $this->_aryField)) {
             return false;
         }
-        if ( !is_null($i) and !array_key_exists($i, $this->_aryField[$fd]) ) {
+        if (!is_null($i) and !array_key_exists($i, $this->_aryField[$fd])) {
             return false;
         }
         return true;
     }
 
-    function get($fd, $def=null, $i=0)
+    function get($fd, $def = null, $i = 0)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return false;
         }
         $fdvalue = (!empty($this->_aryField[$fd][$i]) or (isset($this->_aryField[$fd][$i]) and ('0' === $this->_aryField[$fd][$i])))
@@ -122,19 +130,27 @@ class Field
         return is_array($fdvalue) ? '' : strval($fdvalue);
     }
 
-    function getArray($fd, $strict=false)
+    function getArray($fd, $strict = false)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return '';
         }
         $fds = isset($this->_aryField[$fd]) ? $this->_aryField[$fd] : array();
-        if ( !$cnt = count($fds) ) return array();
-        if ( 1 === $cnt and !isset($fds[0]) ) return array();
+        if (!$cnt = count($fds)) {
+            return array();
+        }
+        if (1 === $cnt and !isset($fds[0])) {
+            return array();
+        }
 
-        if ( !$strict ) {
-            for ( $i = $cnt-1; 0 <= $i; $i-- ) {
-                if ( !is_null($fds[$i]) and '' !== $fds[$i] ) break;
-                if ($this->isGroup($fd)) break;
+        if (!$strict) {
+            for ($i = $cnt - 1; 0 <= $i; $i--) {
+                if (!is_null($fds[$i]) and '' !== $fds[$i]) {
+                    break;
+                }
+                if ($this->isGroup($fd)) {
+                    break;
+                }
                 unset($fds[$i]);
             }
         }
@@ -147,33 +163,39 @@ class Field
         return array_keys($this->_aryField);
     }
 
-    function setField($fd, $vals=null)
+    function setField($fd, $vals = null)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return false;
         }
-        if ( empty($vals) and 0 !== $vals and '0' !== $vals ) {
+        if (empty($vals) and 0 !== $vals and '0' !== $vals) {
             $this->_aryField[$fd]   = array();
         } else {
-            if ( !is_array($vals) ) $vals   = array($vals);
+            if (!is_array($vals)) {
+                $vals   = array($vals);
+            }
             $this->_aryField[$fd]   = array();
             $max = max(array_keys($vals));
             $max = intval($max);
-            for ($i=0; $i<=$max; $i++) {
+            for ($i = 0; $i <= $max; $i++) {
                 $this->_aryField[$fd][$i] = isset($vals[$i]) ? $vals[$i] : '';
             }
         }
         return true;
     }
-    function set($fd, $vals=null)
+    function set($fd, $vals = null)
     {
         return $this->setField($fd, $vals);
     }
 
     function addField($fd, $vals)
     {
-        if ( !is_array($vals) ) $vals = array($vals);
-        foreach ( $vals as $val ) $this->_aryField[$fd][] = $val;
+        if (!is_array($vals)) {
+            $vals = array($vals);
+        }
+        foreach ($vals as $val) {
+            $this->_aryField[$fd][] = $val;
+        }
         return true;
     }
     function add($fd, $vals)
@@ -183,12 +205,11 @@ class Field
 
     function deleteField($fd)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return false;
         }
         unset($this->_aryField[$fd]);
         unset($this->_aryMeta[$fd]);
-        unset($this->_aryGroup[$fd]);
         return true;
     }
     function delete($fd)
@@ -198,7 +219,7 @@ class Field
 
     function & getChild($name)
     {
-        if ( !isset($this->_aryChild[$name]) ) {
+        if (!isset($this->_aryChild[$name])) {
             $class  = get_class($this);
             $obj = new $class();
             $this->addChild($name, $obj);
@@ -206,7 +227,7 @@ class Field
         return $this->_aryChild[$name];
     }
 
-    function addChild($name, & $Field)
+    function addChild($name, &$Field)
     {
         $this->_aryChild[$name] =& $Field;
         return true;
@@ -223,14 +244,14 @@ class Field
         return array_keys($this->_aryChild);
     }
 
-    function isChildExists($name=null)
+    function isChildExists($name = null)
     {
         return is_null($name) ? !!count($this->_aryChild) : !!isset($this->_aryChild[$name]);
     }
 
-    function setMeta($fd, $key=null, $val=null)
+    function setMeta($fd, $key = null, $val = null)
     {
-        if ( empty($key) ) {
+        if (empty($key)) {
             $this->_aryMeta[$fd]    = array();
         } else {
             $this->_aryMeta[$fd][$key]  = $val;
@@ -239,22 +260,24 @@ class Field
         return true;
     }
 
-    function getMeta($fd, $key=null)
+    function getMeta($fd, $key = null)
     {
-        if ( empty($key) ) {
+        if (empty($key)) {
             return isset($this->_aryMeta[$fd]) ? $this->_aryMeta[$fd] : array();
         } else {
             return isset($this->_aryMeta[$fd][$key]) ? $this->_aryMeta[$fd][$key] : null;
         }
     }
 
-    function &dig($scp='field')
+    function &dig($scp = 'field')
     {
         $Field  = $this->getChild($scp);
 
-        if ( $aryFd = $this->getArray($scp, true) ) {
-            foreach ( $aryFd as $fd ) {
-                if ( !$this->isExists($fd) ) continue;
+        if ($aryFd = $this->getArray($scp, true)) {
+            foreach ($aryFd as $fd) {
+                if (!$this->isExists($fd)) {
+                    continue;
+                }
                 $Field->setField($fd, $this->getArray($fd));
                 $this->deleteField($fd);
             }
@@ -263,11 +286,15 @@ class Field
 
         //-----------
         // reference
-        if ( $aryFd = $Field->listFields() ) {
-            foreach ( $aryFd as $fd ) {
-                if ( '&' !== substr($Field->get($fd), 0, 1) ) continue;
+        if ($aryFd = $Field->listFields()) {
+            foreach ($aryFd as $fd) {
+                if ('&' !== substr($Field->get($fd), 0, 1)) {
+                    continue;
+                }
                 $_fd    = preg_replace('@^\s*&\s*|\s*;$@', '', $Field->get($fd));
-                if ( $Field->isNull($_fd) ) continue;
+                if ($Field->isNull($_fd)) {
+                    continue;
+                }
                 $Field->setField($fd, $Field->get($_fd));
             }
         }
@@ -278,10 +305,10 @@ class Field
         return $Field;
     }
 
-    function retouchCustomUnit($id='')
+    function retouchCustomUnit($id = '')
     {
         $aryField = array();
-        foreach ( $this->_aryField as $key => $val ) {
+        foreach ($this->_aryField as $key => $val) {
             $key = preg_replace("/^(.*)$id([^\d]*)$/", '$1$2', $key);
             if (preg_match('/^@/', $key)) {
                 $val = preg_replace("/^(.*)$id([^\d]*)$/", '$1$2', $val);
@@ -294,21 +321,20 @@ class Field
 
     function reset()
     {
-
     }
 }
 
 class Field_Search extends Field
 {
-    var $_aryOperator   = array();
-    var $_aryConnector  = array();
-    var $_arySeparator  = array();
+    public $_aryOperator   = array(); // phpcs:ignore
+    public $_aryConnector  = array(); // phpcs:ignore
+    public $_arySeparator  = array(); // phpcs:ignore
 
-    function overload($Field, $isDeep=false)
+    function overload($Field, $isDeep = false)
     {
-        if ( !is_null($Field) ) {
+        if (!is_null($Field)) {
             parent::overload($Field, $isDeep);
-            if ( is_object($Field) and (strtoupper(__CLASS__) === strtoupper(get_class($Field))) ) {
+            if (is_object($Field) and (strtoupper(__CLASS__) === strtoupper(get_class($Field)))) {
                 $this->_aryOperator     = $Field->_aryOperator;
                 $this->_aryConnector    = $Field->_aryConnector;
                 $this->_arySeparator    = $Field->_arySeparator;
@@ -328,13 +354,13 @@ class Field_Search extends Field
         $value          = null;
         $tmpSeparator   = null;
 
-        while ( null !== ($token = array_shift($tokens)) ) {
+        while (null !== ($token = array_shift($tokens))) {
             //-------------------
             // field token start
-            if ( is_null($field) ) {
+            if (is_null($field)) {
                 $field      = $token;
 
-                if ( in_array($tmpSeparator, array('or', 'and')) ) {
+                if (in_array($tmpSeparator, array('or', 'and'), true)) {
                     $this->addSeparator($field, $tmpSeparator);
                 } else {
                     $this->addSeparator($field, 'and');
@@ -343,11 +369,11 @@ class Field_Search extends Field
                 continue;
             }
 
-            if ( '' === $token ) {
-                if ( is_null($connector) ) {
+            if ('' === $token) {
+                if (is_null($connector)) {
                     $connector  = '';
                     $operator   = '';
-                } else if ( is_null($operator) ) {
+                } elseif (is_null($operator)) {
                     $operator   = 'eq';
                 }
             }
@@ -355,11 +381,11 @@ class Field_Search extends Field
             //----------
             // fd/...
             // fd/or/...
-            if ( is_null($operator) ) {
+            if (is_null($operator)) {
                 //------------
                 // fd/ope/...
                 // fd/or/ope/...
-                switch ( $token ) {
+                switch ($token) {
                     case 'eq':
                     case 'neq':
                     case 'lt':
@@ -382,13 +408,13 @@ class Field_Search extends Field
                 //---------------
                 // fd/ope/...
                 // fd/or/ope/...
-                if ( !is_null($operator) ) {
+                if (!is_null($operator)) {
                     //------------
                     // fd/ope/...
-                    if ( is_null($connector) ) {
+                    if (is_null($connector)) {
                         $connector  = 'and';
                     }
-                    if ( is_null($value) ) {
+                    if (is_null($value)) {
                         continue;
                     }
                 }
@@ -396,11 +422,10 @@ class Field_Search extends Field
 
             //-----------
             // connector
-            if ( is_null($connector) ) {
-
+            if (is_null($connector)) {
                 //-----------
                 // fd/or/...
-                if ( 'or' === $token ) {
+                if ('or' === $token) {
                     $connector  = $token;
                     continue;
 
@@ -415,18 +440,18 @@ class Field_Search extends Field
 
             //---------------
             // fd/or/ope/val
-            if ( is_null($value) ) {
+            if (is_null($value)) {
                 //-------------
                 // fd/or/value
-                if ( is_null($operator) ) {
+                if (is_null($operator)) {
                     $operator   = 'eq';
                 }
                 $value  = $token;
 
             //-----------
             // separator
-            } else if ( in_array($token, array('and', '_and_', '_or_')) ) {
-                if ( $token == '_or_' ) {
+            } elseif (in_array($token, array('and', '_and_', '_or_'), true)) {
+                if ($token == '_or_') {
                     $tmpSeparator = 'or';
                 } else {
                     $tmpSeparator = 'and';
@@ -465,41 +490,41 @@ class Field_Search extends Field
         $this->_arySeparator[$fd]   = $separator;
     }
 
-    function setConnector($fd, $connector=null)
+    function setConnector($fd, $connector = null)
     {
-        if ( is_null($connector) ) {
+        if (is_null($connector)) {
             $this->_aryConnector[$fd]   = array();
         } else {
             $this->_aryConnector[$fd]   = array($connector);
         }
     }
 
-    function setOperator($fd, $operator=null)
+    function setOperator($fd, $operator = null)
     {
-        if ( is_null($operator) ) {
+        if (is_null($operator)) {
             $this->_aryOperator[$fd]    = array();
         } else {
             $this->_aryOperator[$fd]    = array($operator);
         }
     }
 
-    function setSeparator($separator=null)
+    function setSeparator($separator = null)
     {
-        if ( is_null($separator) ) {
+        if (is_null($separator)) {
             $this->_arySeparator        = array();
         } else {
             $this->_arySeparator        = array($separator);
         }
     }
 
-    function getOperator($fd, $i=0)
+    function getOperator($fd, $i = 0)
     {
         return is_null($i) ?
             (!is_null($this->_aryOperator[$fd]) ? $this->_aryOperator[$fd] : null) :
             (isset($this->_aryOperator[$fd][$i]) ? $this->_aryOperator[$fd][$i] : null);
     }
 
-    function getConnector($fd, $i=0)
+    function getConnector($fd, $i = 0)
     {
         return is_null($i) ?
             (!is_null($this->_aryConnector[$fd]) ? $this->_aryConnector[$fd] : null) :
@@ -515,25 +540,25 @@ class Field_Search extends Field
     {
         $aryQuery   = array();
 
-        foreach ( $this->listFields() as $j => $fd ) {
+        foreach ($this->listFields() as $j => $fd) {
             $aryValue       = $this->getArray($fd);
             $aryOperator    = $this->getOperator($fd, null);
             $aryConnector   = $this->getConnector($fd, null);
             $separator      = $this->getSeparator($fd);
 
-            if ( !($cnt = max(count($aryValue), count($aryOperator), count($aryConnector))) ) {
+            if (!($cnt = max(count($aryValue), count($aryOperator), count($aryConnector)))) {
                 continue;
             }
 
             $empty  = 0;
             $buf    = array();
 
-            for ( $i=0; $i<$cnt; $i++ ) {
+            for ($i = 0; $i < $cnt; $i++) {
                 $value      = isset($aryValue[$i]) ? $aryValue[$i] : '';
                 $connector  = isset($aryConnector[$i]) ? $aryConnector[$i] : '';
                 $operator   = isset($aryOperator[$i]) ? $aryOperator[$i] : '';
 
-                switch ( $operator ) {
+                switch ($operator) {
                     case 'eq':
                     case 'neq':
                     case 'lt':
@@ -544,14 +569,14 @@ class Field_Search extends Field
                     case 'nlk':
                     case 're':
                     case 'nre':
-                        if ( '' !== $value ) {
-                            for ( $j=0; $j<$empty; $j++ ) {
+                        if ('' !== $value) {
+                            for ($j = 0; $j < $empty; $j++) {
                                 $buf[]  = '';
                             }
                             $empty  = 0;
 
-                            if ( 'or' == $connector ) {
-                                if ( 'eq' != $operator ) {
+                            if ('or' == $connector) {
+                                if ('eq' != $operator) {
                                     $buf[]  = 'or';
                                     $buf[]  = $operator;
                                 }
@@ -567,11 +592,11 @@ class Field_Search extends Field
                         break;
                     case 'em':
                     case 'nem':
-                        for ( $j=0; $j<$empty; $j++ ) {
+                        for ($j = 0; $j < $empty; $j++) {
                             $buf[]  = '';
                         }
                         $empty  = 0;
-                        if ( 'or' == $connector ) {
+                        if ('or' == $connector) {
                             $buf[]  = 'or';
                         }
                         $buf[]  = $operator;
@@ -582,14 +607,14 @@ class Field_Search extends Field
             }
 
             $aryTmp = array();
-            if ( !empty($buf) ) {
-                if ( $separator === 'or' ) {
+            if (!empty($buf)) {
+                if ($separator === 'or') {
                     $aryTmp[] = '_or_';
                 } else {
                     $aryTmp[] = '_and_';
                 }
                 $aryTmp[] = $fd;
-                foreach ( $buf as $token ) {
+                foreach ($buf as $token) {
                     $aryTmp[] = $token;
                 }
 
@@ -597,7 +622,7 @@ class Field_Search extends Field
                 $aryQuery = array_merge($aryQuery, $aryTmp);
             }
         }
-        if ( !empty($aryQuery) and in_array($aryQuery[0], array('_or_', '_and_', 'and')) ) {
+        if (!empty($aryQuery) and in_array($aryQuery[0], array('_or_', '_and_', 'and'), true)) {
             array_shift($aryQuery);
         }
 
@@ -607,15 +632,15 @@ class Field_Search extends Field
 
 class Field_Validation extends Field
 {
-    var $_aryV      = array();
-    var $_aryMethod = array();
-    var $_aryGroup  = array();
+    public $_aryV      = array(); // phpcs:ignore
+    public $_aryMethod = array(); // phpcs:ignore
+    public $_aryGroup  = array(); // phpcs:ignore
 
-    function overload($Field, $isDeep=false)
+    function overload($Field, $isDeep = false)
     {
-        if ( !is_null($Field) ) {
+        if (!is_null($Field)) {
             parent::overload($Field, $isDeep);
-            if ( is_object($Field) and strtoupper(__CLASS__) === strtoupper(get_class($Field)) ) {
+            if (is_object($Field) and strtoupper(__CLASS__) === strtoupper(get_class($Field))) {
                 $this->_aryV        = $Field->_aryV;
                 $this->_aryMethod   = $Field->_aryMethod;
                 $this->_aryGroup    = $Field->_aryGroup;
@@ -627,33 +652,34 @@ class Field_Validation extends Field
     /**
      * @static
      * @param string $key
-     * @param null $Field
+     * @param null|Field_Validation $Field
      * @return Field
      */
-    public static function & singleton($key, $Field=null)
+    public static function & singleton($key, $Field = null)
     {
         static $aryField  = array();
 
-        if ( !isset($aryField[$key]) or !empty($Field) ) {
+        if (!isset($aryField[$key]) || $Field !== null) {
             $aryField[$key] = new Field_Validation($Field);
         }
 
         return $aryField[$key];
     }
 
-    function listFields($validator=false)
+    function listFields($validator = false)
     {
         $aryFd  = parent::listFields();
-        if ( !!$validator ) $aryFd = array_unique(array_merge($aryFd, array_keys($this->_aryV)));
+        if (!!$validator) {
+            $aryFd = array_unique(array_merge($aryFd, array_keys($this->_aryV)));
+        }
         return $aryFd;
     }
 
     function delete($fd)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return false;
         }
-//        unset($this->_aryField[$fd]);
         parent::delete($fd);
         unset($this->_aryV[$fd]);
         unset($this->_aryMethod[$fd]);
@@ -662,22 +688,22 @@ class Field_Validation extends Field
         return true;
     }
 
-    function setMethod($fd=null, $name=null, $arg=null)
+    function setMethod($fd = null, $name = null, $arg = null)
     {
-        if ( is_null($fd) || !is_string($fd) ) {
+        if (is_null($fd) || !is_string($fd)) {
             $this->_aryMethod = array();
-        } else if ( is_null($name) ) {
+        } elseif (is_null($name)) {
             $this->_aryMethod[$fd]    = null;
         } else {
             $this->_aryMethod[$fd][$name] = $arg;
         }
     }
 
-    function setGroup($fd=null, $group=null)
+    function setGroup($fd = null, $group = null)
     {
-        if ( is_null($fd) || !is_string($fd) ) {
+        if (is_null($fd) || !is_string($fd)) {
             $this->_aryGroup = array();
-        } else if ( is_null($group) ) {
+        } elseif (is_null($group)) {
             $this->_aryGroup[$fd] = null;
         } else {
             $this->_aryGroup[$fd] = $group;
@@ -694,10 +720,12 @@ class Field_Validation extends Field
 
     function listMethods($fd)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return array();
         }
-        if ( !isset($this->_aryV[$fd]) ) return array();
+        if (!isset($this->_aryV[$fd])) {
+            return array();
+        }
         return array_keys($this->_aryV[$fd]);
     }
     function getMethods($fd)
@@ -705,60 +733,60 @@ class Field_Validation extends Field
         return $this->listMethods($fd);
     }
 
-    function setValidator($fd, $method=null, $validation=null, $i=0)
+    function setValidator($fd, $method = null, $validation = null, $i = 0)
     {
-        if ( !is_string($fd) ) {
+        if (!is_string($fd)) {
             return false;
         }
         $this->_aryV[$fd][$method][$i]  = $validation;
         return true;
     }
 
-    function reset($isDeep=false)
+    function reset($isDeep = false)
     {
         $this->_aryV        = array();
         $this->_aryMethod   = array();
         $this->_aryGroup    = array();
-        foreach ( $this->listChildren() as $child ) {
+        foreach ($this->listChildren() as $child) {
             $Child  = $this->getChild($child);
             $Child->reset($isDeep);
         }
         return true;
     }
 
-    function isValid($fd=null, $method=null, $i=null)
+    function isValid($fd = null, $method = null, $i = null)
     {
-        if ( empty($fd) ) {
+        if (empty($fd)) {
             $res    = true;
-            foreach ( $this->_aryV as $fdata ) {
-                foreach ( $fdata as $vdata ) {
-                    foreach ( $vdata as $validation ) {
+            foreach ($this->_aryV as $fdata) {
+                foreach ($fdata as $vdata) {
+                    foreach ($vdata as $validation) {
                         $res    &= $validation;
                     }
                 }
             }
         } else {
-            if ( !is_string($fd) ) {
+            if (!is_string($fd)) {
                 return false;
             }
-            if ( empty($method) ) {
+            if (empty($method)) {
                 $res    = true;
-                if ( isset($this->_aryV[$fd]) ) {
-                    foreach ( $this->_aryV[$fd] as $vdata ) {
-                        foreach ( $vdata as $validation ) {
+                if (isset($this->_aryV[$fd])) {
+                    foreach ($this->_aryV[$fd] as $vdata) {
+                        foreach ($vdata as $validation) {
                             $res    &= $validation;
                         }
                     }
                 }
-            } else if ( is_null($i) ) {
+            } elseif (is_null($i)) {
                 $res    = true;
-                if ( isset($this->_aryV[$fd][$method]) ) {
-                    foreach ( $this->_aryV[$fd][$method] as $validation ) {
+                if (isset($this->_aryV[$fd][$method])) {
+                    foreach ($this->_aryV[$fd][$method] as $validation) {
                         $res    &= $validation;
                     }
                 }
             } else {
-                if ( isset($this->_aryV[$fd][$method][$i]) ) {
+                if (isset($this->_aryV[$fd][$method][$i])) {
                     $res    = $this->_aryV[$fd][$method][$i];
                 } else {
                     $res    = true;
@@ -772,7 +800,7 @@ class Field_Validation extends Field
     function isValidAll()
     {
         $res    = $this->isValid();
-        foreach ( $this->listChildren() as $child ) {
+        foreach ($this->listChildren() as $child) {
             $Child  = $this->getChild($child);
             $res    &= $Child->isValidAll();
         }
@@ -780,23 +808,24 @@ class Field_Validation extends Field
         return $res;
     }
 
-    function validate($V=null)
+    function validate($V = null)
     {
         $this->_aryV    = array();
-        foreach ( $this->_aryMethod as $fd => $method ) {
-            foreach ( $method as $name => $arg ) {
-                if ( $aryFd = $this->getArray($fd) ) {
-                    if ( substr($name, 0, 4) == 'all_' ) {
-                        $res = is_callable(array($V, $name)) ? $V->$name($aryFd, $arg, $this) : !!$arg;
+        foreach ($this->_aryMethod as $fd => $method) {
+            foreach ($method as $name => $arg) {
+                if ($aryFd = $this->getArray($fd)) {
+                    if (substr($name, 0, 4) == 'all_') {
+                        $res = is_callable(array($V, $name)) ? $V->$name($aryFd, $arg, $this) : !!$arg; // @phpstan-ignore-line
                         $this->setValidator($fd, $name, $res, 0);
                     } else {
-                        foreach ( $aryFd as $i => $val ) {
-                            $res = is_callable(array($V, $name)) ? $V->$name($val, $arg, $this) : !!$arg;
+                        foreach ($aryFd as $i => $val) {
+                            $res = is_callable(array($V, $name)) ? $V->$name($val, $arg, $this) : !!$arg; // @phpstan-ignore-line
                             $this->setValidator($fd, $name, $res, $i);
                         }
                     }
-                } else if (!$this->isGroup($fd)) {
-                    $res = is_callable(array($V, $name)) ? $V->$name(null, $arg, $this) : !!$arg;
+                } elseif (!$this->isGroup($fd)) {
+                    $value = substr($name, 0, 4) === 'all_' ? [] : null;
+                    $res = is_callable(array($V, $name)) ? $V->$name($value, $arg, $this) : !!$arg; // @phpstan-ignore-line
                     $this->setValidator($fd, $name, $res, 0);
                 }
             }
@@ -804,16 +833,15 @@ class Field_Validation extends Field
         return true;
     }
 
-    function &dig($scp='field')
+    function &dig($scp = 'field')
     {
         $Field =& $this->getChild($scp);
 
-        if ( $aryFd = $this->getArray($scp, true) ) {
-
+        if ($aryFd = $this->getArray($scp, true)) {
             //-------
             // group
-            foreach ( $aryFd as $fd ) {
-                if ( preg_match('/^@(.*)$/', $fd, $match) && isset($match[1]) ) {
+            foreach ($aryFd as $fd) {
+                if (preg_match('/^@(.*)$/', $fd, $match) && isset($match[1])) {
                     $group = $match[1];
                     foreach ($this->getArray($fd) as $item) {
                         $this->setGroup($item, $group);
@@ -824,7 +852,7 @@ class Field_Validation extends Field
 
             //--------
             // fields
-            foreach ( $aryFd as $fd ) {
+            foreach ($aryFd as $fd) {
                 //if ( !$this->isExists($fd) ) continue;
                 $Field->setField($fd, $this->getArray($fd));
                 $this->deleteField($fd);
@@ -832,24 +860,36 @@ class Field_Validation extends Field
 
             //-----------
             // reference
-            foreach ( $aryFd as $fd ) {
-                if ( '&' !== substr($Field->get($fd), 0, 1) ) continue;
+            foreach ($aryFd as $fd) {
+                if ('&' !== substr($Field->get($fd), 0, 1)) {
+                    continue;
+                }
                 $_fd    = preg_replace('@^\s*&\s*|\s*;$@', '', $Field->get($fd));
-                if ( $Field->isNull($_fd) ) continue;
+                if ($Field->isNull($_fd)) {
+                    continue;
+                }
                 $Field->setField($fd, $Field->get($_fd));
             }
 
             //-----------
             // validator
             $aryFdSearch    = $this->listFields();
-            foreach ( $aryFd as $fd ) {
-                if ( !is_string($fd) ) {
+            foreach ($aryFd as $fd) {
+                if (!is_string($fd)) {
                     continue;
                 }
-                foreach ( $aryFdSearch as $search ) {
-                    if ( preg_match('@^'.str_replace(
-                        '@', '\@', $fd).'(?:\:v#|\:validator#)(.+)$@'
-                    , $search, $match) ) {
+                foreach ($aryFdSearch as $search) {
+                    if (
+                        preg_match(
+                            '@^' . str_replace(
+                                '@',
+                                '\@',
+                                $fd
+                            ) . '(?:\:v#|\:validator#)(.+)$@',
+                            $search,
+                            $match
+                        )
+                    ) {
                         $Field->setMethod($fd, $match[1], $this->get($match[0]));
                         $this->deleteField($match[0]);
                     }

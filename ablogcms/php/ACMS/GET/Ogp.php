@@ -4,7 +4,7 @@ use Acms\Services\Facades\Media;
 
 class ACMS_GET_Ogp extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'uid' => 'global',
         'cid' => 'global',
         'eid' => 'global',
@@ -149,9 +149,9 @@ class ACMS_GET_Ogp extends ACMS_GET
         if (preg_match('/[^x]+x[^x]+/', $str)) {
             list($x, $y) = explode('x', $str);
             if ($type === 'width') {
-                return intVal(trim($x));
+                return intval(trim($x));
             }
-            return intVal(trim($y));
+            return intval(trim($y));
         }
         return '';
     }
@@ -210,7 +210,7 @@ class ACMS_GET_Ogp extends ACMS_GET
                         }
                     }
                 } else {
-                    list($width, $height) = Storage::getImageSize(ARCHIVES_DIR. $unit['column_field_2']);
+                    list($width, $height) = Storage::getImageSize(ARCHIVES_DIR . $unit['column_field_2']);
                     return [
                         'type' => 'image',
                         'width' => $width,
@@ -556,7 +556,8 @@ class ACMS_GET_Ogp extends ACMS_GET
         }
         $string = '';
         $glue = config('ogp_title_tag_delimiter', '/');
-        foreach ($this->tags as $i => $tag) {
+        $tags = Common::getTagsFromString(TAG);
+        foreach ($tags as $i => $tag) {
             if ($i > 0) {
                 $string .= $glue;
             }

@@ -1,28 +1,23 @@
 <header>
-	<div>
-		@include("/admin/topicpath.html")
-	</div>
-	<div>
-		@include("/admin/config/parts/header.html", {"title": "<!--T-->エクスポート<!--/T-->"})
-	</div>
+  <div>
+    @include("/admin/topicpath.html")
+  </div>
+  <div>
+    @include("/admin/config/parts/header.html", {"title": "<!--T-->エクスポート<!--/T-->"})
+  </div>
 </header>
 
-<!-- BEGIN_MODULE Admin_Errors -->
-<p class="acms-admin-alert acms-admin-alert-danger acms-admin-alert-icon">
-	<span class="acms-admin-alert-icon-before acms-admin-icon-news"></span>
-	{error}<button class="js-acms-alert-close acms-admin-alert-icon-after acms-admin-margin-right-mini">×</button>
-</p>
-<!-- END_MODULE Admin_Errors -->
+@include("/admin/include/error-alert.html")
 
 <!-- BEGIN_MODULE Admin_Config -->
 <form method="post" class="js-dialog-body">
-	<div class="js-acms_fix_marker acms_fix_bg">
-		<div class="acms_fix_bg_index">
-			<a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
-			<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-			<a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a><!-- END_MODULE Touch_SessionWithAdministration -->
-		</div>
-	</div>
+  <div class="js-acms_fix_marker acms_fix_bg">
+    <div class="acms_fix_bg_index">
+      <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/config_index/" class="acms-admin-btn-admin"><!--T-->一覧<!--/T--></a>
+      <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+      <a href="{shortcutUrl}" class="acms-admin-btn-admin acms-admin-float-right"><i class="acms-admin-icon acms-admin-icon-shortcut"></i><!--T-->ショートカットに追加<!--/T--></a><!-- END_MODULE Touch_SessionWithAdministration -->
+    </div>
+  </div>
 </form>
 
 <h3 class="acms-admin-admin-title2"><!--T-->コンフィグの設定<!--/T--></h3>

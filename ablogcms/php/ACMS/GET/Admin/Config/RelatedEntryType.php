@@ -36,4 +36,3 @@ class ACMS_GET_Admin_Config_RelatedEntryType extends ACMS_GET
         return $tpl->get();
     }
 }
-

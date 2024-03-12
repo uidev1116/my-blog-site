@@ -71,7 +71,6 @@ class ACMS_GET_Member_Update_Email extends ACMS_GET_Member
             // メールアドレスの確認メール送信画面
             $sent = false;
             if ($this->Post->isNull()) {
-
             } else {
                 if ($this->Post->isValidAll()) {
                     if ($this->Post->get('sent') === 'success') {

@@ -21,11 +21,13 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
                 $id = preg_split('@:@', $mid, 2, PREG_SPLIT_NO_EMPTY);
                 $mbid = intval($id[0]);
                 $mid = intval($id[1]);
-                if (!(1
+                if (
+                    !(1
                     && $mid && $mbid
                     && ACMS_RAM::blogLeft(SBID) <= ACMS_RAM::blogLeft($mbid)
                     && ACMS_RAM::blogRight(SBID) >= ACMS_RAM::blogRight($mbid)
-                )) {
+                    )
+                ) {
                     continue;
                 }
                 Media::deleteItem($mid);
@@ -42,7 +44,7 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
         } catch (\Exception $e) {
             if (!$this->Post->isValid('media', 'operable')) {
                 AcmsLogger::info('権限がないため、メディアを一覧から削除できませんでした');
-            } else if (!$this->Post->isValid('checks', 'required')) {
+            } elseif (!$this->Post->isValid('checks', 'required')) {
                 AcmsLogger::info('メディアが指定されていないため、メディアを一覧から削除できませんでした');
             } else {
                 AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));

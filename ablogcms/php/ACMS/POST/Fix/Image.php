@@ -2,9 +2,21 @@
 
 class ACMS_POST_Fix_Image extends ACMS_POST_Fix
 {
-    function post()
+    /**
+     * @var int
+     */
+    public $resize;
+
+    /**
+     * @var string
+     */
+    public $stdSide;
+
+    public function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('fix_image_type', 'required');
@@ -17,7 +29,7 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
 
             $type           = $Fix->get('fix_image_type');
             $normalSize     = $Fix->get('fix_image_normal_size');
-            $this->resize   = $Fix->get('fix_image_size');
+            $this->resize   = intval($Fix->get('fix_image_size'));
             $this->stdSide  = $Fix->get('fix_image_size_criterion');
 
             $SQL = SQL::newSelect('column');
@@ -25,27 +37,41 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
             $SQL->addSelect('column_field_2');
             $SQL->addWhereOpr('column_type', 'image');
             $SQL->addWhereOpr('column_blog_id', BID);
-            if ( $type == 'normal' ) {
+            if ($type == 'normal') {
                 $SQL->addWhereOpr('column_size', $normalSize);
             }
 
             $all    = $DB->query($SQL->get(dsn()), 'all');
-            foreach ( $all as $row ) {
+            foreach ($all as $row) {
                 $this->resize($type, $row);
             }
 
             $this->Post->set('message', 'success');
 
             $typeName = '';
-            if ($type === 'large') $typeName = '拡大画像';
-            if ($type === 'normal') $typeName = '通常画像（' . $normalSize . '）';
-            if ($type === 'tiny') $typeName = 'モバイル画像';
-            if ($type === 'square') $typeName = '正方形画像';
+            if ($type === 'large') {
+                $typeName = '拡大画像';
+            }
+            if ($type === 'normal') {
+                $typeName = '通常画像（' . $normalSize . '）';
+            }
+            if ($type === 'tiny') {
+                $typeName = 'モバイル画像';
+            }
+            if ($type === 'square') {
+                $typeName = '正方形画像';
+            }
 
             $sizeName = '';
-            if ($this->stdSide === 'width') $sizeName = '横' . $this->resize;
-            if ($this->stdSide === 'height') $sizeName = '縦' . $this->resize;
-            if (empty($this->stdSide)) $sizeName = '長辺' . $this->resize;
+            if ($this->stdSide === 'width') {
+                $sizeName = '横' . $this->resize;
+            }
+            if ($this->stdSide === 'height') {
+                $sizeName = '縦' . $this->resize;
+            }
+            if (empty($this->stdSide)) {
+                $sizeName = '長辺' . $this->resize;
+            }
 
             AcmsLogger::info('データ修正ツールで、「' . $typeName . '」を「' . $sizeName . '」にリサイズしました');
         }
@@ -56,19 +82,21 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
     function resize($type, $column)
     {
         $path       = $column['column_field_2'];
-        $pfx        = ('normal' == $type) ? '' : $type.'-';
+        $pfx        = ('normal' == $type) ? '' : $type . '-';
         $target     = '';
 
         // 各種サイズ
-        $target = preg_replace('@(.*/)([^/]*)$@', '$1'.$pfx.'$2', $path);
-        if ( !preg_match('@\.([^.]+)$@', $target, $match) ) return false;
+        $target = preg_replace('@(.*/)([^/]*)$@', '$1' . $pfx . '$2', $path);
+        if (!preg_match('@\.([^.]+)$@', $target, $match)) {
+            return false;
+        }
         $ext    = $match[1];
 
-        $_file      = SCRIPT_DIR.ARCHIVES_DIR.$target;
+        $_file      = SCRIPT_DIR . ARCHIVES_DIR . $target;
 
         // Large
         $_largePath = preg_replace('@(.*/)([^/]*)$@', '$1large-$2', $path);
-        if ( $xy = Storage::getImageSize(SCRIPT_DIR.ARCHIVES_DIR.$_largePath) ) {
+        if ($xy = Storage::getImageSize(SCRIPT_DIR . ARCHIVES_DIR . $_largePath)) {
             $target = $_largePath;
         }
 
@@ -77,13 +105,13 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
         $_size      = $this->resize;
         $_angle     = null;
 
-        $editTarget = SCRIPT_DIR.ARCHIVES_DIR.$target;
+        $editTarget = SCRIPT_DIR . ARCHIVES_DIR . $target;
         $_stdSide   = $this->stdSide;
 
         // long side
-        if ( $xy = Storage::getImageSize($editTarget) ) {
-            if ( !empty($_stdSide) ) {
-            } else if ( $xy[0] >= $xy[1] ) {
+        if ($xy = Storage::getImageSize($editTarget)) {
+            if (!empty($_stdSide)) {
+            } elseif ($xy[0] >= $xy[1]) {
                 $_stdSide = 'width';
             } else {
                 $_stdSide = 'height';
@@ -93,16 +121,16 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
         }
 
         // square
-        if ( $type == 'square' ) {
+        if ($type == 'square') {
             $_width  = $_size;
             $_height = $_size;
         // normal, tiny, large
         } else {
-            if ( $_stdSide  === 'w' || $_stdSide === 'width' ) {
+            if ($_stdSide  === 'w' || $_stdSide === 'width') {
                 $_width = $_size;
                 $_size  = null;
             }
-            if ( $_stdSide  === 'h' || $_stdSide === 'height' ) {
+            if ($_stdSide  === 'h' || $_stdSide === 'height') {
                 $_height = $_size;
                 $_size   = null;
             }
@@ -110,10 +138,10 @@ class ACMS_POST_Fix_Image extends ACMS_POST_Fix
 
         Image::resizeImg($editTarget, $_file, $ext, $_width, $_height, $_size, $_angle);
 
-        if ( $type == 'normal' ) {
+        if ($type == 'normal') {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newUpdate('column');
-            $SQL->addUpdate('column_size', $_stdSide.$this->resize);
+            $SQL->addUpdate('column_size', $_stdSide . $this->resize);
             $SQL->addWhereOpr('column_type', 'image');
             $SQL->addWhereOpr('column_blog_id', BID);
             $SQL->addWhereOpr('column_id', $column['column_id']);

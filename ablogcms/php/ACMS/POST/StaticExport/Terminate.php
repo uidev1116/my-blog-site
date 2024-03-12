@@ -7,7 +7,9 @@ class ACMS_POST_StaticExport_Terminate extends ACMS_POST
      */
     public function post()
     {
-        if (!sessionWithAdministration()) die();
+        if (!sessionWithAdministration()) {
+            die();
+        }
 
         $service = App::make('static-export.terminate-check');
         $service->terminate();

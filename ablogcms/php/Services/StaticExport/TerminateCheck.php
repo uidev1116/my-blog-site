@@ -49,7 +49,7 @@ class TerminateCheck
      */
     public function check()
     {
-        if ( Storage::exists($this->terminateFlagPath) ) {
+        if (Storage::exists($this->terminateFlagPath)) {
             Storage::remove($this->loggerPath);
             $this->removeFlag();
             die();

@@ -2,9 +2,11 @@
 
 class ACMS_GET_Admin_Fix_Image extends ACMS_GET_Admin_Fix
 {
-    function fix(& $Tpl, $block)
+    function fix(&$Tpl, $block)
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $DB     = DB::singleton(dsn());
         $Fix    =& $this->Post->getChild('fix');
@@ -17,13 +19,15 @@ class ACMS_GET_Admin_Fix_Image extends ACMS_GET_Admin_Fix
         $SQL->addGroup('column_size');
         $all    = $DB->query($SQL->get(dsn()), 'all');
 
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $size = $row['column_size'];
-            if ( empty($size) ) continue;
+            if (empty($size)) {
+                continue;
+            }
             $loop = array(
                 'size'  => $size,
             );
-            if ( $size === $target ) {
+            if ($size === $target) {
                 $loop['selected'] = config('attr_selected');
             }
             $Tpl->add(array_merge(array('normalSize:loop'), $block), $loop);

@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Dashboard_LicenseStatus extends ACMS_GET
 {
     function get()
     {
-        if (!sessionWithAdministration()) return '';
+        if (!sessionWithAdministration()) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $vars = [];
@@ -17,13 +19,15 @@ class ACMS_GET_Admin_Dashboard_LicenseStatus extends ACMS_GET
             case 'professional':
                 $vars['edition'] = 'Professional';
                 break;
+            case 'standard':
             default:
                 $vars['edition'] = 'Standard';
                 break;
         }
 
         $offset = strlen(DOMAIN) - strlen(LICENSE_DOMAIN);
-        if ( 1
+        if (
+            1
             && !((0 <= $offset)
             && LICENSE_DOMAIN == substr(DOMAIN, $offset))
             && !is_private_ip(DOMAIN)
@@ -55,7 +59,7 @@ class ACMS_GET_Admin_Dashboard_LicenseStatus extends ACMS_GET
             $type[] = gettext('独自ドメイン拡張オプション');
         }
         if (defined('LICENSE_OPTION_PLUSDOMAIN') && intval(LICENSE_OPTION_PLUSDOMAIN) > 0) {
-            $type[] = gettext('独自ドメイン追加オプション') . '('.LICENSE_OPTION_PLUSDOMAIN.')';
+            $type[] = gettext('独自ドメイン追加オプション') . '(' . LICENSE_OPTION_PLUSDOMAIN . ')';
         }
         if (defined('LICENSE_OPTION_OEM') && !!LICENSE_OPTION_OEM) {
             $type[] = gettext('OEMライセンス');

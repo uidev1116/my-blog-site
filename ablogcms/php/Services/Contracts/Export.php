@@ -82,9 +82,8 @@ class Export
      *
      * @return void
      */
-    protected function fix(& $record, $table)
+    protected function fix(&$record, $table)
     {
-
     }
 
     /**

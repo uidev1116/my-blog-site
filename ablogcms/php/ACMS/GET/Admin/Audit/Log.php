@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Audit_Log extends ACMS_GET_Admin
 {
     public function get()
     {
-        if (!sessionWithAdministration()) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         $vars = [];
@@ -20,15 +22,15 @@ class ACMS_GET_Admin_Audit_Log extends ACMS_GET_Admin
         // 絞り込みフォームを組み立て
         if (!empty($levels)) {
             foreach ($levels as $level) {
-                $vars['level:checked#'.$level] = config('attr_checked');
+                $vars['level:checked#' . $level] = config('attr_checked');
             }
         } else {
             foreach (['ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO'] as $level) {
-                $vars['level:checked#'.$level] = config('attr_checked');
+                $vars['level:checked#' . $level] = config('attr_checked');
             }
         }
         if (!empty($suid)) {
-            $vars['suid:selected#'.$suid] = config('attr_selected');
+            $vars['suid:selected#' . $suid] = config('attr_selected');
         }
         if (START && strpos(START, '1000-01-01') === false) {
             $vars['start'] = date('Y-m-d', strtotime(START));
@@ -60,7 +62,9 @@ class ACMS_GET_Admin_Audit_Log extends ACMS_GET_Admin
             $count,
             10,
             config('admin_pager_cur_attr'),
-            $tpl, [], [
+            $tpl,
+            [],
+            [
                 'admin' => ADMIN,
             ]
         );

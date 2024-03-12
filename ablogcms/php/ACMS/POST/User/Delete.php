@@ -6,8 +6,11 @@ use Acms\Services\Facades\Webhook;
 
 class ACMS_POST_User_Delete extends ACMS_POST_User
 {
-    function post()
+    public function post()
     {
+        if (is_null(UID)) {
+            return $this->Post;
+        }
         $User = $this->extract('user');
         $User->reset();
 

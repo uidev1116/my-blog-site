@@ -2,7 +2,7 @@
 
 class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     function post()
     {
@@ -12,7 +12,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
         $plain          = '';
         $html           = '';
 
-        if ( 1
+        if (
+            1
             and ACMS_SID
             and sessionWithAdministration()
             and $bid = $this->Post->get('bid')
@@ -21,7 +22,6 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             and findTemplate(config('mail_entry_tpl_subject'))
             and findTemplate(config('mail_entry_tpl_body_plain'))
         ) {
-
         } else {
             return $this->Post;
         }
@@ -31,7 +31,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
         $phpSession = Session::handle();
         $phpSession->writeClose();
 
-        $user_bid = ($this->Post->get('user_blog_id') > 0 )?$this->Post->get('user_blog_id'):$bid;
+        $user_bid = ($this->Post->get('user_blog_id') > 0 ) ? $this->Post->get('user_blog_id') : $bid;
 
         //---------
         // subject
@@ -57,7 +57,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 throw new \RuntimeException(Http::getResponseHeader('http_code'));
             }
             $body = $response->getResponseBody();
-            if ( 1
+            if (
+                1
                 and isset($responseHeaders['content-type'])
                 and preg_match('@^text/[^;]+; charset=(.*)$@', $responseHeaders['content-type'], $match)
             ) {
@@ -70,8 +71,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
         if (empty($subject)) {
             return $this->Post;
-        } else if ( !LICENSE_PLUGIN_MAILMAGAZINE ) {
-            $subject = '[test]'.$subject;
+        } elseif (!LICENSE_PLUGIN_MAILMAGAZINE) {
+            $subject = '[test]' . $subject;
         }
 
         //-------
@@ -98,7 +99,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             }
             $responseHeaders = $response->getResponseHeader();
             $body = $response->getResponseBody();
-            if ( 1
+            if (
+                1
                 and isset($responseHeaders['content-type'])
                 and preg_match('@^text/plain; charset=(.*)$@', $responseHeaders['content-type'], $match)
             ) {
@@ -108,7 +110,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             AcmsLogger::warning('メールテンプレートの取得に失敗しました', Common::exceptionArray($e, ['url' => acmsLink($url)]));
             $this->addError($e->getMessage());
         }
-        if ( empty($plain) ) {
+        if (empty($plain)) {
             return $this->Post;
         }
 
@@ -136,7 +138,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
             }
             $responseHeaders = $response->getResponseHeader();
             $body = $response->getResponseBody();
-            if ( 1
+            if (
+                1
                 and isset($responseHeaders['content-type'])
                 and preg_match('@^text/html; charset=(.*)$@', $responseHeaders['content-type'], $match)
             ) {
@@ -150,7 +153,8 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
         //------
         // mail
-        foreach ( array(
+        foreach (
+            array(
             array(
                 'mail'      => 'user_mail',
                 'magazine'  => 'user_mail_magazine',
@@ -161,10 +165,10 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 'magazine'  => 'user_mail_mobile_magazine',
                 'html'      => false,
             ),
-        ) as $config ) {
-
+            ) as $config
+        ) {
             $aryaryBcc = array();
-            if ( $this->Post->get('issue') and LICENSE_PLUGIN_MAILMAGAZINE ) {
+            if ($this->Post->get('issue') and LICENSE_PLUGIN_MAILMAGAZINE) {
                 $DB = DB::singleton(dsn());
                 $SQL = SQL::newSelect('user');
                 $SQL->setSelect($config['mail']);
@@ -181,15 +185,15 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
                 $n  = 0;
                 $m  = 0;
-                foreach ( $DB->query($q, 'all') as $row ) {
-                    if ( empty($aryaryBcc[$n]) ) {
+                foreach ($DB->query($q, 'all') as $row) {
+                    if (empty($aryaryBcc[$n])) {
                         $aryaryBcc[$n]  = array();
                     }
                     if ($row[$config['mail']]) {
                         $aryaryBcc[$n][$m]  = $row[$config['mail']];
                         $m++;
                     }
-                    if ( $m >= (config('mail_entry_bcc_limit') - 1) ) {
+                    if ($m >= (config('mail_entry_bcc_limit') - 1)) {
                         $n++;
                         $m  = 0;
                     }
@@ -198,12 +202,11 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $aryaryBcc[]    = array();
             }
 
-            foreach ( $aryaryBcc as $aryBcc ) {
-
+            foreach ($aryaryBcc as $aryBcc) {
                 $to = implode(', ', configArray('mail_entry_to'));
                 $from = config('mail_entry_from');
 
-                if ( empty($to) ) {
+                if (empty($to)) {
                     $to = ACMS_RAM::userMail(SUID);
                 }
 
@@ -218,7 +221,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                         $mailer = $mailer->setHtml($html);
                     }
 
-                    if ( !empty($aryBcc) ) {
+                    if (!empty($aryBcc)) {
                         $mailer->setBcc(implode(',', $aryBcc));
                     }
                     $mailer->send();
@@ -229,7 +232,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                         'subject' => $subject,
                         'bcc' => $aryBcc,
                     ]);
-                } catch (Exception $e ) {
+                } catch (Exception $e) {
                     AcmsLogger::warning('メールマガジンの送信に失敗しました', Common::exceptionArray($e, ['entryTitle' => ACMS_RAM::entryTitle($eid)]));
                 }
             }

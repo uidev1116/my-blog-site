@@ -21,7 +21,6 @@ abstract class Base
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -68,8 +67,8 @@ abstract class Base
      */
     protected function convertStrToLocal($path)
     {
-        if ( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ) {
-            if ( $charset = mb_detect_encoding($path, 'UTF-8, EUC-JP, SJIS-win, SJIS') ) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            if ($charset = mb_detect_encoding($path, 'UTF-8, EUC-JP, SJIS-win, SJIS')) {
                 return mb_convert_encoding($path, "CP932", $charset);
             }
         }

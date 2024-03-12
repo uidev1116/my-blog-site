@@ -12,27 +12,30 @@ class ACMS_GET_Admin_App_Menu extends ACMS_GET_Admin_App_Index
      */
     function get()
     {
-        if ( !sessionWithAdministration() ) return '';
+        if (!sessionWithAdministration()) {
+            return '';
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
         $apps = array_merge($this->getAppList(), $this->getLegacyAppList());
         $this->build($Tpl, $apps);
-        if ( !$this->exists ) return '';
+        if (!$this->exists) {
+            return '';
+        }
 
         return $Tpl->get();
     }
 
     /**
-     * @param $Tpl
-     * @param $lists
+     * @inheritdoc
      */
     protected function build($Tpl, $lists)
     {
         $DB = DB::singleton(dsn());
 
         foreach ($lists as $app) {
-            $className = $app->className;
+            $className = get_class($app);
 
             $SQL    = SQL::newSelect('app');
             $SQL->addWhereOpr('app_name', $className);
@@ -62,11 +65,11 @@ class ACMS_GET_Admin_App_Menu extends ACMS_GET_Admin_App_Index
 
             $vars = array(
                 'name'      => $app->name,
-                'url'       => acmsLink(array('admin' => 'app_'.$app->menu, 'bid' => BID)),
+                'url'       => acmsLink(array('admin' => 'app_' . $app->menu, 'bid' => BID)),
                 'className' => $className,
             );
             $reg = '/^app_' . $app->menu . '/';
-            if ( preg_match($reg, ADMIN) ) {
+            if (preg_match($reg, ADMIN)) {
                 $vars['stay'] = ' class="stay"';
             }
             $Tpl->add('app:loop', $vars);

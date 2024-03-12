@@ -42,7 +42,7 @@ class Engine implements Contracts\ViewInterface
     /**
      * @var array
      */
-    protected $_blockIdTxt = array(0=>null);
+    protected $_blockIdTxt = array(0 => null);
 
     /**
      * @var array
@@ -85,7 +85,7 @@ class Engine implements Contracts\ViewInterface
     protected $_resolvedVarPt = array();
 
     /**
-     * @var ACMS_Corrector
+     * @var \ACMS_Corrector
      */
     protected $_Corrector = null;
 
@@ -93,13 +93,13 @@ class Engine implements Contracts\ViewInterface
      * テンプレートの初期化
      *
      * @param string $txt
-     * @param ACMS_Corrector $Corrector
+     * @param \ACMS_Corrector $Corrector
      *
      * @return bool
      */
-    public function init($txt, $Corrector=null)
+    public function init($txt, $Corrector = null)
     {
-        if ( is_object($Corrector) and method_exists($Corrector, 'correct') ) {
+        if (is_object($Corrector) and method_exists($Corrector, 'correct')) {
             $this->_Corrector =& $Corrector;
         }
 
@@ -110,7 +110,7 @@ class Engine implements Contracts\ViewInterface
         $this->emptyToken();  // empty要素の処理
 
         // post_max_size を超えたアクセス
-        if ( empty($_POST) && $_SERVER["REQUEST_METHOD"] === "POST" ) {
+        if (empty($_POST) && $_SERVER["REQUEST_METHOD"] === "POST") {
             $this->add('post:v#filesize');
         }
 
@@ -124,64 +124,59 @@ class Engine implements Contracts\ViewInterface
      */
     public function get()
     {
-        if ( is_null($this->_blockIdTxt[0]) ) $this->add();
+        if (is_null($this->_blockIdTxt[0])) {
+            $this->add();
+        }
         return str_replace(array('<!-- BEGIN\\','<!-- END\\'), array('<!-- BEGIN','<!-- END'), $this->_blockIdTxt[0]);
     }
 
     /**
      * テンプレートを組み立て文字列で取得する
      *
-     * @param mixed $vars
+     * @param object|array $vars
      *
      * @return string
      */
     public function render($vars)
     {
-        if ( is_array($vars) ) {
-            $this->build(json_decode(json_encode($vars)));
-        } else if ( is_object($vars)  ) {
-            $this->build($vars);
-        } else {
-            return false;
-        }
-
+        $this->build(json_decode(json_encode($vars)));
         return $this->get();
     }
 
     /**
-     * ブロック・変数を追加する
-     *
-     * @param array|null $blocks
-     * @param array $vars
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function add($blocks=array(), $vars=array())
+    public function add($blocks = array(), $vars = array())
     {
-        if ( null != $this->_blockIdTxt[0] ) {
+        if (null != $this->_blockIdTxt[0]) {
             trigger_error('root is already touched.', E_USER_NOTICE);
             return false;
         }
 
-        if ( !is_array($blocks) ) {
+        if (!is_array($blocks)) {
             $blocks = is_string($blocks) ? array($blocks) : array();
         }
         $blocks = array_reverse($blocks);
-        if ( !is_array($vars) ) $vars = array();
+        if (!is_array($vars)) {
+            $vars = array();
+        }
 
         $pointAry = array();
         $endBlock = end($blocks);
         $parentAry = array();
 
-        foreach ( $blocks as $block ) {
-            if ( !isset($this->_blockLabelId[$block]) ) return false;
+        foreach ($blocks as $block) {
+            if (!isset($this->_blockLabelId[$block])) {
+                return false;
+            }
             $tempParent = array();
             $ids = $this->_blockLabelId[$block];
 
-            foreach ( $ids as $id ) {
+            foreach ($ids as $id) {
                 $layered = false;
-                foreach ( $parentAry as $ppt ) {
-                    if ( 1
+                foreach ($parentAry as $ppt) {
+                    if (
+                        1
                         && $this->_blockIdTokenEnd[$ppt] >= $this->_blockIdTokenEnd[$id]
                         && $this->_blockIdTokenBegin[$ppt] < $this->_blockIdTokenBegin[$id]
                     ) {
@@ -190,15 +185,17 @@ class Engine implements Contracts\ViewInterface
                         continue;
                     }
                 }
-                if ( (count($blocks) === 1 || $layered) && $block === $endBlock ) {
+                if ((count($blocks) === 1 || $layered) && $block === $endBlock) {
                     $pointAry[] = $id;
                 }
             }
             $parentAry = empty($parentAry) ? $ids : $tempParent;
         }
-        if ( empty($blocks) && empty($pointAry) ) $pointAry = array(0);
+        if (empty($blocks) && empty($pointAry)) {
+            $pointAry = array(0);
+        }
 
-        foreach ( $pointAry as $pt ) {
+        foreach ($pointAry as $pt) {
             $begin = $this->_blockIdTokenBegin[$pt];
             $end = $this->_blockIdTokenEnd[$pt];
 
@@ -206,8 +203,8 @@ class Engine implements Contracts\ViewInterface
             $this->touchBlock($vars, $pt, $begin, $end);
 
             // init tokens
-            for ( $i=$begin; $i<=$end; $i++ ) {
-                if ( isset($this->_varTokenId[$i]) ) {
+            for ($i = $begin; $i <= $end; $i++) {
+                if (isset($this->_varTokenId[$i])) {
                     $this->_tokens[$i]  = null;
                 }
             }
@@ -221,18 +218,20 @@ class Engine implements Contracts\ViewInterface
      * @param int $begin
      * @param int $end
      *
-     * @return bool
+     * @return void
      */
     protected function variable($vars, $begin, $end)
     {
-        foreach ( $vars as $key => $value ) {
-            if ( empty($this->_varLabelId[$key]) ) continue;
+        foreach ($vars as $key => $value) {
+            if (empty($this->_varLabelId[$key])) {
+                continue;
+            }
             $ids    = $this->_varLabelId[$key];
-            foreach ( $ids as $id ) {
+            foreach ($ids as $id) {
                 $token  = $this->_varIdToken[$id];
-                if ( $begin < $token and $token < $end ) {
+                if ($begin < $token and $token < $end) {
                     $val = $value;
-                    if ( isset($this->_Corrector) ) {
+                    if (isset($this->_Corrector)) {
                         if (isset($this->_varIdOption[$id])) {
                             $correctorOption = preg_replace_callback('/%%([^%]+)%%/', function ($matches) use ($vars) {
                                 if (isset($vars[$matches[1]])) {
@@ -259,16 +258,15 @@ class Engine implements Contracts\ViewInterface
      * @param int $begin
      * @param int $end
      *
-     * @return bool
+     * @return void
      */
     protected function touchBlock($vars, $pt, $begin, $end)
     {
         $active     = array($pt => true);
         $ids        = array();
         $buf        = array();
-        for ( $i=$begin; $i<=$end; $i++ ) {
-
-            if ( isset($this->_blockTokenIdBegin[$i]) ) {
+        for ($i = $begin; $i <= $end; $i++) {
+            if (isset($this->_blockTokenIdBegin[$i])) {
                 array_unshift($ids, $this->_blockTokenIdBegin[$i]);
             }
             $id = $ids[0];
@@ -276,16 +274,16 @@ class Engine implements Contracts\ViewInterface
             if ($begin === $end) {
                 $this->_resolvedVarPt[$pt] = true;
             }
-            if ( !empty($active[$id]) ) {
+            if (!empty($active[$id])) {
                 $this->_blockIdTxt[$pt] .= $this->_tokens[$i];
             } else {
-                if ( isset($this->_resolvedVarPt[$id]) ) {
+                if (isset($this->_resolvedVarPt[$id])) {
                     $this->_resolvedVarPt[$pt] = true;
                 }
-                if ( null !== $this->_blockIdTxt[$id] && (isset($this->_resolvedVarPt[$id]) || empty($buf)) ) {
+                if (null !== $this->_blockIdTxt[$id] && (isset($this->_resolvedVarPt[$id]) || empty($buf))) {
                     $txt    = '';
-                    foreach ( $buf as $tokenId => $token ) {
-                        if ( isset($this->_blockTokenIdBegin[$tokenId]) ) {
+                    foreach ($buf as $tokenId => $token) {
+                        if (isset($this->_blockTokenIdBegin[$tokenId])) {
                             $active[$this->_blockTokenIdBegin[$tokenId]]    = true;
                         }
                         $txt    .= $token;
@@ -300,9 +298,10 @@ class Engine implements Contracts\ViewInterface
 
                     array_shift($ids);
                     continue;
-                } else if ( isset($this->_blockTokenIdEnd[$i]) ) {
+                } elseif (isset($this->_blockTokenIdEnd[$i])) {
                     $blockL = $this->_blockIdLabel[$id];
-                    if ( 1
+                    if (
+                        1
                         && substr($blockL, -6) === ':empty'
                         && !isset($vars[substr($blockL, 0, -6)])
                         && isset($this->_blockIdEmptyId[$i])
@@ -311,18 +310,20 @@ class Engine implements Contracts\ViewInterface
                     ) {
                         $this->_blockIdTxt[$pt] .= $this->_tokens[$i];
                     } else {
-                        for ( $j=$this->_blockIdTokenBegin[$id]; $j<$i; $j++ ) unset($buf[$j]);
+                        for ($j = $this->_blockIdTokenBegin[$id]; $j < $i; $j++) {
+                            unset($buf[$j]);
+                        }
                     }
                     array_shift($ids);
                     continue;
                 }
                 $buf[$i]    = $this->_tokens[$i];
             }
-            if ( isset($this->_varTokenId[$i]) ) {
-                if ( null !== $this->_tokens[$i] ) {
+            if (isset($this->_varTokenId[$i])) {
+                if (null !== $this->_tokens[$i]) {
                     $txt    = '';
-                    foreach ( $buf as $tokenId => $token ) {
-                        if ( isset($this->_blockTokenIdBegin[$tokenId]) ) {
+                    foreach ($buf as $tokenId => $token) {
+                        if (isset($this->_blockTokenIdBegin[$tokenId])) {
                             $active[$this->_blockTokenIdBegin[$tokenId]]    = true;
                         }
                         $txt    .= $token;
@@ -332,7 +333,9 @@ class Engine implements Contracts\ViewInterface
                     $buf    = array();
                 }
             }
-            if ( isset($this->_blockTokenIdEnd[$i]) ) array_shift($ids);
+            if (isset($this->_blockTokenIdEnd[$i])) {
+                array_shift($ids);
+            }
         }
     }
 
@@ -344,34 +347,40 @@ class Engine implements Contracts\ViewInterface
      *
      * @return void
      */
-    protected function build($obj, $blocks=array())
+    protected function build($obj, $blocks = array())
     {
         $strVars = array();
-        if ( !is_object($obj) ) return;
+        if (!($obj instanceof \stdClass)) {
+            return;
+        }
 
-        foreach ( get_object_vars($obj) as $key => $vars ) {
-            if ( is_object($vars) ) {
-                $this->build($vars, array_merge(array($key), $blocks));
-            } else if ( is_array($vars)  ) {
-                foreach ( $vars as $i =>  $loopVars  ) {
-                    if ( $i > 0  ) {
-                        $this->add(array_merge(array($key.':glue', $key.':loop'), $blocks));
+        foreach (get_object_vars($obj) as $key => $vars) {
+            if (is_object($vars)) {
+                $this->build(json_decode(json_encode($vars)), array_merge(array($key), $blocks));
+            } elseif (is_array($vars)) {
+                foreach ($vars as $i => $loopVars) {
+                    if ($i > 0) {
+                        $this->add(array_merge(array($key . ':glue', $key . ':loop'), $blocks));
                     }
-                    if ( is_object($loopVars) ) {
-                        $loopVars->{$key.'.i'} = ++$i;
-                        $this->build($loopVars, array_merge(array($key.':loop'), $blocks));
+                    if (is_object($loopVars)) {
+                        /** @var \stdClass $loopObj */
+                        $loopObj = json_decode(json_encode($loopVars));
+                        $loopObj->{$key . '.i'} = ++$i;
+                        $this->build($loopVars, array_merge(array($key . ':loop'), $blocks));
                     } else {
                         $loopObj = new \stdClass();
                         $loopObj->{$key} = $loopVars;
-                        $loopObj->{$key.'.i'} = ++$i;
-                        $this->build($loopObj, array_merge(array($key.':loop'), $blocks));
+                        $loopObj->{$key . '.i'} = ++$i;
+                        $this->build($loopObj, array_merge(array($key . ':loop'), $blocks));
                     }
                 }
             } else {
                 $strVars[$key] = $vars;
             }
         }
-        if ( empty($blocks) ) $blocks = null;
+        if (empty($blocks)) {
+            $blocks = null;
+        }
         $this->add($blocks, $strVars);
     }
 
@@ -410,8 +419,11 @@ class Engine implements Contracts\ViewInterface
      */
     protected function split($txt)
     {
-        $tokens = preg_split('@(<!-- BEGIN |<!-- END | -->|<!--%|%-->)@'
-            , $txt, -1, PREG_SPLIT_DELIM_CAPTURE
+        $tokens = preg_split(
+            '@(<!-- BEGIN |<!-- END | -->|<!--%|%-->)@',
+            $txt,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE
         );
 
         return $tokens;
@@ -428,33 +440,33 @@ class Engine implements Contracts\ViewInterface
     {
         $labels = array();
         $cnt = count($tokens);
-        for ( $i=0; $i<$cnt; $i++ ) {
+        for ($i = 0; $i < $cnt; $i++) {
             $token = $tokens[$i];
-            if ( '<!-- BEGIN ' == $token ) {
-                $label = $tokens[$i+1];
-                if ( isset($labels[$label]) ) {
+            if ('<!-- BEGIN ' == $token) {
+                $label = $tokens[$i + 1];
+                if (isset($labels[$label])) {
                     unset($tokens[$i]);
-                    unset($tokens[$i+1]);
-                    unset($tokens[$i+2]);
+                    unset($tokens[$i + 1]);
+                    unset($tokens[$i + 2]);
                 } else {
                     $labels[$label] = $i;
                 }
                 $i  += 2;
-            } else if ( '<!-- END ' == $token ) {
-                $label  = $tokens[$i+1];
-                if ( !isset($labels[$label]) ) {
+            } elseif ('<!-- END ' == $token) {
+                $label  = $tokens[$i + 1];
+                if (!isset($labels[$label])) {
                     unset($tokens[$i]);
-                    unset($tokens[$i+1]);
-                    unset($tokens[$i+2]);
+                    unset($tokens[$i + 1]);
+                    unset($tokens[$i + 2]);
                 } else {
                     $from   = $labels[$label];
                     $to     = $i;
                     unset($labels[$label]);
-                    foreach ( $labels as $_label => $pos ) {
-                        if ( $from < $pos and $pos < $to ) {
+                    foreach ($labels as $_label => $pos) {
+                        if ($from < $pos and $pos < $to) {
                             unset($tokens[$pos]);
-                            unset($tokens[$pos+1]);
-                            unset($tokens[$pos+2]);
+                            unset($tokens[$pos + 1]);
+                            unset($tokens[$pos + 2]);
                             unset($labels[$_label]);
                         }
                     }
@@ -479,12 +491,12 @@ class Engine implements Contracts\ViewInterface
         $blockId    = 1;
         $varId      = 0;
         $this->_tokens[0]           = '';
-        $this->_blockIdTokenBegin[0]= 0;
-        while ( null !== ($token = array_shift($tokens)) ) {
-            if ( '<!-- BEGIN ' == $token ) {
+        $this->_blockIdTokenBegin[0] = 0;
+        while (null !== ($token = array_shift($tokens))) {
+            if ('<!-- BEGIN ' == $token) {
                 $label  = array_shift($tokens);
                 array_shift($tokens);
-                if ( substr($label, -6) === ':empty' ) {
+                if (substr($label, -6) === ':empty') {
                     $this->_blockEmptyToken[$i] = $label;
                 }
                 $this->_blockIdTxt[$blockId] = null;
@@ -493,21 +505,21 @@ class Engine implements Contracts\ViewInterface
                 $this->_blockIdTokenBegin[$blockId] = $i;
                 $blockId++;
                 continue;
-            } else if ( '<!-- END ' == $token )  {
+            } elseif ('<!-- END ' == $token) {
                 $label  = array_shift($tokens);
                 array_shift($tokens);
 
                 $ids    = $this->_blockLabelId[$label];
-                $this->_blockIdTokenEnd[end($ids)] = ($i-1);
+                $this->_blockIdTokenEnd[end($ids)] = ($i - 1);
                 continue;
-            } else if ( '<!--%' == $token ) {
+            } elseif ('<!--%' == $token) {
                 $label  = array_shift($tokens);
 
                 $this->_varIdToken[$varId] = $i;
                 $this->_varIdLabel[$varId] = $label;
                 $this->_varLabelId[$label][] = $varId;
 
-                if ( '%-->' == array_shift($tokens) ) {
+                if ('%-->' == array_shift($tokens)) {
                     $this->_varIdOption[$varId] = array_shift($tokens);
                     array_shift($tokens);
                 }
@@ -534,10 +546,10 @@ class Engine implements Contracts\ViewInterface
      */
     protected function emptyToken()
     {
-        foreach ( $this->_blockIdTokenEnd as $j => $_end ) {
+        foreach ($this->_blockIdTokenEnd as $j => $_end) {
             $_begin = $this->_blockIdTokenBegin[$j];
-            foreach ( $this->_blockEmptyToken as $k => $v ) {
-                if ( $_begin < $k && $k < $_end ) {
+            foreach ($this->_blockEmptyToken as $k => $v) {
+                if ($_begin < $k && $k < $_end) {
                     $this->_blockIdEmptyId[$k] = array($_begin, $_end);
                     unset($this->_blockEmptyToken[$k]);
                 }

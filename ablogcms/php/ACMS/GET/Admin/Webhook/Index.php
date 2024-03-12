@@ -4,7 +4,9 @@ class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
 {
     function get()
     {
-        if (!sessionWithAdministration()) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
@@ -24,7 +26,7 @@ class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
         $sql->addOrder('webhook_id', 'DESC');
         $q = $sql->get(dsn());
 
-        if (!DB::query($q, 'fetch') || !($row = DB::fetch($q)) ) {
+        if (!DB::query($q, 'fetch') || !($row = DB::fetch($q))) {
             $Tpl->add('notFound');
             return $Tpl->get();
         }
@@ -49,7 +51,7 @@ class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
 
             if (BID === $bid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $row));
-            } else if (sessionWithAdministration($bid)) {
+            } elseif (sessionWithAdministration($bid)) {
                 $Tpl->add('notMinePermit', $this->getLinkVars($bid, $row));
             } else {
                 $Tpl->add('notMine');

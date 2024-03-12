@@ -13,23 +13,24 @@ class ACMS_GET_Shop2_Form_Order extends ACMS_GET_Shop2
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
         $step   = $this->Get->get('step');
-        if ( $this->Post->isValidAll() ) $step  = $this->Post->get('step', $step);
+        if ($this->Post->isValidAll()) {
+            $step  = $this->Post->get('step', $step);
+        }
 
-        $root  = !(empty($step) or is_bool($step)) ? 'step#'.$step : 'step';
+        $root  = !(empty($step) or is_bool($step)) ? 'step#' . $step : 'step';
         $vars   = $this->buildField($Order, $Tpl, $root, 'order');
         $vars['step'] = $step;
 
-        if ( $root == 'step' ) {
+        if ($root == 'step') {
             $SESSION->delete('submitted');
             $SESSION->delete('portrait_cart');
         }
 
-        if ( $step == 'confirm' ) {
+        if ($step == 'confirm') {
             // Cart
 
             $TEMP = $this->openCart();
-            foreach ( $TEMP as $item ) {
-
+            foreach ($TEMP as $item) {
                 /*if ( config('shop_tax_calculate') != 'extax' ) {
                     $item[$this->item_price] += $item[$this->item_price.'#tax'];
                 }*/
@@ -47,7 +48,7 @@ class ACMS_GET_Shop2_Form_Order extends ACMS_GET_Shop2
             $vars += $this->buildField($SESSION, $Tpl, $root);
         }
 
-        if ( $step == 'result' ) {
+        if ($step == 'result') {
             $_vars   = null;
             $this->initVars();
             $_vars   = array('code' => $this->Post->get('code'));

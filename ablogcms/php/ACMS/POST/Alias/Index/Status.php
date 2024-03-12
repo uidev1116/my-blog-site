@@ -11,13 +11,15 @@ class ACMS_POST_Alias_Index_Status extends ACMS_POST
         $this->Post->setMethod('alias', 'operable', sessionWithAdministration());
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $aids = $this->Post->getArray('checks');
             foreach ($aids as $aid) {
-                if ( !($aid = intval($aid)) ) { $aid = null; }
-                if ( $aid !== ACMS_RAM::blogAliasPrimary(BID) ) { // except primary
-                    if ( $aid ) {
+                if (!($aid = intval($aid))) {
+                    $aid = null;
+                }
+                if ($aid !== ACMS_RAM::blogAliasPrimary(BID)) { // except primary
+                    if ($aid) {
                         $SQL    = SQL::newUpdate('alias');
                         $SQL->addUpdate('alias_status', $this->Post->get('status'));
                         $SQL->addWhereOpr('alias_id', $aid);
@@ -47,4 +49,3 @@ class ACMS_POST_Alias_Index_Status extends ACMS_POST
         return $this->Post;
     }
 }
-

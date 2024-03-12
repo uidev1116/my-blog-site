@@ -15,7 +15,9 @@ class ACMS_POST_User_Index_Status extends ACMS_POST
             $status = $this->Post->get('status');
             $targetUsers = [];
             foreach ($this->Post->getArray('checks') as $uid) {
-                if (!($uid = intval($uid))) continue;
+                if (!($uid = intval($uid))) {
+                    continue;
+                }
                 $SQL = SQL::newUpdate('user');
                 $SQL->setUpdate('user_status', $status);
                 $SQL->addWhereOpr('user_id', $uid);

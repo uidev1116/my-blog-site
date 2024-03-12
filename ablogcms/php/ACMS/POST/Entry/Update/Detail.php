@@ -2,7 +2,6 @@
 
 class ACMS_POST_Entry_Update_Detail extends ACMS_POST_Entry_Update
 {
-
     /**
      * ユニットを保存せずプライマリーイメージを取得
      *

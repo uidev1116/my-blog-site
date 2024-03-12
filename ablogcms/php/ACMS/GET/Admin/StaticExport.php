@@ -13,7 +13,7 @@ class ACMS_GET_Admin_StaticExport extends ACMS_GET_Admin
         /**
          * 書き出し中チェック
          */
-        if ( Storage::exists($logger->getDestinationPath()) ) {
+        if (Storage::exists($logger->getDestinationPath())) {
             $rootVars['processing'] = 1;
         } else {
             $rootVars['processing'] = 0;

@@ -11,7 +11,6 @@ class ACMS_GET_Member_Tfa_Check extends ACMS_GET_Member_Signup
      */
     protected function init(): void
     {
-
     }
 
     /**

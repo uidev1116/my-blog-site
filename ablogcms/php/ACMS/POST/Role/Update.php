@@ -6,7 +6,7 @@ class ACMS_POST_Role_Update extends ACMS_POST
     {
         $Role = $this->extract('role');
         $Role->setMethod('name', 'required');
-        $Role->setMethod('role', 'operable', sessionWithEnterpriseAdministration() and $rid = intval($this->Get->get('rid')) and BID === 1 );
+        $Role->setMethod('role', 'operable', sessionWithEnterpriseAdministration() and $rid = intval($this->Get->get('rid')) and BID === 1);
 
         $Role->validate(new ACMS_Validator());
 
@@ -16,9 +16,9 @@ class ACMS_POST_Role_Update extends ACMS_POST
             //-----------
             // role
             $SQL    = SQL::newUpdate('role');
-            foreach ( $Role->listFields() as $key ) {
-                if ( $key !== 'blog_list' ) {
-                    $SQL->addUpdate('role_'.$key, $Role->get($key));
+            foreach ($Role->listFields() as $key) {
+                if ($key !== 'blog_list') {
+                    $SQL->addUpdate('role_' . $key, $Role->get($key));
                 }
             }
             $SQL->addWhereOpr('role_id', $rid);
@@ -30,7 +30,7 @@ class ACMS_POST_Role_Update extends ACMS_POST
             $SQL->addWhereOpr('role_id', $rid);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            foreach ($Role->getArray('blog_list') as $bid ) {
+            foreach ($Role->getArray('blog_list') as $bid) {
                 $SQL    = SQL::newInsert('role_blog');
                 $SQL->addInsert('role_id', $rid);
                 $SQL->addInsert('blog_id', $bid);
@@ -52,4 +52,3 @@ class ACMS_POST_Role_Update extends ACMS_POST
         return $this->Post;
     }
 }
-

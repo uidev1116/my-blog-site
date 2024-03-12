@@ -38,7 +38,6 @@ class NoCache implements AdapterInterface
      */
     public function put($key, $value, $lifetime = 0)
     {
-
     }
 
     /**
@@ -48,7 +47,6 @@ class NoCache implements AdapterInterface
      */
     public function forget($key)
     {
-
     }
 
     /**
@@ -56,7 +54,6 @@ class NoCache implements AdapterInterface
      */
     public function remember($key, $callback, $lifetime = 0)
     {
-
     }
 
     /**
@@ -64,7 +61,6 @@ class NoCache implements AdapterInterface
      */
     public function flush()
     {
-
     }
 
     /**
@@ -72,7 +68,6 @@ class NoCache implements AdapterInterface
      */
     public function prune()
     {
-
     }
 
     /**
@@ -80,6 +75,5 @@ class NoCache implements AdapterInterface
      */
     public function invalidateTags($tags = [])
     {
-
     }
 }

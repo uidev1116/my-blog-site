@@ -96,7 +96,7 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
                 $var['code'] = $bcode;
                 $var['disabled'] = config('attr_disabled');
                 $Tpl->add('action#root');
-            } else if (!empty($aid)) {
+            } elseif (!empty($aid)) {
                 $var['aidLabel'] = $aid;
                 $var['itemUrl'] = acmsLink(array(
                     'bid' => BID,

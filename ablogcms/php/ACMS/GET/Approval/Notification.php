@@ -14,7 +14,9 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
 
     function get()
     {
-        if (!editionWithProfessional()) return false;
+        if (!editionWithProfessional()) {
+            return false;
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
@@ -22,19 +24,20 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
 
         $SQL    = $this->buildSql();
 
-        if ( !($all = $DB->query($SQL->get(dsn()), 'all')) ) {
+        if (!($all = $DB->query($SQL->get(dsn()), 'all'))) {
             $Tpl->add('approval#notFound');
             return $Tpl->get();
         }
 
         $empty = true;
-        foreach ( $all as $row ) {
+        foreach ($all as $row) {
             $exceptUsers    = explode(',', $row['notification_except_user_ids']);
-            if ( in_array(strval(SUID), $exceptUsers)
+            if (
+                in_array(strval(SUID), $exceptUsers)
             ) {
                 continue;
             }
-            if ( $row['notification_type'] == 'reject' ) {
+            if ($row['notification_type'] == 'reject') {
                 $requestUser = $row['notification_request_user_id'];
 
                 $SQL    = SQL::newSelect('approval');
@@ -44,7 +47,8 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
                 $SQL->addWhereOpr('approval_request_user_id', SUID);
                 $SQL->addWhereOpr('approval_datetime', $row['notification_datetime'], '<');
 
-                if ( 0
+                if (
+                    0
                     || !$DB->query($SQL->get(dsn()), 'row')
                     || ACMS_RAM::entryStatus($row['notification_entry_id']) === 'close'
                     || ACMS_RAM::entryStatus($row['notification_entry_id']) === 'trash'
@@ -62,10 +66,10 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             //------------------
             // 担当者 承認依頼のみ
             $receive = array();
-            if ( $row['approval_type'] === 'request' ) {
-                if ( !!$row['approval_receive_user_id'] ) {
+            if ($row['approval_type'] === 'request') {
+                if (!!$row['approval_receive_user_id']) {
                     $receive['userOrGroup'] = ACMS_RAM::userName($row['approval_receive_user_id']);
-                } else if ( !!$row['approval_receive_usergroup_id'] ) {
+                } elseif (!!$row['approval_receive_usergroup_id']) {
                     $SQL    = SQL::newSelect('usergroup');
                     $SQL->addSelect('usergroup_name');
                     $SQL->addWhereOpr('usergroup_id', $row['approval_receive_usergroup_id']);
@@ -78,7 +82,7 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             //---------
             // 承認情報
             $approvalField  = new Field();
-            foreach ( $row as $key => $val ) {
+            foreach ($row as $key => $val) {
                 $key_       = substr($key, strlen('approval_'));
                 $approvalField->add($key_, $val);
             }
@@ -88,8 +92,8 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             $SQL->addWhereOpr('entry_rev_id', $row['notification_rev_id']);
             $SQL->addWhereOpr('entry_id', $row['notification_entry_id']);
             $SQL->addWhereOpr('entry_blog_id', $row['notification_blog_id']);
-            if ( $revStatus = $DB->query($SQL->get(dsn()), 'one') ) {
-                if ( $approvalField->get('type') === 'request' && $revStatus === 'trash' ) {
+            if ($revStatus = $DB->query($SQL->get(dsn()), 'one')) {
+                if ($approvalField->get('type') === 'request' && $revStatus === 'trash') {
                     $approvalField->set('type', 'trash');
                 }
             }
@@ -114,7 +118,7 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             $Tpl->add('approval:loop', $approval);
             $empty = false;
         }
-        if ( $empty ) {
+        if ($empty) {
             $Tpl->add('approval#notFound');
             return $Tpl->get();
         }

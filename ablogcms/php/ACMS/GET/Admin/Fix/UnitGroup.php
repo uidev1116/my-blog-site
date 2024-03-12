@@ -2,9 +2,11 @@
 
 class ACMS_GET_Admin_Fix_UnitGroup extends ACMS_GET_Admin_Fix
 {
-    function fix(& $Tpl, $block)
+    function fix(&$Tpl, $block)
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $DB     = DB::singleton(dsn());
         $Fix    =& $this->Post->getChild('fix');
@@ -17,9 +19,11 @@ class ACMS_GET_Admin_Fix_UnitGroup extends ACMS_GET_Admin_Fix
         $SQL->addWhereOpr('column_blog_id', BID);
 
         $all    = $DB->query($SQL->get(dsn()), 'all');
-        foreach ( $all as $group ) {
+        foreach ($all as $group) {
             $name = $group['column_group'];
-            if ( empty($name) ) continue;
+            if (empty($name)) {
+                continue;
+            }
             $vars = array(
                 'name' => $name,
             );

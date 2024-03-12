@@ -11,7 +11,9 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
             case 'open':
                 break;
             case 'secret':
-                if ('open' == $status) $res = false;
+                if ('open' == $status) {
+                    $res = false;
+                }
                 break;
             case 'close':
             default:
@@ -22,17 +24,23 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
         $this->Post->setMethod('checks', 'required');
         $this->Post->validate(new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
-            foreach ( $this->Post->getArray('checks') as $bid ) {
-                if ( !($bid = idval($bid)) ) continue;
-                if ( !(1
+            foreach ($this->Post->getArray('checks') as $bid) {
+                if (!($bid = idval($bid))) {
+                    continue;
+                }
+                if (
+                    !(1
                     and ACMS_RAM::blogLeft(SBID) <= ACMS_RAM::blogRight($bid)
                     and ACMS_RAM::blogRight(SBID) >= ACMS_RAM::blogRight($bid)
-                ) ) continue;
+                    )
+                ) {
+                    continue;
+                }
 
                 $aryStatus  = array();
-                switch ( $status ) {
+                switch ($status) {
                     case 'close':
                         $aryStatus[]    = 'secret';
                         break;
@@ -45,14 +53,16 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
                         break;
                 }
 
-                if ( !empty($aryStatus) ) {
+                if (!empty($aryStatus)) {
                     $SQL    = SQL::newSelect('blog');
                     $SQL->setSelect('blog_id');
                     $SQL->addWhereIn('blog_status', $aryStatus);
                     $SQL->addWhereOpr('blog_left', ACMS_RAM::blogLeft($bid), '>');
                     $SQL->addWhereOpr('blog_right', ACMS_RAM::blogRight($bid), '<');
                     $SQL->setLimit(1);
-                    if ( !!$DB->query($SQL->get(dsn()), 'one') ) continue;
+                    if (!!$DB->query($SQL->get(dsn()), 'one')) {
+                        continue;
+                    }
                 }
 
                 $SQL    = SQL::newUpdate('blog');
@@ -66,9 +76,15 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
 
                 $aryBid[] = $bid;
             }
-            if ($status === 'open') $status = '公開';
-            if ($status === 'close') $status = '非公開';
-            if ($status === 'secret') $status = 'シークレット';
+            if ($status === 'open') {
+                $status = '公開';
+            }
+            if ($status === 'close') {
+                $status = '非公開';
+            }
+            if ($status === 'secret') {
+                $status = 'シークレット';
+            }
 
             AcmsLogger::info('指定されたブログのステータスを「' . $status . '」に変更', [
                 'targetBIDs' => implode(',', $aryBid),

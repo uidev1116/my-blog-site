@@ -2,7 +2,7 @@
 
 class ACMS_POST_Form_Duplicate extends ACMS_POST_Form
 {
-    function post()
+    public function post()
     {
         $fmid = intval($this->Get->get('fmid')) ?: null;
 
@@ -15,11 +15,10 @@ class ACMS_POST_Form_Duplicate extends ACMS_POST_Form
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {
-
+            $form = $this->findFormById($fmid);
             $newId = $this->duplicate($fmid);
-            $formSetting = $this->loadForm($fmid);
 
-            AcmsLogger::info('「' . $formSetting['name'] . '（' . $formSetting['code'] . '）」フォームIDを複製しました', [
+            AcmsLogger::info('「' . $form['name'] . '（' . $form['code'] . '）」フォームを複製しました', [
                 'sourceFormId' => $fmid,
                 'createdFormId' => $newId,
             ]);

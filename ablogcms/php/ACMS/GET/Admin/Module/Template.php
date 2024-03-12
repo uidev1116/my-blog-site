@@ -15,7 +15,7 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
         $themes         = array();
         $theme          = config('theme');
         $tplModuleDir   = 'include/module/template/';
-        while ( !empty($theme) ) {
+        while (!empty($theme)) {
             array_unshift($themes, $theme);
             $theme  = preg_replace('/^[^@]*?(@|$)/', '', $theme);
         }
@@ -29,22 +29,23 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
         $tplAry     = array();
         $tplLabels  = array();
         $fix        = false;
-        foreach ( $themes as $theme ) {
-            $dir = SCRIPT_DIR.THEMES_DIR.$theme.'/'.$tplModuleDir.$name.'/';
-            if ( Storage::isDirectory($dir) ) {
+        foreach ($themes as $theme) {
+            $dir = SCRIPT_DIR . THEMES_DIR . $theme . '/' . $tplModuleDir . $name . '/';
+            if (Storage::isDirectory($dir)) {
                 $templateDir    = opendir($dir);
-                while ( $tpl = readdir($templateDir) ) {
-                    preg_match('/(?:.*)\/(.*)(?:\.([^.]+$))/', $dir.$tpl, $info);
-                    if ( !isset($info[1]) || !isset($info[2]) ) {
+                while ($tpl = readdir($templateDir)) {
+                    preg_match('/(?:.*)\/(.*)(?:\.([^.]+$))/', $dir . $tpl, $info);
+                    if (!isset($info[1]) || !isset($info[2])) {
                         continue;
                     }
-                    $pattern = '/^('.$info[1].'|'.$info[1].config('module_identifier_duplicate_suffix').'.*)$/';
-                    if ( preg_match($pattern, $identifier) ) {
+                    $pattern = '/^(' . $info[1] . '|' . $info[1] . config('module_identifier_duplicate_suffix') . '.*)$/';
+                    if (preg_match($pattern, $identifier)) {
                         $tplAry = array();
                         $fix    = true;
                         break;
                     }
-                    if ( 0
+                    if (
+                        0
                         || strncasecmp($tpl, '.', 1) === 0
                         || $info[2] === 'yaml'
                     ) {
@@ -52,19 +53,18 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
                     }
                     $tplAry[] = $tpl;
                 }
-                if ( $labelAry = Config::yamlLoad($dir.'label.yaml') ) {
+                if ($labelAry = Config::yamlLoad($dir . 'label.yaml')) {
                     $tplLabels += $labelAry;
                 }
-
             }
         }
         $tplAry = array_unique($tplAry);
         $type   = 'array';
 
         $tplSort = array();
-        foreach ( $tplLabels as $tpl => $label) {
-            $key = array_search($tpl, $tplAry);
-            if ( $key !== false ) {
+        foreach ($tplLabels as $tpl => $label) {
+            $key = array_search($tpl, $tplAry, true);
+            if ($key !== false) {
                 $tplSort[] = array(
                     'template' => $tpl,
                     'tplLabel' => $label,
@@ -72,20 +72,20 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
                 unset($tplAry[$key]);
             }
         }
-        foreach ( $tplAry as $tpl ) {
+        foreach ($tplAry as $tpl) {
             $tplSort[] = array(
                 'template' => $tpl,
                 'tplLabel' => $tpl,
             );
         }
-        foreach ( $tplSort as $i => $loop ) {
-            if ( $i < count($tplSort) - 1 ) {
+        foreach ($tplSort as $i => $loop) {
+            if ($i < count($tplSort) - 1) {
                 $Tpl->add(array('glue', 'template:loop'));
             }
             $Tpl->add('template:loop', $loop);
         }
-        if ( empty($tplSort) ) {
-            if ( $fix ) {
+        if (empty($tplSort)) {
+            if ($fix) {
                 $Tpl->add(array('fixTmpl', 'module:loop'));
                 $type   = 'fix';
             } else {

@@ -38,7 +38,7 @@ class ACMS_POST_Entry_BulkChange_Select extends ACMS_POST_Entry_BulkChange
         parent::validate();
 
         if (count($this->eids) < 1) {
-            throw new ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty;
+            throw new ACMS_POST_Entry_BulkChange_Exceptions_TargetEmpty();
         }
     }
 }

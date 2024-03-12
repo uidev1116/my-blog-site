@@ -4,7 +4,9 @@ class ACMS_POST_Fix_Replacement_Confirm extends ACMS_POST_Fix
 {
     function post()
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Fix = $this->extract('fix');
         $Fix->setMethod('fix_replacement_target', 'required');
@@ -12,7 +14,7 @@ class ACMS_POST_Fix_Replacement_Confirm extends ACMS_POST_Fix
         $Fix->setMethod('fix_replacement_replacement', 'required');
         $Fix->validate(new ACMS_Validator());
 
-        if ( $Fix->isValidAll() ) {
+        if ($Fix->isValidAll()) {
             $this->Post->set('step', 'confirm');
         }
 

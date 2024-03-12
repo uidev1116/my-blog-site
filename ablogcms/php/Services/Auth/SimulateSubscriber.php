@@ -10,7 +10,7 @@ class SimulateSubscriber extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isSubscriber($uid=SUID)
+    public function isSubscriber($uid = SUID)
     {
         return true;
     }
@@ -21,7 +21,7 @@ class SimulateSubscriber extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isContributor($uid=SUID)
+    public function isContributor($uid = SUID)
     {
         return false;
     }
@@ -32,7 +32,7 @@ class SimulateSubscriber extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isEditor($uid=SUID)
+    public function isEditor($uid = SUID)
     {
         return false;
     }
@@ -43,7 +43,7 @@ class SimulateSubscriber extends General
      * @param int|null $uid
      * @return bool
      */
-    public function isAdministrator($uid=SUID)
+    public function isAdministrator($uid = SUID)
     {
         return false;
     }
@@ -54,7 +54,7 @@ class SimulateSubscriber extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfContributor($bid=BID)
+    public function isPermissionOfContributor($bid = BID)
     {
         return false;
     }
@@ -65,7 +65,7 @@ class SimulateSubscriber extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfEditor($bid=BID)
+    public function isPermissionOfEditor($bid = BID)
     {
         return false;
     }
@@ -76,7 +76,7 @@ class SimulateSubscriber extends General
      * @param int|null $bid
      * @return bool
      */
-    public function isPermissionOfAdministrator($bid=BID)
+    public function isPermissionOfAdministrator($bid = BID)
     {
         return false;
     }

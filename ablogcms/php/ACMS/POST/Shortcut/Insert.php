@@ -8,7 +8,7 @@ use Acms\Services\Shortcut\Helper;
 
 class ACMS_POST_Shortcut_Insert extends ACMS_POST
 {
-    var $isCacheDelete = false;
+    public $isCacheDelete = false;
 
     /**
      * @var Repository
@@ -20,6 +20,9 @@ class ACMS_POST_Shortcut_Insert extends ACMS_POST
      */
     protected $ShortcutService;
 
+    /**
+     * @return \Field_Validation
+     */
     public function post()
     {
         /** @var Repository $ShortcutRepository */
@@ -58,7 +61,6 @@ class ACMS_POST_Shortcut_Insert extends ACMS_POST
 
     /**
      * @param \Field_Validation $shortcut
-     * @return string
      */
     protected function validate(\Field_Validation $shortcut)
     {

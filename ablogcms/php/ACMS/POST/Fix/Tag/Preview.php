@@ -2,7 +2,7 @@
 
 class ACMS_POST_Fix_Tag_Preview extends ACMS_POST_Fix_Tag
 {
-    var $preview = array();
+    public $preview = array();
 
     function init()
     {
@@ -22,14 +22,14 @@ class ACMS_POST_Fix_Tag_Preview extends ACMS_POST_Fix_Tag
     function success()
     {
         $i = 0;
-        foreach ( $this->preview as $word => $data ) {
+        foreach ($this->preview as $word => $data) {
             $$word = new Field_Validation();
-            foreach ( $data as $val ) {
-                foreach ( $val as $k => $v ) {
+            foreach ($data as $val) {
+                foreach ($val as $k => $v) {
                     $$word->add($k, $v);
                 }
             }
-            $this->Post->addChild('data'.$i, $$word);
+            $this->Post->addChild('data' . $i, $$word);
             $this->Post->add('word', $word);
 
             $i++;

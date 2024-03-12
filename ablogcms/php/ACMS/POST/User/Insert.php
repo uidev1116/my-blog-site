@@ -39,13 +39,12 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
         ));
         $User->setMethod('user', 'operable', 1
             and IS_LICENSED
-            and sessionWithAdministration()
-        );
+            and sessionWithAdministration());
         $User->validate(new ACMS_Validator_User());
 
         $Field = $this->extract('field', new ACMS_Validator());
 
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('user');
             $SQL->setSelect('user_sort');
@@ -98,9 +97,10 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
             $SQL    = SQL::newSelect('user');
             $SQL->addWhereOpr('user_id', $uid);
             $SQL->addWhereOpr('user_blog_id', BID);
-            if ( !!($row = $DB->query($SQL->get(dsn()), 'row')) ) {
+            if (!!($row = $DB->query($SQL->get(dsn()), 'row'))) {
                 ACMS_RAM::user($uid, $row);
             }
+            ACMS_RAM::cacheDelete(); // loadUser関数のキャッシュを削除
             Common::saveFulltext('uid', $uid, Common::loadUserFulltext($uid));
             $this->Post->set('edit', 'insert');
 

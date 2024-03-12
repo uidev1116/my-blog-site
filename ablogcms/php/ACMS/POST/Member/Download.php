@@ -28,7 +28,6 @@ class ACMS_POST_Member_Download extends ACMS_POST
             AcmsLogger::info('読者ユーザーのCSVをダウンロードしました');
 
             Common::download($destDir . $fileName, $fileName, false, true);
-
         } catch (Exception $e) {
             $this->addError($e->getMessage());
             AcmsLogger::notice($e->getMessage());
@@ -87,7 +86,7 @@ class ACMS_POST_Member_Download extends ACMS_POST
             $sql->addLeftJoin('fulltext', 'fulltext_uid', 'user_id');
             $keywords = preg_split(REGEX_SEPARATER, KEYWORD, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($keywords as $keyword) {
-                $sql->addWhereOpr('fulltext_value', '%'.$keyword.'%', 'LIKE');
+                $sql->addWhereOpr('fulltext_value', '%' . $keyword . '%', 'LIKE');
             }
         }
     }
@@ -130,9 +129,7 @@ class ACMS_POST_Member_Download extends ACMS_POST
     protected function filterField(SQL_Select $sql): void
     {
         $field = $this->extract('field');
-        if (!empty($field)) {
-            ACMS_Filter::userField($sql, $field);
-        }
+        ACMS_Filter::userField($sql, $field);
     }
 
     /**
@@ -154,6 +151,10 @@ class ACMS_POST_Member_Download extends ACMS_POST
 
         Storage::makeDirectory($destDir);
         $fp = fopen($destPath, 'w');
+
+        if (!$fp) {
+            throw new \RuntimeException('CSVファイルの作成に失敗しました。');
+        }
 
         $this->createCsvHeader($fp, $userColumns, $fieldColumns);
 
@@ -216,13 +217,13 @@ class ACMS_POST_Member_Download extends ACMS_POST
     protected function putCsv($fp, array $data)
     {
         if ($this->charset === 'UTF-8') {
-            fputcsv($fp, $data, ",", "\"", "\\", "\n");
+            acmsFputcsv($fp, $data, ",", "\"", "\\", "\n");
         } else {
             $temp = [];
             foreach ($data as $row) {
                 $temp[] = mb_convert_encoding($row, $this->charset, 'UTF-8');
             }
-            fputcsv($fp, $temp, ",", "\"", "\\", "\r\n");
+            acmsFputcsv($fp, $temp, ",", "\"", "\\", "\r\n");
         }
     }
 }

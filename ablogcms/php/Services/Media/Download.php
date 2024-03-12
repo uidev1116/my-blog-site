@@ -29,7 +29,7 @@ class Download
     {
         @set_time_limit(0);
 
-        $this->mid = $media['mid'];
+        $this->mid = intval($media['mid']);
         $this->media = $media;
     }
 
@@ -42,7 +42,7 @@ class Download
         $filename = $this->media['name'];
         $extension = strtolower($this->media['extension']);
 
-        if (in_array($extension, configArray('media_inline_download_extension'))) {
+        if (in_array($extension, configArray('media_inline_download_extension'), true)) {
             Common::download($path, $filename, $extension, false);
         }
         Common::download($path, $filename, false, false);
@@ -59,11 +59,11 @@ class Download
 
         if ($status === 'entry') {
             return $this->validateEntryType();
-        } else if ($status === 'close') {
+        } elseif ($status === 'close') {
             return $this->validateCloseType();
-        } else if ($status === 'secret') {
+        } elseif ($status === 'secret') {
             return $this->validateSecretType();
-        } else if ($status === 'open') {
+        } elseif ($status === 'open') {
             return true;
         }
         return false;
@@ -195,7 +195,7 @@ class Download
                 continue;
             }
             foreach ($field->listFields() as $fd) {
-                if (strpos($fd, '@media') !== false && $field->get($fd) == $this->mid) {
+                if (strpos($fd, '@media') !== false && in_array(strval($this->mid), $field->getArray($fd), true)) {
                     $entryIds[] = intval($unit['column_entry_id']);
                 }
             }

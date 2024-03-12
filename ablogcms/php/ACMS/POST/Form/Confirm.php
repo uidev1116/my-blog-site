@@ -8,7 +8,7 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
 
         // フォーム情報のロード
         $info = $this->loadForm($id);
-        if ( empty($info) ) {
+        if (empty($info)) {
             AcmsLogger::critical('フォームID「' . $id . '」が存在しないため、フォームの処理を中断しました');
             $this->Post->set('step', 'forbidden');
             return $this->Post;
@@ -22,13 +22,13 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
 
         // POSTの整形
         $Field = $this->extract('field');
-        if( !empty($dup) ) {
+        if (!empty($dup)) {
             list($fd, $mail) = $dup;
             $Field->setMethod($fd, 'duplication', $this->mailToDouble($info['id'], $mail));
         }
 
         // 添付ファイルの移動
-        if ( $Form->getChild('mail')->get('AdminAttachment') === 'on' ) {
+        if ($Form->getChild('mail')->get('AdminAttachment') === 'on') {
             $this->modifyAttachedFile($Field);
         }
         $Field->validate(new ACMS_Validator());
@@ -42,11 +42,11 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
      *
      * @param Field $Field
      */
-    function modifyAttachedFile(& $Field)
+    function modifyAttachedFile(&$Field)
     {
-        Storage::makeDirectory(ARCHIVES_DIR.config('mail_attachment_temp_dir'));
+        Storage::makeDirectory(ARCHIVES_DIR . config('mail_attachment_temp_dir'));
 
-        foreach ( $Field->listFields() as $fd ) {
+        foreach ($Field->listFields() as $fd) {
             $pathInfo = $this->getAttachedFilePath($Field, $fd);
 
             if ($pathInfo === false) {
@@ -58,11 +58,11 @@ class ACMS_POST_Form_Confirm extends ACMS_POST_Form
             $fieldpath  = $pathInfo['fieldpath'];
             $fdname     = $pathInfo['fdname'];
 
-            if ( Storage::copy($realpath, $temppath) ) {
+            if (Storage::copy($realpath, $temppath)) {
                 Storage::remove($realpath);
 
                 $Field->set($fd, $fieldpath);
-                $Field->set($fdname.'@secret', md5($fdname.'@'.$fieldpath));
+                $Field->set($fdname . '@secret', md5($fdname . '@' . $fieldpath));
             }
         }
     }

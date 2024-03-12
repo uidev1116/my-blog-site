@@ -4,7 +4,9 @@ class ACMS_GET_Touch_NotPreApproval extends ACMS_GET
 {
     function get()
     {
-        if ( !EID ) return false;
+        if (!EID) {
+            return false;
+        }
 
         $entry = ACMS_RAM::entry(EID);
 

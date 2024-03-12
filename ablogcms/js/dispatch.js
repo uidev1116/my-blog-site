@@ -1556,7 +1556,7 @@ ACMS.Dispatch.countup = function (elm) {
   $(elm)
     .bind('keydown change', function () {
       var $self = $(this),
-        length = $self.val().length,
+        length = Array.from($self.val()).length,
         max = $self.data('max'),
         target = $self.data('label-target')
       ;($target = $(target)), (active = ACMS.Config.countupMarkOver)

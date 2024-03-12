@@ -37,7 +37,7 @@ class ApiEngine implements Contracts\ViewInterface
      *
      * @return bool|self
      */
-    public function init($txt, $Corrector=null)
+    public function init($txt, $Corrector = null)
     {
         if (is_object($Corrector) && method_exists($Corrector, 'correct')) {
             $this->_Corrector =& $Corrector;
@@ -69,20 +69,19 @@ class ApiEngine implements Contracts\ViewInterface
     }
 
     /**
-     * ブロック・変数を追加する
-     *
-     * @param array|null $blocks
-     * @param array $vars
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function add($blocks=array(), $vars=array())
+    public function add($blocks = array(), $vars = array())
     {
         if (!is_array($blocks)) {
             $blocks = is_string($blocks) ? array($blocks) : null;
         }
-        if (!is_array($vars)) $vars = array();
-        if (empty($vars)) $vars = array();
+        if (!is_array($vars)) {
+            $vars = array();
+        }
+        if (empty($vars)) {
+            $vars = array();
+        }
 
         if (empty($blocks)) {
             foreach ($vars as $key => $val) {

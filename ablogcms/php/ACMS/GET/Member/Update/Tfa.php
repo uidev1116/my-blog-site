@@ -53,7 +53,7 @@ class ACMS_GET_Member_Update_Tfa extends ACMS_GET_Member
         if (!$this->Post->isNull() && $this->Post->isValidAll()) {
             if ($this->Post->get('register') === 'success') {
                 $tpl->add(['success', $block], $vars);
-            } else if ($this->Post->get('unregister') === 'success') {
+            } elseif ($this->Post->get('unregister') === 'success') {
                 $tpl->add(['success', $block], $vars);
             }
         }

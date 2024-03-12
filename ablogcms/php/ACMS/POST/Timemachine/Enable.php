@@ -16,7 +16,8 @@ class ACMS_POST_Timemachine_Enable extends ACMS_POST
         $fakeUa = $this->Post->get('preview_fake_ua', false);
         $token = $this->Post->get('preview_token', false);
         $datetime = $date . ' ' . $time;
-        if (1
+        if (
+            1
             && preg_match(REGEXP_VALID_DATETIME, $datetime)
             && $fakeUa
             && $token

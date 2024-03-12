@@ -73,7 +73,7 @@ class Payload extends PayloadContract
         $user = DB::query($sql->get(dsn()), 'row');
         $userData = array();
         foreach ($user as $key => $value) {
-            if (in_array($key, ['user_pass', 'user_pass_reset', 'user_tfa_secret', 'user_tfa_secret_iv', 'user_tfa_recovery', 'user_session_data'])) {
+            if (in_array($key, ['user_pass', 'user_pass_reset', 'user_tfa_secret', 'user_tfa_secret_iv', 'user_tfa_recovery', 'user_session_data'], true)) {
                 continue;
             }
             $userData[substr($key, strlen('user_'))] = $value;

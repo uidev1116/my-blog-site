@@ -2,10 +2,10 @@
 
 class ACMS_POST_Log_Form_Download extends ACMS_POST
 {
-    function post()
+    public function post()
     {
-        if ( !$this->authorityCheck() ) {
-            return fasle;
+        if (!$this->authorityCheck()) {
+            return false;
         }
 
         $fmid   = intval($this->Get->get('fmid'));
@@ -15,7 +15,7 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
 
         $form   = $this->getFormData($fmid);
 
-        if ( empty($form) ) {
+        if (empty($form)) {
             return false;
         }
 
@@ -39,9 +39,15 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
      */
     function authorityCheck()
     {
-        if ( !sessionWithFormAdministration() ) return false;
-        if ( !IS_LICENSED ) return false;
-        if ( !($fmid = intval($this->Get->get('fmid'))) ) return false;
+        if (!sessionWithFormAdministration()) {
+            return false;
+        }
+        if (!IS_LICENSED) {
+            return false;
+        }
+        if (!($fmid = intval($this->Get->get('fmid')))) {
+            return false;
+        }
 
         return true;
     }
@@ -87,10 +93,10 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
 
         $SQL->addWhereOpr('log_form_form_id', $fmid);
-        if ( !empty($eid) ) {
+        if (!empty($eid)) {
             $SQL->addWhereOpr('log_form_entry_id', $eid);
         }
-        if ( !empty($serial) ) {
+        if (!empty($serial)) {
             $SQL->addWhereOpr('log_form_serial', $serial);
         }
 
@@ -112,8 +118,8 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $DB->query($query, 'fetch');
 
         $aryFd    = array();
-        while ( $row = $DB->fetch($query) ) {
-            if ( isset($row['log_form_version']) && intval($row['log_form_version']) === 1 ) {
+        while ($row = $DB->fetch($query)) {
+            if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
                 $Field  = acmsUnserialize($row['log_form_data']);
             } else {
                 $Field  = Common::safeUnSerialize($row['log_form_data']);
@@ -123,11 +129,11 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $aryFd[] = 'log_form_datetime';
 
         $atPathAry = array();
-        foreach ( $aryFd as $i => $fd ) {
+        foreach ($aryFd as $i => $fd) {
             // @つきのメタフィールドを除外
-            if ( strpos($fd, '@') !== false ) {
+            if (strpos($fd, '@') !== false) {
                 // hoge@pathであれば、hogeフィールドに後で代入する
-                if ( strpos($fd, '@path') !== false ) {
+                if (strpos($fd, '@path') !== false) {
                     $atPathAry[] = $fd;
                 }
                 unset($aryFd[$i]);
@@ -155,10 +161,10 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $aryFd      = $data['aryFd'];
         $atPathAry  = $data['atPathAry'];
 
-        $csv = '"'.implode('","', $aryFd).'"'."\x0d\x0a";
+        $csv = '"' . implode('","', $aryFd) . '"' . "\x0d\x0a";
 
-        while ( $row = $DB->fetch($query) ) {
-            if ( isset($row['log_form_version']) && intval($row['log_form_version']) === 1 ) {
+        while ($row = $DB->fetch($query)) {
+            if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
                 $Field  = acmsUnserialize($row['log_form_data']);
             } else {
                 $Field  = Common::safeUnSerialize($row['log_form_data']);
@@ -166,16 +172,16 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
             $Field->set('log_form_datetime', $row['log_form_datetime']);
 
             // @path類を処理
-            foreach ( $atPathAry as $atPath ) {
+            foreach ($atPathAry as $atPath) {
                 // $Field->set('fuga', $Field->get('fuga@path'));
                 $Field->set(substr($atPath, 0, -5), $Field->get($atPath));
             }
 
             $csv    .= '"';
-            foreach ( $aryFd as $i => $fd ) {
-                $csv    .= (empty($i) ? '' : '","').str_replace('"', '""', implode(', ', $Field->getArray($fd)));
+            foreach ($aryFd as $i => $fd) {
+                $csv    .= (empty($i) ? '' : '","') . str_replace('"', '""', implode(', ', $Field->getArray($fd)));
             }
-            $csv    .= '"'."\x0d\x0a";
+            $csv    .= '"' . "\x0d\x0a";
         }
 
         return mb_convert_encoding($csv, $this->Post->get('charset', 'UTF-8'), 'UTF-8');
@@ -189,8 +195,8 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
     function download($csv)
     {
 
-        header('Content-Length: '.strlen($csv));
-        if ( strpos(UA, 'MSIE') ) {
+        header('Content-Length: ' . strlen($csv));
+        if (strpos(UA, 'MSIE')) {
             header('Content-Type: text/download');
         } else {
             header('Content-Disposition: attachment');

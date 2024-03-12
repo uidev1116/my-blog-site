@@ -4,10 +4,8 @@ class ACMS_POST_User_SwitchOriginal extends ACMS_POST_User_Switch
 {
     /**
      * Run
-     *
-     * @return Field
      */
-    function post()
+    public function post()
     {
         $originalUid = $this->getOriginalUid();
         if (!$this->validate(SUID, $originalUid)) {

@@ -2,9 +2,11 @@
 
 class ACMS_GET_Admin_Fix_UnitSize extends ACMS_GET_Admin_Fix
 {
-    function fix(& $Tpl, $block)
+    function fix(&$Tpl, $block)
     {
-        if ( !sessionWithAdministration() ) return false;
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $DB     = DB::singleton(dsn());
         $Fix    =& $this->Post->getChild('fix');
@@ -14,11 +16,11 @@ class ACMS_GET_Admin_Fix_UnitSize extends ACMS_GET_Admin_Fix
         $unitSizeUnitType   = $Fix->get('unit_size_unit_type');
         $unitSizeSizeType   = $Fix->get('unit_size_size_type');
 
-        if ( !empty($unitSizeUnitType) && !empty($unitSizeSizeType) ) {
+        if (!empty($unitSizeUnitType) && !empty($unitSizeSizeType)) {
             $SQL    = SQL::newSelect('column');
             $column = 'column_size';
-            if ( $unitSizeSizeType === 'display' ) {
-                switch ( $unitSizeUnitType ) {
+            if ($unitSizeSizeType === 'display') {
+                switch ($unitSizeUnitType) {
                     case 'youtube':
                     case 'video':
                         $column = 'column_field_3';
@@ -39,9 +41,11 @@ class ACMS_GET_Admin_Fix_UnitSize extends ACMS_GET_Admin_Fix
             $SQL->addWhereOpr('column_blog_id', BID);
 
             $all    = $DB->query($SQL->get(dsn()), 'all');
-            foreach ( $all as $size ) {
+            foreach ($all as $size) {
                 $size = $size[$column];
-                if ( empty($size) ) continue;
+                if (empty($size)) {
+                    continue;
+                }
                 $Tpl->add(array_merge(array('unit_size:loop'), $block), array(
                     'unit_size' => $size,
                 ));

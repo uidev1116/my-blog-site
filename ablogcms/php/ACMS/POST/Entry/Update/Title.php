@@ -7,7 +7,7 @@ class ACMS_POST_Entry_Update_Title extends ACMS_POST_Entry_Update
         $this->Post->setMethod('title', 'required');
         $this->Post->setMethod('entry', 'operable', $this->isOperable());
         $this->Post->validate(new ACMS_Validator());
-        if ( $this->Post->isValidAll() ) {
+        if ($this->Post->isValidAll()) {
             $DB = DB::singleton(dsn());
             $SQL = SQL::newUpdate('entry');
             $SQL->addUpdate('entry_title', $this->Post->get('title'));
@@ -24,7 +24,7 @@ class ACMS_POST_Entry_Update_Title extends ACMS_POST_Entry_Update
         } else {
             httpStatusCode('403 Forbidden');
         }
-        header(PROTOCOL.' '.httpStatusCode());
+        header(PROTOCOL . ' ' . httpStatusCode());
         die(httpStatusCode());
     }
 }

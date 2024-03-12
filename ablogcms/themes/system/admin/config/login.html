@@ -114,14 +114,52 @@
       </td>
     </tr>
     <tr>
-      <th><!--T-->ログインページの指定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->シークレットブログで表示するログイン画面を選択します。<!--/T-->"></i></th>
+      <th><!--T-->ログインページの指定<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->シークレットステータスのページで表示するログイン画面を選択します。<!--/T-->"></i></th>
       <td>
         <select name="redirect_login_page" class="js-select2">
           <option value="signin"{redirect_login_page:selected#signin}><!--T-->一般サインイン画面<!--/T--></option>
           <option value="login"{redirect_login_page:selected#login}><!--T-->管理ログイン画面<!--/T--></option>
         </select>
-        <!-- T-->シークレットブログで表示するログイン画面を選択します<!--/T-->
+        <!-- T-->シークレットステータスのページで表示するログイン画面を選択します<!--/T-->
         <input type="hidden" name="config[]" value="redirect_login_page" />
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <!--T-->ログアウト後ページの指定<!--/T-->
+        <i
+          class="acms-admin-icon-tooltip js-acms-tooltip-hover"
+          data-acms-tooltip="<!--T-->ユーザーがログアウトした後に表示したいページを指定できます。<!--/T-->"
+        ></i>
+      </th>
+      <td>
+        <div class="acms-admin-form-radio">
+          <input
+            type="radio"
+            name="logout_redirect_page"
+            value="top"
+            {logout_redirect_page:checked#top}
+            id="input-radio-logout_redirect_page_top"
+          />
+          <label for="input-radio-logout_redirect_page_top">
+            <i class="acms-admin-ico-radio"></i>
+            <!--T-->トップページ<!--/T-->
+          </label>
+        </div>
+        <div class="acms-admin-form-radio">
+          <input
+            type="radio"
+            name="logout_redirect_page"
+            value="auth"
+            {logout_redirect_page:checked#auth}
+            id="input-radio-logout_redirect_page_auth"
+          />
+          <label for="input-radio-logout_redirect_page_auth">
+            <i class="acms-admin-ico-radio"></i>
+            <!--T-->ログイン（サインイン）ページ<!--/T-->
+          </label>
+        </div>
+        <input type="hidden" name="config[]" value="logout_redirect_page" />
       </td>
     </tr>
   </table>

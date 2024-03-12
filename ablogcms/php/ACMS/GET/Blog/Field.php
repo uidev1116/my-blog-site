@@ -2,24 +2,32 @@
 
 class ACMS_GET_Blog_Field extends ACMS_GET
 {
-    var $_scope = array(
+    public $_scope = array(
         'bid'   => 'global',
     );
 
     function get()
     {
-        if ( !$this->bid ) return '';
-        if ( !$row = ACMS_RAM::blog($this->bid) ) return '';
+        if (!$this->bid) {
+            return '';
+        }
+        if (!$row = ACMS_RAM::blog($this->bid)) {
+            return '';
+        }
 
         $status = ACMS_RAM::blogStatus($this->bid);
-        if (!sessionWithAdministration() and 'close' === $status) return '';
-        if (!sessionWithSubscription() and 'secret'  === $status) return '';
+        if (!sessionWithAdministration() and 'close' === $status) {
+            return '';
+        }
+        if (!sessionWithSubscription() and 'secret'  === $status) {
+            return '';
+        }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
 
         $Field  = loadBlogField($this->bid);
-        foreach ( $row as $key => $val ) {
+        foreach ($row as $key => $val) {
             $Field->setField(preg_replace('@^blog_@', '', $key), $val);
         }
 

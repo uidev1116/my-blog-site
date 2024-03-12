@@ -53,7 +53,6 @@ class ACMS_POST_Backup_BlogExport extends ACMS_POST_Backup_Base
             Storage::compress(SCRIPT_DIR . $this->srcPath, $this->destPath, 'acms_blog_data');
             Storage::removeDirectory($this->srcPath);
             $this->download();
-
         } catch (\Exception $e) {
             $this->Post->set('error', $e->getMessage());
             Storage::removeDirectory($this->srcPath);

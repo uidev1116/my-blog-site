@@ -60,6 +60,7 @@ class ACMS_POST_Logger_Info extends ACMS_POST
             'blogName' => ACMS_RAM::blogName($log['audit_log_blog_id']),
             'message' => $log['audit_log_message'],
             'url' => $log['audit_log_url'],
+            'isManagedDomain' => $this->isManagedDomain($log['audit_log_url']),
             'ua' => $log['audit_log_ua'],
             'referer' => $log['audit_log_referer'],
             'ipAddress' => $log['audit_log_addr'],
@@ -86,5 +87,33 @@ class ACMS_POST_Logger_Info extends ACMS_POST
             $data['acmsPost'] = $post;
         }
         return $data;
+    }
+
+    /**
+     * 指定されたURLがCMSで管理しているドメインか判定する
+     *
+     * @param string $url
+     * @return bool
+     */
+    protected function isManagedDomain(string $url): bool
+    {
+        if (empty($url)) {
+            return false;
+        }
+        $domain = parse_url($url, PHP_URL_HOST);
+        if (empty($domain)) {
+            return false;
+        }
+        $sql = SQL::newSelect('blog');
+        $sql->addWhereOpr('blog_domain', $domain);
+        if (!DB::query($sql->get(dsn()), 'row')) {
+            $sql = SQL::newSelect('alias');
+            $sql->addWhereOpr('alias_domain', $domain);
+            $sql->addWhereOpr('alias_status', 'open');
+            if (!DB::query($sql->get(dsn()), 'row')) {
+                return false;
+            }
+        }
+        return true;
     }
 }

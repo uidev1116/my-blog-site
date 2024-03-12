@@ -6,13 +6,8 @@
  */
 class ACMS_Http
 {
-    public static function file($allowExtensions=null)
+    public static function file($name)
     {
-        return new ACMS_Http_File($allowExtensions);
-    }
-
-    public function __construct()
-    {
-
+        return new ACMS_Http_File($name);
     }
 }

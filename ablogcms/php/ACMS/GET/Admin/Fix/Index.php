@@ -4,8 +4,12 @@ class ACMS_GET_Admin_Fix_Index extends ACMS_GET_Admin
 {
     function get()
     {
-        if ( 'fix_index' <> ADMIN ) return false;
-        if ( !sessionWithAdministration() ) return false;
+        if ('fix_index' <> ADMIN) {
+            return false;
+        }
+        if (!sessionWithAdministration()) {
+            return false;
+        }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $aryAdmin = array(
@@ -19,7 +23,7 @@ class ACMS_GET_Admin_Fix_Index extends ACMS_GET_Admin
             'fix_tag',
             'fix_replacement',
         );
-        foreach ( $aryAdmin as $admin ) {
+        foreach ($aryAdmin as $admin) {
             $AP     = array(
                 'bid'   => BID,
                 'admin' => $admin,

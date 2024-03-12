@@ -2,7 +2,7 @@
 
 class ACMS_POST_Form extends ACMS_POST
 {
-    var $isCacheDelete  = false;
+    public $isCacheDelete  = false;
 
     /**
      * 残った添付ファイルの削除
@@ -10,37 +10,37 @@ class ACMS_POST_Form extends ACMS_POST
      *
      * @param int $lifetime
      */
-    public static function clearAttachedFile($lifetime=1800)
+    public static function clearAttachedFile($lifetime = 1800)
     {
         $temp_dir = ARCHIVES_DIR . config('mail_attachment_temp_dir', 'temp/');
 
         $cur    = getcwd();
         Storage::changeDir(SCRIPT_DIR);
 
-        if ( !Storage::isDirectory($temp_dir) ) {
+        if (!Storage::isDirectory($temp_dir)) {
             return;
         }
 
         $target_dir = opendir($temp_dir);
-        while ( $file = readdir($target_dir) ) {
-            $path = $temp_dir.$file;
+        while ($file = readdir($target_dir)) {
+            $path = $temp_dir . $file;
 
-            if ( $file === '.' || $file === '..' ) {
+            if ($file === '.' || $file === '..') {
                 continue;
             }
-            if ( !Storage::isReadable($path) ) {
+            if (!Storage::isReadable($path)) {
                 continue;
             }
-            if ( Storage::isDirectory($path) ) {
+            if (Storage::isDirectory($path)) {
                 continue;
             }
             $mtime = Storage::lastModified($path);
-            if ( REQUEST_TIME - $lifetime > $mtime){
+            if (REQUEST_TIME - $lifetime > $mtime) {
                 Storage::remove($path);
                 AcmsLogger::debug('添付ファイルの一時ファイルを削除しました', [
                     'path' => $path,
                 ]);
-                if ( HOOK_ENABLE ) {
+                if (HOOK_ENABLE) {
                     $Hook = ACMS_Hook::singleton();
                     $Hook->call('mediaDelete', $path);
                 }
@@ -53,38 +53,78 @@ class ACMS_POST_Form extends ACMS_POST
     /**
      * フォームのロード
      *
-     * @param string $id
-     * @return array
+     * @param string $code
+     * @return array|false
      */
-    function loadForm($id)
+    public function loadForm($code)
     {
-        if ( empty($id) ) { return false; }
-        $form   = false;
-
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newSelect('form');
-        $SQL->addWhereOpr('form_code', $id);
-        $SQL->addLeftJoin('blog', 'blog_id', 'form_blog_id');
-        ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
-
-        $Where  = SQL::newWhere();
-        $Where->addWhereOpr('form_blog_id', BID, '=', 'OR');
-        $Where->addWhereOpr('form_scope', 'global', '=', 'OR');
-        $SQL->addWhere($Where);
-
-        if ( $row = $DB->query($SQL->get(dsn()), 'row') ) {
-            $form   = array(
-                'id'    => $row['form_id'],
-                'bid'   => $row['form_blog_id'],
-                'code'  => $row['form_code'],
-                'name'  => $row['form_name'],
-                'scope' => $row['form_scope'],
-                'log'   => $row['form_log'],
-                'data'  => unserialize($row['form_data']),
-            );
+        if (empty($code)) {
+            return false;
         }
 
-        return $form;
+        $sql = SQL::newSelect('form');
+        $sql->addWhereOpr('form_code', $code);
+        $sql->addLeftJoin('blog', 'blog_id', 'form_blog_id');
+        ACMS_Filter::blogTree($sql, BID, 'ancestor-or-self');
+
+        $where = SQL::newWhere();
+        $where->addWhereOpr('form_blog_id', BID, '=', 'OR');
+        $where->addWhereOpr('form_scope', 'global', '=', 'OR');
+        $sql->addWhere($where);
+        $row = DB::query($sql->get(dsn()), 'row');
+
+        if (empty($row)) {
+            return false;
+        }
+
+        return $this->toFormArray($row);
+    }
+
+    /**
+     * IDによるフォームの探索
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function findFormById(int $id): ?array
+    {
+        $sql = SQL::newSelect('form');
+        $sql->addWhereOpr('form_id', $id);
+        $sql->addLeftJoin('blog', 'blog_id', 'form_blog_id');
+        $row = DB::query($sql->get(dsn()), 'row');
+
+        if (empty($row)) {
+            return null;
+        }
+
+        return $this->toFormArray($row);
+    }
+
+    /**
+     * フォームの配列を作成
+     *
+     * @param array $row
+     * @return array{
+     *  id: int,
+     *  bid: int,
+     *  code: string,
+     *  name: string,
+     *  scope: string,
+     *  log: string,
+     *  data: \Field
+     * }
+     */
+    public function toFormArray(array $row): array
+    {
+        return [
+            'id'    => (int)$row['form_id'],
+            'bid'   => (int)$row['form_blog_id'],
+            'code'  => $row['form_code'],
+            'name'  => $row['form_name'],
+            'scope' => $row['form_scope'],
+            'log'   => $row['form_log'],
+            'data'  => unserialize($row['form_data']),
+        ];
     }
 
     /**
@@ -98,13 +138,17 @@ class ACMS_POST_Form extends ACMS_POST
         $dup = array(); // メールアドレスの重複オプション
         $field = $this->extract('field');
 
-        foreach ( $Option->getArray('field') as $i => $fd ) {
-            if ( empty($fd) ) continue;
-            if ( !($method = $Option->get('method', '', $i)) ) continue;
+        foreach ($Option->getArray('field') as $i => $fd) {
+            if (empty($fd)) {
+                continue;
+            }
+            if (!($method = $Option->get('method', '', $i))) {
+                continue;
+            }
             $value  = $Option->get('value', '', $i);
-            if ( 'converter' == $method ) {
-                $this->Post->set($fd.':converter', $value);
-            } elseif ( 'duplication' == $method ) {
+            if ('converter' == $method) {
+                $this->Post->set($fd . ':converter', $value);
+            } elseif ('duplication' == $method) {
                 $dup[] = $fd;
                 $dup[] = $field->get($fd);
             } else {
@@ -123,30 +167,31 @@ class ACMS_POST_Form extends ACMS_POST
      */
     function getAttachedFilePath($Field, $fd)
     {
-        if ( 1
+        if (
+            1
             and preg_match('@^(.+)\@path$@', $fd, $match)
             and $Field->isExists($match[1])
-            and $Field->isExists($match[1].'@baseName')
+            and $Field->isExists($match[1] . '@baseName')
         ) {
             $fd_file    = $match[1];
-            $filename   = $Field->get($fd_file.'@baseName');
-            $path       = $Field->get($fd_file.'@path');
-            $original_name = $Field->get($fd_file.'@originalName');
+            $filename   = $Field->get($fd_file . '@baseName');
+            $path       = $Field->get($fd_file . '@path');
+            $original_name = $Field->get($fd_file . '@originalName');
 
-            if ( $download_name = $Field->get($fd_file . '@downloadName') ) {
+            if ($download_name = $Field->get($fd_file . '@downloadName')) {
                 $original_name = $download_name;
             }
-            if( strlen($filename) === 0 ){
+            if (strlen($filename) === 0) {
                 $filename = Storage::mbBasename($path);
             }
-            $realpath = ARCHIVES_DIR.$path;
-            $temppath = ARCHIVES_DIR.config('mail_attachment_temp_dir').$filename;
+            $realpath = ARCHIVES_DIR . $path;
+            $temppath = ARCHIVES_DIR . config('mail_attachment_temp_dir') . $filename;
 
-            if ( Storage::exists($realpath) && Storage::isFile($realpath) ) {
+            if (Storage::exists($realpath) && Storage::isFile($realpath)) {
                 return array(
                     'realpath'  => $realpath,
                     'temppath'  => $temppath,
-                    'fieldpath' => config('mail_attachment_temp_dir').$filename,
+                    'fieldpath' => config('mail_attachment_temp_dir') . $filename,
                     'fdname'    => $fd_file,
                     'original_name' => $original_name,
                 );
@@ -164,16 +209,18 @@ class ACMS_POST_Form extends ACMS_POST
      * @param string $scope
      * @return boolean
      */
-    function double($code, $fmid=null, $scope='local')
+    function double($code, $fmid = null, $scope = 'local')
     {
-        if ( empty($code) ) return true;
+        if (empty($code)) {
+            return true;
+        }
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('form');
         $SQL->setSelect('form_id');
         $SQL->addLeftJoin('blog', 'blog_id', 'form_blog_id');
 
         // local
-        if ( $scope === 'local' ) {
+        if ($scope === 'local') {
             ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
             $Where  = SQL::newWhere();
             $Where->addWhereOpr('form_blog_id', BID, '=', 'OR');
@@ -185,7 +232,7 @@ class ACMS_POST_Form extends ACMS_POST
         }
 
         $SQL->addWhereOpr('form_code', $code);
-        if ( is_int($fmid) ) {
+        if (is_int($fmid)) {
             $SQL->addWhereOpr('form_id', $fmid, '<>');
         }
         $SQL->setLimit(1);

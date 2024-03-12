@@ -30,30 +30,32 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function blogTree(& $SQL, $bid, $axis='self', $scope=null)
+    public static function blogTree(&$SQL, $bid, $axis = 'self', $scope = null)
     {
         $self   = is_int(strpos($axis, 'self'));
-        if ( is_int(strpos($axis, 'descendant')) ) {
+        if (is_int(strpos($axis, 'descendant'))) {
             $eq = $self ? '=' : '';
             $l  = ACMS_RAM::blogLeft($bid);
             $r  = ACMS_RAM::blogRight($bid);
-            if ( 1 < ($r - $l) ) {
-                $SQL->addWhereOpr('blog_left', $l, '>'.$eq, 'AND', $scope);
-                $SQL->addWhereOpr('blog_right', $r, '<'.$eq, 'AND', $scope);
-            } else if ( !$self ) {
+            if (1 < ($r - $l)) {
+                $SQL->addWhereOpr('blog_left', $l, '>' . $eq, 'AND', $scope);
+                $SQL->addWhereOpr('blog_right', $r, '<' . $eq, 'AND', $scope);
+            } elseif (!$self) {
                 $SQL->addWhere('0');
             } else {
                 $axis   = 'self';
             }
-        } else if ( is_int(strpos($axis, 'ancestor')) ) {
+        } elseif (is_int(strpos($axis, 'ancestor'))) {
             $eq     = $self ? '=' : '';
             $l  = ACMS_RAM::blogLeft($bid);
             $r  = ACMS_RAM::blogRight($bid);
-            $SQL->addWhereOpr('blog_left', $l, '<'.$eq, 'AND', $scope);
-            $SQL->addWhereOpr('blog_right', $r, '>'.$eq, 'AND', $scope);
+            $SQL->addWhereOpr('blog_left', $l, '<' . $eq, 'AND', $scope);
+            $SQL->addWhereOpr('blog_right', $r, '>' . $eq, 'AND', $scope);
         }
 
-        if ( 'self' == $axis ) $SQL->addWhereOpr('blog_id', $bid, '=', 'AND', $scope);
+        if ('self' == $axis) {
+            $SQL->addWhereOpr('blog_id', $bid, '=', 'AND', $scope);
+        }
     }
 
     /**
@@ -65,11 +67,11 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function blogStatus(& $SQL, $scope=null)
+    public static function blogStatus(&$SQL, $scope = null)
     {
-        if ( !sessionWithAdministration() ) {
+        if (!sessionWithAdministration()) {
             $aryStatus  = array('open');
-            if ( sessionWithSubscription() ) {
+            if (sessionWithSubscription()) {
                 $aryStatus[]    = 'secret';
             }
             $SQL->addWhereIn('blog_status', $aryStatus, 'AND', $scope);
@@ -85,7 +87,7 @@ class ACMS_Filter
      * @param Field $Field
      * @return void
      */
-    public static function blogField(& $SQL, $Field)
+    public static function blogField(&$SQL, $Field)
     {
         ACMS_Filter::_field($SQL, $Field, 'field_bid', 'blog_id');
     }
@@ -103,9 +105,9 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function blogDisclosureSecretStatus(& $SQL, $scope=null)
+    public static function blogDisclosureSecretStatus(&$SQL, $scope = null)
     {
-        if ( !sessionWithAdministration() ) {
+        if (!sessionWithAdministration()) {
             $aryStatus  = array('open', 'secret');
             $SQL->addWhereIn('blog_status', $aryStatus, 'AND', $scope);
         }
@@ -125,10 +127,10 @@ class ACMS_Filter
      * @param null $scp
      * @return void
      */
-    public static function blogOrder(& $SQL, $order, $scp=null)
+    public static function blogOrder(&$SQL, $order, $scp = null)
     {
         list($field, $order) = explode('-', $order);
-        $SQL->addOrder('blog_'.$field, $order, $scp);
+        $SQL->addOrder('blog_' . $field, $order, $scp);
     }
 
     /**
@@ -140,7 +142,7 @@ class ACMS_Filter
      * @param string $keyword
      * @return void
      */
-    public static function blogKeyword(& $SQL, $keyword)
+    public static function blogKeyword(&$SQL, $keyword)
     {
         ACMS_Filter::_keyword($SQL, $keyword, 'fulltext_bid', 'blog_id');
     }
@@ -157,9 +159,9 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function userStatus(& $SQL, $scope=null)
+    public static function userStatus(&$SQL, $scope = null)
     {
-        if ( !sessionWithAdministration() ) {
+        if (!sessionWithAdministration()) {
             $SQL->addWhereOpr('user_status', 'open', '=', 'AND', $scope);
         }
     }
@@ -178,31 +180,31 @@ class ACMS_Filter
      * @param null $scp
      * @return void
      */
-    public static function userOrder(& $SQL, $order, $scp=null)
+    public static function userOrder(&$SQL, $order, $scp = null)
     {
         $aryOrder   = explode('-', $order);
         $fd     = isset($aryOrder[0]) ? $aryOrder[0] : null;
         $seq    = isset($aryOrder[1]) ? $aryOrder[1] : null;
 
-        if ( 'random' == $fd ) {
+        if ('random' == $fd) {
             $Fd = SQL::newFunction(null, 'random', $scp);
         } else {
-            if ( 'field' == $fd ) {
-                if ( false !== strpos($SQL->get(dsn()), 'field_sort') ) {
+            if ('field' == $fd) {
+                if (false !== strpos($SQL->get(dsn()), 'field_sort')) {
                     $fd = 'strfield_sort';
                 } else {
                     $fd = 'user_id';
                 }
-            } else if ( 'intfield' == $fd ) {
-                if ( false !== strpos($SQL->get(dsn()), 'intfield_sort') ) {
+            } elseif ('intfield' == $fd) {
+                if (false !== strpos($SQL->get(dsn()), 'intfield_sort')) {
                     $fd = 'intfield_sort';
                 } else {
                     $fd = 'user_id';
                 }
-            } else if ( 'amount' == $fd ) {
+            } elseif ('amount' == $fd) {
                 $fd = 'entry_amount';
             } else {
-                $fd = 'user_'.$fd;
+                $fd = 'user_' . $fd;
             }
 
             $Fd = SQL::newField($fd, $scp);
@@ -220,7 +222,7 @@ class ACMS_Filter
      * @param string $keyword
      * @return void
      */
-    public static function userKeyword(& $SQL, $keyword)
+    public static function userKeyword(&$SQL, $keyword)
     {
         ACMS_Filter::_keyword($SQL, $keyword, 'fulltext_uid', 'user_id');
     }
@@ -234,7 +236,7 @@ class ACMS_Filter
      * @param Field $Field
      * @return void
      */
-    public static function userField(& $SQL, $Field)
+    public static function userField(&$SQL, $Field)
     {
         ACMS_Filter::_field($SQL, $Field, 'field_uid', 'user_id');
     }
@@ -252,7 +254,7 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function categoryStatus(& $SQL, $scope=null)
+    public static function categoryStatus(&$SQL, $scope = null)
     {
         if (!sessionWithContribution()) {
             $where = SQL::newWhere();
@@ -278,7 +280,7 @@ class ACMS_Filter
      * @param string|null $scope
      * @return void
      */
-    public static function categoryDisclosureSecretStatus(& $SQL, $scope = null)
+    public static function categoryDisclosureSecretStatus(&$SQL, $scope = null)
     {
         if (!sessionWithAdministration()) {
             $where = SQL::newWhere();
@@ -300,15 +302,15 @@ class ACMS_Filter
      * @param null $blogScope
      * @return void
      */
-    public static function categoryTreeGlobal(& $SQL, $bid, $self=true, $categoryScope=null, $blogScope=null)
+    public static function categoryTreeGlobal(&$SQL, $bid, $self = true, $categoryScope = null, $blogScope = null)
     {
         $bleft  = ACMS_RAM::blogLeft($bid);
         $bright = ACMS_RAM::blogRight($bid);
 
-        if ( $self ) {
+        if ($self) {
             $SQLWhereGlobal = SQL::newWhere();
             $SQLWhereGlobal->addWhereOpr('category_scope', 'global', '=', 'AND', $categoryScope);
-            $SQLWhereGlobal->addWhereOpr('blog_left', $bleft, '<',  'AND', $blogScope);
+            $SQLWhereGlobal->addWhereOpr('blog_left', $bleft, '<', 'AND', $blogScope);
             $SQLWhereGlobal->addWhereOpr('blog_right', $bright, '>', 'AND', $blogScope);
 
             $SQLWhereScope  = SQL::newWhere();
@@ -318,7 +320,7 @@ class ACMS_Filter
             $SQL->addWhere($SQLWhereScope);
         } else {
             $SQL->addWhereOpr('category_scope', 'global', '=', 'AND', $categoryScope);
-            $SQL->addWhereOpr('blog_left', $bleft, '<',  'AND', $blogScope);
+            $SQL->addWhereOpr('blog_left', $bleft, '<', 'AND', $blogScope);
             $SQL->addWhereOpr('blog_right', $bright, '>', 'AND', $blogScope);
         }
     }
@@ -332,7 +334,7 @@ class ACMS_Filter
      * @param Field $Field
      * @return void
      */
-    public static function categoryField(& $SQL, $Field)
+    public static function categoryField(&$SQL, $Field)
     {
         ACMS_Filter::_field($SQL, $Field, 'field_cid', 'category_id');
     }
@@ -353,38 +355,42 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function categoryTree(& $SQL, $cid, $axis='self', $scope=null)
+    public static function categoryTree(&$SQL, $cid, $axis = 'self', $scope = null)
     {
-        if ( empty($cid) ) return true;
+        if (empty($cid)) {
+            return true;
+        }
 
         $self   = is_int(strpos($axis, 'self'));
-        if ( is_int(strpos($axis, 'descendant')) ) {
+        if (is_int(strpos($axis, 'descendant'))) {
             $eq     = $self ? '=' : '';
             $l      = ACMS_RAM::categoryLeft($cid);
             $r      = ACMS_RAM::categoryRight($cid);
             $cbid   = ACMS_RAM::categoryBlog($cid);
 
-            if ( 1 < ($r - $l) ) {
-                $SQL->addWhereOpr('category_left', $l, '>'.$eq, 'AND', $scope);
-                $SQL->addWhereOpr('category_right', $r, '<'.$eq, 'AND', $scope);
+            if (1 < ($r - $l)) {
+                $SQL->addWhereOpr('category_left', $l, '>' . $eq, 'AND', $scope);
+                $SQL->addWhereOpr('category_right', $r, '<' . $eq, 'AND', $scope);
                 $SQL->addWhereOpr('category_blog_id', $cbid, '=', 'AND', $scope);
-            } else if ( !$self ) {
+            } elseif (!$self) {
                 $SQL->addWhere('0');
             } else {
                 $axis   = 'self';
             }
-        } else if ( is_int(strpos($axis, 'ancestor')) ) {
+        } elseif (is_int(strpos($axis, 'ancestor'))) {
             $eq     = $self ? '=' : '';
             $l      = ACMS_RAM::categoryLeft($cid);
             $r      = ACMS_RAM::categoryRight($cid);
             $cbid   = ACMS_RAM::categoryBlog($cid);
 
-            $SQL->addWhereOpr('category_left', $l, '<'.$eq, 'AND', $scope);
-            $SQL->addWhereOpr('category_right', $r, '>'.$eq, 'AND', $scope);
+            $SQL->addWhereOpr('category_left', $l, '<' . $eq, 'AND', $scope);
+            $SQL->addWhereOpr('category_right', $r, '>' . $eq, 'AND', $scope);
             $SQL->addWhereOpr('category_blog_id', $cbid, '=', 'AND', $scope);
         }
 
-        if ( 'self' == $axis ) $SQL->addWhereOpr('category_id', $cid, '=', 'AND', $scope);
+        if ('self' == $axis) {
+            $SQL->addWhereOpr('category_id', $cid, '=', 'AND', $scope);
+        }
     }
 
     /**
@@ -401,15 +407,19 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function categoryOrder(& $SQL, $order, $scope=null)
+    public static function categoryOrder(&$SQL, $order, $scope = null)
     {
         list($field, $order) = explode('-', $order);
-        if ( 'amount' == $field ) $field = 'entry_'.$field;
-        if ( 'sort' == $field ) $field = 'left';
-        if ( $field === 'left' ) {
+        if ('amount' == $field) {
+            $field = 'entry_' . $field;
+        }
+        if ('sort' == $field) {
+            $field = 'left';
+        }
+        if ($field === 'left') {
             $SQL->addOrder('category_blog_id', config('global_category_sort', 'DESC'));
         }
-        $SQL->addOrder('category_'.$field, $order, $scope);
+        $SQL->addOrder('category_' . $field, $order, $scope);
     }
 
     /**
@@ -421,7 +431,7 @@ class ACMS_Filter
      * @param string $keyword
      * @return void
      */
-    public static function categoryKeyword(& $SQL, $keyword)
+    public static function categoryKeyword(&$SQL, $keyword)
     {
         ACMS_Filter::_keyword($SQL, $keyword, 'fulltext_cid', 'category_id');
     }
@@ -438,13 +448,13 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function entryStatus(& $SQL, $scope=null)
+    public static function entryStatus(&$SQL, $scope = null)
     {
 
-        if ( true || !sessionWithCompilation() ) {
+        if (true || !sessionWithCompilation()) {
             $SQLWhereEntryStatus    = SQL::newWhere();
             $SQLWhereEntryStatus->addWhereOpr('entry_status', 'open', '=', 'AND', $scope);
-            if ( sessionWithContribution() ) {
+            if (sessionWithContribution()) {
                 $SQLWhereContributor    = SQL::newWhere();
                 $SQLWhereContributor->addWhereOpr('entry_user_id', SUID, '=', 'AND', $scope);
                 $SQLWhereEntryStatus->addWhere($SQLWhereContributor);
@@ -463,7 +473,7 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function entryValidSpan(& $SQL, $datetime, $scope=null)
+    public static function entryValidSpan(&$SQL, $datetime, $scope = null)
     {
         $SQL->addWhereOpr('entry_start_datetime', $datetime, '<=', 'AND', $scope);
         $SQL->addWhereOpr('entry_end_datetime', $datetime, '>=', 'AND', $scope);
@@ -478,7 +488,7 @@ class ACMS_Filter
      * @param null $scp
      * @return void
      */
-    public static function entrySession(& $SQL, $scp=null, $private=false)
+    public static function entrySession(&$SQL, $scp = null, $private = false)
     {
         $SQLWhereSession    = SQL::newWhere();
 
@@ -495,22 +505,25 @@ class ACMS_Filter
 
         if ($private || timemachineMode()) {
             $SQL->addWhere($SQLWhereSession);
-        } else if ( 1
+        } elseif (
+            1
             && !sessionWithCompilation()
             && (config('approval_contributor_edit_auth') === 'on' || !approvalAvailableUser(SUID))
         ) {
-            if ( 1
+            if (
+                1
                 && roleAvailableUser()
                 && roleAuthorization('entry_edit', BID)
                 && roleAuthorization('entry_edit_all', BID)
             ) {
-                if ( !(defined('RVID') && RVID) && !isset($_GET['trash']) ) {
+                if (!(defined('RVID') && RVID) && !isset($_GET['trash'])) {
                     $SQL->addWhereOpr('entry_status', 'trash', '<>', 'AND', $scp);
                 }
                 return;
-            } else if ( sessionWithContribution() ) {
+            } elseif (sessionWithContribution()) {
                 $SQLWhereStatus = SQL::newWhere();
-                if ( 1
+                if (
+                    1
                     && (config('approval_contributor_edit_auth') === 'on' || !approvalAvailableUser(SUID))
                     && ( 'on' == config('session_contributor_only_own_entry') )
                 ) {
@@ -526,7 +539,7 @@ class ACMS_Filter
             } else {
                 $SQL->addWhere($SQLWhereSession);
             }
-        } else if ( !(defined('RVID') && RVID) && !isset($_GET['trash']) ) {
+        } elseif (!(defined('RVID') && RVID) && !isset($_GET['trash'])) {
             $SQL->addWhereOpr('entry_status', 'trash', '<>', 'AND', $scp);
         }
     }
@@ -542,7 +555,7 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function entrySpan(& $SQL, $start, $end, $scope=null)
+    public static function entrySpan(&$SQL, $start, $end, $scope = null)
     {
         $SQL->addWhereBw('entry_datetime', $start, $end, 'AND', $scope);
     }
@@ -557,17 +570,19 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function entryTag(& $SQL, $tags, $scope=null)
+    public static function entryTag(&$SQL, $tags, $scope = null)
     {
-        if ( !is_array($tags) and empty($tags) ) return false;
+        if (!is_array($tags) and empty($tags)) {
+            return false;
+        }
 
         $tag    = array_shift($tags);
         $SQL->addLeftJoin('tag', 'tag_entry_id', 'entry_id', 'tag0');
         $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag0');
         $i  = 1;
-        while ( $tag = array_shift($tags) ) {
-            $SQL->addLeftJoin('tag', 'tag_entry_id', 'tag_entry_id', 'tag'.$i, 'tag'.($i-1));
-            $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag'.$i);
+        while ($tag = array_shift($tags)) {
+            $SQL->addLeftJoin('tag', 'tag_entry_id', 'tag_entry_id', 'tag' . $i, 'tag' . ($i - 1));
+            $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag' . $i);
             $i++;
         }
     }
@@ -581,7 +596,7 @@ class ACMS_Filter
      * @param string $keyword
      * @return void
      */
-    public static function entryKeyword(& $SQL, $keyword)
+    public static function entryKeyword(&$SQL, $keyword)
     {
         ACMS_Filter::_keyword($SQL, $keyword, 'fulltext_eid', 'entry_id');
     }
@@ -595,7 +610,7 @@ class ACMS_Filter
      * @param Field $Field
      * @return array
      */
-    public static function entryField(& $SQL, $Field)
+    public static function entryField(&$SQL, $Field)
     {
         return ACMS_Filter::_field($SQL, $Field, 'field_eid', 'entry_id');
     }
@@ -618,18 +633,18 @@ class ACMS_Filter
      *
      * @return string
      */
-    public static function entryOrder(& $SQL, $order, $uid=null, $cid=null, $secondary_filed_sort=false, $field_name=false)
+    public static function entryOrder(&$SQL, $order, $uid = null, $cid = null, $secondary_filed_sort = false, $field_name = false)
     {
         $orders = array();
         $sortFd = '';
 
-        if ( is_array($order) ) {
+        if (is_array($order)) {
             $orderKeys = array();
-            foreach ( $order as $item ) {
-                if ( preg_match('/^[^-]+-(asc|desc)$/i', $item) ) {
+            foreach ($order as $item) {
+                if (preg_match('/^[^-]+-(asc|desc)$/i', $item)) {
                     $order_info = explode('-', $item);
                     $fd = isset($order_info[0]) ? $order_info[0] : null;
-                    if ( !isset($orderKeys[$fd]) ) {
+                    if (!isset($orderKeys[$fd])) {
                         $orderKeys[$fd] = $item;
                     }
                 } else {
@@ -647,25 +662,25 @@ class ACMS_Filter
         $fd = $first;
         $seq = 'asc';
         $field_num = '';
-        if ( intval($secondary_filed_sort) > 1 ) {
+        if (intval($secondary_filed_sort) > 1) {
             $field_num = '_' . $secondary_filed_sort;
         }
 
-        if ( preg_match('/^[^-]+-(asc|desc)$/i', $first) ) {
+        if (preg_match('/^[^-]+-(asc|desc)$/i', $first)) {
             $order_info = explode('-', $first);
             $fd = isset($order_info[0]) ? $order_info[0] : null;
             $seq = isset($order_info[1]) ? $order_info[1] : null;
         }
 
-        if ( 'random' == $fd ) {
+        if ('random' == $fd) {
             $SQL->setOrder(SQL::newFunction(null, 'random'));
         } else {
-            switch ( $fd ) {
+            switch ($fd) {
                 case 'sort':
                     if (!empty($uid) && is_numeric($uid)) {
                         $SQL->addOrder('entry_user_sort', $seq);
                         $sortFd = 'entry_user_sort';
-                    } else if (!empty($cid) && is_numeric($cid)) {
+                    } elseif (!empty($cid) && is_numeric($cid)) {
                         $SQL->addOrder('entry_category_sort', $seq);
                         $sortFd = 'entry_category_sort';
                     } else {
@@ -691,8 +706,8 @@ class ACMS_Filter
                 case 'category_id':
                 case 'user_id':
                 case 'blog_id':
-                    $SQL->addOrder('entry_'.$fd, $seq);
-                    $sortFd = 'entry_'.$fd;
+                    $SQL->addOrder('entry_' . $fd, $seq);
+                    $sortFd = 'entry_' . $fd;
                     break;
                 case 'field':
                     if (!empty($field_name)) {
@@ -703,10 +718,10 @@ class ACMS_Filter
                         $SQL->addLeftJoin('(' . $SUB->get(dsn()) . ')', 'field_eid', 'entry_id', 'sortFieldTable' . $secondary_filed_sort);
                         $SQL->addOrder(SQL::newOpr('strfield_sort_column', null, '='), 'ASC');
                         $SQL->addOrder('strfield_sort_column', $seq);
-                    } else if ( false !== strpos($SQL->get(), 'strfield_sort') ) {
+                    } elseif (false !== strpos($SQL->get(), 'strfield_sort')) {
                         $SQL->addOrder('strfield_sort' . $field_num, $seq);
                     }
-                    if ( intval($secondary_filed_sort) > 1 ) {
+                    if (intval($secondary_filed_sort) > 1) {
                         $secondary_filed_sort++;
                     } else {
                         $secondary_filed_sort = 2;
@@ -721,7 +736,7 @@ class ACMS_Filter
                         $SQL->addLeftJoin('(' . $SUB->get(dsn()) . ')', 'field_eid', 'entry_id', 'sortFieldTable' . $secondary_filed_sort);
                         $SQL->addOrder(SQL::newOpr('intfield_sort_column', null, '='), 'ASC');
                         $SQL->addOrder('intfield_sort_column', $seq);
-                    } else if ( false !== strpos($SQL->get(), 'intfield_sort') ) {
+                    } elseif (false !== strpos($SQL->get(), 'intfield_sort')) {
                         $SQL->addOrder('intfield_sort' . $field_num, $seq);
                     }
                     if (intval($secondary_filed_sort) > 1) {
@@ -733,8 +748,8 @@ class ACMS_Filter
                 default:
                     break;
             }
-            foreach ( $orders as $order ) {
-                if ( $order !== 'random'  ) {
+            foreach ($orders as $order) {
+                if ($order !== 'random') {
                     self::entryOrder($SQL, $order, $uid, $cid, $secondary_filed_sort, $field_name);
                 }
             }
@@ -759,10 +774,10 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function tagOrder(& $SQL, $order, $scope=null)
+    public static function tagOrder(&$SQL, $order, $scope = null)
     {
         list($field, $order) = explode('-', $order);
-        $SQL->addOrder('tag_'.$field, $order);
+        $SQL->addOrder('tag_' . $field, $order);
     }
     /**
      * タグの特定フィールドを指定して，昇順または降順で並び替えます
@@ -777,10 +792,10 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function mediaTagOrder(& $SQL, $order, $scope=null)
+    public static function mediaTagOrder(&$SQL, $order, $scope = null)
     {
         list($field, $order) = explode('-', $order);
-        $SQL->addOrder('media_tag_'.$field, $order);
+        $SQL->addOrder('media_tag_' . $field, $order);
     }
 
      /**
@@ -796,7 +811,7 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function mediaOrder(& $SQL, $order, $scope=null)
+    public static function mediaOrder(&$SQL, $order, $scope = null)
     {
         list($field, $order) = explode('-', $order);
 
@@ -807,10 +822,10 @@ class ACMS_Filter
             $field = 'upload_date';
         }
         if ($field === 'file_size') {
-            $SQL->addOrder(SQL::newField('ABS(media_' . $field. ')'),  $order);
+            $SQL->addOrder(SQL::newField('ABS(media_' . $field . ')'), $order);
             return;
         }
-        $SQL->addOrder('media_' . $field,  $order);
+        $SQL->addOrder('media_' . $field, $order);
     }
 
     //-------
@@ -825,7 +840,7 @@ class ACMS_Filter
      * @param Field $Field
      * @return void
      */
-    public static function fieldList(& $SQL, $Field)
+    public static function fieldList(&$SQL, $Field)
     {
         ACMS_Filter::_field($SQL, $Field);
     }
@@ -833,13 +848,14 @@ class ACMS_Filter
     //--------
     // common
 
-    private static function _field_where(& $Where, $Field, $fd, $aryOperator, & $emptyAry )
+    private static function _field_where(&$Where, $Field, $fd, $aryOperator, &$emptyAry)
     {
         $res = true;
 
-        foreach ( $aryOperator as $i => $operator ) {
+        foreach ($aryOperator as $i => $operator) {
             $value  = $Field->get($fd, '', $i);
-            if ( 1
+            if (
+                1
                 and ''    === $value
                 and 'em'  <>  $operator
                 and 'nem' <>  $operator
@@ -847,7 +863,7 @@ class ACMS_Filter
                 continue;
             }
 
-            switch ( $operator ) {
+            switch ($operator) {
                 case 'eq':
                     $operator   = '=';
                     $value      = strval($value);
@@ -902,11 +918,15 @@ class ACMS_Filter
                 $value = preg_replace('/\\\(.)/u', '${1}', $value); // エスケープを考慮
             }
             if ($operator === 'LIKE' and !preg_match('@^%|%$@', $value)) {
-                $value = '%'.$value.'%';
+                $value = '%' . $value . '%';
             }
-            $Where->addWhereOpr('field_value', $value, $operator,
+            $Where->addWhereOpr(
+                'field_value',
+                $value,
+                $operator,
                 ('OR' == strtoupper($Field->getConnector($fd, $i))) ?
-                'OR' : 'AND');
+                'OR' : 'AND'
+            );
         }
 
         return $res;
@@ -916,33 +936,34 @@ class ACMS_Filter
      * field
      *
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
-     * @param Field $Field
+     * @param Field_Search $Field
      * @param string $fieldKey
      * @param string $tableKey
      * @return array
      */
-    private static function _field(& $SQL, $Field, $fieldKey = null, $tableKey = null)
+    private static function _field(&$SQL, $Field, $fieldKey = null, $tableKey = null)
     {
         $sortFields = array();
         $unionAry   = array();
         $emptyAry   = array();
         $sort       = false;
 
-        foreach ( $Field->listFields() as $j => $fd ) {
+        foreach ($Field->listFields() as $j => $fd) {
             $Where          = SQL::newWhere();
             $aryOperator    = $Field->getOperator($fd, null);
-            if ( !ACMS_Filter::_field_where($Where, $Field, $fd, $aryOperator, $emptyAry) ) {
+            if (!ACMS_Filter::_field_where($Where, $Field, $fd, $aryOperator, $emptyAry)) {
                 continue;
             }
 
-            if ( 1
+            if (
+                1
                 and !!$Where->get()
                 and !!$fieldKey
                 and !!$tableKey
             ) {
                 $SUB    = SQL::newSelect('field');
                 $SUB->addSelect($fieldKey);
-                if ( !$sort ) {
+                if (!$sort) {
                     $sort = true;
                     $SUB->addSelect('field_value', 'strfield_sort');
                     $SUB->addSelect(SQL::newOpr('field_value', 0, '+'), 'intfield_sort');
@@ -957,26 +978,26 @@ class ACMS_Filter
                 $SUB->addWhereOpr('field_key', $fd);
                 $SUB->addWhere($Where);
 
-                if ( empty($j) ) {
+                if (empty($j)) {
                     $unionAry[] = clone $SUB;
                 } else {
                     $separator = $Field->getSeparator($fd);
-                    if ( $separator === 'or' ) {
+                    if ($separator === 'or') {
                         $unionAry[] = clone $SUB;
                         array_pop($sortFields);
                         array_pop($sortFields);
                     } else {
                         $uniouCount = count($unionAry);
-                        if ( $uniouCount > 1 ) {
-                            $UNION = SQL::newSelect($unionAry[0], 'field_union'.$j);
+                        if ($uniouCount > 1) {
+                            $UNION = SQL::newSelect($unionAry[0], 'field_union' . $j);
                         }
-                        for ( $i=1; $i<$uniouCount; $i++ ) {
+                        for ($i = 1; $i < $uniouCount; $i++) {
                             $UNION->addUnion($unionAry[$i]);
                         }
-                        if ( $uniouCount > 1 ) {
-                            $SQL->addInnerJoin($UNION, $fieldKey, $tableKey, 'field'.$j);
-                        } else if ( $uniouCount > 0 ) {
-                            $SQL->addInnerJoin($unionAry[0], $fieldKey, $tableKey, 'field'.$j);
+                        if ($uniouCount > 1) {
+                            $SQL->addInnerJoin($UNION, $fieldKey, $tableKey, 'field' . $j);
+                        } elseif ($uniouCount > 0) {
+                            $SQL->addInnerJoin($unionAry[0], $fieldKey, $tableKey, 'field' . $j);
                         }
 
                         $unionAry   = array();
@@ -989,22 +1010,22 @@ class ACMS_Filter
             }
         }
         $uniouCount = count($unionAry);
-        if ( $uniouCount > 1 ) {
+        if ($uniouCount > 1) {
             $UNION = SQL::newSelect($unionAry[0], 'field_union_end');
         }
-        for ( $i=1; $i<$uniouCount; $i++ ) {
+        for ($i = 1; $i < $uniouCount; $i++) {
             $UNION->addUnion($unionAry[$i]);
         }
-        if ( $uniouCount > 1 ) {
+        if ($uniouCount > 1) {
             $SQL->addInnerJoin($UNION, $fieldKey, $tableKey, 'field_end');
-        } else if ( $uniouCount > 0 ) {
+        } elseif ($uniouCount > 0) {
             $SQL->addInnerJoin($unionAry[0], $fieldKey, $tableKey, 'field_end');
         }
 
         //-------
         // empty
-        if ( !empty($emptyAry) ) {
-            $temp = '`'. substr(base_convert(md5(uniqid()), 16, 36), 0, 8) . '`';
+        if (!empty($emptyAry)) {
+            $temp = '`' . substr(base_convert(md5(uniqid()), 16, 36), 0, 8) . '`';
             $NOT_EXISTS = SQL::newSelect('field');
             $NOT_EXISTS->setSelect($fieldKey, null, null, 'DISTINCT');
             $NOT_EXISTS->addWhereIn('field_key', $emptyAry);
@@ -1027,40 +1048,44 @@ class ACMS_Filter
      * @param string $tableKey
      * @return void
      */
-    private static function _keyword(& $SQL, $keyword, $fulltextKey, $tableKey)
+    private static function _keyword(&$SQL, $keyword, $fulltextKey, $tableKey)
     {
-        if ( empty($keyword) ) return false;
+        if (empty($keyword)) {
+            return false;
+        }
 
         $keyword = addcslashes($keyword, '%_');
-        if ( !$aryWord = preg_split('/(　|\s)+/u', $keyword, -1, PREG_SPLIT_NO_EMPTY) ) return false;
+        if (!$aryWord = preg_split('/(　|\s)+/u', $keyword, -1, PREG_SPLIT_NO_EMPTY)) {
+            return false;
+        }
 
         //----------------------
         // NGRAM & BOOLEAN MODE
-        if ( config('ngram') ) {
+        if (config('ngram')) {
             $against    = '';
-            foreach ( $aryWord as $word ) {
+            foreach ($aryWord as $word) {
                 $operator   = '+';
-                if ( substr($word, 0, 1) === '-' ) {
+                if (substr($word, 0, 1) === '-') {
                     $operator   = '-';
                     $word       = substr($word, 1);
                 }
                 $aryToken   = ngram($word, config('ngram'));
-                $against    .= ' '.$operator.'(+'.join(' +', $aryToken).')';
+                $against    .= ' ' . $operator . '(+' . join(' +', $aryToken) . ')';
             }
 
             $ngramSQL   = SQL::newSelect('fulltext');
             $ngramSQL->setSelect($fulltextKey);
-            $ngramSQL->addWhere('MATCH ( fulltext_ngram ) AGAINST ('."'".$against."'".' IN BOOLEAN MODE)');
+            $ngramSQL->addWhere('MATCH ( fulltext_ngram ) AGAINST (' . "'" . $against . "'" . ' IN BOOLEAN MODE)');
             $SQL->addInnerJoin($ngramSQL, $fulltextKey, $tableKey, 'ft');
         //-----------
         // LIKE MODE
         } else {
-            foreach ( $aryWord as $word ) {
-                if ( substr($word, 0, 1) === '-' ) {
+            foreach ($aryWord as $word) {
+                if (substr($word, 0, 1) === '-') {
                     $word   = substr($word, 1);
-                    $SQL->addWhereOpr('fulltext_value', '%'.$word.'%', 'NOT LIKE');
+                    $SQL->addWhereOpr('fulltext_value', '%' . $word . '%', 'NOT LIKE');
                 } else {
-                    $SQL->addWhereOpr('fulltext_value', '%'.$word.'%', 'LIKE');
+                    $SQL->addWhereOpr('fulltext_value', '%' . $word . '%', 'LIKE');
                 }
             }
             $SQL->addLeftJoin('fulltext', $fulltextKey, $tableKey);
@@ -1082,22 +1107,22 @@ class ACMS_Filter
      * @param null $cid
      * @return void
      */
-    public static function formbuildOrder(& $SQL, $order, $uid=null, $cid=null)
+    public static function formbuildOrder(&$SQL, $order, $uid = null, $cid = null)
     {
         $aryOrder   = explode('-', $order);
         $fd         = isset($aryOrder[0]) ? $aryOrder[0] : null;
         $seq        = isset($aryOrder[1]) ? $aryOrder[1] : null;
 
-        if ( 'random' == $fd ) {
+        if ('random' == $fd) {
             $SQL->setOrder(SQL::newFunction(null, 'random'));
         } else {
-            switch ( $fd ) {
+            switch ($fd) {
                 case 'id':
                     break;
                 case 'sort':
-                    if ( !empty($uid) ) {
+                    if (!empty($uid)) {
                         $SQL->addOrder('formbuild_user_sort', $seq);
-                    } else if ( !empty($cid) ) {
+                    } elseif (!empty($cid)) {
                         $SQL->addOrder('formbuild_category_sort', $seq);
                     } else {
                         $SQL->addOrder('formbuild_sort', $seq);
@@ -1120,15 +1145,15 @@ class ACMS_Filter
                 case 'category_id':
                 case 'user_id':
                 case 'blog_id':
-                    $SQL->addOrder('formbuild_'.$fd, $seq);
+                    $SQL->addOrder('formbuild_' . $fd, $seq);
                     break;
                 case 'field':
-                    if ( false !== strpos($SQL->get(), 'strfield_sort') ) {
+                    if (false !== strpos($SQL->get(), 'strfield_sort')) {
                         $SQL->addOrder('strfield_sort', $seq);
                     }
                     break;
                 case 'intfield':
-                    if ( false !== strpos($SQL->get(), 'intfield_sort') ) {
+                    if (false !== strpos($SQL->get(), 'intfield_sort')) {
                         $SQL->addOrder('intfield_sort', $seq);
                     }
                     break;
@@ -1147,10 +1172,9 @@ class ACMS_Filter
      * @param null $scp
      * @return void
      */
-    public static function formbuildSession(& $SQL, $scp=null)
+    public static function formbuildSession(&$SQL, $scp = null)
     {
-        if ( !sessionWithCompilation() ) {
-
+        if (!sessionWithCompilation()) {
             $SQLWhereSession    = SQL::newWhere();
 
             //------------
@@ -1162,10 +1186,10 @@ class ACMS_Filter
             //--------
             // status
             $SQLWhereSession->addWhereOpr('formbuild_status', 'open', '=', 'AND', $scp);
-            if ( sessionWithContribution() ) {
+            if (sessionWithContribution()) {
                 $SQLWhereStatus = SQL::newWhere();
 
-                if ( 'on' == config('session_contributor_only_own_entry') ) {
+                if ('on' == config('session_contributor_only_own_entry')) {
                     $connector  = 'AND';
                 } else {
                     $SQLWhereStatus->addWhere($SQLWhereSession);
@@ -1190,7 +1214,7 @@ class ACMS_Filter
      * @param null $scope
      * @return void
      */
-    public static function formbuildSpan(& $SQL, $start, $end, $scope=null)
+    public static function formbuildSpan(&$SQL, $start, $end, $scope = null)
     {
         $SQL->addWhereBw('formbuild_datetime', $start, $end, 'AND', $scope);
     }
@@ -1204,24 +1228,24 @@ class ACMS_Filter
      * @param Field $Field
      * @return void
      */
-    public static function formbuildField(& $SQL, $Field)
+    public static function formbuildField(&$SQL, $Field)
     {
         ACMS_Filter::_field($SQL, $Field, 'field_eid', 'formbuild_id');
     }
 
-    public static function crmMailField(& $SQL, $Field)
+    public static function crmMailField(&$SQL, $Field)
     {
-        foreach ( $Field->listFields() as $j => $fd ) {
+        foreach ($Field->listFields() as $j => $fd) {
             $Where          = SQL::newWhere();
             $aryOperator    = $Field->getOperator($fd, null);
-            foreach ( $aryOperator as $i => $operator ) {
+            foreach ($aryOperator as $i => $operator) {
                 $value      = $Field->get($fd, '', $i);
                 $notexist   = false;
 
-                if ( '' == $value ) {
+                if ('' == $value) {
                     continue;
                 }
-                switch ( $operator ) {
+                switch ($operator) {
                     case 'eq':
                         $operator   = '=';
                         break;
@@ -1267,12 +1291,16 @@ class ACMS_Filter
                     default:    // exception
                         continue 2;
                 }
-                if ( $operator === 'LIKE' and !preg_match('@^%|%$@', $value) ) {
-                    $value = '%'.$value.'%';
+                if ($operator === 'LIKE' and !preg_match('@^%|%$@', $value)) {
+                    $value = '%' . $value . '%';
                 }
 
-                $Where->addWhereOpr($fd, $value, $operator,
-                    ('OR' != strtoupper($Field->getConnector($fd, $i))) ? 'AND' : 'OR');
+                $Where->addWhereOpr(
+                    $fd,
+                    $value,
+                    $operator,
+                    ('OR' != strtoupper($Field->getConnector($fd, $i))) ? 'AND' : 'OR'
+                );
             }
 
             $DB         = DB::singleton(dsn());
@@ -1282,13 +1310,12 @@ class ACMS_Filter
             $res        = $DB->query($Customer->get(dsn()), 'exec');
             $fieldCount = $DB->columnCount($res);
             $cfields    = array();
-            for ( $i=0; $i<$fieldCount; $i++ ) {
+            for ($i = 0; $i < $fieldCount; $i++) {
                 $cfields[]  = $DB->columnMeta($i);
             }
-            if ( array_search($fd, $cfields) !== false ) {
+            if (array_search($fd, $cfields, true) !== false) {
                 $SQL->addWhere($Where);
             }
         }
     }
-
 }

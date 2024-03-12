@@ -17,6 +17,134 @@ session_remote_addr_check: off # on | off ログイン中に接続元IPアドレ
 forbidden_blog_http_status: 404 # 404 | 403
 referrer_policy: strict-origin-when-cross-origin # no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin | strict-origin-when-cross-origin | unsafe-url
 subscriber_access_admin_page: [] # 読者権限でアクセスできる管理ページを設定
+strip_dangerous_tag: off # on | off 変数から標準で危険なタグ（dangerous_tagsで指定）を削除するか指定
+dangerous_tags: ['script', 'iframe'] # 変数から標準で削除するタグを指定
+base_allowed_tags: # 変数で出力できる全タグリスト
+  - a
+  - abbr
+  - acronym
+  - address
+  - applet
+  - area
+  - article
+  - aside
+  - audio
+  - b
+  - base
+  - basefont
+  - bdi
+  - bdo
+  - big
+  - blockquote
+  - body
+  - br
+  - button
+  - canvas
+  - caption
+  - center
+  - cite
+  - code
+  - col
+  - colgroup
+  - data
+  - datalist
+  - dd
+  - del
+  - details
+  - dfn
+  - dialog
+  - dir
+  - div
+  - dl
+  - dt
+  - em
+  - embed
+  - fieldset
+  - figcaption
+  - figure
+  - font
+  - footer
+  - form
+  - frame
+  - frameset
+  - h1
+  - h2
+  - h3
+  - h4
+  - h5
+  - h6
+  - head
+  - header
+  - hgroup
+  - hr
+  - html
+  - i
+  - iframe
+  - img
+  - input
+  - ins
+  - kbd
+  - label
+  - legend
+  - li
+  - link
+  - main
+  - map
+  - mark
+  - menu
+  - meta
+  - meter
+  - nav
+  - noframes
+  - noscript
+  - object
+  - ol
+  - optgroup
+  - option
+  - output
+  - p
+  - param
+  - picture
+  - pre
+  - progress
+  - q
+  - rp
+  - rt
+  - ruby
+  - s
+  - samp
+  - script
+  - search
+  - section
+  - select
+  - small
+  - source
+  - span
+  - strike
+  - strong
+  - style
+  - sub
+  - summary
+  - sup
+  - svg
+  - table
+  - tbody
+  - td
+  - template
+  - textarea
+  - tfoot
+  - th
+  - thead
+  - time
+  - title
+  - tr
+  - track
+  - tt
+  - u
+  - ul
+  - var
+  - video
+  - wbr
 
 ## ログイン・セッション
 subscribe_login_anywhere: off # on | off
@@ -52,6 +180,7 @@ withdrawal_delete_type: logical # logical（論理削除） | physical（物理�
 withdrawal_retention_period: 90 # 30 | 90 | 120 | 150 | 180 | -1（削除しない） 論理削除の場合、何日語に物理削除するか指定します
 extra_logged_in_cookie: off # on | off この値がonだと、ログイン中にユーザー権限が入ったCookieを追加で付与する。Cookieを付与するだけでログイン処理には使用しない。
 extra_logged_in_cookie_name: acms-logged-in # ログイン中に追加されるCookieの名前を指定する。extra_logged_in_cookie が on の時有効。
+logout_redirect_page: top # top | auth ログアウト時のリダイレクト先ページを設定します。
 
 ## 自動アップデート
 system_update_range: patch # patch | minor | none アップデートを行う範囲。パッチのみアップデートか、マイナーバージョンを含めてアップデートするか、更新メニューを表示しない。
@@ -104,7 +233,7 @@ corrector_replace: on
 experimental_enable_global_rule: on
 directory_index: []
 url_preview_expire: 48
-allow_unregistered_domain: on # on | off システムに登録されていないドメインでも表示する
+allow_unregistered_domain: off # on | off システムに登録されていないドメインでも表示する（デバッグモード時のみ有効）
 category_order_strict_mode: off # on | off カテゴリー親子関係を厳密に指定したURLでないと404になるモード。onだと同ブログ内でも同じ階層でなければ同名のカテゴリーコードを設定可能
 
 ## エントリーロック
@@ -1995,23 +2124,6 @@ shop_order_request_others_charge    :
 ## 税金設定
 shop_tax_rate       : 0.08
 shop_tax_calculate  : extax #(intax|extax)
-
-## 受注情報のリスト設定
-shop_receipt_list_limit     : 10
-shop_receipt_list_order     : datetime-desc
-shop_receipt_pager_delta    : 3
-shop_receipt_pager_attr     : ' class="cur"'
-
-## お客様情報のリスト設定
-shop_customer_list_limit    : 10
-shop_customer_list_order    : generated_datetime-desc
-
-## 受注ステータスの設定
-shop_receipt_status         :
-  - 注文受付
-  - 発送準備
-  - 発送済み
-  - 任意項目
 
 ## 合計金額に含める項目
 shop_total_involve          : deliver-others

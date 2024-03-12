@@ -22,11 +22,17 @@ class DatabaseHandler extends AbstractProcessingHandler
             }
             DB::setThrowException(true);
 
+            /** @var int $bid */
             $bid = defined('BID') ? BID : 0;
+            /** @var int|null $uid */
             $uid = defined('UID') ? UID : null;
+            /** @var int|null $cid */
             $cid = defined('CID') ? CID : null;
+            /** @var int|null $eid */
             $eid = defined('EID') ? EID : null;
+            /** @var int|null $rid */
             $rid = defined('RID') ? RID : null;
+            /** @var int $suid */
             $suid = (defined('SUID') && !is_null(SUID)) ? SUID : 0;
             $acmsPost = (defined('ACMS_POST') && !!ACMS_POST) ? ACMS_POST : '';
 

@@ -16,7 +16,7 @@ class Engine
     public function __construct($payload)
     {
         if (!defined('CURL_SSLVERSION_TLSv1_2')) {
-            define('CURL_SSLVERSION_TLSv1_2', 6);
+            define('CURL_SSLVERSION_TLSv1_2', 6); // phpcs:ignore
         }
         $this->payload = $payload;
     }
@@ -60,7 +60,7 @@ class Engine
         $sql->addWhereOpr('webhook_type', $type);
         $where = SQL::newWhere();
         foreach ($events as $event) {
-            $where->addWhere(SQL::newFunction( "'{$event}', webhook_events", 'FIND_IN_SET'), 'OR');
+            $where->addWhere(SQL::newFunction("'{$event}', webhook_events", 'FIND_IN_SET'), 'OR');
         }
         $sql->addWhere($where);
         $where = SQL::newWhere();
@@ -132,7 +132,7 @@ class Engine
      */
     protected function buildPayload($payload, $tpl)
     {
-        $tplEngine = new Template;
+        $tplEngine = new Template();
         return $tplEngine->render(setGlobalVars($tpl), $payload);
     }
 

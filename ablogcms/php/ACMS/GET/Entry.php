@@ -20,7 +20,7 @@ class ACMS_GET_Entry extends ACMS_GET
             && $entry['entry_approval'] !== 'pre_approval'
             && VIEW === 'entry'
         );
-        $unitGroupEnable= (config('unit_group') === 'on');
+        $unitGroupEnable = (config('unit_group') === 'on');
         $mediaDataList = Media::mediaEagerLoadFromUnit($Column);
 
         foreach ($Column as $k => $data) {
@@ -42,7 +42,8 @@ class ACMS_GET_Entry extends ACMS_GET
             }
             //-------
             // group
-            if (1
+            if (
+                1
                 && $unitGroupEnable
                 && $group !== ''
                 && $renderGroup === true
@@ -164,12 +165,12 @@ class ACMS_GET_Entry extends ACMS_GET
                     } else {
                         $i++;
                     }
-                    $path = ARCHIVES_DIR.$path_;
+                    $path = ARCHIVES_DIR . $path_;
                     $xy = Storage::getImageSize($path);
 
-                    $vars['path'.$i] = $path;
-                    $vars['x'.$i] = isset($xy[0]) ? $xy[0] : '';
-                    $vars['y'.$i] = isset($xy[1]) ? $xy[1] : '';
+                    $vars['path' . $i] = $path;
+                    $vars['x' . $i] = isset($xy[0]) ? $xy[0] : '';
+                    $vars['y' . $i] = isset($xy[1]) ? $xy[1] : '';
                 }
 
                 $vars['alt'] = $data['alt'];
@@ -213,7 +214,7 @@ class ACMS_GET_Entry extends ACMS_GET
                         $large = substr($path, 0, strlen($path) - strlen($name)) . 'large-' . $name;
                         if ($xy = Storage::getImageSize($large)) {
                             $Tpl->add(
-                                array_merge(array('link'. $j .'#front', 'unit#' . $actualType), $rootBlock),
+                                array_merge(array('link' . $j . '#front', 'unit#' . $actualType), $rootBlock),
                                 array(
                                     'url' . $j    => BASE_URL . $large,
                                     'viewer' . $j => str_replace('{unit_eid}', $eid, config('entry_body_image_viewer')),
@@ -224,10 +225,10 @@ class ACMS_GET_Entry extends ACMS_GET
                             $Tpl->add(array_merge(array('link' . $j . '#rear', 'unit#' . $actualType), $rootBlock));
                         }
                     } else {
-                        $Tpl->add(array_merge(array('link'.$j.'#front', 'unit#'.$actualType), $rootBlock), array(
+                        $Tpl->add(array_merge(array('link' . $j . '#front', 'unit#' . $actualType), $rootBlock), array(
                             'url' . $j  => $link_,
                         ));
-                        $Tpl->add(array_merge(array('link'.$j.'#rear', 'unit#'.$actualType), $rootBlock));
+                        $Tpl->add(array_merge(array('link' . $j . '#rear', 'unit#' . $actualType), $rootBlock));
                     }
                 }
 
@@ -279,10 +280,10 @@ class ACMS_GET_Entry extends ACMS_GET
                         continue;
                     }
                     $vars += array(
-                        'path'.$fx => $path,
-                        'icon'.$fx => $icon,
-                        'x'.$fx => 70,
-                        'y'.$fx => 81,
+                        'path' . $fx => $path,
+                        'icon' . $fx => $icon,
+                        'x' . $fx => 70,
+                        'y' . $fx => 81,
                     );
                     if (config('file_icon_size') === 'dynamic') {
                         $xy = Storage::getImageSize($icon);
@@ -305,7 +306,7 @@ class ACMS_GET_Entry extends ACMS_GET
 
                 $vars['utid'] = $utid;
                 $vars['unit_eid'] = $eid;
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //-----
             // map
@@ -348,7 +349,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 }
                 $vars['utid'] = $utid;
                 $vars['unit_eid'] = $eid;
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
             } elseif ($type === 'osmap') {
                 if (empty($data['lat'])) {
                     continue;
@@ -385,7 +386,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 }
                 $vars['utid'] = $utid;
                 $vars['unit_eid'] = $eid;
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
             //---------
             // youtube
             } elseif ($type === 'youtube') {
@@ -419,7 +420,7 @@ class ACMS_GET_Entry extends ACMS_GET
 
                 $vars['utid']       = $utid;
                 $vars['unit_eid']   = $eid;
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //---------
             // video
@@ -459,7 +460,7 @@ class ACMS_GET_Entry extends ACMS_GET
 
                 $vars['utid'] = $utid;
                 $vars['unit_eid'] = $eid;
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //---------
             // eximage
@@ -476,7 +477,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 $normalAry = explodeUnitData($data['normal']);
                 $linkAry = explodeUnitData($data['link']);
                 $largeAry = explodeUnitData($data['large']);
-                foreach ( $normalAry as $i => $normal ) {
+                foreach ($normalAry as $i => $normal) {
                     $j = empty($i) ? '' : $i + 1;
 
                     $link_  = isset($linkAry[$i]) ? $linkAry[$i] : '';
@@ -493,8 +494,8 @@ class ACMS_GET_Entry extends ACMS_GET
                             $vars['viewer' . $j] = str_replace('{unit_eid}', $eid, config('entry_body_image_viewer'));
                         }
 
-                        $Tpl->add(array_merge(array('link'.$j.'#front', 'unit#'.$actualType), $rootBlock), $vars);
-                        $Tpl->add(array_merge(array('link'.$j.'#rear', 'unit#'.$actualType), $rootBlock));
+                        $Tpl->add(array_merge(array('link' . $j . '#front', 'unit#' . $actualType), $rootBlock), $vars);
+                        $Tpl->add(array_merge(array('link' . $j . '#rear', 'unit#' . $actualType), $rootBlock));
                     }
                 }
 
@@ -514,7 +515,7 @@ class ACMS_GET_Entry extends ACMS_GET
                     } else {
                         $viewClass = $data['display_size'];
                         $viewClass = ltrim($viewClass, '.');
-                        $vars['display_size_class'] = ' js_notStyle '.$viewClass;
+                        $vars['display_size_class'] = ' js_notStyle ' . $viewClass;
                     }
                 }
 
@@ -536,7 +537,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 buildUnitData($vars['large'], $vars, 'large');
                 buildUnitData($vars['caption'], $vars, 'caption');
 
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //-------
             // quote
@@ -583,7 +584,7 @@ class ACMS_GET_Entry extends ACMS_GET
                     $vars['attr'] = $data['attr'];
                 }
 
-                $Tpl->add(array('unit#'.$actualType), $vars);
+                $Tpl->add(array('unit#' . $actualType), $vars);
 
             //-------
             // media
@@ -634,8 +635,9 @@ class ACMS_GET_Entry extends ACMS_GET
                         $unitLink = isset($mediaLinks[$i]) ? $mediaLinks[$i] : '';
                         $link = $unitLink ? $unitLink : $media['media_field_2'];
                         $url = false;
-                        $originalX = 999999999;
-                        $originalY = 999999999;
+                        $originalX = 0;
+                        $originalY = 0;
+
                         if (strpos($media['media_image_size'], 'x') !== false) {
                             list($tempX, $tempY) = explode('x', $media['media_image_size']);
                             $originalX = intval(trim($tempX));
@@ -643,7 +645,7 @@ class ACMS_GET_Entry extends ACMS_GET
                         }
                         if (strpos($size, 'x') !== false) {
                             list($tempX, $tempY) = explode('x', $size);
-                            if ($originalX >= $tempX && $originalY >= $tempY) {
+                            if (empty($originalX) || empty($originalY) || ($originalX >= $tempX && $originalY >= $tempY)) {
                                 $vars['x' . $fx] = $tempX;
                                 $vars['y' . $fx] = $tempY;
                             } else {
@@ -733,9 +735,9 @@ class ACMS_GET_Entry extends ACMS_GET
                         $icon = pathIcon($media['media_extension']);
                         $vars += array(
                             'url' . $fx => $url,
-                            'icon'.$fx => $icon,
-                            'x'.$fx => 70,
-                            'y'.$fx => 81,
+                            'icon' . $fx => $icon,
+                            'x' . $fx => 70,
+                            'y' . $fx => 81,
                         );
                         if (config('file_icon_size') === 'dynamic') {
                             $xy = Storage::getImageSize($icon);
@@ -745,7 +747,7 @@ class ACMS_GET_Entry extends ACMS_GET
                         if (!empty($media['media_thumbnail'])) {
                             $vars['thumbnail' . $fx] = $media['media_thumbnail'];
                             if (isset($mediaUseIcons[$i])) {
-                                $vars['use_icon'.$fx] = $mediaUseIcons[$i];
+                                $vars['use_icon' . $fx] = $mediaUseIcons[$i];
                             }
                         }
                     }
@@ -780,8 +782,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 $varsRoot['utid'] = $utid;
                 $varsRoot['unit_eid'] = $eid;
 
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $varsRoot);
-
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $varsRoot);
             } elseif ($type === 'rich-editor') {
                 if (empty($data['json'])) {
                     continue;
@@ -797,7 +798,6 @@ class ACMS_GET_Entry extends ACMS_GET
             //-------
             // break
             } elseif ($type === 'break') {
-
                 if (empty($data['label'])) {
                     continue;
                 }
@@ -814,12 +814,11 @@ class ACMS_GET_Entry extends ACMS_GET
                 $vars['unit_eid'] = $eid;
                 $vars['align'] = $data['align'];
 
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //--------
             // module
             } elseif ($type === 'module') {
-
                 if (empty($data['mid'])) {
                     continue;
                 }
@@ -843,7 +842,7 @@ class ACMS_GET_Entry extends ACMS_GET
                 $vars['unit_eid'] = $eid;
                 $vars['align'] = $data['align'];
 
-                $Tpl->add(array_merge(array('unit#'.$actualType), $rootBlock), $vars);
+                $Tpl->add(array_merge(array('unit#' . $actualType), $rootBlock), $vars);
 
             //--------
             // custom
@@ -865,7 +864,8 @@ class ACMS_GET_Entry extends ACMS_GET
                 $Field = acmsUnserialize($data['field']);
                 Tpl::injectMediaField($Field, true);
                 foreach ($Field->listFields() as $fd) {
-                    if ( 1
+                    if (
+                        1
                         && !strpos($fd, '@path')
                         && !strpos($fd, '@tinyPath')
                         && !strpos($fd, '@largePath')
@@ -883,7 +883,7 @@ class ACMS_GET_Entry extends ACMS_GET
                     }
                 }
 
-                $block = array_merge(array('unit#'.$actualType), $rootBlock);
+                $block = array_merge(array('unit#' . $actualType), $rootBlock);
                 $vars += $this->buildField($Field, $Tpl, $block, null, array(
                     'utid' => $utid,
                 ));
@@ -894,7 +894,8 @@ class ACMS_GET_Entry extends ACMS_GET
 
             //--------------
             // edit inplace
-            if (1
+            if (
+                1
                 && VIEW === 'entry'
                 && 'on' === config('entry_edit_inplace_enable')
                 && 'on' === config('entry_edit_inplace')

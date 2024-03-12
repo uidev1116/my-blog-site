@@ -12,7 +12,7 @@ class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
     {
         @set_time_limit(0);
 
-        if ( !$this->checkAuth() ) {
+        if (!$this->checkAuth()) {
             return $this->Post;
         }
         $rid = $this->Get->get('rid') ?: null;
@@ -29,7 +29,7 @@ class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
             $this->Post->set('import', 'success');
 
             AcmsLogger::info('コンフィグの部分インポートをしました');
-        } catch ( \Exception $e ) {
+        } catch (\Exception $e) {
             $this->addError($e->getMessage());
             AcmsLogger::info('コンフィグの部分エクスポートが失敗しました', Common::exceptionArray($e));
         }
