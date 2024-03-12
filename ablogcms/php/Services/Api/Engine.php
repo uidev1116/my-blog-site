@@ -71,7 +71,8 @@ class Engine
             $sql->addWhereOpr('module_identifier', $identifier);
             $sql->addWhereOpr('module_name', $moduleName);
             $eagerLoadModule[$moduleName][$identifier] = DB::query($sql->get(dsn()), 'row');
-            $json = boot($moduleName, '', $opt, $post, $config, $eagerLoadModule);
+            $res = boot($moduleName, '', $opt, $post, $config, $eagerLoadModule);
+            $json = $this->isValidJson($res) ? $res : '{}';
             $noCache = false;
         } catch (NotFoundModuleException $e) {
             AcmsLogger::error('API機能: 有効なモジュールIDが存在しません', [
@@ -269,5 +270,10 @@ class Engine
             header('Access-Control-Max-Age: 3600');
             die();
         }
+    }
+
+    protected function isValidJson(string $json)
+    {
+        return is_null(json_decode($json)) === false;
     }
 }
