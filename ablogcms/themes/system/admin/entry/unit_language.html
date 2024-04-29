@@ -7,10 +7,24 @@
     <li><a href="#tab{id}_en">English</a></li>
   </ul>
   <div id="tab{id}_ja" class="acms-admin-tabs-panel">
-    <textarea type="text" name="text_text_{id}[]" aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->" rows="10" style="width:100%;" class="entryFormTextarea {diff}" placeholder="日本語">{text}[escape|escvars]</textarea>
+    <textarea
+      name="text_text_{id}[]"
+      aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->"
+      rows="10"
+      style="width:100%;"
+      class="entryFormTextarea {diff}"
+      placeholder="日本語"
+    >{text}[escvars]</textarea>
   </div>
   <div id="tab{id}_en" class="acms-admin-tabs-panel">
-    <textarea type="text" name="text_text_{id}[]" aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->" rows="10" style="width:100%;" class="entryFormTextarea {diff}" placeholder="English">{text2}[escape|escvars]</textarea>
+    <textarea
+      name="text_text_{id}[]"
+      aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->"
+      rows="10"
+      style="width:100%;"
+      class="entryFormTextarea {diff}"
+      placeholder="English"
+    >{text2}[escvars]</textarea>
   </div>
 </div>
 <br />
@@ -603,8 +617,14 @@
       <tr class="entryFormFileControl">
         <th><label for="unit-quote-link-{id}"><!--T-->引用URL<!--/T--></label></th>
         <td>
-          <input type="text" name="quote_url_{id}[]" size="45" value="{quote_url}" id="unit-quote-link-{id}" class="entryFormInputText acms-admin-form-width-full"/>
-          <!-- BEGIN html:veil -->{tw_oembed}[raw]<!-- END html:veil -->
+          <input
+            type="text"
+            name="quote_url_{id}[]"
+            size="45"
+            value="{quote_url}"
+            id="unit-quote-link-{id}"
+            class="entryFormInputText acms-admin-form-width-full"
+          />
         </td>
       </tr>
     </table>
@@ -615,8 +635,14 @@
       <tr class="entryFormFileControl">
         <th><label for="unit-quote-link2-{id}"><!--T-->引用URL<!--/T--></label></th>
         <td>
-          <input type="text" name="quote_url_{id}[]" size="45" value="{quote_url2}" id="unit-quote-link2-{id}" class="entryFormInputText acms-admin-form-width-full"/>
-          <!-- BEGIN html2:veil -->{tw_oembed2}[raw]<!-- END html2:veil -->
+          <input
+            type="text"
+            name="quote_url_{id}[]"
+            size="45"
+            value="{quote_url2}"
+            id="unit-quote-link2-{id}"
+            class="entryFormInputText acms-admin-form-width-full"
+          />
         </td>
       </tr>
     </table>

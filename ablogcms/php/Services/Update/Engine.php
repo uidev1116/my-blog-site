@@ -41,7 +41,7 @@ class Engine
     /**
      * データベーススキーマ
      *
-     * @var \ACMS\Services\Update\Schema
+     * @var \Acms\Services\Update\Database\Schema
      */
     protected $schema;
 

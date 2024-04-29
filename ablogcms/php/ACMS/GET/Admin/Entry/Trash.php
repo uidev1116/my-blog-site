@@ -17,7 +17,7 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
         $limit  = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         //-------
         // error
@@ -25,9 +25,9 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
             $Tpl->add('errorMessage');
             $vars['notice_mess'] = 'show';
             foreach ($entries as $id) {
-                $Tpl->add('errorEid:loop', array(
+                $Tpl->add('errorEid:loop', [
                     'errorEid'  => $id,
-                ));
+                ]);
             }
         } else {
             //---------
@@ -58,9 +58,9 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
         // axis
         $axis   = $this->Get->get('axis', 'self');
         if (1 < ACMS_RAM::blogRight($target_bid) - ACMS_RAM::blogLeft($target_bid)) {
-            $Tpl->add('axis', array(
+            $Tpl->add('axis', [
                 'axis:checked#' . $axis => config('attr_checked')
-            ));
+            ]);
         } else {
             $axis   = 'self';
         }
@@ -86,7 +86,7 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
         //-------
         // limit
         foreach ($limits as $val) {
-            $_vars  = array('limit' => $val);
+            $_vars  = ['limit' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -133,8 +133,8 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -150,8 +150,8 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
             $bid    = $row['entry_blog_id'];
             $delUid = $row['entry_delete_uid'];
 
-            $_vars = array();
-            $_vars += array(
+            $_vars = [];
+            $_vars += [
                 'eid'       => $eid,
                 'bid'       => $bid,
                 'datetime'  => $row['entry_datetime'],
@@ -161,43 +161,43 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
                 'blogName'  => ACMS_RAM::blogName($bid),
                 'userName'  => ACMS_RAM::userName($uid),
                 'userIcon'  => loadUserIcon($uid),
-                'entryUrl'  => acmsLink(array(
+                'entryUrl'  => acmsLink([
                     'admin' => false,
                     'bid'   => $bid,
                     'eid'   => $eid,
-                )),
-                'blogUrl'   => acmsLink(array(
+                ]),
+                'blogUrl'   => acmsLink([
                     'admin' => ADMIN,
                     'bid'   => $bid,
-                )),
-                'userUrl'   => acmsLink(array(
+                ]),
+                'userUrl'   => acmsLink([
                     'admin' => ADMIN,
                     'uid'   => $uid,
-                )),
-                'editUrl'   => acmsLink(array(
+                ]),
+                'editUrl'   => acmsLink([
                     'admin' => 'entry_editor',
                     'eid'   => $eid,
-                )),
-            );
+                ]),
+            ];
             if (!empty($delUid)) {
-                $_vars += array(
+                $_vars += [
                     'delUserName' => ACMS_RAM::userName($delUid),
                     'delUserIcon' => loadUserIcon($delUid),
-                    'delUserUrl' => acmsLink(array(
+                    'delUserUrl' => acmsLink([
                         'admin' => ADMIN,
                         'uid' => $delUid,
-                    )),
-                );
+                    ]),
+                ];
             }
 
             if ($cid) {
-                $_vars += array(
+                $_vars += [
                     'categoryName' => ACMS_RAM::categoryName($cid),
-                    'categoryUrl' => acmsLink(array(
+                    'categoryUrl' => acmsLink([
                         'admin' => ADMIN,
                         'cid' => $cid,
-                    )),
-                );
+                    ]),
+                ];
             }
 
             //------------
@@ -211,10 +211,10 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
                     $sort   = $row['entry_sort'];
                 }
 
-                $_vars  += array(
+                $_vars  += [
                     'sort'      => $sort,
                     'sort#eid'  => $eid,
-                );
+                ];
             }
 
             //---------
@@ -229,7 +229,7 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
                         break;
                     }
                 }
-                $Tpl->add(array('adminDeleteActionLoop', 'entry:loop'));
+                $Tpl->add(['adminDeleteActionLoop', 'entry:loop']);
             } while (false);
 
             //-------
@@ -250,8 +250,8 @@ class ACMS_GET_Admin_Entry_Trash extends ACMS_GET_Admin_Entry
                     break;
                 }
             }
-            $Tpl->add(array('adminDeleteAction'));
-            $Tpl->add(array('adminDeleteAction2'));
+            $Tpl->add(['adminDeleteAction']);
+            $Tpl->add(['adminDeleteAction2']);
         } while (false);
 
         //-------------

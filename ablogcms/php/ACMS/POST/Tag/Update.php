@@ -41,7 +41,7 @@ class ACMS_POST_Tag_Update extends ACMS_POST
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('tag');
         $SQL->setSelect('tag_entry_id');
-        $SQL->addWhereIn('tag_name', array($oldTag, $tag));
+        $SQL->addWhereIn('tag_name', [$oldTag, $tag]);
         $SQL->addWhereOpr('tag_blog_id', BID);
         $SQL->setGroup('tag_entry_id');
         $SQL->setHaving(SQL::newOpr('tag_entry_id', 2, '>=', null, 'COUNT'));

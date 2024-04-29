@@ -17,13 +17,13 @@ class ACMS_GET_Shop2_Form_RequestList extends ACMS_GET_Shop2
 
         do {
             $date = date('Y-m-d', strtotime('+' . $start . 'day'));
-            $vars = array('date' => $date);
+            $vars = ['date' => $date];
 
             // if session is stored
             if ($SESSION->get('request_date') == $date) {
-                $vars += array('selected' => config('attr_selected'),
-                               'checked'  => config('attr_checked'),
-                               );
+                $vars += ['selected' => config('attr_selected'),
+                    'checked'  => config('attr_checked'),
+                ];
             }
 
             $Tpl->add('date:loop', $vars);
@@ -36,13 +36,13 @@ class ACMS_GET_Shop2_Form_RequestList extends ACMS_GET_Shop2
         $times = $this->config->getArray('shop_order_request_time');
 
         foreach ($times as $time) {
-            $vars = array('time' => $time);
+            $vars = ['time' => $time];
 
             // if session is stored
             if ($SESSION->get('request_time') == $time) {
-                $vars += array('selected' => config('attr_selected'),
-                               'checked'  => config('attr_checked'),
-                               );
+                $vars += ['selected' => config('attr_selected'),
+                    'checked'  => config('attr_checked'),
+                ];
             }
 
             $Tpl->add('time:loop', $vars);
@@ -55,16 +55,16 @@ class ACMS_GET_Shop2_Form_RequestList extends ACMS_GET_Shop2
         $charge   = $this->config->getArray('shop_order_request_others_charge');
 
         foreach ($requests as $key => $request) {
-            $vars = array(
-                        'request' => $request,
-                        'charge'  => @$charge[$key],
-                        );
+            $vars = [
+                'request' => $request,
+                'charge'  => @$charge[$key],
+            ];
 
             // if session is stored
             if ($SESSION->get('request_others') == $request) {
-                $vars += array('selected' => config('attr_selected'),
-                               'checked'  => config('attr_checked'),
-                               );
+                $vars += ['selected' => config('attr_selected'),
+                    'checked'  => config('attr_checked'),
+                ];
             }
 
             $Tpl->add('request:loop', $vars);

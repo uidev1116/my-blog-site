@@ -15,31 +15,31 @@ class ACMS_GET_Shop2_Form_DeliverList extends ACMS_GET_Shop2
         $common = $this->config->get('shop_order_shipping_common');
 
         foreach ($delivers as $key => $deliver) {
-            $vars = array('deliver' => $deliver);
+            $vars = ['deliver' => $deliver];
 
             /**
              * detect shipping
              */
             if (isset($charge[$key]) && is_numeric($charge[$key])) {
-                $vars += array('charge' => @$charge[$key]);
+                $vars += ['charge' => @$charge[$key]];
             } else {
                 if (is_numeric($common)) {
-                    $vars += array(
+                    $vars += [
                         'charge' => intval($this->config->get('shop_order_shipping_common')),
                         'prefecture' => '全国一律',
-                    );
+                    ];
                 } else {
-                    $vars += array(
+                    $vars += [
                         'charge' => $this->shipping($ADDRESS->get('prefecture')),
                         'prefecture' => $ADDRESS->get('prefecture'),
-                    );
+                    ];
                 }
             }
 
             if ($SESSION->get('deliver') == $deliver) {
-                $vars += array('selected' => config('attr_selected'),
+                $vars += ['selected' => config('attr_selected'),
                     'checked' => config('attr_checked'),
-                );
+                ];
             }
 
             $Tpl->add('deliver:loop', $vars);

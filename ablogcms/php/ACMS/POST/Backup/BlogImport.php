@@ -16,7 +16,7 @@ class ACMS_POST_Backup_BlogImport extends ACMS_POST_Backup_Base
     /**
      * run
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -67,10 +67,12 @@ class ACMS_POST_Backup_BlogImport extends ACMS_POST_Backup_Base
      */
     private function getYaml()
     {
+        $yamlPath = $this->tmpDir . 'acms_blog_data/data.yaml';
         try {
-            return Storage::get($this->tmpDir . 'acms_blog_data/data.yaml');
+            return Storage::get($yamlPath, dirname($yamlPath));
         } catch (\Exception $e) {
-            return Storage::get($this->tmpDir . 'data.yaml');
+            $yamlPath = $this->tmpDir . 'data.yaml';
+            return Storage::get($yamlPath, dirname($yamlPath));
         }
         throw new \RuntimeException('File does not exist.');
     }
@@ -114,7 +116,7 @@ class ACMS_POST_Backup_BlogImport extends ACMS_POST_Backup_Base
      */
     private function deleteArchives()
     {
-        foreach (array(ARCHIVES_DIR, MEDIA_LIBRARY_DIR, MEDIA_STORAGE_DIR) as $baseDir) {
+        foreach ([ARCHIVES_DIR, MEDIA_LIBRARY_DIR, MEDIA_STORAGE_DIR] as $baseDir) {
             $target = SCRIPT_DIR . $baseDir . sprintf("%03d", BID) . '/';
             if (Storage::isDirectory($target)) {
                 Storage::removeDirectory($target);
@@ -129,11 +131,11 @@ class ACMS_POST_Backup_BlogImport extends ACMS_POST_Backup_Base
      */
     private function copyArchives()
     {
-        $list = array(
+        $list = [
             'archives/' => ARCHIVES_DIR,
             'media/' => MEDIA_LIBRARY_DIR,
             'storage/' => MEDIA_STORAGE_DIR,
-        );
+        ];
         foreach ($list as $from => $to) {
             $exists = false;
             $from = $this->tmpDir . 'acms_blog_data/' . $from . '001/';

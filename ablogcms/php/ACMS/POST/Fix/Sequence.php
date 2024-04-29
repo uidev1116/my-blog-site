@@ -9,7 +9,7 @@ class ACMS_POST_Fix_Sequence extends ACMS_POST_Fix
         }
 
         $DB  = DB::singleton(dsn());
-        $seq = array(
+        $seq = [
             'blog_id'                   => '1',
             'alias_id'                  => '0',
             'config_set_id'             => '0',
@@ -31,7 +31,7 @@ class ACMS_POST_Fix_Sequence extends ACMS_POST_Fix
             'webhook_id'                => '0',
             'audit_log_id'              => '0',
             'system_version'            => VERSION,
-        );
+        ];
 
         foreach ($seq as $fd => $val) {
             if ($fd == 'system_version') {

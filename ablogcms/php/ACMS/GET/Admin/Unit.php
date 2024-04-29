@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Unit extends ACMS_GET_Admin_Entry
 {
-    function buildUnit($data, &$Tpl, $rootBlock = array(), $buildColumn = array())
+    function buildUnit($data, &$Tpl, $rootBlock = [], $buildColumn = [])
     {
         return $this->buildColumn($data, $Tpl, $rootBlock, $buildColumn);
     }
@@ -21,7 +21,7 @@ class ACMS_Model
      * get
      *
      * @access public
-     * @param strig $key
+     * @param string $key
      * @param mixed $default
      *
      * @return mixed
@@ -122,7 +122,7 @@ class ACMS_Model_Unit extends ACMS_Model
             return false;
         }
 
-        $units  = array();
+        $units  = [];
         foreach ($all as $row) {
             $Unit = new ACMS_Model_Unit();
             $Unit->setFields($row);
@@ -144,54 +144,54 @@ class ACMS_Model_Unit extends ACMS_Model
     {
         switch ($type) {
             case 'text':
-                return array(
+                return [
                     'text'          => $this->get('column_field_1'),
                     'tag'           => $this->get('column_field_2'),
                     'extend_tag'    => $this->get('column_field_3'),
-                );
+                ];
             case 'table':
-                return array(
+                return [
                     'table'     => $this->get('column_field_1'),
-                );
+                ];
             case 'image':
-                return array(
+                return [
                     'caption'   => $this->get('column_field_1'),
                     'path'      => $this->get('column_field_2'),
                     'link'      => $this->get('column_field_3'),
                     'alt'       => $this->get('column_field_4'),
                     'exif'      => $this->get('column_field_6'),
-                );
+                ];
             case 'file':
-                return array(
+                return [
                     'caption'   => $this->get('column_field_1'),
                     'path'      => $this->get('column_field_2'),
-                );
+                ];
             case 'osmap':
             case 'map':
-                return array(
+                return [
                     'msg'   => $this->get('column_field_1'),
                     'lat'   => $this->get('column_field_2'),
                     'lng'   => $this->get('column_field_3'),
                     'zoom'  => $this->get('column_field_4'),
-                );
+                ];
             case 'youtube':
-                return array(
+                return [
                     'youtube_id'    => $this->get('column_field_2'),
-                );
+                ];
             case 'video':
-                return array(
+                return [
                     'video_id'      => $this->get('column_field_2'),
-                );
+                ];
             case 'eximage':
-                return array(
+                return [
                     'caption'   => $this->get('column_field_1'),
                     'normal'    => $this->get('column_field_2'),
                     'large'     => $this->get('column_field_3'),
                     'link'      => $this->get('column_field_4'),
                     'alt'       => $this->get('column_field_5'),
-                );
+                ];
             case 'quote':
-                return array(
+                return [
                     'quote_url' => $this->get('column_field_6'),
                     'html'      => $this->get('column_field_7'),
                     'site_name' => $this->get('collmn_field_1'),
@@ -199,30 +199,30 @@ class ACMS_Model_Unit extends ACMS_Model
                     'title'     => $this->get('collmn_field_3'),
                     'description' => $this->get('collmn_field_4'),
                     'image'     => $this->get('collmn_field_5'),
-                );
+                ];
             case 'media':
-                return array(
+                return [
                     'media_id' => $this->get('column_field_1'),
                     'caption' => $this->get('column_field_2'),
                     'alt' => $this->get('column_field_3'),
                     'enlarged' => $this->get('column_field_4'),
                     'use_icon' => $this->get('column_field_5'),
-                );
+                ];
             case 'module':
-                return array(
+                return [
                     'mid'       => $this->get('column_field_1'),
                     'tpl'       => $this->get('column_field_2'),
-                );
+                ];
             case 'custom':
-                return array(
+                return [
                     'field'     => $this->get('column_field_6'),
-                );
+                ];
             case 'rich-editor':
-                return array(
+                return [
                     'json' => $this->get('column_field_1')
-                );
+                ];
             default:
-                return array();
+                return [];
         }
     }
 }

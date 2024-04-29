@@ -23,9 +23,9 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
             }
             $vars = json_decode($response, true);
             if (is_array($vars) && $this->is_vector($vars)) {
-                $vars = array(
+                $vars = [
                     'root' => $vars,
-                );
+                ];
             }
             if (is_array($vars)) {
                 return $Tpl->render($vars);

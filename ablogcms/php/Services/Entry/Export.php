@@ -5,7 +5,6 @@ namespace Acms\Services\Entry;
 use SQL;
 use DB;
 use Acms\Services\Contracts\Export as ExportBase;
-use Symfony\Component\Yaml\Yaml;
 
 class Export extends ExportBase
 {
@@ -20,46 +19,46 @@ class Export extends ExportBase
     protected $prefix;
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetEntryIds = array();
+    protected $targetEntryIds = [];
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetCategoryIds = array();
+    protected $targetCategoryIds = [];
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetMediaIds = array();
+    protected $targetMediaIds = [];
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetModuleIds = array();
+    protected $targetModuleIds = [];
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $mediaFiles = array();
+    protected $mediaFiles = [];
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $storageFiles = array();
+    protected $storageFiles = [];
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $archivesFiles = array();
+    protected $archivesFiles = [];
 
     /**
      * Export constructor.
      */
     public function __construct()
     {
-        $this->setTables(array(
+        $this->setTables([
             'entry',
             'column',
             'field',
@@ -69,7 +68,7 @@ class Export extends ExportBase
             'media',
             'media_tag',
             'module',
-        ));
+        ]);
         $dsn = dsn();
         $this->prefix = $dsn['prefix'];
     }
@@ -85,30 +84,30 @@ class Export extends ExportBase
      */
     public function export($fp)
     {
-        $queryList = array();
+        $queryList = [];
 
         foreach ($this->tables as $table) {
             $sql = SQL::newSelect($table);
             $method = 'getQuery' . ucfirst($table);
-            if (is_callable(array($this, $method))) {
-                $sql = call_user_func_array(array($this, $method), array($sql));
+            if (is_callable([$this, $method])) {
+                $sql = call_user_func_array([$this, $method], [$sql]);
             }
             $q = $sql->get(dsn());
             $queryList[$table] = $q;
         }
         $this->dumpYaml($fp, $queryList);
 
-        return array(
+        return [
             'media' => $this->mediaFiles,
             'storage' => $this->storageFiles,
             'archives' => $this->archivesFiles,
-        );
+        ];
     }
 
     /**
      * fix data
      *
-     * @param &array $records
+     * @param array &$record
      * @param string $table
      *
      * @return void
@@ -129,8 +128,8 @@ class Export extends ExportBase
         DB::query($q, 'fetch');
 
         while ($row = DB::fetch($q)) {
-            $cid = $row['entry_category_id'];
-            if (!empty($cid) && !in_array($cid, $this->targetCategoryIds)) {
+            $cid = intval($row['entry_category_id']);
+            if ($cid > 0 && !in_array($cid, $this->targetCategoryIds, true)) {
                 $this->targetCategoryIds[] = $cid;
             }
         }
@@ -155,15 +154,19 @@ class Export extends ExportBase
                 $this->archivesFiles[] = $row['column_field_2'];
             }
             if ($type === 'media') {
-                if (!in_array($row['column_field_1'], $this->targetMediaIds)) {
-                    $this->targetMediaIds[] = $row['column_field_1'];
+                $mediaId = intval($row['column_field_1']);
+                if ($mediaId > 0 && !in_array($mediaId, $this->targetMediaIds, true)) {
+                    $this->targetMediaIds[] = $mediaId;
                 }
             }
             if ($type === 'module') {
-                $this->targetModuleIds[] = $row['column_field_1'];
+                $this->targetModuleIds[] = intval($row['column_field_1']);
             }
             if ($type === 'custom') {
                 $field = acmsUnserialize($row['column_field_6']);
+                if (!($field instanceof \Field)) {
+                    continue;
+                }
                 if (!method_exists($field, 'deleteField')) {
                     continue;
                 }
@@ -173,8 +176,9 @@ class Export extends ExportBase
                             continue;
                         }
                         if (strpos($fd, '@media') !== false) {
-                            if (!in_array($val, $this->targetMediaIds)) {
-                                $this->targetMediaIds[] = $val;
+                            $mediaId = intval($val);
+                            if ($mediaId > 0 && !in_array($mediaId, $this->targetMediaIds, true)) {
+                                $this->targetMediaIds[] = $mediaId;
                             }
                         } elseif (
                             0
@@ -213,8 +217,9 @@ class Export extends ExportBase
             }
             // media
             if (strpos($fd, '@media') !== false) {
-                if (!in_array($row['field_value'], $this->targetMediaIds)) {
-                    $this->targetMediaIds[] = $row['field_value'];
+                $mediaId = intval($row['field_value']);
+                if ($mediaId > 0 && !in_array($mediaId, $this->targetMediaIds, true)) {
+                    $this->targetMediaIds[] = $mediaId;
                 }
             }
         }
@@ -235,8 +240,8 @@ class Export extends ExportBase
         DB::query($q, 'fetch');
 
         while ($row = DB::fetch($q)) {
-            $cid = $row['entry_sub_category_id'];
-            if (!empty($cid) && !in_array($cid, $this->targetCategoryIds)) {
+            $cid = intval($row['entry_sub_category_id']);
+            if ($cid > 0 && !in_array($cid, $this->targetCategoryIds, true)) {
                 $this->targetCategoryIds[] = $cid;
             }
         }

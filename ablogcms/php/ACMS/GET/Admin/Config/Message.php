@@ -8,9 +8,9 @@ class ACMS_GET_Admin_Config_Message extends ACMS_GET
         $config = $this->Post->get('config');
 
         if (!empty($config)) {
-            $Tpl->add(null, array(
+            $Tpl->add(null, [
                 'config_name' => $config,
-            ));
+            ]);
         }
 
         return $Tpl->get();

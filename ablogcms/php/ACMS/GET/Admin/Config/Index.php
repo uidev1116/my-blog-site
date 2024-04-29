@@ -8,7 +8,7 @@ class ACMS_GET_Admin_Config_Index extends ACMS_GET_Admin
         $setid = intval($this->Get->get('setid'));
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $aryAdmin = array(
+        $aryAdmin = [
             'config_function', 'config_cache', 'config_login', 'config_api', 'config_output', 'config_property',
             'config_mail', 'config_access',
             'config_edit', 'config_unit', 'config_bulk-change',
@@ -17,11 +17,11 @@ class ACMS_GET_Admin_Config_Index extends ACMS_GET_Admin
             'customfield_maker', 'i18n_index', 'config_index', 'config_admin-menu',
             'config_deprecated_theme', 'config_deprecated_edit', 'config_deprecated_unit',
             'config_deprecated_bulk-change',
-        );
+        ];
 
         //--------
         // module
-        $aryModule = array(
+        $aryModule = [
             'Entry_Body',
             'Entry_List',
             'Entry_Photo',
@@ -65,26 +65,26 @@ class ACMS_GET_Admin_Config_Index extends ACMS_GET_Admin
             'Schedule',
             'Alias_List',
             'Field_ValueList',
-        );
+        ];
 
         foreach ($aryModule as $module) {
             $aryAdmin[]  = 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $module));
         }
 
         foreach ($aryAdmin as $admin) {
-            $AP = array(
+            $AP = [
                 'bid'   => BID,
                 'admin' => $admin,
-            );
+            ];
             if ($rid || $setid) {
-                $AP['query'] = array(
+                $AP['query'] = [
                     'rid' => $rid,
                     'setid' => $setid,
-                );
+                ];
             }
-            $Tpl->add($admin, array(
+            $Tpl->add($admin, [
                 'url'   => acmsLink($AP),
-            ));
+            ]);
         }
 
         return $Tpl->get();

@@ -18,6 +18,7 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
             die();
         }
         if ((1 < $max) and !empty($_POST['checks']) and is_array($_POST['checks'])) {
+            $aryBid = [];
             foreach ($_POST['checks'] as $bid) {
                 if (!$bid = idval($bid)) {
                     continue;
@@ -152,7 +153,7 @@ class ACMS_POST_Blog_Index_Sort extends ACMS_POST_Blog
 
                 $aryBid[] = $bid;
             }
-            AcmsLogger::info('指定されたブログの並び順を変更', [
+            AcmsLogger::info('指定されたブログの並び順を変更しました', [
                 'targetBIDs' => implode(',', $aryBid),
             ]);
         } else {

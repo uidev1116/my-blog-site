@@ -58,7 +58,7 @@ class Helper
         if (defined('LICENSE_OPTION_PLUSDOMAIN') && intval(LICENSE_OPTION_PLUSDOMAIN) > 0 && $domain !== DOMAIN) {
             $count  = 0;
             $exsits = false;
-            $dnAry  = array();
+            $dnAry  = [];
 
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('blog');
@@ -206,7 +206,7 @@ class Helper
             return true;
         }
 
-        $aryStatus  = array();
+        $aryStatus  = [];
         switch ($val) {
             case 'open':
                 $aryStatus[]    = 'secret';

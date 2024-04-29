@@ -2,10 +2,10 @@
 
 class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if (!sessionWithAdministration()) {
-            return false;
+            return '';
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
@@ -40,14 +40,14 @@ class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
             }
             $Tpl->add('scope#' . $row['webhook_scope']);
             $Tpl->add('status#' . $row['webhook_status']);
-            $vars = array(
+            $vars = [
                 'id' => $id,
                 'bid' => $bid,
                 'name' => $row['webhook_name'],
                 'scope' => $row['webhook_scope'],
                 'type' => $row['webhook_type'],
                 'url' => $row['webhook_url'],
-            );
+            ];
 
             if (BID === $bid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $row));
@@ -65,21 +65,21 @@ class ACMS_GET_Admin_Webhook_Index extends ACMS_GET_Admin
     protected function getLinkVars($bid, $webhook)
     {
         $id = intval($webhook['webhook_id']);
-        return array(
-            'itemUrl' => acmsLink(array(
+        return [
+            'itemUrl' => acmsLink([
                 'bid' => $bid,
                 'admin' => 'webhook_edit',
-                'query' => array(
+                'query' => [
                     'id' => $id,
-                ),
-            )),
-            'logUrl' => acmsLink(array(
+                ],
+            ]),
+            'logUrl' => acmsLink([
                 'bid' => $bid,
                 'admin' => 'webhook_log',
-                'query' => array(
+                'query' => [
                     'id' => $id,
-                ),
-            )),
-        );
+                ],
+            ]),
+        ];
     }
 }

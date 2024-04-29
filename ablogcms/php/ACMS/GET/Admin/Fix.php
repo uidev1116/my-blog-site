@@ -7,25 +7,25 @@ class ACMS_GET_Admin_Fix extends ACMS_GET_Admin
         return true;
     }
 
-    function get()
+    public function get()
     {
         if (!sessionWithAdministration()) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
-        $root   = array(
-            'indexUrl'  => acmsLink(array(
+        $vars   = [];
+        $root   = [
+            'indexUrl'  => acmsLink([
                 'bid'   => BID,
                 'admin' => 'fix_index',
-            )),
-        );
+            ]),
+        ];
 
         $step   = $this->Post->get('step', '');
         $msg    = $this->Post->get('message');
 
-        $block  = !(empty($step) or is_bool($step)) ? array('step#' . $step) : array('step');
+        $block  = !(empty($step) or is_bool($step)) ? ['step#' . $step] : ['step'];
         $this->fix($Tpl, $block);
 
         $vars   += $this->buildField($this->Post, $Tpl, $block);

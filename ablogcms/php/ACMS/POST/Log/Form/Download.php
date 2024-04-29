@@ -117,7 +117,7 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $DB = DB::singleton(dsn());
         $DB->query($query, 'fetch');
 
-        $aryFd    = array();
+        $aryFd    = [];
         while ($row = $DB->fetch($query)) {
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
                 $Field  = acmsUnserialize($row['log_form_data']);
@@ -128,7 +128,7 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         }
         $aryFd[] = 'log_form_datetime';
 
-        $atPathAry = array();
+        $atPathAry = [];
         foreach ($aryFd as $i => $fd) {
             // @つきのメタフィールドを除外
             if (strpos($fd, '@') !== false) {
@@ -140,10 +140,10 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
             }
         }
 
-        return array(
+        return [
             'aryFd'     => $aryFd,
             'atPathAry' => $atPathAry,
-        );
+        ];
     }
 
     /**

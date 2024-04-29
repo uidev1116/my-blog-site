@@ -4,9 +4,9 @@ use Acms\Services\Facades\Preview;
 
 class ACMS_GET_Touch_SessionWithAdministration extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'bid'   => 'global',
-    );
+    ];
 
     function get()
     {

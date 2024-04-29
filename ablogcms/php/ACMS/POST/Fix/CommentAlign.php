@@ -24,7 +24,7 @@ class ACMS_POST_Fix_CommentAlign extends ACMS_POST
                 $SQL->addWhereOpr('comment_blog_id', BID);
                 $SQL->setOrder('pid');
                 $parentQ    = $SQL->get(dsn());
-                $aryPid     = array();
+                $aryPid     = [];
 
                 if ($DB->query($parentQ, 'fetch')) {
                     while (!!($parentRow = $DB->fetch($parentQ))) {

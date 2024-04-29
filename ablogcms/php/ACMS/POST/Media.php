@@ -17,7 +17,7 @@ class ACMS_POST_Media extends ACMS_POST
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('user');
         $SQL->setSelect('user_id', 'user_amount', null, 'count');
-        $SQL->addWhereIn('user_auth', array('administrator', 'editor', 'contributor'));
+        $SQL->addWhereIn('user_auth', ['administrator', 'editor', 'contributor']);
         return  intval($DB->query($SQL->get(dsn()), 'one'));
     }
 }

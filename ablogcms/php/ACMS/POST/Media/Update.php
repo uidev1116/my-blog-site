@@ -99,11 +99,10 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
         } catch (\Exception $e) {
             AcmsLogger::info('メディアの更新に失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
-        die();
     }
 }

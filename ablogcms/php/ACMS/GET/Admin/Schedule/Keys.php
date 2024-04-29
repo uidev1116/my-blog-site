@@ -18,7 +18,7 @@ class ACMS_GET_Admin_Schedule_Keys extends ACMS_GET_Admin
         }
 
         foreach ($all as $row) {
-            $Tpl->add('key:loop', array('name' => $row['schedule_name'], 'id' => $row['schedule_id']));
+            $Tpl->add('key:loop', ['name' => $row['schedule_name'], 'id' => $row['schedule_id']]);
         }
 
         return $Tpl->get();

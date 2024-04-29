@@ -14,7 +14,7 @@ use PDOException;
 class PdoEngine extends Base
 {
     /**
-     * @var \PDOStatement
+     * @var \PDOStatement|null
      */
     protected $statement;
 
@@ -41,7 +41,7 @@ class PdoEngine extends Base
             $connect_str .= 'port=' . $port . ';';
         }
 
-        $options = array();
+        $options = [];
 
         $connect_str .= 'charset=' . $this->getCharset($dsn);
 
@@ -59,11 +59,11 @@ class PdoEngine extends Base
 
         $charset = isset($dsn['charset']) ? $dsn['charset'] : 'UTF-8';
         $this->debug = !empty($dsn['debug']);
-        $this->dsn = array(
+        $this->dsn = [
             'type' => isset($dsn['type']) ? $dsn['type'] : null,
             'debug' => $this->debug,
             'charset' => $charset,
-        );
+        ];
     }
 
     /**
@@ -148,7 +148,7 @@ class PdoEngine extends Base
             return $version;
         }
         $db = self::singleton(dsn());
-        $version = $db->query('select version()', 'one');
+        $version = (string)$db->query('select version()', 'one');
         return $version;
     }
 
@@ -165,7 +165,7 @@ class PdoEngine extends Base
      * @param string $mode
      * @param boolean $buffered
      * @param boolean $auditLog
-     * @return array|bool|resource|int|null
+     * @return array|bool|resource|int|string
      *
      * @throws \ErrorException
      */
@@ -228,7 +228,7 @@ class PdoEngine extends Base
      * }
      *
      * @param string $sql
-     * @return array | bool
+     * @return array|bool
      */
     public function fetch($sql = null, $reset = false)
     {
@@ -285,7 +285,7 @@ class PdoEngine extends Base
      */
     protected function allMode($sql, $response)
     {
-        $all = array();
+        $all = [];
         while ($row = $response->fetch(\PDO::FETCH_ASSOC)) {
             if (is_array($row) and 'UTF-8' <> $this->charset()) {
                 foreach ($row as $key => $val) {
@@ -313,7 +313,7 @@ class PdoEngine extends Base
      */
     protected function listMode($sql, $response)
     {
-        $list = array();
+        $list = [];
         while ($row = $response->fetch(\PDO::FETCH_ASSOC)) {
             $one = array_shift($row);
             if (!is_null($one)) {
@@ -339,7 +339,7 @@ class PdoEngine extends Base
     protected function oneMode($sql, $response)
     {
         if (!$row = $response->fetch(\PDO::FETCH_ASSOC)) {
-            return false;
+            return '';
         }
         $one = array_shift($row);
         $response->closeCursor();

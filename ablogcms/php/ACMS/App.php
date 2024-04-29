@@ -7,7 +7,7 @@ abstract class ACMS_App
 {
     /**
      * アプリのバージョン
-     * @var string|int $version
+     * @var string $version
      */
     public $version;
 

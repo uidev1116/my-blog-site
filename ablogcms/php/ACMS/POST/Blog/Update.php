@@ -19,7 +19,7 @@ class ACMS_POST_Blog_Update extends ACMS_POST_Blog
 
             $status = $Blog->get('status');
             if ('open' <> $status) {
-                $aryStatus  = array('open');
+                $aryStatus  = ['open'];
                 if ('close' == $status) {
                     $aryStatus[]  = 'secret';
                 }
@@ -122,7 +122,7 @@ class ACMS_POST_Blog_Update extends ACMS_POST_Blog
         \Field_Validation $Config
     ) {
         $Blog->setMethod('status', 'required');
-        $Blog->setMethod('status', 'in', array('open', 'close', 'secret'));
+        $Blog->setMethod('status', 'in', ['open', 'close', 'secret']);
         $Blog->setMethod('status', 'status', Blog::isValidStatus($Blog->get('status'), true));
         $Blog->setMethod('status', 'root', !(RBID == BID and 'close' == $Blog->get('status')));
         $Blog->setMethod('name', 'required');

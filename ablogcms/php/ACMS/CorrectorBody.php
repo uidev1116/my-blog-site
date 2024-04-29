@@ -1,11 +1,14 @@
 <?php
 
+use HTMLPurifier;
+use HTMLPurifier_HTML5Config;
+
 class ACMS_CorrectorBody
 {
     /**
      * @var array
      */
-    public $const = array();
+    public $const = [];
 
     public function nl2br($txt)
     {
@@ -22,16 +25,16 @@ class ACMS_CorrectorBody
         return preg_replace("/(\xe2\x80[\xa8-\xa9]|\xc2\x85|\r\n|\r|\n)/", "", $txt);
     }
 
-    public function escape($txt, $args = array())
+    public function escape($txt, $args = [])
     {
         if (!empty($args) and is_array($args)) {
-            $rep = array(
+            $rep = [
                 '&' => '&amp;',
                 '<' => '&lt;',
                 '>' => '&gt;',
                 '"' => '&quot;',
                 "'" => '&#039;',
-            );
+            ];
             foreach ($args as $val) {
                 if (!isset($rep[$val])) {
                     continue;
@@ -58,7 +61,7 @@ class ACMS_CorrectorBody
      * @param array $notAllowedTags
      * @return string
      */
-    public function strip_select_tags($txt, $notAllowedTags = []): string
+    public function strip_select_tags($txt, $notAllowedTags = ['script', 'iframe', 'form']): string
     {
         if (is_array($txt)) {
             $txt = implode($txt);
@@ -66,29 +69,35 @@ class ACMS_CorrectorBody
         if (empty($txt)) {
             return strval($txt);
         }
-        static $allowedAllTags = [];
-        if (empty($allowedAllTags)) {
-            $allowedAllTags = configArray('base_allowed_tags');
-            $allowedAllTags[] = '!DOCTYPE';
-        }
-        if (!isset($notAllowedTags[0])) {
-            $notAllowedTags = [];
-        }
-        $allowedTags = array_diff($allowedAllTags, $notAllowedTags);
+        $config = HTMLPurifier_HTML5Config::createDefault();
+        $config->set('HTML.Doctype', 'HTML5');
+        $config->set('Core.Encoding', 'UTF-8');
+        $config->set('Attr.EnableID', true); // id属性を許可する
+        $config->set('Attr.AllowedRel', ['noopener', 'noreferrer', 'alternate', 'author', 'bookmark', 'canonical', 'external', 'help', 'icon', 'license', 'manifest', 'me', 'next', 'nofollow', 'opener', 'preconnect', 'prefetch', 'preload', 'prerender', 'prev', 'privacy-policy', 'search', 'stylesheet', 'tag', 'terms-of-service']); // rel属性を許可する
+        $config->set('Attr.DefaultImageAlt', ''); // 自動でaltが入る機能をオフ
+        $config->set('Attr.ID.HTML5', true); // クラス命名規則を緩和
+        // $config->set('AutoFormat.Linkify', true); // URLを自動でリンク化
+        $config->set('CSS.AllowImportant', true); // CSSのimportantを許可
+        $config->set('CSS.AllowTricky', true); // トリッキーなCSSを許可（display:noneなど）
+        $config->set('CSS.MaxImgLength', '3000px'); // 画像の最大サイズを指定（HTML.MaxImgLength も同時に指定）
+        $config->set('CSS.Trusted', true); // 利用できるCSSを緩和
+        $config->set('Core.AllowHostnameUnderscore', true); // ホスト名にアンダースコアを許容
+        $config->set('Core.DisableExcludes', true);
+        $config->set('Core.EscapeInvalidTags', true); // 無効なタグを削除ではなく、エスケープして出力
+        $config->set('HTML.Attr.Name.UseCDATA', true); // name属性の命名規則の緩和
+        $config->set('HTML.MaxImgLength', 3000); // 画像の最大サイズを指定（CSS.MaxImgLength も同時に指定）
+        $config->set('HTML.Trusted', true); // 利用できるHTMLを緩和
+        $config->set('HTML.ForbiddenElements', $notAllowedTags); // 禁止にするタグ
+        $config->set('Output.FixInnerHTML', false); // http://htmlpurifier.org/live/configdoc/plain.html#Output.FixInnerHTML
+        $config->set('Cache.SerializerPath', CACHE_DIR); // キャッシュディレクトリの指定
 
-        $allowedTagsString = array_reduce(
-            $allowedTags,
-            function ($string, $tag) {
-                return $string . '<' . $tag . '>';
-            },
-            ''
-        );
-        return strip_tags($txt, $allowedTagsString);
+        $purifier = new HTMLPurifier($config);
+        return $purifier->purify($txt);
     }
 
     public function escvars($txt)
     {
-        return str_replace(array('{', '}'), array('&#123;', '&#125;'), $txt);
+        return str_replace(['{', '}'], ['&#123;', '&#125;'], $txt);
     }
 
     public function escquot($txt)
@@ -96,7 +105,7 @@ class ACMS_CorrectorBody
         return preg_replace('@"@', '""', $txt);
     }
 
-    public function trim($txt, $args = array())
+    public function trim($txt, $args = [])
     {
         if (!isset($args[0])) {
             return $txt;
@@ -107,7 +116,7 @@ class ACMS_CorrectorBody
         return mb_strimwidth($txt, 0, $width, $marker);
     }
 
-    public function mb_trim($txt, $args = array())
+    public function mb_trim($txt, $args = [])
     {
         if (!isset($args[0])) {
             return $txt;
@@ -121,7 +130,7 @@ class ACMS_CorrectorBody
         return $txt;
     }
 
-    public function trim4ext($txt, $args = array())
+    public function trim4ext($txt, $args = [])
     {
         if (!empty($args[0]) && is_array($args) && preg_match('@^.(.*)$@si', $args[0], $match)) {
             return str_replace($args[0], '', $txt);
@@ -130,30 +139,30 @@ class ACMS_CorrectorBody
         }
     }
 
-    public function table($csv, $args = array())
+    public function table($csv, $args = [])
     {
         if (empty($csv)) {
             return $csv;
         }
-        $csv = preg_replace(array('/&gt;(\d+)/', '/&quot;/'), array('>$1', '"'), $csv);
+        $csv = preg_replace(['/&gt;(\d+)/', '/&quot;/'], ['>$1', '"'], $csv);
 
         //-----------
         // overwrite
         $i = 0;
-        $m = array();
+        $m = [];
         foreach (
-            array(
-                     'column' => ',',
-                     'row' => '[\r\n]+',
-                     'enclosure' => '"',
-                     'head' => '#',
-                     'align' => '\|',
-                     'nowrapS' => '\[',
-                     'nowrapE' => '\]',
-                     'regex' => '@',
-                     'rspan' => '\^\d+',
-                     'cspan' => '\>\d+',
-                 ) as $key => $val
+            [
+                'column' => ',',
+                'row' => '[\r\n]+',
+                'enclosure' => '"',
+                'head' => '#',
+                'align' => '\|',
+                'nowrapS' => '\[',
+                'nowrapE' => '\]',
+                'regex' => '@',
+                'rspan' => '\^\d+',
+                'cspan' => '\>\d+',
+            ] as $key => $val
         ) {
             $m[$key] = !empty($args[$i]) ? $args[$i] : $val;
             $i++;
@@ -239,7 +248,7 @@ class ACMS_CorrectorBody
         return $html;
     }
 
-    public function definition_list($txt, $args = array())
+    public function definition_list($txt, $args = [])
     {
         if ($lis = preg_split('@( |　|\t)*\r?\n@', $txt, -1, PREG_SPLIT_NO_EMPTY)) {
             $txt = "\n";
@@ -262,7 +271,7 @@ class ACMS_CorrectorBody
         return $txt;
     }
 
-    public function markdown($txt, $args = array())
+    public function markdown($txt, $args = [])
     {
         $lv = intval(isset($args[0]) ? $args[0] : 0);
         if (0 < $lv) {
@@ -321,16 +330,16 @@ class ACMS_CorrectorBody
 
     public function str4script($txt)
     {
-        return preg_replace(array('@\'|"@', '@\r|\n@'), array('\\\$0', ''), $txt);
+        return preg_replace(['@\'|"@', '@\r|\n@'], ['\\\$0', ''], $txt);
     }
 
-    public function tax($txt, $args = array())
+    public function tax($txt, $args = [])
     {
         $args[0] = is_numeric($args[0]) ? $args[0] : intval($args[0]);
         return floor($txt * $args[0]);
     }
 
-    public function convert($txt, $args = array())
+    public function convert($txt, $args = [])
     {
         return !empty($args[0]) ? mb_convert_kana($txt, strval($args[0])) : $txt;
     }
@@ -361,14 +370,14 @@ class ACMS_CorrectorBody
         return $this->lowercase($this->camelcase_to_hyphen($txt));
     }
 
-    public function wareki($txt, $args = array())
+    public function wareki($txt, $args = [])
     {
         $dt = strtotime($this->fixChars($txt));
         if (!$dt) {
             return $txt;
         }
         $ymd = date('Ymd', $dt);
-        $y = substr($ymd, 0, 4);
+        $y = (int)substr($ymd, 0, 4);
 
         $era = '';
         $year = null;
@@ -414,12 +423,12 @@ class ACMS_CorrectorBody
         return $txt;
     }
 
-    public function date($txt, $args = array())
+    public function date($txt, $args = [])
     {
         return $this->datetime($txt, $args);
     }
 
-    public function datetime($txt, $args = array())
+    public function datetime($txt, $args = [])
     {
         if (!isset($args[0])) {
             return $txt;
@@ -435,17 +444,17 @@ class ACMS_CorrectorBody
         return $txt;
     }
 
-    public function resizeImg($src, $args = array())
+    public function resizeImg($src, $args = [])
     {
         return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FILL);
     }
 
-    public function resizeImgFit($src, $args = array())
+    public function resizeImgFit($src, $args = [])
     {
         return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FIT, true);
     }
 
-    public function resizeImgFill($src, $args = array())
+    public function resizeImgFill($src, $args = [])
     {
         return $this->resizeImgBase($src, $args, ImageResize::SCALE_ASPECT_FILL, true);
     }
@@ -473,7 +482,7 @@ class ACMS_CorrectorBody
             $pfx .= '_' . $color;
         }
 
-        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $archive_dir) {
+        foreach (['', ARCHIVES_DIR, MEDIA_LIBRARY_DIR] as $archive_dir) {
             $tmpPath = $archive_dir . normalSizeImagePath($src);
             $destPath = trim(dirname($tmpPath), '/') . '/' . $pfx . '-' . Storage::mbBasename($tmpPath);
             $destPathVars = trim(dirname($src), '/') . '/' . $pfx . '-' . Storage::mbBasename($tmpPath);
@@ -527,13 +536,13 @@ class ACMS_CorrectorBody
 
     public function fixChars($txt)
     {
-        $needle = array('年', '月', '日', '時', '分', '秒', '　');
-        $replacement = array('', '', '', '', '', '', '');
+        $needle = ['年', '月', '日', '時', '分', '秒', '　'];
+        $replacement = ['', '', '', '', '', '', ''];
         $txt = mb_convert_kana(str_replace($needle, $replacement, $txt), 'a');
         return $txt;
     }
 
-    public function br4alnum($txt, $args = array())
+    public function br4alnum($txt, $args = [])
     {
         if (
             0
@@ -556,9 +565,9 @@ class ACMS_CorrectorBody
         return $newText;
     }
 
-    public function weekEN2JP($txt, $args = array())
+    public function weekEN2JP($txt, $args = [])
     {
-        $en = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+        $en = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         $jp = configArray('week_label');
         foreach ($en as $i => $val) {
             $txt = str_replace($val, $jp[$i], $txt);
@@ -593,13 +602,13 @@ class ACMS_CorrectorBody
 
     public function align2label($txt)
     {
-        $dict = array(
+        $dict = [
             'auto' => 'おまかせ',
             'center' => '中央',
             'right' => '右寄せ',
             'left' => '左寄せ',
             'hidden' => '非表示',
-        );
+        ];
         return isset($dict[$txt]) ? $dict[$txt] : $txt;
     }
 
@@ -613,7 +622,7 @@ class ACMS_CorrectorBody
         return str_replace(array_keys($this->const), '', $txt);
     }
 
-    public function split($txt, $args = array())
+    public function split($txt, $args = [])
     {
         if (!isset($args[1])) {
             return $txt;
@@ -629,7 +638,7 @@ class ACMS_CorrectorBody
         return $data[$count];
     }
 
-    public function contrastColor($color, $args = array())
+    public function contrastColor($color, $args = [])
     {
         $black = isset($args[0]) ? $args[0] : '#000000';
         $white = isset($args[1]) ? $args[1] : '#ffffff';
@@ -681,7 +690,7 @@ class ACMS_CorrectorBody
         return $id;
     }
 
-    public function getWidthFromRatio($ratio, $args = array())
+    public function getWidthFromRatio($ratio, $args = [])
     {
         $ratio = floatval($ratio);
         $height = isset($args[0]) ? intval($args[0]) : 0;
@@ -691,7 +700,7 @@ class ACMS_CorrectorBody
         return round($height * $ratio);
     }
 
-    public function getHeightFromRatio($ratio, $args = array())
+    public function getHeightFromRatio($ratio, $args = [])
     {
         $ratio = floatval($ratio);
         $width = isset($args[0]) ? intval($args[0]) : 0;
@@ -701,9 +710,9 @@ class ACMS_CorrectorBody
         return round($width / $ratio);
     }
 
-    public function imageRatioSizeH($src, $args = array())
+    public function imageRatioSizeH($src, $args = [])
     {
-        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
+        foreach (['', ARCHIVES_DIR, MEDIA_LIBRARY_DIR] as $dir) {
             $size = Storage::getImageSize($dir . urldecode($src));
 
             if ($size) {
@@ -716,9 +725,9 @@ class ACMS_CorrectorBody
         return '';
     }
 
-    public function imageRatioSizeW($src, $args = array())
+    public function imageRatioSizeW($src, $args = [])
     {
-        foreach (array('', ARCHIVES_DIR, MEDIA_LIBRARY_DIR) as $dir) {
+        foreach (['', ARCHIVES_DIR, MEDIA_LIBRARY_DIR] as $dir) {
             $size = Storage::getImageSize($dir . urldecode($src));
 
             if ($size) {
@@ -737,7 +746,7 @@ class ACMS_CorrectorBody
         return mb_substr($escapeTxt, 1, mb_strlen($escapeTxt) - 2);
     }
 
-    public function substring($txt, $args = array())
+    public function substring($txt, $args = [])
     {
         $start = isset($args[0]) ? $args[0] : 0;
         $length = isset($args[1]) ? $args[1] : false;

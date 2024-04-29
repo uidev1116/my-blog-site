@@ -49,7 +49,7 @@ class ACMS_GET_Feed_ExList extends ACMS_GET
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
-        $feeds = array();
+        $feeds = [];
 
         //----------
         // cache

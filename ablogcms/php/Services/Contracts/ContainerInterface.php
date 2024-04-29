@@ -40,7 +40,7 @@ interface ContainerInterface
      *
      * @return void
      */
-    public function bind($alias, $class, array $arguments = array());
+    public function bind($alias, $class, array $arguments = []);
 
     /**
      * register service as singleton
@@ -51,7 +51,7 @@ interface ContainerInterface
      *
      * @return void
      */
-    public function singleton($alias, $class, array $arguments = array());
+    public function singleton($alias, $class, array $arguments = []);
 
     /**
      * register service bootstrap function
@@ -87,5 +87,5 @@ interface ContainerInterface
      *
      * @return mixed
      */
-    public function newInstance($class, array $arguments = array());
+    public function newInstance($class, array $arguments = []);
 }

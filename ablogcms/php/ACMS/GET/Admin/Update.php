@@ -24,7 +24,7 @@ class ACMS_GET_Admin_Update extends ACMS_GET_Admin
     /**
      * @var array
      */
-    protected $rootVars = array();
+    protected $rootVars = [];
 
     /**
      * @return string
@@ -32,14 +32,14 @@ class ACMS_GET_Admin_Update extends ACMS_GET_Admin
     public function get()
     {
         if (!$this->validate()) {
-            return false;
+            return '';
         }
         $this->checkUpdateService = App::make('update.check');
         $this->logger = App::make('update.logger');
         $this->updateService = new Engine($this->logger);
-        $this->rootVars = array(
+        $this->rootVars = [
             'finalCheckTime' => date('Y/m/d H:i:s', $this->checkUpdateService->getFinalCheckTime()),
-        );
+        ];
 
         return $this->build();
     }
@@ -95,10 +95,10 @@ class ACMS_GET_Admin_Update extends ACMS_GET_Admin
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $dbVars = array(
+        $dbVars = [
             'databaseVersion' => $this->updateService->databaseVersion,
             'systemVersion' => $this->updateService->systemVersion,
-        );
+        ];
 
         /**
          * システムアップデート中チェック
@@ -138,10 +138,10 @@ class ACMS_GET_Admin_Update extends ACMS_GET_Admin
         if (defined('IS_TRIAL') && IS_TRIAL) {
             if ($this->checkUpdateService->checkDownGradeUseCache(phpversion())) {
                 $version = $this->checkUpdateService->getDownGradeVersion();
-                $Tpl->add('downgrade', array(
+                $Tpl->add('downgrade', [
                     'version' => $version,
                     'downloadUrl' => $this->checkUpdateService->getDownGradePackageUrl(),
-                ));
+                ]);
             }
         } else {
             /**
@@ -149,42 +149,42 @@ class ACMS_GET_Admin_Update extends ACMS_GET_Admin
              */
             if ($this->checkUpdateService->checkUseCache(phpversion(), $range)) {
                 $version = $this->checkUpdateService->getUpdateVersion();
-                $Tpl->add('oldVersion', array(
+                $Tpl->add('oldVersion', [
                     'version' => $version,
                     'downloadUrl' => $this->checkUpdateService->getPackageUrl(),
                     'oldLicense' => $this->licenseCheck($version) ? 'no' : 'yes',
-                ));
-                if ($versions = $this->checkUpdateService->getReleaseNote()) {
-                    foreach ($versions as $version) {
-                        foreach ($version->logs->features as $message) {
-                            $Tpl->add(array('feature:loop', 'version:loop', 'changelog'), array(
+                ]);
+                if ($releaseNote = $this->checkUpdateService->getReleaseNote()) {
+                    foreach ($releaseNote as $note) {
+                        foreach ($note->logs->features as $message) {
+                            $Tpl->add(['feature:loop', 'version:loop', 'changelog'], [
                                 'log' => $message,
-                            ));
+                            ]);
                         }
-                        foreach ($version->logs->changes as $message) {
-                            $Tpl->add(array('change:loop', 'version:loop', 'changelog'), array(
+                        foreach ($note->logs->changes as $message) {
+                            $Tpl->add(['change:loop', 'version:loop', 'changelog'], [
                                 'log' => $message,
-                            ));
+                            ]);
                         }
-                        foreach ($version->logs->fix as $message) {
-                            $Tpl->add(array('fix:loop', 'version:loop', 'changelog'), array(
+                        foreach ($note->logs->fix as $message) {
+                            $Tpl->add(['fix:loop', 'version:loop', 'changelog'], [
                                 'log' => $message,
-                            ));
+                            ]);
                         }
-                        $Tpl->add(array('version:loop', 'changelog'), array(
-                            'version' => $version->version,
-                            'alert' => $version->alert,
-                        ));
+                        $Tpl->add(['version:loop', 'changelog'], [
+                            'version' => $note->version,
+                            'alert' => $note->alert,
+                        ]);
                     }
-                    $Tpl->add('changelog', array(
+                    $Tpl->add('changelog', [
                         'url' => $this->checkUpdateService->getChangelogUrl(),
-                    ));
+                    ]);
                 }
             } else {
                 if (config('system_update_range') === 'minor') {
-                    $Tpl->add('latest:minor', array());
+                    $Tpl->add('latest:minor', []);
                 } else {
-                    $Tpl->add('latest:patch', array());
+                    $Tpl->add('latest:patch', []);
                 }
             }
         }

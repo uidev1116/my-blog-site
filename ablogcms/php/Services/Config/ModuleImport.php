@@ -16,9 +16,9 @@ class ModuleImport extends Import
      */
     protected function import()
     {
-        $tables = array(
+        $tables = [
             'module', 'config', 'field'
-        );
+        ];
         foreach ($tables as $table) {
             $this->insertData($table);
         }
@@ -56,7 +56,7 @@ class ModuleImport extends Import
         }
 
         $modules = $this->yaml['module'];
-        $identifiers = array();
+        $identifiers = [];
         foreach ($modules as $module) {
             $identifiers[] = $module['module_identifier'];
         }

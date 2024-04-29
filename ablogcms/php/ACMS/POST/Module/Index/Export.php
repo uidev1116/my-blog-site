@@ -3,14 +3,9 @@
 class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
 {
     /**
-     * @var \Acms\Services\Config\ModuleExport $export
-     */
-    protected $export;
-
-    /**
      * run
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -34,6 +29,7 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
 
         try {
             $this->export = App::make('config.export.module');
+            assert($this->export instanceof \Acms\Services\Config\ModuleExport);
             $targetModules = [];
 
             foreach ($this->Post->getArray('checks') as $mid) {
@@ -53,7 +49,7 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
             Storage::remove($this->destPath);
             $this->putYaml();
 
-            AcmsLogger::info('選択したモジュールIDを「' . ACMS_RAM::blogName($bid) . '」エクスポートしました', [
+            AcmsLogger::info('選択したモジュールIDをエクスポートしました', [
                 'targetModules' => $targetModules,
             ]);
 

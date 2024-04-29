@@ -17,9 +17,9 @@ class ACMS_POST_Form_Apply extends ACMS_POST_Form
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return false|Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         $this->extract('field');
         $this->Post->set('step', 'reapply');

@@ -8,9 +8,9 @@ interface ViewInterface
      * テンプレートの初期化
      *
      * @param string $txt
-     * @param ACMS_Corrector $Corrector
+     * @param \ACMS_Corrector $Corrector
      *
-     * @return bool
+     * @return self
      */
     public function init($txt, $Corrector = null);
 
@@ -24,7 +24,7 @@ interface ViewInterface
     /**
      * テンプレートを組み立て文字列で取得する
      *
-     * @param mixed $vars
+     * @param object|array $vars
      *
      * @return string
      */
@@ -38,5 +38,5 @@ interface ViewInterface
      *
      * @return false|void
      */
-    public function add($blocks = array(), $vars = array());
+    public function add($blocks = [], $vars = []);
 }

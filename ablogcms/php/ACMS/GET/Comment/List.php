@@ -39,19 +39,19 @@ class ACMS_GET_Comment_List extends ACMS_GET
             $eid    = intval($row['comment_entry_id']);
             $cmid   = intval($row['comment_id']);
             $status = $row['comment_status'];
-            $vars   = array(
+            $vars   = [
                 'bid'   => $bid,
                 'eid'   => $eid,
                 'cmid'  => $cmid,
                 'title' => $row['comment_title'],
                 'name'  => $row['comment_name'],
-                'url'   => acmsLink(array(
+                'url'   => acmsLink([
                     'bid'   => $bid,
                     'eid'   => $eid,
                     'cmid'  => $cmid,
-                )),
+                ]),
                 'status' => $status,
-            );
+            ];
             if ('awaiting' == $status and !sessionWithCompilation()) {
                 unset($vars['title']);
                 unset($vars['name']);

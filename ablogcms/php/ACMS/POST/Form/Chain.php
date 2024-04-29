@@ -17,9 +17,9 @@ class ACMS_POST_Form_Chain extends ACMS_POST_Form
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return false|Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         $this->Post->reset(true);
         return $this->Post;

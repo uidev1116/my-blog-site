@@ -197,8 +197,8 @@ class SourceResolver extends Resolver
             $tmp = join('/', $split_path);
 
             // 書き出し先にあったら
-            foreach (array('',  $this->destinationBlogCode) as $bcd) {
-                if (is_readable($this->destinationPath . $bcd . $tmp)) {
+            foreach (['',  $this->destinationBlogCode] as $bcd) {
+                if (is_readable($this->destinationPath . $bcd . urldecode($tmp))) {
                     $offset = strlen($match[$mpt][0]);
                     if ($mpt === 5) {
                         $html = substr_replace($html, '/' . $this->destinationOffsetDir . $bcd . $tmp . $query . '', $match[$mpt][1], $offset);

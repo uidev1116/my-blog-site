@@ -4,11 +4,11 @@ class ACMS_GET_Entry_Photo extends ACMS_GET_Entry_Summary
 {
     function initVars()
     {
-        return array(
-            'order'            => array(
+        return [
+            'order'            => [
                 $this->order ? $this->order : config('entry_photo_order'),
                 config('entry_photo_order2'),
-            ),
+            ],
             'orderFieldName'   => config('entry_photo_order_field_name'),
             'noNarrowDownSort' => config('entry_photo_no_narrow_down_sort', 'off'),
             'limit'            => intval(config('entry_photo_limit')),
@@ -32,6 +32,6 @@ class ACMS_GET_Entry_Photo extends ACMS_GET_Entry_Summary
             'hiddenCurrentEntry'    => config('entry_photo_hidden_current_entry'),
             'hiddenPrivateEntry'    => config('entry_photo_hidden_private_entry'),
             'loop_class'            => config('entry_photo_loop_class'),
-        );
+        ];
     }
 }

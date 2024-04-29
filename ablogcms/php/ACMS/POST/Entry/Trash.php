@@ -35,16 +35,16 @@ class ACMS_POST_Entry_Trash extends ACMS_POST_Trash
             }
         }
         if (HOOK_ENABLE) {
-            Webhook::call(BID, 'entry', 'entry:deleted', array($eid, null));
+            Webhook::call(BID, 'entry', 'entry:deleted', [$eid, null]);
         }
 
         $this->trash($eid);
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーをゴミ箱に移動しました');
 
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'bid'   => BID,
             'cid'   => CID,
-        )));
+        ]));
     }
 }

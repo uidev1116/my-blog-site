@@ -2,161 +2,153 @@
 
 namespace Acms\Services\StaticExport\Generator;
 
-use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
-use DB;
-use SQL;
-use ACMS_Filter;
+use Acms\Services\StaticExport\Entities\Page;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
 
-class CategoryArchivesGenerator extends Generator
+use function React\Async\await;
+
+class CategoryArchivesGenerator extends PageGenerator
 {
     /**
-     * @var string
+     * @var int|null
      */
     protected $categoryId;
 
     /**
      * @var array
      */
-    protected $monthRange;
+    protected $monthRange = [];
 
     /**
-     * @var int
+     * @var int|null
      */
-    protected $maxPage;
+    protected $maxPage = 1;
 
-    protected function getName()
+    protected function getName(): string
     {
-        if ($this->categoryId) {
-            return 'カテゴリー毎のアーカイブ書き出し ( ' . \ACMS_RAM::categoryName($this->categoryId) . ' )';
-        } else {
-            return 'カテゴリーなしのアーカイブ書き出し';
-        }
-    }
-
-    protected function getTasks()
-    {
-        return count($this->monthRange);
+        return 'カテゴリー毎のアーカイブ書き出し 【 ' . \ACMS_RAM::categoryName($this->categoryId) . '（' . $this->categoryId .  '）】';
     }
 
     /**
-     * @param int $cid
-     */
-    public function setCategoryId($cid)
-    {
-        $this->categoryId = $cid;
-    }
-
-    /**
-     * @param $start
-     * @throws \Exception
-     */
-    public function setMonthRange($start)
-    {
-        $this->monthRange = array();
-        $start = (new \DateTime())->setTimestamp(strtotime($start));
-        $end = false;
-
-        // そのカテゴリーの最後の日付のエントリーまでアーカイブを作る
-        $SQL = SQL::newSelect('entry');
-        $SQL->addLeftJoin('category', 'category_id', 'entry_category_id');
-        $SQL->addSelect('entry_datetime');
-        $SQL->addWhereOpr('entry_status', 'open');
-        $SQL->setOrder('entry_datetime', 'DESC');
-        $SQL->setLimit(1);
-        if (intval($this->categoryId) > 0) {
-            $SQL->addWhereOpr('category_status', 'open');
-            ACMS_Filter::categoryTree($SQL, $this->categoryId, 'descendant-or-self');
-        }
-        if ($last = DB::query($SQL->get(dsn()), 'one')) {
-            $last = date('Y-m-31 23:23:59', strtotime($last));
-            $end = (new \DateTime())->setTimestamp(strtotime($last));
-        }
-        if (empty($end)) {
-            $end = (new \DateTime())->setTimestamp(REQUEST_TIME);
-        }
-        $next_month = new \DateInterval('P1M');
-
-        while ($start < $end) {
-            $year = $start->format('Y');
-            $month = $start->format('m');
-            if (array_search($year, $this->monthRange, true) === false) {
-                $this->monthRange[] = $year;
-            }
-            $this->monthRange[] = $year . '/' . $month;
-            $start->add($next_month);
-        }
-    }
-
-    /**
-     * @param int $max
-     */
-    public function setMaxPage($max)
-    {
-        $this->maxPage = $max;
-    }
-
-    /**
+     * @param int $categoryId
      * @return void
      */
-    protected function main()
+    public function setCategoryId(int $categoryId): void
     {
-        if (empty($this->monthRange)) {
-            throw new \RuntimeException('no selected month.');
-        }
-        if (empty($this->maxPage)) {
-            throw  new \RuntimeException('no selected max page.');
-        }
-
-        $this->logger->start($this->getName(), $this->getTasks());
-
-        foreach ($this->monthRange as $ym) {
-            $info = array(
-                'bid' => BID,
-                'date' => $ym,
-            );
-            if ($this->categoryId) {
-                $info['cid'] = $this->categoryId;
-            }
-            $url = acmsLink($info, false);
-            $this->request($url, $info);
-            for ($page = 2; $page <= $this->maxPage; $page++) {
-                $info['page'] = $page;
-                $url = acmsLink($info);
-                $this->request($url, $info);
-            }
-        }
+        $this->categoryId = $categoryId;
     }
 
     /**
+     * @param string[] $monthRange
+     * @return void
+     */
+    public function setMonthRange(array $monthRange): void
+    {
+        $this->monthRange = $monthRange;
+    }
+
+    /**
+     * @param int $maxPage
+     * @return void
+     */
+    public function setMaxPage(int $maxPage): void
+    {
+        if ($maxPage < 1) {
+            throw new \InvalidArgumentException('Invalid max page. Prease set more than 1.');
+        }
+        $this->maxPage = $maxPage;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function run(): PromiseInterface
+    {
+        return new Promise(
+            function (callable $resolve, callable $reject) {
+                if (is_null($this->maxPage)) {
+                    $reject(new \RuntimeException('no selected max page.'));
+                    return;
+                }
+                if ($this->maxPage < 1) {
+                    $reject(new \RuntimeException('max page is less than 1.'));
+                    return;
+                }
+
+                $pagesPerMonth = [];
+                foreach ($this->monthRange as $ym) {
+                    $pages = [];
+                    foreach (range(1, $this->maxPage) as $page) {
+                        $archiveContext = $this->getArchiveContext($ym);
+                        $archivePageContext = array_merge($archiveContext, ['page' => $page]);
+                        $url = acmsLink($archivePageContext, false);
+
+                        $blogUrl = acmsLink(['bid' => BID]);
+                        $archiveUrl = acmsLink($archiveContext);
+                        $dir = substr($archiveUrl, strlen($blogUrl));
+                        $filepath = $dir . $this->getFileName($page);
+                        $pages[] = new Page($url, $filepath);
+                    }
+                    $pagesPerMonth[] = $pages;
+                }
+
+                $this->logger->start($this->getName(), count(array_flatten($pagesPerMonth)));
+                foreach ($pagesPerMonth as $pages) {
+                    await($this->handle($pages));
+                }
+                $resolve(null);
+            }
+        );
+    }
+
+    /**
+     * @param string $path
      * @param string $data
-     * @param string $code
-     * @param object $info
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function writeContents(string $path, string $data): void
     {
-        if ($code != '200') {
-            return;
-        }
         $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-        $page = isset($info['page']) ? intval($info['page']) : 1;
-        $file = 'index.html';
-        if ($page > 1) {
-            $file = 'page' . $page . '.html';
-        } elseif ($this->logger) {
-            $this->logger->processing();
-        }
-        unset($info['page']);
-        $blog_url = acmsLink(array('bid' => BID));
-        $archive_url = acmsLink($info);
-        $dir = substr($archive_url, strlen($blog_url));
-
+        $destPath = $destination . $path;
         try {
-            Storage::makeDirectory($destination . $dir);
-            Storage::put($destination . $dir . $file, $data);
+            Storage::makeDirectory(dirname($destPath));
+            Storage::put($destPath, $data);
         } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $destination . $dir . $file);
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
+    }
+
+    /**
+     * @param string $date
+     * @return array{
+     *  bid: int,
+     *  date: string,
+     *  cid?: int,
+     * }
+     */
+    protected function getArchiveContext(string $date): array
+    {
+        $context = [
+            'bid' => BID,
+            'date' => $date,
+        ];
+        if (!is_null($this->categoryId) && $this->categoryId > 0) {
+            $context['cid'] = $this->categoryId;
+        }
+        return $context;
+    }
+
+    /**
+     * @param int $page
+     * @return string
+     */
+    protected function getFileName(int $page): string
+    {
+        if ($page > 1) {
+            return  'page' . $page . '.html';
+        }
+        return 'index.html';
     }
 }

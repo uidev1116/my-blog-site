@@ -9,7 +9,7 @@ class ACMS_GET_Member_Sns_Callback_Facebook extends ACMS_GET
     /**
      * Main
      *
-     * @return void
+     * @return never
      */
     public function get()
     {
@@ -81,7 +81,7 @@ class ACMS_GET_Member_Sns_Callback_Facebook extends ACMS_GET
         $sql = SQL::newSelect('user');
         $sql->setSelect('user_id');
         $sql->addWhereOpr('user_mail', $data['email']);
-        if (DB::query($sql->get(dsn(), 'one'))) {
+        if (DB::query($sql->get(dsn()), 'one')) {
             return $data['sub'] . '@example.com';
         }
         return $data['email'];

@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
 {
-    public $_scope = array(
+    public $_scope = [
         'field'     => 'global',
-    );
+    ];
 
     function get()
     {
@@ -18,7 +18,7 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
         $limit  = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         //-------
         // error
@@ -26,9 +26,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             $Tpl->add('errorMessage');
             $vars['notice_mess'] = 'show';
             foreach ($entries as $id) {
-                $Tpl->add('errorEid:loop', array(
+                $Tpl->add('errorEid:loop', [
                     'errorEid'  => $id,
-                ));
+                ]);
             }
         } else {
             //---------
@@ -60,9 +60,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
         // axis
         $axis   = $this->Get->get('axis', 'self');
         if (1 < ACMS_RAM::blogRight($target_bid) - ACMS_RAM::blogLeft($target_bid)) {
-            $Tpl->add('axis', array(
+            $Tpl->add('axis', [
                 'axis:checked#' . $axis => config('attr_checked')
-            ));
+            ]);
         } else {
             $axis   = 'self';
         }
@@ -115,7 +115,7 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
         //-------
         // limit
         foreach ($limits as $val) {
-            $_vars  = array('limit' => $val);
+            $_vars  = ['limit' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -129,9 +129,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             ACMS_Filter::blogTree($SQL, $target_bid, $axis);
         }
         $category_axis = $this->Get->get('category_axis', 'self');
-        $Tpl->add('category_axis', array(
+        $Tpl->add('category_axis', [
             'category_axis:checked#' . $category_axis => config('attr_checked')
-        ));
+        ]);
         if (CID) {
             if (1 >= ACMS_RAM::categoryRight(CID) - ACMS_RAM::categoryLeft(CID)) {
                 $category_axis = 'self';
@@ -194,9 +194,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
         }
 
         if (ADMIN === 'entry_index') {
-            $query = array('admin' => ADMIN);
+            $query = ['admin' => ADMIN];
         } else {
-            $query = array();
+            $query = [];
         }
         $vars   += $this->buildPager(
             PAGE,
@@ -205,13 +205,13 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
+            [],
             $query
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
         $orderInfo = explode('-', $order);
-        ACMS_Filter::entryOrder($SQL, array($order, 'id-' . $orderInfo[1]), $UID, CID);
+        ACMS_Filter::entryOrder($SQL, [$order, 'id-' . $orderInfo[1]], $UID, CID);
         if (isset($orderInfo[0])) {
             $SQL->addGroup('entry_' . $orderInfo[0]);
         }
@@ -219,8 +219,8 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
 
         $q = $SQL->get(dsn());
         $DB->query($q, 'fetch');
-        $entryIds = array();
-        $entryArray = array();
+        $entryIds = [];
+        $entryArray = [];
         while ($row = $DB->fetch($q)) {
             $entryArray[] = $row;
             $entryIds[] = intval($row['entry_id']);
@@ -233,8 +233,8 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
             $uid    = $row['entry_user_id'];
             $bid    = $row['entry_blog_id'];
 
-            $_vars   = array();
-            $_vars   += array(
+            $_vars   = [];
+            $_vars   += [
                 'eid'       => $eid,
                 'bid'       => $bid,
                 'datetime'  => $row['entry_datetime'],
@@ -251,37 +251,37 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
                 'blogName'  => ACMS_RAM::blogName($bid),
                 'userName'  => ACMS_RAM::userName($uid),
                 'userIcon'  => loadUserIcon($uid),
-                'entryUrl'  => acmsLink(array(
+                'entryUrl'  => acmsLink([
                     'bid'   => $bid,
                     'eid'   => $eid,
-                    'query' => array(),
-                )),
-                'blogUrl'   => acmsLink(array(
+                    'query' => [],
+                ]),
+                'blogUrl'   => acmsLink([
                     'admin' => ADMIN,
                     'bid'   => $bid,
-                    'query' => array(),
-                )),
-                'userUrl'   => acmsLink(array(
+                    'query' => [],
+                ]),
+                'userUrl'   => acmsLink([
                     'admin' => ADMIN,
                     'bid'   => $bid,
                     'uid'   => $uid,
-                    'query' => array(),
-                )),
-                'editUrl'   => acmsLink(array(
+                    'query' => [],
+                ]),
+                'editUrl'   => acmsLink([
                     'admin' => 'entry_editor',
                     'bid'   => $bid,
                     'eid'   => $eid,
-                    'query' => array(),
-                ), false),
-            );
+                    'query' => [],
+                ], false),
+            ];
             if ($cid) {
-                $_vars   += array(
+                $_vars   += [
                     'categoryName'  => ACMS_RAM::categoryName($cid),
-                    'categoryUrl'   => acmsLink(array(
+                    'categoryUrl'   => acmsLink([
                         'admin' => ADMIN,
                         'cid'   => $cid,
-                    )),
-                );
+                    ]),
+                ];
             }
 
             //-----------
@@ -306,9 +306,9 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
                     $sort   = $row['entry_sort'];
                 }
 
-                $_vars += array(
+                $_vars += [
                     'sort' => $sort,
-                );
+                ];
             }
             $_vars['sort#eid'] = $eid;
 
@@ -324,7 +324,7 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
                         break;
                     }
                 }
-                $Tpl->add(array('adminDeleteActionLoop', 'entry:loop'));
+                $Tpl->add(['adminDeleteActionLoop', 'entry:loop']);
             } while (false);
 
             //-------
@@ -346,8 +346,8 @@ class ACMS_GET_Admin_Entry_Index extends ACMS_GET_Admin_Entry
                     break;
                 }
             }
-            $Tpl->add(array('adminDeleteAction'));
-            $Tpl->add(array('adminDeleteAction2'));
+            $Tpl->add(['adminDeleteAction']);
+            $Tpl->add(['adminDeleteAction2']);
         } while (false);
 
         //-------------

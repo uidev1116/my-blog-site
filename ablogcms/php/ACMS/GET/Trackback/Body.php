@@ -2,11 +2,11 @@
 
 class ACMS_GET_Trackback_Body extends ACMS_GET
 {
-    public $_scope    = array(
+    public $_scope    = [
         'eid'   => 'global',
-    );
+    ];
 
-    function get()
+    public function get()
     {
         if (!$this->eid) {
             return '';
@@ -37,7 +37,10 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
         }
 
         $desc       = ('datetime-asc' <> config('trackback_body_order'));
-        $limit      = config('trackback_body_limit');
+        $limit      = (int)config('trackback_body_limit');
+        if ($limit < 1) {
+            $limit = 20;
+        }
         $page       = null;
         $forwardId  = null;
         $backId     = null;
@@ -109,14 +112,14 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
             $tbid   = intval($row['trackback_id']);
             $status = $row['trackback_status'];
             $vars   = $this->buildDate($row['trackback_datetime'], $Tpl, 'trackback:loop');
-            $vars   += array(
+            $vars   += [
                 'tbid'      => $tbid,
                 'title'     => $row['trackback_title'],
                 'excerpt'   => $row['trackback_excerpt'],
                 'blogName'  => $row['trackback_blog_name'],
                 'url'       => $row['trackback_url'],
                 'status'    => $status,
-            );
+            ];
 
             //----------
             // awaiting
@@ -144,38 +147,38 @@ class ACMS_GET_Trackback_Body extends ACMS_GET
                 if ('awaiting' <> $status) {
                     $Tpl->add('status#awaiting');
                 }
-                $vars['action'] = acmsLink(array(
+                $vars['action'] = acmsLink([
                     'tbid'  => $tbid,
                     'fragment'  => 'trackback-' . $tbid,
-                ));
+                ]);
             }
 
             $Tpl->add('trackback:loop', $vars);
         }
 
         if ($isBack) {
-            $Tpl->add('backLink', array(
-                'url'   => acmsLink(array(
+            $Tpl->add('backLink', [
+                'url'   => acmsLink([
                     'tbid'      => $backId,
                     'fragment'  => 'trackback-' . $backId,
-                )),
-            ));
+                ]),
+            ]);
         }
 
         if ($isForward) {
-            $Tpl->add('forwardLink', array(
-                'url'   => acmsLink(array(
+            $Tpl->add('forwardLink', [
+                'url'   => acmsLink([
                     'tbid'      => $forwardId,
                     'fragment'  => 'trackback-' . $forwardId,
-                )),
-            ));
+                ]),
+            ]);
         }
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'amount'    => $amount,
             'from'      => ($page - 1) * $limit + 1,
             'to'        => (($page * $limit) < $amount) ? ($page * $limit) : $amount,
-        ));
+        ]);
 
         return $Tpl->get();
     }

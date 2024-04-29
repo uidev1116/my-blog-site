@@ -2,14 +2,14 @@
 
 class ACMS_GET_User_GeoList extends ACMS_GET_User_Search
 {
-    public $_axis = array(
+    public $_axis = [
         'bid' => 'self',
         'cid' => 'self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'uid' => 'global',
-    );
+    ];
 
     /**
      * 緯度
@@ -32,7 +32,7 @@ class ACMS_GET_User_GeoList extends ACMS_GET_User_Search
      */
     protected function initVars()
     {
-        return array(
+        return [
             'referencePoint' => config('user_geo-list_reference_point'),
             'within'  => floatval(config('user_geo-list_within')),
             'indexing' => config('user_geo-list_indexing'),
@@ -46,7 +46,7 @@ class ACMS_GET_User_GeoList extends ACMS_GET_User_Search
             'entry_list_enable' => config('user_geo-list_entry_list_enable'),
             'entry_list_order' => config('user_geo-list_entry_list_order'),
             'entry_list_limit' => config('user_geo-list_entry_list_limit'),
-        );
+        ];
     }
 
     /**
@@ -99,8 +99,8 @@ class ACMS_GET_User_GeoList extends ACMS_GET_User_Search
                 $this->lng = $data['lng'];
             }
         } elseif ($this->config['referencePoint'] === 'url_query_string') {
-            $this->lat = $this->Get->get('lat');
-            $this->lng = $this->Get->get('lng');
+            $this->lat = (float)$this->Get->get('lat');
+            $this->lng = (float)$this->Get->get('lng');
         }
     }
 

@@ -52,7 +52,7 @@ class Logger
         $this->json->error = '';
         $this->json->inProcess = '';
         $this->json->percentage = 0;
-        $this->json->processList = array();
+        $this->json->processList = [];
 
         $json = json_encode($this->json);
         Storage::put($this->destinationPath, $json);
@@ -106,10 +106,10 @@ class Logger
 
     public function addProcessLog($message, $status = 1)
     {
-        $this->json->processList[] = array(
+        $this->json->processList[] = [
             'message' => $message,
             'status' => empty($status) ? 'ng' : 'ok',
-        );
+        ];
     }
 
     /**
@@ -128,10 +128,10 @@ class Logger
     public function error($message)
     {
         $this->json->error = $message;
-        $this->json->processList[] = array(
+        $this->json->processList[] = [
             'message' => $message,
             'status' => 'ng',
-        );
+        ];
         $this->json->percentage = 100;
         $this->build();
     }

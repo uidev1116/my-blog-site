@@ -25,7 +25,6 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
             if (!$flg_valid) {
                 $this->Get->set('step', '');
                 $this->screenTrans($this->orderTpl, $this->Get->get('step'));
-                return $this->Post;
             }
         }
 
@@ -56,7 +55,7 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
             or !$SESSION->get('total')
             or !$SESSION->get('subtotal')
         ) {
-            $TEMP = array();
+            $TEMP = [];
             $this->closeSession($SESSION);
             $this->closeCart($TEMP);
 
@@ -161,7 +160,7 @@ class ACMS_POST_Shop2_Form_Submit extends ACMS_POST_Shop2
         /**
          * セッションとカートをクリアする
          */
-        $TEMP = array();
+        $TEMP = [];
         $this->closeSession($SESSION);
         $this->closeCart($TEMP);
 

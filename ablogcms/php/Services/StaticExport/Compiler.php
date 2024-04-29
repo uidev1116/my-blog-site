@@ -11,10 +11,10 @@ class Compiler extends ContractsCompiler
      *
      * @var array
      */
-    protected $resolver = array(
+    protected $resolver = [
         'source'    => null,
         'link'      => null,
-    );
+    ];
 
     /**
      * compile

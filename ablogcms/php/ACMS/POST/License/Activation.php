@@ -26,9 +26,9 @@ class ACMS_POST_License_Activation extends ACMS_POST
                 'message' => $e->getMessage()
             ]);
         }
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'bid' => BID,
             'admin' => 'top',
-        )));
+        ]));
     }
 }

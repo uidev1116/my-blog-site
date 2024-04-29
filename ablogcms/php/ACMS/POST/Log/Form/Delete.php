@@ -34,13 +34,13 @@ class ACMS_POST_Log_Form_Delete extends ACMS_POST
             $SQL->addWhereOpr('log_form_blog_id', BID);
             $SQL->addWhereBw('log_form_datetime', START, END);
             $DB->query($SQL->get(dsn()), 'exec');
-            $this->redirect(acmsLink(array(
+            $this->redirect(acmsLink([
                 'bid'   => BID,
                 'admin' => 'form_log',
-                'query' => array(
+                'query' => [
                     'fmid'  => $fmid,
-                ),
-            )));
+                ],
+            ]));
         }
 
         return $this->Post;

@@ -2,18 +2,18 @@
 
 class ACMS_GET_Admin_Entry_Autocomplete extends ACMS_GET_Entry_Summary
 {
-    public $_axis = array(
+    public $_axis = [
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'keyword'   => 'global',
-    );
+    ];
 
     function initVars()
     {
-        return array(
+        return [
             'orderFieldName'   => '',
             'order'            => 'datetime-desc',
             'limit'            => 20,
@@ -37,7 +37,7 @@ class ACMS_GET_Admin_Entry_Autocomplete extends ACMS_GET_Entry_Summary
             'loop_class'            => '',
             'categoryInfoOn'    => 'on',
             'categoryFieldOn'   => 'off',
-        );
+        ];
     }
 
     function get()

@@ -8,7 +8,7 @@ abstract class Payload
 {
     protected function basicPayload($type, $events, $contents, $url = null)
     {
-        $payload = array(
+        $payload = [
             'webhook_id' => 0,
             'webhook_name' => '',
             'type' => $type,
@@ -16,12 +16,12 @@ abstract class Payload
             'actor' => null,
             'url' => $url,
             'contents' => $contents,
-        );
+        ];
         if (SUID) {
-            $payload['actor'] = array(
+            $payload['actor'] = [
                 'uid' => SUID,
                 'name' => ACMS_RAM::userName(SUID),
-            );
+            ];
         }
         return $payload;
     }

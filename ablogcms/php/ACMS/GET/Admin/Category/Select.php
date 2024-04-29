@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_Category_Select extends ACMS_GET_Admin
 {
-    public $_scope  = array(
+    public $_scope  = [
         'cid'   => 'global',
-    );
+    ];
 
     function get()
     {

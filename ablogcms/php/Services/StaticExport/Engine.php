@@ -6,7 +6,9 @@ use App;
 use DB;
 use SQL;
 use ACMS_Filter;
+use ACMS_RAM;
 use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
 use Acms\Services\StaticExport\Generator\TopGenerator;
 use Acms\Services\StaticExport\Generator\ThemeGenerator;
 use Acms\Services\StaticExport\Generator\RequireThemeGenerator;
@@ -16,6 +18,9 @@ use Acms\Services\StaticExport\Generator\CategoryArchivesGenerator;
 use Acms\Services\StaticExport\Generator\EntryGenerator;
 use Acms\Services\StaticExport\Generator\PageGenerator;
 use Symfony\Component\Finder\Finder;
+use React\Promise\Promise;
+
+use function React\Async\await;
 
 class Engine
 {
@@ -50,10 +55,14 @@ class Engine
     protected $maxPublish;
 
     /**
+     * @var string
+     */
+    protected $nameServer;
+
+    /**
      * @var \stdClass
      */
     protected $config;
-
 
     /**
      * Engine constructor.
@@ -69,18 +78,23 @@ class Engine
      * @param \Acms\Services\StaticExport\Logger $logger
      * @param \Acms\Services\StaticExport\Destination $destination
      * @param int $maxPublish
-     * @param \Field $config
+     * @param string $nameServer
+     * @param \stdClass $config
      * @throws \Exception
      */
-    public function init($logger, $destination, $maxPublish, $config)
+    public function init($logger, $destination, $maxPublish, $nameServer, $config)
     {
         $this->logger = $logger;
         $this->destination = $destination;
         $this->maxPublish = $maxPublish;
+        $this->nameServer = $nameServer;
         $this->config = $config;
 
         try {
-            if (!is_writable($this->destination->getDestinationPath())) {
+            if (!Storage::exists($this->destination->getDestinationPath())) {
+                Storage::makeDirectory($this->destination->getDestinationPath());
+            }
+            if (!Storage::isWritable($this->destination->getDestinationPath())) {
                 $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath());
             }
             $this->compiler = App::make('static-export.compiler');
@@ -97,90 +111,112 @@ class Engine
     {
         $themes = $this->extractTheme($this->config->theme);
 
-        // アセットの書き出し
-        $this->processExportArchives();
+        try {
+            // アセットの書き出し
+            $this->processExportAssets();
 
-        // テーマのアセット書き出し
-        $this->processExportAssets($themes);
+            // テーマのアセット書き出し
+            $this->processExportThemeAssets($themes);
 
-        // css の url属性のパス解決
-        $this->processResolvCssPath($themes);
+            // css の url属性のパス解決
+            $this->processResolvCssPath($themes);
 
-        // テーマのテンプレート書き出し
-        $this->processExportTheme($themes);
+            // テーマのテンプレート書き出し
+            await($this->processExportTheme($themes));
 
-        // トップページの書き出し
-        DB::reconnect(dsn());
-        $this->processExportTop();
+            // トップページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportTop());
 
-        // ページの書き出し
-        DB::reconnect(dsn());
-        $this->processExportPagenation();
+            if ($this->config->static_export_dafault_max_page > 1) {
+                // ページの書き出し
+                DB::reconnect(dsn());
+                await($this->processExportPagenation($this->config->static_export_dafault_max_page));
+            }
 
-        // カテゴリートップページの書き出し
-        DB::reconnect(dsn());
-        $this->processExportCategoryTop();
+            // カテゴリートップページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryTop());
 
-        // エントリーの書き出し
-        DB::reconnect(dsn());
-        $this->processExportEntry();
+            // エントリーの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportEntry());
 
-        // カテゴリーページの書き出し
-        DB::reconnect(dsn());
-        $this->processExportCategoryPagenation($this->config->static_page_cid);
+            // カテゴリーページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryPagenation($this->config->static_page_cid));
 
-        // アーカイブページの書き出し
-        DB::reconnect(dsn());
-        $this->processExportArchivePage($this->config->static_archive_cid);
+            // カテゴリーアーカイブページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryArchivePage($this->config->static_archive_cid));
 
-        // 古いファイルの削除
-        $this->deleteOldFiles();
+            // 古いファイルの削除
+            $this->deleteOldFiles();
+        } catch (\Throwable $th) {
+            $this->logger->error('不明なエラーが発生したため、書き出し処理を中断します');
+            throw $th;
+        } finally {
+            $this->logger->start('書き出し完了');
+            $this->logger->processing();
 
-        $this->logger->start('書き出し完了');
-        $this->logger->processing();
+            sleep(1);
 
-        sleep(1);
-
-        $this->logger->destroy();
+            $this->logger->destroy();
+        }
     }
 
     /**
-     * アーカイブの書き出し
+     * アセットの書き出し
      */
-    protected function processExportArchives()
+    protected function processExportAssets()
     {
-        $this->logger->start('アーカイブの書き出し');
+        $this->logger->start('アセットの書き出し');
         $this->logger->processing();
-        $this->copyArchives();
+        try {
+            $this->copyAssets();
+        } catch (\Throwable $th) {
+            $this->logger->error('不明なエラーが発生したため、アセットの書き出しを中断します');
+            \AcmsLogger::error('アセットの静的書き出しに失敗しました。', Common::exceptionArray($th));
+        }
     }
 
     /**
      * テーマのアセット書き出し
      *
-     * @param array $themes
+     * @param string[] $themes
      */
-    protected function processExportAssets($themes)
+    protected function processExportThemeAssets($themes)
     {
         $this->copyThemeItems(THEMES_DIR . 'system/');
         $this->copyThemeRequireItems(THEMES_DIR . 'system/');
         foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
-            $this->copyThemeItems($path);
-            $this->copyThemeRequireItems($path);
+            try {
+                $this->copyThemeItems($path);
+                $this->copyThemeRequireItems($path);
+            } catch (\Throwable $th) {
+                $this->logger->error('不明なエラーが発生したため、「' . $theme . '」のアセットの書き出しを中断します');
+                \AcmsLogger::error('「' . $theme . '」のアセットの静的書き出しに失敗しました。', Common::exceptionArray($th));
+            }
         }
     }
 
     /**
      * css の url属性のパス解決
      *
-     * @param array $themes
+     * @param string[] $themes
      */
-    protected function processResolvCssPath($themes)
+    protected function processResolvCssPath(array $themes)
     {
         $this->resolvePathInCss(THEMES_DIR . 'system/');
         foreach ($themes as $theme) {
             $path = THEMES_DIR . $theme . '/';
-            $this->resolvePathInCss($path);
+            try {
+                $this->resolvePathInCss($path);
+            } catch (\Throwable $th) {
+                $this->logger->error('不明なエラーが発生したため、「' . $theme . '」のCSSのurl属性のパス解決を中断します');
+                \AcmsLogger::error('「' . $theme . '」のCSSのurl属性のパス解決に失敗しました。', Common::exceptionArray($th));
+            }
         }
     }
 
@@ -188,133 +224,325 @@ class Engine
      *  テーマのテンプレート書き出し
      *
      * @param array $themes
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportTheme($themes)
+    protected function processExportTheme($themes): \React\Promise\PromiseInterface
     {
-        foreach ($themes as $theme) {
-            $path = THEMES_DIR . $theme . '/';
-            $themeGenerator = new ThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-            $themeGenerator->setSourceTheme($path);
-            $themeGenerator->setExclusionList($this->config->exclusion_list);
-            $themeGenerator->run();
+        return new Promise(
+            function (callable $resolve) use ($themes) {
+                foreach ($themes as $theme) {
+                    $path = THEMES_DIR . $theme . '/';
+                    $themeGenerator = new ThemeGenerator(
+                        $this->compiler,
+                        $this->destination,
+                        $this->logger,
+                        $this->maxPublish,
+                        $this->nameServer
+                    );
+                    $themeGenerator->setSourceTheme($path);
+                    $themeGenerator->setExclusionList($this->config->exclusion_list);
+                    try {
+                        await($themeGenerator->run());
+                    } catch (\Throwable $th) {
+                        $this->logger->error('不明なエラーが発生したため、「' . $theme . '」のテンプレートの書き出しを中断します');
+                        \AcmsLogger::error('「' . $theme . '」のテンプレートの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                    }
 
-            $themeGenerator = new RequireThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-            $themeGenerator->setSourceTheme($path);
-            $themeGenerator->setIncludeList($this->config->include_list);
-            $themeGenerator->run();
-        }
+
+                    $requireThemeGenerator = new RequireThemeGenerator(
+                        $this->compiler,
+                        $this->destination,
+                        $this->logger,
+                        $this->maxPublish,
+                        $this->nameServer
+                    );
+                    $requireThemeGenerator->setSourceTheme($path);
+                    $requireThemeGenerator->setIncludeList($this->config->include_list);
+                    try {
+                        await($requireThemeGenerator->run());
+                    } catch (\Throwable $th) {
+                        $this->logger->error('不明なエラーが発生したため、「' . $theme . '」の必須テンプレートの書き出しを中断します');
+                        \AcmsLogger::error('「' . $theme . '」の必須テンプレートの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                    }
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
      * トップページの書き出し
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportTop()
+    protected function processExportTop(): \React\Promise\PromiseInterface
     {
-        $generator = new TopGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-        $generator->setExclusionList($this->config->exclusion_list);
-        $generator->run();
+        return new Promise(
+            function (callable $resolve) {
+                $generator = new TopGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setExclusionList($this->config->exclusion_list);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、トップページの書き出しを中断します');
+                    \AcmsLogger::error('トップページの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
      * カテゴリートップの書き出し
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportCategoryTop()
+    protected function processExportCategoryTop(): \React\Promise\PromiseInterface
     {
-        $SQL = SQL::newSelect('category');
-        $SQL->setSelect('category_id');
-        $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
-        ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
-        ACMS_Filter::categoryStatus($SQL);
-        $Where  = SQL::newWhere();
-        $Where->addWhereOpr('category_blog_id', BID, '=', 'OR');
-        $Where->addWhereOpr('category_scope', 'global', '=', 'OR');
-        $SQL->addWhere($Where);
-        $target = DB::query($SQL->get(dsn()), 'list');
-
-        $generator = new CategoryGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-        $generator->setTargetCategories($target);
-        $generator->run();
+        return new Promise(
+            function (callable $resolve) {
+                $SQL = SQL::newSelect('category');
+                $SQL->setSelect('category_id');
+                $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
+                ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
+                ACMS_Filter::categoryStatus($SQL);
+                $Where  = SQL::newWhere();
+                $Where->addWhereOpr('category_blog_id', BID, '=', 'OR');
+                $Where->addWhereOpr('category_scope', 'global', '=', 'OR');
+                $SQL->addWhere($Where);
+                $categoryIds = DB::query($SQL->get(dsn()), 'list');
+                if ($categoryIds === false) {
+                    $this->logger->error('カテゴリーの取得に失敗したため、カテゴリートップページの書き出しを中止します。');
+                    $resolve(null);
+                    return;
+                }
+                $categoryIds = array_map('intval', $categoryIds);
+                $generator = new CategoryGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setCategoryIds($categoryIds);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、カテゴリートップページの書き出しを中断します');
+                    \AcmsLogger::error('カテゴリートップページの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
      * エントリーの書き出し
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportEntry()
+    protected function processExportEntry(): \React\Promise\PromiseInterface
     {
-        $SQL = SQL::newSelect('entry');
-        $SQL->setSelect('entry_id');
-        $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
-        $SQL->addWhereOpr('entry_blog_id', BID);
-        $SQL->addWhereOpr('entry_status', 'open');
-        $target = DB::query($SQL->get(dsn()), 'list');
+        return new Promise(
+            function (callable $resolve) {
+                $SQL = SQL::newSelect('entry');
+                $SQL->setSelect('entry_id');
+                $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
+                $SQL->addWhereOpr('entry_blog_id', BID);
+                $SQL->addWhereOpr('entry_status', 'open');
+                $entryIds = DB::query($SQL->get(dsn()), 'list');
+                if ($entryIds === false) {
+                    $this->logger->error('エントリーの取得に失敗したため、エントリーの書き出しを中止します。');
+                    $resolve(null);
+                    return;
+                }
 
-        $generator = new EntryGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-        $generator->setTargetEntries($target);
-        $generator->run();
+                $entryIds = array_map('intval', $entryIds);
+                $generator = new EntryGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setEntryIds($entryIds);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、エントリーの書き出しを中断します');
+                    \AcmsLogger::error('エントリーの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
      * ページの書き出し
+     * @param int $maxPageCount
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportPagenation()
+    protected function processExportPagenation(int $maxPageCount): \React\Promise\PromiseInterface
     {
-        $this->logger->start('2ページ以降を生成');
-        if (!empty($this->config->static_export_dafault_max_page)) {
-            $this->logger->processing();
-            $generator = new PageGenerator($this->compiler, $this->destination, null, $this->maxPublish);
-            $generator->setMaxPage($this->config->static_export_dafault_max_page);
-            $generator->run(true);
-        }
+        return new Promise(
+            function (callable $resolve) use ($maxPageCount) {
+                if ($maxPageCount < 2) {
+                    $resolve(null);
+                    return;
+                }
+                $generator = new PageGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setMaxPage($maxPageCount);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、ページの書き出しを中断します');
+                    \AcmsLogger::error('ページの静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
      * カテゴリーページの書き出し
      *
-     * @param array $categories
+     * @param int[] $categoryIds
+     * @return \React\Promise\PromiseInterface<null>
      */
-    protected function processExportCategoryPagenation($categories)
+    protected function processExportCategoryPagenation(array $categoryIds): \React\Promise\PromiseInterface
     {
-        if (is_array($categories) && count($categories) > 0) {
-            $this->logger->start('カテゴリーの2ページ以降を生成', count($categories));
-            foreach ($categories as $i => $cid) {
-                // カテゴリーのページを書き出し
-                $this->logger->processing();
-                $generator = new CategoryPageGenerator($this->compiler, $this->destination, null, $this->maxPublish);
-                $generator->setCategoryId($cid);
-                $generator->setMaxPage($this->getConfig('static_page_max', 5, $i));
-                $generator->run(true);
-            }
-        }
-    }
-
-    /**
-     * アーカイブページの書き出し
-     *
-     * @param array $categories
-     */
-    protected function processExportArchivePage($categories)
-    {
-        if (is_array($categories) && count($categories) > 0) {
-            foreach ($categories as $i => $cid) {
-                try {
-                    $generator = new CategoryArchivesGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-                    $generator->setCategoryId($cid);
-                    $generator->setMonthRange($this->getConfig('static_archive_start', date('Y-m-d', REQUEST_TIME), $i));
-                    $generator->setMaxPage($this->getConfig('static_archive_max', 5, $i));
-                    $generator->run();
-                } catch (\Exception $e) {
-                    $this->logger->error($e->getMessage(), $e->getFile() . ':' . $e->getLine());
+        return new Promise(
+            function (callable $resolve) use ($categoryIds) {
+                foreach ($categoryIds as $i => $categoryId) {
+                    // カテゴリーのページを書き出し
+                    $maxPage = $this->getConfig('static_page_max', 5, $i);
+                    if ($maxPage < 2) {
+                        continue;
+                    }
+                    $generator = new CategoryPageGenerator(
+                        $this->compiler,
+                        $this->destination,
+                        $this->logger,
+                        $this->maxPublish,
+                        $this->nameServer
+                    );
+                    $generator->setCategoryId($categoryId);
+                    $generator->setMaxPage($maxPage);
+                    try {
+                        await($generator->run());
+                    } catch (\Throwable $th) {
+                        $categoryName = ACMS_RAM::categoryName($categoryId);
+                        $this->logger->error(
+                            '不明なエラーが発生したため、カテゴリーページの書き出しを中断します【' . $categoryName . '（' . $categoryName . '）】'
+                        );
+                        \AcmsLogger::error(
+                            'カテゴリーページの静的書き出しに失敗しました【' . $categoryName . '（' . $categoryName . '）】',
+                            Common::exceptionArray($th)
+                        );
+                    }
                 }
+                $resolve(null);
             }
-        }
+        );
     }
 
     /**
-     * copy archives
+     * カテゴリーアーカイブページの書き出し
+     *
+     * @param int[] $categoryIds
+     * @return \React\Promise\PromiseInterface<null>
+     */
+    protected function processExportCategoryArchivePage(array $categoryIds): \React\Promise\PromiseInterface
+    {
+        return new Promise(
+            function (callable $resolve) use ($categoryIds) {
+                foreach ($categoryIds as $i => $categoryId) {
+                    $start = $this->getConfig('static_archive_start', date('Y-m-d', REQUEST_TIME), $i);
+                    $startDatetime = (new \DateTime())->setTimestamp(strtotime($start));
+                    $endDatetime = null;
+
+                    // そのカテゴリーの最後の日付のエントリーまでアーカイブを作る
+                    $SQL = SQL::newSelect('entry');
+                    $SQL->addLeftJoin('category', 'category_id', 'entry_category_id');
+                    $SQL->addSelect('entry_datetime');
+                    $SQL->addWhereOpr('entry_status', 'open');
+                    $SQL->setOrder('entry_datetime', 'DESC');
+                    $SQL->setLimit(1);
+                    if ($categoryId > 0) {
+                        $SQL->addWhereOpr('category_status', 'open');
+                        ACMS_Filter::categoryTree($SQL, $categoryId, 'descendant-or-self');
+                    }
+                    if ($last = DB::query($SQL->get(dsn()), 'one')) {
+                        $last = date('Y-m-31 23:23:59', strtotime($last));
+                        $endDatetime = (new \DateTime())->setTimestamp(strtotime($last));
+                    }
+                    if (is_null($endDatetime)) {
+                        $endDatetime = (new \DateTime())->setTimestamp(REQUEST_TIME);
+                    }
+                    $nextMonthInterval = new \DateInterval('P1M');
+
+                    $monthRange = [];
+                    while ($startDatetime < $endDatetime) {
+                        $year = $startDatetime->format('Y');
+                        $month = $startDatetime->format('m');
+                        if (array_search($year, $monthRange, true) === false) {
+                            $monthRange[] = $year;
+                        }
+                        $monthRange[] = $year . '/' . $month;
+                        $startDatetime->add($nextMonthInterval);
+                    }
+                    if (empty($monthRange)) {
+                        continue;
+                    }
+
+                    $maxPage = $this->getConfig('static_archive_max', 5, $i);
+
+                    if ($maxPage < 2) {
+                        continue;
+                    }
+                    try {
+                        $generator = new CategoryArchivesGenerator(
+                            $this->compiler,
+                            $this->destination,
+                            $this->logger,
+                            $this->maxPublish,
+                            $this->nameServer
+                        );
+                        $generator->setCategoryId($categoryId);
+                        $generator->setMonthRange($monthRange);
+                        $generator->setMaxPage($this->getConfig('static_archive_max', 5, $i));
+                        await($generator->run());
+                    } catch (\Throwable $th) {
+                        $categoryName = ACMS_RAM::categoryName($categoryId);
+                        $this->logger->error(
+                            '不明なエラーが発生したため、カテゴリーアーカイブページの書き出しを中断します【' . $categoryName . '（' . $categoryName . '）】'
+                        );
+                        \AcmsLogger::error(
+                            'カテゴリーアーカイブページの静的書き出しに失敗しました【' . $categoryName . '（' . $categoryName . '）】',
+                            Common::exceptionArray($th)
+                        );
+                    }
+                }
+                $resolve(null);
+            }
+        );
+    }
+
+    /**
+     * copy assets
      *
      * @return void
      */
-    protected function copyArchives()
+    protected function copyAssets()
     {
         $blog_archives_dir = sprintf('%03d', BID);
 
@@ -387,7 +615,7 @@ class Engine
             return;
         }
         if (property_exists($this->config, 'include_list')) {
-            $includeList = array();
+            $includeList = [];
             foreach ($this->config->include_list as $path) {
                 if (!empty($path)) {
                     $includeList[] = $path;
@@ -491,9 +719,9 @@ class Engine
         $this->logger->start('古いファイルを削除', iterator_count($iterator));
 
         foreach ($iterator as $file) {
-            $this->logger->processing();
             $path = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $file->getRelativePathname();
-            $this->logger->error('削除', $path, '204');
+            $this->logger->processing($path);
+            $this->logger->removedFile($path);
             Storage::remove($path);
         }
     }

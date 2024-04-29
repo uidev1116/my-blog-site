@@ -47,14 +47,15 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
         if (0 > $offset) {
             $offset = 0;
         }
-        array_splice($all, $offset, 0, array(array(
+        array_splice($all, $offset, 0, [[
             'alias_name' => ACMS_RAM::blogName(BID),
             'alias_domain' => ACMS_RAM::blogDomain(BID),
             'alias_code' => ACMS_RAM::blogCode(BID),
             'alias_status' => ACMS_RAM::blogAliasStatus(BID),
             'alias_scope' => 'self',
             'alias_id' => 0,
-        )));
+        ]
+        ]);
 
         $primary = intval(ACMS_RAM::blogAliasPrimary(BID));
         $count = count($all);
@@ -80,7 +81,7 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
             $code = $row['alias_code'];
             $bcode = ACMS_RAM::blogCode(BID) . '/';
 
-            $var = array(
+            $var = [
                 'sort' => $i + 1,
                 'name' => $name,
                 'domain' => $domain,
@@ -88,7 +89,7 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
                 'aid' => $row['alias_id'],
                 'urlLable' => $url,
                 'urlValue' => $url,
-            );
+            ];
 
             if ($row['alias_scope'] === 'global' && $row['alias_blog_id'] != BID) {
                 $var['urlLable'] = $url . $bcode;
@@ -98,13 +99,13 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
                 $Tpl->add('action#root');
             } elseif (!empty($aid)) {
                 $var['aidLabel'] = $aid;
-                $var['itemUrl'] = acmsLink(array(
+                $var['itemUrl'] = acmsLink([
                     'bid' => BID,
                     'admin' => 'alias_edit',
-                    'query' => array(
+                    'query' => [
                         'aid' => $aid,
-                    ),
-                ));
+                    ],
+                ]);
             } else {
                 $Tpl->add('aid#null');
                 $Tpl->add('action#default');
@@ -114,24 +115,24 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
                 $var['aid:checked'] = config('attr_checked');
             }
 
-            $Tpl->add(array('status:touch#' . $row['alias_status']));
+            $Tpl->add(['status:touch#' . $row['alias_status']]);
 
             if (
                 1
                 and isset($row['alias_scope'])
                 and $row['alias_scope'] === 'global'
             ) {
-                $Tpl->add(array('scope:touch#global'));
+                $Tpl->add(['scope:touch#global']);
             } else {
-                $Tpl->add(array('scope:touch#local'));
+                $Tpl->add(['scope:touch#local']);
             }
 
             for ($j = 0; $j < $count; $j++) {
                 $value = $j + 1;
-                $_var = array(
+                $_var = [
                     'value' => $value,
                     'label' => $value,
-                );
+                ];
                 if ($i == $j) {
                     $_var['selected'] = config('attr_selected');
                 }
@@ -143,7 +144,7 @@ class ACMS_GET_Admin_Alias_Index extends ACMS_GET_Admin
         }
 
         if (!$this->Post->isNull()) {
-            $Tpl->add(null, array('notice_mess' => 'show'));
+            $Tpl->add(null, ['notice_mess' => 'show']);
         }
 
         return $Tpl->get();

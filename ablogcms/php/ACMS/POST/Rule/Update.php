@@ -20,7 +20,7 @@ class ACMS_POST_Rule_Update extends ACMS_POST_Rule
             $SQL->addUpdate('rule_scope', $Rule->get('scope') ?: 'local');
             $SQL->addUpdate('rule_bid', $Rule->isNull('bid') ? null : $Rule->get('bid'));
             $SQL->addUpdate('rule_bid_case', $Rule->isNull('bid_case') ? null : $Rule->get('bid_case'));
-            $SQL->addupdate('rule_aid', $Rule->isNull('aid') ? null : $Rule->get('aid'));
+            $SQL->addUpdate('rule_aid', $Rule->isNull('aid') ? null : $Rule->get('aid'));
             $SQL->addUpdate('rule_aid_case', $Rule->isNull('aid_case') ? null : $Rule->get('aid_case'));
             $SQL->addUpdate('rule_uid', $Rule->isNull('uid') ? null : $Rule->get('uid'));
             $SQL->addUpdate('rule_uid_case', $Rule->isNull('uid_case') ? null : $Rule->get('uid_case'));

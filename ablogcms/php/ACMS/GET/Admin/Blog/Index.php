@@ -12,7 +12,7 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         if (!$this->Post->isNull()) {
             $Tpl->add('refresh');
@@ -65,10 +65,10 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
         $SQL->setLimit($limit, $from);
 
         foreach ($limits as $val) {
-            $_vars  = array(
+            $_vars  = [
                 'value' => $val,
                 'label' => $val,
-            );
+            ];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -82,8 +82,8 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         ACMS_Filter::blogOrder($SQL, $order);
@@ -94,7 +94,7 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
         while ($row = $DB->fetch($q)) {
             $bid    = $row['blog_id'];
             $Tpl->add('status#' . $row['blog_status']);
-            $_vars  = array(
+            $_vars  = [
                 'bid'       => $bid,
                 'sort'      => $row['blog_sort'],
                 'name'      => $row['blog_name'],
@@ -104,23 +104,23 @@ class ACMS_GET_Admin_Blog_Index extends ACMS_GET_Admin
                 'themeSetScope' => $row['blog_theme_set_scope'],
                 'editorSet' => $row['editorSetName'],
                 'editorSetScope' => $row['blog_editor_set_scope'],
-                'urlValue'  => acmsLink(array('bid' => $bid)),
-                'urlLabel'  => acmsLink(array('bid' => $bid, 'sid' => false)),
-                'adminTopLink'  => acmsLink(array(
+                'urlValue'  => acmsLink(['bid' => $bid]),
+                'urlLabel'  => acmsLink(['bid' => $bid, 'sid' => false]),
+                'adminTopLink'  => acmsLink([
                     'bid'   => $bid,
                     'admin' => 'top',
-                )),
-                'itemLink'  => acmsLink(array(
+                ]),
+                'itemLink'  => acmsLink([
                     'bid'   => $bid,
                     'admin' => 'blog_edit',
-                )),
-            );
+                ]),
+            ];
             if (isBlogGlobal($bid)) {
-                $_vars['indexLink'] = acmsLink(array(
+                $_vars['indexLink'] = acmsLink([
                     'bid'   => $bid,
                     'admin' => 'blog_index',
-                ));
-                $Tpl->add(array('branch', 'blog:loop'));
+                ]);
+                $Tpl->add(['branch', 'blog:loop']);
             }
             $Tpl->add('blog:loop', $_vars);
         }

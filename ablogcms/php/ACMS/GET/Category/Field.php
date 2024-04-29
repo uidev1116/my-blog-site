@@ -2,9 +2,9 @@
 
 class ACMS_GET_Category_Field extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'cid'   => 'global',
-    );
+    ];
 
     function get()
     {

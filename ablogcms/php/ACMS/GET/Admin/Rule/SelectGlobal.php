@@ -10,14 +10,14 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
             && strpos(ADMIN, 'config_') === false
             && strpos(TPL, 'ajax/module') === false
         ) {
-            return false;
+            return '';
         }
         if (strpos(ADMIN, 'config_set_') !== false) {
-            return false;
+            return '';
         }
         $Tpl        = new Template($this->tpl, new ACMS_Corrector());
         $DB         = DB::singleton(dsn());
-        $rootVars   = array();
+        $rootVars   = [];
         $rid        = $this->Get->get('rid');
         $query      = parseQuery(QUERY);
 
@@ -27,11 +27,11 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
 
         $tmpQuery   = $query;
         unset($tmpQuery['rid']);
-        $rootVars['defaultUrl'] = acmsLink(array(
+        $rootVars['defaultUrl'] = acmsLink([
             'bid'   => BID,
             'admin' => ADMIN,
             'query' => $tmpQuery,
-        ), true);
+        ], true);
 
         $SQL    = SQL::newSelect('rule');
         $SQL->addLeftJoin('blog', 'blog_id', 'rule_blog_id');
@@ -50,15 +50,15 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
         while ($row = array_shift($all)) {
             $rid            = intval($row['rule_id']);
             $query['rid']   = $rid;
-            $vars           = array(
+            $vars           = [
                 'rid'   => $rid,
                 'label' => $row['rule_name'],
-                'url'   => acmsLink(array(
+                'url'   => acmsLink([
                     'bid'   => BID,
                     'admin' => ADMIN,
                     'query' => $query,
-                ), true),
-            );
+                ], true),
+            ];
             $Tpl->add('rule:loop', $vars);
 
             $sort++;
@@ -70,28 +70,28 @@ class ACMS_GET_Admin_Rule_SelectGlobal extends ACMS_GET_Admin
 
     function getLinkVars($bid, $rid)
     {
-        return array(
-            'itemUrl'   => acmsLink(array(
+        return [
+            'itemUrl'   => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'rule_edit',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'configUrl' => acmsLink(array(
+                ]),
+            ]),
+            'configUrl' => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'config_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'moduleUrl' => acmsLink(array(
+                ]),
+            ]),
+            'moduleUrl' => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'module_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-        );
+                ]),
+            ]),
+        ];
     }
 }

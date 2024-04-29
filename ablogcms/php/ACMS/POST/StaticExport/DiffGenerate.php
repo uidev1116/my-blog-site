@@ -38,6 +38,12 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
             die();
         }
 
+        $this->validate($this->Post);
+
+        if ($this->Post->isValidAll() === false) {
+            return $this->Post;
+        }
+
         ignore_user_abort(true);
         set_time_limit(0);
 
@@ -59,17 +65,19 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
         $offset_dir = $setting->get('static_dest_offset_dir');
         $domain = $setting->get('static_dest_domain');
         $destDiffDir = $setting->get('static_dest_diff');
-        $maxPublish = $setting->get('static_max_publish', 3);
+        $maxPublish = intval($setting->get('static_max_publish', 3));
+        $nameServer = config('static_export_name_server', '8.8.8.8');
         $blogCode = ACMS_RAM::blogCode(BID);
         $config = new stdClass();
-        $config->theme = $setting->get('theme');
-        $config->static_page_cid = $setting->getArray('static_page_cid');
-        $config->static_archive_cid = $setting->getArray('static_archive_cid');
-        $config->static_page_max = $setting->getArray('static_page_max');
+        $config->theme = config('theme');
+        $config->static_export_name_server = config('static_export_name_server', '8.8.8.8');
+        $config->static_page_cid = array_map('intval', $setting->getArray('static_page_cid'));
+        $config->static_archive_cid = array_map('intval', $setting->getArray('static_archive_cid'));
+        $config->static_page_max = array_map('intval', $setting->getArray('static_page_max'));
         $config->static_archive_start = $setting->getArray('static_archive_start');
-        $config->static_archive_max = $setting->getArray('static_archive_max');
-        $exclusionList = array();
-        $includeList = array();
+        $config->static_archive_max = array_map('intval', $setting->getArray('static_archive_max'));
+        $exclusionList = [];
+        $includeList = [];
         if ($list = $setting->get('static_export_exclusion_list', false)) {
             $exclusionList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
         }
@@ -107,7 +115,7 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
             $destination->setDestinationDomain($domain);
             $destination->setBlogCode($blogCode);
             $logger->initLog();
-            $engine->init($logger, $destination, $maxPublish, $config);
+            $engine->init($logger, $destination, $maxPublish, $nameServer, $config);
             $engine->runDiff($fromDatetime);
             $this->saveExportDatetime($exportDate, $exportTime);
 
@@ -130,5 +138,18 @@ class ACMS_POST_StaticExport_DiffGenerate extends ACMS_POST_StaticExport_Generat
         $field->set('static-export-last-time-time', $time);
 
         Config::saveConfig($field, BID);
+    }
+
+    /**
+     * @param \Field_Validation $post
+     * @return void
+     */
+    protected function validate(\Field_Validation $post): void
+    {
+        $post->setMethod('diff_date', 'required');
+        $post->setMethod('diff_date', 'dates');
+        $post->setMethod('diff_time', 'required');
+        $post->setMethod('diff_time', 'times');
+        $post->validate(new ACMS_Validator());
     }
 }

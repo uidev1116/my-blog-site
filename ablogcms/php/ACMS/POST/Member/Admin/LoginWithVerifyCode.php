@@ -9,9 +9,9 @@ class ACMS_POST_Member_Admin_LoginWithVerifyCode extends ACMS_POST_Member_Admin_
     /**
      * Run
      *
-     * @return null|Field_Validation
+     * @inheritDoc
      */
-    public function post(): ?Field_Validation
+    public function post()
     {
         $loginField = $this->extract('login');
         $email = preg_replace("/(\s|　)/", "", $loginField->get('mail'));

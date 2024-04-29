@@ -195,7 +195,7 @@ class ACMS_POST_Entry_Index_Blog extends ACMS_POST
             $globalCategoryIds = $this->getGlobalCategory($bid);
             $loaded = true;
         }
-        return in_array($cid, $globalCategoryIds);
+        return in_array($cid, $globalCategoryIds, true);
     }
 
     /**
@@ -218,7 +218,7 @@ class ACMS_POST_Entry_Index_Blog extends ACMS_POST
      * 指定ブログ・指定ユーザーのエントリーの最大ソート番号（ユーザー）を取得
      *
      * @param int $bid
-     * @param int $suid
+     * @param int $uid
      * @return int
      */
     protected function getEntryUserSort(int $bid, int $uid): int

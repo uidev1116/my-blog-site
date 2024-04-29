@@ -39,13 +39,14 @@ class ACMS_POST_Revision_Change extends ACMS_POST_Entry
                 'rvid' => $rvid,
             ]);
 
-            $this->redirect(acmsLink(array(
+            $this->redirect(acmsLink([
                 'bid'   => BID,
                 'eid'   => EID,
                 'cid'   => $cid,
-            )));
+            ]));
         } catch (\Exception $e) {
             AcmsLogger::info('公開バージョンへの切り替えができませんでした。' . $e->getMessage(), Common::exceptionArray($e));
+            return $this->Post;
         }
     }
 }

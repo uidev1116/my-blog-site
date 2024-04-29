@@ -2,14 +2,14 @@
 
 class ACMS_GET_Field_ValueList extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'bid'   => 'global',
         'field' => 'global',
-    );
+    ];
 
-    public $_axis = array(
+    public $_axis = [
         'bid'   => 'self',
-    );
+    ];
 
     function get()
     {
@@ -45,7 +45,7 @@ class ACMS_GET_Field_ValueList extends ACMS_GET
                     $Tpl->add('glue');
                 }
 
-                $Tpl->add('value:loop', array('value' => $value));
+                $Tpl->add('value:loop', ['value' => $value]);
             } while (!!($row = $DB->fetch($q)));
         }
 

@@ -11,13 +11,13 @@ class ACMS_POST_Module_2GET extends ACMS_POST_Module
             $SQL->addWhereOpr('module_id', $mid);
 
             if ($name = $DB->query($SQL->get(dsn()), 'one')) {
-                $url    = acmsLink(array(
+                $url    = acmsLink([
                     'bid'   => BID,
                     'admin' => 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $name)),
-                    'query' => array(
+                    'query' => [
                         'mid'   => $mid,
-                    ),
-                ));
+                    ],
+                ]);
                 $this->redirect($url);
             }
         }

@@ -2,7 +2,7 @@
 
 class ACMS_GET_Touch_CategoryParent extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('category');
@@ -16,7 +16,7 @@ class ACMS_GET_Touch_CategoryParent extends ACMS_GET
         if ($id) {
             return $this->tpl;
         } else {
-            return false;
+            return '';
         }
     }
 }

@@ -21,12 +21,12 @@ class ACMS_GET_Ajax_ArgReference extends ACMS_GET_Admin
                 ACMS_Filter::blogTree($SQL, BID, 'descendant-or-self');
                 $blogs  = $DB->query($SQL->get(dsn()), 'all');
                 foreach ($blogs as $blog) {
-                    $Tpl->add(array('blog:loop', $root), $blog);
+                    $Tpl->add(['blog:loop', $root], $blog);
                 }
 
                 // current blog's & inherit category:loop
-                $this->buildCategorySelect($Tpl, BID, null, array('category:loop', 'lineage:loop', $root), true);
-                $Tpl->add(array('lineage:loop', $root), array('bid' => BID));
+                $this->buildCategorySelect($Tpl, BID, null, ['category:loop', 'lineage:loop', $root], true);
+                $Tpl->add(['lineage:loop', $root], ['bid' => BID]);
 
                 // linege blog's category:loop
                 foreach ($blogs as $blog) {
@@ -34,8 +34,8 @@ class ACMS_GET_Ajax_ArgReference extends ACMS_GET_Admin
                     if ($bid == BID) {
                         continue;
                     }
-                    $this->buildCategorySelect($Tpl, $bid, null, array('category:loop', 'lineage:loop', $root), true);
-                    $Tpl->add(array('lineage:loop', $root), array('bid' => $bid));
+                    $this->buildCategorySelect($Tpl, $bid, null, ['category:loop', 'lineage:loop', $root], true);
+                    $Tpl->add(['lineage:loop', $root], ['bid' => $bid]);
                 }
 
                 break;
@@ -46,20 +46,20 @@ class ACMS_GET_Ajax_ArgReference extends ACMS_GET_Admin
                 $SQL->addWhereOpr('blog_left', ACMS_RAM::blogLeft(BID), '>=');
                 $SQL->addWhereOpr('blog_right', ACMS_RAM::blogRight(BID), '<=');
                 $all  = $DB->query($SQL->get(dsn()), 'all');
-                $blogs  = array();
-                $users  = array();
+                $blogs  = [];
+                $users  = [];
                 foreach ($all as $row) {
                     $users[$row['user_blog_id']][]  = $row;
                     $blogs[$row['user_blog_id']]    = $row;
                 }
                 foreach ($users as $bid => $us) {
                     foreach ($us as $u) {
-                        $Tpl->add(array('user:loop', 'lineage:loop', $root), $u);
+                        $Tpl->add(['user:loop', 'lineage:loop', $root], $u);
                     }
-                    $Tpl->add(array('lineage:loop', $root), $blogs[$bid]);
+                    $Tpl->add(['lineage:loop', $root], $blogs[$bid]);
                 }
                 foreach ($blogs as $blog) {
-                    $Tpl->add(array('blog:loop', $root), $blog);
+                    $Tpl->add(['blog:loop', $root], $blog);
                 }
                 break;
             case 'eid':

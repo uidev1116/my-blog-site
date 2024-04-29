@@ -17,7 +17,7 @@ class ACMS_GET_Admin_Form_Name extends ACMS_GET
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $Tpl->add(null, array('fmid' => $fmid, 'name' => $name));
+        $Tpl->add(null, ['fmid' => $fmid, 'name' => $name]);
         return $Tpl->get();
     }
 }

@@ -11,7 +11,7 @@ class ACMS_POST_Fix_UnitMap extends ACMS_POST_Fix
         $Fix = $this->extract('fix', new ACMS_Validator());
         $Fix->setMethod('fix_map_type_target', 'required');
         $Fix->setMethod('fix_map_type_change_value', 'required');
-        $Fix->setMethod('fix_image_size', 'in', array('osmap', 'map'));
+        $Fix->setMethod('fix_image_size', 'in', ['osmap', 'map']);
 
         if ($this->Post->isValidAll()) {
             @set_time_limit(0);

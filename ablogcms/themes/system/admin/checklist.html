@@ -213,25 +213,54 @@
   </div>
 </div>
 
-<h2 class="acms-admin-admin-title2"><!--T-->ページキャッシュ<!--/T--></h2>
+<h2 class="acms-admin-admin-title2"><!--T-->キャッシュ<!--/T--></h2>
 <div class="acms-admin-table-responsive acms-admin-margin-bottom-large">
   <table class="acms-admin-table-admin">
     <thead class="acms-admin-table-heading">
       <th class="acms-admin-table-nowrap"><!--T-->ブログID<!--/T--></th>
+      <th class="acms-admin-table-nowrap"><!--T-->コンフィグセットID<!--/T--></th>
       <th class="acms-admin-table-nowrap"><!--T-->ルールID<!--/T--></th>
       <th><!--T-->ページキャッシュ<!--/T--></th>
-      <th><!--T-->POST時のキャッシュクリア<!--/T--></th>
-      <th><!--T-->クリアの対象ブログ<!--/T--></th>
+      <th><!--T-->POST時クリア<!--/T--></th>
+      <th><!--T-->読者ユーザー<!--/T--></th>
+      <th><!--T-->クリアの対象<!--/T--></th>
+      <th><!--T-->クライアントキャッシュ<!--/T--></th>
       <th class="acms-admin-admin-mini-table-action acms-admin-table-nowrap"><!--T-->編集<!--/T--></th>
     </thead>
     <tbody>
       <!-- BEGIN blog:loop -->
       <tr>
-        <td class="acms-admin-table-nowrap acms-admin-text-center"><span class="acms-admin-label label-default">{bid}</span></td>
-        <td class="acms-admin-table-nowrap acms-admin-text-center">{rid}</td><!-- BEGIN cacheCaution -->
-        <td class="{caution}"><!-- END cacheCaution -->{cache}</td>
-        <td>{cacheClearWhenPost}</td><!-- BEGIN cacheClearTargetCaution -->
-        <td class="{caution}"><!-- END cacheClearTargetCaution -->{cacheClearTarget}</td>
+        <td class="acms-admin-table-nowrap acms-admin-text-left">
+          <span class="acms-admin-label label-default">{bid}</span>
+          {blogName}
+        </td>
+        <td class="acms-admin-table-nowrap acms-admin-text-left">
+          <!-- BEGIN_IF [{setid}/nem/] -->
+          <span class="acms-admin-label label-default">{setid}</span>
+          {setName}
+          <!-- END_IF -->
+        </td>
+        <td class="acms-admin-table-nowrap acms-admin-text-left">
+          <!-- BEGIN_IF [{rid}/nem/] -->
+          <span class="acms-admin-label label-default">{rid}</span>
+          {ruleName}
+          <!-- END_IF -->
+        </td>
+        <td class="{cacheCaution}">
+          {cache}
+        </td>
+        <td>
+          {cacheClearWhenPost}
+        </td>
+        <td>
+          {subscriberCache}
+        </td>
+        <td class="{caution}">
+          {cacheClearTarget}
+        </td>
+        <td>
+          {clientCache}
+        </td>
         <td class="acms-admin-admin-mini-table-action">
           <a href="{editUrl}" class="acms-admin-btn-admin acms-admin-text-nowrap"><!--T-->編集<!--/T--></a>
         </td>
@@ -325,19 +354,26 @@
     <thead class="acms-admin-table-heading">
       <th class="acms-admin-table-nowrap"><!--T-->ブログID<!--/T--></th>
       <th><!--T-->モジュールID<!--/T--></th>
-      <th><!--T-->ルール名<!--/T--></th>
+      <th><!--T-->コンフィグセット<!--/T--></th>
+      <th><!--T-->ルール<!--/T--></th>
       <th><!--T-->キー<!--/T--></th>
       <th><!--T-->バリュー<!--/T--></th>
     </thead>
     <tbody>
       <!-- BEGIN config:loop -->
       <tr>
-        <td class="acms-admin-table-nowrap acms-admin-text-center"><a href="{blogUrl}"><span class="acms-admin-label label-default">{bid}</span></a></td>
+        <td class="acms-admin-table-nowrap acms-admin-text-center">
+          <a href="{blogUrl}">
+            <span class="acms-admin-label label-default">{bid}</span>
+          </a>
+        </td>
         <td><a href="{moduleUrl}">{mcode}</a></td>
+        <td><a href="{configSetUrl}">{configSetName}</a></td>
         <td><a href="{ruleUrl}">{rcode}</a></td>
         <td>{key}</td>
         <td>{value}</td>
-      </tr><!-- END config:loop -->
+      </tr>
+      <!-- END config:loop -->
     </tbody>
   </table>
 </div><!-- END config -->

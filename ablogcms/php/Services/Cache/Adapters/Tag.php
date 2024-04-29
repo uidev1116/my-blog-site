@@ -2,6 +2,8 @@
 
 namespace Acms\Services\Cache\Adapters;
 
+use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+
 class Tag extends Standard
 {
     /**
@@ -9,7 +11,7 @@ class Tag extends Standard
      * $lifetimeを指定しない場合はデフォルト値を設定
      *
      * @param string $key
-     * @param any $value
+     * @param mixed $value
      * @param array $tags
      * @param int $lifetime
      */
@@ -31,6 +33,8 @@ class Tag extends Standard
      */
     public function invalidateTags($tags = [])
     {
-        $this->adapter->invalidateTags($tags);
+        if ($this->adapter instanceof TagAwareAdapterInterface) {
+            $this->adapter->invalidateTags($tags);
+        }
     }
 }

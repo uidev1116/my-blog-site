@@ -79,7 +79,6 @@ class DatabaseTagAwareAdapter extends AbstractTagAwareAdapter implements Pruneab
     /**
      * Constructor
      *
-     * @param mixed $connOrDsn
      * @param string $namespace
      * @param int $defaultLifetime
      * @return void

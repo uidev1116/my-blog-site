@@ -27,22 +27,23 @@ class Helper
      */
     public function setConstantsAuthSystemPage(Field $queryParameter): void
     {
-        define('IS_SYSTEM_LOGIN_PAGE', $queryParameter->get('login'));
-        define('IS_SYSTEM_ADMIN_RESET_PASSWORD_PAGE', $queryParameter->get('admin-reset-password'));
-        define('IS_SYSTEM_ADMIN_RESET_PASSWORD_AUTH_PAGE', $queryParameter->get('admin-reset-password-auth'));
-        define('IS_SYSTEM_ADMIN_TFA_RECOVERY_PAGE', $queryParameter->get('admin-tfa-recovery'));
+        define('IS_SYSTEM_LOGIN_PAGE', (int)$queryParameter->get('login'));
+        define('IS_SYSTEM_ADMIN_RESET_PASSWORD_PAGE', (int)$queryParameter->get('admin-reset-password'));
+        define('IS_SYSTEM_ADMIN_RESET_PASSWORD_AUTH_PAGE', (int)$queryParameter->get('admin-reset-password-auth'));
+        define('IS_SYSTEM_ADMIN_TFA_RECOVERY_PAGE', (int)$queryParameter->get('admin-tfa-recovery'));
 
-        define('IS_SYSTEM_SIGNIN_PAGE', $queryParameter->get('signin'));
-        define('IS_SYSTEM_SIGNUP_PAGE', $queryParameter->get('signup'));
-        define('IS_SYSTEM_RESET_PASSWORD_PAGE', $queryParameter->get('reset-password'));
-        define('IS_SYSTEM_RESET_PASSWORD_AUTH_PAGE', $queryParameter->get('reset-password-auth'));
-        define('IS_SYSTEM_TFA_RECOVERY_PAGE', $queryParameter->get('tfa-recovery'));
+        define('IS_SYSTEM_SIGNIN_PAGE', (int)$queryParameter->get('signin'));
+        define('IS_SYSTEM_SIGNUP_PAGE', (int)$queryParameter->get('signup'));
+        define('IS_SYSTEM_RESET_PASSWORD_PAGE', (int)$queryParameter->get('reset-password'));
+        define('IS_SYSTEM_RESET_PASSWORD_AUTH_PAGE', (int)$queryParameter->get('reset-password-auth'));
+        define('IS_SYSTEM_TFA_RECOVERY_PAGE', (int)$queryParameter->get('tfa-recovery'));
 
-        define('IS_UPDATE_PROFILE_PAGE', $queryParameter->get('update-profile'));
-        define('IS_UPDATE_PASSWORD_PAGE', $queryParameter->get('update-password'));
-        define('IS_UPDATE_EMAIL_PAGE', $queryParameter->get('update-email'));
-        define('IS_UPDATE_TFA_PAGE', $queryParameter->get('update-tfa'));
-        define('IS_WITHDRAWAL_PAGE', $queryParameter->get('withdrawal'));
+        define('IS_UPDATE_PROFILE_PAGE', (int)$queryParameter->get('update-profile'));
+        define('IS_UPDATE_PASSWORD_PAGE', (int)$queryParameter->get('update-password'));
+        define('IS_UPDATE_EMAIL_PAGE', (int)$queryParameter->get('update-email'));
+        define('IS_UPDATE_TFA_PAGE', (int)$queryParameter->get('update-tfa'));
+        define('IS_WITHDRAWAL_PAGE', (int)$queryParameter->get('withdrawal'));
+        define('IS_REVISION_PREVIEW_PAGE', $queryParameter->get('tpl') === 'ajax/revision-preview.html' ? 1 : 0);
 
         if (
             IS_SYSTEM_LOGIN_PAGE ||
@@ -101,10 +102,12 @@ class Helper
 
             if (config('login_auto_redirect') === 'on') {
                 $path = rtrim('/' . DIR_OFFSET, '/') . REQUEST_PATH;
+                if (pathinfo($path, PATHINFO_EXTENSION) !== '') {
+                    $path = rtrim($path, '/') . '/';
+                }
                 if (QUERY) {
                     $path = $path . '?' . QUERY;
                 }
-                $path = rtrim($path, '/') . '/';
                 $phpSession = Session::handle();
                 $phpSession->set('acms-login-redirect', $path);
                 $phpSession->save();
@@ -137,7 +140,9 @@ class Helper
         if (!!ADMIN && Preview::isPreviewShareAdmin(ADMIN) === false) {
             return true;
         }
-
+        if (IS_REVISION_PREVIEW_PAGE) {
+            return true;
+        }
         return false;
     }
 
@@ -337,7 +342,7 @@ class Helper
         $SQL = SQL::newSelect('user');
         $SQL->setSelect('user_id');
         $SQL->addWhereOpr('user_mail', $data['email']);
-        if (DB::query($SQL->get(dsn(), 'one'))) {
+        if (DB::query($SQL->get(dsn()), 'one')) {
             throw new \RuntimeException('すでに登録済みのメールアドレスです');
         }
 
@@ -406,11 +411,11 @@ class Helper
         $context = acmsSerialize($context);
         $prk = hash_hmac('sha256', PASSWORD_SALT_1, $salt);
         $derivedKey = hash_hmac('sha256', $prk, $context);
-        $params = http_build_query(array(
+        $params = http_build_query([
             'key' => $derivedKey,
             'salt' => $salt,
             'context' => $context,
-        ));
+        ]);
         return $params;
     }
 
@@ -490,8 +495,12 @@ class Helper
      * @param int $userId
      * @return string
      */
-    public function getLogoutRedirectUrl(int $userId = SUID): string
+    public function getLogoutRedirectUrl(int $userId): string
     {
+        if ($userId < 1) {
+            throw new \InvalidArgumentException('Invalid user id.');
+        }
+
         $logoutRedirectPage = config('logout_redirect_page', 'top');
 
         if ($logoutRedirectPage === 'top') {
@@ -643,11 +652,11 @@ class Helper
         }
 
         // 通常のブログのトップページにリダイレクト
-        $url = acmsLink(array(
+        $url = acmsLink([
             'protocol' => (SSL_ENABLE and ('on' == config('login_ssl'))) ? 'https' : 'http',
             'bid' => $redirectBid,
             'query' => [],
-        ));
+        ]);
         redirect($url);
     }
 

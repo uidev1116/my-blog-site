@@ -2,9 +2,9 @@
 
 class ACMS_GET_Field_Search extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'field' => 'global',
-    );
+    ];
 
     function get()
     {

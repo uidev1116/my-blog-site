@@ -8,15 +8,19 @@ class ACMS_POST_Import extends ACMS_POST
 
     protected $textType;
     protected $uploadFiledName;
+
+    /**
+     * @var \ACMS_Http_File
+     */
     protected $httpFile;
     protected $fileObject;
     protected $locale;
     protected $entryCount = 0;
-    protected $categoryList = array();
+    protected $categoryList = [];
     protected $importType = '';
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $importCid;
 
@@ -112,14 +116,14 @@ class ACMS_POST_Import extends ACMS_POST
         $eid    = $DB->query(SQL::nextval('entry_id', dsn()), 'seq');
         $cid    = null;
         $ecode  = config('entry_code_prefix') . $eid . '.html';
-        if (isset($this->importCid) and !empty($this->importCid) and $this->importCid != 0) {
+        if (isset($this->importCid) && !empty($this->importCid) && $this->importCid != 0) {
             if ($this->importCid > 0) {
                 $cid = $this->importCid;
             } else {
                 $cid = null;
             }
         }
-        if (isset($entry['ecode']) and !empty($entry['ecode'])) {
+        if (isset($entry['ecode']) && !empty($entry['ecode'])) {
             $ecode  = $entry['ecode'] . '.html';
         }
 
@@ -131,7 +135,7 @@ class ACMS_POST_Import extends ACMS_POST
         $this->insertUnit($eid, $contents);
 
         // category
-        if (isset($entry['category']) and !empty($entry['category'])) {
+        if (isset($entry['category']) && !empty($entry['category'])) {
             $cid = $this->insertCategory($entry['category']);
         }
 
@@ -140,7 +144,7 @@ class ACMS_POST_Import extends ACMS_POST
         $posted_datetime = preg_replace('@[0-9]{2}$@', $second, $posted_datetime);
 
         $SQL    = SQL::newInsert('entry');
-        $row    = array(
+        $row    = [
             'entry_id'                  => $eid,
             'entry_posted_datetime'     => $posted_datetime,
             'entry_updated_datetime'    => $entry['date'],
@@ -157,7 +161,7 @@ class ACMS_POST_Import extends ACMS_POST
             'entry_link'                => '',
             'entry_datetime'            => $entry['date'],
             'entry_hash'                => md5(SYSTEM_GENERATED_DATETIME . $posted_datetime),
-        );
+        ];
 
         foreach ($row as $key => $val) {
             $SQL->addInsert($key, $val);
@@ -165,12 +169,12 @@ class ACMS_POST_Import extends ACMS_POST
         $DB->query($SQL->get(dsn()), 'exec');
 
         // tag
-        if (isset($entry['tags']) and !empty($entry['tags'])) {
+        if (isset($entry['tags']) && !empty($entry['tags'])) {
             $this->insertTag($eid, $entry);
         }
 
         // field
-        if (isset($entry['fields']) and !empty($entry['fields'])) {
+        if (isset($entry['fields']) && !empty($entry['fields'])) {
             $this->insertField($eid, $entry);
         }
 
@@ -180,11 +184,11 @@ class ACMS_POST_Import extends ACMS_POST
 
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array($eid, 0));
+            $Hook->call('saveEntry', [$eid, 0]);
         }
     }
 
-    public function insertUnit($eid, $contents = array())
+    public function insertUnit($eid, $contents = [])
     {
         $DB = DB::singleton(dsn());
 

@@ -5,14 +5,14 @@ class ACMS_POST_Entry_BulkChange_Select extends ACMS_POST_Entry_BulkChange
     /**
      * @var array
      */
-    protected $eids = array();
+    protected $eids = [];
 
     /**
      * Run
      *
-     * @return \Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         $this->eids = $this->Post->getArray('checks');
         try {

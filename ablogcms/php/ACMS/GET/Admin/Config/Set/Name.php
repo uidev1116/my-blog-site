@@ -18,7 +18,7 @@ class ACMS_GET_Admin_Config_Set_Name extends ACMS_GET
         if (!$name = $DB->query($SQL->get(dsn()), 'one')) {
             return $Tpl->get();
         }
-        $Tpl->add(null, array('setid' => $setid, 'name' => $name));
+        $Tpl->add(null, ['setid' => $setid, 'name' => $name]);
         return $Tpl->get();
     }
 }

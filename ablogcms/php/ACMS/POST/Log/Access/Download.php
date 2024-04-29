@@ -22,7 +22,7 @@ class ACMS_POST_Log_Access_Download extends ACMS_POST
         @set_time_limit(0);
         $axis   = $this->Post->get('axis', 'self');
 
-        $fds    = array(
+        $fds    = [
             'log_access_datetime',
             'log_access_url',
             'log_access_ua',
@@ -42,7 +42,7 @@ class ACMS_POST_Log_Access_Download extends ACMS_POST
             'log_access_user_id',
             'log_access_rule_id',
             'log_access_blog_id',
-        );
+        ];
 
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('log_access');

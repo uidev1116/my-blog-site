@@ -3,7 +3,7 @@
 class ACMS_POST_Backup_Download extends ACMS_POST_Backup_Base
 {
     /**
-     * @return bool|Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -17,7 +17,7 @@ class ACMS_POST_Backup_Download extends ACMS_POST_Backup_Base
             if (empty($fileName)) {
                 throw new \RuntimeException('File name empty.');
             }
-            if (!in_array($type, array('database', 'archives'))) {
+            if (!in_array($type, ['database', 'archives'], true)) {
                 throw new \RuntimeException('Wrong type.');
             }
 

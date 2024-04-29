@@ -7,11 +7,11 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     protected $fields;
     protected $importCid;
     protected $importBid = BID;
-    protected $subCategories = array();
+    protected $subCategories = [];
     protected $geoLat = 0;
     protected $geoLng = 0;
     protected $geoZoom = 11;
-    protected $tags = array();
+    protected $tags = [];
     protected $idLabel = 'entry_id';
 
     function setTargetCid($cid)
@@ -62,7 +62,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
                     }
                     break;
                 case 'entry_status':
-                    if (!in_array($value, array('open', 'close', 'draft', 'trash'))) {
+                    if (!in_array($value, ['open', 'close', 'draft', 'trash'], true)) {
                         throw new \RuntimeException('不正な値が設定されています（' . $key . '）');
                     }
                     break;
@@ -76,12 +76,12 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
                     }
                     break;
                 case 'entry_indexing':
-                    if (!in_array($value, array('on', 'off'))) {
+                    if (!in_array($value, ['on', 'off'], true)) {
                         throw new \RuntimeException('on または off 以外の値が設定されています（' . $key . '）');
                     }
                     break;
                 case 'entry_members_only':
-                    if (!in_array($value, array('on', 'off'))) {
+                    if (!in_array($value, ['on', 'off'], true)) {
                         throw new \RuntimeException('on または off 以外の値が設定されています（' . $key . '）');
                     }
                     break;
@@ -137,7 +137,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         Common::saveFulltext('eid', $this->nextId, Common::loadEntryFulltext($this->nextId));
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array($this->nextId, 0));
+            $Hook->call('saveEntry', [$this->nextId, 0]);
         }
     }
 
@@ -152,7 +152,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         Common::saveFulltext('eid', $this->csvId, Common::loadEntryFulltext($this->csvId), ACMS_RAM::entryBlog($this->csvId));
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array($this->csvId, 0));
+            $Hook->call('saveEntry', [$this->csvId, 0]);
         }
     }
 
@@ -323,7 +323,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
         $eid = $this->csvId;
 
         if (!empty($this->fields)) {
-            $fkey = array();
+            $fkey = [];
             $SQL = SQL::newDelete('field');
             $SQL->addWhereOpr('field_eid', $eid);
             foreach ($this->fields as $dval) {
@@ -378,7 +378,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
                 $this->buildTag($value);
             } elseif (strpos($key, 'unit@') === 0) {
                 $this->buildUnit($unit, $key, $value);
-            } elseif (in_array($key, array('geo_lat', 'geo_lng', 'geo_zoom'))) {
+            } elseif (in_array($key, ['geo_lat', 'geo_lng', 'geo_zoom'], true)) {
                 $this->buildGeo($key, $value);
             } else {
                 $this->buildField($field, $key, $value);
@@ -450,7 +450,10 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     function buildSubCategory($value)
     {
         $subCategoryIds = explode(',', $value);
-        if (empty($subCategoryIds)) {
+        if ($subCategoryIds === false) {
+            return;
+        }
+        if (count($subCategoryIds) === 0) {
             return;
         }
         foreach ($subCategoryIds as $cid) {
@@ -533,7 +536,7 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
     {
         $posted_datetime = $this->getPostedDatetime();
 
-        return array(
+        return [
             'entry_id'              => $this->nextId,
             'entry_code'            => config('entry_code_prefix') . $this->nextId . $this->getExtension(),
             'entry_status'          => 'open',
@@ -555,12 +558,12 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             'entry_category_id'     => $this->importCid,
             'entry_user_id'         => SUID,
             'entry_blog_id'         => $this->importBid,
-        );
+        ];
     }
 
     function unitBase()
     {
-        return array(
+        return [
             'column_id'         => 0,
             'column_sort'       => 0,
             'column_align'      => 'auto',
@@ -574,19 +577,19 @@ class ACMS_POST_Import_Model_Entry extends ACMS_POST_Import_Model
             'column_field_5'    => '',
             'column_entry_id'   => $this->nextId,
             'column_blog_id'    => $this->importBid,
-        );
+        ];
     }
 
     function fieldBase()
     {
-        return array(
+        return [
             'field_key'     => null,
             'field_value'   => null,
             'field_sort'    => 1,
             'field_search'  => 'on',
             'field_eid'     => $this->nextId,
             'field_blog_id' => $this->importBid,
-        );
+        ];
     }
 
     protected function getExtension()

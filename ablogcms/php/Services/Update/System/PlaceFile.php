@@ -32,10 +32,6 @@ class PlaceFile
     protected $logger;
 
     /**
-     * @var array
-     */
-
-    /**
      * PlaceFile constructor.
      *
      * @param \Acms\Services\Update\Logger $logger
@@ -46,7 +42,7 @@ class PlaceFile
 
         $this->logger = $logger;
 
-        $this->moveList = array(
+        $this->moveList = [
             'js' => 'js',
             'lang' => 'lang',
             'php' => 'php',
@@ -55,19 +51,19 @@ class PlaceFile
             'acms.js' => 'acms.js',
             'index.php' => 'index.php',
             'setup' => '_setup_' . date('YmdHi'),
-        );
+        ];
 
-        $this->exclusionMoveFile = array_merge(configArray('system_update_ignore'), array(
+        $this->exclusionMoveFile = array_merge(configArray('system_update_ignore'), [
             'php/AAPP',
             'php/ACMS/User',
-        ));
+        ]);
 
-        $this->backupList = array(
+        $this->backupList = [
             'private/config.system.yaml',
             'config.server.php',
             'license.php',
             'extension',
-        );
+        ];
     }
 
     /**
@@ -213,7 +209,7 @@ class PlaceFile
     protected function removeSetup()
     {
         $finder = new Finder();
-        $lists = array();
+        $lists = [];
         $iterator = $finder
             ->in('./')
             ->depth('< 2')

@@ -7,13 +7,13 @@
  */
 function appConfig()
 {
-    return array(
+    return [
         /**
          * ****************************************************
          * Service Providers
          * ****************************************************
          */
-        'providers' => array(
+        'providers' => [
             'Acms\Services\Logger\LoggerServiceProvider',
             'Acms\Services\Cache\CacheServiceProvider',
             'Acms\Services\Session\SessionServiceProvider',
@@ -37,20 +37,19 @@ function appConfig()
             'Acms\Services\Update\UpdateServiceProvider',
             'Acms\Services\Media\MediaServiceProvider',
             'Acms\Services\Webhook\WebhookServiceProvider',
-            'Acms\Services\React\ReactServiceProvider',
             'Acms\Services\StaticExport\StaticExportServiceProvider',
             'Acms\Services\Preview\PreviewServiceProvider',
             'Acms\Services\SocialLogin\SocialLoginServiceProvider',
             'Acms\Services\RichEditor\RichEditorServiceProvider',
             'Acms\Services\Shortcut\ShortcutServiceProvider',
-        ),
+        ],
 
         /**
          * ****************************************************
          * Class Aliases
          * ****************************************************
          */
-        'aliases' => array(
+        'aliases' => [
             'App'        => 'Acms\Services\Facades\Application',
             'AcmsLogger' => 'Acms\Services\Facades\Logger',
             'Cache'      => 'Acms\Services\Facades\Cache',
@@ -76,8 +75,8 @@ function appConfig()
             'Preview'    => 'Acms\Services\Facades\Preview',
             'Webhook'    => 'Acms\Services\Facades\Webhook',
             'ACMS_Hook'  => 'Acms\Services\Common\HookFactory',
-        ),
-    );
+        ],
+    ];
 }
 
 /**

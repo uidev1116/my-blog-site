@@ -17,14 +17,14 @@ class ACMS_GET_PasswordPolicy extends ACMS_GET
         $blacklist = preg_split("/[,\s\n]/", $blacklist);
 
         if (intval($min) > 0) {
-            $Tpl->add('min', array(
+            $Tpl->add('min', [
                 'num' => $min,
-            ));
+            ]);
         }
         if (intval($max) < 9999) {
-            $Tpl->add('max', array(
+            $Tpl->add('max', [
                 'num' => $max,
-            ));
+            ]);
         }
         if ($uppercase === 'on') {
             $Tpl->add('uppsercase');
@@ -46,9 +46,9 @@ class ACMS_GET_PasswordPolicy extends ACMS_GET
                 if (empty($word)) {
                     continue;
                 }
-                $Tpl->add('blacklist:loop', array(
+                $Tpl->add('blacklist:loop', [
                     'word' => $word,
-                ));
+                ]);
             }
         }
         return $Tpl->get();

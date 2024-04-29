@@ -1,8 +1,0 @@
-<!-- BEGIN_MODULE Google_Translate -->[
-    <!-- BEGIN data -->
-    <!-- BEGIN translations:loop -->{
-    "translatedText": "{translatedText}",
-    "detectedSourceLanguage": "{detectedSourceLanguage}"
-    }<!-- END translations:loop -->
-    <!-- END data -->
-]<!-- END_MODULE Google_Translate -->

@@ -3,9 +3,9 @@
 class ACMS_POST_Module_Import extends ACMS_POST
 {
     /**
-     * @return \Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         @set_time_limit(0);
 

@@ -11,13 +11,13 @@ class ACMS_GET_Admin_Dashboard_PhpStatus extends ACMS_GET
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
         // ディレクティブ
-        $directive = array(
+        $directive = [
             'memory_limit',
             'upload_max_filesize',
             'post_max_size',
             'max_file_uploads',
             'safe_mode',
-        );
+        ];
 
         foreach ($directive as $key) {
             $val = ini_get($key);

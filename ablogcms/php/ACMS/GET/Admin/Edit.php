@@ -54,7 +54,7 @@ class ACMS_GET_Admin_Edit extends ACMS_GET_Admin
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $vars = array();
+        $vars = [];
         $edit = 'update';
         $edit_ = $this->Get->get('edit');
         if (!empty($edit_)) {
@@ -75,7 +75,7 @@ class ACMS_GET_Admin_Edit extends ACMS_GET_Admin
 
         $this->edit = $edit;
         if (!$this->edit($Tpl)) {
-            return false;
+            return '';
         }
 
         $vars += $this->buildField($this->Post, $Tpl);
@@ -118,7 +118,7 @@ class ACMS_GET_Admin_Edit extends ACMS_GET_Admin
 
     public function buildArgLabels(&$Field)
     {
-        foreach (array('bid', 'uid', 'cid', 'eid', 'session_uid') as $arg) {
+        foreach (['bid', 'uid', 'cid', 'eid', 'session_uid'] as $arg) {
             $args = preg_split('/,/', preg_replace('/\s　/', '', $Field->get($arg)));
             $argLabels = [];
 
@@ -126,50 +126,50 @@ class ACMS_GET_Admin_Edit extends ACMS_GET_Admin
                 case 'bid':
                     foreach ($args as $val) {
                         if (!empty($val)) {
-                            $argLabels[] = array(
+                            $argLabels[] = [
                                 'label' => ACMS_RAM::blogName($val) . '（bid:' . $val . '）',
                                 'value' => $val,
-                            );
+                            ];
                         }
                     }
                     break;
                 case 'uid':
                     foreach ($args as $val) {
                         if (!empty($val)) {
-                            $argLabels[] = array(
+                            $argLabels[] = [
                                 'label' => ACMS_RAM::userName($val) . '（uid:' . $val . '）',
                                 'value' => $val,
-                            );
+                            ];
                         }
                     }
                     break;
                 case 'session_uid':
                     foreach ($args as $val) {
                         if (!empty($val)) {
-                            $argLabels[] = array(
+                            $argLabels[] = [
                                 'label' => ACMS_RAM::userName($val) . '（uid:' . $val . '）',
                                 'value' => $val,
-                            );
+                            ];
                         }
                     }
                     break;
                 case 'cid':
                     foreach ($args as $val) {
                         if (!empty($val)) {
-                            $argLabels[] = array(
+                            $argLabels[] = [
                                 'label' => ACMS_RAM::categoryName($val) . '（cid:' . $val . '）',
                                 'value' => $val,
-                            );
+                            ];
                         }
                     }
                     break;
                 case 'eid':
                     foreach ($args as $val) {
                         if (!empty($val)) {
-                            $argLabels[] = array(
+                            $argLabels[] = [
                                 'label' => ACMS_RAM::entryTitle($val) . '（eid:' . $val . '）',
                                 'value' => $val,
-                            );
+                            ];
                         }
                     }
                     break;

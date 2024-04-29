@@ -4,7 +4,8 @@ class ACMS_POST_Comment_Edit extends ACMS_POST_Comment
 {
     function post()
     {
-        $Comment    =& $this->Post->getChild('comment');
+        $Comment =& $this->Post->getChild('comment');
+        assert($Comment instanceof Field_Validation);
         $Comment->setMethod('comment', 'cmidIsNull', !!CMID);
 
         if ($this->Post->isValidAll()) {

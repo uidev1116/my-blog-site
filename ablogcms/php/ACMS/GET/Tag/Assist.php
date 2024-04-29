@@ -29,13 +29,13 @@ class ACMS_GET_Tag_Assist extends ACMS_GET
         $firstLoop = true;
         do {
             if (!$firstLoop) {
-                $Tpl->add(array('tag:glue', 'tag:loop'));
+                $Tpl->add(['tag:glue', 'tag:loop']);
             }
             $firstLoop = false;
-            $Tpl->add('tag:loop', array(
+            $Tpl->add('tag:loop', [
                 'name' => $row['tag_name'],
                 'amount' => $row['tag_amount'],
-            ));
+            ]);
         } while ($row = $DB->fetch($q));
 
         return $Tpl->get();

@@ -2,11 +2,11 @@
 
 class ACMS_GET_User_Search extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'uid' => 'global',
         'field' => 'global',
         'page' => 'global',
-    );
+    ];
 
     /**
      * @var array
@@ -28,7 +28,7 @@ class ACMS_GET_User_Search extends ACMS_GET
      */
     protected function initVars()
     {
-        return array(
+        return [
             'indexing' => config('user_search_indexing'),
             'auth' => configArray('user_search_auth'),
             'status' => configArray('user_search_status'),
@@ -42,7 +42,7 @@ class ACMS_GET_User_Search extends ACMS_GET
             'entry_list_order' => config('user_search_entry_list_order'),
             'entry_list_limit' => config('user_search_entry_list_limit'),
             'geolocation_on' => config('user_search_geolocation_on')
-        );
+        ];
     }
 
     function get()
@@ -91,7 +91,7 @@ class ACMS_GET_User_Search extends ACMS_GET
                 $Tpl
             );
         }
-        return array();
+        return [];
     }
 
     /**
@@ -129,11 +129,11 @@ class ACMS_GET_User_Search extends ACMS_GET
                 $vars['origIcon'] = $orig;
             }
             if ($entry_list_enable) {
-                $this->loadUserEntry($Tpl, $id, array('user:loop'));
+                $this->loadUserEntry($Tpl, $id, ['user:loop']);
             }
             $vars['user:loop.class'] = $loop_class;
             if (!empty($i)) {
-                $Tpl->add(array_merge(array('user:glue', 'user:loop')));
+                $Tpl->add(array_merge(['user:glue', 'user:loop']));
             }
             if (isset($row['distance'])) {
                 $vars['geo_distance'] = $row['distance'];
@@ -320,7 +320,7 @@ class ACMS_GET_User_Search extends ACMS_GET
         return true;
     }
 
-    protected function loadUserEntry(&$Tpl, $uid, $block = array())
+    protected function loadUserEntry(&$Tpl, $uid, $block = [])
     {
         $DB = DB::singleton(dsn());
 
@@ -342,24 +342,24 @@ class ACMS_GET_User_Search extends ACMS_GET
         $entries = $DB->query($q, 'all');
         foreach ($entries as $i => $entry) {
             $link = $entry['entry_link'];
-            $vars = array();
-            $url = acmsLink(array(
+            $vars = [];
+            $url = acmsLink([
                 'bid' => $entry['entry_blog_id'],
                 'cid' => $entry['entry_category_id'],
                 'eid' => $entry['entry_id'],
-            ));
+            ]);
             if (!empty($i)) {
-                $Tpl->add(array_merge(array('glue', 'entry:loop')));
+                $Tpl->add(array_merge(['glue', 'entry:loop']));
             }
             if (!empty($i)) {
-                $Tpl->add(array_merge(array('entry:glue', 'entry:loop')));
+                $Tpl->add(array_merge(['entry:glue', 'entry:loop']));
             }
 
             if ($link != '#') {
-                $vars += array(
+                $vars += [
                     'url' => !empty($link) ? $link : $url,
-                );
-                $Tpl->add(array_merge(array('url#rear', 'entry:loop'), $block));
+                ];
+                $Tpl->add(array_merge(['url#rear', 'entry:loop'], $block));
             }
             $vars['title'] = addPrefixEntryTitle(
                 $entry['entry_title'],
@@ -368,7 +368,7 @@ class ACMS_GET_User_Search extends ACMS_GET
                 $entry['entry_end_datetime'],
                 $entry['entry_approval']
             );
-            $Tpl->add(array_merge(array('entry:loop'), $block), $vars);
+            $Tpl->add(array_merge(['entry:loop'], $block), $vars);
         }
     }
 }

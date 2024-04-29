@@ -2,26 +2,23 @@
 
 class ACMS_POST_Import_WordpressThumbnail extends ACMS_POST_Import_Wordpress
 {
-    protected $importCid;
-    protected $csvLabels;
-
-    function init()
+    public function init()
     {
         @set_time_limit(-1);
         $this->importType = 'WordPress Thumbnail';
         $this->uploadFiledName = 'wordpress_import_file';
     }
 
-    function import()
+    public function import()
     {
-        $this->httpFile->validateFormat(array('text/xml', 'application/xml'));
+        $this->httpFile->validateFormat(['text/xml', 'application/xml']);
         $path = $this->httpFile->getPath();
-        $data = Storage::get($path);
+        $data = Storage::get($path, dirname($path));
         $data = Storage::removeIllegalCharacters($data); // 不正な文字コードを削除
         $this->validateXml($data);
 
         $xml = new XMLReader();
-        $xml->xml($data);
+        $xml->XML($data); // @phpstan-ignore-line
 
         while ($xml->read()) {
             if ($xml->name === 'item' and intval($xml->nodeType) === XMLReader::ELEMENT) {

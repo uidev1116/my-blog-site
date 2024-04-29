@@ -14,7 +14,7 @@ interface Base
     /**
      * 偽装ユーザーエージェントの取得
      *
-     * @return string
+     * @return string|false
      */
     public function getFakeUserAgent();
 
@@ -50,14 +50,14 @@ interface Base
      *
      * @param string $fakeUserAgent
      * @param string $token
-     * @return bool
+     * @return void
      */
     public function startPreviewMode($fakeUserAgent, $token);
 
     /**
      * プレビューモードを終了
      *
-     * @return bool
+     * @return void
      */
     public function endPreviewMode();
 }

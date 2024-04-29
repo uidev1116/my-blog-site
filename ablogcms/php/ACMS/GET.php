@@ -40,7 +40,7 @@ class ACMS_GET
     /**
      * @var string[]
      */
-    public $tags = array();
+    public $tags = [];
 
     /**
      * @var string|null
@@ -77,12 +77,6 @@ class ACMS_GET
      * @var null
      */
     public $alt = null;
-
-    /**
-     * @deprecated 未使用のプロパティ
-     * @var null
-     */
-    public $step = null;
 
     /**
      * @deprecated 未使用のプロパティ
@@ -127,16 +121,16 @@ class ACMS_GET
      *     order?: 'local' | 'global'
      * }
      */
-    public $_scope = array(); // phpcs:ignore
+    public $_scope = []; // phpcs:ignore
 
     /**
      * 階層の設定
      * @var array<'bid' | 'cid', string>
      */
-    public $_axis = array( // phpcs:ignore
+    public $_axis = [ // phpcs:ignore
         'bid' => 'self',
         'cid' => 'self',
-    );
+    ];
 
     /**
      * @var int|null
@@ -163,6 +157,18 @@ class ACMS_GET
      */
     public $cache = 0;
 
+    /**
+     * @param string $tpl
+     * @param string $acms
+     * @param array $scope
+     * @param array $axis
+     * @param \Field_Validation $Post
+     * @param int|null $mid
+     * @param int|null $mbid
+     * @param string|null $identifier
+     * @param array|null $aryMultiAcms
+     * @param bool $showField
+     */
     public function __construct(
         $tpl,
         $acms,
@@ -263,12 +269,14 @@ class ACMS_GET
 
         $this->tag = join('/', $this->Q->getArray('tag'));
         $this->tags = $this->Q->getArray('tag');
-        $this->Field =& $this->Q->getChild('field');
+        /** @var Field_Search $field */
+        $field =& $this->Q->getChild('field');
+        $this->Field =& $field;
         $this->field = $this->Field->serialize();
 
         //------
         // axis
-        foreach (array('bid', 'cid') as $key) {
+        foreach (['bid', 'cid'] as $key) {
             if (!array_key_exists($key, $axis)) {
                 continue;
             }
@@ -279,48 +287,57 @@ class ACMS_GET
         $this->mbid = $mbid;
     }
 
-    function blogAxis()
+    /**
+     * @return string
+     */
+    public function blogAxis()
     {
         $axis = $this->_axis['bid'];
         return empty($axis) ? 'self' : $axis;
     }
 
-    function categoryAxis()
+    /**
+     * @return string
+     */
+    public function categoryAxis()
     {
         $axis = $this->_axis['cid'];
         return empty($axis) ? 'self' : $axis;
     }
 
-    function fire()
+    /**
+     * @return string
+     */
+    public function fire()
     {
         //----------------
         // module link
-        $className = str_replace(array('ACMS_GET_', 'ACMS_User_GET_'), '', get_class($this));
+        $className = str_replace(['ACMS_GET_', 'ACMS_User_GET_'], '', get_class($this));
         $config = 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $className));
         $bid = !empty($this->mbid) ? $this->mbid : BID;
 
-        $url = acmsLink(array(
+        $url = acmsLink([
             'bid' => $bid,
             'admin' => $config,
-            'query' => array(
+            'query' => [
                 'mid' => $this->mid,
                 'setid' => Config::getCurrentConfigSetId(),
-            ),
-        ), false);
+            ],
+        ], false);
 
-        $this->tpl = str_replace(array(
+        $this->tpl = str_replace([
             '{admin_module_bid}',
             '{admin_module_mid}',
             '{admin_module_url}',
             '{admin_module_name}',
             '{admin_module_identifier}',
-        ), array(
+        ], [
             $bid,
             $this->mid,
             $url,
             $className,
             $this->identifier,
-        ), $this->tpl);
+        ], $this->tpl);
 
         if (isSessionAdministrator()) {
             $this->tpl = preg_replace('@<!--[\t 　]*(BEGIN|END)[\t 　]module_setting[\t 　]-->@', '', $this->tpl);
@@ -330,21 +347,25 @@ class ACMS_GET
         // execute & hook
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('beforeGetFire', array(&$this->tpl, $this));
+            $Hook->call('beforeGetFire', [&$this->tpl, $this]);
             $rendered = $this->cache();
-            $Hook->call('afterGetFire', array(&$rendered, $this));
+            $Hook->call('afterGetFire', [&$rendered, $this]);
         } else {
             $rendered = $this->cache();
         }
         return $rendered;
     }
 
-    function cache()
+    /**
+     * @return string
+     */
+    protected function cache()
     {
         $cacheOn = $this->cache > 0 && $this->identifier;
         if ($cacheOn) {
             $cache = Cache::module();
-            $className = str_replace(array('ACMS_GET_', 'ACMS_User_GET_'), '', get_class($this));
+            assert($cache instanceof \Acms\Services\Cache\Contracts\AdapterInterface);
+            $className = str_replace(['ACMS_GET_', 'ACMS_User_GET_'], '', get_class($this));
             $cacheKey = md5($className . $this->identifier);
             if ($cache->has($cacheKey)) {
                 return $cache->get($cacheKey);
@@ -357,103 +378,199 @@ class ACMS_GET
         return $rendered;
     }
 
-    function get()
+    /**
+     * @return string|never
+     */
+    public function get()
     {
-        return false;
+        throw new \BadMethodCallException('Method get() is not implemented.');
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param Template &$Tpl
+     * @return void
      */
-    function buildModuleField(&$Tpl)
+    public function buildModuleField(&$Tpl)
     {
         Tpl::buildModuleField($Tpl, $this->mid, $this->showField);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param int|string $datetime
+     * @param Template &$Tpl
+     * @param string[] $block
+     * @param string $prefix
+     *
+     * @return array
      */
-    function buildDate($datetime, &$Tpl, $block = array(), $prefix = 'date#')
+    public function buildDate($datetime, &$Tpl, $block = [], $prefix = 'date#')
     {
         return Tpl::buildDate($datetime, $Tpl, $block, $prefix);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param \Field $Field
+     * @param Template &$Tpl
+     * @param string[] $block
+     * @param string|null $scp
+     * @param array $root_vars
+     *
+     * @return array
      */
-    function buildField($Field, &$Tpl, $block = array(), $scp = null, $root_vars = array())
+    public function buildField($Field, &$Tpl, $block = [], $scp = null, $root_vars = [])
     {
         return Tpl::buildField($Field, $Tpl, $block, $scp, $root_vars);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param array $data
+     * @param Template &$Tpl
+     * @param string[] $block
+     *
+     * @return array
      */
-    function buildInputTextValue($data, &$Tpl, $block = array())
+    public function buildInputTextValue($data, &$Tpl, $block = [])
     {
         return Tpl::buildInputTextValue($data, $Tpl, $block);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param array $data
+     * @param Template &$Tpl
+     * @param string[] $block
+     *
+     * @return array
      */
-    function buildInputCheckboxChecked($data, &$Tpl, $block = array())
+    public function buildInputCheckboxChecked($data, &$Tpl, $block = [])
     {
         return Tpl::buildInputCheckboxChecked($data, $Tpl, $block);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param array $data
+     * @param Template &$Tpl
+     * @param string[] $block
+     *
+     * @return array
      */
-    function buildSelectSelected($data, &$Tpl, $block = array())
+    public function buildSelectSelected($data, &$Tpl, $block = [])
     {
         return Tpl::buildSelectSelected($data, $Tpl, $block);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param int $page ページ数
+     * @param int $limit 1ページの件数
+     * @param int $amount 総数
+     * @param int $delta 前後ページ数
+     * @param string $curAttr
+     * @param Template &$Tpl
+     * @param string[] $block
+     * @param array $Q
+     *
+     * @return array
      */
-    function buildPager($page, $limit, $amount, $delta, $curAttr, &$Tpl, $block = array(), $Q = array())
+    public function buildPager($page, $limit, $amount, $delta, $curAttr, &$Tpl, $block = [], $Q = [])
     {
         return Tpl::buildPager($page, $limit, $amount, $delta, $curAttr, $Tpl, $block, $Q);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param array &$vars
+     * @param int $eid
+     * @param array $eagerLoadingData
+     *
+     * @return void
      */
-    function buildSummaryFulltext(&$vars, $eid, $eagerLoadingData)
+    public function buildSummaryFulltext(&$vars, $eid, $eagerLoadingData)
     {
         $vars = Tpl::buildSummaryFulltext($vars, $eid, $eagerLoadingData);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param Template $Tpl
+     * @param int $eid
+     *
+     * @return mixed
      */
-    function buildTag(&$Tpl, $eid)
+    public function buildTag(&$Tpl, $eid)
     {
         return Tpl::buildTag($Tpl, $eid);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param Template $Tpl
+     * @param int $pimageId
+     * @param array $config
+     * @param array $eagerLoadingData
+     *
+     * @return array
      */
-    function buildImage(&$Tpl, $pimageId, $config, $eagerLoadingData)
+    public function buildImage(&$Tpl, $pimageId, $config, $eagerLoadingData)
     {
         return Tpl::buildImage($Tpl, $pimageId, $config, $eagerLoadingData);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param Template $Tpl
+     * @param int[] $eids
+     * @param string[] $block
+     *
+     * @return mixed
      */
-    function buildRelatedEntries(&$Tpl, $eids = array(), $block = array())
+    public function buildRelatedEntries(&$Tpl, $eids = [], $block = [])
     {
         return Tpl::buildRelatedEntries($Tpl, $eids, $block, $this->start, $this->end);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * 互換性のためpublic宣言
+     * @deprecated
+     * @param Template $Tpl
+     * @param array $row
+     * @param int $count
+     * @param int $gluePoint
+     * @param array $config
+     * @param array $extraVars
+     * @param array $eagerLoadingData
+     *
+     * @return mixed
      */
-    function buildSummary(&$Tpl, $row, $count, $gluePoint, $config, $extraVars = array(), $eagerLoadingData = array())
+    public function buildSummary(&$Tpl, $row, $count, $gluePoint, $config, $extraVars = [], $eagerLoadingData = [])
     {
         return Tpl::buildSummary($Tpl, $row, $count, $gluePoint, $config, $extraVars, $this->page, $eagerLoadingData);
     }

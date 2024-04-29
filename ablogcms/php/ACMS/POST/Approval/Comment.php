@@ -98,14 +98,14 @@ class ACMS_POST_Approval_Comment extends ACMS_POST_Approval
             $approval->setField('entryTitle', $rev['entry_title']);
             $approval->setField('entryStatus', ACMS_RAM::entryStatus($eid));
             $approval->setField('version', $rev['entry_rev_memo']);
-            $approval->setField('revisionUrl', acmsLink(array(
+            $approval->setField('revisionUrl', acmsLink([
                 'protocol' => SSL_ENABLE ? 'https' : 'http',
                 'bid' => BID,
                 'cid' => CID,
                 'eid' => $eid,
                 'tpl' => 'ajax/revision-preview.html',
-                'query' => array('rvid' => $rvid),
-            ), false));
+                'query' => ['rvid' => $rvid],
+            ], false));
 
             $subject = Common::getMailTxt($subjectTpl, $approval);
             $body = Common::getMailTxt($bodyTpl, $approval);
@@ -116,17 +116,17 @@ class ACMS_POST_Approval_Comment extends ACMS_POST_Approval
 
             $send = true;
             if (HOOK_ENABLE) {
-                $data = array(
+                $data = [
                     'type' => 'public',
-                    'from' => array($from),
+                    'from' => [$from],
                     'to' => $addresses,
                     'subject' => $subject,
                     'bcc' => configArray('mail_approval_bcc'),
                     'body' => $body,
                     'data' => $approval,
-                );
+                ];
                 $Hook = ACMS_Hook::singleton();
-                $Hook->call('approvalNotification', array($data, &$send));
+                $Hook->call('approvalNotification', [$data, &$send]);
             }
             if ($send !== false) {
                 try {

@@ -2,17 +2,17 @@
 
 class ACMS_GET_Admin_Fix_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
-        if ('fix_index' <> ADMIN) {
-            return false;
+        if ('fix_index' !== ADMIN) {
+            return '';
         }
         if (!sessionWithAdministration()) {
             return false;
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $aryAdmin = array(
+        $aryAdmin = [
             'fix_image',
             'fix_unit-size',
             'fix_unit-group',
@@ -22,15 +22,15 @@ class ACMS_GET_Admin_Fix_Index extends ACMS_GET_Admin
             'fix_ngram',
             'fix_tag',
             'fix_replacement',
-        );
+        ];
         foreach ($aryAdmin as $admin) {
-            $AP     = array(
+            $AP     = [
                 'bid'   => BID,
                 'admin' => $admin,
-            );
-            $Tpl->add($admin, array(
+            ];
+            $Tpl->add($admin, [
                 'url'   => acmsLink($AP),
-            ));
+            ]);
         }
 
         return $Tpl->get();

@@ -16,7 +16,7 @@ interface AdapterInterface
      * キャッシュを取得
      *
      * @param string $key
-     * @return any
+     * @return mixed
      */
     public function get($key);
 
@@ -25,8 +25,9 @@ interface AdapterInterface
      * $lifetimeを指定しない場合はデフォルト値を設定
      *
      * @param string $key
-     * @param $value
+     * @param mixed $value
      * @param int $lifetime
+     * @return void
      */
     public function put($key, $value, $lifetime = 0);
 
@@ -34,16 +35,22 @@ interface AdapterInterface
      * キャッシュを削除
      *
      * @param string $key
+     * @return void
      */
     public function forget($key);
 
     /**
      * キャッシュがなかった場合はコールバックを実行し、キャッシュに追加
+     * @param string $key
+     * @param callable $callback
+     * @param int $lifetime
+     * @return void
      */
     public function remember($key, $callback, $lifetime = 0);
 
     /**
      * キャッシュを全削除
+     * @return void
      */
     public function flush();
 }

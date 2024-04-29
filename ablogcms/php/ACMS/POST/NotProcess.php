@@ -14,9 +14,10 @@ class ACMS_POST_NotProcess extends ACMS_POST
 
     /**
      * Main
-     * @return void
+     * @inheritDoc
      */
     public function post()
     {
+        return $this->Post;
     }
 }

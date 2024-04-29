@@ -17,7 +17,7 @@ class ACMS_GET_Admin_Module_Edit extends ACMS_GET_Admin_Edit
     protected $ruleId = null;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function init()
     {

@@ -42,22 +42,22 @@ class Engine implements MailerInterface
     /**
      * @var array
      */
-    protected $to = array();
+    protected $to = [];
 
     /**
      * @var array
      */
-    protected $cc = array();
+    protected $cc = [];
 
     /**
      * @var array
      */
-    protected $bcc = array();
+    protected $bcc = [];
 
     /**
      * @var array
      */
-    protected $attachedFiles = array();
+    protected $attachedFiles = [];
 
     /**
      * Mailer Engine constructor.
@@ -213,7 +213,7 @@ class Engine implements MailerInterface
         $ary = $this->parseAddress($to);
 
         foreach ($ary as $email) {
-            $email = is_array($email) ? $email : array($email);
+            $email = is_array($email) ? $email : [$email];
             $this->to = array_merge($this->to, $email);
         }
 
@@ -244,7 +244,7 @@ class Engine implements MailerInterface
         $ary = $this->parseAddress($cc);
 
         foreach ($ary as $email) {
-            $email = is_array($email) ? $email : array($email);
+            $email = is_array($email) ? $email : [$email];
             $this->cc = array_merge($this->cc, $email);
         }
 
@@ -275,7 +275,7 @@ class Engine implements MailerInterface
         $ary = $this->parseAddress($bcc);
 
         foreach ($ary as $email) {
-            $email = is_array($email) ? $email : array($email);
+            $email = is_array($email) ? $email : [$email];
             $this->bcc = array_merge($this->bcc, $email);
         }
 
@@ -383,7 +383,7 @@ class Engine implements MailerInterface
     public function parseAddress($txt)
     {
         if (empty($txt)) {
-            return array();
+            return [];
         }
         return preg_split('/,/', $txt);
     }

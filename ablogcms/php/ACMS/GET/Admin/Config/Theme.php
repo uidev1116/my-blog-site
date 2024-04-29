@@ -46,7 +46,7 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
             $config_theme       = $configDefaultArray['theme'];
         }
 
-        $themesDirList = array();
+        $themesDirList = [];
         while ($theme = readdir($themesDir)) {
             $themesDirList[] = $theme;
         }
@@ -62,14 +62,14 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
                 and $theme !== '..'
             ) {
                 $selected = $config_theme === $theme ? ' selected="selected"' : '';
-                $Tpl->add('theme:loop', array(
+                $Tpl->add('theme:loop', [
                     'name'      => $theme,
                     'selected'  => $selected,
                     'key'       => $index,
-                ));
+                ]);
 
                 $selected = $config_theme === $theme ? '' : 'js-load_hide_box';
-                $TplSetting = array();
+                $TplSetting = [];
                 while (!empty($theme)) {
                     if ($_TplSetting = Config::yamlLoad(SCRIPT_DIR . THEMES_DIR . $theme . '/template.yaml')) {
                         foreach ($_TplSetting as $key => $val) {
@@ -87,20 +87,20 @@ class ACMS_GET_Admin_Config_Theme extends ACMS_GET
                     $TplSetting['key'] = $index;
                     $Tpl->add('template:loop', $TplSetting);
                 } else {
-                    $Tpl->add('template:loop', array(
+                    $Tpl->add('template:loop', [
                         'not_found'         => $theme,
                         'js-load_hide_box'  => $selected,
                         'key'               => $index,
-                    ));
+                    ]);
                 }
                 $index++;
             }
         }
         closedir($themesDir);
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'theme' => $config_theme,
-        ));
+        ]);
 
         return $Tpl->get();
     }

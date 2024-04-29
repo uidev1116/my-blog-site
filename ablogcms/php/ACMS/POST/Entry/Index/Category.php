@@ -2,7 +2,7 @@
 
 class ACMS_POST_Entry_Index_Category extends ACMS_POST
 {
-    function post()
+    public function post()
     {
         if (!($cid = intval($this->Post->get('cid')))) {
             $cid = null;
@@ -51,7 +51,7 @@ class ACMS_POST_Entry_Index_Category extends ACMS_POST
 
                 $targetEIDs[] = $eid;
             }
-            AcmsLogger::info('指定されたエントリーのカテゴリーを「' . ACMS_RAM::blogName($bid) . '」カテゴリーに一括変更しました', [
+            AcmsLogger::info('指定されたエントリーのカテゴリーを「' . ACMS_RAM::categoryName($cid) . '」カテゴリーに一括変更しました', [
                 'targetEIDs' => implode(',', $targetEIDs),
                 'targetCID' => $cid,
             ]);
@@ -70,7 +70,7 @@ class ACMS_POST_Entry_Index_Category extends ACMS_POST
 
         $error          = false;
         $discovery      = false;
-        $entries        = array();
+        $entries        = [];
 
         foreach ($checked as $beid) {
             $id     = preg_split('@:@', $beid, 2, PREG_SPLIT_NO_EMPTY);

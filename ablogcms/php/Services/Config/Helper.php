@@ -23,7 +23,7 @@ class Helper
     protected $config;
 
     /**
-     * @var Cache
+     * @var \Acms\Services\Cache\Adapters\Tag
      */
     protected $cache;
 
@@ -653,12 +653,12 @@ class Helper
      * モジュール内で使用した場合は，モジュールIDで設定されたコンフィグを返す
      *
      * @param string $key
-     * @param mixed $default
+     * @param string|int|null $default
      * @param int $i
      *
-     * @return mixed
+     * @return string|false
      */
-    public function get($key = null, $default = null, $i = 0)
+    public function get($key, $default = null, $i = 0)
     {
         return $this->config->get($key, $default, $i);
     }
@@ -694,12 +694,12 @@ class Helper
     /**
      * コンフィグへのアクセス権限チェック
      *
-     * @param Field_Validation $Config
+     * @param \Field_Validation $Config
      * @param int $rid
      * @param int $mid
      * @param int $setid
      *
-     * @return Field_Validation
+     * @return \Field_Validation
      */
     public function setValide($Config, $rid = null, $mid = null, $setid = null)
     {
@@ -716,7 +716,6 @@ class Helper
     /**
      * コンフィグの操作権限があるかどうか
      *
-     * @param string $action
      * @param int $rid
      * @param int $mid
      * @param int $setid
@@ -790,7 +789,7 @@ class Helper
         $data = null;
         try {
             if (Storage::exists($path)) {
-                $data = @$this->yamlParse(Storage::get($path));
+                $data = @$this->yamlParse(Storage::get($path, dirname($path)));
             }
         } catch (ParseException $e) {
             throw $e;
@@ -879,12 +878,12 @@ class Helper
 
         //-------------
         // file upload
-        $listNameAry = array(
+        $listNameAry = [
             'file_extension_document',
             'file_extension_archive',
             'file_extension_movie',
             'file_extension_audio',
-        );
+        ];
         foreach ($listNameAry as $listName) {
             // リストがなければ処理しない
             if (!$Config->isExists($listName . '@list')) {
@@ -909,8 +908,8 @@ class Helper
         //------------
         // navigation
         if ($Config->getArray('navigation@sort', true)) {
-            $all = array();
-            $Sort = array();
+            $all = [];
+            $Sort = [];
             foreach ($Config->getArray('navigation@sort', true) as $i => $sort) {
                 if (!$label = $Config->get('navigation_label', 0, $i)) {
                     continue;
@@ -923,7 +922,7 @@ class Helper
                 }
 
                 $Sort[$pid][$id] = $sort;
-                $all[$id] = array(
+                $all[$id] = [
                     'label' => $label,
                     'pid' => $pid,
                     'uri' => $Config->get('navigation_uri', '', $i),
@@ -931,7 +930,7 @@ class Helper
                     'publish' => $Config->get('navigation_publish-' . $i),
                     'attr' => $Config->get('navigation_attr', '', $i),
                     'a_attr' => $Config->get('navigation_a_attr', '', $i),
-                );
+                ];
 
                 $Config->deleteField('navigation_uri-' . $i);
                 $Config->deleteField('navigation_target-' . $i);
@@ -949,15 +948,15 @@ class Helper
                 $Config->setField('navigation_attr');
                 $Config->setField('navigation_a_attr');
 
-                $Parent = array();
+                $Parent = [];
                 foreach ($Sort as $pid => $ids) {
                     asort($ids);
                     $Parent[$pid] = array_keys($ids);
                 }
 
                 $i = 1;
-                $map = array(0 => 0);
-                $pidStack = array(0);
+                $map = [0 => 0];
+                $pidStack = [0];
                 while (count($pidStack)) {
                     $pid = array_pop($pidStack);
                     while ($id = array_shift($Parent[$pid])) {
@@ -1000,8 +999,8 @@ class Helper
             $Config->setField('banner_dateend');
             $Config->setField('banner_timeend');
 
-            $aryBanner = array();
-            $arySort = array();
+            $aryBanner = [];
+            $arySort = [];
             foreach ($aryId as $id) {
                 $sort = $Config->get('banner-' . $id . '@sort');
                 $status = $Config->get('banner-' . $id . '@status');
@@ -1041,7 +1040,7 @@ class Helper
                     continue;
                 }
 
-                $aryBanner[$id] = array(
+                $aryBanner[$id] = [
                     'banner_status' => $status,
                     'banner_src' => $src,
                     'banner_img' => $img,
@@ -1054,7 +1053,7 @@ class Helper
                     'banner_timestart' => $timestart,
                     'banner_dateend' => $dateend,
                     'banner_timeend' => $timeend,
-                );
+                ];
                 $arySort[$id] = $sort;
             }
 

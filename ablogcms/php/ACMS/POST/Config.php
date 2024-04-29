@@ -17,9 +17,9 @@ class ACMS_POST_Config extends ACMS_POST
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return false|Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         if (!$rid = idval($this->Post->get('rid'))) {
             $rid = null;
@@ -63,32 +63,36 @@ class ACMS_POST_Config extends ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
      */
-    function resetConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
+    protected function resetConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
         Config::resetConfig($Config, $bid, $rid, $mid, $setid);
     }
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
      */
-    function saveConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
+    protected function saveConfig(&$Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
         return Config::saveConfig($Config, $bid, $rid, $mid, $setid);
     }
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
      */
-    function fix($Config)
+    protected function fix($Config)
     {
         return Config::fix($Config);
     }
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
      */
-    function setValide(&$Config, $rid = null, $mid = null, $setid = null)
+    protected function setValide(&$Config, $rid = null, $mid = null, $setid = null)
     {
         $Config = Config::setValide($Config, $rid, $mid, $setid);
     }

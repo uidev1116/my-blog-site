@@ -6046,16 +6046,6 @@ msgstr ""
 "Enter your Google Maps API KEY. When using Google Maps, this field must be "
 "filled."
 
-msgid "Google Translate API Key"
-msgstr "Google Translate API Key"
-
-msgid ""
-"取得したGoogle Translate API Keyを設定します。Google 翻訳APIをご利用の場合は"
-"ここの設定が必要です。"
-msgstr ""
-"Google Translate API Key. If you want to use the feature you have to input "
-"here."
-
 msgid "YahooアプリケーションID"
 msgstr "Yahoo Application ID"
 

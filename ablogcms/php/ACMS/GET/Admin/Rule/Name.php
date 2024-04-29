@@ -16,7 +16,7 @@ class ACMS_GET_Admin_Rule_Name extends ACMS_GET
             return $Tpl->get();
         }
 
-        $Tpl->add(null, array('rid' => $rid, 'name' => $name));
+        $Tpl->add(null, ['rid' => $rid, 'name' => $name]);
         return $Tpl->get();
     }
 }

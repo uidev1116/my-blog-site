@@ -2,18 +2,18 @@
 
 class ACMS_GET_Approval_History extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!enableApproval()) {
-            return false;
+            return '';
         }
         if (!RVID) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
-        $vars   = array();
+        $vars   = [];
 
         $SQL    = SQL::newSelect('entry_rev');
         $SQL->addWhereOpr('entry_id', EID);
@@ -53,16 +53,16 @@ class ACMS_GET_Approval_History extends ACMS_GET
             //--------------
             // 操作ユーザ情報
             $reqUserField = loadUser($row['approval_request_user_id']);
-            $reqUser = $this->buildField($reqUserField, $Tpl, array('requestUser', 'approval:loop'));
+            $reqUser = $this->buildField($reqUserField, $Tpl, ['requestUser', 'approval:loop']);
             $userField = loadUserField($row['approval_request_user_id']);
-            $reqUser += $this->buildField($userField, $Tpl, array('requestUser', 'approval:loop'));
+            $reqUser += $this->buildField($userField, $Tpl, ['requestUser', 'approval:loop']);
 
-            $Tpl->add(array('requestUser', 'approval:loop'), $reqUser);
+            $Tpl->add(['requestUser', 'approval:loop'], $reqUser);
 
             //------------------
             // 担当者 承認依頼のみ
             if ($row['approval_type'] === 'request') {
-                $receive = array();
+                $receive = [];
                 if (!!$row['approval_receive_user_id']) {
                     $receive['userOrGroupp'] = ACMS_RAM::userName($row['approval_receive_user_id']);
                 } elseif (!!$row['approval_receive_usergroup_id']) {
@@ -75,7 +75,7 @@ class ACMS_GET_Approval_History extends ACMS_GET
                 if (intval($row['count']) > 1) {
                     $receive['userOrGroupp'] = '次グループ全体';
                 }
-                $Tpl->add(array('receiveUser', 'approval:loop'), $receive);
+                $Tpl->add(['receiveUser', 'approval:loop'], $receive);
             }
 
             //---------
@@ -84,7 +84,7 @@ class ACMS_GET_Approval_History extends ACMS_GET
             foreach ($row as $key => $val) {
                 $key_ = substr($key, strlen('approval_'));
                 if ($key_ === 'comment') {
-                    $val = str_replace(array('{', '}'), array('\\{', '\\}'), $val);
+                    $val = str_replace(['{', '}'], ['\\{', '\\}'], $val);
                 }
                 $approvalField->add($key_, $val);
             }
@@ -99,7 +99,7 @@ class ACMS_GET_Approval_History extends ACMS_GET
                     $approvalField->set('type', 'trash');
                 }
             }
-            $approval  = $this->buildField($approvalField, $Tpl, array('approval:loop'));
+            $approval  = $this->buildField($approvalField, $Tpl, ['approval:loop']);
 
             $Tpl->add('approval:loop', $approval);
         }

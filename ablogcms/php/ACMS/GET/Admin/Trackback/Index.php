@@ -2,17 +2,17 @@
 
 class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
-        if ('trackback_index' <> ADMIN) {
-            return false;
+        if ('trackback_index' !== ADMIN) {
+            return '';
         }
         if (!sessionWithCompilation()) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $Vars   = array();
+        $Vars   = [];
 
         //---------
         // refresh
@@ -25,9 +25,9 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
         // axis
         $axis   = $this->Get->get('axis', 'descendant-or-self');
         if (1 < ACMS_RAM::blogRight(BID) - ACMS_RAM::blogLeft(BID)) {
-            $Tpl->add('axis', array(
+            $Tpl->add('axis', [
                 'axis:checked#' . $axis => config('attr_checked')
-            ));
+            ]);
         } else {
             $axis   = 'self';
         }
@@ -47,7 +47,7 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
         $aryLimit   = configArray('admin_limit_option');
         $limit      = $this->Q->get('limit', $aryLimit[config('admin_limit_default')]);
         foreach ($aryLimit as $val) {
-            $_vars  = array('value' => $val);
+            $_vars  = ['value' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -69,9 +69,9 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
         //--------
         // status
         if (
-            in_array($status, array(
-            'open', 'close', 'awaiting'
-            ))
+            in_array($status, [
+                'open', 'close', 'awaiting'
+            ])
         ) {
             $SQL->addWhereOpr('trackback_status', $status);
         }
@@ -79,9 +79,9 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
         //------
         // flow
         if (
-            in_array($flow, array(
-            'receive', 'send'
-            ))
+            in_array($flow, [
+                'receive', 'send'
+            ])
         ) {
             $SQL->addWhereOpr('trackback_flow', $flow);
         }
@@ -103,8 +103,8 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN,)
+            [],
+            ['admin' => ADMIN,]
         );
 
         //-------
@@ -127,29 +127,29 @@ class ACMS_GET_Admin_Trackback_Index extends ACMS_GET_Admin
                 $Tpl->add('url#rear');
             }
 
-            $vars   = array(
+            $vars   = [
                 'id'        => $tbid,
                 'title'     => $row['trackback_title'],
                 'excerpt'   => $row['trackback_excerpt'],
                 'datetime'  => $row['trackback_datetime'],
                 'name'      => $row['trackback_blog_name'],
                 'reftitle'  => ACMS_RAM::entryTitle($eid),
-                'reflink'   => acmsLink(array(
+                'reflink'   => acmsLink([
                     'bid'   => $bid,
                     'eid'   => $eid,
-                )),
+                ]),
                 'blogName'  => ACMS_RAM::blogName($bid),
-                'blogLink'  => acmsLink(array(
+                'blogLink'  => acmsLink([
                     'bid'   => $bid,
                     'admin' => 'trackback_index',
-                )),
-                'itemLink'  => acmsLink(array(
+                ]),
+                'itemLink'  => acmsLink([
                     'bid'   => $bid,
                     'eid'   => $eid,
                     'tbid'  => $tbid,
                     'fragment'  => 'trackback-' . $tbid,
-                )),
-            );
+                ]),
+            ];
             if (BID <> $bid) {
                 $vars['disabled']   = config('attr_disabled');
             }

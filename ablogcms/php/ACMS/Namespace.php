@@ -22,7 +22,7 @@ class ACMS_Namespace
     /**
      * @var array
      */
-    private $_namespaces = array();
+    private $_namespaces = [];
 
     /**
      * @param string $path
@@ -30,10 +30,10 @@ class ACMS_Namespace
      */
     public function addNamespace($path, $type = 'old')
     {
-        $this->_namespaces[] = array(
+        $this->_namespaces[] = [
             "path" => $path,
             "type" => $type,
-        );
+        ];
     }
 
     /**
@@ -47,7 +47,7 @@ class ACMS_Namespace
             $type = $ns['type'];
             $path = $ns['path'];
 
-            $moduleClassName = implode('_', array($path, $method, $moduleName));
+            $moduleClassName = implode('_', [$path, $method, $moduleName]);
             if ($type !== 'old') {
                 $moduleClassName = str_replace('_', '\\', $moduleClassName);
             }

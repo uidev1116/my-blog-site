@@ -20,12 +20,13 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
                 $res = false;
         }
         $this->Post->setMethod('blog', 'isOperable', sessionWithAdministration() and !!$res);
-        $this->Post->setMethod('batchStatus', 'in', array('open', 'close', 'secret'));
+        $this->Post->setMethod('batchStatus', 'in', ['open', 'close', 'secret']);
         $this->Post->setMethod('checks', 'required');
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {
-            $DB     = DB::singleton(dsn());
+            $DB = DB::singleton(dsn());
+            $aryBid = [];
             foreach ($this->Post->getArray('checks') as $bid) {
                 if (!($bid = idval($bid))) {
                     continue;
@@ -39,7 +40,7 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
                     continue;
                 }
 
-                $aryStatus  = array();
+                $aryStatus  = [];
                 switch ($status) {
                     case 'close':
                         $aryStatus[]    = 'secret';
@@ -86,7 +87,7 @@ class ACMS_POST_Blog_Index_Status extends ACMS_POST_Blog
                 $status = 'シークレット';
             }
 
-            AcmsLogger::info('指定されたブログのステータスを「' . $status . '」に変更', [
+            AcmsLogger::info('指定されたブログのステータスを「' . $status . '」に変更しました', [
                 'targetBIDs' => implode(',', $aryBid),
             ]);
         } else {

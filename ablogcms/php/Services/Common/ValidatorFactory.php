@@ -9,14 +9,14 @@ class ValidatorFactory extends Factory
      * @param mixed  $params
      * @return string|bool
      */
-    public function call($method, $params = array())
+    public function call($method, $params = [])
     {
         if (!is_array($params)) {
-            $params = array($params);
+            $params = [$params];
         }
         foreach ($this->_collection as $validator) {
-            if (is_callable(array($validator, $method))) {
-                return call_user_func_array(array($validator, $method), $params);
+            if (is_callable([$validator, $method])) {
+                return call_user_func_array([$validator, $method], $params);
             }
         }
         throw new \RuntimeException('Not found validator.');

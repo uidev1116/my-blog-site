@@ -48,7 +48,7 @@ class ACMS_POST_User_Update extends ACMS_POST_User
 
     protected function old()
     {
-        $targetColumn = array('name', 'code', 'mail', 'mail_mobile', 'url');
+        $targetColumn = ['name', 'code', 'mail', 'mail_mobile', 'url'];
 
         foreach ($this->field->listFields() as $key) {
             if ($this->field->get($key) !== $this->preField->get($key)) {
@@ -129,20 +129,20 @@ class ACMS_POST_User_Update extends ACMS_POST_User
     {
         $validator = new ACMS_Validator_User();
 
-        $this->user->setMethod('status', 'in', array('open', 'close'));
+        $this->user->setMethod('status', 'in', ['open', 'close']);
         $this->user->setMethod('name', 'required');
         $this->user->setMethod('mail', 'required');
         $this->user->setMethod('mail', 'email');
         $this->user->setMethod('mail', 'doubleMail', UID);
         $this->user->setMethod('code', 'doubleCode', UID);
-        $this->user->setMethod('mail_magazine', 'in', array('on', 'off'));
-        $this->user->setMethod('mail_mobile_magazine', 'in', array('on', 'off'));
+        $this->user->setMethod('mail_magazine', 'in', ['on', 'off']);
+        $this->user->setMethod('mail_mobile_magazine', 'in', ['on', 'off']);
         $this->user->setMethod('mail_mobile', 'email');
         $this->user->setMethod('url', 'url');
         $this->user->setMethod('pass', 'password');
-        $this->user->setMethod('auth', 'in', array('administrator', 'editor', 'contributor', 'subscriber'));
-        $this->user->setMethod('indexing', 'in', array('on', 'off'));
-        $this->user->setMethod('mode', 'in', array('debug', 'benchmark'));
+        $this->user->setMethod('auth', 'in', ['administrator', 'editor', 'contributor', 'subscriber']);
+        $this->user->setMethod('indexing', 'in', ['on', 'off']);
+        $this->user->setMethod('mode', 'in', ['debug', 'benchmark']);
         $this->user->setMethod('code', 'string', isValidCode($this->user->get('code')));
 
         // 現在、読者かつ読者以外に変更しようとしているときだけ、ユーザー数の制限チェックを行う
@@ -156,12 +156,12 @@ class ACMS_POST_User_Update extends ACMS_POST_User
         }
 
         $this->user->setMethod('login_expire', 'regex', '@\d\d\d\d-\d\d-\d\d@');
-        $this->user->setMethod('login_anywhere', 'in', array('on', 'off'));
+        $this->user->setMethod('login_anywhere', 'in', ['on', 'off']);
         $this->user->setMethod('login_anywhere', 'anywhere', !(1
             && 'on' == $this->user->get('login_anywhere')
             && !(1
-                && (empty($this->user->get('code')) || $validator->doubleCode($this->user->get('code'), array('uid' => UID)))
-                && $validator->doubleMail($this->user->get('mail'), array('uid' => UID))
+                && (empty($this->user->get('code')) || $validator->doubleCode($this->user->get('code'), ['uid' => UID]))
+                && $validator->doubleMail($this->user->get('mail'), ['uid' => UID])
             )
         ));
         $this->user->setMethod('user', 'operable', $this->isOperable());

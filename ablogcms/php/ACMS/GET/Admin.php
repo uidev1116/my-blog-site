@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin extends ACMS_GET
 {
-    function buildBlogSelect(&$Tpl, $rbid = BID, $selectedBid = null, $loopblock = 'loop', $aryAuth = array(), $isGlobal = false, $order = 'sort-asc')
+    function buildBlogSelect(&$Tpl, $rbid = BID, $selectedBid = null, $loopblock = 'loop', $aryAuth = [], $isGlobal = false, $order = 'sort-asc')
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('blog');
@@ -22,10 +22,10 @@ class ACMS_GET_Admin extends ACMS_GET
         $q      = $SQL->get(dsn());
         $root   = 0;
         if (!!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q))) {
-            $all    = array();
-            $amount = array();
-            $parent = array();
-            $last   = array();
+            $all    = [];
+            $amount = [];
+            $parent = [];
+            $last   = [];
             do {
                 $bid    = intval($row['blog_id']);
                 $pid    = intval($row['blog_parent']);
@@ -41,7 +41,7 @@ class ACMS_GET_Admin extends ACMS_GET
             } while (!!($row = $DB->fetch($q)));
 
             foreach ($all as $i => $v) {
-                $sort = array();
+                $sort = [];
                 foreach ($all[$i] as $key => $data) {
                     $sort[$key] = $data[$order];
                 }
@@ -61,7 +61,7 @@ class ACMS_GET_Admin extends ACMS_GET
             $query  = preg_replace('/\_bid=(\d+)/', 'prev-bid=$1', $query);
             while ($row = array_shift($stack)) {
                 $bid    = intval($row['blog_id']);
-                $blocks = array();
+                $blocks = [];
                 if (isset($parent[$bid]) && isset($parent[$parent[$bid]])) {
                     $blocks[]   = isset($last[$bid]) ? $marks[0] : $marks[1];
                     $_pid   = $bid;
@@ -73,17 +73,17 @@ class ACMS_GET_Admin extends ACMS_GET
                     }
                 }
 
-                $vars  = array(
+                $vars  = [
                     'value'         => $bid,
                     'code'          => $row['blog_code'],
                     'label'         => $row['blog_name'],
                     'indent'        => join('', array_reverse($blocks)),
-                    'adminUrl'      => acmsLink(array('bid' => $bid, 'admin' => 'top')),
-                    'adminUrl2'     => acmsLink(array(
+                    'adminUrl'      => acmsLink(['bid' => $bid, 'admin' => 'top']),
+                    'adminUrl2'     => acmsLink([
                         'bid'   => $bid,
                         'admin' => ADMIN,
-                    )) . $query,
-                );
+                    ]) . $query,
+                ];
 
                 if ($selectedBid == $bid) {
                     $vars['selected']   = config('attr_selected');
@@ -100,10 +100,10 @@ class ACMS_GET_Admin extends ACMS_GET
             }
         }
 
-        return array();
+        return [];
     }
 
-    function buildUserSelect(&$Tpl, $bid = BID, $selectedUid = null, $loopblock = 'loop', $aryAuth = array(), $isGlobal = false, $order = 'sort-asc')
+    function buildUserSelect(&$Tpl, $bid = BID, $selectedUid = null, $loopblock = 'loop', $aryAuth = [], $isGlobal = false, $order = 'sort-asc')
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('user');
@@ -127,17 +127,17 @@ class ACMS_GET_Admin extends ACMS_GET
 
         foreach ($DB->query($SQL->get(dsn()), 'all') as $row) {
             $uid    = intval($row['user_id']);
-            $vars   = array(
+            $vars   = [
                 'value' => $uid,
                 'label' => $row['user_name'],
-            );
+            ];
             if (intval($selectedUid) == $uid) {
                 $vars['selected'] = config('attr_selected');
             }
             $Tpl->add($loopblock, $vars);
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -175,27 +175,25 @@ class ACMS_GET_Admin extends ACMS_GET
         if ($filterCid > 0) {
             ACMS_Filter::categoryTree($SQL, $filterCid, 'descendant');
         }
-        if (true) {
-            $CaseW  = SQL::newWhere();
-            $CaseW->addWhereOpr('entry_blog_id', null, '<>');
-            $CaseW->addWhereOpr('entry_status', 'trash', '<>');
+        $CaseW  = SQL::newWhere();
+        $CaseW->addWhereOpr('entry_blog_id', null, '<>');
+        $CaseW->addWhereOpr('entry_status', 'trash', '<>');
 
-            $Case   = SQL::newCase();
-            $Case->add($CaseW, 1);
-            $Case->setElse('NULL');
+        $Case   = SQL::newCase();
+        $Case->add($CaseW, 1);
+        $Case->setElse('NULL');
 
-            $SQL->addSelect($Case, 'category_entry_amount', null, 'COUNT');
-            $SQL->addSelect('entry_status');
-        }
+        $SQL->addSelect($Case, 'category_entry_amount', null, 'COUNT');
+        $SQL->addSelect('entry_status');
 
         ACMS_Filter::categoryOrder($SQL, $order);
 
         $q  = $SQL->get(dsn());
         if (!!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q))) {
-            $all    = array();
-            $amount = array();
-            $parent = array();
-            $last   = array();
+            $all    = [];
+            $amount = [];
+            $parent = [];
+            $last   = [];
             do {
                 $cid    = intval($row['category_id']);
                 $pid    = intval($row['category_parent']);
@@ -218,7 +216,7 @@ class ACMS_GET_Admin extends ACMS_GET
             $marks  = configArray('indent_marks');
             while ($row = array_shift($stack)) {
                 $cid = intval($row['category_id']);
-                $blocks = array();
+                $blocks = [];
                 if (!empty($parent[$cid])) {
                     $blocks[]   = isset($last[$cid]) ? $marks[0] : $marks[1];
                     $_pid   = $cid;
@@ -230,12 +228,12 @@ class ACMS_GET_Admin extends ACMS_GET
                     }
                 }
 
-                $vars  = array(
+                $vars  = [
                     'value'     => $cid,
                     'code'      => $row['category_code'],
                     'label'     => $row['category_name'],
                     'indent'    => join('', array_reverse($blocks)),
-                );
+                ];
                 if (isset($row['category_entry_amount'])) {
                     $vars['amount'] = $row['category_entry_amount'];
                 }
@@ -244,7 +242,7 @@ class ACMS_GET_Admin extends ACMS_GET
                 }
 
                 // $loopblockはarrayのケースと、stringのケースがあるのでキャストしてからarray_merge
-                $Tpl->add(array_merge(array('status:touch#' . $row['category_status']), (array)$loopblock));
+                $Tpl->add(array_merge(['status:touch#' . $row['category_status']], (array)$loopblock));
 
                 $Tpl->add($loopblock, $vars);
 
@@ -257,6 +255,6 @@ class ACMS_GET_Admin extends ACMS_GET
             }
         }
 
-        return array();
+        return [];
     }
 }

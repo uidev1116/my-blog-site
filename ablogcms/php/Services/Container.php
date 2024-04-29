@@ -29,8 +29,8 @@ class Container implements Contracts\ContainerInterface
      */
     public function __construct()
     {
-        $this->aliases = array();
-        $this->bootstrap = array();
+        $this->aliases = [];
+        $this->bootstrap = [];
 
         $this->singleton('container', '\Acms\Services\Container');
         $this->resolvedInstance['container'] = $this;
@@ -77,8 +77,8 @@ class Container implements Contracts\ContainerInterface
         if (!($info->class instanceof \Closure) && !class_exists($info->class)) {
             throw new \RuntimeException("Container missing class '" . $info->class . "'.");
         }
-        if (is_callable(array($this, $info->type . 'Make'))) {
-            $instance = call_user_func(array($this, $info->type . 'Make'), $alias);
+        if (is_callable([$this, $info->type . 'Make'])) {
+            $instance = call_user_func([$this, $info->type . 'Make'], $alias);
 
             if (isset($this->bootstrap[$alias])) {
                 $this->bootstrap[$alias]($instance);
@@ -98,13 +98,13 @@ class Container implements Contracts\ContainerInterface
      *
      * @return void
      */
-    public function bind($alias, $class, array $arguments = array())
+    public function bind($alias, $class, array $arguments = [])
     {
-        $info = (object)array(
+        $info = (object)[
             'type' => 'bind',
             'class' => $class,
             'arguments' => $arguments,
-        );
+        ];
 
         $this->aliases[$alias] = $info;
     }
@@ -118,13 +118,13 @@ class Container implements Contracts\ContainerInterface
      *
      * @return void
      */
-    public function singleton($alias, $class, array $arguments = array())
+    public function singleton($alias, $class, array $arguments = [])
     {
-        $info = (object)array(
+        $info = (object)[
             'type' => 'singleton',
             'class' => $class,
             'arguments' => $arguments,
-        );
+        ];
         $this->aliases[$alias] = $info;
     }
 
@@ -183,7 +183,7 @@ class Container implements Contracts\ContainerInterface
      *
      * @return mixed
      */
-    public function newInstance($class, array $arguments = array())
+    public function newInstance($class, array $arguments = [])
     {
         if ($class instanceof \Closure) {
             $obj = $class($this);
@@ -262,7 +262,7 @@ class Container implements Contracts\ContainerInterface
      */
     protected function createInstanceFromArray($arguments)
     {
-        $objects = array();
+        $objects = [];
 
         foreach ($arguments as $arg) {
             $name = $arg->name;
@@ -292,7 +292,7 @@ class Container implements Contracts\ContainerInterface
      *
      * @return object
      */
-    protected function createInstance($class, $arguments = array())
+    protected function createInstance($class, $arguments = [])
     {
         $reflection = new \ReflectionClass($class);
 
@@ -317,7 +317,7 @@ class Container implements Contracts\ContainerInterface
      */
     private function setDefaultArguments($args)
     {
-        $arguments = array();
+        $arguments = [];
 
         foreach ($args as $param) {
             try {

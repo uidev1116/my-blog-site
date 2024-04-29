@@ -13,7 +13,7 @@ class ACMS_GET_Admin_Unit_Single extends ACMS_GET_Admin_Unit
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
-        $aryTypeLabel    = array();
+        $aryTypeLabel    = [];
         foreach (configArray('column_add_type') as $i => $type) {
             $aryTypeLabel[$type]    = config('column_add_type_label', '', $i);
         }
@@ -87,14 +87,14 @@ class ACMS_GET_Admin_Unit_Single extends ACMS_GET_Admin_Unit
 
         //-------
         // align
-        if (in_array(detectUnitTypeSpecifier($type), array('text', 'custom', 'module', 'table'), true)) {
-            $Tpl->add(array('align#liquid'), array(
+        if (in_array(detectUnitTypeSpecifier($type), ['text', 'custom', 'module', 'table'], true)) {
+            $Tpl->add(['align#liquid'], [
                 'align:selected#' . $data['align'] => config('attr_selected')
-            ));
+            ]);
         } else {
-            $Tpl->add(array('align#solid'), array(
+            $Tpl->add(['align#solid'], [
                 'align:selected#' . $data['align'] => config('attr_selected')
-            ));
+            ]);
         }
 
         //------
@@ -102,10 +102,10 @@ class ACMS_GET_Admin_Unit_Single extends ACMS_GET_Admin_Unit
         if ($aryAttr = configArray('column_' . $data['type'] . '_attr')) {
             foreach ($aryAttr as $i => $_attr) {
                 $label  = config('column_' . $data['type'] . '_attr_label', '', $i);
-                $_vars  = array(
+                $_vars  = [
                     'value' => $_attr,
                     'label' => $label,
-                );
+                ];
                 if ($data['attr'] == $_attr) {
                     $_vars['selected'] = config('attr_selected');
                 }
@@ -115,20 +115,20 @@ class ACMS_GET_Admin_Unit_Single extends ACMS_GET_Admin_Unit
             $Tpl->add('clattr#none');
         }
 
-        $Tpl->add('column:loop', array(
+        $Tpl->add('column:loop', [
             'cltype'    => $data['type'],
             'uniqid'    => $data['id'],
             'clname'    => ite($aryTypeLabel, $data['type']),
             'clid'      => $data['clid'],
-        ));
+        ]);
 
         //-----------------------
         // add keep sort & gorup
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'group' => $data['group'],
             'sort'  => $data['sort'],
             'post'  => implode('/', $_POST),
-        ));
+        ]);
 
         return $Tpl->get();
     }

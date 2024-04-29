@@ -8,7 +8,7 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
 
         $User = $this->extract('user');
         $User->setMethod('status', 'required');
-        $User->setMethod('status', 'in', array('open', 'close'));
+        $User->setMethod('status', 'in', ['open', 'close']);
         $User->setMethod('name', 'required');
         $User->setMethod('code', 'regex', REGEX_VALID_ID);
         $User->setMethod('code', 'doubleCode');
@@ -16,25 +16,25 @@ class ACMS_POST_User_Insert extends ACMS_POST_User
         $User->setMethod('mail', 'required');
         $User->setMethod('mail', 'email');
         $User->setMethod('mail', 'doubleMail');
-        $User->setMethod('mail_magazine', 'in', array('on', 'off'));
-        $User->setMethod('mail_mobile_magazine', 'in', array('on', 'off'));
+        $User->setMethod('mail_magazine', 'in', ['on', 'off']);
+        $User->setMethod('mail_mobile_magazine', 'in', ['on', 'off']);
         $User->setMethod('mail_mobile', 'email');
         $User->setMethod('url', 'url');
         $User->setMethod('pass', 'required');
         $User->setMethod('pass', 'password');
         $User->setMethod('auth', 'required');
-        $User->setMethod('auth', 'in', array('administrator', 'editor', 'contributor', 'subscriber'));
+        $User->setMethod('auth', 'in', ['administrator', 'editor', 'contributor', 'subscriber']);
         $User->setMethod('indexing', 'required');
-        $User->setMethod('indexing', 'in', array('on', 'off'));
-        $User->setMethod('mode', 'in', array('debug', 'benchmark'));
+        $User->setMethod('indexing', 'in', ['on', 'off']);
+        $User->setMethod('mode', 'in', ['debug', 'benchmark']);
         $User->setMethod('user', 'limit', ('subscriber' == $User->get('auth')) ? true : $this->isLimit());
         $User->setMethod('login_expire', 'regex', '@\d\d\d\d-\d\d-\d\d@');
-        $User->setMethod('login_anywhere', 'in', array('on', 'off'));
+        $User->setMethod('login_anywhere', 'in', ['on', 'off']);
         $User->setMethod('login_anywhere', 'anywhere', !( 1
             && 'on' == $User->get('login_anywhere')
             && !( 1
-                && (empty($User->get('code')) || $validator->doubleCode($User->get('code'), array('uid' => UID)))
-                && $validator->doubleMail($User->get('mail'), array())
+                && (empty($User->get('code')) || $validator->doubleCode($User->get('code'), ['uid' => UID]))
+                && $validator->doubleMail($User->get('mail'), [])
             )
         ));
         $User->setMethod('user', 'operable', 1

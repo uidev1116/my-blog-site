@@ -7,20 +7,20 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
     /**
      * @var array
      */
-    protected $menus = array();
+    protected $menus = [];
 
     /**
      * @var array
      */
-    protected $categories = array();
+    protected $categories = [];
 
     /**
      * @var array
      */
-    protected $defaultMenus = array();
+    protected $defaultMenus = [];
 
     /**
-     * @return run
+     * @return string
      */
     public function get()
     {
@@ -210,10 +210,10 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
         if (empty($linkCheck)) {
             $linkCheck = $admin;
         }
-        $this->defaultMenus[$admin] = array(
-            'url' => acmsLink(array('admin' => $admin, 'bid' => BID)),
+        $this->defaultMenus[$admin] = [
+            'url' => acmsLink(['admin' => $admin, 'bid' => BID]),
             'stay' => $this->linkCheck($linkCheck),
-        );
+        ];
     }
 
     /**
@@ -237,12 +237,12 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
                     }
                 }
                 $hasMenu = true;
-                $Tpl->add(array('menus:loop', 'categories:loop'), $menu);
+                $Tpl->add(['menus:loop', 'categories:loop'], $menu);
             }
             if ($hasMenu) {
-                $Tpl->add('categories:loop', array(
+                $Tpl->add('categories:loop', [
                     'title' => $category,
-                ));
+                ]);
             }
         }
     }
@@ -289,11 +289,13 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
     {
         $config =& Field::singleton('config');
         $defaultConfig = Config::loadDefaultField();
+        /** @var string[] $defaultMenuIds */
         $defaultMenuIds = $defaultConfig->getArray('admin_menu_card_id');
+        /** @var string[] $customMenuIds */
         $customMenuIds = $config->getArray('admin_menu_card_id');
 
         foreach ($defaultMenuIds as $i => $id) {
-            if (!in_array($id, $customMenuIds)) {
+            if (!in_array($id, $customMenuIds, true)) {
                 $config->add('admin_menu_card_id', $id);
                 $config->add('admin_menu_card_title', $defaultConfig->get('admin_menu_card_title', '', $i));
                 $config->add('admin_menu_card_url', $defaultConfig->get('admin_menu_card_url', '', $i));
@@ -306,15 +308,15 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
         $ids = $config->getArray('admin_menu_card_laneid');
         foreach ($ids as $i => $id) {
             if (!isset($this->menus[$id])) {
-                $this->menus[$id] = array();
+                $this->menus[$id] = [];
             }
-            $this->menus[$id][] = array(
+            $this->menus[$id][] = [
                 'id' => $config->get('admin_menu_card_id', '', $i),
                 'title' => $config->get('admin_menu_card_title', '', $i),
                 'url' => setGlobalVars($config->get('admin_menu_card_url', '', $i)),
                 'admin' => $config->get('admin_menu_card_admin', '', $i) === 'true',
                 'icon' => $config->get('admin_menu_card_icon', '', $i),
-            );
+            ];
         }
     }
 }

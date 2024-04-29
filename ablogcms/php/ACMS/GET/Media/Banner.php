@@ -11,8 +11,8 @@ class ACMS_GET_Media_Banner extends ACMS_GET
         $loopClass  = config('media_banner_loop_class');
         $aryStatus = configArray('media_banner_status');
 
-        $items = array();
-        $mids = array();
+        $items = [];
+        $mids = [];
         $nth = 0;
 
         switch ($order) {
@@ -67,7 +67,7 @@ class ACMS_GET_Media_Banner extends ACMS_GET
                 continue;
             }
 
-            $item = array();
+            $item = [];
             $type = config('media_banner_type', '', $i);
             $source = config('media_banner_source', '', $i);
             $target = config('media_banner_target', '', $i);
@@ -81,7 +81,7 @@ class ACMS_GET_Media_Banner extends ACMS_GET
                 if (!$mid) {
                     continue;
                 }
-                $item['banner#img'] = array(
+                $item['banner#img'] = [
                     'target' => $target === "true" ? "_blank" : "_self",
                     'attr1' => $attr1,
                     'attr2' => $attr2,
@@ -90,14 +90,14 @@ class ACMS_GET_Media_Banner extends ACMS_GET
                     'nth' => $nth,
                     'banner:loop.class' => $loopClass,
                     'url' => $link
-                );
+                ];
                 $mids[] = $mid;
             } elseif ($type === 'source') {
-                $item['banner#src'] = array(
+                $item['banner#src'] = [
                     'src' => $source,
                     'nth' => $nth,
                     'banner:loop.class' => $loopClass
-                );
+                ];
             }
             $nth++;
             $int_display++;
@@ -126,8 +126,8 @@ class ACMS_GET_Media_Banner extends ACMS_GET
             $items[$i]['banner:loop.class'] = $loopClass;
         }
 
-        return setGlobalVars($Tpl->render(array(
+        return setGlobalVars($Tpl->render([
             'banner' => $items
-        )));
+        ]));
     }
 }

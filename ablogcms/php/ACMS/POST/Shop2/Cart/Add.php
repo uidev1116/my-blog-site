@@ -2,7 +2,7 @@
 
 class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
 {
-    function post()
+    public function post()
     {
         $this->initVars();
 
@@ -29,6 +29,14 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
             $SQL->addSelect('entry_category_id');
             $SQL->addWhereOpr('entry_id', $Cart->get($this->item_id));
 
+            /**
+             * @var array{
+             *   field_key: string,
+             *   field_value: string,
+             *   entry_primary_image: int|null,
+             *   entry_category_id: int|null
+             * }[] $fds
+             */
             $fds = $DB->query($SQL->get(dsn()), 'all');
 
             if (!empty($fds)) {
@@ -41,8 +49,13 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
                 }
 
                 // すべての行にentry系の情報はつながっている
-                $item['entry_primary_image'] = $fd['entry_primary_image'];
-                $item[$this->item_category]  = ACMS_RAM::categoryName(intval($fd['entry_category_id']));
+                $item['entry_primary_image'] = $fds[0]['entry_primary_image'];
+                $categoryName = null;
+                $categoryId = intval($fds[0]['entry_category_id']);
+                if ($categoryId > 0) {
+                    $categoryName = ACMS_RAM::categoryName($categoryId);
+                }
+                $item[$this->item_category] = $categoryName;
 
                 // 既定のフィールドを埋める
                 $item[$this->item_qty] = intval($Cart->get($this->item_qty));
@@ -63,9 +76,9 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
                     $item[$fd] = $Cart->get($fd);
                 }
 
-                //　既存のカート内商品の走査
-                if (! is_array($TEMP)) {
-                    $TEMP = array();
+                // 既存のカート内商品の走査
+                if (!is_array($TEMP)) {
+                    $TEMP = [];
                 }
 
                 if (isset($item['item_tax'])) {
@@ -127,7 +140,7 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
     }
 
     // レパートリーの定義は，判定したい商品の追加時には，必ず同じモノが提供されなければならない
-    function isSameItem($old, $new, $repertories)
+    protected function isSameItem($old, $new, $repertories)
     {
         // エントリーIDが異なれば，違う商品とみなす
         if ($old[$this->item_id] !== $new[$this->item_id]) {
@@ -154,18 +167,4 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
         // すべてのレパートリーに一致が見られれば，同じ商品とみなす
         return true;
     }
-
-/*
-    function tax($val)
-    {
-        $rate    = config('shop_tax_rate');
-        $tax_int = $rate * 100;
-
-        if ( config('shop_tax_calculate') == 'intax' ) {
-            return intval(floor($val * ($tax_int / (100 + $tax_int))));
-        } elseif ( config('shop_tax_calculate') == 'extax' ) {
-            return intval(floor($val * $rate));
-        }
-    }
-    */
 }

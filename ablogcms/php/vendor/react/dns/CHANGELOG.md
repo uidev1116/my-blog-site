@@ -1,5 +1,208 @@
 # Changelog
 
+## 1.12.0 (2023-11-29)
+
+*   Feature: Full PHP 8.3 compatibility.
+    (#217 by @sergiy-petrov)
+
+*   Update test environment and avoid unhandled promise rejections.
+    (#215, #216 and #218 by @clue)
+
+## 1.11.0 (2023-06-02)
+
+*   Feature: Include timeout logic to avoid dependency on reactphp/promise-timer.
+    (#213 by @clue)
+
+*   Improve test suite and project setup and report failed assertions.
+    (#210 by @clue, #212 by @WyriHaximus and #209 and #211 by @SimonFrings)
+
+## 1.10.0 (2022-09-08)
+
+*   Feature: Full support for PHP 8.2 release.
+    (#201 by @clue and #207 by @WyriHaximus)
+
+*   Feature: Optimize forward compatibility with Promise v3, avoid hitting autoloader.
+    (#202 by @clue)
+
+*   Feature / Fix: Improve error reporting when custom error handler is used.
+    (#197 by @clue)
+
+*   Fix: Fix invalid references in exception stack trace.
+    (#191 by @clue)
+
+*   Minor documentation improvements.
+    (#195 by @SimonFrings and #203 by @nhedger)
+
+*   Improve test suite, update to use default loop and new reactphp/async package.
+    (#204, #205 and #206 by @clue and #196 by @SimonFrings)
+
+## 1.9.0 (2021-12-20)
+
+*   Feature: Full support for PHP 8.1 release and prepare PHP 8.2 compatibility
+    by refactoring `Parser` to avoid assigning dynamic properties.
+    (#188 and #186 by @clue and #184 by @SimonFrings)
+
+*   Feature: Avoid dependency on `ext-filter`.
+    (#185 by @clue)
+
+*   Feature / Fix: Skip invalid nameserver entries from `resolv.conf` and ignore IPv6 zone IDs.
+    (#187 by @clue)
+
+*   Feature / Fix: Reduce socket read chunk size for queries over TCP/IP.
+    (#189 by @clue)
+
+## 1.8.0 (2021-07-11)
+
+A major new feature release, see [**release announcement**](https://clue.engineering/2021/announcing-reactphp-default-loop).
+
+*   Feature: Simplify usage by supporting new [default loop](https://reactphp.org/event-loop/#loop).
+    (#182 by @clue)
+
+    ```php
+    // old (still supported)
+    $factory = new React\Dns\Resolver\Factory();
+    $resolver = $factory->create($config, $loop);
+
+    // new (using default loop)
+    $factory = new React\Dns\Resolver\Factory();
+    $resolver = $factory->create($config);
+    ```
+
+## 1.7.0 (2021-06-25)
+
+*   Feature: Update DNS `Factory` to accept complete `Config` object.
+    Add new `FallbackExecutor` and use fallback DNS servers when `Config` lists multiple servers.
+    (#179 and #180 by @clue)
+
+    ```php
+    // old (still supported)
+    $config = React\Dns\Config\Config::loadSystemConfigBlocking();
+    $server = $config->nameservers ? reset($config->nameservers) : '8.8.8.8';
+    $resolver = $factory->create($server, $loop);
+
+    // new
+    $config = React\Dns\Config\Config::loadSystemConfigBlocking();
+    if (!$config->nameservers) {
+        $config->nameservers[] = '8.8.8.8';
+    }
+    $resolver = $factory->create($config, $loop);
+    ```
+
+## 1.6.0 (2021-06-21)
+
+*   Feature: Add support for legacy `SPF` record type.
+    (#178 by @akondas and @clue)
+
+*   Fix: Fix integer overflow for TCP/IP chunk size on 32 bit platforms.
+    (#177 by @clue)
+
+## 1.5.0 (2021-03-05)
+
+*   Feature: Improve error reporting when query fails, include domain and query type and DNS server address where applicable.
+    (#174 by @clue)
+
+*   Feature: Improve error handling when sending data to DNS server fails (macOS).
+    (#171 and #172 by @clue)
+
+*   Fix: Improve DNS response parser to limit recursion for compressed labels.
+    (#169 by @clue)
+
+*   Improve test suite, use GitHub actions for continuous integration (CI).
+    (#170 by @SimonFrings)
+
+## 1.4.0 (2020-09-18)
+
+*   Feature: Support upcoming PHP 8.
+    (#168 by @clue)
+
+*   Improve test suite and update to PHPUnit 9.3.
+    (#164 by @clue, #165 and #166 by @SimonFrings and #167 by @WyriHaximus)
+
+## 1.3.0 (2020-07-10)
+
+*   Feature: Forward compatibility with react/promise v3.
+    (#153 by @WyriHaximus)
+
+*   Feature: Support parsing `OPT` records (EDNS0).
+    (#157 by @clue)
+
+*   Fix: Avoid PHP warnings due to lack of args in exception trace on PHP 7.4.
+    (#160 by @clue)
+
+*   Improve test suite and add `.gitattributes` to exclude dev files from exports.
+    Run tests on PHPUnit 9 and PHP 7.4 and clean up test suite.
+    (#154 by @reedy, #156 by @clue and #163 by @SimonFrings)
+
+## 1.2.0 (2019-08-15)
+
+*   Feature: Add `TcpTransportExecutor` to send DNS queries over TCP/IP connection,
+    add `SelectiveTransportExecutor` to retry with TCP if UDP is truncated and
+    automatically select transport protocol when no explicit `udp://` or `tcp://` scheme is given in `Factory`.
+    (#145, #146, #147 and #148 by @clue)
+
+*   Feature: Support escaping literal dots and special characters in domain names.
+    (#144 by @clue)
+
+## 1.1.0 (2019-07-18)
+
+*   Feature: Support parsing `CAA` and `SSHFP` records.
+    (#141 and #142 by @clue)
+
+*   Feature: Add `ResolverInterface` as common interface for `Resolver` class.
+    (#139 by @clue)
+
+*   Fix: Add missing private property definitions and
+    remove unneeded dependency on `react/stream`.
+    (#140 and #143 by @clue)
+
+## 1.0.0 (2019-07-11)
+
+*   First stable LTS release, now following [SemVer](https://semver.org/).
+    We'd like to emphasize that this component is production ready and battle-tested.
+    We plan to support all long-term support (LTS) releases for at least 24 months,
+    so you have a rock-solid foundation to build on top of.
+
+This update involves a number of BC breaks due to dropped support for
+deprecated functionality and some internal API cleanup. We've tried hard to
+avoid BC breaks where possible and minimize impact otherwise. We expect that
+most consumers of this package will actually not be affected by any BC
+breaks, see below for more details:
+
+*   BC break: Delete all deprecated APIs, use `Query` objects for `Message` questions
+    instead of nested arrays and increase code coverage to 100%.
+    (#130 by @clue)
+
+*   BC break: Move `$nameserver` from `ExecutorInterface` to `UdpTransportExecutor`,
+    remove advanced/internal `UdpTransportExecutor` args for `Parser`/`BinaryDumper` and
+    add API documentation for `ExecutorInterface`.
+    (#135, #137 and #138 by @clue)
+
+*   BC break: Replace `HeaderBag` attributes with simple `Message` properties.
+    (#132 by @clue)
+
+*   BC break: Mark all `Record` attributes as required, add documentation vs `Query`.
+    (#136 by @clue)
+
+*   BC break: Mark all classes as final to discourage inheritance
+    (#134 by @WyriHaximus)
+
+## 0.4.19 (2019-07-10)
+
+*   Feature: Avoid garbage references when DNS resolution rejects on legacy PHP <= 5.6.
+    (#133 by @clue)
+
+## 0.4.18 (2019-09-07)
+
+*   Feature / Fix: Implement `CachingExecutor` using cache TTL, deprecate old `CachedExecutor`,
+    respect TTL from response records when caching and do not cache truncated responses.
+    (#129 by @clue)
+
+*   Feature: Limit cache size to 256 last responses by default. 
+    (#127 by @clue)
+
+*   Feature: Cooperatively resolve hosts to avoid running same query concurrently.
+    (#125 by @clue)
+
 ## 0.4.17 (2019-04-01)
 
 *   Feature: Support parsing `authority` and `additional` records from DNS response.

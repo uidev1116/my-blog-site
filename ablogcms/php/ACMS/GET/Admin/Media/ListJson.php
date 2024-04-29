@@ -31,11 +31,11 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
     protected $amount;
 
     /**
-     * @var array
+     * @inheritdoc
      */
-    public $_scope = array( // phpcs:ignore
+    public $_scope = [ // phpcs:ignore
         'tag' => 'global',
-    );
+    ];
 
     /**
      * run
@@ -67,12 +67,11 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
         } catch (\Exception $e) {
             AcmsLogger::notice('メディア一覧のJSON取得に失敗しました', Common::exceptionArray($e));
 
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
-        die();
     }
 
     /**
@@ -81,21 +80,21 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
      */
     protected function buildJson($q)
     {
-        $json = array(
+        $json = [
             'total' => $this->amount,
             'pageAmount' => ceil($this->amount / $this->limit),
             'archives' => $this->archiveList,
             'tags' => $this->tagList,
             'extensions' => $this->extList,
             'largeSize' => intval(config('image_size_large')),
-        );
+        ];
         $db = DB::singleton(dsn());
         $db->query($q, 'fetch');
-        $items = array();
+        $items = [];
         while ($row = $db->fetch($q)) {
             $mid = $row['media_id'];
             $bid = $row['media_blog_id'];
-            $data = array(
+            $data = [
                 'status' => $row['media_status'],
                 'path' => $row['media_path'],
                 'thumbnail' => $row['media_thumbnail'],
@@ -115,7 +114,7 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
                 'field_6' => $row['media_field_6'],
                 'blog_name' => $row['blog_name'],
                 'editable' => intval($row['media_user_id']) === SUID || sessionWithCompilation()
-            );
+            ];
             $tags = $row['tag_name'];
             $items[] = Media::buildJson($mid, $data, $tags, $bid);
         }
@@ -133,7 +132,7 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
         $sql->addLeftJoin('blog', 'blog_id', 'media_blog_id');
         ACMS_Filter::blogTree($sql, SBID, 'descendant-or-self');
         if (getAuthConsideringRole(SUID) === 'contributor') {
-            $sql->addWhereIn('media_user_id', array(0, SUID));
+            $sql->addWhereIn('media_user_id', [0, SUID]);
         }
         return $sql;
     }
@@ -175,7 +174,7 @@ class ACMS_GET_Admin_Media_ListJson extends ACMS_GET
         $ext = $this->Get->get('ext');
         if ($type && $type !== 'all') {
             if ($type === 'image') {
-                $sql->addWhereIn('media_type', array('image', 'svg'));
+                $sql->addWhereIn('media_type', ['image', 'svg']);
             } else {
                 $sql->addWhereOpr('media_type', $type);
             }

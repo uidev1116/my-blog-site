@@ -31,7 +31,7 @@ class ACMS_POST_Entry_Index_Trash extends ACMS_POST_Trash
                     || ( roleAvailableUser() && roleAuthorization('entry_delete', $bid, $eid) )
                 ) {
                     if (HOOK_ENABLE && $count === 1) {
-                        Webhook::call($bid, 'entry', 'entry:deleted', array($eid, null));
+                        Webhook::call($bid, 'entry', 'entry:deleted', [$eid, null]);
                     }
                     $this->trash($eid);
                 }

@@ -2,7 +2,7 @@
 
 class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
 {
-    public $_scope = array(
+    public $_scope = [
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -12,15 +12,15 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
         'start'     => 'global',
         'end'       => 'global',
         'page'      => 'global',
-    );
+    ];
 
     function initVars()
     {
-        return array(
-            'order'            => array(
+        return [
+            'order'            => [
                 $this->order ? $this->order : config('entry_headline_order'),
                 config('entry_headline_order2'),
-            ),
+            ],
             'orderFieldName'   => config('entry_headline_order_field_name'),
             'noNarrowDownSort' => config('entry_headline_no_narrow_down_sort', 'off'),
             'limit'            => intval(config('entry_headline_limit')),
@@ -50,6 +50,6 @@ class ACMS_GET_Entry_Headline extends ACMS_GET_Entry_Summary
             'pagerCurAttr'     => config('entry_headline_pager_cur_attr'),
 
             'mainImageOn'      => 'off',
-        );
+        ];
     }
 }

@@ -59,11 +59,10 @@ class ACMS_POST_Media_Upload extends ACMS_POST
         } catch (\Exception $e) {
             AcmsLogger::notice('メディアのアップロードに失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
-        die();
     }
 }

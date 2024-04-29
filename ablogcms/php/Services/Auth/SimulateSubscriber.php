@@ -82,7 +82,7 @@ class SimulateSubscriber extends General
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function checkShortcut(array $ids): bool
     {

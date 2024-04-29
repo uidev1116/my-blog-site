@@ -19,7 +19,7 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $Vars   = array();
+        $Vars   = [];
 
         //---------
         // refresh
@@ -43,7 +43,7 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
         $limits = configArray('admin_limit_option');
         $limit  = $this->Q->get('limit', $limits[config('admin_limit_default')]);
         foreach ($limits as $val) {
-            $_vars  = array('value' => $val);
+            $_vars  = ['value' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -52,10 +52,10 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
 
         //-------
         // span
-        $Vars   += array(
+        $Vars   += [
             'start' => START,
             'end'   => END,
-        );
+        ];
 
         $DB     = DB::singleton(dsn());
 
@@ -103,8 +103,8 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         list($fd, $sort) = explode('-', $order);
@@ -126,13 +126,13 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
                 $log_admin_body     = $row['log_form_mail_body_admin'];
             }
 
-            $log = array(
+            $log = [
                 'bid'               => $row['log_form_blog_id'],
                 'fmid'              => $fmid,
                 'serial'            => $row['log_form_serial'],
                 'datetime'          => $row['log_form_datetime'],
                 'mail_to'           => $row['log_form_mail_to'],
-            );
+            ];
 
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
                 $Field   = acmsUnserialize($row['log_form_data']);

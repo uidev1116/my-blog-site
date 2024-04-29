@@ -25,7 +25,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         if (!!$_config) {
             $config->overload($_config);
             foreach (
-                array(
+                [
                     'links_label',
                     'links_value',
                     'navigation_label',
@@ -35,7 +35,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
                     'navigation_parent',
                     'navigation_target',
                     'navigation_publish',
-                ) as $fd
+                ] as $fd
             ) {
                 $config->setField($fd, $_config->getArray($fd));
             }
@@ -74,7 +74,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
         $Config =& $this->getConfig($rid, $mid, $setid);
 
         if (!$this->Post->isValidAll()) {
@@ -115,16 +115,16 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
             $admin  = 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $module->get('name')));
         }
 
-        $vars['shortcutUrl'] = acmsLink(array(
-                'bid'   => BID,
-                'admin' => 'shortcut_edit',
-                'query' => array(
-                    'admin'  => $admin,
-                    'rid'   => $rid,
-                    'mid'   => $mid,
-                    'setid' => $setid
-                )
-        ));
+        $vars['shortcutUrl'] = acmsLink([
+            'bid'   => BID,
+            'admin' => 'shortcut_edit',
+            'query' => [
+                'admin'  => $admin,
+                'rid'   => $rid,
+                'mid'   => $mid,
+                'setid' => $setid
+            ]
+        ]);
 
         $vars += $this->buildColumn($Config, $Tpl);
 
@@ -147,7 +147,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         }
 
         $vars   += $this->buildNavigation($Config, $Tpl);
-        $vars   += $this->buildField($Config, $Tpl, array(), 'config');
+        $vars   += $this->buildField($Config, $Tpl, [], 'config');
 
         $vars['notice_mess'] = $this->Post->get('notice_mess');
 
@@ -179,35 +179,35 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         $url = '';
         if (sessionWithAdministration()) {
             if ($mid) {
-                $url    = acmsLink(array(
+                $url    = acmsLink([
                     'bid'   => BID,
                     'admin' => 'module_index',
-                ));
+                ]);
             } elseif ($rid || $setid) {
-                $url    = acmsLink(array(
+                $url    = acmsLink([
                     'bid'   => BID,
                     'admin' => 'config_index',
-                    'query' => array(
+                    'query' => [
                         'rid' => $rid,
                         'setid' => $setid,
-                    ),
-                ));
+                    ],
+                ]);
             } elseif ('shop' == substr(ADMIN, 0, 4)) {
-                $url    = acmsLink(array(
+                $url    = acmsLink([
                     'bid'   => BID,
                     'admin' => 'shop_menu',
-                ));
+                ]);
             } else {
-                $url    = acmsLink(array(
+                $url    = acmsLink([
                     'bid'   => BID,
                     'admin' => 'config_index',
-                ));
+                ]);
             }
         } else {
-            $url    = acmsLink(array(
+            $url    = acmsLink([
                 'bid'   => BID,
                 'admin' => 'top',
-            ));
+            ]);
         }
         return $url;
     }
@@ -216,21 +216,21 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
     {
     }
 
-    function buildColumn(&$Config, &$Tpl, $rootBlock = array())
+    function buildColumn(&$Config, &$Tpl, $rootBlock = [])
     {
         if (!is_array($rootBlock)) {
-            $rootBlock = array($rootBlock);
+            $rootBlock = [$rootBlock];
         }
         array_unshift($rootBlock, 'Config_Column');
 
         // typeで参照できるラベルの連想配列
-        $aryTypeLabel    = array();
+        $aryTypeLabel    = [];
         foreach ($Config->getArray('column_add_type') as $i => $type) {
             $aryTypeLabel[$type]    = $Config->get('column_add_type_label', '', $i);
         }
 
         $labels = $Config->getArray('column_add_type_label');
-        $column = array('insert' => '新規エントリー作成');
+        $column = ['insert' => '新規エントリー作成'];
         foreach ($Config->getArray('column_add_type') as $mode) {
             $label = array_shift($labels);
             if (preg_match('@^(text|table|rich-editor|image|file|osmap|map|video|youtube|eximage|break|quote|media|module|custom)[^_]+(.*)@', $mode)) {
@@ -278,86 +278,86 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
 
                 if ('text' == $type) {
                     foreach ($Config->getArray('column_text_tag') as $j => $tag) {
-                        $_vars = array(
+                        $_vars = [
                             'value' => $tag,
                             'label' => $Config->get('column_text_tag_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('field_2') == $tag) {
                             $_vars['selected'] = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('textTag:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['textTag:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('table' == $type) {
                 } elseif ('image' == $type) {
                     foreach ($Config->getArray('column_image_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_image_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('osmap' == $type || 'map' == $type) {
                     foreach ($Config->getArray('column_map_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_map_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('youtube' == $type) {
                     foreach ($Config->getArray('column_youtube_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_youtube_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('video' == $type) {
                     foreach ($Config->getArray('column_video_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_video_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('eximage' == $type) {
                     foreach ($Config->getArray('column_eximage_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_eximage_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 } elseif ('quote' == $type) {
                 } elseif ('rich-editor' == $type) {
-                    $Tpl->add(array_merge(array('edit', $type), $rootBlock), array(
+                    $Tpl->add(array_merge(['edit', $type], $rootBlock), [
                         'html' => RichEditor::render($Field->get('field_1'))
-                    ));
+                    ]);
                 } elseif ('media' == $type) {
                     foreach ($Config->getArray('column_media_size') as $j => $size) {
-                        $_vars  = array(
+                        $_vars  = [
                             'value' => $size,
                             'label' => $Config->get('column_media_size_label', '', $j),
-                        );
+                        ];
                         if ($Field->get('size') == $size) {
                             $_vars['selected']  = $Config->get('attr_selected');
                         }
-                        $Tpl->add(array_merge(array('size:loop', $type), $rootBlock), $_vars);
+                        $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $_vars);
                     }
                 }
 
@@ -373,68 +373,68 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
 
                     if (count($classes) === count($labels)) {
                         foreach ($labels as $k => $label) {
-                            $Tpl->add(array_merge(array('group:loop', 'group:veil', $type), $rootBlock), array(
-                                 'group.value'     => $classes[$k],
-                                 'group.label'     => $label,
-                                 'group.selected'  => ($classes[$k] === $Field->get('group')) ? $Config->get('attr_selected') : '',
-                            ));
+                            $Tpl->add(array_merge(['group:loop', 'group:veil', $type], $rootBlock), [
+                                'group.value'     => $classes[$k],
+                                'group.label'     => $label,
+                                'group.selected'  => ($classes[$k] === $Field->get('group')) ? $Config->get('attr_selected') : '',
+                            ]);
                         }
 
-                        $Tpl->add(array_merge(array('group:veil', $type), $rootBlock), array(
+                        $Tpl->add(array_merge(['group:veil', $type], $rootBlock), [
                             'group.pfx' => $Field->get('pfx'),
-                        ));
+                        ]);
                     }
                 }
                 // selected用のgroupをunset ( しないと，以後のbuildFieldでgroup:loopが暴発する )
                 $Field->delete('group');
 
                 $Field->setField('size');
-                $vars   = $this->buildField($Field, $Tpl, array_merge(array($type), $rootBlock));
+                $vars   = $this->buildField($Field, $Tpl, array_merge([$type], $rootBlock));
 
                 if (isset($aryTypeLabel[$actualType])) {
-                    $vars  += array(
+                    $vars  += [
                         'actualType'  => $actualType,
                         'actualLabel' => $aryTypeLabel[$actualType],
-                    );
+                    ];
                 }
-                $Tpl->add(array_merge(array($type, 'loop', 'mode:loop'), $rootBlock), $vars);
-                $Tpl->add(array_merge(array('loop', 'mode:loop'), $rootBlock));
+                $Tpl->add(array_merge([$type, 'loop', 'mode:loop'], $rootBlock), $vars);
+                $Tpl->add(array_merge(['loop', 'mode:loop'], $rootBlock));
             }
 
             foreach ($Config->getArray('column_add_type') as $i => $type) {
                 if (!preg_match('/^(text|table|rich-editor|image|file|osmap|map|video|youtube|eximage|break|quote|media|module|custom)($|_)/', $type)) {
                     continue;
                 }
-                $Tpl->add(array_merge(array('add_type:loop', 'mode:loop'), $rootBlock), array(
+                $Tpl->add(array_merge(['add_type:loop', 'mode:loop'], $rootBlock), [
                     'type'  => $type,
                     'label' => $Config->get('column_add_type_label', '未定義', $i),
                     'modePrefix.type' => $pfx
-                ));
+                ]);
             }
-            $Tpl->add(array_merge(array('mode:loop'), $rootBlock), array(
+            $Tpl->add(array_merge(['mode:loop'], $rootBlock), [
                 'mode'          => $modeLabel,
                 'modePrefix'    => $pfx,
-            ));
+            ]);
         }
         $Tpl->add($rootBlock);
 
-        return array();
+        return [];
     }
 
-    function buildNavigation(&$Config, &$Tpl, $rootBlock = array())
+    function buildNavigation(&$Config, &$Tpl, $rootBlock = [])
     {
         if (!is_array($rootBlock)) {
-            $rootBlock = array($rootBlock);
+            $rootBlock = [$rootBlock];
         }
         array_unshift($rootBlock, 'Config_Navigation');
         $addNum = 0;
 
-        $Count  = array(0 => $addNum);
-        $Parent = array(0 => array());
+        $Count  = [0 => $addNum];
+        $Parent = [0 => []];
         foreach ($Config->getArray('navigation_label') as $i => $label) {
             $id         = $i + 1;
             $pid        = intval($Config->get('navigation_parent', 0, $i));
-            $Parent[$pid][$id]   = array(
+            $Parent[$pid][$id]   = [
                 'id'        => $id,
                 'pid'       => $pid,
                 'label'     => $label,
@@ -443,21 +443,21 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
                 'publish'   => $Config->get('navigation_publish', null, $i),
                 'attr'      => $Config->get('navigation_attr', null, $i),
                 'a_attr'    => $Config->get('navigation_a_attr', null, $i),
-                'marks'     => array(),
-            );
+                'marks'     => [],
+            ];
             $Count[$pid]    = (isset($Count[$pid]) ? $Count[$pid] : 0) + 1;
         }
 
-        $all        = array();
-        $pidStack   = array(0);
-        $aryMark    = array('');
+        $all        = [];
+        $pidStack   = [0];
+        $aryMark    = [''];
         while (count($pidStack)) {
             $pid    = array_pop($pidStack);
             $mark   = array_pop($aryMark);
             while ($row = array_shift($Parent[$pid])) {
                 $id = $row['id'];
 
-                $row['marks']   = array_merge(array(count($Parent[$pid]) ? 1 : 0), $aryMark);
+                $row['marks']   = array_merge([count($Parent[$pid]) ? 1 : 0], $aryMark);
                 $all[] = $row;
 
                 if (isset($Parent[$id])) {
@@ -476,7 +476,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
 
         //---------------
         // parent select
-        $PSelect    = array();
+        $PSelect    = [];
         foreach ($all as $row) {
             $label  = $row['label'];
 
@@ -496,7 +496,7 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
         }
 
         $seq    = 0;
-        $Sort   = array();
+        $Sort   = [];
         $length = count($all) - 1;
         foreach ($all as $row) {
             $id     = $row['id'];
@@ -509,52 +509,52 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
             // indent
             $level  = 0;
             $marks  = array_reverse($marks);
-            foreach ($marks as $i => $mark) {
+            foreach ($marks as $i => $_mark) {
                 if (empty($i)) {
                     continue;
                 }
-                if (0 == $mark) {
+                if (0 == $_mark) {
                     $block  = 'child#last';
-                } elseif (1 == $mark) {
+                } elseif (1 == $_mark) {
                     $block  = 'child';
-                } elseif (2 == $mark) {
+                } elseif (2 == $_mark) {
                     $block  = 'descendant#last';
-                } elseif (3 == $mark) {
+                } elseif (3 == $_mark) {
                     $block  = 'descendant';
                 } else {
                     continue;
                 }
-                $Tpl->add(array_merge(array($block, 'navigation:loop'), $rootBlock));
+                $Tpl->add(array_merge([$block, 'navigation:loop'], $rootBlock));
                 $level++;
             }
 
             //------
             // sort
             for ($i = 1; $i <= $Count[$pid]; $i++) {
-                $vars   = array(
+                $vars   = [
                     'label' => $i,
                     'value' => $i,
-                );
+                ];
                 if ($i == $Sort[$pid]) {
                     $vars['selected'] = $Config->get('attr_selected');
                 }
-                $Tpl->add(array_merge(array('sort:loop', 'navigation:loop'), $rootBlock), $vars);
+                $Tpl->add(array_merge(['sort:loop', 'navigation:loop'], $rootBlock), $vars);
             }
 
             //---------------
             // parent select
             foreach ($PSelect as $_id => $_label) {
-                $vars   = array(
+                $vars   = [
                     'value' => $_id,
                     'label' => $_label,
-                );
+                ];
                 if ($pid == $_id) {
                     $vars['selected']   = $Config->get('attr_selected');
                 }
-                $Tpl->add(array_merge(array('parent:loop', 'navigation:loop'), $rootBlock), $vars);
+                $Tpl->add(array_merge(['parent:loop', 'navigation:loop'], $rootBlock), $vars);
             }
 
-            $vars   = array(
+            $vars   = [
                 'seq'   => $seq,
                 'level' => $level,
                 'pseq'  => $pid,
@@ -564,15 +564,15 @@ class ACMS_GET_Admin_Config extends ACMS_GET_Admin
                 'a_attr' => $row['a_attr'],
                 'navigation_target:checked#' . $row['target'] => $Config->get('attr_checked'),
                 'navigation_publish:checked#' . $row['publish'] => $Config->get('attr_checked'),
-            );
+            ];
             if ($length !== $seq) {
                 $Tpl->add('glue');
             }
-            $Tpl->add(array_merge(array('navigation:loop'), $rootBlock), $vars);
+            $Tpl->add(array_merge(['navigation:loop'], $rootBlock), $vars);
             $seq++;
         }
         $Tpl->add($rootBlock);
 
-        return array();
+        return [];
     }
 }

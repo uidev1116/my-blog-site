@@ -2,7 +2,7 @@
 
 class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
 {
-    function post()
+    public function post()
     {
         $eid = idval($this->Post->get('eid', EID));
         if (!$this->validate($eid)) {
@@ -15,14 +15,14 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
             'newEID' => $newEid,
         ]);
 
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'bid'   => BID,
             'cid'   => $cid,
             'eid'   => $newEid,
-        )));
+        ]));
     }
 
-    function duplicate($eid)
+    protected function duplicate($eid)
     {
         $DB = DB::singleton(dsn());
         $newEid = $DB->query(SQL::nextval('entry_id', dsn()), 'seq');
@@ -34,7 +34,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         return $newEid;
     }
 
-    function validate($eid)
+    protected function validate($eid)
     {
         if (empty($eid)) {
             return false;
@@ -57,7 +57,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         return true;
     }
 
-    function _filesDupe(&$Field, &$Old_Field, $info, $int_filedindex)
+    protected function _filesDupe(&$Field, &$Old_Field, $info, $int_filedindex)
     {
         $key            = $info['name'];
         $pfx            = $info['pfx'];
@@ -87,7 +87,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function fieldDupe(&$Field)
+    protected function fieldDupe(&$Field)
     {
         foreach ($Field->listFields() as $fd) {
             if (preg_match('/(.*?)@path$/', $fd, $match)) {
@@ -112,20 +112,20 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                             $dirname    = $match[1];
                             $extension  = $match[3];
 
-                            $info = array(
+                            $info = [
                                 'field'         => $_fd,
                                 'dirname'       => $dirname,
                                 'newBasename'   => uniqueString(),
                                 'extension'     => $extension,
-                            );
+                            ];
 
                             foreach (
-                                array(
-                                         ''          => '@path',
-                                         'large-'    => '@largePath',
-                                         'tiny-'     => '@tinyPath',
-                                         'square-'   => '@squarePath',
-                                     ) as $pfx => $name
+                                [
+                                    ''          => '@path',
+                                    'large-'    => '@largePath',
+                                    'tiny-'     => '@tinyPath',
+                                    'square-'   => '@squarePath',
+                                ] as $pfx => $name
                             ) {
                                 $info['name']   = $name;
                                 $info['pfx']    = $pfx;
@@ -133,12 +133,12 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                             }
                         } else {
                             foreach (
-                                array(
-                                         ''          => '@path',
-                                         'large-'    => '@largePath',
-                                         'tiny-'     => '@tinyPath',
-                                         'square-'   => '@squarePath',
-                                     ) as $pfx => $name
+                                [
+                                    ''          => '@path',
+                                    'large-'    => '@largePath',
+                                    'tiny-'     => '@tinyPath',
+                                    'square-'   => '@squarePath',
+                                ] as $pfx => $name
                             ) {
                                 if ($int_filedindex === 0) {
                                     $Field->deleteField($_fd . $name);
@@ -153,7 +153,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function relationDupe($eid, $newEid)
+    protected function relationDupe($eid, $newEid)
     {
         $DB     = DB::singleton(dsn());
 
@@ -171,7 +171,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function geoDuplicate($eid, $newEid)
+    protected function geoDuplicate($eid, $newEid)
     {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('geo');
@@ -186,7 +186,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function approvalDupe($eid, $newEid)
+    protected function approvalDupe($eid, $newEid)
     {
         $DB         = DB::singleton(dsn());
         $bid        = ACMS_RAM::entryBlog($eid);
@@ -200,7 +200,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
 
         //--------
         // column
-        $map    = array();
+        $map    = [];
         if ($sourceRev) {
             $SQL    = SQL::newSelect('column_rev');
             $SQL->addWhereOpr('column_rev_id', 1);
@@ -216,7 +216,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 switch ($type) {
                     case 'image':
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $info   = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -241,7 +241,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                         break;
                     case 'file':
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $old    = $row['column_field_2'];
                             $info   = pathinfo($old);
@@ -394,19 +394,19 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $SQL    = SQL::newInsert('entry');
         foreach ($row as $fd => $val) {
             if (
-                !in_array($fd, array(
-                'entry_approval',
-                'entry_approval_public_point',
-                'entry_approval_reject_point',
-                'entry_last_update_user_id',
-                'entry_rev_id',
-                'entry_rev_status',
-                'entry_rev_memo',
-                'entry_rev_user_id',
-                'entry_rev_datetime',
-                'entry_current_rev_id',
-                'entry_reserve_rev_id'
-                ))
+                !in_array($fd, [
+                    'entry_approval',
+                    'entry_approval_public_point',
+                    'entry_approval_reject_point',
+                    'entry_last_update_user_id',
+                    'entry_rev_id',
+                    'entry_rev_status',
+                    'entry_rev_memo',
+                    'entry_rev_user_id',
+                    'entry_rev_datetime',
+                    'entry_current_rev_id',
+                    'entry_reserve_rev_id'
+                ], true)
             ) {
                 $SQL->addInsert($fd, $val);
             }
@@ -418,14 +418,14 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $SQL    = SQL::newInsert('entry_rev');
         foreach ($row as $fd => $val) {
             if (
-                !in_array($fd, array(
-                'entry_current_rev_id',
-                'entry_reserve_rev_id',
-                'entry_last_update_user_id',
-                'entry_rev_id',
-                'entry_rev_user_id',
-                'entry_rev_datetime'
-                ))
+                !in_array($fd, [
+                    'entry_current_rev_id',
+                    'entry_reserve_rev_id',
+                    'entry_last_update_user_id',
+                    'entry_rev_id',
+                    'entry_rev_user_id',
+                    'entry_rev_datetime'
+                ], true)
             ) {
                 $SQL->addInsert($fd, $val);
             }
@@ -523,14 +523,14 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         Entry::saveFieldRevision($newEid, $Field, 1);
     }
 
-    function dupe($eid, $newEid)
+    protected function dupe($eid, $newEid)
     {
         $DB     = DB::singleton(dsn());
         $bid    = ACMS_RAM::entryBlog($eid);
 
         //--------
         // column
-        $map    = array();
+        $map    = [];
         $SQL    = SQL::newSelect('column');
         $SQL->addWhereOpr('column_entry_id', $eid);
         $SQL->addWhereOpr('column_blog_id', $bid);
@@ -541,7 +541,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 switch ($type) {
                     case 'image':
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $info   = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -565,7 +565,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                         break;
                     case 'file':
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $info   = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';

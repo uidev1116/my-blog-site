@@ -225,18 +225,18 @@ class Rule
 
         while ($row = $DB->fetch($q)) {
             // user
-            $user = array(
+            $user = [
                 $row['user_name'],
                 $row['user_code'],
                 $row['user_mail'],
                 $row['user_mail_mobile'],
                 $row['user_url']
-            );
+            ];
             $uid = $row['user_id'];
             $bid = $row['user_blog_id'];
 
             // meta
-            $meta = array();
+            $meta = [];
             $SQL = SQL::newSelect('field');
             $SQL->addSelect('field_value');
             $SQL->addWhereOpr('field_search', 'on');
@@ -324,7 +324,7 @@ class Rule
     {
         $DB = DB::singleton(dsn());
 
-        $startList = array();
+        $startList = [];
         $SQL = SQL::newSelect('config');
         $SQL->addWhereOpr('config_key', 'workflow_start_group');
         $q = $SQL->get(dsn());
@@ -333,7 +333,7 @@ class Rule
             $startList[$row['config_blog_id']][] = $row['config_value'];
         }
 
-        $lastList = array();
+        $lastList = [];
         $SQL = SQL::newSelect('config');
         $SQL->addWhereOpr('config_key', 'workflow_last_group');
         $q = $SQL->get(dsn());

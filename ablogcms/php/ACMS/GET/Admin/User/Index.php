@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
 {
-    public $_scope = array(
+    public $_scope = [
         'field'     => 'global'
-    );
+    ];
 
     /**
      * 絞り込むBID
@@ -18,10 +18,10 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
      *
      * @return string
      */
-    function get(): string
+    public function get(): string
     {
         $tpl = new Template($this->tpl, new ACMS_Corrector());
-        $this->targetBid = $this->Get->get('_bid', BID);
+        $this->targetBid = intval($this->Get->get('_bid', BID));
         $vars = [];
 
         if (!$this->validate()) {
@@ -338,10 +338,10 @@ class ACMS_GET_Admin_User_Index extends ACMS_GET_Admin
 
             // sort
             if ('self' === $axis) {
-                $_vars += array(
+                $_vars += [
                     'sort' => $row['user_sort'],
                     'sort#uid' => $uid,
-                );
+                ];
             }
 
             // field

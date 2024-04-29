@@ -2,7 +2,7 @@
 
 class ACMS_POST_Form_Update extends ACMS_POST_Form
 {
-    function post()
+    public function post()
     {
         $Form = $this->extract('form');
         $Form->setMethod('form', 'fmidIsNull', ($fmid = intval($this->Get->get('fmid'))));
@@ -21,15 +21,15 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         $Mail = $this->extract('mail');
         foreach ($Mail->listFields() as $fd) {
             if (
-                !in_array($fd, array(
-                'To', 'From', 'Cc', 'Bcc', 'Reply-To',
-                'AdminTo', 'AdminFrom', 'AdminCc', 'AdminBcc', 'AdminReply-To'
-                ))
+                !in_array($fd, [
+                    'To', 'From', 'Cc', 'Bcc', 'Reply-To',
+                    'AdminTo', 'AdminFrom', 'AdminCc', 'AdminBcc', 'AdminReply-To'
+                ], true)
             ) {
                 continue;
             }
             if ($val = $Mail->get($fd)) {
-                $aryVal = array();
+                $aryVal = [];
                 foreach (explode(',', $val) as $_val) {
                     $_val = trim($_val);
                     if (empty($_val)) {
@@ -44,9 +44,9 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
         }
 
         $Option = $this->extract('option');
-        $aryFd  = array();
-        $aryMd  = array();
-        $aryVal = array();
+        $aryFd  = [];
+        $aryMd  = [];
+        $aryVal = [];
         foreach ($Option->getArray('field') as $i => $fd) {
             if (empty($fd)) {
                 continue;

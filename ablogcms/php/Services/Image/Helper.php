@@ -6,26 +6,27 @@ use Storage;
 use Imagick;
 use ACMS_Hook;
 use ImageOptimizer\OptimizerFactory;
+use Acms\Services\Facades\Logger;
 
 class Helper
 {
-    protected $exts = array(
+    protected $exts = [
         'image/gif'          => 'gif',
         'image/png'          => 'png',
         'image/vnd.wap.wbmp' => 'bmp',
         'image/xbm'          => 'xbm',
         'image/jpeg'         => 'jpg',
-    );
+    ];
 
     /**
-     * @var \ImageOptimizer\SmartOptimizer
+     * @var \ImageOptimizer\Optimizer
      */
     protected $optimizer = null;
 
     public function __construct()
     {
         if (config('img_optimizer') !== 'off') {
-            $factory = new OptimizerFactory(array('ignore_errors' => false));
+            $factory = new OptimizerFactory(['ignore_errors' => false]);
             $this->optimizer = $factory->get();
         }
     }
@@ -33,7 +34,7 @@ class Helper
     /**
      * ロスレス圧縮
      *
-     * @param $path
+     * @param string $path
      */
     public function optimize($path)
     {
@@ -51,7 +52,7 @@ class Helper
     /**
      * ロスレス圧縮可能かテスト
      *
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function optimizeTest($path)
@@ -86,16 +87,29 @@ class Helper
      *
      * @param string $from
      * @param string $to
-     * @param int $width
-     * @param int $height
-     * @param int $size
-     * @param int $angle
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
      *
      * @return bool
      */
     public function copyImage($from, $to, $width = null, $height = null, $size = null, $angle = null)
     {
-        if (!($xy = Storage::getImageSize($from))) {
+
+        /**
+         * @var array{
+         *  0: int,
+         *  1: int,
+         *  2: int,
+         *  3: string,
+         *  bits: int,
+         *  channels: int,
+         *  mime: string
+         * }|false $xy
+         */
+        $xy = Storage::getImageSize($from);
+        if ($xy === false) {
             return false;
         }
         if (!Storage::makeDirectory(dirname($to))) {
@@ -117,20 +131,20 @@ class Helper
 
         //--------
         // resize
-        $fromFunc   = array(
+        $fromFunc   = [
             'gif'   => 'imagecreatefromgif',
             'png'   => 'imagecreatefrompng',
             'bmp'   => 'imagecreatefromwbmp',
             'xbm'   => 'imagecreatefromxbm',
             'jpg'   => 'imagecreatefromjpeg',
-        );
+        ];
 
-        $toFunc = array(
+        $toFunc = [
             'gif'   => 'imagegif',
             'png'   => 'imagepng',
             'bmp'   => 'imagewbmp',
             'xbm'   => 'imagexbm',
-        );
+        ];
         if (
             0
             or !empty($width) and $width < $xy[0]
@@ -177,10 +191,10 @@ class Helper
      * @param string $srcPath
      * @param string $distPath
      * @param string $ext
-     * @param null $width
-     * @param null $height
-     * @param null $size
-     * @param null $angle
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
      * @throws \ImagickException
      */
     public function resizeImg($srcPath, $distPath, $ext, $width = null, $height = null, $size = null, $angle = null)
@@ -285,21 +299,44 @@ class Helper
     }
 
     /**
-     * @param $resource
-     * @param $distPath
+     * @param string|resource|\GdImage $resource
+     * @param string $distPath
      * @param int $imageQuality
+     * @return void
      */
-    public function createWebpWithGd($resource, $distPath, $imageQuality = 75)
+    public function createWebpWithGd($resource, $distPath, $imageQuality = 75): void // @phpstan-ignore-line
     {
         if (!$this->isAvailableWebpWithGd()) {
             return;
         }
-        if (
-            is_resource($resource) && 'gd' === get_resource_type($resource)
-            || is_object($resource) && $resource instanceof \GdImage
-        ) {
-            imagewebp($resource, $distPath, $imageQuality);
-        } elseif ($resource) {
+
+        if (is_string($resource)) {
+            // パス指定の場合はリソースに変換
+            if ($resource === '') {
+                throw new \InvalidArgumentException('Resource is empty.');
+            }
+
+            if (!Storage::isReadable($resource)) {
+                throw new \InvalidArgumentException('Resource is not readable.');
+            }
+
+            /**
+             * @var array{
+             *  0: int,
+             *  1: int,
+             *  2: int,
+             *  3: string,
+             *  bits: int,
+             *  channels: int,
+             *  mime: string
+             * }|false $imageInfo
+             * */
+            $imageInfo = Storage::getImageSize($resource);
+
+            if (!$imageInfo) {
+                throw new \RuntimeException('Failed to get image info.');
+            }
+
             $fromFunc = [
                 'gif' => 'imagecreatefromgif',
                 'png' => 'imagecreatefrompng',
@@ -307,13 +344,37 @@ class Helper
                 'xbm' => 'imagecreatefromxbm',
                 'jpg' => 'imagecreatefromjpeg',
             ];
-            if ($imageInfo = Storage::getImageSize($resource)) {
-                $fromExt = $this->exts[$imageInfo['mime']];
-                if (isset($fromFunc[$fromExt])) {
-                    $resource = $fromFunc[$fromExt]($resource);
-                    imagewebp($resource, $distPath, $imageQuality);
-                }
+
+            $fromExt = $this->exts[$imageInfo['mime']];
+            if (!isset($fromFunc[$fromExt])) {
+                throw new \RuntimeException('Unsupported image type.');
             }
+
+            /** @var \GdImage|resource|false $resource */
+            $resource = $fromFunc[$fromExt]($resource); // @phpstan-ignore-line
+
+            if (!$resource) {
+                throw new \RuntimeException('Failed to create image resource.');
+            }
+        }
+
+        // パレットベースの画像かどうかを確認し、TrueColorに変換
+        if (!imageistruecolor($resource)) {
+            // パレットベースの画像をTrueColorに変換
+            imagepalettetotruecolor($resource);
+        }
+
+        // PNG画像の場合、TrueColorに変換後に透明度情報を保持するために必要
+        // PNG画像でない場合は適用しても何も起こらない
+        imagealphablending($resource, false);
+        imagesavealpha($resource, true);
+
+        if (!imagewebp($resource, $distPath, $imageQuality)) {
+            throw new \RuntimeException('Failed to create webp with GD.');
+            Logger::error('GDによるWebP画像の生成に失敗しました', [
+                'distPath' => $distPath,
+                'imageQuality' => $imageQuality,
+            ]);
         }
     }
 
@@ -340,14 +401,14 @@ class Helper
      * 画像のリサイズ（GD使用）
      *
      * @param resource|\GdImage $rsrc
-     * @param int $width
-     * @param int $height
-     * @param int $size
-     * @param int $angle
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
      *
      * @return resource|\GdImage
      */
-    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null)
+    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null) // @phpstan-ignore-line
     {
         $x          = imagesx($rsrc);
         $y          = imagesy($rsrc);
@@ -440,13 +501,13 @@ class Helper
      *
      * @param string $rsrc
      * @param string $file
-     * @param int $width
-     * @param int $height
-     * @param int $size
-     * @param int $angle
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
      *
      * @return void
-     * @throws
+     * @throws \ImagickException
      */
     public function editImageForImagick($rsrc, $file, $width = null, $height = null, $size = null, $angle = null)
     {
@@ -581,7 +642,7 @@ class Helper
      *
      * @param string $target_mime
      *
-     * @return string
+     * @return 'gif' | 'png' | 'bmp' | 'xbm' | 'jpg' | ''
      */
     public function detectImageExtenstion($target_mime)
     {
@@ -591,5 +652,391 @@ class Helper
             }
         }
         return '';
+    }
+
+    /**
+     * サイズ違い（tiny, square, large, normal）の画像を生成
+     *
+     * @param array{
+     *   name: string,
+     *   type: string,
+     *   tmp_name: string,
+     *   error: int,
+     *   size: int
+     * } $File $_FILES[$name] で取得したファイル情報
+     * @param array{
+     *   normal?: int,
+     *   tiny?: int,
+     *   large?: int,
+     *   square?: int
+     * } $sizes
+     * @param string $destDir
+     * @param bool $isRandomFileName
+     * @param int|null $angle
+     * @param bool $forceLarge
+     * @return array{
+     *  path: string,
+     *  type: string,
+     *  name: string,
+     *  size: string
+     * }
+     */
+    public function createImages(
+        array $File,
+        array $sizes,
+        string $destDir,
+        bool $isRandomFileName = true,
+        ?int $angle = null,
+        bool $forceLarge = false
+    ): array {
+        $config = $this->createCreateImagesConfig(
+            $File,
+            $sizes,
+            $destDir,
+            $isRandomFileName,
+            $angle,
+            $forceLarge
+        );
+
+        return $this->createResizedImages($config);
+    }
+
+    /**
+     * @param array{
+     *   name: string,
+     *   type: string,
+     *   tmp_name: string,
+     *   error: int,
+     *   size: int
+     * } $File $_FILES[$name] で取得したファイル情報
+     * @param array{
+     *   normal?: int,
+     *   tiny?: int,
+     *   large?: int,
+     *   square?: int
+     * } $sizes
+     * @param string $destDir
+     * @param bool $isRandomFileName
+     * @param int|null $angle
+     * @param bool $forceLarge
+     * @return array{
+     *   edit: array{
+     *     tiny: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     },
+     *     square?: array{
+     *       size: int,
+     *       angle?: int|null,
+     *     },
+     *     normal: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     },
+     *     large?: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     }
+     *   },
+     *   srcPath: string,
+     *   destPath: string,
+     *   path: string,
+     *   ext: 'gif' | 'png' | 'bmp' | 'xbm' | 'jpg',
+     *   fileName: string
+     * }
+     */
+    protected function createCreateImagesConfig(
+        array $File,
+        array $sizes,
+        string $destDir,
+        bool $isRandomFileName = true,
+        ?int $angle = null,
+        bool $forceLarge = false
+    ): array {
+        $tempPath = $File['tmp_name'];
+
+        if ($tempPath === '') {
+            throw new \InvalidArgumentException('Uploaded image file not found.');
+        }
+
+        $path = '';
+        $ext = '';
+        $edit = [];
+
+        $normalSize = isset($sizes['normal']) ? strval($sizes['normal']) : '640';
+        $tinySize = isset($sizes['tiny']) ? strval($sizes['tiny']) : '280';
+        $largeSize = isset($sizes['large']) ? strval($sizes['large']) : '1200';
+        $squareSize = isset($sizes['square']) ? intval($sizes['square']) : 300;
+
+        ///* [CMS-762] (1).辺(string)と、px値(int)に分解する
+        $stdSide = null;
+        $stdSideTiny = null;
+        $stdSideLarge = null;
+
+        // normal
+        if (preg_match('/^(w|width|h|height)(\d+)/', $normalSize, $matches)) {
+            $stdSide = strval($matches[1]);
+            $normalSize = intval($matches[2]);
+        } else {
+            $normalSize = intval($normalSize);
+        }
+        // tiny
+        if (preg_match('/^(w|width|h|height)(\d+)/', $tinySize, $matches)) {
+            $stdSideTiny = strval($matches[1]);
+            $tinySize = intval($matches[2]);
+        } else {
+            $tinySize = intval($tinySize);
+        }
+        // large
+        if (preg_match('/^(w|width|h|height)(\d+)/', $largeSize, $matches)) {
+            $stdSideLarge = strval($matches[1]);
+            $largeSize = intval($matches[2]);
+        } else {
+            $largeSize = intval($largeSize);
+        }
+
+        if ($squareSize < 1) {
+            $squareSize = -1;
+        }
+
+        if ($normalSize !== 0 && $normalSize < $tinySize) {
+            $tinySize = $normalSize;
+        }
+
+        $fileName = $File['name'];
+
+        /**
+         * @var array{
+         *  0: int,
+         *  1: int,
+         *  2: int,
+         *  3: string,
+         *  bits: int,
+         *  channels: int,
+         *  mime: string
+         * }|false $imageInfo
+         * */
+        $imageInfo = Storage::getImageSize($tempPath);
+        if (!$imageInfo) {
+            throw new \RuntimeException('Failed to get image info.');
+        }
+
+        /** @var int $longSide */
+        $longSide = max($imageInfo[0], $imageInfo[1]);
+        $mime = $imageInfo['mime'];
+
+        $edit['tiny'] = [
+            'size'  => $tinySize,
+            'angle' => $angle,
+            'side'  => $stdSideTiny,
+        ];
+
+        if ($squareSize > 0) {
+            $edit['square'] = [
+                'size'  => $squareSize,
+                'angle' => $angle,
+            ];
+        }
+
+        $edit['normal'] = [
+            'size'  => $normalSize,
+            'angle' => $angle,
+            'side'  => $stdSide,
+        ];
+
+        if ($forceLarge || (!empty($normalSize) && $longSide > $normalSize)) {
+            $edit['large'] = [
+                'size'  => ($longSide > $largeSize) ? $largeSize : $longSide,
+                'angle' => $angle,
+                'side'  => $stdSideLarge,
+            ];
+        }
+
+        $archivesDir = Storage::archivesDir();
+
+        Storage::makeDirectory($destDir . $archivesDir);
+        $ext = $this->detectImageExtenstion($mime) ?: 'jpg';
+
+        $fileNameParts = preg_split('/\./', $fileName);
+        array_pop($fileNameParts);
+        $fileName = implode('.', $fileNameParts);
+        $fileName = preg_replace('/\s/u', '_', $fileName);
+        if (preg_match('@^(large|tiny|square)@', $fileName)) {
+            $fileName = 'img_' . $fileName;
+        }
+        if (!$isRandomFileName) {
+            $path = $archivesDir . $fileName . '.' . $ext;
+            $path = uniqueFilePath($path, $destDir);
+        } else {
+            $path = $archivesDir . uniqueString(8) . '.' . $ext;
+        }
+        $destPath = $destDir . $path;
+
+        return [
+            'edit' => $edit,
+            'srcPath' => $tempPath,
+            'destPath' => $destPath,
+            'path' => $path,
+            'ext' => $ext,
+            'fileName' => $fileName,
+        ];
+    }
+
+    /**
+     * @param array{
+     *   edit: array{
+     *     tiny: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     },
+     *     square?: array{
+     *       size: int,
+     *       angle?: int|null,
+     *     },
+     *     normal: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     },
+     *     large?: array{
+     *       size: int,
+     *       angle?: int,
+     *       side?: 'w' | 'h' | 'width' | 'height'
+     *     }
+     *   },
+     *   srcPath: string,
+     *   destPath: string,
+     *   path: string,
+     *   ext: 'gif' | 'png' | 'bmp' | 'xbm' | 'jpg',
+     *   fileName: string
+     * } $config
+     * @return array{
+     *  path: string,
+     *  type: string,
+     *  name: string,
+     *  size: string
+     * }
+     */
+    protected function createResizedImages(array $config): array
+    {
+        if ($config['srcPath'] === '') {
+            throw new \RuntimeException('Source file path not found.');
+        }
+
+        if ($config['destPath'] === '') {
+            throw new \RuntimeException('Destination file path not found.');
+        }
+
+        $normalSize = '';
+        $angleSrc = false;
+        $isOriginalUpload = false;
+
+        foreach (array_keys($config['edit']) as $sizeType) {
+            /** @var 'tiny'| 'square' | 'normal' | 'large' $sizeType */
+
+            /**
+             * @var array{
+             *     size: int,
+             *     angle?: int,
+             *     side?: 'w' | 'h' | 'width' | 'height'
+             *  } $editConfig
+             */
+            $editConfig = $config['edit'][$sizeType];
+
+            $pfx = ('normal' === $sizeType) ? '' : $sizeType . '-';
+            /** @var string $destPath */
+            $destPath = preg_replace('@(.*/)([^/]*)$@', '$1' . $pfx . '$2', $config['destPath']);
+            if (!preg_match('@\.([^.]+)$@', $destPath, $match)) {
+                continue;
+            }
+            $ext = $match[1];
+
+            $size = $editConfig['size'] > 0 ? $editConfig['size'] : null;
+            $angle = !is_null($editConfig['angle']) ? $editConfig['angle'] : null;
+
+            $width = null;
+            $height = null;
+
+            // width
+            if (
+                in_array($sizeType, ['normal', 'tiny', 'large'], true) &&
+                in_array($editConfig['side'], ['w', 'width'], true)
+            ) {
+                $width = $size;
+                $size  = null;
+            }
+            // height
+            if (
+                in_array($sizeType, ['normal', 'tiny', 'large'], true) &&
+                in_array($editConfig['side'], ['h', 'height'], true)
+            ) {
+                $height = $size;
+                $size = null;
+            }
+
+            // square
+            if ($sizeType === 'square') {
+                $width = $size;
+                $height = $size;
+            }
+
+            // 回転された画像をさらに回転処理しないように
+            if ($angleSrc) {
+                $angle = null;
+            }
+            if (!$angleSrc && $config['srcPath'] === $destPath) {
+                $angleSrc = true;
+            }
+
+            if (
+                (is_null($width) && is_null($height) && is_null($size)) // オリジナルのアップロード画像
+                || $isOriginalUpload && $sizeType === 'large'
+            ) {
+                if (is_uploaded_file($config['srcPath'])) {
+                    Storage::copy($config['srcPath'], $destPath);
+                    if (class_exists('Imagick') && config('image_magick') == 'on') {
+                        $this->createWebpWithImagick($config['srcPath'], $destPath . '.webp');
+                    } else {
+                        if (in_array($ext, ['png', 'jpg'], true)) {
+                            $this->createWebpWithGd($config['srcPath'], $destPath . '.webp');
+                        }
+                    }
+                    $this->optimize($destPath);
+                    $isOriginalUpload = true;
+                }
+            } else {
+                $this->resizeImg($config['srcPath'], $destPath, $ext, $width, $height, $size, $angle);
+            }
+            if ($sizeType === 'normal') {
+                /**
+                 * @var array{
+                 *  0: int,
+                 *  1: int,
+                 *  2: int,
+                 *  3: string,
+                 *  bits: int,
+                 *  channels: int,
+                 *  mime: string
+                 * }|false $xy
+                 * */
+                $xy = Storage::getImageSize($destPath);
+                $normalSize = $xy[0] . ' x ' . $xy[1];
+            }
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('mediaCreate', $destPath);
+            }
+        }
+
+        return [
+            'path'  => $config['path'],
+            'type'  => strtoupper($config['ext']),
+            'name'  => $config['fileName'],
+            'size'  => $normalSize,
+        ];
     }
 }

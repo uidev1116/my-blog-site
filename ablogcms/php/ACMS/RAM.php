@@ -11,9 +11,9 @@
  */
 class ACMS_RAM
 {
-    private static $cacheAttached = array();
+    private static $cacheAttached = [];
 
-    private static $funcCache = array();
+    private static $funcCache = [];
 
     private static $cache = null;
     /**
@@ -24,7 +24,7 @@ class ACMS_RAM
      * @param array $args
      * @return mixed
      */
-    public static function cacheMethod($method, $args = array())
+    public static function cacheMethod($method, $args = [])
     {
         $key = $method . '_' . md5(serialize($args));
 
@@ -54,7 +54,7 @@ class ACMS_RAM
 
     public static function cacheDelete()
     {
-        self::$funcCache = array();
+        self::$funcCache = [];
     }
 
     /**
@@ -62,12 +62,12 @@ class ACMS_RAM
      *
      * @param string $key
      * @param int $id
-     * @param null $val
-     * @return bool|null
+     * @param mixed $val
+     * @return string|int|bool|null
      */
     public static function _mapping($key, $id, $val = null)
     {
-        static $table = array();
+        static $table = [];
 
         if (!$id = intval($id)) {
             return false;
@@ -100,10 +100,10 @@ class ACMS_RAM
             return true;
         } else {
             if (!isset($table[$type])) {
-                $table[$type] = array();
+                $table[$type] = [];
             }
             if (!isset($table[$type][$id])) {
-                $table[$type][$id] = array();
+                $table[$type][$id] = [];
             }
             if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
                 if (self::$cache->has($cacheKey)) {
@@ -351,7 +351,7 @@ class ACMS_RAM
      */
     public static function blogMaintenanceMode($bid)
     {
-        static $maintenanceMode = array();
+        static $maintenanceMode = [];
         $bid = intval($bid);
 
         if (isset($maintenanceMode[$bid])) {
@@ -489,7 +489,7 @@ class ACMS_RAM
      * $alias_bid = ACMS_RAM::aliasBlog($aid);
      *
      * @param int $aid
-     * @return string
+     * @return int
      */
     public static function aliasBlog($aid)
     {
@@ -1116,7 +1116,7 @@ class ACMS_RAM
      * 指定されたidから該当するユニットのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @param int $uid
+     * @param int $utid
      * @param null $val
      * @return array|bool
      */
@@ -1130,7 +1130,7 @@ class ACMS_RAM
      * $sort = ACMS_RAM::unitSort($utid);
      *
      * @param int $utid
-     * @return string
+     * @return int
      */
     public static function unitSort($utid)
     {
@@ -1202,7 +1202,7 @@ class ACMS_RAM
      * $field2 = ACMS_RAM::unitField2($utid);
      *
      * @param int $utid
-     * @return string
+     * @return int
      */
     public static function unitField2($utid)
     {
@@ -1214,7 +1214,7 @@ class ACMS_RAM
      * $field3 = ACMS_RAM::unitField3($utid);
      *
      * @param int $utid
-     * @return string
+     * @return int
      */
     public static function unitField3($utid)
     {
@@ -1226,7 +1226,7 @@ class ACMS_RAM
      * $field4 = ACMS_RAM::unitField4($utid);
      *
      * @param int $utid
-     * @return string
+     * @return int
      */
     public static function unitField4($utid)
     {
@@ -1238,7 +1238,7 @@ class ACMS_RAM
      * $field5 = ACMS_RAM::unitField5($utid);
      *
      * @param int $utid
-     * @return string
+     * @return int
      */
     public static function unitField5($utid)
     {
@@ -1441,7 +1441,7 @@ class ACMS_RAM
 
     /**
      * 指定されたidから該当するフォームのコードを返します
-     * @param int $setid
+     * @param int $id
      * @return string
      */
     public static function formCode($id)
@@ -1451,7 +1451,7 @@ class ACMS_RAM
 
     /**
      * 指定されたidから該当するフォームの名前を返します
-     * @param int $setid
+     * @param int $id
      * @return string
      */
     public static function formName($id)

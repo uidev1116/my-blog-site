@@ -2,6 +2,19 @@
 
 class ACMS_GET_Entry_Calendar extends ACMS_GET
 {
+    /**
+     * @var array{
+     *   mode: 'month' | 'week' | 'days' | 'until_days',
+     *   pagerCount: int,
+     *   order: string,
+     *   aroundEntry: 'on' | 'off',
+     *   beginWeek: int,
+     *   maxEntryCount: int,
+     *   weekLabels: string[],
+     *   today: string,
+     *   dateOrder: 'asc' | 'desc'
+     * }
+     */
     protected $config;
     protected $entries;
 
@@ -75,21 +88,31 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
      */
     protected $separateWeek;
 
-    public $_axis  = array(
+    public $_axis  = [
         'bid'   => 'self',
         'cid'   => 'self'
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'date'  => 'global',
         'start' => 'global',
         'end'   => 'global'
-    );
+    ];
 
     /**
      * コンフィグの取得
      *
-     * @return array
+     * @return array{
+     *   mode: 'month' | 'week' | 'days' | 'until_days',
+     *   pagerCount: int,
+     *   order: string,
+     *   aroundEntry: 'on' | 'off',
+     *   beginWeek: int,
+     *   maxEntryCount: int,
+     *   weekLabels: string[],
+     *   today: string,
+     *   dateOrder: 'asc' | 'desc'
+     * }
      */
     protected function initVars()
     {
@@ -206,7 +229,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 $this->startDate = $minusDay . ' 00:00:00';
                 $this->endDate = $addDay . ' 23:59:59';
 
-                $this->firstDay = substr($minusDay, 8, 2);
+                $this->firstDay = intval(substr($minusDay, 8, 2));
 
                 $this->entryStartDate = $this->startDate;
                 $this->entryEndDate = $this->endDate;
@@ -230,7 +253,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 $this->startDate = $this->ymd . ' 00:00:00';
                 $this->endDate = $addDay . ' 23:59:59';
 
-                $this->firstDay = substr($this->ymd, 8, 2);
+                $this->firstDay = intval(substr($this->ymd, 8, 2));
 
                 $this->loopCount = 7;
 
@@ -255,7 +278,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 $this->startDate = $minusDay . ' 00:00:00';
                 $this->endDate = $this->ymd . ' 23:59:59';
 
-                $this->firstDay = substr($minusDay, 8, 2);
+                $this->firstDay = intval(substr($minusDay, 8, 2));
 
                 $this->loopCount = 7;
 
@@ -339,7 +362,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
     protected function buildQuery()
     {
         $SQL = SQL::newSelect('entry');
-        $SQL->addSelect(SQL::newFunction('entry_datetime', array('SUBSTR', 0, 10)), 'entry_date', null, 'DISTINCT');
+        $SQL->addSelect(SQL::newFunction('entry_datetime', ['SUBSTR', 0, 10]), 'entry_date', null, 'DISTINCT');
         $SQL->addSelect('entry_id');
         $SQL->addSelect('entry_approval');
         $SQL->addSelect('entry_title');
@@ -375,10 +398,10 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
         for ($i = 0; $i < 7; $i++) {
             $w  = ($this->beginW + $i) % 7;
             if (!empty($this->config['weekLabels'][$w])) {
-                $Tpl->add('weekLabel:loop', array(
+                $Tpl->add('weekLabel:loop', [
                     'w'     => $w,
                     'label' => $this->config['weekLabels'][$w],
-                ));
+                ]);
             }
         }
 
@@ -412,12 +435,12 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
             if (!empty($this->config['weekLabels'][$pw])) {
                 $this->buildEntries($Tpl, $date, ['foreEntry:loop', 'foreSpacer'], $this->config['aroundEntry'] === 'on');
 
-                $Tpl->add(['foreSpacer', 'week:loop'], array(
+                $Tpl->add(['foreSpacer', 'week:loop'], [
                     'prevDay'   => intval(substr($date, 8, 2)), // 先頭の0削除
                     'prevDate'  => $date,
                     'w'         => $pw,
                     'week'      => $this->config['weekLabels'][$pw],
-                ));
+                ]);
 
                 $date = date('Y-m-d', strtotime($date . (($this->config['dateOrder'] === 'desc') ? '-' : '') . '1 day'));
             }
@@ -453,12 +476,12 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
             if (!empty($this->config['weekLabels'][$nw])) {
                 $this->buildEntries($Tpl, $date, ['rearEntry:loop', 'rearSpacer'], $this->config['aroundEntry'] === 'on');
 
-                $Tpl->add(['rearSpacer', 'week:loop'], array(
+                $Tpl->add(['rearSpacer', 'week:loop'], [
                     'nextDay' => intval(substr($date, 8, 2)), // 先頭の0削除
                     'nextDate' => $date,
                     'w'       => $nw,
                     'week'    => $this->config['weekLabels'][$nw],
-                ));
+                ]);
 
                 $date = date('Y-m-d', strtotime($date . (($this->config['dateOrder'] === 'desc') ? '-' : '') . '1 day'));
             }
@@ -485,17 +508,17 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
         for ($i = 0; $i < intval($this->loopCount); $i++) {
             $curW = intval(date('w', strtotime($date)));
 
-            $vars = array(
+            $vars = [
                 'week'  => $this->config['weekLabels'][$curW],
                 'w'     => $curW,
                 'day'   => intval(substr($date, 8, 2)), // 先頭の0削除
                 'date'  => $date,
-            );
+            ];
 
             if (date('Y-m-d', requestTime()) === $date) {
-                $vars += array(
+                $vars += [
                     'today' => $this->config['today']
-                );
+                ];
             }
 
             $this->buildEntries($Tpl, $date, ['entry:loop', 'day:loop']);
@@ -529,10 +552,10 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
      */
     protected function buildEntries(&$Tpl, $date, $block, $enableAround = null)
     {
-        $currentEntries = array();
+        $currentEntries = [];
         foreach ($this->entries as $entry) {
             if ($entry['entry_date'] === $date) {
-                $currentEntries[] = array(
+                $currentEntries[] = [
                     'eid'       => $entry['entry_id'],
                     'cid'       => $entry['entry_category_id'],
                     'bid'       => $entry['entry_blog_id'],
@@ -546,7 +569,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                     'link'      => $entry['entry_link'],
                     'status'    => $entry['entry_status'],
                     'date'      => $entry['entry_datetime'],
-                );
+                ];
                 if (count($currentEntries) == $this->config['maxEntryCount']) {
                     break;
                 }
@@ -556,24 +579,24 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
         if (count($currentEntries) !== 0) {
             foreach ($currentEntries as $entry) {
                 $link   = $entry['link'];
-                $link   = !empty($link) ? $link : acmsLink(array(
+                $link   = !empty($link) ? $link : acmsLink([
                     'bid' => $entry['bid'],
                     'eid' => $entry['eid'],
-                ));
-                $vars = array(
+                ]);
+                $vars = [
                     'eid'       => $entry['eid'],
                     'title'     => $entry['title'],
                     'cid'       => $entry['cid'],
                     'bid'       => $entry['bid'],
                     'status'    => $entry['status'],
-                );
+                ];
 
                 //------
                 // date
                 $vars += $this->buildDate($entry['date'], $Tpl, $block);
 
                 if ($link != '#') {
-                    $Tpl->add(array_merge(array('url#rear'), $block));
+                    $Tpl->add(array_merge(['url#rear'], $block));
                     $vars['url']  = $link;
                 }
                 $vars += $this->buildField(loadEntryField($entry['eid']), $Tpl, $block);
@@ -592,22 +615,28 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
      */
     protected function getDateVars()
     {
-        $weekTitle = array();
+        $weekTitle = [];
 
+        $py = '';
+        $pm = '';
+        $pd = '';
+        $ny = '';
+        $nm = '';
+        $nd = '';
         switch ($this->config['mode']) {
             case "month":
                 $prevtime  = mktime(0, 0, 0, intval($this->m) - 1, 1, intval($this->y));
                 $nexttime  = mktime(0, 0, 0, intval($this->m) + 1, 1, intval($this->y));
-                list($py, $pm, $pd) = array(
+                list($py, $pm, $pd) = [
                     date('Y', $prevtime),
                     date('m', $prevtime),
                     date('d', $prevtime)
-                );
-                list($ny, $nm, $nd) = array(
+                ];
+                list($ny, $nm, $nd) = [
                     date('Y', $nexttime),
                     date('m', $nexttime),
                     date('d', $nexttime)
-                );
+                ];
 
                 break;
 
@@ -616,9 +645,9 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 $next = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), 7);
                 list($py, $pm, $pd) = explode('-', $prev);
                 list($ny, $nm, $nd) = explode('-', $next);
-                $weekTitle = array(
+                $weekTitle = [
                     'firstWeekDay' => $this->firstDay
-                );
+                ];
 
                 break;
 
@@ -628,14 +657,14 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
                 $next = $this->computeDate(intval($this->y), intval($this->m), intval($this->d), $this->config['pagerCount']);
                 list($py, $pm, $pd) = explode('-', $prev);
                 list($ny, $nm, $nd) = explode('-', $next);
-                $weekTitle = array(
+                $weekTitle = [
                     'firstWeekDay' => $this->firstDay
-                );
+                ];
 
                 break;
         }
 
-        $vars = array(
+        $vars = [
             'year'      => $this->y,
             'month'     => $this->m,
             'day'       => substr($this->d, 0, 2),
@@ -644,7 +673,7 @@ class ACMS_GET_Entry_Calendar extends ACMS_GET
             'date'      => $this->ymd,
             'prevMonth' => $pm,
             'nextMonth' => $nm,
-        );
+        ];
 
         $vars += $weekTitle;
 

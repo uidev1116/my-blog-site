@@ -17,7 +17,7 @@ class ACMS_POST_Member_Signin extends ACMS_POST_Member
     /**
      * Run
      *
-     * @return void|Field_Validation
+     * @inheritDoc
      */
     public function post()
     {
@@ -139,7 +139,7 @@ class ACMS_POST_Member_Signin extends ACMS_POST_Member
     protected function find(?string $id, ?string $password, ...$args): array
     {
         if (empty($id) || empty($password)) {
-            return array();
+            return [];
         }
         $sql = SQL::newSelect('user');
         $sql->addWhereOpr('user_status', 'open');

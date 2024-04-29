@@ -3,22 +3,22 @@
 namespace Acms\Services\StaticExport\Generator;
 
 use Acms\Services\StaticExport\CopyEntryArchive;
-use DB;
-use App;
 use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
+use Acms\Services\StaticExport\Entities\Page;
+use Acms\Services\StaticExport\Entities\EntryPage;
+use React\Promise\Promise;
+use ACMS_RAM;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class EntryGenerator extends Generator
 {
     /**
-     * @var int
-     */
-    protected $numberOfEntries;
-
-    /**
      * @var array
      */
-    protected $targetEntries;
+    protected $entryIds = [];
 
     /**
      * @var \Acms\Services\StaticExport\CopyEntryArchive
@@ -31,92 +31,104 @@ class EntryGenerator extends Generator
     protected $withArchive = false;
 
     /**
-     * @param array $entries
+     * @param int[] $entryIds
      */
-    public function setTargetEntries($entries)
+    public function setEntryIds(array $entryIds)
     {
-        $this->targetEntries = $entries;
+        $this->entryIds = $entryIds;
     }
 
     /**
-     * @param $bool
+     * @param bool $withArchive
      */
-    public function setWithArchive($bool)
+    public function setWithArchive(bool $withArchive): void
     {
-        $this->withArchive = $bool;
+        $this->withArchive = $withArchive;
     }
 
-    protected function getName()
+    protected function getName(): string
     {
         return 'エントリーの書き出し';
     }
 
-    protected function getTasks()
-    {
-        return $this->numberOfEntries;
-    }
-
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function main()
+    public function run(): PromiseInterface
     {
-        $this->numberOfEntries = count($this->targetEntries);
-        $this->logger->start($this->getName(), $this->getTasks());
+        return new Promise(
+            function (callable $resolve) {
+                $this->copyArchiveEngine = new CopyEntryArchive([
+                    $this->destination->getDestinationPath(),
+                    $this->destination->getDestinationDocumentRoot() . $this->destination->getDestinationOffsetDir()
+                ]);
 
-        if ($this->withArchive) {
-            $this->copyArchiveEngine = new CopyEntryArchive(array(
-                $this->destination->getDestinationPath(),
-                $this->destination->getDestinationDocumentRoot() . $this->destination->getDestinationOffsetDir()
-            ));
-        }
+                $pages = array_map(
+                    function (int $entryId) {
+                        $url = acmsLink(['bid' => BID, 'eid' => $entryId]);
+                        $blogUrl = acmsLink(['bid' => BID]);
+                        $filepath = substr($url, strlen($blogUrl));
 
-        foreach ($this->targetEntries as $eid) {
-            $info = array(
-                'bid' => BID,
-                'eid' => $eid,
-            );
-            $url = acmsLink($info);
-            try {
-                if ($this->withArchive) {
-                    $this->copyArchiveEngine->copy($eid);
-                }
-                $this->request($url, $info);
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage(), $url);
+                        if (ACMS_RAM::entryCode($entryId) === '') {
+                            $filepath = $filepath . 'index.html';
+                        }
+                        if (substr($filepath, -1) === '/') {
+                            $filepath = rtrim($filepath, '/') . '.html';
+                        }
+                        return new EntryPage($url, $filepath, $entryId);
+                    },
+                    $this->entryIds
+                );
+                $this->logger->start($this->getName(), count($pages));
+                await($this->handle($pages));
+                $resolve(null);
             }
+        );
+    }
+
+    /**
+     * @param string $path
+     * @param string $data
+     * @return void
+     */
+    protected function writeContents(string $path, string $data): void
+    {
+        $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
+        $destPath = $destination . $path;
+        try {
+            Storage::makeDirectory(dirname($destPath));
+            Storage::put($destPath, $data);
+        } catch (\Exception $e) {
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
     }
 
     /**
-     * @param string $data
-     * @param string $code
-     * @param object $info
+     * @param \Throwable $th
+     * @param string $url
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function handleError(\Throwable $th, string $url): void
     {
-        if ($this->logger) {
-            $this->logger->processing();
-        }
-        if (empty($data) || $code != '200') {
-            $this->logger->error('データの取得に失敗しました。', acmsLink($info), $code);
+        if ($th instanceof \React\Http\Message\ResponseException) {
+            $response = $th->getResponse();
+            $this->logger->error(
+                'データの取得に失敗しました。',
+                $url,
+                $response->getStatusCode()
+            );
             return;
         }
-        $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-        $blog_url = acmsLink(array('bid' => BID));
-        $url = acmsLink($info);
-        $file = substr($url, strlen($blog_url));
-        $file = $destination . $file;
+        $this->logger->error($th->getMessage(), $url);
+    }
 
-        if (is_dir($file)) {
-            $file = $file . 'index.html';
-        }
-        try {
-            Storage::makeDirectory(dirname($file));
-            Storage::put($file, $data);
-        } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $file);
+    /**
+     * @inheritDoc
+     */
+    protected function onBeforeRequest(Page $page): void
+    {
+        if ($this->withArchive && $page instanceof EntryPage) {
+            $this->copyArchiveEngine->copy($page->getEntryId());
         }
     }
 }

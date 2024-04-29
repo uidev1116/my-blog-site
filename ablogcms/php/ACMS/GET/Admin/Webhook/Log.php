@@ -2,10 +2,10 @@
 
 class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if (!sessionWithAdministration()) {
-            return false;
+            return '';
         }
 
         $id = $this->Get->get('id');
@@ -15,12 +15,13 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
         $bid = DB::query($sql->get(dsn()), 'one');
 
         if (!sessionWithAdministration($bid)) {
-            return false;
+            return '';
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $webhook = loadWebhook($id);
         $vars = $this->buildField($webhook, $Tpl, 'webhook');
+        $showResponseView = env('WEBHOOK_RESPONSE_VIEW', 'disable') === 'enable';
 
         $sql = SQL::newSelect('log_webhook');
         $sql->addWhereOpr('log_webhook_id', $id);
@@ -33,7 +34,7 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
             $Tpl->add('notFound');
         } else {
             foreach ($histories as $i => $history) {
-                $Tpl->add('history:loop', array(
+                $data = [
                     'key' => md5($history['log_webhook_datetime'] . $i),
                     'datetime' => $history['log_webhook_datetime'],
                     'status' => $history['log_webhook_status_code'],
@@ -43,7 +44,9 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
                     'req_body' => $history['log_webhook_request_body'],
                     'res_header' => $history['log_webhook_response_header'],
                     'res_body' => $history['log_webhook_response_body'],
-                ));
+                    'res_view' => $showResponseView ? 'show' : 'hidden',
+                ];
+                $Tpl->add('history:loop', $data);
             }
         }
         $Tpl->add(null, $vars);
@@ -86,10 +89,10 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
         $types = configArray('webhook_types');
         $labels = configArray('webhook_types_label');
         foreach ($types as $i => $type) {
-            $item = array(
+            $item = [
                 'type_value' => $type,
                 'type_label' => $labels[$i],
-            );
+            ];
             if ($data->get('type') === $type) {
                 $item['selected'] = config('attr_selected');
             }
@@ -99,7 +102,7 @@ class ACMS_GET_Admin_Webhook_Log extends ACMS_GET_Admin
             $webhookEventValue = configArray("webhook_event_{$type}");
             $webhookEventLabel = configArray("webhook_event_{$type}_label");
             $events = explode(',', $data->get('events'));
-            $labels = array();
+            $labels = [];
             foreach ($webhookEventValue as $i => $value) {
                 if (in_array($value, $events, true)) {
                     $labels[] = $webhookEventLabel[$i];

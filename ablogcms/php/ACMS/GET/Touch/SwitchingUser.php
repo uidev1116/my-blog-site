@@ -2,12 +2,12 @@
 
 class ACMS_GET_Touch_SwitchingUser extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if ($this->getOriginalUserId()) {
             return $this->tpl;
         }
-        return false;
+        return '';
     }
 
     /**

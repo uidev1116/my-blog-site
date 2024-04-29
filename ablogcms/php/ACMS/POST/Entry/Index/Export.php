@@ -16,7 +16,7 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
     protected $destPath;
 
     /**
-     * @return false|Field|void
+     * @inheritDoc
      */
     function post()
     {

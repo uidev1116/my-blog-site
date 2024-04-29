@@ -12,5 +12,6 @@ class ACMS_POST_Entry_DirectEdit_Enable extends ACMS_POST
 
             $this->redirect(REQUEST_URL);
         }
+        return $this->Post;
     }
 }

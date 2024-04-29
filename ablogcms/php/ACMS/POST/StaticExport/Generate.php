@@ -58,19 +58,20 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
         $document_root = $setting->get('static_dest_document_root');
         $offset_dir = $setting->get('static_dest_offset_dir');
         $domain = $setting->get('static_dest_domain');
-        $maxPublish = $setting->get('static_max_publish', 3);
+        $maxPublish = intval($setting->get('static_max_publish', 3));
+        $nameServer = config('static_export_name_server', '8.8.8.8');
         $blogCode = ACMS_RAM::blogCode(BID);
         $config = new stdClass();
-        $config->theme = $setting->get('theme');
-        $config->static_export_dafault_max_page = $setting->get('static_export_dafault_max_page', 0);
-        $config->static_page_cid = $setting->getArray('static_page_cid');
-        $config->static_archive_cid = $setting->getArray('static_archive_cid');
-        $config->static_page_max = $setting->getArray('static_page_max');
+        $config->theme = config('theme');
+        $config->static_export_dafault_max_page = intval($setting->get('static_export_dafault_max_page', 0));
+        $config->static_page_cid = array_map('intval', $setting->getArray('static_page_cid'));
+        $config->static_archive_cid = array_map('intval', $setting->getArray('static_archive_cid'));
+        $config->static_page_max = array_map('intval', $setting->getArray('static_page_max'));
         $config->static_archive_start = $setting->getArray('static_archive_start');
-        $config->static_archive_max = $setting->getArray('static_archive_max');
-        $exclusionDeleteList = array();
-        $exclusionList = array();
-        $includeList = array();
+        $config->static_archive_max = array_map('intval', $setting->getArray('static_archive_max'));
+        $exclusionDeleteList = [];
+        $exclusionList = [];
+        $includeList = [];
         if ($list = $setting->get('static_export_delete_exclusion_list', false)) {
             $exclusionDeleteList = $this->createRegexPathList(preg_split('/(\n|\r|\r\n|\n\r)/', $list));
         }
@@ -106,7 +107,7 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
             $destination->setDestinationDomain($domain);
             $destination->setBlogCode($blogCode);
             $logger->initLog();
-            $engine->init($logger, $destination, $maxPublish, $config);
+            $engine->init($logger, $destination, $maxPublish, $nameServer, $config);
             $engine->run();
 
             AcmsLogger::info('静的書き出しを完了しました', [
@@ -124,12 +125,12 @@ class ACMS_POST_StaticExport_Generate extends ACMS_POST
     /**
      * パスのリストを正規表現に変換
      *
-     * @param array
+     * @param array $list
      * @return array
      */
     protected function createRegexPathList($list)
     {
-        $regexList = array();
+        $regexList = [];
         foreach ($list as $path) {
             if (empty($path)) {
                 continue;

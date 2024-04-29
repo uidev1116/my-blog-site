@@ -102,7 +102,9 @@ class ACMS_GET_Shop2 extends ACMS_GET
             }
             return $data;
         } else {
-            $data = htmlentities($data, ENT_QUOTES, 'UTF-8');
+            if (is_string($data)) {
+                $data = htmlentities($data, ENT_QUOTES, 'UTF-8');
+            }
             return $data;
         }
     }
@@ -145,7 +147,7 @@ class ACMS_GET_Shop2 extends ACMS_GET
         } elseif (!ACMS_SID && !empty($cart)) {
             return $cart;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -185,9 +187,9 @@ class ACMS_GET_Shop2 extends ACMS_GET
     function screenTrans($page = null, $step = null)
     {
         if (!empty($step)) {
-            redirect(acmsLink(array('tpl' => $page, 'query' => array('step' => $step))));
+            redirect(acmsLink(['tpl' => $page, 'query' => ['step' => $step]]));
         } else {
-            redirect(acmsLink(array('tpl' => $page)));
+            redirect(acmsLink(['tpl' => $page]));
         }
     }
 }

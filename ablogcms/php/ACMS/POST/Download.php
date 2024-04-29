@@ -15,10 +15,10 @@ class ACMS_POST_Download extends ACMS_POST
     function post()
     {
         $Q = \Common::getUriObject($this->Post);
-        $headerAry = array(
+        $headerAry = [
             'User-Agent: acms',
             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
-        );
+        ];
         if (ACMS_SID) {
             $phpSession = Session::handle();
             $phpSession->writeClose(); // セッションをクローズ（デッドロック対応）
@@ -59,6 +59,7 @@ class ACMS_POST_Download extends ACMS_POST
         } catch (\Exception $e) {
             AcmsLogger::warning('ダウンロードに失敗しました', Common::exceptionArray($e, ['url' => $url]));
             echo $e->getMessage();
+            return $this->Post;
         }
     }
 }

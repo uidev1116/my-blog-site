@@ -3,7 +3,7 @@
 class ACMS_POST_Import_User extends ACMS_POST_Import_Csv
 {
     /**
-     * @var string
+     * @var array
      */
     protected $csvLabels;
 

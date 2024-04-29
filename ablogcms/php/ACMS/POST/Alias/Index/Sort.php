@@ -82,7 +82,7 @@ class ACMS_POST_Alias_Index_Sort extends ACMS_POST
         $SQL->addSelect('alias_id');
         $SQL->addWhereOpr('alias_blog_id', BID);
 
-        $fromAry = array();
+        $fromAry = [];
 
         foreach ($DB->query($SQL->get(dsn()), 'all') as $alias) {
             $aid = $alias['alias_id'];

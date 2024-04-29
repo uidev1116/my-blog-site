@@ -2,14 +2,16 @@
 
 class ACMS_POST_Schedule extends ACMS_POST
 {
-    function post()
+    public function post()
     {
         return $this->Post;
     }
-    function buildSchedule(&$sche, &$sfds, $limit)
+
+    protected function buildSchedule(&$sche, &$sfds, $limit)
     {
         $invalid = false;
-
+        $_sche = [];
+        $_sfds = [];
         for ($i = 1; $i < $limit; $i++) {
             $_sche[$i] = $this->extract('schedule' . $i);
             $_sche[$i]->validate(new ACMS_Validator());
@@ -26,26 +28,28 @@ class ACMS_POST_Schedule extends ACMS_POST
 
         if ($invalid) {
             return false;
-        } else {
-            for ($i = 1; $i < $limit; $i++) {
-                $schedules[$i] = $_sche[$i]->_aryField;
-            }
-            $sche  = serialize($schedules);
-
-            for ($i = 1; $i < $limit; $i++) {
-                $sField[$i] = new Field();
-                foreach ($_sfds[$i]->_aryField as $key => $val) {
-                    $key = preg_replace('@[0-9]{1,2}$@', '', $key);
-                    $sField[$i]->setField($key, $val);
-                }
-            }
-            $sfds = serialize($sField);
         }
+
+        $schedules = [];
+        for ($i = 1; $i < $limit; $i++) {
+            $schedules[$i] = $_sche[$i]->_aryField;
+        }
+        $sche  = serialize($schedules);
+
+        $sField = [];
+        for ($i = 1; $i < $limit; $i++) {
+            $sField[$i] = new Field();
+            foreach ($_sfds[$i]->_aryField as $key => $val) {
+                $key = preg_replace('@[0-9]{1,2}$@', '', $key);
+                $sField[$i]->setField($key, $val);
+            }
+        }
+        $sfds = serialize($sField);
 
         return true;
     }
 
-    function loadDefine($scid)
+    protected function loadDefine($scid)
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('schedule');
@@ -54,6 +58,7 @@ class ACMS_POST_Schedule extends ACMS_POST
         $SQL->addWhereOpr('schedule_month', '00');
         $row    = $DB->query($SQL->get(dsn()), 'row');
 
+        $vars = [];
         foreach ($row as $key => $val) {
             $vars[str_replace('schedule_', '', $key)] = $val;
         }

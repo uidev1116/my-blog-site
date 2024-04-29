@@ -3,11 +3,24 @@
 {title}
 日付：{date#Y}/{date#m}/{date#d}
 ----------------------------------------
-<!-- BEGIN unit:veil --><!-- BEGIN unit:loop --><!-- BEGIN unit#text -->
-<!-- BEGIN p -->{text}[striptags]<!-- END p --><!-- BEGIN h2 -->{text}[striptags]<!-- END h2 --><!-- BEGIN h3 -->{text}[striptags]<!-- END h3 --><!-- BEGIN h4 -->{text}[striptags]<!-- END h4 --><!-- BEGIN h5 -->{text}[striptags]<!-- END h5 --><!-- BEGIN ul -->{text}[striptags]<!-- END ul --><!-- BEGIN ol -->{text}[striptags]<!-- END ol --><!-- BEGIN blockquote -->{text}[striptags]<!-- END blockquote --><!-- BEGIN table -->{text}[striptags]<!-- END table --><!-- BEGIN pre -->{text}[striptags]<!-- END pre --><!-- BEGIN none -->{text}[striptags]<!-- END none --><!-- BEGIN markdown -->{text}[striptags]<!-- END markdown --><!-- BEGIN wysiwyg -->{text}[striptags]<!-- END wysiwyg -->
-<!-- END unit#text --><!-- BEGIN unit#image -->
+<!-- BEGIN unit:veil --><!-- BEGIN unit:loop -->
+<!-- BEGIN unit#text -->
+<!-- BEGIN p -->{text}[striptags]<!-- END p --><!-- BEGIN h2 --># {text}[striptags]<!-- END h2 --><!-- BEGIN h3 -->{text}[striptags]<!-- END h3 --><!-- BEGIN h4 -->{text}[striptags]<!-- END h4 --><!-- BEGIN h5 -->{text}[striptags]<!-- END h5 --><!-- BEGIN ul -->{text}[striptags]<!-- END ul --><!-- BEGIN ol -->{text}[striptags]<!-- END ol --><!-- BEGIN blockquote -->{text}[striptags]<!-- END blockquote --><!-- BEGIN table -->{text}[striptags]<!-- END table --><!-- BEGIN pre -->{text}[striptags]<!-- END pre --><!-- BEGIN none -->{text}[striptags]<!-- END none --><!-- BEGIN markdown -->{text}[striptags]<!-- END markdown --><!-- BEGIN wysiwyg -->{text}[striptags]<!-- END wysiwyg --><!-- END unit#text --><!-- BEGIN unit#image -->
 画像：%{HTTP_ROOT}{path}<!-- BEGIN caption:veil -->
-{caption}<!-- END caption:veil -->
-<!-- END unit#image --><!-- END unit:loop --><!-- END unit:veil -->
+{caption}<!-- END caption:veil --><!-- END unit#image --><!-- BEGIN unit#media --><!-- BEGIN type#image -->
+画像：<!-- BEGIN link#front -->{url}<!-- END link#front --><!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END type#image --><!-- BEGIN type#svg -->
+svg画像：<!-- BEGIN link#front -->{url}<!-- END link#front --><!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END type#svg --><!-- BEGIN type#file -->
+ファイル：%{PROTOCOL}://%{HTTP_HOST}{url}<!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END type#file --><!-- END unit#media --><!-- BEGIN unit#file -->
+ファイル：%{HTTP_ROOT}{path}<!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END unit#file --><!-- BEGIN unit#map -->
+地図：https://www.google.co.jp/maps/@{lat},{lng},{zoom}z?hl=ja<!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END unit#map --><!-- BEGIN unit#youtube -->
+YouTube：https://www.youtube.com/watch?v={youtubeId}<!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END unit#youtube --><!-- BEGIN unit#eximage -->
+画像：{url}<!-- BEGIN caption:veil -->
+{caption}<!-- END caption:veil --><!-- END unit#eximage --><!-- END unit:loop --><!-- END unit:veil -->
 
 Copyright(c) %{BLOG_NAME}<!-- END entry:loop --><!-- END_MODULE Entry_Body -->

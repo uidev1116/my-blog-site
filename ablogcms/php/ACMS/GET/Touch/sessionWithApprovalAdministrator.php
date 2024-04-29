@@ -2,7 +2,7 @@
 
 class ACMS_GET_Touch_sessionWithApprovalAdministrator extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (
             0
@@ -11,7 +11,7 @@ class ACMS_GET_Touch_sessionWithApprovalAdministrator extends ACMS_GET
         ) {
             return $this->tpl;
         } else {
-            return false;
+            return '';
         }
     }
 }

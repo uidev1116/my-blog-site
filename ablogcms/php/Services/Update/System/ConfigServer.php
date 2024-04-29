@@ -47,7 +47,7 @@ class ConfigServer
 
     protected function getDefinition()
     {
-        return array(
+        return [
             'DOMAIN' => '',
             'DOMAIN_BASE' => '',
             '1' => 'BR',
@@ -155,6 +155,6 @@ class ConfigServer
             'COMMENT_7' => '本番運用時に DEBUG_MODE を必ず 0 に設定して下さい',
             'DEBUG_MODE' => 0,
             'BENCHMARK_MODE' => 0,
-        );
+        ];
     }
 }

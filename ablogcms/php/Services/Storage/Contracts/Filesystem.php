@@ -26,28 +26,28 @@ interface Filesystem
     public function isDirectory($path);
 
     /**
-     * @param $path
+     * @param string $path
      *
      * @return bool
      */
     public function isExecutable($path);
 
     /**
-     * @param $path
+     * @param string $path
      *
      * @return bool
      */
     public function isWritable($path);
 
     /**
-     * @param $path
+     * @param string $path
      *
      * @return bool
      */
     public function isReadable($path);
 
     /**
-     * @param $path
+     * @param string $path
      *
      * @return bool
      */
@@ -71,16 +71,33 @@ interface Filesystem
      * @param string $path
      * @param array $info
      *
-     * @return array
+     * @return array{
+     *  0: int,
+     *  1: int,
+     *  2: int,
+     *  3: string,
+     *  bits: int,
+     *  channels: int,
+     *  mime: string
+     * }|false
      */
-    public function getImageSize($path, &$info = array());
+    public function getImageSize($path, &$info = []);
 
     /**
-     * @param $path
+     * ディレクトリ・トラバーサル対応のため、パスが公開領域のものか確認する
      *
-     * @return mixed
+     * @param string $path
+     * @param string $publicDir
+     * @return boolean
      */
-    public function get($path);
+    public function validatePublicPath($path, $publicDir = '');
+
+    /**
+     * @param string $path
+     * @param string $publicDir
+     * @return string|false
+     */
+    public function get($path, $publicDir = '');
 
     /**
      * @param $path
@@ -93,7 +110,7 @@ interface Filesystem
      * @param string $path
      * @param string $content
      *
-     * @return bool
+     * @return int<0, max>
      */
     public function put($path, $content);
 
@@ -155,7 +172,7 @@ interface Filesystem
      *
      * @return void
      */
-    public function compress($source, $destination, $root = '', $exclude = array());
+    public function compress($source, $destination, $root = '', $exclude = []);
 
     /**
      * @param string $source

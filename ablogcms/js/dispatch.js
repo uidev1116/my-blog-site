@@ -633,26 +633,6 @@ ACMS.Dispatch = function (context) {
   if ($(Config.prettyScrollMark, context).length > 0) {
     Dispatch.prettyScroll($(Config.prettyScrollMark, context).get(0))
   }
-  if ($(Config.googleTranslateMark, context).length > 0) {
-    $(Config.googleTranslateMark, context).click(function () {
-      var $dest = $($(this).data('target'))
-      var query = {
-        target_language: $(this).data('lang'),
-        text: $($(this).data('source')).val(),
-        cache: new Date().getTime(),
-      }
-      var url = ACMS.Library.acmsLink(
-        { tpl: '/ajax/google-translate.json', bid: ACMS.BID, Query: query },
-        false,
-      )
-      $.getJSON(url, function (res) {
-        if (res && res[0] && res[0].translatedText) {
-          var result = res[0].translatedText
-          $dest.val(ACMS.Library.decodeEntities(result))
-        }
-      })
-    })
-  }
   ACMS.dispatchEvent('acmsDispatch')
 }
 ACMS.Dispatch.unloadAlert = function (context) {

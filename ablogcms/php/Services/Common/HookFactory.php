@@ -9,16 +9,16 @@ class HookFactory extends Factory
      * @param mixed  $params
      * @return array
      */
-    public function call($timingMethod, $params = array())
+    public function call($timingMethod, $params = [])
     {
-        $rv = array();
+        $rv = [];
         if (!is_array($params)) {
-            $params = array($params);
+            $params = [$params];
         }
         foreach ($this->_collection as $Hook) {
             if (method_exists($Hook, $timingMethod)) {
                 $rv[] = get_class($Hook);
-                call_user_func_array(array($Hook, $timingMethod), $params);
+                call_user_func_array([$Hook, $timingMethod], $params);
             }
         }
         return $rv;

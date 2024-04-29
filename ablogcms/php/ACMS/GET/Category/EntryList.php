@@ -2,19 +2,19 @@
 
 class ACMS_GET_Category_EntryList extends ACMS_GET
 {
-    public $_scope  = array(
+    public $_scope  = [
         'cid'   => 'global',
-    );
+    ];
 
-    public $_config = array();
+    public $_config = [];
 
-    protected $entries = array();
+    protected $entries = [];
 
-    protected $eagerLoadingData = array();
+    protected $eagerLoadingData = [];
 
     protected function initVars()
     {
-        return array(
+        return [
             'categoryOrder'                 => config('category_entry_list_category_order'),
             'categoryEntryListLevel'        => config('category_entry_list_level'),
             'categoryIndexing'              => config('category_entry_list_category_indexing'),
@@ -26,7 +26,7 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
             'indexing'                      => config('category_entry_list_entry_indexing'),
             'categoryLoopClass'             => config('category_entry_list_category_loop_class'),
             'entryLoopClass'                => config('category_entry_list_entry_loop_class'),
-        );
+        ];
     }
 
     public function get()
@@ -37,9 +37,9 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
         $this->buildModuleField($Tpl);
         $DB     = DB::singleton(dsn());
 
-        $aryStack   = array(intval($this->cid));
-        $aryCount   = array();
-        $aryHidden  = array();
+        $aryStack   = [intval($this->cid)];
+        $aryCount   = [];
+        $aryHidden  = [];
         $eagerLoadCategoryFields = $this->eagerLoadCategoryFields();
 
         while (array_key_exists(0, $aryStack)) {
@@ -74,11 +74,12 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
 
             if (intval($this->_config['categoryEntryListLevel']) >= $level) {
                 while (!!($cRow = $DB->fetch($cQ))) {
-                    $cid    = intval($cRow['category_id']);
-                    $this->entries = array();
+                    $cid = intval($cRow['category_id']);
+                    $this->entries = [];
+                    $eQ = false;
 
-                                //--------------------
-                                // entry build query
+                    //--------------------
+                    // entry build query
                     if (!('on' == $this->_config['categoryIndexing'] and 'on' <> $cRow['category_indexing'])) {
                         if ($eQ = $this->buildQuery($cid, $Tpl)) {
                             if (!!$DB->query($eQ, 'fetch') and !!($eRow = $DB->fetch($eQ))) {
@@ -96,39 +97,39 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
                         if (isset($this->_config['notfound']) && $this->_config['notfound'] === 'on' && empty($eRow)) {
                             $Tpl->add('notFound');
                         }
-                        if (isset($this->_config['entryActiveCategory']) && 'on' == $this->_config['entryActiveCategory'] && ( $cid != CID || intval(CID) == 0 )) {
+                        if (isset($this->_config['entryActiveCategory']) && 'on' == $this->_config['entryActiveCategory'] && ($cid != CID || intval(CID) == 0)) {
                         } else {
                             $i = 0;
-                            if (!empty($eRow)) {
+                            if (!empty($eRow) && is_string($eQ)) {
                                 do {
-                                                                $i++;
-                                                                $this->entries[$i] = $eRow;
+                                    $i++;
+                                    $this->entries[$i] = $eRow;
                                 } while (!!($eRow = $DB->fetch($eQ) ));
                             }
                             foreach ($this->entries as $entry) {
                                 ACMS_RAM::entry($entry['entry_id'], $entry);
                             }
                             $this->preBuildUnit();
-                            foreach ($this->entries as $i => $entry) {
-                                $this->buildUnit($entry, $Tpl, $cid, $level, $i);
+                            foreach ($this->entries as $j => $entry) {
+                                $this->buildUnit($entry, $Tpl, $cid, $level, $j);
                             }
                         }
 
                         //----------
                         // category
-                        $vars   = array();
-                        $vars   += array(
-                        'categoryUrl'   => acmsLink(array(
-                            'bid'   => $this->bid,
-                            'cid'   => $cid,
-                        )),
-                        'categoryName'  => $cRow['category_name'],
-                        'categoryLevel' => $level,
-                        'categoryCode'  => $cRow['category_code'],
-                        'categoryId'    => $cid,
-                        'categoryPid'   => $pid,
-                        'category:loop.class'   => $this->_config['categoryLoopClass'],
-                        );
+                        $vars = [];
+                        $vars += [
+                            'categoryUrl'   => acmsLink([
+                                'bid'   => $this->bid,
+                                'cid'   => $cid,
+                            ]),
+                            'categoryName'  => $cRow['category_name'],
+                            'categoryLevel' => $level,
+                            'categoryCode'  => $cRow['category_code'],
+                            'categoryId'    => $cid,
+                            'categoryPid'   => $pid,
+                            'category:loop.class'   => $this->_config['categoryLoopClass'],
+                        ];
 
                         if (!isset($this->_config['categoryFieldOn']) or $this->_config['categoryFieldOn'] === 'on') {
                             if (isset($eagerLoadCategoryFields[$cid])) {
@@ -145,7 +146,7 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
                         $aryCount[$pid]++;
 
                         $Tpl->add('category:loop', $vars);
-                        $Tpl->add('categoryEntryList:loop', array('debug' => 'bug'));
+                        $Tpl->add('categoryEntryList:loop', ['debug' => 'bug']);
                     } else {
                         $aryHidden[$cid]    = true;
                     }
@@ -201,10 +202,11 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
 
     protected function buildQuery($cid, &$Tpl)
     {
-        $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
+        $list = ['entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
             'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
-            'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id',
-            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id');
+            'entry_members_only', 'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id',
+            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id'
+        ];
 
         $subCategory = isset($this->_config['subCategory']) && $this->_config['subCategory'] === 'on';
 
@@ -244,7 +246,7 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
         $SQL->addGroup('entry_id');
 
         $SQL->setLimit($this->_config['limit']);
-        $eQ = $SQL->get(dsn(array('prefix' => '')));
+        $eQ = $SQL->get(dsn(['prefix' => '']));
 
         return $eQ;
     }
@@ -256,14 +258,14 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
         if (!empty($eRow['entry_link'])) {
             $entryUrl   = $eRow['entry_link'];
         } else {
-            $entryUrl   = acmsLink(array(
+            $entryUrl   = acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $cid,
                 'eid'   => $eid,
-            ));
+            ]);
         }
-        $vars = array();
-        $vars += array(
+        $vars = [];
+        $vars += [
             'entryUrl'      => $entryUrl,
             'entryTitle'    => addPrefixEntryTitle(
                 $eRow['entry_title'],
@@ -276,23 +278,23 @@ class ACMS_GET_Category_EntryList extends ACMS_GET
             'entryCode'     => $eRow['entry_code'],
             'entryId'       => $eid,
             'entry:loop.class'  => $this->_config['entryLoopClass'],
-        );
+        ];
         if (isset($eRow['entry_members_only']) && $eRow['entry_members_only'] === 'on') {
             $Tpl->add(['membersOnly', 'entry:loop']);
         }
         if (!empty($cid)) {
             $categoryName = $eRow['category_name'];
             $categoryCode = $eRow['category_code'];
-            $categoryUrl = acmsLink(array(
+            $categoryUrl = acmsLink([
                 'bid'   => $eRow['category_blog_id'],
                 'cid'   => $cid,
-            ));
-            $vars += array(
+            ]);
+            $vars += [
                 'categoryName' => $categoryName,
                 'categoryCode' => $categoryCode,
                 'categoryUrl' => $categoryUrl,
                 'cid' => $cid,
-            );
+            ];
         }
         $vars   += $this->buildField(loadEntryField($eid), $Tpl);
         $Tpl->add('entry:loop', $vars);

@@ -2,14 +2,14 @@
 
 class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
 {
-    public $_axis = array(
+    public $_axis = [
         'bid' => 'self',
         'cid' => 'self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'eid' => 'global',
-    );
+    ];
 
     /**
      * コンフィグの取得
@@ -18,7 +18,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
      */
     function initVars()
     {
-        return array(
+        return [
             'order' => $this->order ? $this->order : config('entry_tag-relational_order'),
             'limit' => intval(config('entry_tag-relational_limit')),
             'indexing' => config('entry_tag-relational_indexing'),
@@ -45,7 +45,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
             'userFieldOn' => config('entry_tag-relational_user_field_on'),
             'blogInfoOn' => config('entry_tag-relational_blog_on'),
             'blogFieldOn' => config('entry_tag-relational_blog_field_on'),
-        );
+        ];
     }
 
     /**
@@ -62,7 +62,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
         if (empty($this->eid)) {
-            return false;
+            return '';
         }
         $q = $this->buildQuery();
         $this->entries = $DB->query($q, 'all');
@@ -184,7 +184,7 @@ class ACMS_GET_Entry_TagRelational extends ACMS_GET_Entry_Summary
                 $i,
                 $gluePoint,
                 $this->config,
-                array('grade' => 'tag_similar_grade'),
+                ['grade' => 'tag_similar_grade'],
                 $this->eagerLoad()
             );
         }

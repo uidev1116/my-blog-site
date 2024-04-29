@@ -77,13 +77,23 @@
 
         <h4>Request Header</h4>
 <pre><code>{req_header}</code></pre>
+
         <h4>Request Body</h4>
 <pre><code>{req_body}</code></pre>
 
         <h4>Response Header</h4>
+<!-- BEGIN_IF [{res_view}/eq/hidden] -->
+<pre>閲覧するには「.env」ファイルで「WEBHOOK_RESPONSE_VIEW」を「enable」に設定ください。</pre>
+<!-- ELSE -->
 <pre><code>{res_header}</code></pre>
+<!-- END_IF -->
+
         <h4>Response Body</h4>
+<!-- BEGIN_IF [{res_view}/eq/hidden] -->
+<pre>閲覧するには「.env」ファイルで「WEBHOOK_RESPONSE_VIEW」を「enable」に設定ください。</pre>
+<!-- ELSE -->
 <pre><code>{res_body}</code></pre>
+<!-- END_IF -->
       </td>
     </tr>
     <!-- END history:loop -->

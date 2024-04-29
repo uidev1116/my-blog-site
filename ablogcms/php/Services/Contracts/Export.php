@@ -21,7 +21,7 @@ class Export
      *
      * @throws \RuntimeException
      */
-    public function setTables($tables = array())
+    public function setTables($tables = [])
     {
         if (!is_array($tables)) {
             throw new \RuntimeException('Not specified tables.');
@@ -65,7 +65,7 @@ class Export
             fwrite($fp, "$table:\n");
             while ($row = $db->fetch($q)) {
                 $this->fix($row, $table);
-                $record = Yaml::dump(array('dummy' => $row), 1);
+                $record = Yaml::dump(['dummy' => $row], 1);
                 if ($record) {
                     $record = $this->fixYaml($record);
                     fwrite($fp, str_replace('dummy:', '    -', $record));
@@ -77,7 +77,7 @@ class Export
     /**
      * fix data
      *
-     * @param & array $records
+     * @param array &$record
      * @param string $table
      *
      * @return void

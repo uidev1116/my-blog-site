@@ -10,7 +10,7 @@ class ACMS_GET_Touch_SnsAdminLogin extends ACMS_GET
             return '';
         }
         $auth = config('snslogin_auth');
-        if (in_array($auth, Login::getAdminLoginAuth())) {
+        if (in_array($auth, Login::getAdminLoginAuth(), true)) {
             return $this->tpl;
         }
         return '';

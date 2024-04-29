@@ -2,14 +2,15 @@
 
 class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
 {
-    function post()
+    public function post()
     {
+        $configSetId = intval($this->Post->get('config_set_id'));
+        $configSetType = $this->Post->get('config_set_type', null);
+        $configSetTypeName = $this->getLogName($configSetType);
+
         try {
             $this->validate();
             $db = DB::singleton(dsn());
-            $configSetId = intval($this->Post->get('config_set_id'));
-            $configSetType = $this->Post->get('config_set_type', null);
-            $configSetTypeName = $this->getLogName($configSetType);
 
             $name = 'このブログの初期コンフィグ';
             if ($configSetType === 'theme') {

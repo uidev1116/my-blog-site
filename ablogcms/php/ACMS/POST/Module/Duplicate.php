@@ -22,14 +22,14 @@ class ACMS_POST_Module_Duplicate extends ACMS_POST_Module
             }
 
             // redirect new module_edit
-            $url = acmsLink(array(
+            $url = acmsLink([
                 'bid' => BID,
                 'admin' => 'module_edit',
-                'query' => array(
+                'query' => [
                     'mid' => $new,
                     'edit' => 'update',
-                ),
-            ));
+                ],
+            ]);
             $this->redirect($url);
         } else {
             AcmsLogger::info('モジュールの複製に失敗しました', [

@@ -49,7 +49,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                     // 並列承認
                     if ($type === 'parallel') {
                         // すでに承認作業済みのユーザを除去
-                        $exceptUser = array();
+                        $exceptUser = [];
                         $SQL = SQL::newSelect('approval_notification');
                         $SQL->addSelect('notification_request_user_id');
                         $SQL->addWhereOpr('notification_type', 'request');
@@ -73,7 +73,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                         $SQL->addWhereNotIn('user_id', $exceptUser, 'AND', 'u');
 
                         $mail   = $DB->query($SQL->get(dsn()), 'all');
-                        $mail_  = array();
+                        $mail_  = [];
                         foreach ($mail as $addr) {
                             $mail_[] = $addr['user_mail'];
                         }
@@ -96,7 +96,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                         }
 
                         $mail = $DB->query($SQL->get(dsn()), 'all');
-                        $mail_ = array();
+                        $mail_ = [];
                         foreach ($mail as $addr) {
                             $mail_[] = $addr['user_mail'];
                         }
@@ -113,11 +113,11 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                         $SQL->addWhereOpr('user_blog_id', BID);
                     }
                     ACMS_Filter::blogStatus($SQL);
-                    $SQL->addWhereIn('user_auth', array('editor', 'administrator'));
+                    $SQL->addWhereIn('user_auth', ['editor', 'administrator']);
                     $SQL->addWhereOpr('user_status', 'open');
 
                     $mail   = $DB->query($SQL->get(dsn()), 'all');
-                    $mail_  = array();
+                    $mail_  = [];
                     foreach ($mail as $addr) {
                         $mail_[] = $addr['user_mail'];
                     }
@@ -132,6 +132,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
 
             //-----------
             // Send Mail
+            $apid = null;
             if (
                 1
                 and $To
@@ -148,14 +149,14 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                 $Approval->setField('entryTitle', $revision['entry_title']);
                 $Approval->setField('entryStatus', ACMS_RAM::entryStatus(EID));
                 $Approval->setField('version', $revision['entry_rev_memo']);
-                $Approval->setField('revisionUrl', acmsLink(array(
+                $Approval->setField('revisionUrl', acmsLink([
                     'protocol'  => SSL_ENABLE ? 'https' : 'http',
                     'bid'   => BID,
                     'cid'   => CID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/revision-preview.html',
-                    'query' => array('rvid' => $rvid),
-                ), false));
+                    'query' => ['rvid' => $rvid],
+                ], false));
 
                 $workflowPoint  = approvalWorkflowPublicPoint(BID, CID);
                 $currentPoint   = approvalRevisionPublicPoint(EID, $rvid);
@@ -175,17 +176,17 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
 
                 $send = true;
                 if (HOOK_ENABLE) {
-                    $data = array(
+                    $data = [
                         'type'      => 'request',
-                        'from'      => array($from),
+                        'from'      => [$from],
                         'to'        => $To,
                         'subject'   => $subject,
                         'bcc'       => configArray('mail_approval_bcc'),
                         'body'      => $body,
                         'data'      => $Approval,
-                    );
+                    ];
                     $Hook   = ACMS_Hook::singleton();
-                    $Hook->call('approvalNotification', array($data, & $send));
+                    $Hook->call('approvalNotification', [$data, & $send]);
                 }
                 if ($send !== false) {
                     try {
@@ -211,7 +212,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                     $uid    = null;
                 }
 
-                $userGroup = array();
+                $userGroup = [];
                 if ($ugid === '0') {
                     $workflow = loadWorkflow(BID, CID);
                     $userGroup  = $workflow->getArray('workflow_last_group');
@@ -223,14 +224,14 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                 // Save DB
                 $apid   = $DB->query(SQL::nextval('approval_id', dsn()), 'seq');
 
-                foreach ($userGroup as $ugid) {
+                foreach ($userGroup as $approvalUserGroupId) {
                     $SQL    = SQL::newInsert('approval');
                     $SQL->addInsert('approval_id', $apid);
                     $SQL->addInsert('approval_type', 'request');
                     $SQL->addInsert('approval_method', $type);
                     $SQL->addInsert('approval_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
                     $SQL->addInsert('approval_comment', $comment);
-                    $SQL->addInsert('approval_receive_usergroup_id', $ugid);
+                    $SQL->addInsert('approval_receive_usergroup_id', $approvalUserGroupId);
                     $SQL->addInsert('approval_receive_user_id', $uid);
                     $SQL->addInsert('approval_request_usergroup_id', $req_group);
                     $SQL->addInsert('approval_request_user_id', SUID);
@@ -259,7 +260,7 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                 // Update Notification
 
                 // 並列承認
-                $exceptUser = array();
+                $exceptUser = [];
                 if ($type == 'parallel') {
                     $SQL    = SQL::newSelect('approval_notification');
                     $SQL->addSelect('notification_request_user_id');
@@ -285,14 +286,14 @@ class ACMS_POST_Approval_Request extends ACMS_POST_Approval
                 $SQL->addWhereOpr('notification_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');
 
-                foreach ($userGroup as $ugid) {
-                    $SQL    = SQL::newInsert('approval_notification');
+                foreach ($userGroup as $notificationUserGroupId) {
+                    $SQL = SQL::newInsert('approval_notification');
                     $SQL->addInsert('notification_rev_id', $rvid);
                     $SQL->addInsert('notification_entry_id', EID);
                     $SQL->addInsert('notification_blog_id', BID);
                     $SQL->addInsert('notification_approval_id', $apid);
                     $SQL->addInsert('notification_receive_user_id', $uid);
-                    $SQL->addInsert('notification_receive_usergroup_id', $ugid);
+                    $SQL->addInsert('notification_receive_usergroup_id', $notificationUserGroupId);
                     $SQL->addInsert('notification_request_user_id', SUID);
                     $SQL->addInsert('notification_type', 'request');
                     $SQL->addInsert('notification_except_user_ids', implode(',', $exceptUser));

@@ -18,10 +18,10 @@ class ACMS_POST_User_SwitchOriginal extends ACMS_POST_User_Switch
             'to' => ACMS_RAM::user($originalUid),
         ]);
 
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'bid' => BID,
             'admin' => 'top',
-        ), false));
+        ], false));
     }
 
     /**

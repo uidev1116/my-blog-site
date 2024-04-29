@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
 {
-    function auth()
+    public function auth()
     {
         if (
             0
@@ -14,14 +14,15 @@ class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
         return true;
     }
 
-    function edit(&$Tpl)
+    public function edit(&$Tpl)
     {
         $Form =& $this->Post->getChild('form');
 
-        if (empty($this->step) and ($fmid = intval($this->Get->get('fmid')))) {
+        $formId = intval($this->Get->get('fmid'));
+        if ($formId > 0) {
             $DB     = DB::singleton(dsn());
             $SQL    = SQL::newSelect('form');
-            $SQL->addWhereOpr('form_id', $fmid);
+            $SQL->addWhereOpr('form_id', $formId);
             if ($row = $DB->query($SQL->get(dsn()), 'row')) {
                 $Form->set('code', $row['form_code']);
                 $Form->set('name', $row['form_name']);
@@ -33,21 +34,21 @@ class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
 
         $Mail   = $Form->getChild('mail');
         if (!$Mail->isNull()) {
-            $vars   = array();
+            $vars   = [];
             foreach ($Mail->listFields() as $fd) {
                 $vars[$fd]  = join(', ', $Mail->getArray($fd));
                 if (preg_match('/^(AdminAttachment|template|FormSend|AdminFormSend)/', $fd)) {
                     $vars[ $fd . ":checked#" . $Mail->get($fd) ]  = config('attr_checked');
-                    $Tpl->add(array($fd . ":checked#" . $Mail->get($fd), 'mail'), null);
+                    $Tpl->add([$fd . ":checked#" . $Mail->get($fd), 'mail'], null);
                 }
             }
-            $Tpl->add(array('mail'), $vars);
+            $Tpl->add(['mail'], $vars);
         } else {
-            $vars   = array(
+            $vars   = [
                 'Charset'       => 'ISO-2022-JP',
                 'CharsetHTML'   => 'UTF-8',
-            );
-            $Tpl->add(array('mail'), $vars);
+            ];
+            $Tpl->add(['mail'], $vars);
         }
         $Option = $Form->getChild('option');
 
@@ -61,12 +62,12 @@ class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
                 }
 
                 $value  = $Option->get('value', '', $i);
-                $Tpl->add(array('method:touch#' . $method));
-                $Tpl->add(array('option:loop'), array(
+                $Tpl->add(['method:touch#' . $method]);
+                $Tpl->add(['option:loop'], [
                     'field'     => $fd,
                     'value'     => $value,
                     'method:selected#' . $method  => config('attr_selected'),
-                ));
+                ]);
             }
         }
 

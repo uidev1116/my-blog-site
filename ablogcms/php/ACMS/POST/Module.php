@@ -17,8 +17,8 @@ class ACMS_POST_Module extends ACMS_POST
                     $Module->setValidator('eid', 'exists', false);
                 }
             } elseif (strpos($Module->get('eid'), ',') !== false) {
-                $aryBid = array();
-                $aryCid = array();
+                $aryBid = [];
+                $aryCid = [];
                 $Module->setField('cid');
                 foreach (explode(',', $Module->get('eid')) as $_eid) {
                     if ($_bid = ACMS_RAM::entryBlog($_eid)) {

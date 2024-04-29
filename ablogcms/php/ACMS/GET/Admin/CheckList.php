@@ -2,6 +2,7 @@
 
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Image;
+use Acms\Services\Facades\Config;
 
 class ACMS_GET_Admin_CheckList extends ACMS_GET
 {
@@ -16,58 +17,71 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         $keyword = $this->Get->get('keyword');
 
         if (!empty($keyword)) {
-            $SQL = SQL::newSelect('config');
+            $SQL = SQL::newSelect('config', 'config');
+            $SQL->addLeftJoin('config_set', 'config_set_id', 'config_set_id', 'config_set', 'config');
             $SQL->addLeftJoin('module', 'config_module_id', 'module_id');
             $SQL->addLeftJoin('rule', 'config_rule_id', 'rule_id');
             $SQL->addWhereOpr('config_key', '%' . $keyword . '%', 'LIKE', 'OR');
             $SQL->addWhereOpr('config_value', '%' . $keyword . '%', 'LIKE', 'OR');
             $SQL->setLimit(300);
             $configAll = $DB->query($SQL->get(dsn()), 'all');
+
             if (is_array($configAll) && count($configAll) > 0) {
                 foreach ($configAll as $config) {
                     $bid = $config['config_blog_id'];
+                    $setId = $config['config_set_id'];
                     $rid = $config['config_rule_id'];
                     $mid = $config['config_module_id'];
-                    $configVars = array(
+                    $configVars = [
                         'bid'   => $bid,
+                        'setId' => $setId,
                         'rid'   => $rid,
                         'mid'   => $mid,
+                        'configSetName' => $config['config_set_name'],
                         'rcode' => $config['rule_name'],
                         'mcode' => $config['module_identifier'],
                         'key'   => $config['config_key'],
                         'value' => $config['config_value'],
-                    );
-                    $configVars['blogUrl']  = acmsLink(array(
-                        'bid'       => $bid,
-                        'admin'     => 'config_index',
-                    ));
-                    $configVars['ruleUrl']  = acmsLink(array(
-                        'bid'       => $bid,
-                        'query'     => array(
-                            'rid'   => $rid,
-                        ),
-                        'admin'     => 'config_index',
-                    ));
-                    $configVars['moduleUrl']  = acmsLink(array(
-                        'bid'       => $bid,
-                        'query'     => array(
-                            'rid'   => $rid,
-                            'mid'   => $mid,
-                        ),
-                        'admin'     => 'module_edit',
-                    ));
-                    $Tpl->add(array('config:loop', 'config'), $configVars);
+                    ];
+                    $configVars['blogUrl'] = acmsLink([
+                        'bid' => $bid,
+                        'admin' => 'config_index',
+                    ]);
+                    $configVars['configSetUrl'] = acmsLink([
+                        'bid' => $bid,
+                        'query' => [
+                            'setid' => $setId,
+                        ],
+                        'admin' => 'config_index',
+                    ]);
+                    $configVars['ruleUrl'] = acmsLink([
+                        'bid' => $bid,
+                        'query' => [
+                            'setid' => $setId,
+                            'rid' => $rid,
+                        ],
+                        'admin' => 'config_index',
+                    ]);
+                    $configVars['moduleUrl']  = acmsLink([
+                        'bid' => $bid,
+                        'query' => [
+                            'rid' => $rid,
+                            'mid' => $mid,
+                        ],
+                        'admin' => 'module_edit',
+                    ]);
+                    $Tpl->add(['config:loop', 'config'], $configVars);
                 }
                 $Tpl->add('config');
             }
         }
 
         if (LICENSE_BLOG_LIMIT == 2147483647) {
-            $Tpl->add(array('userUnlimited', 'license'));
+            $Tpl->add(['userUnlimited', 'license']);
         } else {
-            $Tpl->add(array('userLimited', 'license'), array(
+            $Tpl->add(['userLimited', 'license'], [
                 'limit' => LICENSE_BLOG_LIMIT,
-            ));
+            ]);
         }
 
         //-------------
@@ -89,20 +103,20 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         //------------
         // 画像エンジン
         if (class_exists('Imagick') && config('image_magick') == 'on') {
-            $Tpl->add('imgLibrary', array(
+            $Tpl->add('imgLibrary', [
                 'mode'  => 'ImageMagick',
-            ));
+            ]);
         } else {
-            $Tpl->add('imgLibrary', array(
+            $Tpl->add('imgLibrary', [
                 'mode'  => 'GD',
-            ));
+            ]);
         }
 
         //------------
         // ロスレス圧縮
-        $Tpl->add('imgOptimizer', array(
+        $Tpl->add('imgOptimizer', [
             'format' => implode(', ', $this->imgOptimizerCheck()),
-        ));
+        ]);
 
         //-------
         // cache
@@ -132,36 +146,36 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
         if (is_array($formAll)) {
             foreach ($formAll as $form) {
                 $formField = unserialize($form['form_data']);
-                $formVars = $this->buildField($formField, $Tpl, array('formGeneral:loop'));
+                $formVars = $this->buildField($formField, $Tpl, ['formGeneral:loop']);
                 $formVars['bid']    = $form['form_blog_id'];
                 $formVars['fmid']   = $form['form_id'];
-                $formVars['editUrl']  = acmsLink(array(
+                $formVars['editUrl']  = acmsLink([
                     'bid'       => $form['form_blog_id'],
-                    'query'     => array(
+                    'query'     => [
                         'fmid'   => $form['form_id'],
-                    ),
+                    ],
                     'admin'     => 'form_edit',
-                ));
+                ]);
 
                 $Tpl->add('formGeneral:loop', $formVars);
 
-                $formVars = $this->buildField($formField, $Tpl, array('formAdmin:loop'));
+                $formVars = $this->buildField($formField, $Tpl, ['formAdmin:loop']);
                 $formVars['bid']    = $form['form_blog_id'];
                 $formVars['fmid']   = $form['form_id'];
-                $formVars['editUrl']  = acmsLink(array(
+                $formVars['editUrl']  = acmsLink([
                     'bid'       => $form['form_blog_id'],
-                    'query'     => array(
+                    'query'     => [
                         'fmid'   => $form['form_id'],
-                    ),
+                    ],
                     'admin'     => 'form_edit',
-                ));
+                ]);
                 $Tpl->add('formAdmin:loop', $formVars);
             }
         }
         if (!empty($keyword)) {
-            $Tpl->add(null, array(
+            $Tpl->add(null, [
                 'keyword'   => $keyword,
-            ));
+            ]);
         }
 
         return $Tpl->get();
@@ -169,33 +183,55 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
 
     function addBlogInfo(&$Tpl, $bid = 0, $rid = null)
     {
-        $blogConfig = array(
-            'bid' => $bid,
-            'rid' => $rid,
-            'cache' => $this->config('cache', $bid, $rid),
-            'cacheClearWhenPost' => $this->config('cache_clear_when_post', $bid, $rid),
-            'cacheClearTarget' => $this->config('cache_clear_target', $bid, $rid),
-        );
-        $blogConfig['editUrl']  = acmsLink(array(
-            'bid'       => $bid,
-            'query'     => array(
-                'rid'   => $rid,
-            ),
-            'admin'     => 'config_function',
-        ));
-        $Tpl->add(array('cacheCaution', 'blog:loop'), array(
-            'caution'   => ( $blogConfig['cache'] == 'off' ) ? 'caution' : '',
-        ));
-        $Tpl->add(array('cacheClearTargetCaution', 'blog:loop'), array(
-            'caution'   => ( $blogConfig['cacheClearTarget'] == 'low' ) ? 'caution' : '',
-        ));
+        $configSetId = null;
+        if ($setId = ACMS_RAM::blogConfigSetId($bid)) {
+            $configSetId = $setId;
+        }
+        if ($configSetId === null) {
+            if ($setId = Config::getAncestorBlogConfigSet($bid, 'config')) {
+                $configSetId = $setId;
+            }
+        }
 
+        $config = new Field();
+        $config->overload(Config::loadDefaultField());
+        $config->overload(Config::loadBlogConfigSet($bid));
+
+        if ($rid && $rid > 0) {
+            if ($ruleConfigSet = Config::loadRuleConfigSet($rid)) {
+                $config->overload($ruleConfigSet);
+            }
+        }
+
+        $blogConfig = [
+            'bid' => $bid,
+            'blogName' => ACMS_RAM::blogName($bid),
+            'setid' => $configSetId,
+            'setName' => ACMS_RAM::configSetName($configSetId),
+            'rid' => $rid,
+            'ruleName' => ACMS_RAM::ruleName($rid),
+            'cache' => $config->get('cache'),
+            'cacheCaution' => $config->get('cache') === 'off' ? 'caution' : '',
+            'cacheClearWhenPost' => $config->get('cache_clear_when_post'),
+            'subscriberCache' => $config->get('subscriber_cache'),
+            'cacheClearTarget' => $config->get('cache_clear_target'),
+            'clientCache' => $config->get('cache_expire_client'),
+
+        ];
+        $blogConfig['editUrl'] = acmsLink([
+            'bid' => $bid,
+            'query' => [
+                'setid' => $setId,
+                'rid' => $rid,
+            ],
+            'admin' => 'config_cache',
+        ]);
         $Tpl->add('blog:loop', $blogConfig);
     }
 
     function imgOptimizerCheck()
     {
-        $format = array();
+        $format = [];
         if (
             0
             || !Storage::isWritable(THEMES_DIR . 'system/images/system/check.jpeg')

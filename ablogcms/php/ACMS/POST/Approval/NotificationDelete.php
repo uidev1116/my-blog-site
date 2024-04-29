@@ -25,8 +25,8 @@ class ACMS_POST_Approval_NotificationDelete extends ACMS_POST_Approval
         $SQL->addWhereOpr('notification_approval_id', $apid);
 
         if ($except = $DB->query($SQL->get(dsn()), 'row')) {
-            $exceptAry = explode(',', $except['notification_except_user_ids']);
-            if (!array_search(SUID, $exceptAry)) {
+            $exceptAry = array_map('intval', explode(',', $except['notification_except_user_ids']));
+            if (!array_search(SUID, $exceptAry, true)) {
                 array_push($exceptAry, SUID);
                 $exceptAry = array_filter($exceptAry);
 

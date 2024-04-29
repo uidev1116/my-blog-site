@@ -2,7 +2,7 @@
 
 class ACMS_POST_Comment_Status extends ACMS_POST_Comment
 {
-    function _post($status)
+    public function _post($status)
     {
         $this->Post->reset(true);
         $this->Post->setMethod('comment', 'isOperable', (1
@@ -27,13 +27,7 @@ class ACMS_POST_Comment_Status extends ACMS_POST_Comment
             $SQL->addWhereOpr('comment_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            $this->redirect(acmsLink(array(
-                'bid'       => BID,
-                'cid'       => CID,
-                'eid'       => EID,
-                'cmid'      => CMID,
-                'fragment'  => 'comment-' . CMID,
-            )));
+            $statusName = '';
             if ($status === 'awaiting') {
                 $statusName = '承認待ち';
             }
@@ -44,6 +38,14 @@ class ACMS_POST_Comment_Status extends ACMS_POST_Comment
                 $statusName = '公開';
             }
             AcmsLogger::info('コメントのステータスを「' . $statusName . '」に変更しました');
+
+            $this->redirect(acmsLink([
+                'bid'       => BID,
+                'cid'       => CID,
+                'eid'       => EID,
+                'cmid'      => CMID,
+                'fragment'  => 'comment-' . CMID,
+            ]));
         }
 
         return $this->Post;

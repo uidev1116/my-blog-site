@@ -2,7 +2,7 @@
 
 class ACMS_GET_Navigation extends ACMS_GET
 {
-    public $parentNavi = array();
+    public $parentNavi = [];
 
     function get()
     {
@@ -13,8 +13,8 @@ class ACMS_GET_Navigation extends ACMS_GET
             return '';
         }
 
-        $Parent     = array();
-        $notPublish = array();
+        $Parent     = [];
+        $notPublish = [];
         $levelLabel = configArray('navigation_ul_level');
 
         foreach ($labels as $i => $label) {
@@ -22,7 +22,7 @@ class ACMS_GET_Navigation extends ACMS_GET
 
             $pid    = intval(config('navigation_parent', 0, $i));
             if (config('navigation_publish', null, $i) === 'on') {
-                $Parent[$pid][$id]  = array(
+                $Parent[$pid][$id]  = [
                     'id'        => $id,
                     'pid'       => $pid,
                     'label'     => $label,
@@ -30,8 +30,8 @@ class ACMS_GET_Navigation extends ACMS_GET
                     'target'    => config('navigation_target', null, $i),
                     'attr'      => config('navigation_attr', null, $i),
                     'a_attr'      => config('navigation_a_attr', null, $i),
-                    'end'       => array(),
-                );
+                    'end'       => [],
+                ];
             } else {
                 $notPublic[] = $id;
             }
@@ -48,8 +48,8 @@ class ACMS_GET_Navigation extends ACMS_GET
             }
         }
 
-        $all        = array();
-        $pidStack   = array(0);
+        $all        = [];
+        $pidStack   = [0];
         while (count($pidStack)) {
             $pid    = array_pop($pidStack);
             while ($row = array_shift($Parent[$pid])) {
@@ -62,9 +62,10 @@ class ACMS_GET_Navigation extends ACMS_GET
                     break;
                 }
             }
+            // @phpstan-ignore-next-line
             if (!empty($row)) {
                 $row    = array_pop($all);
-                $row['end']   = array('ul#front');
+                $row['end']   = ['ul#front'];
                 $all[] = $row;
             } elseif (!empty($pidStack)) {
                 $row    = array_pop($all);
@@ -75,16 +76,16 @@ class ACMS_GET_Navigation extends ACMS_GET
         }
 
         $lvLabel    = isset($levelLabel[0]) ? $levelLabel[0] : '1';
-        $Tpl->add('ul#front', array('ulLevel' => $lvLabel));
-        foreach ($all as $row) {
-            $uri        = $row['uri'];
-            $label      = $row['label'];
+        $Tpl->add('ul#front', ['ulLevel' => $lvLabel]);
+        foreach ($all as $navigation) {
+            $uri        = $navigation['uri'];
+            $label      = $navigation['label'];
 
             if (!preg_match('/^#$/', $uri)) {
                 $acmsPath   = preg_replace('@^acms://@', '', $uri);
                 if ($uri <> $acmsPath) {
                     $Q      = parseAcmsPath($acmsPath);
-                    $rep    = array();
+                    $rep    = [];
 
                     if (!$Q->isNull('bid')) {
                         $rep['%{BLOG_NAME}']    = ACMS_RAM::blogName($Q->get('bid'));
@@ -103,18 +104,18 @@ class ACMS_GET_Navigation extends ACMS_GET
                     //$uri    = setGlobalVars($uri);
                     $label  = setGlobalVars($label);
                 }
-                $_target    = $row['target'];
-                $lvBlock    = 'level_' . strval($this->buildLevel(intval($row['id'])));
-                $Tpl->add(array($lvBlock, 'link#front', 'navigation:loop'));
-                if (in_array('ul#front', $row['end'])) {
-                    $Tpl->add(array('childNavi', 'link#front', 'navigation:loop'));
+                $_target    = $navigation['target'];
+                $lvBlock    = 'level_' . strval($this->buildLevel(intval($navigation['id'])));
+                $Tpl->add([$lvBlock, 'link#front', 'navigation:loop']);
+                if (in_array('ul#front', $navigation['end'], true)) {
+                    $Tpl->add(['childNavi', 'link#front', 'navigation:loop']);
                 }
-                $Tpl->add(array('link#front', 'navigation:loop'), array(
+                $Tpl->add(['link#front', 'navigation:loop'], [
                     'url'       => $uri,
                     'target'    => $_target,
-                    'attr'  => (substr($row['a_attr'], 0, 1) !== ' ' ? ' ' : '') . $row['a_attr'],
-                ));
-                $Tpl->add(array('link#rear', 'navigation:loop'));
+                    'attr'  => (substr($navigation['a_attr'], 0, 1) !== ' ' ? ' ' : '') . $navigation['a_attr'],
+                ]);
+                $Tpl->add(['link#rear', 'navigation:loop']);
             }
 
             if (preg_match('@^(https|http|acms)://@', $label, $match)) {
@@ -130,10 +131,10 @@ class ACMS_GET_Navigation extends ACMS_GET
                     $label = '';
                     try {
                         $req = \Http::init($location, 'GET');
-                        $req->setRequestHeaders(array(
+                        $req->setRequestHeaders([
                             'User-Agent: ' . 'ablogcms/' . VERSION,
                             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
-                        ));
+                        ]);
                         $response = $req->send();
                         if (strpos(\Http::getResponseHeader('http_code'), '200') === false) {
                             throw new \RuntimeException(\Http::getResponseHeader('http_code'));
@@ -147,37 +148,37 @@ class ACMS_GET_Navigation extends ACMS_GET
                 }
             }
 
-            $level      = $this->buildLevel(intval($row['id']));
+            $level      = $this->buildLevel(intval($navigation['id']));
             $lvLabel    = isset($levelLabel[$level]) ? $levelLabel[$level] : strval($level);
             $lvBlock    = 'level_' . strval($level);
 
-            $vars   = array(
+            $vars   = [
                 'label' => $label,
-                'level' => strval($this->buildLevel(intval($row['id']))),
-            );
+                'level' => strval($this->buildLevel(intval($navigation['id']))),
+            ];
             if (!preg_match('/^#$/', $uri)) {
-                $vars['attr']   = (substr($row['attr'], 0, 1) !== ' ' ? ' ' : '') . $row['attr'];
+                $vars['attr']   = (substr($navigation['attr'], 0, 1) !== ' ' ? ' ' : '') . $navigation['attr'];
             } else {
-                $Tpl->add(array('li#front', 'navigation:loop'));
+                $Tpl->add(['li#front', 'navigation:loop']);
             }
 
-            $Tpl->add(array($lvBlock, 'navigation:loop'));
+            $Tpl->add([$lvBlock, 'navigation:loop']);
             $Tpl->add('navigation:loop', $vars);
 
-            foreach ($row['end'] as $block) {
+            foreach ($navigation['end'] as $block) {
                 if ($block === 'ul#front') {
-                    $Tpl->add(array($lvBlock, 'ul#front', 'navigation:loop'));
-                    $Tpl->add(array('ul#front', 'navigation:loop'), array(
+                    $Tpl->add([$lvBlock, 'ul#front', 'navigation:loop']);
+                    $Tpl->add(['ul#front', 'navigation:loop'], [
                         'ulLevel'   => $lvLabel,
-                    ));
+                    ]);
                 } else {
-                    $Tpl->add(array($lvBlock, $block, 'navigation:loop'));
-                    $Tpl->add(array($block, 'navigation:loop'));
+                    $Tpl->add([$lvBlock, $block, 'navigation:loop']);
+                    $Tpl->add([$block, 'navigation:loop']);
                 }
                 $Tpl->add('navigation:loop');
             }
         }
-        $Tpl->add(array('ul#rear', 'navigation:loop'));
+        $Tpl->add(['ul#rear', 'navigation:loop']);
         $Tpl->add('navigation:loop');
 
         return setGlobalVars($Tpl->get());

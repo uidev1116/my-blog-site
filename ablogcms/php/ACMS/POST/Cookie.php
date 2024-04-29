@@ -12,7 +12,7 @@ class ACMS_POST_Cookie extends ACMS_POST
         $Cookie = $this->extract('cookie');
         foreach ($Cookie->listFields() as $key) {
             if ($Cookie->isNull($key)) {
-                foreach (array($key . '[0]', $key) as $_key) {
+                foreach ([$key . '[0]', $key] as $_key) {
                     acmsSetCookie($_key, null, REQUEST_TIME - 1, '/');
                 }
             } else {

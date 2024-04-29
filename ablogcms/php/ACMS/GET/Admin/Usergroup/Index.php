@@ -10,7 +10,7 @@ class ACMS_GET_Admin_Usergroup_Index extends ACMS_GET_Admin
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $order  = ORDER ? ORDER : 'id-asc';
-        $vars   = array();
+        $vars   = [];
         $vars['order:selected#' . $order] = config('attr_selected');
         list($field, $order) = explode('-', $order);
 
@@ -34,12 +34,12 @@ class ACMS_GET_Admin_Usergroup_Index extends ACMS_GET_Admin
         $all    = $DB->query($q, 'all');
         foreach ($all as $i => $row) {
             $ugid   = intval($row['usergroup_id']);
-            $var    = array(
+            $var    = [
                 'name'          => $row['usergroup_name'],
                 'point'         => $row['usergroup_approval_point'],
                 'description'   => $row['usergroup_description'],
                 'ugid'          => $ugid,
-            );
+            ];
 
             // role
             $SQL    = SQL::newSelect('role');
@@ -60,13 +60,13 @@ class ACMS_GET_Admin_Usergroup_Index extends ACMS_GET_Admin
             }
 
             if (!empty($ugid)) {
-                $var['itemUrl'] = acmsLink(array(
+                $var['itemUrl'] = acmsLink([
                     'bid'   => 1,
                     'admin' => 'usergroup_edit',
-                    'query' => array(
+                    'query' => [
                         'ugid'   => $ugid,
-                    ),
-                ));
+                    ],
+                ]);
             }
             $Tpl->add('usergroup:loop', $var);
         }

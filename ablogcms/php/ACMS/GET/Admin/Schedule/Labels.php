@@ -18,34 +18,34 @@ class ACMS_GET_Admin_Schedule_Labels extends ACMS_GET_Admin
         $max  = count($labels) + 1 + $add;
 
         if (is_array($labels) && !empty($labels)) {
-            foreach ($labels as $sort => $label) {
+            foreach ($labels as $label) {
                 $sort++;
                 $_label = explode(config('schedule_label_separator'), $label);
 
                 for ($i = 1; $i < $max; $i++) {
-                    $vars   = array('i' => $i);
+                    $vars   = ['i' => $i];
                     if ($i == $sort) {
                         $vars['selected'] = config('attr_selected');
                     }
-                    $Tpl->add(array('sort:loop', 'label:loop'), $vars);
+                    $Tpl->add(['sort:loop', 'label:loop'], $vars);
                 }
 
-                $Tpl->add('label:loop', array(
+                $Tpl->add('label:loop', [
                     'sort'  => $sort,
                     'name'  => isset($_label[0]) ? $_label[0] : '',
                     'key'   => isset($_label[1]) ? $_label[1] : '',
-                    'class' => isset($_label[2]) ? $_label[2] : '',
-                    ));
+                    'classStr' => isset($_label[2]) ? $_label[2] : '',
+                ]);
             }
 
             for ($n = 0; $n < $add; $n++) {
                 $sort++;
                 for ($i = 1; $i < $max; $i++) {
-                    $vars   = array('i' => $i);
+                    $vars   = ['i' => $i];
                     if ($i == $sort) {
                         $vars['selected'] = config('attr_selected');
                     }
-                    $Tpl->add(array('sort:loop', 'label:loop'), $vars);
+                    $Tpl->add(['sort:loop', 'label:loop'], $vars);
                 }
                 $Tpl->add('label:loop');
             }
@@ -53,11 +53,11 @@ class ACMS_GET_Admin_Schedule_Labels extends ACMS_GET_Admin
             for ($n = 0; $n < $add; $n++) {
                 $sort++;
                 for ($i = 1; $i < $max; $i++) {
-                    $vars   = array('i' => $i);
+                    $vars   = ['i' => $i];
                     if ($i == $sort) {
                         $vars['selected'] = config('attr_selected');
                     }
-                    $Tpl->add(array('sort:loop', 'label:loop'), $vars);
+                    $Tpl->add(['sort:loop', 'label:loop'], $vars);
                 }
                 $Tpl->add('label:loop');
             }

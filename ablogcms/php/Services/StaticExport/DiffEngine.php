@@ -2,24 +2,28 @@
 
 namespace Acms\Services\StaticExport;
 
-use App;
 use DB;
 use SQL;
 use Acms\Services\StaticExport\Generator\RequireThemeGenerator;
 use Acms\Services\StaticExport\Generator\CategoryGenerator;
 use Acms\Services\StaticExport\Generator\EntryGenerator;
+use Acms\Services\Facades\Common;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class DiffEngine extends Engine
 {
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetEntries = array();
+    protected $targetEntryIds = [];
 
     /**
-     * @var array
+     * @var int[]
      */
-    protected $targetCategories = array();
+    protected $targetCategoryIds = [];
 
     /**
      * DiffEngine constructor.
@@ -40,36 +44,45 @@ class DiffEngine extends Engine
             throw new \RuntimeException("Datetime format is invalid.（{$from}）");
         }
         $themes = $this->extractTheme($this->config->theme);
-
         $this->setDiffItems($from);
 
-        // テーマの必須アセット書き出し
-        $this->processExportAssets($themes);
+        try {
+            // テーマの必須アセット書き出し
+            $this->processExportThemeAssets($themes);
 
-        // テーマの必須テンプレート書き出し
-        $this->processExportTheme($themes);
+            // テーマの必須テンプレート書き出し
+            $this->processExportTheme($themes);
 
-        // トップページの書き出し
-        $this->processExportTop();
+            // トップページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportTop());
 
-        // カテゴリートップページの書き出し
-        $this->processExportCategoryTop();
+            // カテゴリートップページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryTop());
 
-        // エントリーの書き出し
-        $this->processExportEntry();
+            // エントリーの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportEntry());
 
-        // カテゴリーページの書き出し
-        $this->processExportCategoryPagenation(array_intersect($this->config->static_page_cid, $this->targetCategories));
+            // カテゴリーページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryPagenation(array_intersect($this->config->static_page_cid, $this->targetCategoryIds)));
 
-        // アーカイブページの書き出し
-        $this->processExportArchivePage(array_intersect($this->config->static_archive_cid, $this->targetCategories));
+            // カテゴリーアーカイブページの書き出し
+            DB::reconnect(dsn());
+            await($this->processExportCategoryArchivePage(array_intersect($this->config->static_archive_cid, $this->targetCategoryIds)));
+        } catch (\Throwable $th) {
+            $this->logger->error('不明なエラーが発生したため、部分書き出し処理を中断します');
+            throw $th;
+        } finally {
+            $this->logger->start('書き出し完了');
+            $this->logger->processing();
 
-        $this->logger->start('書き出し完了');
-        $this->logger->processing();
+            sleep(1);
 
-        sleep(1);
-
-        $this->logger->destroy();
+            $this->logger->destroy();
+        }
     }
 
     /**
@@ -77,7 +90,7 @@ class DiffEngine extends Engine
      *
      * @param string $from (YYYY-MM-DD HH:ii:ss)
      */
-    public function setDiffItems($from)
+    private function setDiffItems($from)
     {
         $SQL = SQL::newSelect('entry');
         $SQL->addSelect('entry_id');
@@ -89,38 +102,68 @@ class DiffEngine extends Engine
         $all = DB::query($SQL->get(dsn()), 'all');
 
         foreach ($all as $entry) {
-            $this->targetEntries[] = $entry['entry_id'];
-            $this->targetCategories[] = $entry['entry_category_id'];
+            $this->targetEntryIds[] = intval($entry['entry_id']);
+            $this->targetCategoryIds[] = intval($entry['entry_category_id']);
         }
     }
 
     /**
-     * カテゴリートップの書き出し
+     * @inheritDoc
      */
-    protected function processExportCategoryTop()
+    protected function processExportCategoryTop(): PromiseInterface
     {
-        $generator = new CategoryGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-        $generator->setTargetCategories($this->targetCategories);
-        $generator->run();
+        return new Promise(
+            function (callable $resolve) {
+                $generator = new CategoryGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setCategoryIds($this->targetCategoryIds);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、カテゴリートップページの書き出しを中断します');
+                    \AcmsLogger::error('カテゴリートップページの部分静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
-     * エントリーの書き出し
+     * @inheritDoc
      */
-    protected function processExportEntry()
+    protected function processExportEntry(): PromiseInterface
     {
-        $generator = new EntryGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-        $generator->setTargetEntries($this->targetEntries);
-        $generator->setWithArchive(true);
-        $generator->run();
+        return new Promise(
+            function (callable $resolve) {
+                $generator = new EntryGenerator(
+                    $this->compiler,
+                    $this->destination,
+                    $this->logger,
+                    $this->maxPublish,
+                    $this->nameServer
+                );
+                $generator->setEntryIds($this->targetEntryIds);
+                $generator->setWithArchive(true);
+                try {
+                    await($generator->run());
+                } catch (\Throwable $th) {
+                    $this->logger->error('不明なエラーが発生したため、エントリーの書き出しを中断します');
+                    \AcmsLogger::error('エントリーの部分静的書き出しに失敗しました。', Common::exceptionArray($th));
+                }
+                $resolve(null);
+            }
+        );
     }
 
     /**
-     * テーマのアセット書き出し
-     *
-     * @param array $themes
+     * @inheritDoc
      */
-    protected function processExportAssets($themes)
+    protected function processExportThemeAssets($themes)
     {
         $this->copyThemeRequireItems(THEMES_DIR . 'system/');
         foreach ($themes as $theme) {
@@ -132,16 +175,32 @@ class DiffEngine extends Engine
     /**
      *  テーマのテンプレート書き出し
      *
-     * @param array $themes
+     * @inheritDoc
      */
-    protected function processExportTheme($themes)
+    protected function processExportTheme($themes): PromiseInterface
     {
-        foreach ($themes as $theme) {
-            $path = THEMES_DIR . $theme . '/';
-            $themeGenerator = new RequireThemeGenerator($this->compiler, $this->destination, $this->logger, $this->maxPublish);
-            $themeGenerator->setSourceTheme($path);
-            $themeGenerator->setIncludeList($this->config->include_list);
-            $themeGenerator->run();
-        }
+        return new Promise(
+            function (callable $resolve) use ($themes) {
+                foreach ($themes as $theme) {
+                    $path = THEMES_DIR . $theme . '/';
+                    $requireThemeGenerator = new RequireThemeGenerator(
+                        $this->compiler,
+                        $this->destination,
+                        $this->logger,
+                        $this->maxPublish,
+                        $this->nameServer
+                    );
+                    $requireThemeGenerator->setSourceTheme($path);
+                    $requireThemeGenerator->setIncludeList($this->config->include_list);
+                    try {
+                        await($requireThemeGenerator->run());
+                    } catch (\Throwable $th) {
+                        $this->logger->error('不明なエラーが発生したため、「' . $theme . '」の必須テンプレートの書き出しを中断します');
+                        \AcmsLogger::error('「' . $theme . '」の必須テンプレートの部分静的書き出しに失敗しました。', Common::exceptionArray($th));
+                    }
+                }
+                $resolve(null);
+            }
+        );
     }
 }

@@ -42,10 +42,10 @@ class ACMS_GET_Shop2_Form_Address extends ACMS_GET_Shop2
         */
         if (is_null(SUID)) {
             if ($SESSION->isExists('mail')) {
-                $Tpl->add(array('mailTo:veil', 'address#primary'), array('mail' => $SESSION->get('mail')));
+                $Tpl->add(['mailTo:veil', 'address#primary'], ['mail' => $SESSION->get('mail')]);
                 $Primary->set('mail', '');
             } else {
-                $Tpl->add(array('mailTo:veil', 'address#primary'), array('mail' => $Primary->get('mail')));
+                $Tpl->add(['mailTo:veil', 'address#primary'], ['mail' => $Primary->get('mail')]);
             }
             //$Primary->delete('mail');
         } else {
@@ -60,7 +60,7 @@ class ACMS_GET_Shop2_Form_Address extends ACMS_GET_Shop2
                 $mail = $DB->query($SQL->get(dsn()), 'one');
                 $SESSION->set('mail', $mail);
             }
-            $Tpl->add(array('registTo:veil', 'address#primary'), array('mail' => $SESSION->get('mail')));
+            $Tpl->add(['registTo:veil', 'address#primary'], ['mail' => $SESSION->get('mail')]);
         }
         $Tpl->add('address#primary', $this->buildField($Primary, $Tpl, 'address#primary'));
 
@@ -72,20 +72,18 @@ class ACMS_GET_Shop2_Form_Address extends ACMS_GET_Shop2
         /*
         * registed
         */
-        if (!empty($Registed)) {
-            foreach ($Registed as $row) {
-                $vars  = $this->buildField($row, $Tpl, array('address:loop', 'address#registed'));
-                $Tpl->add(array('address:loop', 'address#registed'), $vars);
-            }
-            $Tpl->add('address#registed');
+        foreach ($Registed as $row) {
+            $vars  = $this->buildField($row, $Tpl, ['address:loop', 'address#registed']);
+            $Tpl->add(['address:loop', 'address#registed'], $vars);
         }
+        $Tpl->add('address#registed');
 
         $vars = $this->buildField($Order, $Tpl);
         if ($Order->isNull()) {
-            $vars += array(
-                        'sendto:checked#' . $SESSION->get('sendto') => config('attr_checked'),
-                        'sendto:selected#' . $SESSION->get('sendto') => config('attr_selected'),
-                        );
+            $vars += [
+                'sendto:checked#' . $SESSION->get('sendto') => config('attr_checked'),
+                'sendto:selected#' . $SESSION->get('sendto') => config('attr_selected'),
+            ];
         }
         $Tpl->add(null, $vars);
 
@@ -94,7 +92,7 @@ class ACMS_GET_Shop2_Form_Address extends ACMS_GET_Shop2
 
     public function &loadRegisted()
     {
-        $Registed = array();
+        $Registed = [];
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('shop_address');
         $SQL->addWhereOpr('address_user_id', SUID);

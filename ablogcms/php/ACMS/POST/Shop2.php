@@ -108,7 +108,7 @@ class ACMS_POST_Shop2 extends ACMS_POST_ShopLite2
     function sanitize(&$data)
     {
         if (is_array($data)) {
-            return array_map(array(&$this, 'sanitize'), $data);
+            return array_map([&$this, 'sanitize'], $data);
         } else {
             $data = htmlentities($data, ENT_QUOTES, 'UTF-8');
             return $data;
@@ -166,7 +166,7 @@ class ACMS_POST_Shop2 extends ACMS_POST_ShopLite2
         } elseif (!ACMS_SID && !empty($cart)) {
             return $cart;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -215,12 +215,12 @@ class ACMS_POST_Shop2 extends ACMS_POST_ShopLite2
     function screenTrans($page = null, $step = null, $bid = BID)
     {
         if (!empty($step)) {
-            $this->redirect(acmsLink(array('tpl' => $page, 'query' => array('step' => $step))));
+            $this->redirect(acmsLink(['tpl' => $page, 'query' => ['step' => $step]]));
         } else {
             if (empty($page)) {
                 $this->redirect(acmsLink());
             } else {
-                $this->redirect(acmsLink(array('bid' => $bid, 'cid' => null, 'eid' => null, 'tpl' => $page)));
+                $this->redirect(acmsLink(['bid' => $bid, 'cid' => null, 'eid' => null, 'tpl' => $page]));
             }
         }
     }

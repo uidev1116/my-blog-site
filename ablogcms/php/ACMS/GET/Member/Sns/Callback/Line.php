@@ -9,7 +9,7 @@ class ACMS_GET_Member_Sns_Callback_Line extends ACMS_GET
     /**
      * Main
      *
-     * @return void
+     * @return never
      */
     public function get()
     {

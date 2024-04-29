@@ -2,9 +2,9 @@
 
 class ACMS_GET_Category_GeoList extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'cid' => 'global',
-    );
+    ];
 
     /**
      * 緯度
@@ -33,25 +33,25 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
     /**
      * @var array
      */
-    protected $categories = array();
+    protected $categories = [];
 
     /**
      * @return array
      */
     protected function initVars()
     {
-        return array(
+        return [
             'referencePoint' => config('category_geo-list_reference_point'),
             'within'  => floatval(config('category_geo-list_within')),
             'limit' => intval(config('category_geo-list_limit')),
             'loop_class' => config('category_geo-list_loop_class'),
-        );
+        ];
     }
 
     /**
-     * @return mixed
+     * @inheritDoc
      */
-    function get()
+    public function get()
     {
         if (!$this->setConfig()) {
             return '';
@@ -80,10 +80,10 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
 
         $currentCategory = loadCategoryField($this->cid);
         $currentCategory->overload(loadCategory($this->cid));
-        $currentCategory->set('url', acmsLink(array(
+        $currentCategory->set('url', acmsLink([
             'bid' => $this->bid,
             'cid' => $this->cid,
-        )));
+        ]));
         $Tpl->add('currentCategory', $this->buildField($currentCategory, $Tpl));
 
         return $Tpl->get();
@@ -138,10 +138,10 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
             foreach ($row as $key => $val) {
                 $Field->setField(preg_replace('/category\_/', '', $key), $val);
             }
-            $Field->set('url', acmsLink(array(
+            $Field->set('url', acmsLink([
                 'bid' => $row['category_blog_id'],
                 'cid' => $cid,
-            )));
+            ]));
             $Field->set('category:loop.class', $loopClass);
 
             //------
@@ -182,8 +182,8 @@ class ACMS_GET_Category_GeoList extends ACMS_GET
                 $this->lng = $data['lng'];
             }
         } elseif ($this->config['referencePoint'] === 'url_query_string') {
-            $this->lat = $this->Get->get('lat');
-            $this->lng = $this->Get->get('lng');
+            $this->lat = (float)$this->Get->get('lat');
+            $this->lng = (float)$this->Get->get('lng');
         }
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Webhook\Validator as WebhookValidator;
+
 class ACMS_POST_Webhook_Update extends ACMS_POST
 {
     function post()
@@ -22,11 +24,13 @@ class ACMS_POST_Webhook_Update extends ACMS_POST
         $sql->addWhereOpr('webhook_id', $id);
         $bid = DB::query($sql->get(dsn()), 'one');
 
-        $input->setMethod('status', 'in', array('open', 'close'));
+        $input->setMethod('status', 'in', ['open', 'close']);
         $input->setMethod('name', 'required');
         $input->setMethod('type', 'required');
         $input->setMethod('events', 'required');
         $input->setMethod('url', 'required');
+        $input->setMethod('url', 'webhookScheme');
+        $input->setMethod('url', 'webhookWhitelist');
         $input->setMethod('webhook', 'operative', sessionWithAdministration($bid));
         $input->validate(new ACMS_Validator());
 

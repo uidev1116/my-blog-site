@@ -2,8 +2,10 @@
 
 class ACMS_POST_Entry_Index_User extends ACMS_POST
 {
-    function post()
+    public function post()
     {
+        $userId = intval($this->Post->get('uid'));
+        $userBlogId = ACMS_RAM::userBlog($userId);
         if (enableApproval(BID, CID)) {
             $this->Post->setMethod('entry', 'operative', sessionWithApprovalAdministrator(BID, CID));
         } elseif (roleAvailableUser()) {
@@ -13,10 +15,10 @@ class ACMS_POST_Entry_Index_User extends ACMS_POST
         }
         $this->Post->setMethod('checks', 'required');
         $this->Post->setMethod('entry', 'uidIsNull', 1
-            and !!($uid = intval($this->Post->get('uid')))
-            and !!($bid = ACMS_RAM::userBlog($uid))
-            and ACMS_RAM::blogLeft($bid) <= ACMS_RAM::blogLeft(BID)
-            and ACMS_RAM::blogRight($bid) >= ACMS_RAM::blogRight(BID));
+            && $userId > 0
+            && $userBlogId > 0
+            && ACMS_RAM::blogLeft($userBlogId) <= ACMS_RAM::blogLeft(BID)
+            && ACMS_RAM::blogRight($userBlogId) >= ACMS_RAM::blogRight(BID));
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {
@@ -33,14 +35,14 @@ class ACMS_POST_Entry_Index_User extends ACMS_POST
                     continue;
                 }
                 $SQL    = SQL::newUpdate('entry');
-                $SQL->setUpdate('entry_user_id', $uid);
+                $SQL->setUpdate('entry_user_id', $userId);
                 $SQL->addWhereOpr('entry_id', $eid);
                 $SQL->addWhereOpr('entry_blog_id', $bid);
                 $DB->query($SQL->get(dsn()), 'exec');
                 ACMS_RAM::entry($eid, null);
                 $targetEIDs[] = $eid;
             }
-            AcmsLogger::info('選択したエントリーのユーザーを「' . ACMS_RAM::userName($uid) . '」に変更しました', [
+            AcmsLogger::info('選択したエントリーのユーザーを「' . ACMS_RAM::userName($userId) . '」に変更しました', [
                 'targetEIDs' => $targetEIDs,
             ]);
         } else {

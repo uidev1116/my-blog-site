@@ -54,7 +54,15 @@ class ACMS_POST_Form extends ACMS_POST
      * フォームのロード
      *
      * @param string $code
-     * @return array|false
+     * @return array{
+     *  id: int,
+     *  bid: int,
+     *  code: string,
+     *  name: string,
+     *  scope: string,
+     *  log: '1' | '0',
+     *  data: \Field
+     * }|false
      */
     public function loadForm($code)
     {
@@ -84,7 +92,15 @@ class ACMS_POST_Form extends ACMS_POST
      * IDによるフォームの探索
      *
      * @param int $id
-     * @return array|null
+     * @return array{
+     *  id: int,
+     *  bid: int,
+     *  code: string,
+     *  name: string,
+     *  scope: string,
+     *  log: '1' | '0',
+     *  data: \Field
+     * }|null
      */
     public function findFormById(int $id): ?array
     {
@@ -110,7 +126,7 @@ class ACMS_POST_Form extends ACMS_POST
      *  code: string,
      *  name: string,
      *  scope: string,
-     *  log: string,
+     *  log: '1' | '0',
      *  data: \Field
      * }
      */
@@ -122,7 +138,7 @@ class ACMS_POST_Form extends ACMS_POST
             'code'  => $row['form_code'],
             'name'  => $row['form_name'],
             'scope' => $row['form_scope'],
-            'log'   => $row['form_log'],
+            'log'   => strval($row['form_log']),
             'data'  => unserialize($row['form_data']),
         ];
     }
@@ -135,7 +151,7 @@ class ACMS_POST_Form extends ACMS_POST
      */
     function buildOptions($Option)
     {
-        $dup = array(); // メールアドレスの重複オプション
+        $dup = []; // メールアドレスの重複オプション
         $field = $this->extract('field');
 
         foreach ($Option->getArray('field') as $i => $fd) {
@@ -163,7 +179,7 @@ class ACMS_POST_Form extends ACMS_POST
      *
      * @param Field $Field
      * @param string $fd
-     * @return array
+     * @return array|false
      */
     function getAttachedFilePath($Field, $fd)
     {
@@ -188,13 +204,13 @@ class ACMS_POST_Form extends ACMS_POST
             $temppath = ARCHIVES_DIR . config('mail_attachment_temp_dir') . $filename;
 
             if (Storage::exists($realpath) && Storage::isFile($realpath)) {
-                return array(
+                return [
                     'realpath'  => $realpath,
                     'temppath'  => $temppath,
                     'fieldpath' => config('mail_attachment_temp_dir') . $filename,
                     'fdname'    => $fd_file,
                     'original_name' => $original_name,
-                );
+                ];
             }
         }
 
@@ -243,7 +259,7 @@ class ACMS_POST_Form extends ACMS_POST
     /**
      * メールアドレスの重複チェック
      *
-     * @param string $code
+     * @param int $id
      * @param string $mail
      * @return boolean
      */

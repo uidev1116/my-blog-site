@@ -4,7 +4,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
 {
     public function post()
     {
-        $this->Post->set('module', array(
+        $this->Post->set('module', [
             'name', 'status', 'identifier', 'label', 'description', 'cache', 'scope', 'custom_field', 'layout_use', 'api_use',
             'bid', 'uid', 'cid', 'eid', 'keyword', 'tag', 'field_',
             'start_date', 'start_time', 'end_date', 'end_time',
@@ -12,7 +12,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
             'uid_scope', 'cid_scope', 'eid_scope', 'keyword_scope', 'tag_scope', 'field_scope',
             'start_scope', 'end_scope', 'page_scope', 'order_scope',
             'bid_axis', 'cid_axis',
-        ));
+        ]);
         $Module = $this->extract('module');
 
         $Module->setMethod('name', 'required');
@@ -102,15 +102,15 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
                 'module' => $Module->_aryField,
             ]);
 
-            $this->redirect(acmsLink(array(
+            $this->redirect(acmsLink([
                 'bid'   => BID,
                 $key    => $val,
-                'query' => array(
+                'query' => [
                     'mid'   => $mid,
                     'edit'  => 'update',
                     'msg'   => 'new',
-                ),
-            )));
+                ],
+            ]));
         } else {
             $this->Post->set('validate', true);
 

@@ -14,7 +14,7 @@ class ACMS_POST_Trackback_Delete extends ACMS_POST
             $SQL->addWhereOpr('trackback_id', TBID);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            $this->redirect(acmsLink(array('eid' => EID,)));
+            $this->redirect(acmsLink(['eid' => EID,]));
         }
 
         return $this->Post;

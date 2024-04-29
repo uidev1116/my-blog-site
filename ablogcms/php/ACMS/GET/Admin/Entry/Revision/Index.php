@@ -38,7 +38,7 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
             $author = ACMS_RAM::user($auid);
             $rvid = intval($rev['entry_rev_id']);
 
-            $revision = array(
+            $revision = [
                 'rvid' => $rvid,
                 'current_rvid' => $currentRvid,
                 'reserve_rvid' => $reserveRvid,
@@ -51,17 +51,17 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
                 'datetime' => $rev['entry_rev_datetime'],
                 'start_datetime' => $rev['entry_start_datetime'],
                 'end_datetime' => $rev['entry_end_datetime'],
-                'confirmUrl' => acmsLink(array(
+                'confirmUrl' => acmsLink([
                     'bid' => BID,
                     'eid' => EID,
                     'cid' => CID,
                     'aid' => $this->Get->get('aid'),
-                    'query' => array(
+                    'query' => [
                         'rvid' => $rev['entry_rev_id'],
                         'aid' => $this->Get->get('aid'),
-                    ),
-                )),
-            );
+                    ],
+                ]),
+            ];
             if (sessionWithApprovalAdministrator(BID, $rev['entry_category_id']) || $auid === SUID) {
                 $revision['editUrl'] = acmsLink([
                     'bid' => BID,
@@ -87,11 +87,11 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
                 $rev['entry_rev_status'] = 'none';
             }
             if ($rev['entry_status'] === 'trash' && $rev['entry_rev_status'] === 'in_review') {
-                $tpl->add(array('touch:rev_status#trash', 'revision:loop'));
+                $tpl->add(['touch:rev_status#trash', 'revision:loop']);
             } else {
-                $tpl->add(array('touch:rev_status#' . $rev['entry_rev_status'], 'revision:loop'));
+                $tpl->add(['touch:rev_status#' . $rev['entry_rev_status'], 'revision:loop']);
             }
-            $tpl->add(array('touch:status#' . $rev['entry_status'], 'revision:loop'));
+            $tpl->add(['touch:status#' . $rev['entry_status'], 'revision:loop']);
             $tpl->add('revision:loop', $revision);
         }
     }

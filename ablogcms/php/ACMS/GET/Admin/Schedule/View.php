@@ -14,11 +14,11 @@ class ACMS_GET_Admin_Schedule_View extends ACMS_GET_Plugin_Schedule
         if (!empty($_POST['dateArgs'])) {
             $dateArgs = explode('-', $_POST['dateArgs']);
         } elseif (!empty($_POST['yearArg']) && !empty($_POST['monthArg'])) {
-            $dateArgs = array();
+            $dateArgs = [];
             $dateArgs[0] = $_POST['yearArg'];
             $dateArgs[1] = $_POST['monthArg'];
         } elseif (!empty($_POST['year']) && !empty($_POST['month'])) {
-            $dateArgs = array();
+            $dateArgs = [];
             $dateArgs[0] = $_POST['year'];
             $dateArgs[1] = $_POST['month'];
         }

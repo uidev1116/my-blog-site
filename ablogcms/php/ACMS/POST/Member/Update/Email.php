@@ -14,7 +14,7 @@ class ACMS_POST_Member_Update_Email extends ACMS_POST_Member
      */
     protected function getTokenKey(array $data): string
     {
-        return SUID;
+        return strval(SUID);
     }
 
     /**

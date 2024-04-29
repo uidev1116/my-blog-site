@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_Blog_SelectGlobal extends ACMS_GET_Admin
 {
-    public $_scope  = array(
+    public $_scope  = [
         'bid'   => 'global',
-    );
+    ];
 
     function get()
     {

@@ -2,16 +2,16 @@
 
 class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!sessionWithApprovalRequest()) {
-            return false;
+            return '';
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $DB = DB::singleton(dsn());
-        $vars = array();
-        $userGroup = array();
+        $vars = [];
+        $userGroup = [];
         $currentGroup = 0;
 
         if (editionIsEnterprise()) {
@@ -27,7 +27,7 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
             foreach (array_reverse($workflow->getArray('workflow_route_group')) as $groupId) {
                 $userGroup[] = $groupId;
             }
-            $nextGroup = array();
+            $nextGroup = [];
             foreach ($userGroup as $ugid) {
                 $SQL = SQL::newSelect('usergroup_user');
                 $SQL->addSelect('usergroup_id');
@@ -37,7 +37,7 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
                     $currentGroup = $group;
                     break;
                 }
-                $nextGroup = array($ugid);
+                $nextGroup = [$ugid];
             }
             if (empty($nextGroup)) {
                 $nextGroup = $lastGroup;
@@ -63,20 +63,20 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
                 $all = $DB->query($SQL->get(dsn()), 'all');
 
                 if (count($all) > 1) {
-                    $nameAry = array();
+                    $nameAry = [];
                     foreach ($all as $row) {
                         $nameAry[] = $row['usergroup_name'];
                     }
-                    $Tpl->add('group:loop', array(
+                    $Tpl->add('group:loop', [
                         'nextGroup' => 0,
                         'nextGroupName' => implode(', ', $nameAry),
-                    ));
+                    ]);
                 }
                 foreach ($all as $row) {
-                    $Tpl->add('group:loop', array(
+                    $Tpl->add('group:loop', [
                         'nextGroup' => $row['usergroup_id'],
                         'nextGroupName' => $row['usergroup_name'],
-                    ));
+                    ]);
                 }
 
                 $SQL = SQL::newSelect('usergroup_user', 't_usergroup_user');
@@ -103,16 +103,16 @@ class ACMS_GET_Approval_NextUsergroup extends ACMS_GET
                     $SQL->addWhereOpr('user_blog_id', BID);
                 }
                 ACMS_Filter::blogStatus($SQL);
-                $SQL->addWhereIn('user_auth', array('editor', 'administrator'));
+                $SQL->addWhereIn('user_auth', ['editor', 'administrator']);
 
                 $all = $DB->query($SQL->get(dsn()), 'all');
 
                 $vars['currentGroup'] = 0;
 
-                $Tpl->add('group:loop', array(
+                $Tpl->add('group:loop', [
                     'nextGroup' => 0,
                     'nextGroupName' => '編集者, 管理者',
-                ));
+                ]);
 
                 foreach ($all as $user) {
                     $user['icon'] = loadUserIcon($user['user_id']);

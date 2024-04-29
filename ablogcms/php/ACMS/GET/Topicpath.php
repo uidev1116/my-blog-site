@@ -2,12 +2,12 @@
 
 class ACMS_GET_Topicpath extends ACMS_GET
 {
-    public $_axis = array( // phpcs:ignore
+    public $_axis = [ // phpcs:ignore
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
-    );
+    ];
 
-    public $_scope = array( // phpcs:ignore
+    public $_scope = [ // phpcs:ignore
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -18,7 +18,7 @@ class ACMS_GET_Topicpath extends ACMS_GET
         'start'     => 'global',
         'end'       => 'global',
         'page'      => 'global',
-    );
+    ];
 
     public function get()
     {
@@ -71,21 +71,21 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
             foreach ($all as $i => $row) {
                 if (!empty($cnt)) {
-                    $Tpl->add(array('glue', 'blog:loop'));
+                    $Tpl->add(['glue', 'blog:loop']);
                 } elseif (!!($altLabel = config('mo_topicpath_root_label'))) {
                     $row['blog_name'] = $altLabel;
                 }
                 $bid    = intval($row['blog_id']);
                 if ('on' === config('mo_topicpath_blog_field')) {
-                    $Tpl->add(array('blogField', 'blog:loop'), $this->buildField(loadBlogField($bid), $Tpl));
+                    $Tpl->add(['blogField', 'blog:loop'], $this->buildField(loadBlogField($bid), $Tpl));
                 }
-                $Tpl->add('blog:loop', array(
+                $Tpl->add('blog:loop', [
                     'name' => $row['blog_name'],
-                    'url'   => acmsLink(array(
+                    'url'   => acmsLink([
                         'bid'   => $bid,
-                    )),
+                    ]),
                     'sNum' => $loop,
-                ));
+                ]);
                 $cnt++;
                 $loop++;
             }
@@ -136,22 +136,22 @@ class ACMS_GET_Topicpath extends ACMS_GET
 
             foreach ($all as $i => $row) {
                 if (!empty($cnt)) {
-                    $Tpl->add(array('glue', 'category:loop'));
+                    $Tpl->add(['glue', 'category:loop']);
                 }
 
                 $cid    = intval($row['category_id']);
                 if ('on' === config('mo_topicpath_category_field')) {
-                    $Tpl->add(array('categoryField', 'category:loop'), $this->buildField(loadCategoryField($cid), $Tpl));
+                    $Tpl->add(['categoryField', 'category:loop'], $this->buildField(loadCategoryField($cid), $Tpl));
                 }
 
-                $Tpl->add('category:loop', array(
+                $Tpl->add('category:loop', [
                     'name'  => $row['category_name'],
-                    'url'   => acmsLink(array(
+                    'url'   => acmsLink([
                         'bid'   => $this->bid,
                         'cid'   => $cid,
-                    )),
+                    ]),
                     'sNum' => $loop,
-                ));
+                ]);
                 $cnt++;
                 $loop++;
             }
@@ -167,22 +167,22 @@ class ACMS_GET_Topicpath extends ACMS_GET
                 // ignore block
             } else {
                 if (!empty($cnt)) {
-                    $Tpl->add(array('glue', 'entry'));
+                    $Tpl->add(['glue', 'entry']);
                 }
 
                 $eid    = intval($row['entry_id']);
                 if ('on' === config('mo_topicpath_entry_field')) {
-                    $Tpl->add(array('entryField', 'entry'), $this->buildField(loadEntryField($eid), $Tpl));
+                    $Tpl->add(['entryField', 'entry'], $this->buildField(loadEntryField($eid), $Tpl));
                 }
 
-                $Tpl->add('entry', array(
+                $Tpl->add('entry', [
                     'title' => $row['entry_title'],
-                    'url'   => acmsLink(array(
+                    'url'   => acmsLink([
                         'bid'   => $this->bid,
                         'eid'   => $eid,
-                    )),
+                    ]),
                     'sNum' => $loop,
-                ));
+                ]);
                 $loop++;
             }
         }

@@ -14,10 +14,10 @@ abstract class Compiler
     /**
      * @var array
      */
-    protected $resolver = array();
+    protected $resolver = [];
 
     /**
-     * @param \Acms\Services\StaticExport\Destination
+     * @param \Acms\Services\StaticExport\Destination $destination
      */
     public function setDestination(Destination $destination)
     {

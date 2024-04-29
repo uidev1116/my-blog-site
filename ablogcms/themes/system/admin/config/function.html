@@ -231,7 +231,7 @@
 	<h3 class="acms-admin-admin-title2"><!--T-->プレビュー<!--/T--></h3>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
-			<th><!--T-->プレビュー時の初期デバイス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->プレビュー時のデフォルトのデバイスを設定します。<!--/T-->"></i></th>
+			<th><!--T-->プレビュー時の初期デバイス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->プレビュー時のデフォルトのデバイスを設定します。チェックすると、直前に利用したデバイスがブラウザに保存されます。<!--/T-->"></i></th>
 			<td>
 				<select name="preview_default_device">
 					<option value=""><!--T-->デバイスを選択<!--/T--></option>
@@ -245,11 +245,20 @@
 					<option value="Xperia XZ2"{preview_default_device:selected#Xperia XZ2}>Xperia XZ2</option>
 					<option value="PC"{preview_default_device:selected#PC}>PC</option>
 				</select>
-				<input type="hidden" name="config[]" value="preview_default_device" />
-			</td>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="preview_has_history_device[]" value="on" {preview_has_history_device:checked#on} id="input-checkbox-preview_has_history_device-on" />
+          <label for="input-checkbox-preview_has_history_device-on">
+            <i class="acms-admin-ico-checkbox"></i>直前に利用したデバイスをブラウザに保存する</label>
+        </div>
+        <input type="hidden" name="config[]" value="preview_default_device" />
+        <input type="hidden" name="config[]" value="preview_has_history_device" />
+      </td>
 		</tr>
 		<tr>
-			<th><!--T-->承認プレビュー時の初期デバイス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->承認プレビュー時のデフォルトのデバイスを設定します。<!--/T-->"></i></th>
+			<th>
+        <!--T-->承認プレビュー時の初期デバイス<!--/T-->
+        <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->承認プレビュー時のデフォルトのデバイスを設定します。チェックすると、直前に利用したデバイスがブラウザに保存されます。<!--/T-->"></i>
+      </th>
 			<td>
 				<select name="approval_preview_default_device">
 					<option value=""><!--T-->デバイスを選択<!--/T--></option>
@@ -263,11 +272,25 @@
 					<option value="Xperia XZ2"{approval_preview_default_device:selected#Xperia XZ2}>Xperia XZ2</option>
 					<option value="PC"{approval_preview_default_device:selected#PC}>PC</option>
 				</select>
-				<input type="hidden" name="config[]" value="approval_preview_default_device" />
-			</td>
+        <div class="acms-admin-form-checkbox">
+          <input
+            type="checkbox"
+            name="approval_preview_has_history_device[]"
+            value="on"
+            {approval_preview_has_history_device:checked#on}
+            id="input-checkbox-approval_preview_has_history_device-on" />
+          <label for="input-checkbox-approval_preview_has_history_device-on">
+            <i class="acms-admin-ico-checkbox"></i>直前に利用したデバイスをブラウザに保存する</label>
+        </div>
+        <input type="hidden" name="config[]" value="approval_preview_default_device" />
+        <input type="hidden" name="config[]" value="approval_preview_has_history_device" />
+      </td>
 		</tr>
 		<tr>
-			<th><!--T-->タイムマシン時の初期デバイス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->タイムマシンモード時のデフォルトのデバイスを設定します。<!--/T-->"></i></th>
+			<th>
+        <!--T-->タイムマシン時の初期デバイス<!--/T-->
+        <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->タイムマシンモード時のデフォルトのデバイスを設定します。チェックすると、直前に利用したデバイスがブラウザに保存されます。<!--/T-->"></i>
+      </th>
 			<td>
 				<select name="timemachine_preview_default_device">
 					<option value=""><!--T-->デバイスを選択<!--/T--></option>
@@ -281,11 +304,20 @@
 					<option value="Xperia XZ2"{timemachine_preview_default_device:selected#Xperia XZ2}>Xperia XZ2</option>
 					<option value="PC"{timemachine_preview_default_device:selected#PC}>PC</option>
 				</select>
-				<input type="hidden" name="config[]" value="timemachine_preview_default_device" />
-			</td>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="timemachine_preview_has_history_device[]" value="on" {timemachine_preview_has_history_device:checked#on} id="input-checkbox-timemachine_preview_has_history_device-on" />
+          <label for="input-checkbox-timemachine_preview_has_history_device-on">
+            <i class="acms-admin-ico-checkbox"></i>直前に利用したデバイスをブラウザに保存する</label>
+        </div>
+        <input type="hidden" name="config[]" value="timemachine_preview_default_device" />
+        <input type="hidden" name="config[]" value="timemachine_preview_has_history_device" />
+      </td>
 		</tr>
     <tr>
-			<th><!--T-->プレビュー共有の有効期限<!--/T--></th>
+			<th>
+        <!--T-->プレビュー共有の有効期限<!--/T-->
+        <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->プレビューを共有する有効期限を設定します。<!--/T-->"></i>
+      </th>
 			<td>
 				<input type="text" name="url_preview_expire" value="{url_preview_expire}" size="5" /> <!--T-->時間<!--/T-->
 				<input type="hidden" name="config[]" value="url_preview_expire" />

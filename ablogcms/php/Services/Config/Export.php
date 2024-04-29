@@ -35,7 +35,7 @@ class Export
      */
     public function __construct()
     {
-        $this->yaml = array();
+        $this->yaml = [];
         $this->metaTargetIds = '/^(.*)_(bid|uid|cid|eid|aid)$/';
     }
 
@@ -44,7 +44,7 @@ class Export
      */
     public function exportPartsConfig($field)
     {
-        $config = array();
+        $config = [];
         foreach ($field->listFields() as $fd) {
             $val = $field->getArray($fd);
             $config[$fd] = (1 == count($val)) ? $val[0] : $val;
@@ -102,7 +102,7 @@ class Export
     {
         $Config = Config::load($bid, null, null, null);
 
-        $config = array();
+        $config = [];
         foreach ($Config->listFields() as $fd) {
             $val = $Config->getArray($fd);
             $config[$fd] = (1 == count($val)) ? $val[0] : $val;
@@ -137,7 +137,7 @@ class Export
         $SQL->addWhereOpr('config_set_blog_id', $this->bid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $records[] = $r;
@@ -154,7 +154,7 @@ class Export
         $SQL->addWhereOpr('config_blog_id', $this->bid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
@@ -172,7 +172,7 @@ class Export
         $SQL->addWhereOpr('rule_blog_id', $this->bid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
@@ -190,7 +190,7 @@ class Export
         $SQL->addWhereOpr('module_blog_id', $this->bid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
@@ -234,7 +234,7 @@ class Export
      * @param string $type
      * @param int $id
      *
-     * @return string
+     * @return string|false
      */
     protected function getCode($type, $id)
     {

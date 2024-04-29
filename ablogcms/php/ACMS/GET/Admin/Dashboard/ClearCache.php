@@ -9,7 +9,7 @@ class ACMS_GET_Admin_Dashboard_ClearCache extends ACMS_GET
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $vars = array();
+        $vars = [];
 
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('cache_reserve');
@@ -20,21 +20,21 @@ class ACMS_GET_Admin_Dashboard_ClearCache extends ACMS_GET
         $all = $DB->query($SQL->get(dsn()), 'all');
 
         foreach ($all as $row) {
-            $reserve = array(
+            $reserve = [
                 'title'     => $row['entry_title'],
                 'datetime'  => $row['cache_reserve_datetime'],
                 'type'      => $row['cache_reserve_type'],
-                'entryUrl'  => acmsLink(array(
+                'entryUrl'  => acmsLink([
                     'bid'   => $row['entry_blog_id'],
                     'eid'   => $row['entry_id'],
-                )),
-                'entryEdit' => acmsLink(array(
+                ]),
+                'entryEdit' => acmsLink([
                     'bid'   => $row['entry_blog_id'],
                     'eid'   => $row['entry_id'],
                     'admin' => 'entry_editor',
-                )),
-            );
-            $reserveVal = $this->buildField(new Field($reserve), $Tpl, array('cache_reserve:loop'));
+                ]),
+            ];
+            $reserveVal = $this->buildField(new Field($reserve), $Tpl, ['cache_reserve:loop']);
             $Tpl->add('cache_reserve:loop', $reserveVal);
         }
         $Tpl->add(null, $vars);

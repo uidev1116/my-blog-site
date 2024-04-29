@@ -60,14 +60,14 @@ class Helper
         $info = getimagesize($fileObj['tmp_name']);
         $extension = Image::detectImageExtenstion($info['mime']);
 
-        return array(
+        return [
             'tags' => $tags,
             'name' => $name,
             'file' => $fileObj,
             'size' => $fileObj['size'],
             'type' => $fileObj['type'],
             'extension' => $extension,
-        );
+        ];
     }
 
     public function copyImages($mid)
@@ -89,10 +89,10 @@ class Helper
         copyFile(otherSizeImagePath($oldPath, 'large'), otherSizeImagePath($newPath, 'large'));
         copyFile(otherSizeImagePath($oldPath, 'tiny'), otherSizeImagePath($newPath, 'tiny'));
 
-        return array(
+        return [
             'path' => substr($newPath, strlen(MEDIA_LIBRARY_DIR)),
             'name' => $newName . $ext,
-        );
+        ];
     }
 
     public function copyFiles($mid)
@@ -114,23 +114,38 @@ class Helper
         $newName = preg_replace("/(.+)(\.[^.]+$)/", "$1", Storage::mbBasename($newPath));
         copyFile($oldPath, $newPath);
 
-        return array(
+        return [
             'path' => substr($newPath, strlen($baseDir)),
             'name' => $newName . '.' . $ext,
-        );
+        ];
     }
 
     public function uploadImage($fieldName = 'file', $original = true)
     {
-        $size = array(
+        $size = [
             'normal' => 0,
             'tiny' => 330,
-        );
+        ];
         if ($original) {
             $size['large'] = 99999;
         }
         $isRamdomFileName = config('media_image_ramdom_filename', 'off') === 'on';
-        $data = createImages($size, MEDIA_LIBRARY_DIR, $fieldName, $isRamdomFileName, null, true);
+        /**
+         * @var array{
+         *  path: string,
+         *  type: string,
+         *  name: string,
+         *  size: string
+         * }
+         */
+        $data = Image::createImages(
+            $_FILES[$fieldName],
+            $size,
+            MEDIA_LIBRARY_DIR,
+            $isRamdomFileName,
+            null,
+            true
+        );
         $data['extension'] = $data['type'];
         $data['type'] = 'image';
         $data['name'] = Storage::mbBasename($data['path']);
@@ -141,7 +156,14 @@ class Helper
 
     public function uploadPdfThumbnail($name)
     {
-        return createImages(array('normal' => 99999), MEDIA_LIBRARY_DIR, $name, true, null, true);
+        return Image::createImages(
+            $_FILES[$name],
+            ['normal' => 99999],
+            MEDIA_LIBRARY_DIR,
+            true,
+            null,
+            true
+        );
     }
 
     public function uploadSvg($size, $fieldName = 'file')
@@ -322,9 +344,9 @@ class Helper
     public function getFilePermalink($mid, $fullpath = true)
     {
         if ($fullpath) {
-            return acmsLink(array('bid' => BID), false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
+            return acmsLink(['bid' => BID], false) . MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
         }
-        $offset = rtrim(DIR_OFFSET . acmsPath(array('bid' => BID)), '/');
+        $offset = rtrim(DIR_OFFSET . acmsPath(['bid' => BID]), '/');
         if (strlen($offset) > 1) {
             $offset .= '/';
         }
@@ -407,7 +429,7 @@ class Helper
         $DB = DB::singleton(dsn());
         $SQL    = SQL::newSelect('media_tag');
         $SQL->setSelect('media_tag_media_id');
-        $SQL->addWhereIn('media_tag_name', array($oldTag, $newTag));
+        $SQL->addWhereIn('media_tag_name', [$oldTag, $newTag]);
         $SQL->addWhereOpr('media_tag_blog_id', BID);
         $SQL->setGroup('media_tag_media_id');
         $SQL->setHaving(SQL::newOpr('media_tag_media_id', 2, '>=', null, 'COUNT'));
@@ -456,7 +478,7 @@ class Helper
         } else {
             $SQL->addInsert('media_original', otherSizeImagePath($data['path'], 'large'));
         }
-        foreach (array('1', '2', '3', '4', '5', '6') as $i) {
+        foreach (['1', '2', '3', '4', '5', '6'] as $i) {
             if (isset($data['field_' . $i])) {
                 $SQL->addInsert('media_field_' . $i, $data['field_' . $i]);
             }
@@ -476,7 +498,7 @@ class Helper
             $old = loadMedia($mid);
             Storage::remove($old->get('original'));
         }
-        $field = array(
+        $field = [
             'type' => 'media_type',
             'status' => 'media_status',
             'extension' => 'media_extension',
@@ -493,7 +515,7 @@ class Helper
             'field_4' => 'media_field_4',
             'field_5' => 'media_field_5',
             'field_6' => 'media_field_6',
-        );
+        ];
         $SQL = SQL::newUpdate('media');
         foreach ($field as $key => $column) {
             if (isset($data[$key])) {
@@ -532,7 +554,7 @@ class Helper
                 $thumbnail = $this->getImageThumbnail($path);
             }
         }
-        return array(
+        return [
             "media_status" => $data['status'],
             "media_title" => $data['name'],
             "media_label" => $tags,
@@ -558,15 +580,15 @@ class Helper
             "media_editable" => isset($data['editable']) ? $data['editable'] : false,
             "media_pdf_page" => isset($data['field_6']) ? $data['field_6'] : '',
             "checked" => false
-        );
+        ];
     }
 
     public function getMediaArchiveList($sql)
     {
-        $archives = array();
+        $archives = [];
         $archive = new SQL_Select($sql);
         $archive->addSelect('media_upload_date');
-        $archive->addSelect(SQL::newFunction('media_upload_date', array('SUBSTR', 0, 7)), 'media_date');
+        $archive->addSelect(SQL::newFunction('media_upload_date', ['SUBSTR', 0, 7]), 'media_date');
         $archive->addGroup('media_date');
         $all = DB::query($archive->get(dsn()), 'all');
         foreach ($all as $row) {
@@ -577,7 +599,7 @@ class Helper
 
     public function getMediaTagList($sql)
     {
-        $tags = array();
+        $tags = [];
         $tag = new SQL_Select($sql);
         $tag->addLeftJoin('media_tag', 'media_tag_media_id', 'media_id');
         $tag->addGroup('media_tag_name');
@@ -592,7 +614,7 @@ class Helper
 
     public function getMediaExtensionList($sql)
     {
-        $exts = array();
+        $exts = [];
         $ext = new SQL_Select($sql);
         $ext->addGroup('media_extension');
         $all = DB::query($ext->get(dsn()), 'all');
@@ -625,8 +647,8 @@ class Helper
 
     public function mediaEagerLoadFromUnit($unit)
     {
-        $mediaList = array();
-        $mediaDataList = array();
+        $mediaList = [];
+        $mediaDataList = [];
         foreach ($unit as $data) {
             $actualType = $data['type'];
             $type = detectUnitTypeSpecifier($actualType);
@@ -662,9 +684,9 @@ class Helper
         $sql->addWhereOpr('media_id', $mid);
         $row = DB::query($sql->get(dsn()), 'row');
         if (empty($row)) {
-            return array();
+            return [];
         }
-        return array(
+        return [
             'mid' => $row['media_id'],
             'bid' => $row['media_blog_id'],
             'status' => $row['media_status'],
@@ -686,7 +708,7 @@ class Helper
             'field_6' => $row['media_field_6'],
             'blog_name' => $row['blog_name'],
             'editable' => intval($row['media_user_id']) === SUID
-        );
+        ];
     }
 
     /**
@@ -802,8 +824,8 @@ class Helper
                         if (strpos($focalPoint, ',') !== false) {
                             list($focalX, $focalY) = explode(',', $focalPoint);
                             if ($focalX && $focalY) {
-                                $tmpFocalX = ($focalX / 50) - 1;
-                                $tmpFocalY = (($focalY / 50) - 1) * -1;
+                                $tmpFocalX = ((float)$focalX / 50) - 1;
+                                $tmpFocalY = (((float)$focalY / 50) - 1) * -1;
                             }
                         }
                         $focalXAry[] = $tmpFocalX;
@@ -956,7 +978,7 @@ class Helper
             !in_array(
                 $extension,
                 array_merge(
-                    array('svg', 'SVG'),
+                    ['svg', 'SVG'],
                     configArray('file_extension_document'),
                     configArray('file_extension_archive'),
                     configArray('file_extension_movie'),
@@ -971,7 +993,7 @@ class Helper
         $mimeType = Common::getMimeType($src);
         if (preg_match('/svg/', strtolower($mimeType))) {
             // SVGの場合、サニタイズ処理をする
-            $dirty = Storage::get($src);
+            $dirty = Storage::get($src, dirname($src));
             $clean = $this->sanitizeSvg($dirty);
             Storage::put($file, $clean);
         } else {

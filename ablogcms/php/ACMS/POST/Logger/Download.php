@@ -41,6 +41,7 @@ class ACMS_POST_Logger_Download extends ACMS_POST_Logger_Info
             Common::download($path, $tempFile, false, true);
         } catch (\Exception $e) {
             AcmsLogger::error($e->getMessage());
+            return $this->Post;
         }
     }
 

@@ -2,16 +2,16 @@
 
 class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 {
-    public $_axis = array(
+    public $_axis = [
         'bid'   => 'self',
         'cid'   => 'self',
-    );
+    ];
 
     public $_endGluePoint = null;
 
     protected function initVars()
     {
-        $config = array(
+        $config = [
             'categoryOrder'             => config('category_entry_summary_category_order'),
             'categoryEntryListLevel'    => config('category_entry_summary_level'),
             'categoryIndexing'          => config('category_entry_summary_category_indexing'),
@@ -44,7 +44,7 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
             'userFieldOn'               => config('category_entry_summary_user_field_on'),
             'blogInfoOn'                => 'on',
             'blogFieldOn'               => config('category_entry_summary_blog_field_on'),
-        );
+        ];
         if (!empty($this->order)) {
             $config['order'] = $this->order;
         }
@@ -54,11 +54,12 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
     protected function buildQuery($cid, &$Tpl)
     {
-        $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
+        $list = ['entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
             'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
             'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id', 'blog_id', 'blog_code',
             'blog_status', 'blog_parent', 'blog_name', 'blog_domain', 'blog_indexing', 'blog_alias_status', 'blog_alias_sort', 'blog_alias_primary', 'category_id', 'category_code',
-            'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id');
+            'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id'
+        ];
 
         $subCategory = isset($this->_config['subCategory']) && $this->_config['subCategory'] === 'on';
 
@@ -108,7 +109,7 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
         }
         $SQL->addGroup('entry_id');
 
-        $q = $SQL->get(dsn(array('prefix' => '')));
+        $q = $SQL->get(dsn(['prefix' => '']));
         $all = DB::query($q, 'all');
         if (empty($all)) {
             return false;
@@ -120,10 +121,10 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
     protected function preBuildUnit()
     {
-        $entryIds = array();
-        $blogIds = array();
-        $userIds = array();
-        $categoryIds = array();
+        $entryIds = [];
+        $blogIds = [];
+        $userIds = [];
+        $categoryIds = [];
 
         foreach ($this->entries as $entry) {
             if (!empty($entry['entry_id'])) {
@@ -174,7 +175,7 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
 
     protected function buildUnit($eRow, &$Tpl, $cid, $level, $count = 0)
     {
-        $this->buildSummary($Tpl, $eRow, $count, $this->_endGluePoint, $this->_config, array(), $this->eagerLoadingData);
+        $this->buildSummary($Tpl, $eRow, $count, $this->_endGluePoint, $this->_config, [], $this->eagerLoadingData);
     }
 
     protected function unionQuery($SQL)

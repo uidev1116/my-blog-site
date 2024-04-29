@@ -113,28 +113,28 @@ if (!defined('RID')) {
     define('RID', null);
 }
 if (!defined('ADMIN')) {
-    define('ADMIN', null);
+    define('ADMIN', '');
 }
 if (!defined('ORDER')) {
-    define('ORDER', null);
+    define('ORDER', '');
 }
 if (!defined('PAGE')) {
-    define('PAGE', null);
+    define('PAGE', 1);
 }
 if (!defined('END')) {
-    define('END', null);
+    define('END', '');
 }
 if (!defined('START')) {
-    define('START', null);
+    define('START', '');
 }
 if (!defined('FIELD')) {
-    define('FIELD', null);
+    define('FIELD', '');
 }
 if (!defined('TAG')) {
-    define('TAG', null);
+    define('TAG', '');
 }
 if (!defined('KEYWORD')) {
-    define('KEYWORD', null);
+    define('KEYWORD', '');
 }
 if (!defined('RVID')) {
     define('RVID', null);

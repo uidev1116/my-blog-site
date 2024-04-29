@@ -17,8 +17,7 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return bool|Field
-     * @throws Exception
+     * @inheritDoc
      */
     public function post()
     {
@@ -110,13 +109,13 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
 
         //------
         // mail
-        $Comment->set('commentUrl', acmsLink(array(
+        $Comment->set('commentUrl', acmsLink([
             'bid'       => BID,
             'cid'       => ACMS_RAM::entryCategory(EID),
             'eid'       => EID,
             'cmid'      => $cmid,
             'fragment'  => 'comment-' . $cmid,
-        ), false));
+        ], false));
 
         if (
             1
@@ -163,6 +162,6 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
             return $this->Post;
         }
 
-        return true;
+        return $this->Post;
     }
 }

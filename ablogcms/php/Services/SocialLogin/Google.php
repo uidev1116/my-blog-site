@@ -31,7 +31,6 @@ class Google
      *
      * @param string $clientId
      * @param string $secretKey
-     * @param int $bid
      * @return void
      */
     public function __construct(string $clientId, string $secretKey)

@@ -118,12 +118,12 @@ class CopyEntryArchive
                             and preg_match('@^(.*?)([^/]+)(\.[^.]+)$@', $path, $match)
                         ) {
                             foreach (
-                                array(
-                                         '' => '@path',
-                                         'large-' => '@largePath',
-                                         'tiny-' => '@tinyPath',
-                                         'square-' => '@squarePath',
-                                     ) as $pfx => $name
+                                [
+                                    '' => '@path',
+                                    'large-' => '@largePath',
+                                    'tiny-' => '@tinyPath',
+                                    'square-' => '@squarePath',
+                                ] as $pfx => $name
                             ) {
                                 if (
                                     1

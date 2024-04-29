@@ -59,7 +59,7 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
     {
         $user->setMethod('name', 'required');
         $user->setMethod('code', 'doubleCode', SUID);
-        $user->setMethod('mail_magazine', 'in', array('on', 'off'));
+        $user->setMethod('mail_magazine', 'in', ['on', 'off']);
         $user->setMethod('url', 'url');
         $user->setMethod('code', 'string', isValidCode($user->get('code')));
         $user->setMethod('user', 'operable', !!SUID);

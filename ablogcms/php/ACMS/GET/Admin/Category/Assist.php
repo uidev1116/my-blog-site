@@ -2,11 +2,11 @@
 
 class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
 {
-    public $_scope = array(
+    public $_scope = [
         'cid' => 'global',
         'eid' => 'global',
         'keyword' => 'global',
-    );
+    ];
 
     function get()
     {
@@ -66,11 +66,12 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
 
     protected function buildList($q, $filterCid)
     {
-        $list = array();
+        /** @var array{ label: string, value: int }[] */
+        $list = [];
         $DB = DB::singleton(dsn());
         if (!!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q))) {
-            $all = array();
-            $parent = array();
+            $all = [];
+            $parent = [];
             do {
                 $cid = intval($row['category_id']);
                 $pid = intval($row['category_parent']);
@@ -88,7 +89,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
             while ($row = array_shift($stack)) {
                 $cid = intval($row['category_id']);
 
-                $blocks = array();
+                $blocks = [];
                 $_pid = $cid;
                 while ($_pid = $parent[$_pid]) {
                     array_unshift($blocks, $category[$_pid]);
@@ -104,10 +105,10 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                     }
                     $label .= $item['category_name'];
                 }
-                $list[] = array(
+                $list[] = [
                     'label' => $label,
                     'value' => $cid,
-                );
+                ];
                 if (isset($row['category_entry_amount'])) {
                     $vars['amount'] = $row['category_entry_amount'];
                 }
@@ -119,8 +120,9 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                 }
             }
         }
-        if ($currentCid = $this->Get->get('currentCid')) {
-            if (array_search(intval($currentCid), array_column($list, 'value')) === false) {
+        $currentCid = (int)$this->Get->get('currentCid');
+        if ($currentCid > 0) {
+            if (array_search(intval($currentCid), array_column($list, 'value'), true) === false) {
                 $name = ACMS_RAM::categoryName($currentCid);
                 $tempCid = $currentCid;
                 do {
@@ -130,10 +132,10 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                     }
                     $name = ACMS_RAM::categoryName($tempCid) . ' > ' . $name;
                 } while (true);
-                $list[] = array(
+                $list[] = [
                     'label' => $name,
                     'value' => $currentCid,
-                );
+                ];
             }
         }
         return $list;

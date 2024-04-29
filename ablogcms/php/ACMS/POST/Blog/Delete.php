@@ -48,11 +48,11 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
             $DB->query($SQL->get(dsn()), 'exec');
 
             foreach (
-                array(
-                'alias', 'category', 'column', 'comment', 'config', 'config_set', 'dashboard',
-                'entry', 'field', 'form', 'fulltext', 'log_form',
-                'module', 'rule', 'tag', 'trackback', 'user',
-                ) as $tb
+                [
+                    'alias', 'category', 'column', 'comment', 'config', 'config_set', 'dashboard',
+                    'entry', 'field', 'form', 'fulltext', 'log_form',
+                    'module', 'rule', 'tag', 'trackback', 'user',
+                ] as $tb
             ) {
                 $SQL    = SQL::newDelete($tb);
                 $SQL->addWhereOpr($tb . '_blog_id', BID);
@@ -64,10 +64,10 @@ class ACMS_POST_Blog_Delete extends ACMS_POST_Blog
 
             AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログを削除しました');
 
-            $this->redirect(acmsLink(array(
+            $this->redirect(acmsLink([
                 'bid'   => $pid,
                 'admin' => 'blog_edit',
-            )));
+            ]));
         } else {
             AcmsLogger::info('「' . ACMS_RAM::blogName(BID) . '」ブログの削除に失敗しました');
         }

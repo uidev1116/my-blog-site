@@ -3,13 +3,14 @@
 namespace Acms\Services\Cache\Adapters;
 
 use Acms\Services\Cache\Contracts\AdapterInterface;
+use Symfony\Component\Cache\PruneableInterface;
 
 class Standard implements AdapterInterface
 {
     /**
-     * @var \Symfony\Component\Cache\Adapter\AdapterInterface;
+     * @var \Symfony\Component\Cache\Adapter\AdapterInterface
      */
-    protected $adapter = null;
+    protected $adapter;
 
     /**
      * Construct
@@ -36,7 +37,7 @@ class Standard implements AdapterInterface
      * キャッシュを取得
      *
      * @param string $key
-     * @return any
+     * @return mixed
      */
     public function get($key)
     {
@@ -49,8 +50,7 @@ class Standard implements AdapterInterface
      * $lifetimeを指定しない場合はデフォルト値を設定
      *
      * @param string $key
-     * @param any $value
-     * @param array $tags
+     * @param mixed $value
      * @param int $lifetime
      */
     public function put($key, $value, $lifetime = 0)
@@ -93,7 +93,7 @@ class Standard implements AdapterInterface
      */
     public function prune()
     {
-        if (method_exists($this->adapter, 'prune')) {
+        if ($this->adapter instanceof PruneableInterface) {
             $this->adapter->prune();
         }
     }

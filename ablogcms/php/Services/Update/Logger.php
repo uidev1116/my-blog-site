@@ -53,7 +53,7 @@ class Logger
         $this->json->error = '';
         $this->json->inProcess = '';
         $this->json->percentage = 0;
-        $this->json->processList = array();
+        $this->json->processList = [];
 
         $json = json_encode($this->json);
         Storage::put($this->destinationPath, $json);
@@ -95,10 +95,10 @@ class Logger
     {
         $this->json->inProcess = $message;
         $this->json->percentage += $percentage;
-        $this->json->processList[] = array(
+        $this->json->processList[] = [
             'message' => $message,
             'status' => empty($status) ? 'ng' : 'ok',
-        );
+        ];
         if ($this->json->percentage > 100) {
             $this->json->percentage = 100;
         }
@@ -131,10 +131,10 @@ class Logger
     public function error($message)
     {
         $this->json->error = $message;
-        $this->json->processList[] = array(
+        $this->json->processList[] = [
             'message' => $message,
             'status' => 'ng',
-        );
+        ];
         $this->json->percentage = 100;
         $this->build();
     }
@@ -142,7 +142,7 @@ class Logger
     public function addPercentage($percentage = 0)
     {
         $this->json->percentage += $percentage;
-        if ($this->json->percentage > 100) {
+        if ((int)$this->json->percentage > 100) {
             $this->json->percentage = 100;
         }
         $this->build();

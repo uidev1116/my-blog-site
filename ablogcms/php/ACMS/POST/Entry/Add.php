@@ -20,10 +20,10 @@ class ACMS_POST_Entry_Add extends ACMS_POST_Entry
         }
 
         if (!$Column = Entry::extractColumn()) {
-            return acmsLink(array(
+            return acmsLink([
                 'bid'   => BID,
                 'eid'   => EID,
-            ));
+            ]);
         }
         $DB  = DB::singleton(dsn());
         $Res = Entry::saveColumn($Column, EID, BID, true);
@@ -54,9 +54,9 @@ class ACMS_POST_Entry_Add extends ACMS_POST_Entry
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーにユニットを追加しました');
 
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'bid'   => BID,
             'eid'   => EID,
-        )));
+        ]));
     }
 }

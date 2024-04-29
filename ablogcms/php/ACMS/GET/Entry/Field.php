@@ -2,9 +2,9 @@
 
 class ACMS_GET_Entry_Field extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'eid'   => 'global',
-    );
+    ];
 
     function get()
     {

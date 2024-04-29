@@ -24,17 +24,17 @@ class Engine
     /**
      * @var array
      */
-    protected $restrictionReferrer = array();
+    protected $restrictionReferrer = [];
 
     /**
      * @var array
      */
-    protected $restrictionAddress = array();
+    protected $restrictionAddress = [];
 
     /**
      * @var array
      */
-    protected $allowOriginDomains = array();
+    protected $allowOriginDomains = [];
 
     /**
      * Constructor
@@ -71,47 +71,47 @@ class Engine
             $sql->addWhereOpr('module_identifier', $identifier);
             $sql->addWhereOpr('module_name', $moduleName);
             $eagerLoadModule[$moduleName][$identifier] = DB::query($sql->get(dsn()), 'row');
-            $res = boot($moduleName, '', $opt, $post, $config, $eagerLoadModule);
-            $json = $this->isValidJson($res) ? $res : '{}';
+            $json = boot($moduleName, '', $opt, $post, $config, $eagerLoadModule);
+            $json = $this->jsonValidate($json) ? $json : '{}'; // GETモジュールの結果が不正なJSONの場合は'{}'を返す
             $noCache = false;
         } catch (NotFoundModuleException $e) {
             AcmsLogger::error('API機能: 有効なモジュールIDが存在しません', [
                 'identifier' => $identifier,
             ]);
             httpStatusCode('404 Not Found');
-            $json = json_encode(array(
+            $json = json_encode([
                 'status' => 404,
                 'error' => '404 Not Found Module',
                 'message' => 'モジュールIDが存在しません',
                 'path' => REQUEST_PATH,
-            ));
+            ]);
         } catch (ApiKeyException $e) {
             $this->logging($e, $moduleName, $identifier);
             httpStatusCode('401 Unauthorized');
-            $json = json_encode(array(
+            $json = json_encode([
                 'status' => 401,
                 'error' => '401 Unauthorized',
                 'message' => $e->getMessage(),
                 'path' => REQUEST_PATH,
-            ));
+            ]);
         } catch (ForbiddenException $e) {
             $this->logging($e, $moduleName, $identifier);
             httpStatusCode('403 Forbidden');
-            $json = json_encode(array(
+            $json = json_encode([
                 'status' => 403,
                 'error' => '403 Forbidden',
                 'message' => $e->getMessage(),
                 'path' => REQUEST_PATH,
-            ));
+            ]);
         } catch (\Exception $e) {
             $this->logging($e, $moduleName, $identifier);
             httpStatusCode('404 Not Found');
-            $json = json_encode(array(
+            $json = json_encode([
                 'status' => 404,
                 'error' => '404 Not Found',
                 'message' => $e->getMessage(),
                 'path' => REQUEST_PATH,
-            ));
+            ]);
         }
         $this->response($json, $noCache);
     }
@@ -272,8 +272,17 @@ class Engine
         }
     }
 
-    protected function isValidJson(string $json)
+    /**
+     * 文字列が有効なJSONかどうかを検証する
+     * @param string $json
+     * @return bool
+     */
+    protected function jsonValidate(string $json): bool
     {
+        if (version_compare(PHP_VERSION, '8.3', '>=')) {
+            // PHP 8.3以降の場合、組み込みのjson_validate関数を利用する
+            return json_validate($json); // @phpstan-ignore-line
+        }
         return is_null(json_decode($json)) === false;
     }
 }

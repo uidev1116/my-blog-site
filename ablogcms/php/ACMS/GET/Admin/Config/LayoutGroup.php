@@ -21,16 +21,16 @@ class ACMS_GET_Admin_Config_LayoutGroup extends ACMS_GET_Admin_Config
         $labels = $Config->getArray('layout_group_label');
         $hoge   = $Config->getArray('layout_add_type_set');
 
-        $vars   = array();
+        $vars   = [];
         foreach ($groups as $i => $group) {
             $label = $labels[$i];
             if (empty($group) || empty($label)) {
                 continue;
             }
-            $Tpl->add('group:loop', array(
+            $Tpl->add('group:loop', [
                 'group' => $group,
                 'label' => $label,
-            ));
+            ]);
         }
 
         $Tpl->add(null, $vars);

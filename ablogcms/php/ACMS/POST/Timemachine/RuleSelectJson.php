@@ -19,13 +19,13 @@ class ACMS_POST_Timemachine_RuleSelectJson extends ACMS_POST
         $SQL->setOrder('rule_sort');
         $all = $DB->query($SQL->get(dsn()), 'all');
 
-        $json = array();
+        $json = [];
         while ($row = array_shift($all)) {
             $rid = intval($row['rule_id']);
-            $json[] = array(
+            $json[] = [
                 'id' => $rid,
                 'label' => $row['rule_name'],
-            );
+            ];
         }
         Common::responseJson($json);
     }

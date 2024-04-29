@@ -1,30 +1,29 @@
 <?php
 
-define('ARCHIVES_BACKUP_DIR', SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_archives/');
-define('DB_FULL_BACKUP_DIR', SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_database/');
-define('BLOG_EXPORT_DIR', SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_blog/');
-
 class ACMS_GET_Admin_Backup_ArchiveZipList extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $zip_list = array();
-        $sql_list = array();
-        $import_list = array();
+        $zip_list = [];
+        $sql_list = [];
+        $import_list = [];
 
-        $this->createList(ARCHIVES_BACKUP_DIR, $zip_list);
-        $this->createList(DB_FULL_BACKUP_DIR, $sql_list);
-        $this->createList(BLOG_EXPORT_DIR, $import_list);
+        $archivesBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_archives/';
+        $dbBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_database/';
+        $blogBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_blog/';
+        $this->createList($archivesBackupDir, $zip_list);
+        $this->createList($dbBackupDir, $sql_list);
+        $this->createList($blogBackupDir, $import_list);
 
         if (empty($zip_list)) {
             $Tpl->add('notFoundZip');
         } else {
             foreach ($zip_list as $file) {
-                $Tpl->add('zip:loop', array(
+                $Tpl->add('zip:loop', [
                     'zipfile' => $file,
-                ));
+                ]);
             }
             $Tpl->add('foundZip');
         }
@@ -33,9 +32,9 @@ class ACMS_GET_Admin_Backup_ArchiveZipList extends ACMS_GET
             $Tpl->add('notFoundSql');
         } else {
             foreach ($sql_list as $file) {
-                $Tpl->add('sql:loop', array(
+                $Tpl->add('sql:loop', [
                     'sqlfile' => $file,
-                ));
+                ]);
             }
             $Tpl->add('foundSql');
         }
@@ -44,9 +43,9 @@ class ACMS_GET_Admin_Backup_ArchiveZipList extends ACMS_GET
             $Tpl->add('notFoundExport');
         } else {
             foreach ($import_list as $file) {
-                $Tpl->add('export:loop', array(
+                $Tpl->add('export:loop', [
                     'zip' => $file,
-                ));
+                ]);
             }
             $Tpl->add('foundExport');
         }
@@ -54,9 +53,9 @@ class ACMS_GET_Admin_Backup_ArchiveZipList extends ACMS_GET
         return $Tpl->get();
     }
 
-    function createList($target, &$list)
+    private function createList($target, &$list)
     {
-        $time_list = array(); //ファイルの日付を保存する配列
+        $time_list = []; //ファイルの日付を保存する配列
         if (Storage::isDirectory($target)) {
             if ($dir = opendir($target)) {
                 while (($file = readdir($dir)) !== false) {

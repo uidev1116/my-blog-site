@@ -15,7 +15,7 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
             return '';
         }
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $Vars   = array();
+        $Vars   = [];
         //---------
         // refresh
         if (!$this->Post->isNull()) {
@@ -31,7 +31,7 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
         $limits = configArray('admin_limit_option');
         $limit  = $this->Q->get('limit', $limits[config('admin_limit_default')]);
         foreach ($limits as $val) {
-            $_vars  = array('value' => $val);
+            $_vars  = ['value' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -62,8 +62,8 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
         $Log = SQL::newSelect('log_form');
         $Log->setOrder('log_form_datetime', 'DESC');
@@ -118,34 +118,34 @@ class ACMS_GET_Admin_Form_Index extends ACMS_GET_Admin_Module
                 $logAction  = true;
             }
             if ($editAction) {
-                $Tpl->add(array('editAction', 'form:loop'), array(
-                    'itemUrl'   => acmsLink(array(
+                $Tpl->add(['editAction', 'form:loop'], [
+                    'itemUrl'   => acmsLink([
                         'bid'   => $fmbid,
                         'admin' => 'form_edit',
-                        'query' => array(
+                        'query' => [
                             'fmid'  => $fmid,
-                        ),
-                    )),
-                ));
+                        ],
+                    ]),
+                ]);
             }
             if ($logAction) {
-                $Tpl->add(array('logAction', 'form:loop'), array(
-                    'logUrl'    => acmsLink(array(
+                $Tpl->add(['logAction', 'form:loop'], [
+                    'logUrl'    => acmsLink([
                         'bid'   => BID,
                         'admin' => 'form_log',
-                        'query' => array(
+                        'query' => [
                             'fmid'  => $fmid,
-                        ),
-                    )),
-                ));
+                        ],
+                    ]),
+                ]);
             }
-            $Tpl->add('form:loop', array(
+            $Tpl->add('form:loop', [
                 'code'      => $row['form_code'],
                 'name'      => $row['form_name'],
                 'datetime'  => $row['form_last_datetime'],
                 'amount'    => $row['form_log_amount'],
                 'scope'     => $row['form_scope'],
-            ));
+            ]);
         }
         $Tpl->add(null, $Vars);
         return $Tpl->get();

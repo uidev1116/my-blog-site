@@ -70,7 +70,7 @@ class ACMS_Filter
     public static function blogStatus(&$SQL, $scope = null)
     {
         if (!sessionWithAdministration()) {
-            $aryStatus  = array('open');
+            $aryStatus  = ['open'];
             if (sessionWithSubscription()) {
                 $aryStatus[]    = 'secret';
             }
@@ -108,7 +108,7 @@ class ACMS_Filter
     public static function blogDisclosureSecretStatus(&$SQL, $scope = null)
     {
         if (!sessionWithAdministration()) {
-            $aryStatus  = array('open', 'secret');
+            $aryStatus  = ['open', 'secret'];
             $SQL->addWhereIn('blog_status', $aryStatus, 'AND', $scope);
         }
     }
@@ -358,7 +358,7 @@ class ACMS_Filter
     public static function categoryTree(&$SQL, $cid, $axis = 'self', $scope = null)
     {
         if (empty($cid)) {
-            return true;
+            return;
         }
 
         $self   = is_int(strpos($axis, 'self'));
@@ -566,17 +566,21 @@ class ACMS_Filter
      * ACMS_Filter::entryTag($SQL, $tags);
      *
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
-     * @param array $tags
+     * @param string[] $tags
      * @param null $scope
      * @return void
      */
     public static function entryTag(&$SQL, $tags, $scope = null)
     {
-        if (!is_array($tags) and empty($tags)) {
-            return false;
+        if (!is_array($tags)) {
+            return;
         }
 
-        $tag    = array_shift($tags);
+        if (count($tags) < 1) {
+            return;
+        }
+
+        $tag = array_shift($tags);
         $SQL->addLeftJoin('tag', 'tag_entry_id', 'entry_id', 'tag0');
         $SQL->addWhereOpr('tag_name', $tag, '=', 'AND', 'tag0');
         $i  = 1;
@@ -625,9 +629,9 @@ class ACMS_Filter
      * ACMS_Filter::entryOrder($SQL, 'code-asc');
      *
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
-     * @param string | array $order
-     * @param null $uid
-     * @param null $cid
+     * @param string|string[] $order
+     * @param int|null $uid
+     * @param int|null $cid
      * @param bool|int $secondary_filed_sort
      * @param bool|string $field_name
      *
@@ -635,11 +639,11 @@ class ACMS_Filter
      */
     public static function entryOrder(&$SQL, $order, $uid = null, $cid = null, $secondary_filed_sort = false, $field_name = false)
     {
-        $orders = array();
+        $orders = [];
         $sortFd = '';
 
         if (is_array($order)) {
-            $orderKeys = array();
+            $orderKeys = [];
             foreach ($order as $item) {
                 if (preg_match('/^[^-]+-(asc|desc)$/i', $item)) {
                     $order_info = explode('-', $item);
@@ -718,7 +722,7 @@ class ACMS_Filter
                         $SQL->addLeftJoin('(' . $SUB->get(dsn()) . ')', 'field_eid', 'entry_id', 'sortFieldTable' . $secondary_filed_sort);
                         $SQL->addOrder(SQL::newOpr('strfield_sort_column', null, '='), 'ASC');
                         $SQL->addOrder('strfield_sort_column', $seq);
-                    } elseif (false !== strpos($SQL->get(), 'strfield_sort')) {
+                    } elseif (false !== strpos($SQL->get(dsn()), 'strfield_sort')) {
                         $SQL->addOrder('strfield_sort' . $field_num, $seq);
                     }
                     if (intval($secondary_filed_sort) > 1) {
@@ -736,7 +740,7 @@ class ACMS_Filter
                         $SQL->addLeftJoin('(' . $SUB->get(dsn()) . ')', 'field_eid', 'entry_id', 'sortFieldTable' . $secondary_filed_sort);
                         $SQL->addOrder(SQL::newOpr('intfield_sort_column', null, '='), 'ASC');
                         $SQL->addOrder('intfield_sort_column', $seq);
-                    } elseif (false !== strpos($SQL->get(), 'intfield_sort')) {
+                    } elseif (false !== strpos($SQL->get(dsn()), 'intfield_sort')) {
                         $SQL->addOrder('intfield_sort' . $field_num, $seq);
                     }
                     if (intval($secondary_filed_sort) > 1) {
@@ -748,9 +752,9 @@ class ACMS_Filter
                 default:
                     break;
             }
-            foreach ($orders as $order) {
-                if ($order !== 'random') {
-                    self::entryOrder($SQL, $order, $uid, $cid, $secondary_filed_sort, $field_name);
+            foreach ($orders as $orderString) {
+                if ($orderString !== 'random') {
+                    self::entryOrder($SQL, $orderString, $uid, $cid, $secondary_filed_sort, $field_name);
                 }
             }
         }
@@ -943,9 +947,9 @@ class ACMS_Filter
      */
     private static function _field(&$SQL, $Field, $fieldKey = null, $tableKey = null)
     {
-        $sortFields = array();
-        $unionAry   = array();
-        $emptyAry   = array();
+        $sortFields = [];
+        $unionAry   = [];
+        $emptyAry   = [];
         $sort       = false;
 
         foreach ($Field->listFields() as $j => $fd) {
@@ -1000,7 +1004,7 @@ class ACMS_Filter
                             $SQL->addInnerJoin($unionAry[0], $fieldKey, $tableKey, 'field' . $j);
                         }
 
-                        $unionAry   = array();
+                        $unionAry   = [];
                         $unionAry[] = clone $SUB;
                     }
                 }
@@ -1009,16 +1013,14 @@ class ACMS_Filter
                 $SQL->addWhere($Where);
             }
         }
-        $uniouCount = count($unionAry);
-        if ($uniouCount > 1) {
+        $unionCount = count($unionAry);
+        if ($unionCount > 1) {
             $UNION = SQL::newSelect($unionAry[0], 'field_union_end');
-        }
-        for ($i = 1; $i < $uniouCount; $i++) {
-            $UNION->addUnion($unionAry[$i]);
-        }
-        if ($uniouCount > 1) {
+            for ($i = 1; $i < $unionCount; $i++) {
+                $UNION->addUnion($unionAry[$i]);
+            }
             $SQL->addInnerJoin($UNION, $fieldKey, $tableKey, 'field_end');
-        } elseif ($uniouCount > 0) {
+        } elseif ($unionCount > 0) {
             $SQL->addInnerJoin($unionAry[0], $fieldKey, $tableKey, 'field_end');
         }
 
@@ -1051,12 +1053,12 @@ class ACMS_Filter
     private static function _keyword(&$SQL, $keyword, $fulltextKey, $tableKey)
     {
         if (empty($keyword)) {
-            return false;
+            return;
         }
 
         $keyword = addcslashes($keyword, '%_');
         if (!$aryWord = preg_split('/(　|\s)+/u', $keyword, -1, PREG_SPLIT_NO_EMPTY)) {
-            return false;
+            return;
         }
 
         //----------------------
@@ -1103,8 +1105,8 @@ class ACMS_Filter
      *
      * @param SQL_Select|SQL_Update|SQL_Delete $SQL
      * @param string $order asc|desc
-     * @param null $uid
-     * @param null $cid
+     * @param int|null $uid
+     * @param int|null $cid
      * @return void
      */
     public static function formbuildOrder(&$SQL, $order, $uid = null, $cid = null)
@@ -1309,7 +1311,7 @@ class ACMS_Filter
 
             $res        = $DB->query($Customer->get(dsn()), 'exec');
             $fieldCount = $DB->columnCount($res);
-            $cfields    = array();
+            $cfields    = [];
             for ($i = 0; $i < $fieldCount; $i++) {
                 $cfields[]  = $DB->columnMeta($i);
             }

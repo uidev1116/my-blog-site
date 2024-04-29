@@ -46,9 +46,9 @@ class ACMS_GET_Admin_Fix_UnitSize extends ACMS_GET_Admin_Fix
                 if (empty($size)) {
                     continue;
                 }
-                $Tpl->add(array_merge(array('unit_size:loop'), $block), array(
+                $Tpl->add(array_merge(['unit_size:loop'], $block), [
                     'unit_size' => $size,
-                ));
+                ]);
             }
         }
 

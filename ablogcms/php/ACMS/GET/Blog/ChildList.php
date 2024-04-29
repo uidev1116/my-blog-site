@@ -2,9 +2,9 @@
 
 class ACMS_GET_Blog_ChildList extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'bid'   => 'global',
-    );
+    ];
 
     /**
      * @var array
@@ -19,24 +19,24 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
     /**
      * @var array
      */
-    protected $blog = array();
+    protected $blog = [];
 
     /**
      * @return array
      */
     protected function initVars()
     {
-        return array(
+        return [
             'order' => config('blog_child_list_order'),
             'limit' => intval(config('blog_child_list_limit')),
             'loop_class' => config('blog_child_list_loop_class'),
-        );
+        ];
     }
 
     /**
-     * @return mixed
+     * @inheritDoc
      */
-    function get()
+    public function get()
     {
         if (!$this->setConfig()) {
             return '';
@@ -52,9 +52,9 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
 
         $currentBlog = loadBlogField($this->bid);
         $currentBlog->overload(loadBlog($this->bid));
-        $currentBlog->set('url', acmsLink(array(
+        $currentBlog->set('url', acmsLink([
             'bid'   => $this->bid,
-        )));
+        ]));
         $Tpl->add('currentBlog', $this->buildField($currentBlog, $Tpl));
 
         return $Tpl->get();
@@ -140,9 +140,9 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
             foreach ($row as $key => $val) {
                 $Field->setField(preg_replace('/blog\_/', '', $key), $val);
             }
-            $Field->set('url', acmsLink(array(
+            $Field->set('url', acmsLink([
                 'bid'   => $bid,
-            )));
+            ]));
             $Field->set('blog:loop.class', $loopClass);
 
             //------

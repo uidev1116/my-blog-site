@@ -45,7 +45,7 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
      */
     protected function getAppList()
     {
-        $apps = array();
+        $apps = [];
         if (!Storage::exists(PLUGIN_LIB_DIR)) {
             return $apps;
         }
@@ -74,7 +74,7 @@ class ACMS_GET_Admin_App_Index extends ACMS_GET_Admin
      */
     protected function getLegacyAppList()
     {
-        $apps = array();
+        $apps = [];
         $list = scandir(AAPP_LIB_DIR);
         if (!Storage::exists(AAPP_LIB_DIR)) {
             return $apps;

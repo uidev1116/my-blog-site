@@ -35,13 +35,13 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
      */
     function validate()
     {
-        if (array_search('user_code', $this->labels) === false) {
+        if (array_search('user_code', $this->labels, true) === false) {
             throw new RuntimeException('コード (user_code) フィールドがありません。');
         }
-        if (array_search('user_mail', $this->labels) === false) {
+        if (array_search('user_mail', $this->labels, true) === false) {
             throw new RuntimeException('メールアドレス (user_mail) フィールドがありません。');
         }
-        if (array_search('user_pass', $this->labels) === false) {
+        if (array_search('user_pass', $this->labels, true) === false) {
             throw new RuntimeException('パスワード (user_pass) フィールドがありません。');
         }
 
@@ -59,12 +59,12 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
                     }
                     break;
                 case 'user_status':
-                    if (!in_array($value, array('open', 'close', 'withdrawal', 'pseudo'))) {
+                    if (!in_array($value, ['open', 'close', 'withdrawal', 'pseudo'], true)) {
                         throw new \RuntimeException('不正な値が設定されています（' . $key . '）');
                     }
                     break;
                 case 'user_auth':
-                    if (!in_array($value, array('administrator', 'editor', 'contributor', 'subscriber'))) {
+                    if (!in_array($value, ['administrator', 'editor', 'contributor', 'subscriber'], true)) {
                         throw new \RuntimeException('不正な値が設定されています（' . $key . '）');
                     }
                     break;
@@ -86,7 +86,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
                 case 'user_login_anywhere':
                 case 'user_global_auth':
                 case 'user_login_terminal_restriction':
-                    if (!in_array($value, array('on', 'off'))) {
+                    if (!in_array($value, ['on', 'off'], true)) {
                         throw new \RuntimeException('on または off 以外の値が設定されています（' . $key . '）');
                     }
                     break;
@@ -116,7 +116,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $q = $SQL->get(dsn());
 
         if ($row = $DB->query($q, 'row')) {
-            if (array_search('user_id', $this->labels) === false || $row['user_id'] != $this->data['user_id']) {
+            if (array_search('user_id', $this->labels, true) === false || $row['user_id'] != $this->data['user_id']) {
                 throw new RuntimeException('既に存在するユーザーが含まれています。');
             }
         }
@@ -219,7 +219,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
         $uid = $this->csvId;
 
         if (!empty($this->fields)) {
-            $fkey = array();
+            $fkey = [];
             $SQL    = SQL::newDelete('field');
             $SQL->addWhereOpr('field_uid', $uid);
             foreach ($this->fields as $dval) {
@@ -371,7 +371,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
      */
     function userBase()
     {
-        $base = array(
+        $base = [
             'user_id'               => $this->nextId,
             'user_code'             => 'user-' . $this->nextId,
             'user_status'           => 'open',
@@ -393,7 +393,7 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
             'user_updated_datetime' => date('Y-m-d H:i:s', REQUEST_TIME),
             'user_generated_datetime'   => date('Y-m-d H:i:s', REQUEST_TIME),
             'user_blog_id'          => BID,
-        );
+        ];
 
         if (!$this->isUpdate) {
             $base['user_pass'] = acmsUserPasswordHash('user-' . $this->nextId);
@@ -410,13 +410,13 @@ class ACMS_POST_Import_Model_User extends ACMS_POST_Import_Model
      */
     function fieldBase()
     {
-        return array(
+        return [
             'field_key'     => null,
             'field_value'   => null,
             'field_sort'    => 1,
             'field_search'  => 'on',
             'field_uid'     => $this->nextId,
             'field_blog_id' => BID,
-        );
+        ];
     }
 }

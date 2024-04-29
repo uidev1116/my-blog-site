@@ -62,7 +62,9 @@ class LinkResolver extends Resolver
             if (preg_match($mediaDownloadRegex, $path, $mediaMatchs)) {
                 $mid = $mediaMatchs[1];
                 $media = Media::getMedia($mid);
-                $path = '/' . MEDIA_STORAGE_DIR . $media['path'];
+                if (isset($media['path']) && $media['path']) {
+                    $path = '/' . MEDIA_STORAGE_DIR . $media['path'];
+                }
             }
             $path = substr($path, 1);
             $path = '/' . $offset_dir . $path;

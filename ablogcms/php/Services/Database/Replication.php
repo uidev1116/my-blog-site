@@ -8,7 +8,7 @@ use AcmsLogger;
 class Replication
 {
     /**
-     * @var \Acms\Services\Database\Engine
+     * @var \Acms\Services\Database\Engine\Base
      */
     protected $db;
 
@@ -41,7 +41,7 @@ class Replication
         $sql = 'SHOW TABLES FROM `' . $this->dbName . '`';
         $tables = DB::query($sql, 'all');
 
-        $list = array();
+        $list = [];
         foreach ($tables as $key => $table) {
             array_push($list, strtolower(reset($table)));
         }
@@ -56,7 +56,7 @@ class Replication
      */
     public function dropAllTables()
     {
-        $list = array();
+        $list = [];
         foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
             array_push($list, '`' . $table . '`');
@@ -76,7 +76,7 @@ class Replication
      */
     public function renameAllTable()
     {
-        $list = array();
+        $list = [];
         foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
             if (!preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '.*/', $table)) {
@@ -96,7 +96,7 @@ class Replication
      */
     public function dropCashTable()
     {
-        $list = array();
+        $list = [];
         foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
             if (preg_match('/^backup_acms_.*/', $table)) {
@@ -130,7 +130,7 @@ class Replication
     public function buildCreateTableSql()
     {
         $master = '';
-        $list = array();
+        $list = [];
         foreach ($this->getTableList() as $table) {
             $table = strtolower($table);
             if (!preg_match('/^backup_acms_.*/', $table) and preg_match('/^' . DB_PREFIX . '.*/', $table)) {
@@ -141,9 +141,9 @@ class Replication
         foreach ($list as $key => $row) {
             $sql = 'SHOW CREATE TABLE ' . $row;
             $create = DB::query($sql, 'all');
-            foreach ($create as $row) {
-                $create_sql = $row['Create Table'];
-                $create_sql = str_replace(array("\r\n", "\n", "\r"), '', $create_sql);
+            foreach ($create as $createRow) {
+                $create_sql = $createRow['Create Table'];
+                $create_sql = str_replace(["\r\n", "\n", "\r"], '', $create_sql);
                 $master .= $create_sql . ';' . PHP_EOL;
             }
         }
@@ -165,8 +165,8 @@ class Replication
             return;
         }
         $db = DB::singleton(dsn());
-        $columnsList = array();
-        $columnsType = array();
+        $columnsList = [];
+        $columnsType = [];
 
         $columns = $db->query('SHOW COLUMNS FROM `' . $table . '`', 'all');
         foreach ($columns as $row) {

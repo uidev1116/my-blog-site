@@ -273,7 +273,7 @@ class SQL_Field_Operator_Between extends SQL_Field_Operator
 
     function getBetween()
     {
-        return array($this->_a, $this->_b);
+        return [$this->_a, $this->_b];
     }
 
     function _right($dsn = null)
@@ -289,7 +289,7 @@ class SQL_Field_Operator_Between extends SQL_Field_Operator
 
 class SQL_Field_Case
 {
-    public $_cases     = array();
+    public $_cases     = [];
     public $_simple    = null;
     public $_else      = null;
 
@@ -305,15 +305,15 @@ class SQL_Field_Case
 
     function add($when, $then)
     {
-        $this->_cases[] = array(
+        $this->_cases[] = [
             'when'  => $when,
             'then'  => $then,
-        );
+        ];
         return true;
     }
     function set($when = null, $then = null)
     {
-        $this->_cases   = array();
+        $this->_cases   = [];
         if (!empty($when)) {
             $this->add($when, $then);
         }
@@ -369,19 +369,19 @@ class SQL_Field_Case
  */
 class SQL_Where extends SQL
 {
-    public $_wheres    = array();
+    public $_wheres    = [];
 
     function addWhere($w, $gl = 'AND')
     {
-        $this->_wheres[]    = array(
+        $this->_wheres[]    = [
             'where' => $w,
             'glue'  => $gl,
-        );
+        ];
         return true;
     }
     function setWhere($w, $gl = 'AND')
     {
-        $this->_wheres  = array();
+        $this->_wheres  = [];
         if (!empty($w)) {
             $this->addWhere($w, $gl);
         }
@@ -402,10 +402,10 @@ class SQL_Where extends SQL
             $F->setFunction($func);
         }
 
-        return  array(
+        return  [
             'where' => SQL::newOpr($F, $val, $opr),
             'glue'  => $gl,
-        );
+        ];
     }
 
     function getWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
@@ -422,10 +422,10 @@ class SQL_Where extends SQL
             $F->setFunction($func);
         }
 
-        return array(
+        return [
             'where' => SQL::newOprIn($F, $vals),
             'glue'  => $gl,
-        );
+        ];
     }
 
     function getWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
@@ -442,26 +442,26 @@ class SQL_Where extends SQL
             $F->setFunction($func);
         }
 
-        return array(
+        return [
             'where' => SQL::newOprNotIn($F, $vals),
             'glue'  => $gl,
-        );
+        ];
     }
 
     function getWhereExists($vals, $gl = 'AND')
     {
-        return array(
+        return [
             'where' => SQL::newOprExists($vals),
             'glue'  => $gl,
-        );
+        ];
     }
 
     function getWhereNotExists($vals, $gl = 'AND')
     {
-        return array(
+        return [
             'where' => SQL::newOprNotExists($vals),
             'glue'  => $gl,
-        );
+        ];
     }
 
     function getWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
@@ -478,10 +478,10 @@ class SQL_Where extends SQL
             $F->setFunction($func);
         }
 
-        return array(
+        return [
             'where' => SQL::newOprBw($F, $a, $b),
             'glue'  => $gl,
-        );
+        ];
     }
 
     /**
@@ -518,7 +518,7 @@ class SQL_Where extends SQL
     function addWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         if (empty($vals)) {
-            $vals = array(-100);
+            $vals = [-100];
         }
         $this->_wheres[]    = $this->getWhereIn($fd, $vals, $gl, $scp, $func);
         return true;
@@ -628,31 +628,31 @@ class SQL_Where extends SQL
  */
 class SQL_Select extends SQL_Where
 {
-    public $_tables = array();
-    public $_leftJoins = array();
-    public $_innerJoins = array();
-    public $_selects = array();
-    public $_havings = array();
-    public $_groups = array();
+    public $_tables = [];
+    public $_leftJoins = [];
+    public $_innerJoins = [];
+    public $_selects = [];
+    public $_havings = [];
+    public $_groups = [];
     public $_limit = null;
-    public $_orders = array();
+    public $_orders = [];
     public $_fdOrders = null;
     public $_where = null;
-    public $_union = array();
+    public $_union = [];
     public $_straightJoin = false;
 
     function addTable($tb, $als = null, $straight_join = false)
     {
         $this->_straightJoin = $straight_join;
-        $this->_tables[] = array(
+        $this->_tables[] = [
             'table' => $tb,
             'alias' => $als,
-        );
+        ];
         return true;
     }
     function setTable($tb = null, $als = null, $straight_join = false)
     {
-        $this->_tables  = array();
+        $this->_tables  = [];
         if (!empty($tb)) {
             $this->addTable($tb, $als, $straight_join);
         }
@@ -675,18 +675,18 @@ class SQL_Select extends SQL_Where
     {
         $A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         $B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
-        $this->_leftJoins[] = array(
+        $this->_leftJoins[] = [
             'table'     => $tb,
             'a'         => $A,
             'b'         => $B,
             'where'     => $where,
-        );
+        ];
         return true;
     }
 
     function setLeftJoin($tb = null, $a = null, $b = null, $aScp = null, $bScp = null, $where = null)
     {
-        $this->_leftJoins   = array();
+        $this->_leftJoins   = [];
         if (!empty($tb) and !empty($a) and !empty($b)) {
             $this->addLeftJoin($tb, $a, $b, $aScp, $bScp);
         }
@@ -709,20 +709,20 @@ class SQL_Select extends SQL_Where
     {
         //$A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         //$B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
-        $this->_innerJoins[] = array(
+        $this->_innerJoins[] = [
             'table'     => $tb,
             'a'         => $a,
             'b'         => $b,
             'als'       => $als,
             'scp'       => $scp,
             'where'     => $where,
-        );
+        ];
         return true;
     }
 
     function setInnerJoin($tb = null, $a = null, $b = null, $als = null, $scp = null)
     {
-        $this->_innerJoins   = array();
+        $this->_innerJoins   = [];
         if (!empty($tb) and !empty($a) and !empty($b)) {
             $this->addInnerJoin($tb, $a, $b, $als, $scp);
         }
@@ -759,15 +759,15 @@ class SQL_Select extends SQL_Where
             $F->setFunction($func);
 //        }
 
-        $this->_selects[]   = array(
+        $this->_selects[]   = [
             'field' => $F,
             'alias' => $als,
-        );
+        ];
         return true;
     }
     function setSelect($fd = null, $als = null, $scp = null, $func = null)
     {
-        $this->_selects = array();
+        $this->_selects = [];
         if (!empty($fd)) {
             $this->addSelect($fd, $als, $scp, $func);
         }
@@ -795,15 +795,15 @@ class SQL_Select extends SQL_Where
      */
     function addHaving($h, $gl = 'AND')
     {
-        $this->_havings[]   = array(
+        $this->_havings[]   = [
             'having'    => $h,
             'glue'      => $gl,
-        );
+        ];
         return true;
     }
     function setHaving($h = null, $gl = 'AND')
     {
-        $this->_havings = array();
+        $this->_havings = [];
         if (!empty($h)) {
             $this->addHaving($h, $gl);
         }
@@ -828,7 +828,7 @@ class SQL_Select extends SQL_Where
     }
     function setGroup($fd = null, $scp = null)
     {
-        $this->_groups  = array();
+        $this->_groups  = [];
         if (!empty($fd)) {
             $this->addGroup($fd, $scp);
         }
@@ -846,19 +846,19 @@ class SQL_Select extends SQL_Where
      */
     function setLimit($lmt, $off = 0)
     {
-        $this->_limit   = array(
+        $this->_limit   = [
             'limit'     => intval($lmt),
             'offset'    => intval($off),
-        );
+        ];
         return true;
     }
 
     function addOrder($fd, $ord = 'ASC', $scp = null)
     {
-        $this->_orders[]    = array(
+        $this->_orders[]    = [
             'order' => (strtoupper($ord) == 'ASC') ? 'ASC' : 'DESC',
             'field' => SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp),
-        );
+        ];
         return true;
     }
 
@@ -867,25 +867,26 @@ class SQL_Select extends SQL_Where
      * $SQL->setOrder('entry_id', 'ASC', 'acms_entry');<br>
      * LIMIT 10, 30
      *
-     * @param int $lmt
-     * @param int $off
+     * @param string|null $fd
+     * @param string $ord
+     * @param string|null $scp
      * @return bool
      */
     function setOrder($fd = null, $ord = 'ASC', $scp = null)
     {
-        $this->_orders  = array();
+        $this->_orders  = [];
         if (!empty($fd)) {
             $this->addOrder($fd, $ord, $scp);
         }
         return true;
     }
 
-    function setFieldOrder($fd = null, $values = array(), $scp = null)
+    function setFieldOrder($fd = null, $values = [], $scp = null)
     {
-        $this->_fdOrders    = array(
+        $this->_fdOrders    = [
             'fd'        => SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp),
             'values'    => $values,
-        );
+        ];
     }
 
     function get($dsn = null)
@@ -1091,7 +1092,7 @@ class SQL_Insert extends SQL
             return false;
         }
 
-        $this->_insert = array();
+        $this->_insert = [];
         if (!empty($fd)) {
             $this->addInsert($fd, $val);
         }
@@ -1119,8 +1120,8 @@ class SQL_Insert extends SQL
         } elseif (!is_array($this->_insert)) {
             return false;
         } else {
-            $fds   = array();
-            $vals   = array();
+            $fds   = [];
+            $vals   = [];
             foreach ($this->_insert as $fd => $val) {
                 $fds[] = $fd;
                 if (is_null($val)) {
@@ -1182,7 +1183,7 @@ class SQL_Replace extends SQL
             return false;
         }
 
-        $this->_replace = array();
+        $this->_replace = [];
         if (!empty($fd)) {
             $this->addReplace($fd, $val);
         }
@@ -1210,8 +1211,8 @@ class SQL_Replace extends SQL
         } elseif (!is_array($this->_replace)) {
             return false;
         } else {
-            $fds   = array();
-            $vals   = array();
+            $fds   = [];
+            $vals   = [];
             foreach ($this->_replace as $fd => $val) {
                 $fds[] = $fd;
                 if (is_null($val)) {
@@ -1243,7 +1244,7 @@ class SQL_Replace extends SQL
  */
 class SQL_Update extends SQL_Where
 {
-    public $_update    = array();
+    public $_update    = [];
     public $_table     = null;
 
     /**
@@ -1266,7 +1267,7 @@ class SQL_Update extends SQL_Where
 
     function setUpdate($fd = null, $val = null)
     {
-        $this->_update  = array();
+        $this->_update  = [];
         if (!empty($fd)) {
             $this->addUpdate($fd, $val);
         }
@@ -1349,7 +1350,7 @@ class SQL_InsertOrUpdate extends SQL_Insert
 
     function setUpdate($fd = null, $val = null)
     {
-        $this->_update  = array();
+        $this->_update  = [];
         if (!empty($fd)) {
             $this->addUpdate($fd, $val);
         }
@@ -1377,8 +1378,8 @@ class SQL_InsertOrUpdate extends SQL_Insert
         } elseif (!is_array($this->_insert)) {
             return false;
         } else {
-            $fds   = array();
-            $vals   = array();
+            $fds   = [];
+            $vals   = [];
             foreach ($this->_insert as $fd => $val) {
                 $fds[] = $fd;
                 if (is_null($val)) {
@@ -1627,6 +1628,11 @@ class SQL
                 $this->$key = $value; // @phpstan-ignore-line
             }
         }
+    }
+
+    public function get($dsn = null)
+    {
+        throw new Exception('SQL::get() is not implemented.');
     }
 
     public static function isClass(&$obj, $className)
@@ -1953,7 +1959,7 @@ class SQL
     {
         $Obj    = new SQL_InsertOrUpdate();
         if (!empty($tb)) {
-            $Obj->setTable($tb, $als);
+            $Obj->setTable($tb);
         }
         return $Obj;
     }

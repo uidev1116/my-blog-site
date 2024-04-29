@@ -4,6 +4,11 @@ namespace Acms\Services\StaticExport\Generator;
 
 use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
+use Acms\Services\StaticExport\Entities\Page;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class TemplateGenerator extends Generator
 {
@@ -13,66 +18,70 @@ class TemplateGenerator extends Generator
     protected $path;
 
     /**
-     * @var int
+     * @param string $path
+     * @return void
      */
-    protected $numberOfTasks;
-
-    /**
-     * @param mixed $path
-     */
-    public function setPath($path)
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
 
-    protected function getName()
+    protected function getName(): string
     {
         return '部分テンプレートの書き出し' . '( ' . $this->path . ' )';
     }
 
-    protected function getTasks()
-    {
-        return 1;
-    }
-
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function main()
+    public function run(): PromiseInterface
     {
-        if (!$this->path) {
-            throw new \RuntimeException('no selected path.');
-        }
+        return new Promise(
+            function (callable $resolve, callable $reject) {
+                if (!$this->path) {
+                    $reject(new \RuntimeException('no selected path.'));
+                    return;
+                }
 
-        $this->logger->start($this->getName(), $this->getTasks());
-
-        $url = acmsLink(array('bid' => BID), false);
-        try {
-            $this->request($url . $this->path, $this->path);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), $url);
-        }
+                $url = acmsLink(['bid' => BID], false) . $this->path;
+                $pages = [new Page($url, $this->path)];
+                $this->logger->start($this->getName(), count($pages));
+                await($this->handle($pages));
+                $resolve(null);
+            }
+        );
     }
 
     /**
+     * @param string $path
      * @param string $data
-     * @param string $code
-     * @param object $info
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function writeContents(string $path, string $data): void
     {
-        if ($this->logger) {
-            $this->logger->processing();
+        $destPath = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $path;
+        try {
+            Storage::put($destPath, $data);
+        } catch (\Exception $e) {
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
-        if (empty($data) || $code != '200') {
-            $this->logger->error('データの取得に失敗しました。', $info, $code);
+    }
+
+    /**
+     * @param \Throwable $th
+     * @param string $url
+     */
+    protected function handleError(\Throwable $th, string $url): void
+    {
+        if ($th instanceof \React\Http\Message\ResponseException) {
+            $response = $th->getResponse();
+            $this->logger->error(
+                'データの取得に失敗しました。',
+                $url,
+                $response->getStatusCode()
+            );
             return;
         }
-        try {
-            Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $info, $data);
-        } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath() . $info);
-        }
+        $this->logger->error($th->getMessage(), $url);
     }
 }

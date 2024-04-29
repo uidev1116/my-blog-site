@@ -6,7 +6,7 @@ class ACMS_POST_Fix_Tag_Add extends ACMS_POST_Fix_Tag
 
     protected $targetEIDs = [];
 
-    function process($data, $word)
+    protected function process($data, $word)
     {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newInsert('tag');
@@ -20,7 +20,7 @@ class ACMS_POST_Fix_Tag_Add extends ACMS_POST_Fix_Tag
         $this->targetEIDs[] = $data['entry_id'];
     }
 
-    function success()
+    protected function success()
     {
         $this->Post->set('message', 'success');
 

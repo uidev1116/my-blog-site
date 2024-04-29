@@ -6,7 +6,7 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
     {
         $Blog = $this->extract('blog');
         $Blog->setMethod('status', 'required');
-        $Blog->setMethod('status', 'in', array('open', 'close', 'secret'));
+        $Blog->setMethod('status', 'in', ['open', 'close', 'secret']);
         $Blog->setMethod('status', 'status', Blog::isValidStatus($Blog->get('status')));
         $Blog->setMethod('status', 'root', true);
         $Blog->setMethod('name', 'required');
@@ -22,7 +22,7 @@ class ACMS_POST_Blog_Insert extends ACMS_POST_Blog
         $Blog->setMethod('editor_set_id', 'value', $this->checkConfigSetScope($Blog->get('editor_set_id')));
         $Blog->setMethod('editor_set_scope', 'in', ['local', 'global']);
         $Blog->setMethod('indexing', 'required');
-        $Blog->setMethod('indexing', 'in', array('on', 'off'));
+        $Blog->setMethod('indexing', 'in', ['on', 'off']);
         $Blog->setMethod('blog', 'operable', 1
             and sessionWithAdministration()
             and isBlogGlobal(SBID)

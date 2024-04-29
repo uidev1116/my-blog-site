@@ -17,7 +17,7 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
             return '';
         }
 
-        $aryTypeLabel = array();
+        $aryTypeLabel = [];
         foreach (configArray('column_add_type') as $i => $type) {
             $aryTypeLabel[$type] = config('column_add_type_label', '', $i);
         }
@@ -58,10 +58,10 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
             //------
             // sort
             for ($j = 1; $j <= $cnt; $j++) {
-                $_vars = array(
+                $_vars = [
                     'value' => $j,
                     'label' => $j,
-                );
+                ];
                 if (($i + 1 + $offset) == $j) {
                     $_vars['selected'] = config('attr_selected');
                 }
@@ -70,14 +70,14 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
 
             //-------
             // align
-            if (in_array(detectUnitTypeSpecifier($type), array('text', 'custom', 'module', 'table'), true)) {
-                $Tpl->add(array('align#liquid'), array(
+            if (in_array(detectUnitTypeSpecifier($type), ['text', 'custom', 'module', 'table'], true)) {
+                $Tpl->add(['align#liquid'], [
                     'align:selected#' . $data['align'] => config('attr_selected')
-                ));
+                ]);
             } else {
-                $Tpl->add(array('align#solid'), array(
+                $Tpl->add(['align#solid'], [
                     'align:selected#' . $data['align'] => config('attr_selected')
-                ));
+                ]);
             }
 
             //-------
@@ -86,11 +86,11 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
                 $labels = configArray('unit_group_label');
                 foreach ($labels as $i => $label) {
                     $class = config('unit_group_class', '', $i);
-                    $Tpl->add('group:loop', array(
+                    $Tpl->add('group:loop', [
                         'value' => $class,
                         'label' => $label,
                         'selected' => ($class === $data['group']) ? config('attr_selected') : '',
-                    ));
+                    ]);
                 }
             }
 
@@ -99,10 +99,10 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
             if ($aryAttr = configArray('column_' . $type . '_attr')) {
                 foreach ($aryAttr as $i => $_attr) {
                     $label = config('column_' . $type . '_attr_label', '', $i);
-                    $_vars = array(
+                    $_vars = [
                         'value' => $_attr,
                         'label' => $label,
-                    );
+                    ];
                     if ($data['attr'] == $_attr) {
                         $_vars['selected'] = config('attr_selected');
                     }
@@ -113,11 +113,11 @@ class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
             }
 
 
-            $Tpl->add('column:loop', array(
+            $Tpl->add('column:loop', [
                 'cltype' => $type,
                 'uniqid' => $data['id'],
                 'clname' => ite($aryTypeLabel, $type),
-            ));
+            ]);
         }
         return $Tpl->get();
     }

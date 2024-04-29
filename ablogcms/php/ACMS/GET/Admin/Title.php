@@ -10,7 +10,7 @@ class ACMS_GET_Admin_Title extends ACMS_GET_Admin
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
-        $aryAdmin   = array();
+        $aryAdmin   = [];
         if ('form_log' == ADMIN) {
             $aryAdmin[] = 'form_index';
             $aryAdmin[] = 'form_edit';

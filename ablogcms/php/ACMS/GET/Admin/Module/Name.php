@@ -16,12 +16,12 @@ class ACMS_GET_Admin_Module_Name extends ACMS_GET_Admin_Module
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'mid' => $mid,
             'name' => $row['module_name'],
             'label' => $row['module_label'],
             'identifier' => $row['module_identifier'],
-        ));
+        ]);
         return $Tpl->get();
     }
 }

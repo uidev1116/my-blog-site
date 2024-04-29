@@ -72,7 +72,7 @@ interface Guard
      * 指定したユーザーがSNSログインを利用できるか
      *
      * @param int|null $uid
-     * @param int|null $uid
+     * @param int|null $bid
      * @return bool
      */
     public function isPermissionOfSnsLogin($uid = SUID, $bid = BID);

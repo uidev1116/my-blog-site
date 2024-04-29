@@ -5,7 +5,7 @@ class ACMS_GET_Admin_Webhook_EventList extends ACMS_GET
     function get()
     {
         $webhookType = $this->Get->get('type');
-        $json = array();
+        $json = [];
         $webhookEventValue = configArray("webhook_event_{$webhookType}");
         $webhookEventLabel = configArray("webhook_event_{$webhookType}_label");
 
@@ -18,10 +18,10 @@ class ACMS_GET_Admin_Webhook_EventList extends ACMS_GET
             Common::responseJson($json);
         }
         foreach ($webhookEventValue as $i => $value) {
-            $json[] = array(
+            $json[] = [
                 'value' => $value,
                 'label' => $webhookEventLabel[$i],
-            );
+            ];
         }
         Common::responseJson($json);
     }

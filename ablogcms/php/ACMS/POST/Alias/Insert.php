@@ -7,9 +7,9 @@ class ACMS_POST_Alias_Insert extends ACMS_POST_Alias
         $Alias = $this->extract('alias');
         $Alias->setMethod('name', 'required');
         $Alias->setMethod('status', 'required');
-        $Alias->setMethod('status', 'in', array('open', 'close'));
+        $Alias->setMethod('status', 'in', ['open', 'close']);
         $Alias->setMethod('indexing', 'required');
-        $Alias->setMethod('indexing', 'in', array('on', 'off'));
+        $Alias->setMethod('indexing', 'in', ['on', 'off']);
         $Alias->setMethod('alias', 'operable', IS_LICENSED and sessionWithAdministration());
 
         $Alias->setMethod('domain', 'required');

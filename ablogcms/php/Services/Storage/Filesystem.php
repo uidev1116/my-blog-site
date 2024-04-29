@@ -5,6 +5,7 @@ namespace Acms\Services\Storage;
 use Acms\Services\Storage\Contracts\Filesystem as FilesystemInterface;
 use Acms\Services\Storage\Contracts\Base;
 use Alchemy\Zippy\Adapter\ZipExtensionAdapter;
+use Symfony\Component\Filesystem\Path;
 use Cache;
 
 class Filesystem extends Base implements FilesystemInterface
@@ -129,12 +130,9 @@ class Filesystem extends Base implements FilesystemInterface
     }
 
     /**
-     * @param string $path
-     * @param array $info
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getImageSize($path, &$info = array())
+    public function getImageSize($path, &$info = [])
     {
         $cache = Cache::temp();
         $cacheKey = md5($path);
@@ -157,17 +155,68 @@ class Filesystem extends Base implements FilesystemInterface
     }
 
     /**
-     * @param $path
+     * ディレクトリ・トラバーサル対応のため、パスが公開領域のものか確認する
      *
-     * @return mixed
+     * @param string $path
+     * @param string $publicDir
+     * @return boolean
+     */
+    public function validatePublicPath($path, $publicDir = '')
+    {
+        if (!is_string($path)) {
+            return false;
+        }
+        if (!is_string($publicDir)) {
+            return false;
+        }
+        if ($publicDir === '') {
+            // cms設置ディレクトリ以下
+            $publicDir1 = dirname(SCRIPT_FILE);
+            $publicDir2 = dirname(realpath(SCRIPT_FILE));
+        } else {
+            // 指定されたディレクトリ以下
+            $publicDir1 = Path::makeAbsolute($publicDir, SCRIPT_DIR);
+            $publicDir2 = realpath($publicDir);
+        }
+
+        $absolutePath = Path::makeAbsolute($path, SCRIPT_DIR);
+        $fileName = basename($path);
+
+        if ($absolutePath === false) {
+            return false;
+        }
+        if (empty($publicDir1) || empty($publicDir2)) {
+            return false;
+        }
+        $secretFileNames = array_merge(configArray('secret_file_name'), ['config.server.php', '.env', '.htaccess']);
+        $secretFileNames = array_values(array_unique($secretFileNames));
+        if (in_array($fileName, $secretFileNames, true)) {
+            return false;
+        }
+        if ($this->exists($absolutePath) === false) {
+            return false;
+        }
+        if ($this->isFile($absolutePath) === false) {
+            return false;
+        }
+        if (strpos($absolutePath, $publicDir1) !== 0 && strpos($absolutePath, $publicDir2) !== 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param string $path 取得したいファイルパス
+     * @param string $publicDir 設定されたディレクトリ以下に取得できるファイルを制限（index.phpからの相対パス可）
+     * @return string|false
      *
      * @throws \RuntimeException
      */
-    public function get($path)
+    public function get($path, $publicDir = '')
     {
         $path = $this->convertStrToLocal($path);
 
-        if ($this->isFile($path)) {
+        if ($this->isFile($path) && $this->validatePublicPath($path, $publicDir)) {
             return @file_get_contents($path);
         }
         throw new \RuntimeException("File does not exist at path {$path}");
@@ -193,7 +242,7 @@ class Filesystem extends Base implements FilesystemInterface
      * @param string $path
      * @param string $contents
      *
-     * @return bool
+     * @return int<0, max>
      */
     public function put($path, $contents)
     {
@@ -316,7 +365,7 @@ class Filesystem extends Base implements FilesystemInterface
                 $this->changeMod($dir);
             }
         }
-        return $dir;
+        return true;
     }
 
     /**
@@ -350,7 +399,7 @@ class Filesystem extends Base implements FilesystemInterface
      *
      * @return void
      */
-    public function compress($source, $destination, $root = '', $exclude = array())
+    public function compress($source, $destination, $root = '', $exclude = [])
     {
         $source = $this->convertStrToLocal($source);
         $destination = $this->convertStrToLocal($destination);
@@ -358,9 +407,9 @@ class Filesystem extends Base implements FilesystemInterface
         $zippy = ZipExtensionAdapter::newInstance();
 
         if (empty($root)) {
-            $list = array(basename($destination, '.zip') => $source);
+            $list = [basename($destination, '.zip') => $source];
         } else {
-            $list = array($root => $source);
+            $list = [$root => $source];
         }
         $archive = $zippy->create($destination, $list, true);
         foreach ($exclude as $path) {

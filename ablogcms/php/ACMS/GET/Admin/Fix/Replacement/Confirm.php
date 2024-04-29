@@ -9,7 +9,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         $DB = DB::singleton(dsn());
 
         if (empty($word)) {
-            return array();
+            return [];
         }
         $SQL = SQL::newSelect('entry');
         $SQL->addSelect('entry_id');
@@ -23,13 +23,13 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         }
 
         $all = $DB->query($SQL->get(dsn()), 'all');
-        $list = array();
+        $list = [];
         foreach ($all as $row) {
-            $list[] = array(
+            $list[] = [
                 'id' => $row['entry_id'],
                 'text' => $row['entry_title'],
                 'eid' => $row['entry_id'],
-            );
+            ];
         }
         return $list;
     }
@@ -39,7 +39,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         $DB = DB::singleton(dsn());
 
         if (empty($word)) {
-            return array();
+            return [];
         }
         $SQL = SQL::newSelect('column');
         $SQL->addWhereOpr('column_field_1', '%' . $word . '%', 'LIKE');
@@ -51,13 +51,13 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         }
 
         $all    = $DB->query($SQL->get(dsn()), 'all');
-        $list   = array();
+        $list   = [];
         foreach ($all as $row) {
-            $list[] = array(
+            $list[] = [
                 'id'    => $row['column_id'],
                 'text'  => $row['column_field_1'],
                 'eid'   => $row['column_entry_id'],
-            );
+            ];
         }
         return $list;
     }
@@ -67,7 +67,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         $DB = DB::singleton(dsn());
 
         if (empty($word)) {
-            return array();
+            return [];
         }
         $SQL = SQL::newSelect('field');
         $SQL->addSelect('field_key');
@@ -87,22 +87,22 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         }
 
         $all = $DB->query($SQL->get(dsn()), 'all');
-        $list = array();
+        $list = [];
         foreach ($all as $row) {
-            $list[] = array(
+            $list[] = [
                 'id'    => $row['field_eid'] . ':' . $row['field_sort'] . ':' . $row['field_key'],
                 'text'  => $row['field_value'],
                 'eid'   => $row['field_eid'],
                 'key'   => $row['field_key'],
-            );
+            ];
         }
         return $list;
     }
 
-    function get()
+    public function get()
     {
         if (!sessionWithAdministration()) {
-            return false;
+            return '';
         }
 
         @set_time_limit(0);
@@ -118,10 +118,10 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
         $this->limit = $Fix->get('fix_replacement_limit', 100);
 
         if ($step !== 'confirm') {
-            return false;
+            return '';
         }
 
-        $list = array();
+        $list = [];
 
         switch ($target) {
             case 'title':
@@ -135,7 +135,7 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
                 $Tpl->add('field_name');
                 break;
             default:
-                return false;
+                return '';
                 break;
         }
 
@@ -151,13 +151,13 @@ class ACMS_GET_Admin_Fix_Replacement_Confirm extends ACMS_GET_Admin_Fix
             $hits   = $row['text'];
             $hits   = preg_replace('/(' . preg_quote($pattern, '/') . ')/iu', '<strong class="highlight1">$1</strong>', $hits);
 
-            $loop = array(
+            $loop = [
                 'id'    => $id,
                 'text'  => $hits,
-                'url'   => acmsLink(array(
+                'url'   => acmsLink([
                     'eid' => $eid
-                )),
-            );
+                ]),
+            ];
             if (isset($row['key'])) {
                 $loop['key'] = $row['key'];
             }

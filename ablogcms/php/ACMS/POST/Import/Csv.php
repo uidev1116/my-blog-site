@@ -3,6 +3,10 @@
 class ACMS_POST_Import_Csv extends ACMS_POST_Import
 {
     protected $importCid;
+
+    /**
+     * @var array
+     */
     protected $csvLabels;
 
     /**

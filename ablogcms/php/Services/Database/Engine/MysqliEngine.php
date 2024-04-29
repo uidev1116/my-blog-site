@@ -46,11 +46,11 @@ class MysqliEngine extends Base
         }
 
         $this->debug = !empty($dsn['debug']);
-        $this->dsn = array(
+        $this->dsn = [
             'type' => isset($dsn['type']) ? $dsn['type'] : null,
             'debug' => $this->debug,
             'charset' => $charset,
-        );
+        ];
     }
 
     /**
@@ -195,7 +195,7 @@ class MysqliEngine extends Base
      */
     protected function allMode($sql, $response)
     {
-        $all = array();
+        $all = [];
         while ($row = $response->fetch_assoc()) {
             if (is_array($row) and 'UTF-8' <> $this->charset()) {
                 foreach ($row as $key => $val) {
@@ -223,7 +223,7 @@ class MysqliEngine extends Base
      */
     protected function listMode($sql, $response)
     {
-        $list = array();
+        $list = [];
         while ($row = $response->fetch_assoc()) {
             $one = array_shift($row);
             if (!is_null($one)) {
@@ -249,7 +249,7 @@ class MysqliEngine extends Base
     protected function oneMode($sql, $response)
     {
         if (!$row = $response->fetch_assoc()) {
-            return false;
+            return '';
         }
         $one = array_shift($row);
 

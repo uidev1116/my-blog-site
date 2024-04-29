@@ -7,82 +7,82 @@ class Engine implements Contracts\ViewInterface
     /**
      * @var array
      */
-    protected $_tokens = array();
+    protected $_tokens = [];
 
     /**
      * @var array
      */
-    protected $_blockIdLabel = array();
+    protected $_blockIdLabel = [];
 
     /**
      * @var array
      */
-    protected $_blockLabelId = array();
+    protected $_blockLabelId = [];
 
     /**
      * @var array
      */
-    protected $_blockIdTokenBegin = array();
+    protected $_blockIdTokenBegin = [];
 
     /**
      * @var array
      */
-    protected $_blockIdTokenEnd = array();
+    protected $_blockIdTokenEnd = [];
 
     /**
      * @var array
      */
-    protected $_blockTokenIdBegin = array();
+    protected $_blockTokenIdBegin = [];
 
     /**
      * @var array
      */
-    protected $_blockTokenIdEnd = array();
+    protected $_blockTokenIdEnd = [];
 
     /**
      * @var array
      */
-    protected $_blockIdTxt = array(0 => null);
+    protected $_blockIdTxt = [0 => null];
 
     /**
      * @var array
      */
-    protected $_blockEmptyToken = array();
+    protected $_blockEmptyToken = [];
 
     /**
      * @var array
      */
-    protected $_blockIdEmptyId = array();
+    protected $_blockIdEmptyId = [];
 
     /**
      * @var array
      */
-    protected $_varIdLabel = array();
+    protected $_varIdLabel = [];
 
     /**
      * @var array
      */
-    protected $_varLabelId = array();
+    protected $_varLabelId = [];
 
     /**
      * @var array
      */
-    protected $_varIdOption = array();
+    protected $_varIdOption = [];
 
     /**
      * @var array
      */
-    protected $_varIdToken = array();
+    protected $_varIdToken = [];
 
     /**
      * @var array
      */
-    protected $_varTokenId = array();
+    protected $_varTokenId = [];
 
     /**
      * @var array
      */
-    protected $_resolvedVarPt = array();
+    protected $_resolvedVarPt = [];
 
     /**
      * @var \ACMS_Corrector
@@ -95,7 +95,7 @@ class Engine implements Contracts\ViewInterface
      * @param string $txt
      * @param \ACMS_Corrector $Corrector
      *
-     * @return bool
+     * @return self
      */
     public function init($txt, $Corrector = null)
     {
@@ -127,7 +127,7 @@ class Engine implements Contracts\ViewInterface
         if (is_null($this->_blockIdTxt[0])) {
             $this->add();
         }
-        return str_replace(array('<!-- BEGIN\\','<!-- END\\'), array('<!-- BEGIN','<!-- END'), $this->_blockIdTxt[0]);
+        return str_replace(['<!-- BEGIN\\','<!-- END\\'], ['<!-- BEGIN','<!-- END'], $this->_blockIdTxt[0]);
     }
 
     /**
@@ -144,9 +144,9 @@ class Engine implements Contracts\ViewInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function add($blocks = array(), $vars = array())
+    public function add($blocks = [], $vars = [])
     {
         if (null != $this->_blockIdTxt[0]) {
             trigger_error('root is already touched.', E_USER_NOTICE);
@@ -154,22 +154,22 @@ class Engine implements Contracts\ViewInterface
         }
 
         if (!is_array($blocks)) {
-            $blocks = is_string($blocks) ? array($blocks) : array();
+            $blocks = is_string($blocks) ? [$blocks] : [];
         }
         $blocks = array_reverse($blocks);
         if (!is_array($vars)) {
-            $vars = array();
+            $vars = [];
         }
 
-        $pointAry = array();
+        $pointAry = [];
         $endBlock = end($blocks);
-        $parentAry = array();
+        $parentAry = [];
 
         foreach ($blocks as $block) {
             if (!isset($this->_blockLabelId[$block])) {
                 return false;
             }
-            $tempParent = array();
+            $tempParent = [];
             $ids = $this->_blockLabelId[$block];
 
             foreach ($ids as $id) {
@@ -192,7 +192,7 @@ class Engine implements Contracts\ViewInterface
             $parentAry = empty($parentAry) ? $ids : $tempParent;
         }
         if (empty($blocks) && empty($pointAry)) {
-            $pointAry = array(0);
+            $pointAry = [0];
         }
 
         foreach ($pointAry as $pt) {
@@ -262,9 +262,9 @@ class Engine implements Contracts\ViewInterface
      */
     protected function touchBlock($vars, $pt, $begin, $end)
     {
-        $active     = array($pt => true);
-        $ids        = array();
-        $buf        = array();
+        $active     = [$pt => true];
+        $ids        = [];
+        $buf        = [];
         for ($i = $begin; $i <= $end; $i++) {
             if (isset($this->_blockTokenIdBegin[$i])) {
                 array_unshift($ids, $this->_blockTokenIdBegin[$i]);
@@ -290,7 +290,7 @@ class Engine implements Contracts\ViewInterface
                     }
 
                     $this->_blockIdTxt[$pt] .= $txt;
-                    $buf    = array();
+                    $buf    = [];
 
                     $this->_blockIdTxt[$pt] .= $this->_blockIdTxt[$id];
                     $this->_blockIdTxt[$id] = null;
@@ -330,7 +330,7 @@ class Engine implements Contracts\ViewInterface
                     }
                     $this->_blockIdTxt[$pt] .= $txt;
                     $this->_resolvedVarPt[$pt] = true;
-                    $buf    = array();
+                    $buf    = [];
                 }
             }
             if (isset($this->_blockTokenIdEnd[$i])) {
@@ -347,31 +347,31 @@ class Engine implements Contracts\ViewInterface
      *
      * @return void
      */
-    protected function build($obj, $blocks = array())
+    protected function build($obj, $blocks = [])
     {
-        $strVars = array();
+        $strVars = [];
         if (!($obj instanceof \stdClass)) {
             return;
         }
 
         foreach (get_object_vars($obj) as $key => $vars) {
             if (is_object($vars)) {
-                $this->build(json_decode(json_encode($vars)), array_merge(array($key), $blocks));
+                $this->build(json_decode(json_encode($vars)), array_merge([$key], $blocks));
             } elseif (is_array($vars)) {
                 foreach ($vars as $i => $loopVars) {
                     if ($i > 0) {
-                        $this->add(array_merge(array($key . ':glue', $key . ':loop'), $blocks));
+                        $this->add(array_merge([$key . ':glue', $key . ':loop'], $blocks));
                     }
                     if (is_object($loopVars)) {
                         /** @var \stdClass $loopObj */
                         $loopObj = json_decode(json_encode($loopVars));
                         $loopObj->{$key . '.i'} = ++$i;
-                        $this->build($loopVars, array_merge(array($key . ':loop'), $blocks));
+                        $this->build($loopObj, array_merge([$key . ':loop'], $blocks));
                     } else {
                         $loopObj = new \stdClass();
                         $loopObj->{$key} = $loopVars;
                         $loopObj->{$key . '.i'} = ++$i;
-                        $this->build($loopObj, array_merge(array($key . ':loop'), $blocks));
+                        $this->build($loopObj, array_merge([$key . ':loop'], $blocks));
                     }
                 }
             } else {
@@ -393,18 +393,18 @@ class Engine implements Contracts\ViewInterface
      */
     protected function fairing($txt)
     {
-        $txt = preg_replace(array(
+        $txt = preg_replace([
             '@<!--[\t 　]*[BEGIN]{3,6}+[\t 　]+([^\t 　]+)[\t 　]*-->@',
             '@<!--[\t 　]*[END]{2,4}+[\t 　]+([^\t 　]+)[\t 　]*-->@',
-        ), array(
+        ], [
             '<!-- BEGIN $1 -->',
             '<!-- END $1 -->',
-        ), $txt);
+        ], $txt);
         $txt = preg_replace_callback('@(?<!\\\)\{([^}\n]+)(?<!\\\)\}\[([^\]\n]+)\]@', function ($matches) {
-            return '<!--%' . $matches[1] . '%-->' . str_replace(array('{','}'), array('%%','%%'), $matches[2]) . ' -->';
+            return '<!--%' . $matches[1] . '%-->' . str_replace(['{','}'], ['%%','%%'], $matches[2]) . ' -->';
         }, $txt);
         $txt = preg_replace('@(?<!\\\)\{([^}\n]+)(?<!\\\)\}@', '<!--%$1 -->', $txt);
-        $txt = str_replace(array('\{','\}'), array('{','}'), $txt);
+        $txt = str_replace(['\{','\}'], ['{','}'], $txt);
 
 
         return $txt;
@@ -438,7 +438,7 @@ class Engine implements Contracts\ViewInterface
      */
     protected function validate($tokens)
     {
-        $labels = array();
+        $labels = [];
         $cnt = count($tokens);
         for ($i = 0; $i < $cnt; $i++) {
             $token = $tokens[$i];
@@ -540,8 +540,6 @@ class Engine implements Contracts\ViewInterface
     /**
      * empty要素の処理
      *
-     * @param array $tokens
-     *
      * @return void
      */
     protected function emptyToken()
@@ -550,7 +548,7 @@ class Engine implements Contracts\ViewInterface
             $_begin = $this->_blockIdTokenBegin[$j];
             foreach ($this->_blockEmptyToken as $k => $v) {
                 if ($_begin < $k && $k < $_end) {
-                    $this->_blockIdEmptyId[$k] = array($_begin, $_end);
+                    $this->_blockIdEmptyId[$k] = [$_begin, $_end];
                     unset($this->_blockEmptyToken[$k]);
                 }
             }

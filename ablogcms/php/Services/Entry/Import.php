@@ -21,7 +21,7 @@ class Import
     protected $bid;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $uid;
 
@@ -43,7 +43,7 @@ class Import
     /**
      * @var array
      */
-    protected $mediaFieldFix = array();
+    protected $mediaFieldFix = [];
 
     /**
      * @var int
@@ -53,10 +53,10 @@ class Import
     /**
      * @var string
      */
-    protected $entryStatus = false;
+    protected $entryStatus = '';
 
     /**
-     * @var
+     * @var int
      */
     protected $userSort = 0;
 
@@ -78,13 +78,13 @@ class Import
      *
      * @return array
      */
-    public function run($bid, $yaml, $distPath, $status = false)
+    public function run($bid, $yaml, $distPath, $status = '')
     {
         $this->bid = $bid;
         $this->yaml = Yaml::parse($yaml);
         $this->distPath = $distPath;
-        $this->ids = array();
-        $this->errors = array();
+        $this->ids = [];
+        $this->errors = [];
         $this->entryStatus = $status;
 
         $sql = SQL::newSelect('entry');
@@ -104,7 +104,7 @@ class Import
 
         $this->registerNewIDs();
 
-        $tables = array(
+        $tables = [
             'entry',
             'column',
             'field',
@@ -112,7 +112,7 @@ class Import
             'entry_sub_category',
             'media',
             'media_tag',
-        );
+        ];
         foreach ($tables as $table) {
             $this->insertData($table);
         }
@@ -133,8 +133,8 @@ class Import
             $sql = SQL::newInsert($table);
             foreach ($record as $field => $value) {
                 $value = $this->fix($table, $field, $value);
-                if (is_callable(array($this, $table . 'Fix'))) {
-                    $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value, $record));
+                if (is_callable([$this, $table . 'Fix'])) {
+                    $value = call_user_func_array([$this, $table . 'Fix'], [$field, $value, $record]);
                 }
                 if ($value !== false) {
                     $sql->addInsert($field, $value);
@@ -262,15 +262,15 @@ class Import
 
         if ($type === 'custom' && $field === 'column_field_6') {
             $data = acmsUnserialize($value);
-            if (method_exists($data, 'deleteField')) {
-                $fixMediaField = array();
+            if ($data instanceof \Field && method_exists($data, 'deleteField')) {
+                $fixMediaField = [];
                 foreach ($data->listFields() as $fd) {
                     foreach ($data->getArray($fd, true) as $i => $val) {
                         if (!empty($val)) {
                             if (strpos($fd, '@media') !== false) {
                                 $sourceFd = substr($fd, 0, -6);
                                 if (!isset($fixMediaField[$sourceFd])) {
-                                    $fixMediaField[$sourceFd] = array();
+                                    $fixMediaField[$sourceFd] = [];
                                 }
                                 if ($val = $this->getNewID('media', $val)) {
                                     $fixMediaField[$sourceFd][] = $val;
@@ -347,12 +347,12 @@ class Import
         } elseif ($field === 'field_value' && !empty($value)) {
             if (preg_match('/@media$/', $record['field_key'])) {
                 if ($value = $this->getNewID('media', $value)) {
-                    $this->mediaFieldFix[] = array(
+                    $this->mediaFieldFix[] = [
                         'name' => substr($record['field_key'], 0, -6),
                         'value' => $value,
                         'eid' => $this->getNewID('entry', $record['field_eid']),
                         'sort' => $record['field_sort'],
-                    );
+                    ];
                 }
             } elseif (
                 0
@@ -419,11 +419,11 @@ class Import
      */
     private function registerNewIDs()
     {
-        $tables = array(
+        $tables = [
             'entry',
             'column',
             'media',
-        );
+        ];
         foreach ($tables as $table) {
             $this->registerNewID($table);
         }
@@ -442,7 +442,7 @@ class Import
         if (!$this->existsYaml('category')) {
             return;
         }
-        $codeArray = array();
+        $codeArray = [];
         foreach ($this->yaml['category'] as $record) {
             $codeArray[] = $record['category_code'];
         }
@@ -457,7 +457,7 @@ class Import
         $q = $sql->get(dsn());
         DB::query($q, 'fetch');
 
-        $categoryTable = array();
+        $categoryTable = [];
         while ($row = DB::fetch($q)) {
             $code = $row['category_code'];
             $categoryTable[$code] = $row['category_id'];
@@ -479,7 +479,7 @@ class Import
         if (!$this->existsYaml('module')) {
             return;
         }
-        $identifierArray = array();
+        $identifierArray = [];
         foreach ($this->yaml['module'] as $record) {
             $identifierArray[] = $record['module_identifier'];
         }
@@ -494,7 +494,7 @@ class Import
         $q = $sql->get(dsn());
         DB::query($q, 'fetch');
 
-        $moduleTable = array();
+        $moduleTable = [];
         while ($row = DB::fetch($q)) {
             $identifier = $row['module_identifier'];
             $moduleTable[$identifier] = $row['module_id'];

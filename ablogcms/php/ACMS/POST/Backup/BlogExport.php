@@ -26,7 +26,7 @@ class ACMS_POST_Backup_BlogExport extends ACMS_POST_Backup_Base
     /**
      * run
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {

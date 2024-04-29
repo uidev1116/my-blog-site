@@ -37,10 +37,10 @@ class ACMS_GET_Admin_Webhook_Edit extends ACMS_GET_Admin_Edit
         $types = configArray('webhook_types');
         $labels = configArray('webhook_types_label');
         foreach ($types as $i => $type) {
-            $item = array(
+            $item = [
                 'type_value' => $type,
                 'type_label' => $labels[$i],
-            );
+            ];
             if ($data->get('type') === $type) {
                 $item['selected'] = config('attr_selected');
             }
@@ -50,7 +50,7 @@ class ACMS_GET_Admin_Webhook_Edit extends ACMS_GET_Admin_Edit
             $webhookEventValue = configArray("webhook_event_{$type}");
             $webhookEventLabel = configArray("webhook_event_{$type}_label");
             $events = explode(',', $data->get('events'));
-            $labels = array();
+            $labels = [];
             foreach ($webhookEventValue as $i => $value) {
                 if (in_array($value, $events, true)) {
                     $labels[] = $webhookEventLabel[$i];

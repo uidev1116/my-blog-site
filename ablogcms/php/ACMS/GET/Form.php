@@ -2,7 +2,15 @@
 
 class ACMS_GET_Form extends ACMS_GET
 {
-    function get()
+    /**
+     * ステップ
+     * 互換性のためpublic宣言で定義
+     *
+     * @var string
+     */
+    public $step = 'step';
+
+    public function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
@@ -29,7 +37,7 @@ class ACMS_GET_Form extends ACMS_GET
      *
      * @param Template & $Tpl
      */
-    function build_tpl(&$Tpl)
+    protected function build_tpl(&$Tpl)
     {
         $block  = !(empty($this->step) or is_bool($this->step)) ? 'step#' . $this->step : 'step';
         $pattern = '/<!--[\t 　]*BEGIN[\s]+' . preg_quote($block, '/') . '[\t 　]*-->/u';
@@ -61,11 +69,14 @@ class ACMS_GET_Form extends ACMS_GET
      *
      * @param Template & $Tpl
      */
-    function error(&$Tpl)
+    protected function error(&$Tpl)
     {
-        $Errors = array();
+        $Errors = [];
         if (isset($this->Post->_aryChild['field'])) {
             $Field  = $this->Post->_aryChild['field'];
+            if (!($Field instanceof Field_Validation)) {
+                return;
+            }
             foreach ($Field->_aryV as $key => $val) {
                 foreach ($val as $valid) {
                     if (
@@ -79,10 +90,10 @@ class ACMS_GET_Form extends ACMS_GET
             }
         }
         if (!empty($Errors)) {
-            $Tpl->add('error', array(
+            $Tpl->add('error', [
                 'formID'    => $this->Post->get('id'),
                 'errorKey'  => implode(',', $Errors),
-            ));
+            ]);
         }
     }
 }

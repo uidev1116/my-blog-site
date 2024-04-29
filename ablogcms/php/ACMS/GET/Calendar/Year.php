@@ -2,18 +2,18 @@
 
 class ACMS_GET_Calendar_Year extends ACMS_GET
 {
-    public $_axis  = array(
+    public $_axis  = [
         'bid'   => 'self',
         'cid'   => 'self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'date'  => 'global',
         'start' => 'global',
         'end'   => 'global',
-    );
+    ];
 
-    function buildMonth(&$Tpl, $ym, $block = array())
+    function buildMonth(&$Tpl, $ym, $block = [])
     {
         if ('1000-01' == $ym) {
             $ym = date('Y-m', requestTime());
@@ -23,7 +23,7 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('entry');
 
-        $SQL->addSelect(SQL::newFunction('entry_datetime', array('SUBSTR', 0, 10)), 'entry_date', null, 'DISTINCT');
+        $SQL->addSelect(SQL::newFunction('entry_datetime', ['SUBSTR', 0, 10]), 'entry_date', null, 'DISTINCT');
         $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
         ACMS_Filter::blogStatus($SQL);
@@ -34,7 +34,7 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
         ACMS_Filter::entrySpan($SQL, $ym . '-01 00:00:00', $ym . '-31 23:59:59');
         $q  = $SQL->get(dsn());
 
-        $exists = array();
+        $exists = [];
         $all    = $DB->query($q, 'all');
         foreach ($all as $row) {
             $exists[]   = $row['entry_date'];
@@ -46,10 +46,10 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
 
         for ($i = 0; $i < 7; $i++) {
             $w  = ($beginW + $i) % 7;
-            $Tpl->add(array_merge(array('weekLabel:loop'), $block), array(
+            $Tpl->add(array_merge(['weekLabel:loop'], $block), [
                 'w'     => $w,
                 'label' => $label[$w],
-            ));
+            ]);
         }
 
         //--------
@@ -58,8 +58,8 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
 
         if ($span = ($firstW + (7 - $beginW)) % 7) {
             for ($i = 0; $i < $span; $i++) {
-                $Tpl->add(array_merge(array('spacer'), $block));
-                $Tpl->add(array_merge(array('day:loop'), $block));
+                $Tpl->add(array_merge(['spacer'], $block));
+                $Tpl->add(array_merge(['day:loop'], $block));
             }
         }
 
@@ -70,27 +70,27 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
         for ($day = 1; $day <= $lastDay; $day++) {
             $date   = $ym . '-' . sprintf('%02d', $day);
             if (in_array($date, $exists, true)) {
-                $Tpl->add(array_merge(array('link'), $block), array(
+                $Tpl->add(array_merge(['link'], $block), [
                     'w'     => $curW,
-                    'url'   => acmsLink(array(
+                    'url'   => acmsLink([
                         'bid'   => $this->bid,
                         'cid'   => $this->cid,
-                        'date'  => array(
+                        'date'  => [
                             intval($y), intval($m), intval($day)
-                        ),
-                    )),
+                        ],
+                    ]),
                     'day'   => $day,
-                ));
+                ]);
             } else {
-                $Tpl->add(array_merge(array('none'), $block), array(
+                $Tpl->add(array_merge(['none'], $block), [
                     'w'     => $curW,
                     'day'   => $day,
-                ));
+                ]);
             }
-            $Tpl->add(array_merge(array('day:loop'), $block));
+            $Tpl->add(array_merge(['day:loop'], $block));
             $curW   = ($curW + 1) % 7;
             if ($beginW == $curW) {
-                $Tpl->add(array_merge(array('week:loop'), $block));
+                $Tpl->add(array_merge(['week:loop'], $block));
             }
         }
 
@@ -100,8 +100,8 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
 
         if ($span = 6 - ($lastW + (7 - $beginW)) % 7) {
             for ($i = 0; $i < $span; $i++) {
-                $Tpl->add(array_merge(array('spacer'), $block));
-                $Tpl->add(array_merge(array('day:loop'), $block));
+                $Tpl->add(array_merge(['spacer'], $block));
+                $Tpl->add(array_merge(['day:loop'], $block));
             }
             $Tpl->add('week:loop');
         }
@@ -123,16 +123,16 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
         $unit   = config('calendar_year_unit', 1);
 
         for ($mo = 0; $mo < 12; $mo++) {
-            $this->buildMonth($Tpl, $y . '-' . sprintf('%02d', $mo + 1), array('month:loop', 'unit:loop'));
-            $Tpl->add(array('month:loop', 'unit:loop'), array(
+            $this->buildMonth($Tpl, $y . '-' . sprintf('%02d', $mo + 1), ['month:loop', 'unit:loop']);
+            $Tpl->add(['month:loop', 'unit:loop'], [
                 'month'     => $mo + 1,
                 'monthDate' => $y . '-' . sprintf('%02d-01', $mo + 1),
-                'monthUrl'  => acmsLink(array(
+                'monthUrl'  => acmsLink([
                     'bid'   => $this->bid,
                     'cid'   => $this->cid,
                     'date'  => date("Y/m", strtotime($y . '-' . sprintf('%02d-01', $mo + 1))),
-                )),
-            ));
+                ]),
+            ]);
             if ($mo % $unit === $unit - 1) {
                 $Tpl->add('unit:loop');
             }
@@ -143,7 +143,7 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
         $prevtime   = mktime(0, 0, 0, intval($m), 1, intval($y) - 1);
         $nexttime   = mktime(0, 0, 0, intval($m), 1, intval($y) + 1);
 
-        $vars   = array('year' => $y);
+        $vars   = ['year' => $y];
 
         //-----------
         // year link
@@ -173,30 +173,30 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
 
         //-----------
         // prev link
-        if (($y - 1) >= intval($pastValue)) {
-            $Tpl->add('prevLink', array(
-                'pYear'  => $y - 1,
-                'url'   => acmsLink(array(
+        if ((intval($y) - 1) >= intval($pastValue)) {
+            $Tpl->add('prevLink', [
+                'pYear'  => intval($y) - 1,
+                'url'   => acmsLink([
                     'bid'   => $this->bid,
                     'cid'   => $this->cid,
                     'tpl'   => TPL,
-                    'date' => array($y - 1),
-                )),
-            ));
+                    'date' => [intval($y) - 1],
+                ]),
+            ]);
         }
 
         //-----------
         // next link
-        if (($y + 1) <= intval($recentryValue)) {
-            $Tpl->add('nextLink', array(
-                'nYear'  => $y + 1,
-                'url'   => acmsLink(array(
+        if ((intval($y) + 1) <= intval($recentryValue)) {
+            $Tpl->add('nextLink', [
+                'nYear'  => intval($y) + 1,
+                'url'   => acmsLink([
                     'bid'   => $this->bid,
                     'cid'   => $this->cid,
                     'tpl'   => TPL,
-                    'date' => array($y + 1),
-                )),
-            ));
+                    'date' => [intval($y) + 1],
+                ]),
+            ]);
         }
 
         $Tpl->add(null, $vars);

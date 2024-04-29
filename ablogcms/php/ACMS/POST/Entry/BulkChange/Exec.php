@@ -5,9 +5,9 @@ class ACMS_POST_Entry_BulkChange_Exec extends ACMS_POST_Entry_BulkChange_Confirm
     /**
      * Run
      *
-     * @return \Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         DB::setThrowException(true);
         try {

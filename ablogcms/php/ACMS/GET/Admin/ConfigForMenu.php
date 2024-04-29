@@ -4,7 +4,7 @@ use Acms\Services\Facades\Config;
 
 class ACMS_GET_Admin_ConfigForMenu extends ACMS_GET_Admin_Config
 {
-    function & getConfig($rid, $mid, $setid = null)
+    public function & getConfig($rid, $mid, $setid = null)
     {
         $post_config =& $this->Post->getChild('config');
         $config = Config::loadDefaultField();
@@ -19,10 +19,12 @@ class ACMS_GET_Admin_ConfigForMenu extends ACMS_GET_Admin_Config
         }
 
         $defaultConfig = Config::loadDefaultField();
+        /** @var string[] $defaultMenuIds */
         $defaultMenuIds = $defaultConfig->getArray('admin_menu_card_id');
+        /** @var string[] $customMenuIds */
         $customMenuIds = $config->getArray('admin_menu_card_id');
         foreach ($defaultMenuIds as $i => $id) {
-            if (!in_array($id, $customMenuIds)) {
+            if (!in_array($id, $customMenuIds, true)) {
                 $config->add('admin_menu_card_id', $id);
                 $config->add('admin_menu_card_title', $defaultConfig->get('admin_menu_card_title', '', $i));
                 $config->add('admin_menu_card_url', $defaultConfig->get('admin_menu_card_url', '', $i));

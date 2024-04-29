@@ -18,133 +18,8 @@ forbidden_blog_http_status: 404 # 404 | 403
 referrer_policy: strict-origin-when-cross-origin # no-referrer | no-referrer-when-downgrade | origin | origin-when-cross-origin | same-origin | strict-origin | strict-origin-when-cross-origin | unsafe-url
 subscriber_access_admin_page: [] # 読者権限でアクセスできる管理ページを設定
 strip_dangerous_tag: off # on | off 変数から標準で危険なタグ（dangerous_tagsで指定）を削除するか指定
-dangerous_tags: ['script', 'iframe'] # 変数から標準で削除するタグを指定
-base_allowed_tags: # 変数で出力できる全タグリスト
-  - a
-  - abbr
-  - acronym
-  - address
-  - applet
-  - area
-  - article
-  - aside
-  - audio
-  - b
-  - base
-  - basefont
-  - bdi
-  - bdo
-  - big
-  - blockquote
-  - body
-  - br
-  - button
-  - canvas
-  - caption
-  - center
-  - cite
-  - code
-  - col
-  - colgroup
-  - data
-  - datalist
-  - dd
-  - del
-  - details
-  - dfn
-  - dialog
-  - dir
-  - div
-  - dl
-  - dt
-  - em
-  - embed
-  - fieldset
-  - figcaption
-  - figure
-  - font
-  - footer
-  - form
-  - frame
-  - frameset
-  - h1
-  - h2
-  - h3
-  - h4
-  - h5
-  - h6
-  - head
-  - header
-  - hgroup
-  - hr
-  - html
-  - i
-  - iframe
-  - img
-  - input
-  - ins
-  - kbd
-  - label
-  - legend
-  - li
-  - link
-  - main
-  - map
-  - mark
-  - menu
-  - meta
-  - meter
-  - nav
-  - noframes
-  - noscript
-  - object
-  - ol
-  - optgroup
-  - option
-  - output
-  - p
-  - param
-  - picture
-  - pre
-  - progress
-  - q
-  - rp
-  - rt
-  - ruby
-  - s
-  - samp
-  - script
-  - search
-  - section
-  - select
-  - small
-  - source
-  - span
-  - strike
-  - strong
-  - style
-  - sub
-  - summary
-  - sup
-  - svg
-  - table
-  - tbody
-  - td
-  - template
-  - textarea
-  - tfoot
-  - th
-  - thead
-  - time
-  - title
-  - tr
-  - track
-  - tt
-  - u
-  - ul
-  - var
-  - video
-  - wbr
+dangerous_tags: ['script', 'iframe', 'form'] # 変数から標準で削除するタグを指定
+secret_file_name: [config.server.php, .env, .htaccess] # CMSのStorageサービスで取得できないファイル名を指定
 
 ## ログイン・セッション
 subscribe_login_anywhere: off # on | off
@@ -235,6 +110,7 @@ directory_index: []
 url_preview_expire: 48
 allow_unregistered_domain: off # on | off システムに登録されていないドメインでも表示する（デバッグモード時のみ有効）
 category_order_strict_mode: off # on | off カテゴリー親子関係を厳密に指定したURLでないと404になるモード。onだと同ブログ内でも同じ階層でなければ同名のカテゴリーコードを設定可能
+allow_template_extension: [html, htm, csv, xml, json, css, yaml] # ここで指定した以外の拡張子のテンプレートファイルは404として処理をする
 
 ## エントリーロック
 entry_lock_enable: on # on | off エントリーのロック（排他制御）が利用可能か設定します
@@ -376,11 +252,8 @@ subscribe_expire  : 864000
 login_cookie_lifetime : 864000
 comment_cookie_lifetime : 864000
 
-yahoo_search_api_key  :
 twitter_consumer_key  :
 twitter_consumer_secret :
-google_analytics_mobile_account : MO-0000000-0
-google_analytics_mobile_pixel : ga.php
 
 ## コメント
 comment     : off

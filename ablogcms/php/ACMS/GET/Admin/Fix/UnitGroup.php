@@ -24,10 +24,10 @@ class ACMS_GET_Admin_Fix_UnitGroup extends ACMS_GET_Admin_Fix
             if (empty($name)) {
                 continue;
             }
-            $vars = array(
+            $vars = [
                 'name' => $name,
-            );
-            $Tpl->add(array_merge(array('unit_group:loop'), $block), $vars);
+            ];
+            $Tpl->add(array_merge(['unit_group:loop'], $block), $vars);
         }
         return true;
     }

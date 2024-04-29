@@ -3,26 +3,23 @@
 declare(strict_types=1);
 
 use Acms\Services\Facades\Application;
-use Acms\Services\Shortcut\Repository;
 use Acms\Services\Shortcut\Entities\Shortcut;
 
 class ACMS_GET_Admin_Shortcut_Index extends ACMS_GET_Admin
 {
     /**
-     * @var Repository
+     * @var \Acms\Services\Shortcut\Repository
      */
     protected $ShortcutRepository;
 
     /**
-     * @var Helper
+     * @var \Acms\Services\Shortcut\Helper
      */
     protected $ShortcutService;
 
     public function get()
     {
-        /** @var Repository $ShortcutRepository */
         $this->ShortcutRepository = Application::make('shortcut.repository');
-        /** @var Helper $ShortcutService */
         $this->ShortcutService = Application::make('shortcut.helper');
 
         if (!sessionWithAdministration()) {
@@ -52,7 +49,7 @@ class ACMS_GET_Admin_Shortcut_Index extends ACMS_GET_Admin
     {
         foreach ($Shortcuts as $Shortcut) {
             // auth
-            $Tpl->add(array('auth#' . $Shortcut->getAuth(), 'shortcut:loop'));
+            $Tpl->add(['auth#' . $Shortcut->getAuth(), 'shortcut:loop']);
 
             // data
             $Tpl->add('shortcut:loop', [

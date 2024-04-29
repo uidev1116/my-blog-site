@@ -2,11 +2,11 @@
 
 class ACMS_GET_Admin_Media_Tag_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
 
-        if ('media-tag_index' <> ADMIN) {
-            return false;
+        if ('media-tag_index' !== ADMIN) {
+            return '';
         }
         if (roleAvailableUser()) {
             if (!roleAuthorization('tag_edit', BID)) {
@@ -25,7 +25,7 @@ class ACMS_GET_Admin_Media_Tag_Index extends ACMS_GET_Admin
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
 
-        $vars   = array();
+        $vars   = [];
 
         //-------
         // order
@@ -34,10 +34,10 @@ class ACMS_GET_Admin_Media_Tag_Index extends ACMS_GET_Admin
         //-------
         // limit
         foreach ($limits as $val) {
-            $_vars  = array(
+            $_vars  = [
                 'value' => $val,
                 'label' => $val,
-            );
+            ];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -60,8 +60,8 @@ class ACMS_GET_Admin_Media_Tag_Index extends ACMS_GET_Admin
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         $SQL = SQL::newSelect('media_tag');
@@ -76,14 +76,14 @@ class ACMS_GET_Admin_Media_Tag_Index extends ACMS_GET_Admin
         $DB->query($q, 'fetch');
         while ($row = $DB->fetch($q)) {
             $tag    = $row['media_tag_name'];
-            $Tpl->add('tag:loop', array(
-                'url' => acmsLink(array(
+            $Tpl->add('tag:loop', [
+                'url' => acmsLink([
                     'admin' => 'media-tag_edit',
                     'tag' => $tag,
-                )),
+                ]),
                 'name' => $tag,
                 'amount' => $row['media_tag_amount'],
-            ));
+            ]);
         }
 
         $Tpl->add(null, $vars);

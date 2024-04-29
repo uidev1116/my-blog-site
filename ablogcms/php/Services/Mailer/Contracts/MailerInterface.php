@@ -31,7 +31,7 @@ interface MailerInterface
     /**
      * 本文を設定
      *
-     * @param $body
+     * @param string $body
      * @return self
      */
     public function setBody($body);

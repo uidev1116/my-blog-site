@@ -57,7 +57,7 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
             if ($dir = opendir($storageTarget)) {
                 while (($file = readdir($dir)) !== false) {
                     if ($file != "." && $file != ".." && substr($file, 0, 1) !== '.') {
-                        if (in_array($file, array('backup_archives', 'backup_database' . 'backup_blog'))) {
+                        if (in_array($file, ['backup_archives', 'backup_database' . 'backup_blog'], true)) {
                             continue;
                         }
                         Storage::compress(

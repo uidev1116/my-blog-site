@@ -86,10 +86,10 @@ class ACMS_POST_Publish_Apply extends ACMS_POST_Publish
                 if ($layout === 'layout') {
                     $headers['User-Agent'] = ONLY_BUILD_LAYOUT;
                 }
-                $req->setRequestHeaders(array(
+                $req->setRequestHeaders([
                     'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
                     'User-Agent ' . $ua,
-                ));
+                ]);
                 $response = $req->send();
                 if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
                     throw new \RuntimeException(Http::getResponseHeader('http_code'));

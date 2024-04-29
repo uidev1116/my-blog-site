@@ -5,7 +5,7 @@ class ACMS_POST_Config_DefaultExport extends ACMS_POST_Config_Export
     /**
      * run
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {

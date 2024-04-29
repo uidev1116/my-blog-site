@@ -15,7 +15,7 @@ class ACMS_GET_Admin_Comment_Edit extends ACMS_GET_Admin
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         $step       = $this->Post->get('step', 'apply');
         $action     = $this->Post->get('action', 'insert');
@@ -38,8 +38,8 @@ class ACMS_GET_Admin_Comment_Edit extends ACMS_GET_Admin
 
         $rootBlock  = 'step#' . $step;
 
-        $Tpl->add(array('msg#' . $action, $rootBlock));
-        $Tpl->add(array('action#' . $action, $rootBlock));
+        $Tpl->add(['msg#' . $action, $rootBlock]);
+        $Tpl->add(['action#' . $action, $rootBlock]);
 
         $vars   += $this->buildField($Comment, $Tpl, $rootBlock, 'comment');
         $vars['step']   = $step;

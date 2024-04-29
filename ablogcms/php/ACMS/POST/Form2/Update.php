@@ -2,9 +2,9 @@
 
 class ACMS_POST_Form2_Update extends ACMS_POST_Entry
 {
-    function extractFormColumn()
+    protected function extractFormColumn()
     {
-        $Column     = array();
+        $Column     = [];
         $overCount  = 0;
 
         $typeAry = $this->Post->getArray('type');
@@ -15,23 +15,23 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             $id = $this->Post->get('id', 0, $i);
 
             // text, textarea
-            if (in_array($type, array('text', 'textarea'))) {
-                $data   = array(
+            if (in_array($type, ['text', 'textarea'], true)) {
+                $data   = [
                     'label'     => $this->Post->get($type . '_label_' . $id),
                     'caption'   => $this->Post->get($type . '_caption_' . $id),
-                );
+                ];
             // radio, select, checkbox
-            } elseif (in_array($type, array('radio', 'select', 'checkbox'))) {
-                $values = array_merge(array_diff($this->Post->getArray($type . '_value_' . $id), array("")));
-                $data   = array(
+            } elseif (in_array($type, ['radio', 'select', 'checkbox'], true)) {
+                $values = array_merge(array_diff($this->Post->getArray($type . '_value_' . $id), [""]));
+                $data   = [
                     'label'             => $this->Post->get($type . '_label_' . $id),
                     'caption'           => $this->Post->get($type . '_caption_' . $id),
                     'values'            => acmsSerialize($values),
-                );
+                ];
             } else {
                 continue;
             }
-            $baseCol = array(
+            $baseCol = [
                 'id'                => $id,
                 'clid'              => $_POST['clid'][$i],
                 'type'              => $type,
@@ -39,14 +39,14 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
                 'validator'         => $_POST['column_validator_' . $id],
                 'validator-value'   => $_POST['column_validator-value_' . $id],
                 'validator-message' => $_POST['column_validator-message_' . $id],
-            );
+            ];
 
             $Column[]   = $data + $baseCol;
         }
         return $Column;
     }
 
-    function saveFormColumn(&$Column, $eid, $bid)
+    protected function saveFormColumn(&$Column, $eid, $bid)
     {
         $DB     = DB::singleton(dsn());
         $offset = 0;
@@ -63,13 +63,13 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             $id     = $data['id'];
             $type   = $data['type'];
 
-            $valid  = array(
+            $valid  = [
                 'validator'         => $data['validator'],
                 'validator-value'   => $data['validator-value'],
                 'validator-message' => $data['validator-message'],
-            );
+            ];
 
-            $row    = array(
+            $row    = [
                 'column_align'      => '',
                 'column_attr'       => 'acms-form',
                 'column_group'      => '',
@@ -78,7 +78,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
                 'column_field_2'    => $data['caption'],
                 'column_field_7'    => acmsSerialize($data['validator-message']),
                 'column_field_8'    => acmsSerialize($valid),
-            );
+            ];
 
             if (empty($data['label'])) {
                 $offset++;
@@ -87,10 +87,10 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
 
             //----------------
             // text, textarea
-            if (in_array($type, array('text', 'textarea'))) {
+            if (in_array($type, ['text', 'textarea'], true)) {
             //-------------------------
             // radio, select, checkbox
-            } elseif (in_array($type, array('radio', 'select', 'checkbox'))) {
+            } elseif (in_array($type, ['radio', 'select', 'checkbox'], true)) {
                 $row['column_field_6']  = $data['values'];
             } else {
                 $offset++;
@@ -132,7 +132,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         return true;
     }
 
-    function update($oldField = null)
+    protected function update($oldField = null)
     {
         $DB     = DB::singleton(dsn());
         $Form   = $this->extract('form');
@@ -157,11 +157,11 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         $this->saveFormColumn($Column, EID, BID);
 
         $SQL    = SQL::newUpdate('entry');
-        $row    = array(
+        $row    = [
             'entry_updated_datetime'    => date('Y-m-d H:i:s', REQUEST_TIME),
             'entry_form_id'             => $Form->get('form_id'),
             'entry_form_status'         => $Form->get('form_status'),
-        );
+        ];
         foreach ($row as $key => $val) {
             $SQL->addUpdate($key, $val);
         }
@@ -176,10 +176,10 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
             'Column' => $Column,
         ]);
 
-        return array('eid' => EID, 'cid' => CID);
+        return ['eid' => EID, 'cid' => CID];
     }
 
-    function post()
+    public function post()
     {
         $updatedResponse = $this->update();
 
@@ -189,11 +189,11 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         setCookieDelFlag();
 
         if (is_array($updatedResponse)) {
-            $this->redirect(acmsLink(array(
+            $this->redirect(acmsLink([
                 'bid'   => BID,
                 'cid'   => $updatedResponse['cid'],
                 'eid'   => EID,
-            )));
+            ]));
         } else {
             return $this->Post;
         }

@@ -2,7 +2,7 @@
 
 class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 {
-    function post()
+    public function post()
     {
         $DB         = DB::singleton(dsn());
         $Approval   = $this->extract('approval');
@@ -48,7 +48,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                     $SQL->addWhereOpr('workflow_category_id', $cid);
 
                     $mail = $DB->query($SQL->get(dsn()), 'all');
-                    $mail_ = array();
+                    $mail_ = [];
                     foreach ($mail as $addr) {
                         $mail_[] = $addr['user_mail'];
                     }
@@ -65,7 +65,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                     $SQL->addWhereOpr('approval_revision_id', $rvid);
                     $SQL->addWhereOpr('approval_entry_id', EID);
                     $all    = $DB->query($SQL->get(dsn()), 'all');
-                    $mail_  = array();
+                    $mail_  = [];
                     foreach ($all as $mail) {
                         $mail_[] = $mail['user_mail'];
                     }
@@ -86,6 +86,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 
             //-----------
             // Send Mail
+            $apid = null;
             if (
                 1
                 and $To
@@ -102,14 +103,14 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
                 $Approval->setField('entryTitle', $revision['entry_title']);
                 $Approval->setField('entryStatus', ACMS_RAM::entryStatus(EID));
                 $Approval->setField('version', $revision['entry_rev_memo']);
-                $Approval->setField('revisionUrl', acmsLink(array(
+                $Approval->setField('revisionUrl', acmsLink([
                     'protocol'  => SSL_ENABLE ? 'https' : 'http',
                     'bid'   => BID,
                     'cid'   => CID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/revision-preview.html',
-                    'query' => array('rvid' => $rvid),
-                ), false));
+                    'query' => ['rvid' => $rvid],
+                ], false));
 
                 $subject    = Common::getMailTxt($subjectTpl, $Approval);
                 $body       = Common::getMailTxt($bodyTpl, $Approval);
@@ -120,17 +121,17 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 
                 $send = true;
                 if (HOOK_ENABLE) {
-                    $data = array(
+                    $data = [
                         'type'      => 'reject',
-                        'from'      => array($from),
+                        'from'      => [$from],
                         'to'        => $To,
                         'subject'   => $subject,
                         'bcc'       => configArray('mail_approval_bcc'),
                         'body'      => $body,
                         'data'      => $Approval,
-                    );
+                    ];
                     $Hook   = ACMS_Hook::singleton();
-                    $Hook->call('approvalNotification', array($data, & $send));
+                    $Hook->call('approvalNotification', [$data, & $send]);
                 }
                 if ($send !== false) {
                     try {
@@ -152,7 +153,7 @@ class ACMS_POST_Approval_Reject extends ACMS_POST_Approval
 
                 //---------
                 // Save DB
-                $apid   = $DB->query(SQL::nextval('approval_id', dsn()), 'seq');
+                $apid = $DB->query(SQL::nextval('approval_id', dsn()), 'seq');
 
                 // 並列承認
                 if ($type == 'parallel') {

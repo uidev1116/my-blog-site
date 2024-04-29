@@ -28,7 +28,7 @@ class Helper
     /**
      * ユニット保存後のユニットデータ
      *
-     * @var string
+     * @var array
      */
     protected $savedColumn;
 
@@ -61,7 +61,7 @@ class Helper
      * ユニット保存後のユニットデータを取得
      * Entry::extractColumn 後に決定
      *
-     * @return int
+     * @return array
      */
     public function getSavedColumn()
     {
@@ -83,7 +83,7 @@ class Helper
      * アップロードされたファイルを取得
      * Entry::extractColumn 後に決定
      *
-     * @param string $name
+     * @param string $path
      * @return void
      */
     public function addUploadedFiles($path)
@@ -200,29 +200,29 @@ class Helper
         $aryEndpoint = preg_split('@\s@', $endpoint, -1, PREG_SPLIT_NO_EMPTY);
         $title = ACMS_RAM::entryTitle($eid);
         $excerpt = mb_strimwidth(loadFulltext($eid), 0, 252, '...', 'UTF-8');
-        $url = acmsLink(array(
+        $url = acmsLink([
             'bid'   => BID,
             'cid'   => ACMS_RAM::entryCategory($eid),
             'eid'   => $eid,
-        ), false);
+        ], false);
         $blog_name = ACMS_RAM::blogName(BID);
 
         if (empty($aryEndpoint)) {
-            return false;
+            return;
         }
 
         foreach ($aryEndpoint as $ep) {
             try {
                 $req = \Http::init($ep, 'POST');
-                $req->setRequestHeaders(array(
+                $req->setRequestHeaders([
                     'Content-Type: application/x-www-form-urlencoded'
-                ));
-                $req->setPostData(array(
+                ]);
+                $req->setPostData([
                     'title' => $title,
                     'excerpt' => $excerpt,
                     'url' => $url,
                     'blog_name' => $blog_name,
-                ));
+                ]);
                 $response = $req->send();
                 $response->getResponseBody();
             } catch (\Exception $e) {
@@ -242,48 +242,9 @@ class Helper
     {
         $DB = DB::singleton(dsn());
 
-        //----------
-        // archives
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereOpr('column_entry_id', $eid);
-        $q = $SQL->get(dsn());
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-            do {
-                $type = detectUnitTypeSpecifier($row['column_type']);
-                switch ($type) {
-                    case 'image':
-                        if (empty($row['column_field_2'])) {
-                            break;
-                        }
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ($oldAry as $old) {
-                            $path   = ARCHIVES_DIR . $old;
-                            $large  = otherSizeImagePath($path, 'large');
-                            $tiny   = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-                            deleteFile($path);
-                            deleteFile($large);
-                            deleteFile($tiny);
-                            deleteFile($square);
-                        }
-                        break;
-                    case 'file':
-                        if (empty($row['column_field_2'])) {
-                            break;
-                        }
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        foreach ($oldAry as $old) {
-                            $path   = ARCHIVES_DIR . $old;
-                            deleteFile($path);
-                        }
-                        break;
-                }
-            } while ($row = $DB->fetch($q));
-        }
-
         //------------
         // entry
-        $SQL    = SQL::newDelete('entry');
+        $SQL = SQL::newDelete('entry');
         $SQL->addWhereOpr('entry_id', $eid);
         $DB->query($SQL->get(dsn()), 'exec');
         ACMS_RAM::entry($eid, null);
@@ -300,7 +261,7 @@ class Helper
             $SQL->addWhereOpr('tag_entry_id', $eid);
             $DB->query($SQL->get(dsn()), 'exec');
         } else {
-            foreach (array('column', 'tag', 'comment') as $tb) {
+            foreach (['column', 'tag', 'comment'] as $tb) {
                 $SQL = SQL::newDelete($tb);
                 $SQL->addWhereOpr($tb . '_entry_id', $eid);
                 $DB->query($SQL->get(dsn()), 'exec');
@@ -325,32 +286,65 @@ class Helper
         $SQL->addWhereOpr('fulltext_eid', $eid);
         $DB->query($SQL->get(dsn()), 'exec');
 
-        //-------
-        // field
-        $Field  = loadEntryField($eid);
-        foreach ($Field->listFields() as $fd) {
-            if (
-                1
-                and !strpos($fd, '@path')
-                and !strpos($fd, '@tinyPath')
-                and !strpos($fd, '@largePath')
-                and !strpos($fd, '@squarePath')
-            ) {
-                continue;
-            }
-            foreach ($Field->getArray($fd, true) as $i => $val) {
-                $path = $val;
-                if (!Storage::isFile(ARCHIVES_DIR . $path)) {
+        //----------
+        // archives
+        if ($changeRevision === false) {
+            $Field = loadEntryField($eid);
+            foreach ($Field->listFields() as $fd) {
+                if (
+                    1
+                    and !strpos($fd, '@path')
+                    and !strpos($fd, '@tinyPath')
+                    and !strpos($fd, '@largePath')
+                    and !strpos($fd, '@squarePath')
+                ) {
                     continue;
                 }
-                Storage::remove(ARCHIVES_DIR . $path);
-                if (HOOK_ENABLE) {
-                    $Hook = ACMS_Hook::singleton();
-                    $Hook->call('mediaDelete', ARCHIVES_DIR . $path);
+                foreach ($Field->getArray($fd, true) as $path) {
+                    deleteFile(ARCHIVES_DIR . $path);
                 }
+            }
+
+            $SQL = SQL::newSelect('column');
+            $SQL->addWhereOpr('column_entry_id', $eid);
+            $q = $SQL->get(dsn());
+            if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+                do {
+                    $type = detectUnitTypeSpecifier($row['column_type']);
+                    switch ($type) {
+                        case 'image':
+                            if (empty($row['column_field_2'])) {
+                                break;
+                            }
+                            $oldAry = explodeUnitData($row['column_field_2']);
+                            foreach ($oldAry as $old) {
+                                $path   = ARCHIVES_DIR . $old;
+                                $large  = otherSizeImagePath($path, 'large');
+                                $tiny   = otherSizeImagePath($path, 'tiny');
+                                $square = otherSizeImagePath($path, 'square');
+                                deleteFile($path);
+                                deleteFile($large);
+                                deleteFile($tiny);
+                                deleteFile($square);
+                            }
+                            break;
+                        case 'file':
+                            if (empty($row['column_field_2'])) {
+                                break;
+                            }
+                            $oldAry = explodeUnitData($row['column_field_2']);
+                            foreach ($oldAry as $old) {
+                                $path = ARCHIVES_DIR . $old;
+                                deleteFile($path);
+                            }
+                            break;
+                    }
+                } while ($row = $DB->fetch($q));
             }
         }
 
+        //-------
+        // field
         Common::saveField('eid', $eid);
 
         //-----------------------
@@ -491,7 +485,7 @@ class Helper
      * @param int $eid
      * @param int $bid
      *
-     * @return int
+     * @return int|false
      */
     function changeRevision($rvid, $eid, $bid)
     {
@@ -629,13 +623,13 @@ class Helper
         $SQL->addWhereOpr('relation_id', $eid);
         $SQL->addWhereOpr('relation_rev_id', $rvid);
 
-        $all    = $DB->query($SQL->get(dsn()), 'all');
-        foreach ($all as $row) {
+        $relations = $DB->query($SQL->get(dsn()), 'all');
+        foreach ($relations as $relation) {
             $SQL    = SQL::newInsert('relationship');
             $SQL->addInsert('relation_id', $eid);
-            $SQL->addInsert('relation_eid', $row['relation_eid']);
-            $SQL->addInsert('relation_type', $row['relation_type']);
-            $SQL->addInsert('relation_order', $row['relation_order']);
+            $SQL->addInsert('relation_eid', $relation['relation_eid']);
+            $SQL->addInsert('relation_type', $relation['relation_type']);
+            $SQL->addInsert('relation_order', $relation['relation_order']);
             $DB->query($SQL->get(dsn()), 'exec');
         }
 
@@ -650,7 +644,7 @@ class Helper
      * 削除予定の指定されたパスがDBに存在するかチェック
      *
      * @param string $type
-     * @param int $clid
+     * @param string $path
      * @return bool
      */
     public function validateRemovePath(string $type, string $path): bool
@@ -703,9 +697,9 @@ class Helper
     {
         $summaryRange = $range;
         if (!empty($_POST['column_object'])) {
-            return unserialize(gzinflate(base64_decode($_POST['column_object'])));
+            return unserialize(gzinflate(base64_decode($_POST['column_object']))); // @phpstan-ignore-line
         }
-        $Column = array();
+        $Column = [];
         $overCount = 0;
         if (!(isset($_POST['type']) and is_array($_POST['type']))) {
             return $Column;
@@ -719,12 +713,16 @@ class Helper
             // 特定指定子を除外した、一般名のユニット種別
             $type = detectUnitTypeSpecifier($type);
 
+            $data = [];
+            $dataArray = [];
+            $fileArray = [];
+            $mediaArray = [];
             //------
             // text
-            if ('text' == $type) {
-                $data = array(
+            if ('text' === $type) {
+                $data = [
                     'tag' => $_POST['text_tag_' . $id],
-                );
+                ];
                 if (isset($_POST['text_extend_tag_' . $id])) {
                     $data['extend_tag'] = $_POST['text_extend_tag_' . $id];
                 }
@@ -736,17 +734,16 @@ class Helper
 
             //-------
             // table
-            } elseif ('table' == $type) {
-                $data = array(
+            } elseif ('table' === $type) {
+                $data = [
                     'table' => implodeUnitData($_POST['table_source_' . $id]),
-                );
+                ];
             //-------
             // image
-            } elseif ('image' == $type) {
+            } elseif ('image' === $type) {
                 $caption = isset($_POST['image_caption_' . $id]) ? $_POST['image_caption_' . $id] : null;
                 $Image = new ACMS_POST_Image($olddel, $directAdd);
                 $imageFiles = [];
-                $dataArray = [];
 
                 $old = isset($_POST['image_old_' . $id]) ? $_POST['image_old_' . $id] : null;
                 if ($old && !$this->validateRemovePath('image', $old)) {
@@ -756,8 +753,8 @@ class Helper
                 //------------------
                 // extra unit data
                 if (is_array($caption)) {
-                    $imagePathAry = array();
-                    $exifAry = array();
+                    $imagePathAry = [];
+                    $exifAry = [];
 
                     foreach ($caption as $n => $val) {
                         $_old   = isset($_POST['image_old_' . $id][$n]) ? $_POST['image_old_' . $id][$n] : $old;
@@ -772,7 +769,7 @@ class Helper
                         }
 
                         $tmp = isset($_FILES['image_file_' . $id]['tmp_name'][$n]) ? $_FILES['image_file_' . $id]['tmp_name'][$n] : '';
-                        $exifData = isset($_POST['image_exif_' . $id]) ? $_POST['image_exif_' . $id] : array();
+                        $exifData = isset($_POST['image_exif_' . $id]) ? $_POST['image_exif_' . $id] : [];
 
                         foreach (
                             $Image->buildAndSave(
@@ -789,24 +786,24 @@ class Helper
                             $imageFiles[$n] = $imageData;
                         }
                         if (empty($imageFiles[$n])) {
-                            $imageFiles[$n] = array(
+                            $imageFiles[$n] = [
                                 'path' => '',
                                 'exif' => '',
-                            );
+                            ];
                         }
                     }
                     foreach ($imageFiles as $imagePath) {
                         $imagePathAry[] = $imagePath['path'];
                         $exifAry[] = $imagePath['exif'];
                     }
-                    $dataArray[]    = array(
+                    $dataArray[]    = [
                         'path'      => implodeUnitData($imagePathAry),
                         'exif'      => implodeUnitData($exifAry),
                         'caption'   => implodeUnitData($_POST['image_caption_' . $id]),
                         'link'      => implodeUnitData($_POST['image_link_' . $id]),
                         'alt'       => implodeUnitData($_POST['image_alt_' . $id]),
                         'size'      => implodeUnitData($_POST['image_size_' . $id]),
-                    );
+                    ];
 
                 //------------------
                 // normal unit data
@@ -824,7 +821,7 @@ class Helper
                     }
                     $tmp = isset($_FILES['image_file_' . $id]['tmp_name']) ? $_FILES['image_file_' . $id]['tmp_name'] : '';
                     $oldSize = isset($_POST['old_image_size_' . $id]) ? $_POST['old_image_size_' . $id] : '';
-                    $exifAry = isset($_POST['image_exif_' . $id]) ? $_POST['image_exif_' . $id] : array();
+                    $exifAry = isset($_POST['image_exif_' . $id]) ? $_POST['image_exif_' . $id] : [];
 
                     foreach (
                         $Image->buildAndSave(
@@ -844,24 +841,23 @@ class Helper
                         $imageFiles[] = $imageData;
                     }
                     foreach ($imageFiles as $imagePath) {
-                        $dataArray[]    = array(
+                        $dataArray[]    = [
                             'path'      => $imagePath['path'],
                             'exif'      => $imagePath['exif'],
                             'caption'   => $_POST['image_caption_' . $id],
                             'link'      => $_POST['image_link_' . $id],
                             'alt'       => $_POST['image_alt_' . $id],
                             'size'      => $_POST['image_size_' . $id],
-                        );
+                        ];
                     }
                 }
 
             //------
             // file
-            } elseif ('file' == $type) {
+            } elseif ('file' === $type) {
                 $caption = isset($_POST['file_caption_' . $id]) ? $_POST['file_caption_' . $id] : null;
                 $File = new ACMS_POST_File($olddel, $directAdd);
                 $files = [];
-                $fileArray = [];
                 $old = isset($_POST['file_old_' . $id]) ? $_POST['file_old_' . $id] : null;
                 if ($old && !$this->validateRemovePath('file', $old)) {
                     $old = null;
@@ -870,7 +866,7 @@ class Helper
                 //------------------
                 // extra unit data
                 if (is_array($caption)) {
-                    $filePathAry = array();
+                    $filePathAry = [];
                     foreach ($caption as $n => $val) {
                         $edit = isset($_POST['file_edit_' . $id][$n]) ? $_POST['file_edit_' . $id][$n] : (isset($_POST['file_edit_' . $id]) ? $_POST['file_edit_' . $id] : '');
                         $_old = isset($_POST['file_old_' . $id][$n]) ? $_POST['file_old_' . $id][$n] : $old;
@@ -896,10 +892,10 @@ class Helper
                     foreach ($files as $filePath) {
                         $filePathAry[] = $filePath;
                     }
-                    $fileArray[]    = array(
+                    $fileArray[]    = [
                         'path'      => implodeUnitData($filePathAry),
                         'caption'   => implodeUnitData($_POST['file_caption_' . $id]),
-                    );
+                    ];
                 //------------------
                 // normal unit data
                 } else {
@@ -924,17 +920,17 @@ class Helper
                         $files[] = $fileData;
                     }
                     foreach ($files as $filePath) {
-                        $fileArray[]    = array(
+                        $fileArray[]    = [
                             'path'      => $filePath,
                             'caption'   => $_POST['file_caption_' . $id],
-                        );
+                        ];
                     }
                 }
 
             //-----
             // map
             } elseif ('map' === $type) {
-                $data = array(
+                $data = [
                     'lat'   => $_POST['map_lat_' . $id],
                     'lng'   => $_POST['map_lng_' . $id],
                     'zoom'  => $_POST['map_zoom_' . $id],
@@ -944,38 +940,38 @@ class Helper
                     'view_pitch' => isset($_POST['map_view_pitch_' . $id]) ? $_POST['map_view_pitch_' . $id] : '',
                     'view_heading' => isset($_POST['map_view_heading_' . $id]) ? $_POST['map_view_heading_' . $id] : '',
                     'view_activate' => isset($_POST['map_view_activate_' . $id]) ? $_POST['map_view_activate_' . $id] : '',
-                );
+                ];
             } elseif ('osmap' === $type) {
-                $data = array(
+                $data = [
                     'lat'   => $_POST['map_lat_' . $id],
                     'lng'   => $_POST['map_lng_' . $id],
                     'zoom'  => $_POST['map_zoom_' . $id],
                     'msg'   => $_POST['map_msg_' . $id],
                     'size'  => $_POST['map_size_' . $id],
-                );
+                ];
             //---------
             // youtube
-            } elseif ('youtube' == $type) {
-                $data   = array(
+            } elseif ('youtube' === $type) {
+                $data   = [
                     'youtube_id'    => implodeUnitData($_POST['youtube_id_' . $id]),
                     'size'          => $_POST['youtube_size_' . $id],
-                );
+                ];
                 if ($directAdd && strlen($data['youtube_id']) === 0) {
                     $data['youtube_id'] = config('action_direct_def_youtubeid');
                 }
             //---------
             // video
-            } elseif ('video' == $type) {
-                $data   = array(
+            } elseif ('video' === $type) {
+                $data   = [
                     'video_id'  => implodeUnitData($_POST['video_id_' . $id]),
                     'size'      => $_POST['video_size_' . $id],
-                );
+                ];
                 if ($directAdd && strlen($data['video_id']) === 0) {
                     $data['video_id'] = config('action_direct_def_videoid');
                 }
             //---------
             // eximage
-            } elseif ('eximage' == $type) {
+            } elseif ('eximage' === $type) {
                 $size   = $_POST['eximage_size_' . $id];
                 $normal = $_POST['eximage_normal_' . $id];
                 $large  = $_POST['eximage_large_' . $id];
@@ -1018,31 +1014,31 @@ class Helper
                     $size   = $size . ':' . $display_size;
                 }
 
-                $data   = array(
+                $data   = [
                     'normal'    => implodeUnitData($normal),
                     'large'     => implodeUnitData($large),
                     'caption'   => implodeUnitData($_POST['eximage_caption_' . $id]),
                     'link'      => implodeUnitData($_POST['eximage_link_' . $id]),
                     'alt'       => implodeUnitData($_POST['eximage_alt_' . $id]),
                     'size'      => $size,
-                );
+                ];
                 if ($directAdd && strlen($data['normal']) === 0) {
                     $data['normal'] = config('action_direct_def_eximage');
                     $data['size'] = config('action_direct_def_eximage_size');
                 }
             //---------
             // quote
-            } elseif ('quote' == $type) {
-                $data   = array(
+            } elseif ('quote' === $type) {
+                $data   = [
                     'quote_url' => implodeUnitData($_POST['quote_url_' . $id]),
-                );
+                ];
                 if ($directAdd && strlen($data['quote_url']) === 0) {
                     $data['quote_url'] = config('action_direct_def_quote_url');
                 }
 
             //---------
             // media
-            } elseif ('media' == $type) {
+            } elseif ('media' === $type) {
                 $midArray = $_POST['media_id_' . $id];
                 $size = $_POST['media_size_' . $id];
                 $enlarged = isset($_POST['media_enlarged_' . $id]) ? $_POST['media_enlarged_' . $id] : null;
@@ -1050,18 +1046,13 @@ class Helper
                 $caption = isset($_POST['media_caption_' . $id]) ? $_POST['media_caption_' . $id] : null;
                 $link = isset($_POST['media_link_' . $id]) ? $_POST['media_link_' . $id] : null;
                 $alt = isset($_POST['media_alt_' . $id]) ? $_POST['media_alt_' . $id] : null;
-                $display_size = '';
-                $mediaArray = array();
 
-                if (!empty($display_size)) {
-                    $size   = $size . ':' . $display_size;
-                }
                 if (!is_array($midArray)) {
-                    $midArray = array($midArray);
+                    $midArray = [$midArray];
                 }
                 //多言語ユニットの場合
                 if (is_array($caption)) {
-                    $mediaArray[] = array(
+                    $mediaArray[] = [
                         'media_id' => implodeUnitData($midArray),
                         'size' => implodeUnitData($size),
                         'enlarged' => implodeUnitData($enlarged),
@@ -1069,11 +1060,11 @@ class Helper
                         'caption' => implodeUnitData($caption),
                         'alt' => implodeUnitData($alt),
                         'link' => implodeUnitData($link)
-                    );
+                    ];
                 // 普通のユニットの場合
                 } else {
                     foreach ($midArray as $n => $mid) {
-                        $mediaArray[] = array(
+                        $mediaArray[] = [
                             'media_id' => implodeUnitData($mid),
                             'size' => implodeUnitData($size),
                             'enlarged' => implodeUnitData($enlarged),
@@ -1081,43 +1072,43 @@ class Helper
                             'caption' => implodeUnitData($caption),
                             'alt' => implodeUnitData($alt),
                             'link' => implodeUnitData($link)
-                        );
+                        ];
                     }
                 }
             //-------
             // rich-editor
-            } elseif ('rich-editor' == $type) {
-                $data = array(
+            } elseif ('rich-editor' === $type) {
+                $data = [
                     'json' => implodeUnitData($_POST['rich-editor_json_' . $id])
-                );
+                ];
             //-------
             // break
-            } elseif ('break' == $type) {
-                $data   = array(
+            } elseif ('break' === $type) {
+                $data   = [
                     'label'  => implodeUnitData($_POST['break_label_' . $id]),
-                );
+                ];
 
             //--------
             // module
-            } elseif ('module' == $type) {
-                $data   = array(
+            } elseif ('module' === $type) {
+                $data   = [
                     'mid'   => $_POST['module_mid_' . $id],
                     'tpl'   => $_POST['module_tpl_' . $id],
-                );
+                ];
 
             //--------
             // custom
-            } elseif ('custom' == $type) {
+            } elseif ('custom' === $type) {
                 $Field = Common::extract('unit' . $id, new ACMS_Validator(), new Field());
                 $obj = Common::getDeleteField();
                 $Field->retouchCustomUnit($id);
-                $data = array(
+                $data = [
                     'field' => $Field,
-                );
+                ];
             } else {
                 continue;
             }
-            $baseCol = array(
+            $baseCol = [
                 'id'    => $id,
                 'clid'  => $_POST['clid'][$i],
                 'type'  => $actualType,
@@ -1126,10 +1117,10 @@ class Helper
                 'attr'  => $_POST['attr'][$i],
                 'group' => @$_POST['group'][$i],
                 'size'  => '',
-            );
+            ];
 
             $baseSortNum = $baseCol['sort'];
-            if ('image' == $type) {
+            if ('image' === $type) {
                 foreach (array_reverse($dataArray) as $num => $col) {
                     if ($baseSortNum <= $summaryRange and $num > 0) {
                         $summaryRange++;
@@ -1142,7 +1133,7 @@ class Helper
                     }
                     $Column[] = $col + $baseCol;
                 }
-            } elseif ('file' == $type) {
+            } elseif ('file' === $type) {
                 foreach (array_reverse($fileArray) as $num => $col) {
                     if ($baseSortNum <= $summaryRange and $num > 0) {
                         $summaryRange++;
@@ -1169,7 +1160,7 @@ class Helper
                     $Column[] = $col + $baseCol;
                 }
             } else {
-                $Column[]   = $data + $baseCol;
+                $Column[] = $data + $baseCol;
             }
         }
 
@@ -1215,7 +1206,7 @@ class Helper
             }
             $DB->query($SQL->get(dsn()), 'exec');
 
-            $arySort    = array();
+            $arySort    = [];
             foreach ($Column as $data) {
                 if (is_array($data)) {
                     $arySort[] = $data['sort'];
@@ -1225,7 +1216,7 @@ class Helper
                 $offset = min($arySort) - 1;
             }
         }
-        $Res = array();
+        $Res = [];
 
         foreach ($Column as $key => $data) {
             $id     = $data['id'];
@@ -1237,15 +1228,15 @@ class Helper
             // 特定指定子を除外した、一般名のユニット種別
             $type = detectUnitTypeSpecifier($type);
 
-            $row  = array(
+            $row  = [
                 'column_align'      => $data['align'],
                 'column_attr'       => $data['attr'],
                 'column_group'      => $data['group'],
                 'column_size'       => $data['size'],
                 'column_type'       => $actualType,
-            );
+            ];
 
-            if ('text' == $type) {
+            if ('text' === $type) {
                 if (empty($data['text'])) {
                     $offset++;
                     continue;
@@ -1262,7 +1253,7 @@ class Helper
                     if (!$val = array_shift($tokens)) {
                         continue;
                     }
-                    if ('#' == $mark) {
+                    if ('#' === $mark) {
                         $id = $val;
                     } else {
                         $class = $val;
@@ -1279,13 +1270,13 @@ class Helper
                 if (!empty($attr)) {
                     $row['column_attr'] = $attr;
                 }
-            } elseif ('table' == $type) {
+            } elseif ('table' === $type) {
                 if (empty($data['table'])) {
                     $offset++;
                     continue;
                 }
                 $row['column_field_1'] = $data['table'];
-            } elseif ('image' == $type) {
+            } elseif ('image' === $type) {
                 if (empty($data['path'])) {
                     $offset++;
                     continue;
@@ -1335,7 +1326,7 @@ class Helper
                     $row['column_field_2']  = implodeUnitData($newAry);
                     $Column[$key]['path']   = implodeUnitData($newAry);
                 }
-            } elseif ('file' == $type) {
+            } elseif ('file' === $type) {
                 if (empty($data['path'])) {
                     $offset++;
                     continue;
@@ -1345,7 +1336,7 @@ class Helper
 
                 if ($asNewVersion) {
                     $oldAry = explodeUnitData($row['column_field_2']);
-                    $newAry = array();
+                    $newAry = [];
                     foreach ($oldAry as $old) {
                         if (in_array($old, $this->getUploadedFiles(), true)) {
                             $newAry[] = $old;
@@ -1368,10 +1359,10 @@ class Helper
             } elseif ('map' === $type) {
                 if (
                     1
-                    and empty($data['msg'])
-                    and empty($data['lat'])
-                    and empty($data['lng'])
-                    and empty($data['zoom'])
+                    && empty($data['msg'])
+                    && empty($data['lat'])
+                    && empty($data['lng'])
+                    && empty($data['zoom'])
                 ) {
                     $offset++;
                     continue;
@@ -1394,10 +1385,10 @@ class Helper
             } elseif ('osmap' === $type) {
                 if (
                     1
-                    and empty($data['msg'])
-                    and empty($data['lat'])
-                    and empty($data['lng'])
-                    and empty($data['zoom'])
+                    && empty($data['msg'])
+                    && empty($data['lat'])
+                    && empty($data['lng'])
+                    && empty($data['zoom'])
                 ) {
                     $offset++;
                     continue;
@@ -1412,7 +1403,7 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_5']  = $display_size;
                 }
-            } elseif ('youtube' == $type) {
+            } elseif ('youtube' === $type) {
                 if (empty($data['youtube_id'])) {
                     $offset++;
                     continue;
@@ -1430,24 +1421,24 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_3']  = $display_size;
                 }
-            } elseif ('video' == $type) {
+            } elseif ('video' === $type) {
                 if (empty($data['video_id'])) {
                     $offset++;
                     continue;
                 }
                 if (preg_match(REGEX_VALID_URL, $data['video_id'])) {
-                    $vid = null;
+                    $videoId = '';
                     if (HOOK_ENABLE) {
                         $Hook = ACMS_Hook::singleton();
-                        $Hook->call('extendsVideoUnit', array($data['video_id'], &$vid));
+                        $Hook->call('extendsVideoUnit', [$data['video_id'], &$videoId]);
                     }
-                    if (empty($vid)) {
+                    if (is_string($videoId) && $videoId !== '') {
+                        $data['video_id'] = $videoId;
+                    } else {
                         $parsed_url = parse_url($data['video_id']);
                         if (!empty($parsed_url['query'])) {
                             $data['video_id'] = preg_replace('/v=([\w\-_]+).*/', '$1', $parsed_url['query']);
                         }
-                    } else {
-                        $data['video_id'] = $vid;
                     }
                 }
                 $row['column_field_2']  = $data['video_id'];
@@ -1457,7 +1448,7 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_3']  = $display_size;
                 }
-            } elseif ('eximage' == $type) {
+            } elseif ('eximage' === $type) {
                 if (empty($data['normal'])) {
                     $offset++;
                     continue;
@@ -1473,7 +1464,7 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_6']  = $display_size;
                 }
-            } elseif ('quote' == $type) {
+            } elseif ('quote' === $type) {
                 if (empty($data['quote_url'])) {
                     $offset++;
                     continue;
@@ -1481,15 +1472,15 @@ class Helper
 
                 $row['column_field_6']  = $data['quote_url'];
                 $urlAry     = explodeUnitData($row['column_field_6']);
-                $oldUrlAry  = array();
+                $oldUrlAry  = [];
                 $old_       = null;
 
-                $field1Ary  = array();
-                $field2Ary  = array();
-                $field3Ary  = array();
-                $field4Ary  = array();
-                $field5Ary  = array();
-                $field7Ary  = array();
+                $field1Ary  = [];
+                $field2Ary  = [];
+                $field3Ary  = [];
+                $field4Ary  = [];
+                $field5Ary  = [];
+                $field7Ary  = [];
 
                 foreach ($urlAry as $i => $url) {
                     if (preg_match(REGEX_VALID_URL, $url)) {
@@ -1529,13 +1520,13 @@ class Helper
                             $field7Ary[]    = isset($htmlAry[$i]) ? $htmlAry[$i] : '';
                         }
                         if (!$no_change) {
-                            $html = null;
+                            $html = '';
                             if (HOOK_ENABLE) {
                                 $Hook = ACMS_Hook::singleton();
-                                $Hook->call('extendsQuoteUnit', array($url, &$html));
+                                $Hook->call('extendsQuoteUnit', [$url, &$html]);
                             }
 
-                            if (!empty($html)) {
+                            if (is_string($html) && $html !== '') {
                                 $field7Ary[] = $html;
                             } else {
                                 $existsGraphInfo = false;
@@ -1562,13 +1553,13 @@ class Helper
                         }
                     }
                 }
-                $row['column_field_1']  = implodeUnitData($field1Ary);
-                $row['column_field_2']  = implodeUnitData($field2Ary);
-                $row['column_field_3']  = implodeUnitData($field3Ary);
-                $row['column_field_4']  = implodeUnitData($field4Ary);
-                $row['column_field_5']  = implodeUnitData($field5Ary);
-                $row['column_field_7']  = implodeUnitData($field7Ary);
-            } elseif ('media' == $type) {
+                $row['column_field_1'] = implodeUnitData($field1Ary);
+                $row['column_field_2'] = implodeUnitData($field2Ary);
+                $row['column_field_3'] = implodeUnitData($field3Ary);
+                $row['column_field_4'] = implodeUnitData($field4Ary);
+                $row['column_field_5'] = implodeUnitData($field5Ary);
+                $row['column_field_7'] = implodeUnitData($field7Ary);
+            } elseif ('media' === $type) {
                 if (empty($data['media_id'])) {
                     $offset++;
                     continue;
@@ -1586,26 +1577,26 @@ class Helper
                     $row['column_size']     = $size;
                     $row['column_field_6']  = $display_size;
                 }
-            } elseif ('rich-editor' == $type) {
+            } elseif ('rich-editor' === $type) {
                 if (empty($data['json'])) {
                     $offset++;
                     continue;
                 }
                 $row['column_field_1'] = $data['json'];
-            } elseif ('break' == $type) {
+            } elseif ('break' === $type) {
                 if (empty($data['label'])) {
                     $offset++;
                     continue;
                 }
                 $row['column_field_1']  = $data['label'];
-            } elseif ('module' == $type) {
+            } elseif ('module' === $type) {
                 if (empty($data['mid'])) {
                     $offset++;
                     continue;
                 }
                 $row['column_field_1']  = $data['mid'];
                 $row['column_field_2']  = $data['tpl'];
-            } elseif ('custom' == $type) {
+            } elseif ('custom' === $type) {
                 if (empty($data['field'])) {
                     $offset++;
                     continue;
@@ -1761,7 +1752,7 @@ class Helper
     public function getSubCategoryFromString($string, $delimiter = ',')
     {
         $cidAry = explode($delimiter, $string);
-        $list = array();
+        $list = [];
         foreach ($cidAry as $item) {
             $item = preg_replace('/^[\s　]+|[\s　]+$/u', '', $item);
             if ($item !== '') {
@@ -1781,7 +1772,7 @@ class Helper
      *
      * @return void
      */
-    public function saveRelatedEntries($eid, $entryAry = array(), $rvid = null, $typeAry = array(), $loadedTypes = array())
+    public function saveRelatedEntries($eid, $entryAry = [], $rvid = null, $typeAry = [], $loadedTypes = [])
     {
         $DB = DB::singleton(dsn());
         $table = 'relationship';
@@ -1796,14 +1787,14 @@ class Helper
         }
         $DB->query($SQL->get(dsn()), 'exec');
 
-        $exists = array();
+        $exists = [];
         foreach ($entryAry as $i => $reid) {
             try {
                 $type = $typeAry[$i] ?? '';
                 if (!isset($exists[$type])) {
                     $exists[$type] = [];
                 }
-                if (in_array($reid, $exists[$type])) {
+                if (in_array($reid, $exists[$type], true)) {
                     continue;
                 }
                 $SQL = SQL::newInsert($table);
@@ -1832,7 +1823,7 @@ class Helper
      * @param string $type
      * @param string $memo
      *
-     * @return int
+     * @return int|false
      */
     public function saveEntryRevision($eid, $rvid, $entryAry, $type = '', $memo = '')
     {
@@ -1897,7 +1888,7 @@ class Helper
                 $sql->addInsert('entry_rev_status', 'approved');
             }
             foreach ($entryData as $key => $val) {
-                if (!in_array($key, array('entry_current_rev_id', 'entry_reserve_rev_id', 'entry_last_update_user_id'), true)) {
+                if (!in_array($key, ['entry_current_rev_id', 'entry_reserve_rev_id', 'entry_last_update_user_id'], true)) {
                     $sql->addInsert($key, $val);
                 }
             }
@@ -1914,7 +1905,7 @@ class Helper
             $sql->addWhereOpr('entry_id', $eid);
             $sql->addWhereOpr('entry_rev_id', $rvid);
             foreach ($entryData as $key => $val) {
-                if (!in_array($key, array('entry_current_rev_id', 'entry_last_update_user_id'), true)) {
+                if (!in_array($key, ['entry_current_rev_id', 'entry_last_update_user_id'], true)) {
                     $sql->addUpdate($key, $val);
                 }
             }
@@ -1931,7 +1922,6 @@ class Helper
      * @param int $eid
      * @param int $bid
      * @param int $rvid
-     * @param string $revisionType
      *
      * @return array|bool
      */

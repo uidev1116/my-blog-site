@@ -50,7 +50,7 @@ class ModuleExport extends Export
         $SQL->addWhereOpr('config_rule_id', null);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);
@@ -69,7 +69,7 @@ class ModuleExport extends Export
         $SQL->addWhereOpr('module_id', $this->mid);
         $q = $SQL->get(dsn());
         DB::query($q, 'fetch');
-        $records = array();
+        $records = [];
 
         while ($r = DB::fetch($q)) {
             $this->extractMetaIds($r);

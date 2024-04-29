@@ -6,22 +6,26 @@ class ACMS_GET_Admin_StaticExport extends ACMS_GET_Admin
 {
     function get()
     {
-        $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $rootVars = array();
+        $tpl = new Template($this->tpl, new ACMS_Corrector());
         $logger = App::make('static-export.logger');
+        assert($logger instanceof \Acms\Services\StaticExport\Logger);
 
         /**
          * 書き出し中チェック
          */
         if (Storage::exists($logger->getDestinationPath())) {
-            $rootVars['processing'] = 1;
-        } else {
-            $rootVars['processing'] = 0;
-            $rootVars['last-time-date'] = config('static-export-last-time-date', '1000-01-01');
-            $rootVars['last-time-time'] = config('static-export-last-time-time', '00:00:00');
+            return $tpl->render([
+                'processing' => 1,
+            ]);
         }
-        $Tpl->add(null, $rootVars);
 
-        return $Tpl->get();
+        $blogConfig = Config::loadDefaultField();
+        $blogConfig->overload(Config::loadBlogConfig(BID));
+
+        return $tpl->render(array_merge([
+            'processing' => 0,
+            'last-time-date' => $blogConfig->get('static-export-last-time-date', '1000-01-01'),
+            'last-time-time' => $blogConfig->get('static-export-last-time-time', '00:00:00'),
+        ], $this->buildField($this->Post, $tpl)));
     }
 }

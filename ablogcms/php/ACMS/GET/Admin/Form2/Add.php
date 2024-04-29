@@ -13,7 +13,7 @@ class ACMS_GET_Admin_Form2_Add extends ACMS_GET_Admin_Entry
 
         $addType    = substr(ADMIN, 10);
 
-        $aryTypeLabel    = array();
+        $aryTypeLabel    = [];
         foreach (configArray('column_form_add_type') as $i => $type) {
             $aryTypeLabel[$type]    = config('column_form_add_type_label', '', $i);
         }
@@ -40,10 +40,10 @@ class ACMS_GET_Admin_Form2_Add extends ACMS_GET_Admin_Entry
         //------
         // sort
         for ($j = 1; $j <= $cnt; $j++) {
-            $_vars  = array(
+            $_vars  = [
                 'value' => $j,
                 'label' => $j,
-            );
+            ];
             if (($i + 1 + $offset) == $j) {
                 $_vars['selected']  = config('attr_selected');
             }
@@ -53,17 +53,17 @@ class ACMS_GET_Admin_Form2_Add extends ACMS_GET_Admin_Entry
         //--------
         // option
         for ($i = 0; $i < 3; $i++) {
-            $Tpl->add(array('option:loop'), array(
+            $Tpl->add(['option:loop'], [
                 'id'    => $data['id'],
                 'unique' => 'new-' . ($i + 1),
-            ));
+            ]);
         }
 
-        $Tpl->add('column:loop', array(
+        $Tpl->add('column:loop', [
             'cltype'    => $addType,
             'uniqid'    => $data['id'],
             'clname'    => ite($aryTypeLabel, $addType),
-        ));
+        ]);
 
         return $Tpl->get();
     }

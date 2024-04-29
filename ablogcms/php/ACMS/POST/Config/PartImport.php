@@ -6,9 +6,9 @@ use Acms\Services\Facades\Common;
 class ACMS_POST_Config_PartImport extends ACMS_POST_Config_Import
 {
     /**
-     * @return \Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         @set_time_limit(0);
 

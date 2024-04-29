@@ -2,9 +2,9 @@
 
 class ACMS_GET_Blog_Field extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'bid'   => 'global',
-    );
+    ];
 
     function get()
     {

@@ -36,7 +36,7 @@ class ACMS_POST_Update_ExecDB extends ACMS_POST_Update_Exec
             $dbUpdateService->update();
 
             $logger->success();
-            AcmsLogger::info('データベースのアップデートしました');
+            AcmsLogger::info('データベースをアップデートしました');
         } catch (\Exception $e) {
             $message = $e->getMessage();
             if (!empty($message)) {

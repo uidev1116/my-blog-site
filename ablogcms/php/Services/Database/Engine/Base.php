@@ -76,7 +76,7 @@ abstract class Base
      *
      * @param string $sql
      * @param string $mode
-     * @return array|bool|resource|int
+     * @return array|bool|resource|int|string
      */
     abstract public function query($sql, $mode = 'row');
 
@@ -178,7 +178,7 @@ abstract class Base
     {
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('query', array(&$sql));
+            $Hook->call('query', [&$sql]);
         }
     }
 
@@ -198,11 +198,11 @@ abstract class Base
      *
      * @static
      * @param array $dsn
-     * @return DB
+     * @return static
      */
     public static function singleton($dsn = null)
     {
-        static $connections = array();
+        static $connections = [];
 
         $id = sha1(serialize($dsn));
         if (!isset($connections[$id])) {
@@ -217,11 +217,11 @@ abstract class Base
     /**
      * バージョンによって、サブクエリを使用するか分離するかを判断
      *
-     * @param SQL $query
+     * @param \SQL $query
      * @param bool $subquery
-     * @return String | SQL
+     * @return \SQL|null|array|bool
      */
-    public function subQuery($query = null, $subquery = false)
+    public function subQuery($query, $subquery = false)
     {
         $version = $this->getVersion();
         if (version_compare($this->getVersion(), '5.6.0', '>=')) {
@@ -246,7 +246,7 @@ abstract class Base
 
     /**
      * @param array $dsn
-     * @return DB
+     * @return static
      */
     public function persistent($dsn = null)
     {
@@ -281,17 +281,17 @@ abstract class Base
      */
     public static function time($sql = null, $time = null)
     {
-        static $arySql = array();
-        static $aryTime = array();
+        static $arySql = [];
+        static $aryTime = [];
 
         if (is_int($sql)) {
-            $res = array();
-            foreach ($aryTime as $i => $time) {
-                $res[strval($time)] = $arySql[$i];
+            $res = [];
+            foreach ($aryTime as $i => $timeValue) {
+                $res[strval($timeValue)] = $arySql[$i];
             }
             krsort($res);
             $_res = $res;
-            $res = array();
+            $res = [];
             $i = 0;
             foreach ($_res as $key => $val) {
                 $res[$key] = $val;
@@ -437,10 +437,10 @@ abstract class Base
         $this->hook($sql);
         if (isBenchMarkMode() && $time > DB_SLOW_QUERY_TIME) {
             global $bench_slow_query;
-            $bench_slow_query[] = array(
+            $bench_slow_query[] = [
                 'time' => $time,
                 'query' => nl2br($sql),
-            );
+            ];
         }
         self::time($sql, $time);
     }

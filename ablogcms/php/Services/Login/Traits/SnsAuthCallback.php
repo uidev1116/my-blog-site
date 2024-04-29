@@ -92,18 +92,16 @@ trait SnsAuthCallback
 
     /**
      * Main
-     * @return void
+     * @return never
      */
-    protected function oAuthCallbackProcess(): void
+    protected function oAuthCallbackProcess()
     {
         try {
             $this->type = $this->getType();
             $this->targetBlogId = $this->getTargetBlog();
 
             $data = $this->oauth();
-            if ($data) {
-                $this->runProcess($data);
-            }
+            $this->runProcess($data);
         } catch (\Exception $e) {
             if ($this->type === 'register') {
                 AcmsLogger::notice($this->getServiceName() . '連携登録に失敗しました', Common::exceptionArray($e));
@@ -160,10 +158,13 @@ trait SnsAuthCallback
      * 各処理を開始
      *
      * @param array $data
-     * @return void
+     * @return never
      */
-    protected function runProcess(array $data): void
+    protected function runProcess(array $data)
     {
+        if (count($data) === 0) {
+            throw new \InvalidArgumentException('data is empty.');
+        }
         if ($this->type === 'register') {
             $this->register($data);
         }
@@ -176,15 +177,18 @@ trait SnsAuthCallback
         if ($this->type === 'signup') {
             $this->signup($data);
         }
+        throw new \UnexpectedValueException(
+            sprintf('Encountered an unrecognized oauth type: %s', $this->type)
+        );
     }
 
     /**
      * 成功時
      *
      * @param int $uid
-     * @return void
+     * @return never
      */
-    protected function success(int $uid = 0): void
+    protected function success(int $uid = 0)
     {
         $this->cleanupSession();
         $session = Session::handle();
@@ -233,9 +237,9 @@ trait SnsAuthCallback
     /**
      * 失敗時
      *
-     * @return void
+     * @return never
      */
-    protected function error(): void
+    protected function error()
     {
         $this->cleanupSession();
         $session = Session::handle();
@@ -267,9 +271,9 @@ trait SnsAuthCallback
      * サインイン
      *
      * @param array $data
-     * @return void
+     * @return never
      */
-    protected function signin(array $data): void
+    protected function signin(array $data)
     {
         $sub = $this->getSubId($data);
         $userData = $this->findAccount($this->getKeyName(), $sub);
@@ -291,11 +295,11 @@ trait SnsAuthCallback
     }
 
     /**
-     * 既存ユーザーにgoogle認証を登録
+     * 既存ユーザーに認証を登録
      *
-     * @return void
+     * @return never
      */
-    protected function register(array $data): void
+    protected function register(array $data)
     {
         $sub = $this->getSubId($data);
         $sql = SQL::newSelect('user');
@@ -312,7 +316,6 @@ trait SnsAuthCallback
             ACMS_RAM::user(SUID, null);
 
             $this->success(SUID);
-            return;
         }
         $this->error();
     }
@@ -321,9 +324,9 @@ trait SnsAuthCallback
      * サインアップ
      *
      * @param array $data
-     * @return void
+     * @return never
      */
-    protected function signup(array $data): void
+    protected function signup(array $data)
     {
         $config = Config::loadBlogConfigSet($this->targetBlogId);
         $sub = $this->getSubId($data);
@@ -398,7 +401,7 @@ trait SnsAuthCallback
     /**
      * ユーザー作成用にgoogle認証からユーザー情報を抜き出し
      *
-     * @param array
+     * @param array $data
      * @return array
      */
     protected function extractAccountData($data): array
@@ -434,9 +437,9 @@ trait SnsAuthCallback
      *
      * @param int $bid
      * @param array $params
-     * @return void
+     * @return never
      */
-    protected function redirect(int $bid, array $params): void
+    protected function redirect(int $bid, array $params)
     {
         $params = array_merge([
             'protocol' => (SSL_ENABLE && ('on' == config('login_ssl'))) ? 'https' : 'http',

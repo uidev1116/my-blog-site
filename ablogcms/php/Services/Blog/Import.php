@@ -20,7 +20,7 @@ class Import
     protected $bid;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $uid;
 
@@ -37,7 +37,7 @@ class Import
     /**
      * @var array
      */
-    protected $mediaFieldFix = array();
+    protected $mediaFieldFix = [];
 
     /**
      * Import constructor
@@ -59,18 +59,18 @@ class Import
     {
         $this->bid = $bid;
         $this->yaml = Yaml::parse($yaml);
-        $this->ids = array();
-        $this->errors = array();
+        $this->ids = [];
+        $this->errors = [];
 
         $this->dropData();
         $this->registerNewIDs();
 
-        $tables = array(
+        $tables = [
             'category', 'entry', 'tag',
             'module', 'layout_grid',
             'rule', 'config', 'column', 'config_set',
             'dashboard', 'field', 'media', 'media_tag',
-        );
+        ];
         foreach ($tables as $table) {
             $this->insertData($table);
         }
@@ -85,7 +85,7 @@ class Import
     private function generateFulltext()
     {
         $DB = DB::singleton(dsn());
-        foreach (array('category', 'entry') as $type) {
+        foreach (['category', 'entry'] as $type) {
             $SQL = SQL::newSelect($type);
             $SQL->addSelect($type . '_id');
             $SQL->addWhereOpr($type . '_blog_id', $this->bid);
@@ -118,8 +118,8 @@ class Import
             $SQL = SQL::newInsert($table);
             foreach ($record as $field => $value) {
                 $value = $this->fix($table, $field, $value);
-                if (is_callable(array($this, $table . 'Fix'))) {
-                    $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value, $record));
+                if (is_callable([$this, $table . 'Fix'])) {
+                    $value = call_user_func_array([$this, $table . 'Fix'], [$field, $value, $record]);
                 }
                 if ($value !== false) {
                     $SQL->addInsert($field, $value);
@@ -263,14 +263,14 @@ class Import
     {
         if (strncmp($record['column_type'], 'custom', 6) === 0 && $field === 'column_field_6') {
             $data = acmsUnserialize($value);
-            if (method_exists($data, 'deleteField')) {
-                $fixMediaField = array();
+            if ($data instanceof \Field && method_exists($data, 'deleteField')) {
+                $fixMediaField = [];
                 foreach ($data->listFields() as $fd) {
                     foreach ($data->getArray($fd, true) as $i => $val) {
                         if (strpos($fd, '@media') !== false) {
                             $sourceFd = substr($fd, 0, -6);
                             if (!isset($fixMediaField[$sourceFd])) {
-                                $fixMediaField[$sourceFd] = array();
+                                $fixMediaField[$sourceFd] = [];
                             }
                             $val = $this->getNewID('media', $val);
                             $fixMediaField[$sourceFd][] = $val;
@@ -437,7 +437,7 @@ class Import
             preg_match('/@media$/', $record['field_key'])
         ) {
             $value = $this->getNewID('media', $value);
-            $this->mediaFieldFix[] = array(
+            $this->mediaFieldFix[] = [
                 'name' => substr($record['field_key'], 0, -6),
                 'value' => $value,
                 'sort' => $record['field_sort'],
@@ -446,7 +446,7 @@ class Import
                 'uid' => empty($record['field_uid']) ? null : $this->getNewID('user', $record['field_uid']),
                 'bid' => empty($record['field_bid']) ? null : $this->bid,
                 'mid' => empty($record['field_mid']) ? null : $this->getNewID('module', $record['field_mid']),
-            );
+            ];
         }
         return $value;
     }
@@ -484,11 +484,11 @@ class Import
      */
     private function registerNewIDs()
     {
-        $tables = array(
+        $tables = [
             'category', 'column', 'alias',
             'entry', 'fulltext', 'media',
             'module', 'rule', 'media', 'config_set',
-        );
+        ];
 
         foreach ($tables as $table) {
             $this->registerNewID($table);
@@ -543,13 +543,13 @@ class Import
      */
     private function dropData()
     {
-        $tables = array(
+        $tables = [
             'category', 'entry', 'column', 'tag',
             'fulltext', 'field', 'media', 'media_tag',
             'approval', 'cache_reserve', 'column_rev', 'entry_rev',
             'field_rev', 'tag_rev',
             'dashboard', 'module', 'layout_grid', 'rule', 'config', 'config_set',
-        );
+        ];
 
         foreach ($tables as $table) {
             $this->clearTable($table);

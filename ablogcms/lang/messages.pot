@@ -5907,12 +5907,6 @@ msgstr ""
 msgid "取得したGoogle Maps API Keyを設定します。Google Mapsをご利用の場合はここの設定が必要です。"
 msgstr ""
 
-msgid "Google Translate API Key"
-msgstr ""
-
-msgid "取得したGoogle Translate API Keyを設定します。Google 翻訳APIをご利用の場合はここの設定が必要です。"
-msgstr ""
-
 msgid "YahooアプリケーションID"
 msgstr ""
 
@@ -7589,7 +7583,7 @@ msgid "エラーが発生しました。
 msgstr ""
 
 msgid "
-  $1 ブログ
+  $1 ブログ, 
   $2 に
   $3件、インポートしました。
   "
@@ -9740,4 +9734,3 @@ msgstr ""
 
 msgid "下階層のカテゴリーのみを対象とする"
 msgstr ""
-

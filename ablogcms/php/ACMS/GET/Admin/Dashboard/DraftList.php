@@ -9,7 +9,7 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         $limit  = LIMIT ? LIMIT : 5;
         $pagerDelta = 3;
@@ -48,8 +48,8 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
             $pagerDelta,
             $pagerCurAttr,
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -63,29 +63,29 @@ class ACMS_GET_Admin_Dashboard_DraftList extends ACMS_GET
             $uid    = $row['entry_user_id'];
             $bid    = $row['entry_blog_id'];
 
-            $_vars = array(
+            $_vars = [
                 'userName'  => ACMS_RAM::userName($uid),
                 'datetime'  => $row['entry_datetime'],
                 'title' => $row['entry_title'],
-                'entryUrl'  => acmsLink(array(
+                'entryUrl'  => acmsLink([
                     'admin' => false,
                     'bid'   => $bid,
                     'eid'   => $eid,
-                )),
-                'editUrl' => acmsLink(array(
+                ]),
+                'editUrl' => acmsLink([
                     'admin'    => 'entry-edit',
                     'eid'   => $eid,
-                )),
-            );
+                ]),
+            ];
 
             if ($cid) {
-                $_vars   += array(
+                $_vars   += [
                     'categoryName'  => ACMS_RAM::categoryName($cid),
-                    'categoryUrl'   => acmsLink(array(
+                    'categoryUrl'   => acmsLink([
                         'admin' => 'category_edit',
                         'cid'   => $cid,
-                    )),
-                );
+                    ]),
+                ];
             }
 
             $Tpl->add('entry:loop', $_vars);

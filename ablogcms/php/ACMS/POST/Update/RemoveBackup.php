@@ -8,7 +8,7 @@ class ACMS_POST_Update_RemoveBackup extends ACMS_POST_Update_Base
     public function post()
     {
         $finder = new Finder();
-        $lists = array();
+        $lists = [];
         $iterator = $finder
             ->in('private')
             ->depth('< 2')

@@ -10,7 +10,7 @@ class ACMS_GET_Admin_Role_Index extends ACMS_GET_Admin
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $order  = ORDER ? ORDER : 'id-asc';
-        $vars   = array();
+        $vars   = [];
         $vars['order:selected#' . $order] = config('attr_selected');
         list($field, $order) = explode('-', $order);
 
@@ -34,11 +34,11 @@ class ACMS_GET_Admin_Role_Index extends ACMS_GET_Admin
         $all    = $DB->query($q, 'all');
         foreach ($all as $i => $row) {
             $rid    = intval($row['role_id']);
-            $var    = array(
+            $var    = [
                 'name'          => $row['role_name'],
                 'description'   => $row['role_description'],
                 'rid'           => $row['role_id'],
-            );
+            ];
 
             // blog count
             $SQL    = SQL::newSelect('role_blog');
@@ -49,13 +49,13 @@ class ACMS_GET_Admin_Role_Index extends ACMS_GET_Admin
             }
 
             if (!empty($rid)) {
-                $var['itemUrl'] = acmsLink(array(
+                $var['itemUrl'] = acmsLink([
                     'bid'   => 1,
                     'admin' => 'role_edit',
-                    'query' => array(
+                    'query' => [
                         'rid'   => $rid,
-                    ),
-                ));
+                    ],
+                ]);
             }
             $Tpl->add('role:loop', $var);
         }

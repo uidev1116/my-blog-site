@@ -94,9 +94,9 @@ class ACMS_POST_Member_SigninWithEmail extends ACMS_POST_Member_Signin
     /**
      * Run
      *
-     * @return null|Field_Validation
+     * @inheritDoc
      */
-    public function post(): ?Field_Validation
+    public function post()
     {
         $loginField = $this->extract('login');
         $email = preg_replace("/(\s|　)/", "", $loginField->get('mail'));
@@ -177,7 +177,7 @@ class ACMS_POST_Member_SigninWithEmail extends ACMS_POST_Member_Signin
     protected function find(?string $id, ?string $password, ...$args): array
     {
         if (empty($id)) {
-            return array();
+            return [];
         }
         $sql = SQL::newSelect('user');
         $sql->addWhereOpr('user_status', 'open');

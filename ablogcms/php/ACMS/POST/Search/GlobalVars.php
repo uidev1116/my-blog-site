@@ -29,18 +29,18 @@ class ACMS_POST_Search_GlobalVars extends ACMS_POST
                 $obj = json_decode($json);
                 $Hook = ACMS_Hook::singleton();
                 $exVars = new Field();
-                $Hook->call('extendsGlobalVars', array(& $exVars));
+                $Hook->call('extendsGlobalVars', [& $exVars]);
 
                 if (is_array($exVars->_aryField)) {
                     foreach ($exVars->_aryField as $key => $val) {
                         $varname = '%{' . $key . '}';
                         if (isset($val[0])) {
-                            array_unshift($obj->items, array(
+                            array_unshift($obj->items, [
                                 "bid" => BID,
                                 "title" => $varname,
                                 "subtitle" => "custom vars",
                                 "url" => $val[0],
-                            ));
+                            ]);
                         }
                     }
                 }

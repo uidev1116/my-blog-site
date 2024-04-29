@@ -2,9 +2,9 @@
 
 class ACMS_GET_User_Field extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'uid'   => 'global',
-    );
+    ];
 
     function get()
     {

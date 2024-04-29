@@ -12,7 +12,7 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
         $SQL->addWhereOpr('module_id', $mid);
         $module = $DB->query($SQL->get(dsn()), 'row');
 
-        $themes         = array();
+        $themes         = [];
         $theme          = config('theme');
         $tplModuleDir   = 'include/module/template/';
         while (!empty($theme)) {
@@ -26,11 +26,11 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
 
         //---------------
         // layout module
-        $tplAry     = array();
-        $tplLabels  = array();
+        $tplAry     = [];
+        $tplLabels  = [];
         $fix        = false;
-        foreach ($themes as $theme) {
-            $dir = SCRIPT_DIR . THEMES_DIR . $theme . '/' . $tplModuleDir . $name . '/';
+        foreach ($themes as $themeName) {
+            $dir = SCRIPT_DIR . THEMES_DIR . $themeName . '/' . $tplModuleDir . $name . '/';
             if (Storage::isDirectory($dir)) {
                 $templateDir    = opendir($dir);
                 while ($tpl = readdir($templateDir)) {
@@ -40,7 +40,7 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
                     }
                     $pattern = '/^(' . $info[1] . '|' . $info[1] . config('module_identifier_duplicate_suffix') . '.*)$/';
                     if (preg_match($pattern, $identifier)) {
-                        $tplAry = array();
+                        $tplAry = [];
                         $fix    = true;
                         break;
                     }
@@ -61,42 +61,42 @@ class ACMS_GET_Admin_Module_Template extends ACMS_GET_Admin_Edit
         $tplAry = array_unique($tplAry);
         $type   = 'array';
 
-        $tplSort = array();
+        $tplSort = [];
         foreach ($tplLabels as $tpl => $label) {
             $key = array_search($tpl, $tplAry, true);
             if ($key !== false) {
-                $tplSort[] = array(
+                $tplSort[] = [
                     'template' => $tpl,
                     'tplLabel' => $label,
-                );
+                ];
                 unset($tplAry[$key]);
             }
         }
         foreach ($tplAry as $tpl) {
-            $tplSort[] = array(
+            $tplSort[] = [
                 'template' => $tpl,
                 'tplLabel' => $tpl,
-            );
+            ];
         }
         foreach ($tplSort as $i => $loop) {
             if ($i < count($tplSort) - 1) {
-                $Tpl->add(array('glue', 'template:loop'));
+                $Tpl->add(['glue', 'template:loop']);
             }
             $Tpl->add('template:loop', $loop);
         }
         if (empty($tplSort)) {
             if ($fix) {
-                $Tpl->add(array('fixTmpl', 'module:loop'));
+                $Tpl->add(['fixTmpl', 'module:loop']);
                 $type   = 'fix';
             } else {
-                $Tpl->add(array('notEmptyTmpl', 'module:loop'));
+                $Tpl->add(['notEmptyTmpl', 'module:loop']);
                 $type   = 'empty';
             }
         }
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'type'  => $type,
-        ));
+        ]);
 
         return $Tpl->get();
     }

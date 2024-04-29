@@ -23,19 +23,19 @@ class ACMS_POST_Preview_Share extends ACMS_POST
                 'url' => $url,
             ]);
 
-            die(json_encode(array(
+            die(json_encode([
                 'status' => true,
                 'uri' => $shareUrl,
-            )));
+            ]));
         } catch (\Exception $e) {
             AcmsLogger::notice('プレビュー共有URLの発行に失敗しました', [
                 'url' => $url,
             ]);
 
-            die(json_encode(array(
+            die(json_encode([
                 'status' => false,
                 'message' => $e->getMessage(),
-            )));
+            ]));
         }
     }
 

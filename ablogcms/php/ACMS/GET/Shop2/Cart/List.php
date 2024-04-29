@@ -51,12 +51,12 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
     {
         $step   = $this->Post->get('step', null);
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $amount = array(
+        $amount = [
             'amount' => 0,
             'subtotal' => 0,
             'tax-omit' => 0,
             'tax-only' => 0,
-        );
+        ];
 
         // カートが空のときのパターン
         if (empty($TEMP)) {
@@ -77,7 +77,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             redirect($loc);
         }
 
-        $tax_rate = array();
+        $tax_rate = [];
 
         // 通常の表示をするパターン
         foreach ($TEMP as $hash => $row) {
@@ -147,22 +147,23 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
 
             // 商品エントリーへのリンクを作成
             $eid = $row[$this->item_id];
-            $row += array('url' => acmsLink(
-                array(
+            $row += ['url' => acmsLink(
+                [
                     'bid' => ACMS_RAM::entryBlog($eid),
                     'eid' => $eid
-                )
-            ));
+                ]
+            )
+            ];
 
             // メイン画像の取得を試みる
             if (!empty($row['entry_primary_image'])) {
                 $this->loadPrimaryImage($row['entry_primary_image'], $row);
             } else {
-                $row += array(
+                $row += [
                     'x' => $this->imageX,
                     'y' => $this->imageY,
-                );
-                $Tpl->add(array('noimage', 'item:loop', 'contents'));
+                ];
+                $Tpl->add(['noimage', 'item:loop', 'contents']);
             }
 
             // 配列からFieldに変換する
@@ -181,18 +182,18 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
                 }
             }
 
-            $vars = $this->buildField($Field, $Tpl, array('item:loop', 'contents'));
+            $vars = $this->buildField($Field, $Tpl, ['item:loop', 'contents']);
 
             // 在庫チェック
             $EntryField = loadEntryField(intval($row[$this->item_id]));
             $item_stock = $EntryField->get($this->item_sku);
-            if (isset($item_stock) && ($item_stock > 0)) {
+            if ($item_stock !== false && (intval($item_stock) > 0)) {
                 if (intval($item_stock) < intval($row[$this->item_qty])) {
-                    $Tpl->add(array($this->item_qty . ':validator', 'item:loop', 'contents'));
+                    $Tpl->add([$this->item_qty . ':validator', 'item:loop', 'contents']);
                 }
             }
 
-            $Tpl->add(array('item:loop', 'contents'), $vars);
+            $Tpl->add(['item:loop', 'contents'], $vars);
         }
 
         if (config('shop_tax_calc_method') == 'rebate') {
@@ -306,9 +307,9 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             }
         }
 
-        $vars += array(
+        $vars += [
             'path'  => $path,
-        );
+        ];
         if ('on' == $this->imageTrim) {
             $imgX   = $x;
             $imgY   = $y;
@@ -390,29 +391,29 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             $top    = 0;
         }
 
-        $vars   += array(
+        $vars   += [
             'imgX'  => $imgX,
             'imgY'  => $imgY,
             'left'  => $left,
             'top'   => $top,
-        );
+        ];
 
         //------
         // tiny
         if ($type === 'image') {
             $tiny = ARCHIVES_DIR . preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
             if ($xy = Storage::getImageSize($tiny)) {
-                $vars   += array(
+                $vars   += [
                     'tinyPath'  => $tiny,
                     'tinyX'     => $xy[0],
                     'tinyY'     => $xy[1],
-                );
+                ];
             }
         }
-        $vars   += array(
+        $vars   += [
             'x' => $this->imageX,
             'y' => $this->imageY,
-        );
+        ];
 
         return $vars;
     }

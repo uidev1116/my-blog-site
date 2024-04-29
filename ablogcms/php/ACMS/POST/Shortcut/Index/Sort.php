@@ -20,9 +20,7 @@ class ACMS_POST_Shortcut_Index_Sort extends ACMS_POST
 
     public function post()
     {
-        /** @var Repository $ShortcutRepository */
         $this->ShortcutRepository = Application::make('shortcut.repository');
-        /** @var Helper $ShortcutService */
         $this->ShortcutService = Application::make('shortcut.helper');
 
         $this->validate($this->Post);
@@ -63,8 +61,8 @@ class ACMS_POST_Shortcut_Index_Sort extends ACMS_POST
     /**
      * バリデート
      *
-     * @param \Field_Validation
-     **/
+     * @param \Field_Validation $Post
+     */
     public function validate(\Field_Validation $Post)
     {
         $Post->setMethod('sort', 'required', !empty($Post->getArray('sort')));

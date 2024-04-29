@@ -41,7 +41,7 @@ class ACMS_POST_Unit_Duplicate extends ACMS_POST_Unit
         // insert
         if (detectUnitTypeSpecifier($unit['column_type']) == 'image') {
             $oldAry = explodeUnitData($unit['column_field_2']);
-            $newAry = array();
+            $newAry = [];
             foreach ($oldAry as $old) {
                 $info   = pathinfo($old);
                 $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -66,7 +66,7 @@ class ACMS_POST_Unit_Duplicate extends ACMS_POST_Unit
         } elseif (detectUnitTypeSpecifier($unit['column_type']) == 'file') {
             $old    = $unit['column_field_2'];
             $oldAry = explodeUnitData($unit['column_field_2']);
-            $newAry = array();
+            $newAry = [];
             foreach ($oldAry as $old) {
                 $info   = pathinfo($old);
                 $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -138,7 +138,7 @@ class ACMS_POST_Unit_Duplicate extends ACMS_POST_Unit
         $SQL->addInsert('column_id', $nclid);
         $SQL->addInsert('column_sort', $sort + 1);
         foreach ($unit as $key => $val) {
-            if (in_array($key, array('column_id', 'column_sort', 'column_group'))) {
+            if (in_array($key, ['column_id', 'column_sort', 'column_group'])) {
                 continue;
             }
             $SQL->addInsert($key, $val);
@@ -153,11 +153,11 @@ class ACMS_POST_Unit_Duplicate extends ACMS_POST_Unit
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの指定ユニットを複製しました', $unit);
 
-        $this->redirect(acmsLink(array(
+        $this->redirect(acmsLink([
             'tpl'   => 'include/unit-fetch.html',
             'utid'  => $nclid,
             'eid'   => EID,
-        )));
+        ]));
 
         return true;
     }

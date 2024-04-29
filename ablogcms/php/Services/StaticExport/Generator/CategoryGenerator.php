@@ -4,88 +4,93 @@ namespace Acms\Services\StaticExport\Generator;
 
 use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
-use SQL;
-use DB;
-use ACMS_Filter;
+use Acms\Services\StaticExport\Entities\Page;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class CategoryGenerator extends Generator
 {
     /**
-     * @var int
+     * @var int[]
      */
-    protected $numberOfCategories;
+    protected $categoryIds = [];
 
     /**
-     * @var array
+     * @param int[] $categoryIds
+     * @return void
      */
-    protected $targetCategories;
-
-    /**
-     * @param array $categories
-     */
-    public function setTargetCategories($categories)
+    public function setCategoryIds(array $categoryIds): void
     {
-        $this->targetCategories = $categories;
+        $this->categoryIds = $categoryIds;
     }
 
-    protected function getName()
+    protected function getName(): string
     {
         return 'カテゴリートップの書き出し';
     }
 
-    protected function getTasks()
-    {
-        return $this->numberOfCategories;
-    }
-
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function main()
+    public function run(): PromiseInterface
     {
-        $this->numberOfCategories = count($this->targetCategories);
-
-        $this->logger->start($this->getName(), $this->getTasks());
-
-        foreach ($this->targetCategories as $cid) {
-            $info = array(
-                'bid' => BID,
-                'cid' => $cid,
-            );
-            $url = acmsLink($info);
-            try {
-                $this->request($url, array($info, 'index.html'));
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage(), $url);
+        return new Promise(
+            function (callable $resolve) {
+                $pages = array_map(
+                    function (int $categoryId) {
+                        $blogUrl = acmsLink(['bid' => BID]);
+                        $url = acmsLink([
+                            'bid' => BID,
+                            'cid' => $categoryId,
+                        ]);
+                        $categoryDir = substr($url, strlen($blogUrl));
+                        $filepath = $categoryDir . 'index.html';
+                        return new Page($url, $filepath);
+                    },
+                    $this->categoryIds
+                );
+                $this->logger->start($this->getName(), count($pages));
+                await($this->handle($pages));
+                $resolve(null);
             }
+        );
+    }
+
+    /**
+     * @param string $path
+     * @param string $data
+     * @return void
+     */
+    protected function writeContents(string $path, string $data): void
+    {
+        $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
+        $destPath = $destination . $path;
+        try {
+            Storage::makeDirectory(dirname($destPath));
+            Storage::put($destPath, $data);
+        } catch (\Exception $e) {
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
     }
 
     /**
-     * @param string $data
-     * @param string $code
-     * @param object $info
+     * @param \Throwable $th
+     * @param string $url
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function handleError(\Throwable $th, string $url): void
     {
-        if ($this->logger) {
-            $this->logger->processing();
-        }
-        if (empty($data) || $code != '200') {
-            $this->logger->error('データの取得に失敗しました。', acmsLink($info[0]), $code);
+        if ($th instanceof \React\Http\Message\ResponseException) {
+            $response = $th->getResponse();
+            $this->logger->error(
+                'データの取得に失敗しました。',
+                $url,
+                $response->getStatusCode()
+            );
             return;
         }
-        $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-        $blog_url = acmsLink(array('bid' => BID));
-        $url = acmsLink($info[0]);
-        $dir = substr($url, strlen($blog_url));
-
-        try {
-            Storage::makeDirectory($destination . $dir);
-            Storage::put($destination . $dir . $info[1], $data);
-        } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $destination . $dir . 'index.html');
-        }
+        $this->logger->error($th->getMessage(), $url);
     }
 }

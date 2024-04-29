@@ -23,14 +23,14 @@ class ACMS_POST_Form_Duplicate extends ACMS_POST_Form
                 'createdFormId' => $newId,
             ]);
 
-            $url = acmsLink(array(
+            $url = acmsLink([
                 'bid' => BID,
                 'admin' => 'form_edit',
                 'query' => [
                     'fmid' => $newId,
                     'edit' => 'update',
                 ],
-            ));
+            ]);
             $this->redirect($url);
         } else {
             AcmsLogger::info('フォームの複製に失敗しました', [
@@ -54,6 +54,7 @@ class ACMS_POST_Form_Duplicate extends ACMS_POST_Form
         $sql = SQL::newSelect('form');
         $sql->addWhereOpr('form_id', $fmid);
         $sql->addWhereOpr('form_blog_id', BID);
+        /** @var array{ form_code: string, form_name: string } $base */
         $base = DB::query($sql->get(dsn()), 'row');
 
         $base['form_id'] = $newId;

@@ -77,7 +77,13 @@
     <div class="entryFormColumnBody">
       <!-- BEGIN text -->
       @section(admin-text-unit)
-      <textarea type="text" name="text_text_{id}" aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->" rows="10" style="width:100%;" class="entryFormTextarea {diff}">{text}[escape|escvars]</textarea>
+      <textarea
+        name="text_text_{id}"
+        aria-label="<!--T-->テキストユニットに内容を入力する<!--/T-->"
+        rows="10"
+        style="width:100%;"
+        class="entryFormTextarea {diff}"
+      >{text}[escvars]</textarea>
       <div class="js-extendTagSelect">
         <select name="text_tag_{id}" aria-label="<!--T-->タグを選択する<!--/T-->"><!-- BEGIN textTag:loop -->
           <option value="{value}" {selected} data-tag_extend="{extend}">{label}</option><!-- END textTag:loop -->
@@ -600,8 +606,14 @@
         <tr class="entryFormFileControl">
           <th><label for="unit-quote-link-{id}"><!--T-->引用URL<!--/T--></label></th>
           <td>
-            <input type="text" name="quote_url_{id}" size="45" value="{quote_url}" id="unit-quote-link-{id}" class="entryFormInputText acms-admin-form-width-full"/>
-            <!-- BEGIN html:veil -->{tw_oembed}[raw]<!-- END html:veil -->
+            <input
+              type="text"
+              name="quote_url_{id}"
+              size="45"
+              value="{quote_url}"
+              id="unit-quote-link-{id}"
+              class="entryFormInputText acms-admin-form-width-full"
+            />
           </td>
         </tr>
       </table>
@@ -621,7 +633,7 @@
           <button type="button" class="js-acms_layout_select_module acms-admin-btn-admin acms-admin-btn-small"><span class="acms-admin-icon acms-admin-icon-module"></span><!--T-->モジュール<!--/T--></button>
         </div>
         <div class="js-acms_layout_contents js-acms_layout_module_box" data-col="1">
-          {view}[raw]
+          {view}[raw|allow_dangerous_tag]
         </div>
       </div>
 

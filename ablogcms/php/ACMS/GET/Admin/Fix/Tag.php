@@ -21,7 +21,7 @@ class ACMS_GET_Admin_Fix_Tag extends ACMS_GET_Admin_Fix
         if ($this->Post->get('preview') === 'on') {
             $words = $this->Post->getArray('word');
             if (empty($words)) {
-                $Tpl->add(array_merge(array('notFound', 'preview'), $block));
+                $Tpl->add(array_merge(['notFound', 'preview'], $block));
             }
             foreach ($words as $i => $word) {
                 $Entries = $this->Post->getChild('data' . $i);
@@ -30,16 +30,16 @@ class ACMS_GET_Admin_Fix_Tag extends ACMS_GET_Admin_Fix
                     $fulltext = $Entries->get('fulltext', '', $j);
                     $fulltext = preg_replace('@(' . $word . ')@', '<strong class="highlight">$1</strong>', $fulltext);
 
-                    $Tpl->add(array_merge(array('entry:loop', 'word:loop', 'preview'), $block), array(
+                    $Tpl->add(array_merge(['entry:loop', 'word:loop', 'preview'], $block), [
                         'title'     => $title,
                         'fulltext'  => $fulltext,
                         'word'      => $Entries->get('word', '', $j),
                         'eid'       => $Entries->get('eid', '', $j),
-                    ));
+                    ]);
                 }
-                $Tpl->add(array_merge(array('word:loop', 'preview'), $block), array(
+                $Tpl->add(array_merge(['word:loop', 'preview'], $block), [
                     'word'  => $word,
-                ));
+                ]);
             }
         }
 

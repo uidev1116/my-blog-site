@@ -11,18 +11,18 @@ class CorrectorFactory extends Factory
      * @param bool $magic_call
      * @return string|bool
      */
-    public function call($method, $txt, $params = array(), $magic_call = false)
+    public function call($method, $txt, $params = [], $magic_call = false)
     {
         if (!is_array($params)) {
-            $params = array($params);
+            $params = [$params];
         }
-        $argument = array($txt, $params);
+        $argument = [$txt, $params];
         if ($magic_call) {
             $argument = $params;
         }
         foreach ($this->_collection as $corrector) {
-            if (is_callable(array($corrector, $method))) {
-                return call_user_func_array(array($corrector, $method), $argument);
+            if (is_callable([$corrector, $method])) {
+                return call_user_func_array([$corrector, $method], $argument);
             }
         }
         return false;

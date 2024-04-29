@@ -1030,6 +1030,11 @@ ACMS.Config({
   //--------------------
   // プレビュー機能の設定
   //--------------------
+  previewDeviceHistoryKey: {
+    preview: 'acms-preview-history-device', // プレビュー時
+    approval: 'acms-approval-preview-history-device', // 承認プレビュー時
+    timemachine: 'acms-timemachine-preview-history-device', // タイムマシン時
+  },
   previewDevices: [
     {
       name: 'iPhone 6/7/8',
@@ -1107,9 +1112,7 @@ ACMS.Config({
   // テキストの自動選択
   clickSelectionInputTextMark:
     ':text.url, textarea.js-click-selection, :text.js-click-selection', // セレクタの示す要素をクリックするとテキストが選択状態になります。
-  //-----------
-  // Google Translate
-  googleTranslateMark: '.js-translate',
+
   //--------------------------
   // イメージのロールオーバー
   rolloverImgMark: 'img.js-rollover, img.imgover', // セレクタの示す要素をホバーするとイメージがロールオーバーします。

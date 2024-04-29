@@ -88,7 +88,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
                 $status .= ' 削除依頼';
             }
 
-            $vars = array(
+            $vars = [
                 'rvid' => RVID,
                 'memo' => $revision['entry_rev_memo'],
                 'author' => $author['user_name'],
@@ -97,16 +97,16 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
                 'isReserve' => $isReserve ? '1' : '0',
                 'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
                 'datetime' => $revision['entry_rev_datetime'],
-                'url' => acmsLink(array(
+                'url' => acmsLink([
                     'eid' => EID,
                     'bid' => BID,
                     'aid' => $this->Get->get('aid', null),
-                    'query' => array(
+                    'query' => [
                         'rvid' => RVID,
                         'trash' => 'show',
-                    ),
-                )),
-            );
+                    ],
+                ]),
+            ];
             if (enableApproval(BID, CID)) {
                 $vars['status'] = $status;
             }

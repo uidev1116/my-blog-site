@@ -2,24 +2,24 @@
 
 class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
 {
-    public $_axis = array(
+    public $_axis = [
         'bid' => 'descendant-or-self',
         'cid' => 'descendant-or-self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'cid' => 'global',
         'eid' => 'global',
         'start' => 'global',
         'end' => 'global',
-    );
+    ];
 
     function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
         $DB = DB::singleton(dsn());
-        $vars = array();
+        $vars = [];
 
         $SQL = SQL::newSelect('column');
         $SQL->addLeftJoin('entry', 'entry_id', 'column_entry_id');
@@ -66,7 +66,7 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
         $over = $itemsAmount <= $from;
 
         if (!$itemsAmount || $over) {
-            return false;
+            return '';
         }
 
         $SQL->setLimit($limit, $from);
@@ -74,8 +74,8 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
         $q = $SQL->get(dsn());
 
         // eager loading
-        $mediaEagerLoading = array();
-        $mediaIds = array();
+        $mediaEagerLoading = [];
+        $mediaIds = [];
         if ($DB->query($q, 'fetch') and $row = $DB->fetch($q)) {
             do {
                 $type = detectUnitTypeSpecifier($row['column_type']);
@@ -138,26 +138,26 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                 if ('custom' === $type) {
                     $field = acmsUnserialize($row['column_field_6']);
                     $block = 'unit#' . $row['column_type'];
-                    $Tpl->add(array($block, 'unit:loop'), $this->buildField($field, $Tpl, array($block, 'unit:loop')));
+                    $Tpl->add([$block, 'unit:loop'], $this->buildField($field, $Tpl, [$block, 'unit:loop']));
                 }
 
-                $row['entry_url'] = acmsLink(array(
+                $row['entry_url'] = acmsLink([
                     'bid' => $bid,
                     'eid' => $eid,
-                ));
+                ]);
                 if (!empty($cid)) {
-                    $row['category_url'] = acmsLink(array(
+                    $row['category_url'] = acmsLink([
                         'bid' => $bid,
                         'cid' => $cid,
-                    ));
+                    ]);
                 } else {
                     unset($row['category_name']);
                 }
-                $row['blog_url'] = acmsLink(array(
+                $row['blog_url'] = acmsLink([
                     'bid' => $bid,
-                ));
+                ]);
 
-                $tmp = array();
+                $tmp = [];
                 foreach ($row as $key => $val) {
                     if (empty($val)) {
                         unset($row[$key]);
@@ -180,7 +180,7 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                     $Field->setField('fieldEntryCode', ACMS_RAM::entryCode($eid));
                     $Field->setField('fieldEntryDatetime', ACMS_RAM::entryDatetime($eid));
 
-                    $Tpl->add(array('entryField', 'unit:loop'), $this->buildField($Field, $Tpl, 'unit:loop'));
+                    $Tpl->add(['entryField', 'unit:loop'], $this->buildField($Field, $Tpl, 'unit:loop'));
                 }
 
                 //-------------
@@ -204,7 +204,7 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                     if ($orig = loadUserOriginalIcon($uid)) {
                         $Field->setField('fieldUserOrigIcon', $orig);
                     }
-                    $Tpl->add(array('userField', 'unit:loop'), $this->buildField($Field, $Tpl, 'unit:loop'));
+                    $Tpl->add(['userField', 'unit:loop'], $this->buildField($Field, $Tpl, 'unit:loop'));
                 }
 
                 //------------
@@ -217,9 +217,9 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                     }
                     $Field->setField('fieldBlogName', ACMS_RAM::blogName($bid));
                     $Field->setField('fieldBlogCode', ACMS_RAM::blogCode($bid));
-                    $Field->setField('fieldBlogUrl', acmsLink(array('bid' => $bid, '_protocol' => 'http'), false));
+                    $Field->setField('fieldBlogUrl', acmsLink(['bid' => $bid, '_protocol' => 'http'], false));
 
-                    $Tpl->add(array('blogField', 'unit:loop'), $this->buildField($Field, $Tpl, 'unit:loop'));
+                    $Tpl->add(['blogField', 'unit:loop'], $this->buildField($Field, $Tpl, 'unit:loop'));
                 }
 
                 //----------------
@@ -232,10 +232,10 @@ class ACMS_GET_Unit_List extends ACMS_GET_Entry_Summary
                     }
                     $Field->setField('fieldCategoryName', ACMS_RAM::categoryName($cid));
                     $Field->setField('fieldCategoryCode', ACMS_RAM::categoryCode($cid));
-                    $Field->setField('fieldCategoryUrl', acmsLink(array('cid' => $cid, '_protocol' => 'http'), false));
+                    $Field->setField('fieldCategoryUrl', acmsLink(['cid' => $cid, '_protocol' => 'http'], false));
                     $Field->setField('fieldCategoryId', $cid);
 
-                    $Tpl->add(array('categoryField', 'unit:loop'), $this->buildField($Field, $Tpl, 'unit:loop'));
+                    $Tpl->add(['categoryField', 'unit:loop'], $this->buildField($Field, $Tpl, 'unit:loop'));
                 }
 
                 $Tpl->add('column:loop', $row);

@@ -4,68 +4,92 @@ namespace Acms\Services\StaticExport\Generator;
 
 use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
+use Acms\Services\StaticExport\Entities\Page;
+use React\Promise\PromiseInterface;
+use React\Promise\Promise;
+
+use function React\Async\await;
 
 class TopGenerator extends Generator
 {
     /**
-     * @var array
+     * @var string[]
      */
-    protected $exclusionList = array();
+    protected $exclusionList = [];
 
-    public function setExclusionList($list)
+    /**
+     * @param string[] $list
+     * @return void
+     */
+    public function setExclusionList($list): void
     {
         $this->exclusionList = $list;
     }
 
-    protected function getName()
+    protected function getName(): string
     {
         return 'トップページの書き出し';
     }
 
-    protected function getTasks()
-    {
-        return 3;
-    }
-
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function main()
+    public function run(): PromiseInterface
     {
-        $this->logger->start($this->getName(), $this->getTasks());
-        $url = acmsLink(array('bid' => BID), false);
-        try {
-            $this->request($url, 'index.html');
-            if (!in_array('rss2.xml', $this->exclusionList, true)) {
-                $this->request($url . 'rss2.xml', 'rss2.xml');
+        return new Promise(
+            function (callable $resolve) {
+                $blogUrl = acmsLink(['bid' => BID], false);
+
+                $pages = [
+                    new Page($blogUrl, 'index.html')
+                ];
+
+                if (!in_array('rss2.xml', $this->exclusionList, true)) {
+                    $pages[] = new Page($blogUrl . 'rss2.xml', 'rss2.xml');
+                }
+
+                if (!in_array('sitemap.xml', $this->exclusionList, true)) {
+                    $pages[] = new Page($blogUrl . 'sitemap.xml', 'sitemap.xml');
+                }
+
+                $this->logger->start($this->getName(), count($pages));
+                await($this->handle($pages));
+
+                $resolve(null);
             }
-            if (!in_array('sitemap.xml', $this->exclusionList, true)) {
-                $this->request($url . 'sitemap.xml', 'sitemap.xml');
-            }
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), $url);
-        }
+        );
     }
 
     /**
+     * @param string $path
      * @param string $data
-     * @param string $code
-     * @param object $info
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function writeContents(string $path, string $data): void
     {
-        if ($this->logger) {
-            $this->logger->processing();
+        $destPath = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $path;
+        try {
+            Storage::put($destPath, $data);
+        } catch (\Exception $e) {
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
-        if (empty($data) || $code != '200') {
-            $this->logger->error('データの取得に失敗しました。', $info, $code);
+    }
+
+    /**
+     * @param \Throwable $th
+     * @param string $url
+     */
+    protected function handleError(\Throwable $th, string $url): void
+    {
+        if ($th instanceof \React\Http\Message\ResponseException) {
+            $response = $th->getResponse();
+            $this->logger->error(
+                'データの取得に失敗しました。',
+                $url,
+                $response->getStatusCode()
+            );
             return;
         }
-        try {
-            Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $info, $data);
-        } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $this->destination->getDestinationPath() . 'index.html');
-        }
+        $this->logger->error($th->getMessage(), $url);
     }
 }

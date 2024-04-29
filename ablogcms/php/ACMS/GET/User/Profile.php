@@ -36,11 +36,11 @@ class ACMS_GET_User_Profile extends ACMS_GET
             $SQL->addWhereOpr('user_indexing', 'on');
         }
 
-        $aryAuth    = array();
+        $aryAuth    = [];
         foreach (
-            array(
-            'administrator', 'editor', 'contributor', 'subscriber'
-            ) as $auth
+            [
+                'administrator', 'editor', 'contributor', 'subscriber'
+            ] as $auth
         ) {
             if ('on' == config('user_profile_' . $auth)) {
                 $aryAuth[] = $auth;

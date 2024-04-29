@@ -22,18 +22,18 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
         if (is_array($insertedResponse)) {
             $Session = &Field::singleton('session');
             $Session->add('entry_action', 'update');
-            $info = array(
+            $info = [
                 'bid' => BID,
                 'cid' => $insertedResponse['cid'],
                 'eid' => $insertedResponse['eid'],
-                'query' => array(),
-            );
+                'query' => [],
+            ];
             if ($insertedResponse['trash'] == 'trash') {
-                $info['query'] = array('trash' => 'show');
+                $info['query'] = ['trash' => 'show'];
             }
             if (!empty($backend)) {
                 $info['admin'] = 'entry_editor';
-                $info['query'] += array('success' => $insertedResponse['success']);
+                $info['query'] += ['success' => $insertedResponse['success']];
             }
             $this->responseRedirect(acmsLink($info), $ajax);
         }
@@ -143,8 +143,8 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
         // Hook
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array(intval($eid), null));
-            $events = array('entry:created');
+            $Hook->call('saveEntry', [intval($eid), null]);
+            $events = ['entry:created'];
             if (
                 1
                 && !(enableApproval() && !sessionWithApprovalAdministrator())
@@ -154,7 +154,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
             ) {
                 $events[] = 'entry:opened';
             }
-            Webhook::call(BID, 'entry', $events, array(intval($eid), null));
+            Webhook::call(BID, 'entry', $events, [intval($eid), null]);
         }
 
         return [
@@ -217,9 +217,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
     /**
      * 保存するエントリーデータを整形して取得
      *
-     * @param mixed $preEntry
      * @param mixed $postEntry
-     * @param mixed $range
      * @return array
      */
     protected function getInsertEntryData($postEntry)
@@ -249,10 +247,9 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
 
     /**
      * エントリーをメインデータに保存
-     * @param \Field $preEntry
-     * @param \Field $postEntry
-     * @param int $range
-     * @param int $primaryImageId
+     *
+     * @param int $eid
+     * @param array $entryData
      * @return void
      */
     protected function insertEntry($eid, $entryData)
@@ -278,7 +275,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
     protected function insertValidate($postEntry, $eid, $cid)
     {
         $postEntry->setMethod('status', 'required');
-        $postEntry->setMethod('status', 'in', array('open', 'close', 'draft', 'trash'));
+        $postEntry->setMethod('status', 'in', ['open', 'close', 'draft', 'trash']);
         $postEntry->setMethod('status', 'category', true);
         $postEntry->setMethod('title', 'required');
         $code = strval($postEntry->get('code'));
@@ -293,7 +290,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
         }
         $postEntry->setMethod('code', 'string', isValidCode($postEntry->get('code')));
         $postEntry->setMethod('indexing', 'required');
-        $postEntry->setMethod('indexing', 'in', array('on', 'off'));
+        $postEntry->setMethod('indexing', 'in', ['on', 'off']);
         $postEntry->setMethod('entry', 'operable', $this->isOperable());
         $postEntry = Entry::validTag($postEntry);
         $postEntry->validate(new ACMS_Validator());

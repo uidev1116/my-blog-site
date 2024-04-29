@@ -9,7 +9,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
-        $blogs = array();
+        $blogs = [];
 
         //-----------
         // blog tree
@@ -26,7 +26,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         foreach ($all as $blog) {
             $pbid = $blog['blog_parent'];
             if (!isset($blogs[$pbid])) {
-                $blogs[$pbid] = array();
+                $blogs[$pbid] = [];
             }
             $blogs[$pbid][] = $blog;
         }
@@ -51,32 +51,32 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 $Tpl->add('glue');
             }
 
-            $topics = array();
+            $topics = [];
             if (isset($blogs[$bid]) && count($blogs[$bid]) > 0) {
                 $topics['child_blog'] = 1;
                 foreach ($blogs[$bid] as $child) {
-                    $Tpl->add(array('childBlog:loop', 'topic:loop'), array(
+                    $Tpl->add(['childBlog:loop', 'topic:loop'], [
                         'name' => $child['blog_name'],
-                        'blogUrl' => acmsLink(array(
+                        'blogUrl' => acmsLink([
                             'bid'   => $child['blog_id'],
                             'admin' => 'top'
-                        )),
-                    ));
+                        ]),
+                    ]);
                 }
             }
-            $topics += array(
-                'url'   => acmsLink(array(
+            $topics += [
+                'url'   => acmsLink([
                     'bid'   => $bid,
                     'admin' => 'top'
-                )),
+                ]),
                 'label'  => $row['blog_name'],
-            );
+            ];
 
             $Tpl->add('topic:loop', $topics);
             $i++;
         }
 
-        $aryAdmin   = array();
+        $aryAdmin   = [];
         if ('form_log' == ADMIN) {
             $aryAdmin[] = 'form_index';
             $aryAdmin[] = 'form_edit';
@@ -124,7 +124,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             $aryAdmin[] = ADMIN;
         } elseif ('config' === substr(ADMIN, 0, strlen('config'))) {
             $aryAdmin[] = 'config_set_base_index';
-            if (!in_array(ADMIN, array('config_set_index', 'config_set_edit'))) {
+            if (!in_array(ADMIN, ['config_set_index', 'config_set_edit'])) {
                 if ('config_import' !== ADMIN && 'config_export' !== ADMIN) {
                     $aryAdmin[] = 'config_index';
                     $aryAdmin[] = 'rule_index';
@@ -154,7 +154,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         } elseif (preg_match('@(\_edit|\_editor)$@', ADMIN)) {
             if (!('user_edit' == ADMIN and !sessionWithContribution())) {
                 if ('blog_edit' !== ADMIN) {
-                    $aryAdmin[] = str_replace(array('_editor', '_edit'), array('_index', '_index'), ADMIN);
+                    $aryAdmin[] = str_replace(['_editor', '_edit'], ['_index', '_index'], ADMIN);
                 }
             }
             $aryAdmin[] = ADMIN;
@@ -171,7 +171,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             $Tpl->add('glue');
             $Tpl->add($admin);
             if (preg_match('@_edit$@', $admin)) {
-                $url = acmsLink(array(
+                $url = acmsLink([
                     'bid' => BID,
                     'uid' => UID,
                     'cid' => CID,
@@ -179,44 +179,44 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                     'tag' => TAG,
                     'admin' => $admin,
                     'query' => Field::singleton('get'),
-                ));
+                ]);
             } elseif ($admin === 'config_set_default' || $admin === 'config_index' || $admin === 'rule_edit') {
-                $url = acmsLink(array(
+                $url = acmsLink([
                     'bid' => BID,
                     'admin' => ADMIN,
-                    'query' => array(
+                    'query' => [
                         'rid' => $this->Get->get('rid'),
                         'setid' => $this->Get->get('setid'),
-                    ),
-                ));
+                    ],
+                ]);
             } else {
-                $url = acmsLink(array(
+                $url = acmsLink([
                     'bid'   => BID,
                     'admin' => $admin,
-                    'query' => array(
+                    'query' => [
                         'rid'   => $this->Get->get('rid'),
                         'mid'   => $this->Get->get('mid'),
                         'fmid'  => $this->Get->get('fmid'),
-                    ),
-                ));
+                    ],
+                ]);
             }
-            $topicVars = array('url' => $url);
+            $topicVars = ['url' => $url];
 
             if ($admin === 'config_theme') {
                 if ($configSet = $this->getConfigSet('theme', 'このブログの初期テーマ')) {
                     $topicVars['config_set'] = 1;
                     foreach ($configSet as $set) {
-                        $Tpl->add(array('configSet:loop', 'topic:loop'), array(
+                        $Tpl->add(['configSet:loop', 'topic:loop'], [
                             'name' => $set['name'],
-                            'configSetUrl' => acmsLink(array(
+                            'configSetUrl' => acmsLink([
                                 'bid' => $set['bid'],
                                 'admin' => ADMIN,
-                                'query' => array(
+                                'query' => [
                                     'rid' => $this->Get->get('rid'),
                                     'setid' => $set['id'],
-                                )
-                            )),
-                        ));
+                                ]
+                            ]),
+                        ]);
                     }
                 }
             }
@@ -224,17 +224,17 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 if ($configSet = $this->getConfigSet('editor', 'このブログの初期編集画面')) {
                     $topicVars['config_set'] = 1;
                     foreach ($configSet as $set) {
-                        $Tpl->add(array('configSet:loop', 'topic:loop'), array(
+                        $Tpl->add(['configSet:loop', 'topic:loop'], [
                             'name' => $set['name'],
-                            'configSetUrl' => acmsLink(array(
+                            'configSetUrl' => acmsLink([
                                 'bid' => $set['bid'],
                                 'admin' => ADMIN,
-                                'query' => array(
+                                'query' => [
                                     'rid' => $this->Get->get('rid'),
                                     'setid' => $set['id'],
-                                )
-                            )),
-                        ));
+                                ]
+                            ]),
+                        ]);
                     }
                 }
             }
@@ -242,17 +242,17 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 if ($configSet = $this->getConfigSet(null, 'このブログの初期コンフィグ')) {
                     $topicVars['config_set'] = 1;
                     foreach ($configSet as $set) {
-                        $Tpl->add(array('configSet:loop', 'topic:loop'), array(
+                        $Tpl->add(['configSet:loop', 'topic:loop'], [
                             'name' => $set['name'],
-                            'configSetUrl' => acmsLink(array(
+                            'configSetUrl' => acmsLink([
                                 'bid' => $set['bid'],
                                 'admin' => ADMIN,
-                                'query' => array(
+                                'query' => [
                                     'rid' => $this->Get->get('rid'),
                                     'setid' => $set['id'],
-                                )
-                            )),
-                        ));
+                                ]
+                            ]),
+                        ]);
                     }
                 }
             }
@@ -260,27 +260,27 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 if ($rules = $this->getRule()) {
                     $topicVars['rule'] = 1;
                     foreach ($rules as $rule) {
-                        $Tpl->add(array('rule:loop', 'topic:loop'), array(
+                        $Tpl->add(['rule:loop', 'topic:loop'], [
                             'name' => $rule['name'],
-                            'ruleUrl' => acmsLink(array(
+                            'ruleUrl' => acmsLink([
                                 'bid' => $rule['bid'],
                                 'admin' => ADMIN,
-                                'query' => array(
+                                'query' => [
                                     'setid' => $this->Get->get('setid'),
                                     'mid' => $this->Get->get('mid'),
                                     'rid' => $rule['id'],
-                                )
-                            )),
-                        ));
+                                ]
+                            ]),
+                        ]);
                     }
                 }
             }
             $Tpl->add('topic:loop', $topicVars);
         }
         $rootConfig = Config::loadBlogConfigSet(RBID);
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'blog_theme_logo@squarePath' => $rootConfig->get('blog_theme_logo@squarePath'),
-        ));
+        ]);
 
         return $Tpl->get();
     }
@@ -292,20 +292,20 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $SQL->addWhereOpr('config_set_blog_id', BID);
         $SQL->setOrder('config_set_sort', 'ASC');
 
-        $result = array();
-        $result[] = array(
+        $result = [];
+        $result[] = [
             'id' => null,
             'bid' => BID,
             'name' => $name,
-        );
+        ];
 
         $all = DB::query($SQL->get(dsn()), 'all');
         foreach ($all as $item) {
-            $result[] = array(
+            $result[] = [
                 'id' => $item['config_set_id'],
                 'bid' => $item['config_set_blog_id'],
                 'name' => $item['config_set_name'],
-            );
+            ];
         }
         return $result;
     }
@@ -323,20 +323,20 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $SQL->addWhereOpr('rule_status', 'open');
         $SQL->setOrder('rule_sort');
 
-        $result = array();
-        $result[] = array(
+        $result = [];
+        $result[] = [
             'id' => null,
             'bid' => BID,
             'name' => gettext('ルールなし'),
-        );
+        ];
 
         $all = DB::query($SQL->get(dsn()), 'all');
         foreach ($all as $item) {
-            $result[] = array(
+            $result[] = [
                 'id' => $item['rule_id'],
                 'bid' => BID,
                 'name' => $item['rule_name'],
-            );
+            ];
         }
         return $result;
     }

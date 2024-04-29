@@ -108,6 +108,8 @@
         <input type="hidden" name="webhook[]" value="url">
         <input type="hidden" name="url:validator#required" id="validator-url-required">
         <label class="validator-result-{url:validator#required}"><!--T-->Webhook URLを入力して下さい。<!--/T--></label>
+        <label class="validator-result-{url:validator#webhookScheme}"><!--T-->許可されていないプロトコルです。「http」もしくは「https」を指定ください。<!--/T--></label>
+        <label class="validator-result-{url:validator#webhookWhitelist}"><!--T-->許可されていないホストです。 「.env」ファイルの「WEBHOOK_WHITE_LIST」に許可するホストを設定してください。<!--/T--></label>
       </td>
     </tr>
     <tr>

@@ -6,7 +6,7 @@ class ACMS_POST_Blog_MaintenanceMode extends ACMS_POST_Blog
     {
         $blog = $this->extract('blog');
         $blog->setMethod('maintenance_mode', 'required');
-        $blog->setMethod('maintenance_mode', 'in', array('on', 'off'));
+        $blog->setMethod('maintenance_mode', 'in', ['on', 'off']);
         $blog->setMethod('blog', 'operable', sessionWithAdministration());
         $blog->validate(new ACMS_Validator());
 

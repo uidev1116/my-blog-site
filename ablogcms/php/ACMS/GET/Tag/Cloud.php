@@ -2,12 +2,12 @@
 
 class ACMS_GET_Tag_Cloud extends ACMS_GET
 {
-    public $_axis  = array(
+    public $_axis  = [
         'bid'   => 'self',
         'cid'   => 'self'
-    );
+    ];
 
-    function get()
+    public function get()
     {
         $DB = DB::singleton(dsn());
         $SQL = SQL::newSelect('tag');
@@ -72,19 +72,18 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
 
         $all = $DB->query($q, 'all');
         if (!$cnt = count($all)) {
-            return false;
+            return '';
         }
 
-        $tags = array();
-        $amounts = array();
+        $tags = [];
+        $amounts = [];
         foreach ($all as $row) {
             $tag = $row['tag_name'];
-            $amount = $row['tag_amount'];
-            $tags[$tag] = $amount;
-            $amounts[] = $amount;
+            $tags[$tag] = $row['tag_amount'];
+            $amounts[] = $row['tag_amount'];
         }
-        $min = empty($amount) ? 0 : min($amounts);
-        $max = empty($amount) ? 0 : max($amounts);
+        $min = empty($amounts) ? 0 : min($amounts);
+        $max = empty($amounts) ? 0 : max($amounts);
 
         $c = ($max <> $min) ? (24 / (sqrt($max) - sqrt($min))) : 1;
         $x = ceil(sqrt($min) * $c);
@@ -102,13 +101,13 @@ class ACMS_GET_Tag_Cloud extends ACMS_GET
                 $Tpl->add('glue');
             }
             $context['tag'] = $tag;
-            $Tpl->add('tag:loop', array(
+            $Tpl->add('tag:loop', [
                 'level'     => ceil(sqrt($amount) * $c) - $x + 1,
                 'url'       => acmsLink($context),
                 'path'      => acmsPath($context),
                 'amount'    => $amount,
                 'name'      => $tag,
-            ));
+            ]);
             $i++;
         }
 

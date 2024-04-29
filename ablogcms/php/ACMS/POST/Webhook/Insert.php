@@ -15,11 +15,13 @@ class ACMS_POST_Webhook_Insert extends ACMS_POST_Module
             $input->set('payload', 'default');
         }
 
-        $input->setMethod('status', 'in', array('open', 'close'));
+        $input->setMethod('status', 'in', ['open', 'close']);
         $input->setMethod('name', 'required');
         $input->setMethod('type', 'required');
         $input->setMethod('events', 'required');
         $input->setMethod('url', 'required');
+        $input->setMethod('url', 'webhookScheme');
+        $input->setMethod('url', 'webhookWhitelist');
         $input->setMethod('webhook', 'operative', sessionWithAdministration());
         $input->validate(new ACMS_Validator());
 

@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_Tag_Edit extends ACMS_GET_Admin_Edit
 {
-    public $_scope = array(
+    public $_scope = [
         'tag'   => 'global',
-    );
+    ];
 
     function auth()
     {
@@ -47,7 +47,7 @@ class ACMS_GET_Admin_Tag_Edit extends ACMS_GET_Admin_Edit
             }
         }
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $Tpl->add(null, array('tag' => TAG));
+        $Tpl->add(null, ['tag' => TAG]);
         return $Tpl->get();
     }
 }

@@ -5,20 +5,33 @@ namespace Acms\Services\Webhook;
 use DB;
 use SQL;
 use ACMS_Filter;
+use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Common;
+use RuntimeException;
+use Exception;
 
 class Engine
 {
+    /**
+     * @var \Acms\Services\Webhook\Payload;
+     */
     protected $payload;
+
+    /**
+     * @var array
+     */
+    protected $whiteList = [];
 
     /**
      * Engine constructor.
      */
-    public function __construct($payload)
+    public function __construct($payload, $whiteList)
     {
         if (!defined('CURL_SSLVERSION_TLSv1_2')) {
             define('CURL_SSLVERSION_TLSv1_2', 6); // phpcs:ignore
         }
         $this->payload = $payload;
+        $this->whiteList = $whiteList;
     }
 
     /**
@@ -27,10 +40,10 @@ class Engine
      * @param array|string $events
      * @param array $args
      */
-    public function call($bid, $type, $events, $args = array())
+    public function call($bid, $type, $events, $args = [])
     {
         if (!is_array($events)) {
-            $events = array($events);
+            $events = [$events];
         }
         $hooks = $this->getHooks($bid, $type, $events);
         if (empty($hooks)) {
@@ -43,6 +56,36 @@ class Engine
             $payload['webhook_name'] = $hook['webhook_name'];
             $this->send($hook, $payload, $events);
         }
+    }
+
+    /**
+     * URLのスキーマが http or https か確認する
+     *
+     * @param string $url
+     * @return bool
+     */
+    public function validateUrlScheme(string $url): bool
+    {
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        if (in_array($scheme, ['http', 'https'], true)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * URLのホストがホワイトリストに含まれるか確認
+     *
+     * @param string $url
+     * @return bool
+     */
+    public function validateUrlWhiteList(string $url): bool
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+        if (in_array($host, $this->whiteList, true)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -79,16 +122,16 @@ class Engine
      * @param array $args
      * @return false|mixed
      */
-    protected function getPayload($type, $events, $args = array())
+    protected function getPayload($type, $events, $args = [])
     {
         if (!is_array($args)) {
-            $args = array($args);
+            $args = [$args];
         }
         array_unshift($args, $events);
         $methodName = "{$type}Hook";
 
         if (method_exists($this->payload, $methodName)) {
-            return call_user_func_array(array($this->payload, $methodName), $args);
+            return call_user_func_array([$this->payload, $methodName], $args);
         }
         return false;
     }
@@ -100,29 +143,47 @@ class Engine
      */
     protected function send($hook, $payload, $events)
     {
-        $headers = array(
-            'Content-Type: application/json',
-        );
-        if ($hook['webhook_payload'] === 'custom') {
-            $data = $this->buildPayload($payload, $hook['webhook_payload_tpl']);
-        } else {
-            $data = json_encode($payload, JSON_PRETTY_PRINT);
-        }
+        $url = $hook['webhook_url'];
+        $ch = curl_init($url);
+        try {
+            if (empty($url)) {
+                throw new RuntimeException('空のURLでWebhookが実行されそうになりました。');
+            }
+            if (!$this->validateUrlScheme($url)) {
+                throw new RuntimeException('不正なURLのWebhookが実行されそうになりました。');
+            }
+            if (!$this->validateUrlWhiteList($url)) {
+                throw new RuntimeException('ホワイトリストに登録されていないWebhookが実行されそうになりました。');
+            }
 
-        $ch = curl_init($hook['webhook_url']);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        if ($hook['webhook_history'] === 'on') {
-            $this->saveLog($ch, $hook['webhook_id'], $hook['webhook_url'], $events, implode("\n", $headers), $data);
+            $headers = [
+                'Content-Type: application/json',
+            ];
+            if ($hook['webhook_payload'] === 'custom') {
+                $data = $this->buildPayload($payload, $hook['webhook_payload_tpl']);
+            } else {
+                $data = json_encode($payload, JSON_PRETTY_PRINT);
+            }
+
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
+            curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS); // 使用できるプロトコルを限定（SSRF対策）
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+            $response = curl_exec($ch);
+            if ($hook['webhook_history'] === 'on') {
+                $this->saveLog($ch, $response, $hook['webhook_id'], $hook['webhook_url'], $events, implode("\n", $headers), $data);
+            }
+        } catch (Exception $e) {
+            Logger::warning($e->getMessage(), Common::exceptionArray($e, $hook));
+        } finally {
+            curl_close($ch);
         }
-        curl_close($ch);
     }
 
     /**
@@ -138,19 +199,18 @@ class Engine
 
     /**
      * @param $curl
+     * @param $response
      * @param $id
      * @param $endpoint
      * @param $events
      * @param $requestHeader
      * @param $requestBody
      */
-    protected function saveLog($curl, $id, $endpoint, $events, $requestHeader, $requestBody)
+    protected function saveLog($curl, $response, $id, $endpoint, $events, $requestHeader, $requestBody)
     {
-        $response = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $time = curl_getinfo($curl, CURLINFO_TOTAL_TIME);
         $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-
         $responseHeader = substr($response, 0, $headerSize);
         $responseBody = substr($response, $headerSize);
 

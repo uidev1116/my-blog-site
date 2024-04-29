@@ -2,19 +2,18 @@
 
 class ACMS_POST_Rule_Index_Status extends ACMS_POST
 {
-    function post()
+    public function post()
     {
         try {
             if (!sessionWithAdministration()) {
                 throw new \RuntimeException('権限がありません');
             }
-            if (!(($status = $this->Post->get('status')) && in_array($status, array('open', 'close')))) {
+            if (!(($status = $this->Post->get('status')) && in_array($status, ['open', 'close'], true))) {
                 throw new \RuntimeException('指定されたステータスが不正です');
             }
-            if (empty($_POST['checks']) || !is_array($_POST['checks'])) {
-            }
+            $ruleIds = $this->Post->getArray('checks'); // required
             $targetRules = [];
-            foreach ($_POST['checks'] as $rid) {
+            foreach ($ruleIds as $rid) {
                 if (!$rid = idval($rid)) {
                     continue;
                 }

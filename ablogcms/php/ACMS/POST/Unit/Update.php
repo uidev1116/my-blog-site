@@ -39,8 +39,8 @@ class ACMS_POST_Unit_Update extends ACMS_POST_Unit
         // Hook
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array(EID, 1));
-            Webhook::call(BID, 'entry', 'entry:updated', array(EID, null));
+            $Hook->call('saveEntry', [EID, 1]);
+            Webhook::call(BID, 'entry', 'entry:updated', [EID, null]);
         }
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのユニットを更新しました', $Column);

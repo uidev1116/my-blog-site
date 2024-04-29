@@ -2,19 +2,20 @@
 
 class ACMS_POST_Alias_Update extends ACMS_POST_Alias
 {
-    function post()
+    public function post()
     {
+        $aliasId = (int)$this->Get->get('aid');
         $Alias = $this->extract('alias');
         $Alias->setMethod('name', 'required');
         $Alias->setMethod('status', 'required');
-        $Alias->setMethod('status', 'in', array('open', 'close'));
-        $Alias->setMethod('indexing', 'in', array('on', 'off'));
-        $Alias->setMethod('alias', 'operable', IS_LICENSED and sessionWithAdministration() and $aid = intval($this->Get->get('aid')));
+        $Alias->setMethod('status', 'in', ['open', 'close']);
+        $Alias->setMethod('indexing', 'in', ['on', 'off']);
+        $Alias->setMethod('alias', 'operable', $this->isOperable($aliasId));
 
         $Alias->setMethod('domain', 'required');
-        $Alias->setMethod('domain', 'domain', Blog::isDomain($Alias->get('domain'), $this->Get->get('aid'), true, true));
+        $Alias->setMethod('domain', 'domain', Blog::isDomain($Alias->get('domain'), $aliasId, true, true));
         $Alias->setMethod('scope', 'deny', $this->checkScope($Alias->get('scope')));
-        $Alias->setMethod('code', 'exists', Blog::isCodeExists($Alias->get('domain'), $Alias->get('code'), BID, $aid));
+        $Alias->setMethod('code', 'exists', Blog::isCodeExists($Alias->get('domain'), $Alias->get('code'), BID, $aliasId));
         $Alias->setMethod('code', 'reserved', !isReserved($Alias->get('code')));
         $Alias->setMethod('code', 'string', isValidCode($Alias->get('code')));
 
@@ -31,15 +32,15 @@ class ACMS_POST_Alias_Update extends ACMS_POST_Alias
             $SQL->addUpdate('alias_indexing', $Alias->get('indexing', 'on'));
             $SQL->addUpdate('alias_blog_id', BID);
             $SQL->addWhereOpr('alias_blog_id', BID);
-            $SQL->addWhereOpr('alias_id', $aid);
+            $SQL->addWhereOpr('alias_id', $aliasId);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            ACMS_RAM::alias($aid, null);
+            ACMS_RAM::alias($aliasId, null);
 
             $this->Post->set('edit', 'update');
 
             AcmsLogger::info('エイリアス「' . $Alias->get('name') . '」を更新しました', [
-                'aid' => $aid,
+                'aid' => $aliasId,
                 'status' => $Alias->get('status'),
                 'domain' => $Alias->get('domain'),
                 'code' => $Alias->get('code'),
@@ -50,11 +51,33 @@ class ACMS_POST_Alias_Update extends ACMS_POST_Alias
             ]);
         } else {
             AcmsLogger::info('エイリアスの更新に失敗しました', [
-                'aid' => $aid,
+                'aid' => $aliasId,
                 'validator' => $Alias->_aryV,
             ]);
         }
 
         return $this->Post;
+    }
+
+    /**
+     * エイリアスが操作可能かどうかを判定する
+     * @param int $aliasId
+     * @return bool
+     */
+    protected function isOperable(int $aliasId): bool
+    {
+        if (!IS_LICENSED) {
+            return false;
+        }
+
+        if (!sessionWithAdministration()) {
+            return false;
+        }
+
+        if ($aliasId < 1) {
+            return false;
+        }
+
+        return true;
     }
 }

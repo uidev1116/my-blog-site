@@ -4,7 +4,7 @@ use Acms\Services\Facades\Media;
 
 class ACMS_GET_Ogp extends ACMS_GET
 {
-    public $_scope = array(
+    public $_scope = [
         'uid' => 'global',
         'cid' => 'global',
         'eid' => 'global',
@@ -12,32 +12,32 @@ class ACMS_GET_Ogp extends ACMS_GET
         'tag' => 'global',
         'date' => 'global',
         'page' => 'global',
-    );
+    ];
 
     protected $glue = ' | ';
 
     /**
-     * @return mixed
+     * @inheritDoc
      */
     public function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->glue = config('ogp_title_delimiter', ' | ');
-        $vars = array(
+        $vars = [
             'title' => $this->getTitle(),
             'description' => $this->getDescription(),
             'keywords' => $this->getKeywords(),
             'type' => $this->getType(),
-        );
+        ];
 
         $imageData = $this->getImage();
         if ($imageData) {
-            $vars = array_merge($vars, array (
+            $vars = array_merge($vars, [
                 'image' => $imageData['path'],
                 'image@x' => $imageData['width'],
                 'image@y' => $imageData['height'],
                 'image@type' => $imageData['type'],
-            ));
+            ]);
         }
 
         return $Tpl->render($vars);
@@ -65,8 +65,8 @@ class ACMS_GET_Ogp extends ACMS_GET
 
         foreach ($parts as $part) {
             $method = 'get' . ucwords($part) . 'Title';
-            if (is_callable(array($this, $method))) {
-                if ($val = call_user_func(array($this, $method))) {
+            if (is_callable([$this, $method])) {
+                if ($val = call_user_func([$this, $method])) {
                     $title .= ($val . $this->glue);
                 }
             }
@@ -78,7 +78,12 @@ class ACMS_GET_Ogp extends ACMS_GET
      * og:image を取得
      * 優先度: EntryField -> EntryMainImage -> CategoryField -> BlogField
      *
-     * @return bool|string
+     * @return false|array{
+     *   type: 'image' | 'media',
+     *   width: int,
+     *   height: int,
+     *   path: string
+     * }
      */
     public function getImage()
     {
@@ -157,7 +162,12 @@ class ACMS_GET_Ogp extends ACMS_GET
     }
 
     /**
-     * @return bool|string
+     * @return false|array{
+     *   type: 'image' | 'media',
+     *   width: int,
+     *   height: int,
+     *   path: string
+     * }
      */
     protected function getEntryImage()
     {
@@ -224,7 +234,12 @@ class ACMS_GET_Ogp extends ACMS_GET
     }
 
     /**
-     * @return bool|string
+     * @return false|array{
+     *   type: 'image' | 'media',
+     *   width: int,
+     *   height: int,
+     *   path: string
+     * }
      */
     protected function getCategoryImage()
     {
@@ -261,7 +276,12 @@ class ACMS_GET_Ogp extends ACMS_GET
 
     /**
      * @param int $bid
-     * @return bool|string
+     * @return false|array{
+     *   type: 'image' | 'media',
+     *   width: int,
+     *   height: int,
+     *   path: string
+     * }
      */
     protected function getBlogImage($bid = BID)
     {
@@ -297,7 +317,7 @@ class ACMS_GET_Ogp extends ACMS_GET
     }
 
     /**
-     * @param bool @hide
+     * @param bool $hide
      * @return bool|string
      */
     protected function getEntryDescription($hide = false)
@@ -315,8 +335,8 @@ class ACMS_GET_Ogp extends ACMS_GET
         if ($hide) {
             return false;
         }
-        $vars = array();
-        if ($vars = Tpl::buildSummaryFulltext($vars, EID, Tpl::eagerLoadFullText(array(EID)))) {
+        $vars = [];
+        if ($vars = Tpl::buildSummaryFulltext($vars, EID, Tpl::eagerLoadFullText([EID]))) {
             if (isset($vars['summary'])) {
                 return $vars['summary'];
             }
@@ -467,7 +487,7 @@ class ACMS_GET_Ogp extends ACMS_GET
         }
         $all = DB::query($sql->get(dsn()), 'all');
 
-        $title = array();
+        $title = [];
         foreach ($all as $category) {
             if (isset($category['field_value']) && $category['field_value']) {
                 $title[] = $category['field_value'];
@@ -511,7 +531,7 @@ class ACMS_GET_Ogp extends ACMS_GET
             $sql->addLeftJoin($field, 'field_bid', 'blog_id', 'field');
         }
         $all = DB::query($sql->get(dsn()), 'all');
-        $title = array();
+        $title = [];
         foreach ($all as $blog) {
             if (isset($blog['field_value']) && $blog['field_value']) {
                 $title[] = $blog['field_value'];
@@ -543,7 +563,7 @@ class ACMS_GET_Ogp extends ACMS_GET
             return false;
         }
         $suffix = config('ogp_title_page_suffix', '');
-        return str_replace('{page}', PAGE, $suffix);
+        return str_replace('{page}', strval(PAGE), $suffix);
     }
 
     /**

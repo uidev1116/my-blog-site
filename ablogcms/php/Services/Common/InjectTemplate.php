@@ -18,7 +18,7 @@ class InjectTemplate extends Singleton
     public function add($type, $path)
     {
         if (!isset($this->collection[$type])) {
-            $this->collection[$type] = array();
+            $this->collection[$type] = [];
         }
         $this->collection[$type][] = $path;
     }
@@ -32,6 +32,6 @@ class InjectTemplate extends Singleton
         if (isset($this->collection[$type])) {
             return $this->collection[$type];
         }
-        return array();
+        return [];
     }
 }

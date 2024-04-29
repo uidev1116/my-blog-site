@@ -35,15 +35,15 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
         //---------
         // subject
-        $header = array(
+        $header = [
             'User-Agent: acms',
             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
-        );
-        $url = array(
+        ];
+        $url = [
             'bid' => $bid,
             'eid' => $eid,
             'tpl' => config('mail_entry_tpl_subject'),
-        );
+        ];
 
         if (ACMS_SID) {
             $header[] = 'Cookie: ' . SESSION_NAME . '=' . ACMS_SID;
@@ -77,15 +77,15 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
         //-------
         // plain
-        $header = array(
+        $header = [
             'User-Agent: acms',
             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
-        );
-        $url = array(
+        ];
+        $url = [
             'bid' => $bid,
             'eid' => $eid,
             'tpl' => config('mail_entry_tpl_body_plain'),
-        );
+        ];
 
         if (ACMS_SID) {
             $header[] = 'Cookie: ' . SESSION_NAME . '=' . ACMS_SID;
@@ -116,15 +116,15 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
 
         //------
         // html
-        $header = array(
+        $header = [
             'User-Agent: acms',
             'Accept-Language: ' . HTTP_ACCEPT_LANGUAGE,
-        );
-        $url = array(
+        ];
+        $url = [
             'bid' => $bid,
             'eid' => $eid,
             'tpl' => config('mail_entry_tpl_body_html'),
-        );
+        ];
 
         if (ACMS_SID) {
             $header[] = 'Cookie: ' . SESSION_NAME . '=' . ACMS_SID;
@@ -154,20 +154,20 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
         //------
         // mail
         foreach (
-            array(
-            array(
-                'mail'      => 'user_mail',
-                'magazine'  => 'user_mail_magazine',
-                'html'      => true,
-            ),
-            array(
-                'mail'      => 'user_mail_mobile',
-                'magazine'  => 'user_mail_mobile_magazine',
-                'html'      => false,
-            ),
-            ) as $config
+            [
+                [
+                    'mail'      => 'user_mail',
+                    'magazine'  => 'user_mail_magazine',
+                    'html'      => true,
+                ],
+                [
+                    'mail'      => 'user_mail_mobile',
+                    'magazine'  => 'user_mail_mobile_magazine',
+                    'html'      => false,
+                ],
+            ] as $config
         ) {
-            $aryaryBcc = array();
+            $aryaryBcc = [];
             if ($this->Post->get('issue') and LICENSE_PLUGIN_MAILMAGAZINE) {
                 $DB = DB::singleton(dsn());
                 $SQL = SQL::newSelect('user');
@@ -187,7 +187,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $m  = 0;
                 foreach ($DB->query($q, 'all') as $row) {
                     if (empty($aryaryBcc[$n])) {
-                        $aryaryBcc[$n]  = array();
+                        $aryaryBcc[$n]  = [];
                     }
                     if ($row[$config['mail']]) {
                         $aryaryBcc[$n][$m]  = $row[$config['mail']];
@@ -199,7 +199,7 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                     }
                 }
             } else {
-                $aryaryBcc[]    = array();
+                $aryaryBcc[]    = [];
             }
 
             foreach ($aryaryBcc as $aryBcc) {

@@ -2,7 +2,7 @@
 
 class ACMS_POST_Schedule_Delete extends ACMS_POST_Schedule
 {
-    function post()
+    public function post()
     {
         $DB = DB::singleton(dsn());
         $scid = $this->Get->get('scid');

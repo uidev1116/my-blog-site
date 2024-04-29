@@ -10,7 +10,7 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
     private $tmpDir;
 
     /**
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -63,7 +63,6 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
      */
     private function getZipFile()
     {
-        $path = false;
         $uploadFile = '';
 
         if (isset($_FILES['entry_export_data']['tmp_name'])) {
@@ -73,10 +72,7 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
             // アップロードされたファイルを利用
             return $uploadFile;
         }
-        if (empty($path)) {
-            throw new RuntimeException('zipファイルのアップロードに失敗しました。ファイルサイズが大きすぎる可能性があります。');
-        }
-        return $path;
+        throw new RuntimeException('zipファイルのアップロードに失敗しました。ファイルサイズが大きすぎる可能性があります。');
     }
 
     /**
@@ -86,10 +82,12 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
      */
     private function getYaml()
     {
+        $yamlPath = $this->tmpDir . 'acms_entry_data/data.yaml';
         try {
-            return Storage::get($this->tmpDir . 'acms_entry_data/data.yaml');
+            return Storage::get($yamlPath, dirname($yamlPath));
         } catch (\Exception $e) {
-            return Storage::get($this->tmpDir . 'data.yaml');
+            $yamlPath = $this->tmpDir . 'data.yaml';
+            return Storage::get($yamlPath, dirname($yamlPath));
         }
         throw new \RuntimeException('File does not exist.');
     }
@@ -116,11 +114,11 @@ class ACMS_POST_Entry_Import extends ACMS_POST_Entry
      */
     private function copyAssets($distPath)
     {
-        $list = array(
+        $list = [
             'archives/' => ARCHIVES_DIR,
             'media/' => MEDIA_LIBRARY_DIR,
             'storage/' => MEDIA_STORAGE_DIR,
-        );
+        ];
         foreach ($list as $from => $to) {
             $exists = false;
             $from2 = $this->tmpDir . 'acms_entry_data/' . $from;

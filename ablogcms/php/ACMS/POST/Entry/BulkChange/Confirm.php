@@ -5,24 +5,24 @@ class ACMS_POST_Entry_BulkChange_Confirm extends ACMS_POST_Entry_BulkChange
     /**
      * @var array
      */
-    protected $eids = array();
+    protected $eids = [];
 
     /**
      * @var array
      */
-    protected $entryActions = array();
+    protected $entryActions = [];
 
     /**
      * @var array
      */
-    protected $fieldActions = array();
+    protected $fieldActions = [];
 
     /**
      * Run
      *
-     * @return \Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         try {
             $this->set();

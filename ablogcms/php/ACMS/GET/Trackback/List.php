@@ -38,19 +38,19 @@ class ACMS_GET_Trackback_List extends ACMS_GET
             $eid    = intval($row['trackback_entry_id']);
             $tbid   = intval($row['trackback_id']);
             $status = $row['trackback_status'];
-            $vars   = array(
+            $vars   = [
                 'bid'   => $bid,
                 'eid'   => $eid,
                 'tbid'  => $tbid,
                 'title' => $row['trackback_title'],
                 'blog_name'  => $row['trackback_blog_name'],
-                'url'   => acmsLink(array(
+                'url'   => acmsLink([
                     'bid'   => $bid,
                     'eid'   => $eid,
                     'tbid'  => $tbid,
-                )),
+                ]),
                 'status' => $status,
-            );
+            ];
             if ('awaiting' == $status and !sessionWithCompilation()) {
                 unset($vars['title']);
                 unset($vars['blog_name']);

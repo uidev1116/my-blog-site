@@ -68,7 +68,7 @@ class ACMS_GET_Banner extends ACMS_GET
 
             if ($img = config('banner_img', '', $i)) {
                 $xy = Storage::getImageSize(ARCHIVES_DIR . $img);
-                $Tpl->add('banner#img', array(
+                $Tpl->add('banner#img', [
                     'img'   => $img,
                     'x'     => isset($xy[0]) ? $xy[0] : '',
                     'y'     => isset($xy[1]) ? $xy[1] : '',
@@ -79,17 +79,17 @@ class ACMS_GET_Banner extends ACMS_GET
                     'target' => config('banner_target', '', $i),
                     'nth'   => $i,
                     'banner:loop.class' => $loopClass,
-                ));
+                ]);
             } else {
-                $Tpl->add('banner#src', array(
+                $Tpl->add('banner#src', [
                     'src'   => config('banner_src', '', $i),
                     'nth'   => $i,
                     'banner:loop.class' => $loopClass,
-                ));
+                ]);
             }
-            $Tpl->add('banner:loop', array(
+            $Tpl->add('banner:loop', [
                 'banner:loop.class' => $loopClass,
-            ));
+            ]);
         }
 
         return setGlobalVars($Tpl->get());

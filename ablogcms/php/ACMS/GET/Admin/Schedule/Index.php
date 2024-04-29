@@ -2,13 +2,13 @@
 
 class ACMS_GET_Admin_Schedule_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if ('schedule_index' <> ADMIN) {
-            return false;
+            return '';
         }
         if (!sessionWithScheduleAdministration()) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
@@ -21,35 +21,35 @@ class ACMS_GET_Admin_Schedule_Index extends ACMS_GET_Admin
 
         if (empty($all)) {
             $Tpl->add('notFound');
-            $Tpl->add(null, array('notice_mess' => 'show'));
+            $Tpl->add(null, ['notice_mess' => 'show']);
         } else {
             foreach ($all as $row) {
                 foreach ($row as $key => $val) {
                     $vars[str_replace('schedule_', '', $key)] = $val;
                 }
-                $vars   += array(
-                                'itemUrl'   => acmsLink(array(
-                                    'bid'   => BID,
-                                    'admin' => 'schedule_edit',
-                                    'query' => array(
-                                                'scid'  => $vars['id'],
-                                                ),
-                                    )),
-                                'labelUrl'   => acmsLink(array(
-                                    'bid'   => BID,
-                                    'admin' => 'schedule_edit-label',
-                                    'query' => array(
-                                                'scid'  => $vars['id'],
-                                                ),
-                                    )),
-                                'dataUrl'   => acmsLink(array(
-                                    'bid'   => BID,
-                                    'admin' => 'schedule_edit-data',
-                                    'query' => array(
-                                                'scid'  => $vars['id'],
-                                                ),
-                                    )),
-                                );
+                $vars   += [
+                    'itemUrl'   => acmsLink([
+                        'bid'   => BID,
+                        'admin' => 'schedule_edit',
+                        'query' => [
+                            'scid'  => $vars['id'],
+                        ],
+                    ]),
+                    'labelUrl'   => acmsLink([
+                        'bid'   => BID,
+                        'admin' => 'schedule_edit-label',
+                        'query' => [
+                            'scid'  => $vars['id'],
+                        ],
+                    ]),
+                    'dataUrl'   => acmsLink([
+                        'bid'   => BID,
+                        'admin' => 'schedule_edit-data',
+                        'query' => [
+                            'scid'  => $vars['id'],
+                        ],
+                    ]),
+                ];
                 $Tpl->add('schedule:loop', $vars);
                 unset($vars);
             }

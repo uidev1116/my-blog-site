@@ -3,14 +3,9 @@
 class ACMS_POST_Module_Export extends ACMS_POST_Config_Export
 {
     /**
-     * @var \Acms\Services\Config\ModuleExport $export
-     */
-    protected $export;
-
-    /**
      * run
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -26,6 +21,7 @@ class ACMS_POST_Module_Export extends ACMS_POST_Config_Export
                 return $this->Post;
             }
             $this->export = App::make('config.export.module');
+            assert($this->export instanceof \Acms\Services\Config\ModuleExport);
             $this->export->exportModule(BID, $mid);
             $this->yaml = $this->export->getYaml();
             $this->destPath = ARCHIVES_DIR . 'config.yaml';

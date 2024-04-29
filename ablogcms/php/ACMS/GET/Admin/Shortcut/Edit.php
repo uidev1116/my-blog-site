@@ -35,9 +35,7 @@ class ACMS_GET_Admin_Shortcut_Edit extends ACMS_GET_Admin_Edit
 
     public function edit(&$Tpl)
     {
-        /** @var Repository $ShortcutRepository */
         $this->ShortcutRepository = Application::make('shortcut.repository');
-        /** @var Helper $ShortcutService */
         $this->ShortcutService = Application::make('shortcut.helper');
 
         if (!$this->validate()) {

@@ -158,7 +158,7 @@ class Helper
     /**
      * クエリパラメーターからidsを作成
      *
-     * @param
+     * @param \Field $getParameter
      * @return string[]
      **/
     public function createIdsFromGetParameter(\Field $getParameter): array
@@ -176,7 +176,7 @@ class Helper
     /**
      * ショートカットオブジェクトの作成
      *
-     * @param array
+     * @param array $resource
      * @return Entities\Shortcut
      **/
     public function createShortcut(array $resource): Entities\Shortcut

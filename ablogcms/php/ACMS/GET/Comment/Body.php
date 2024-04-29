@@ -2,9 +2,9 @@
 
 class ACMS_GET_Comment_Body extends ACMS_GET
 {
-    public $map = array();
-    public $score = array();
-    public $status = array();
+    public $map = [];
+    public $score = [];
+    public $status = [];
 
     /**
      *
@@ -54,7 +54,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
 
             $Tpl->add('div#front');
             $Tpl->add('div#rear');
-            $this->buildComment($Tpl, array(), $row);
+            $this->buildComment($Tpl, [], $row);
         } elseif ('thread' == config('comment_body_display')) {
             $this->buildThread($Tpl);
         } else {
@@ -88,11 +88,11 @@ class ACMS_GET_Comment_Body extends ACMS_GET
 
             $vars['posterName']   = $name;
             if (!empty($url)) {
-                $Tpl->add('posterLink#front', array('url' => $url));
+                $Tpl->add('posterLink#front', ['url' => $url]);
                 $Tpl->add('posterLink#rear');
             }
             if (!empty($mail)) {
-                $Tpl->add('posterMail#front', array('mail' => $mail));
+                $Tpl->add('posterMail#front', ['mail' => $mail]);
                 $Tpl->add('posterMail#rear');
             }
         }
@@ -105,13 +105,13 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $vars   += $this->buildDate($row['comment_datetime'], $Tpl, 'comment:loop');
 
         if ($this->Post->isNull()) {
-            $vars   += array(
-                'target'    => acmsLink(array(
+            $vars   += [
+                'target'    => acmsLink([
                     'eid'       => EID,
                     'cmid'      => $cmid,
                     'fragment'  => 'comment-' . $cmid,
-                )),
-            );
+                ]),
+            ];
             if (
                 1
                 and !!SUID
@@ -145,7 +145,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
 
     function tree(&$Tpl, $list)
     {
-        $Tpl->add(array('div#front', 'comment:loop'));
+        $Tpl->add(['div#front', 'comment:loop']);
         $Tpl->add('comment:loop');
 
         foreach ($list as $row) {
@@ -153,24 +153,24 @@ class ACMS_GET_Comment_Body extends ACMS_GET
             if ($this->current > $this->limit) {
                 break;
             }
-            $Tpl->add(array('item#front', 'comment:loop'));
-            $this->buildComment($Tpl, array(
-                'replyUrl'  => acmsLink(array(
+            $Tpl->add(['item#front', 'comment:loop']);
+            $this->buildComment($Tpl, [
+                'replyUrl'  => acmsLink([
                     'bid'   => BID,
                     'cid'   => CID,
                     'eid'   => EID,
                     'alt'   => 'reply',
                     'cmid'  => $row['comment_id'],
-                )),
-            ), $row);
+                ]),
+            ], $row);
 
             if ($child = $this->getChild($row['comment_id'])) {
                 $this->tree($Tpl, $child);
             }
-            $Tpl->add(array('item#rear', 'comment:loop'));
+            $Tpl->add(['item#rear', 'comment:loop']);
             $Tpl->add('comment:loop');
         }
-        $Tpl->add(array('div#rear', 'comment:loop'));
+        $Tpl->add(['div#rear', 'comment:loop']);
         $Tpl->add('comment:loop');
     }
 
@@ -212,9 +212,9 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         $root = $this->getChild(0);
         $this->tree($Tpl, $root);
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'amount'    => $amount,
-        ));
+        ]);
 
         return true;
     }
@@ -288,16 +288,18 @@ class ACMS_GET_Comment_Body extends ACMS_GET
         }
 
         if (!is_null($leftCmid) && $leftCmid > 0) {
-            $Tpl->add($desc ? 'forwardLink' : 'backLink', array('url' => acmsLink(array(
+            $Tpl->add($desc ? 'forwardLink' : 'backLink', ['url' => acmsLink([
                 'cmid'      => $leftCmid,
                 'fragment'  => 'comment-' . $leftCmid,
-            ))));
+            ])
+            ]);
         }
         if (!is_null($rightCmid) && $rightCmid > 0) {
-            $Tpl->add($desc ? 'backLink' : 'forwardLink', array('url' => acmsLink(array(
+            $Tpl->add($desc ? 'backLink' : 'forwardLink', ['url' => acmsLink([
                 'cmid'      => $rightCmid,
                 'fragment'  => 'comment-' . $rightCmid,
-            ))));
+            ])
+            ]);
         }
 
         $SQL    = SQL::newSelect('comment');
@@ -340,7 +342,7 @@ class ACMS_GET_Comment_Body extends ACMS_GET
                 ($rev ? ($to - $i + 1) : ($from + $i))
             ;
 
-            $vars   = array('seq' => $seq);
+            $vars   = ['seq' => $seq];
             $this->buildComment($Tpl, $vars, $row);
 
             $i++;
@@ -354,11 +356,11 @@ class ACMS_GET_Comment_Body extends ACMS_GET
             $pageTo     = $to;
         }
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'itemsAmount'    => $amount,
             'itemsFrom'      => $pageFrom,
             'itemsTo'        => $pageTo,
-        ));
+        ]);
 
         return true;
     }

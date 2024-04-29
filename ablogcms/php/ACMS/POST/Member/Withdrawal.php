@@ -61,7 +61,11 @@ class ACMS_POST_Member_Withdrawal extends ACMS_POST_Member
     {
         $userService = Application::make('user');
 
-        $this->Post->setMethod('withdrawal', 'auth', !in_array(ACMS_RAM::userAuth(SUID), Login::getAdminLoginAuth()));
+        $this->Post->setMethod(
+            'withdrawal',
+            'auth',
+            !in_array(ACMS_RAM::userAuth(SUID), Login::getAdminLoginAuth(), true)
+        );
         $this->Post->setMethod('withdrawal', 'operable', !!SUID);
         $this->Post->setMethod('withdrawal', 'entryExists', !$userService->entryExists(SUID));
         $this->Post->validate(new ACMS_Validator());

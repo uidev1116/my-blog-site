@@ -20,9 +20,5 @@ class ACMS_POST_Entry_Lock_Exec extends ACMS_POST_Entry
                 'message' => $e->getMessage(),
             ]);
         }
-        Common::responseJson([
-            'locked' => false,
-            'message' => 'Unknown error',
-        ]);
     }
 }

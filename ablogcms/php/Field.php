@@ -8,16 +8,38 @@
 #[\AllowDynamicProperties]
 class Field
 {
-    public $_aryField  = array(); // phpcs:ignore
-    public $_aryChild  = array(); // phpcs:ignore
-    public $_aryMeta   = array(); // phpcs:ignore
+    /**
+     * @var array<string, array>
+     */
+    public $_aryField = [];
 
-    function __construct($Field = null, $isDeep = false)
+    /**
+     * @var array<string, Field>
+     */
+    public $_aryChild = [];
+
+    /**
+     * @var array<string, array>
+     */
+    public $_aryMeta = [];
+
+    /**
+     * constructor
+     *
+     * @param Field|array<string, mixed>|string|null $Field
+     * @param bool $isDeep
+     */
+    public function __construct($Field = null, $isDeep = false)
     {
         $this->overload($Field, $isDeep);
     }
 
-    function parse($query)
+    /**
+     * フィールドクエリを解析する
+     * @param string $query
+     * @return void
+     */
+    public function parse($query)
     {
         foreach (preg_split('@/\s*and\s*/@i', $query, -1, PREG_SPLIT_NO_EMPTY) as $data) {
             $s      = preg_split('@/@i', $data, -1, PREG_SPLIT_NO_EMPTY);
@@ -28,7 +50,14 @@ class Field
         }
     }
 
-    function overload($Field, $isDeep = false)
+    /**
+     * オブジェクトを上書きする
+     *
+     * @param Field|array<string, mixed>|string $Field
+     * @param bool $isDeep
+     * @return void
+     */
+    public function overload($Field, $isDeep = false)
     {
         if (is_object($Field) and 'FIELD' == substr(strtoupper(get_class($Field)), 0, 5)) {
             foreach ($Field->listFields() as $fd) {
@@ -69,6 +98,8 @@ class Field
     }
 
     /**
+     * シングルトンパターンでオブジェクトを生成する
+     *
      * @static
      * @param string $key
      * @param null|Field $Field
@@ -76,7 +107,7 @@ class Field
      */
     public static function & singleton($key, $Field = null)
     {
-        static $aryField  = array();
+        static $aryField  = [];
 
         if (!isset($aryField[$key]) || $Field !== null) {
             $aryField[$key] = new Field($Field);
@@ -85,7 +116,11 @@ class Field
         return $aryField[$key];
     }
 
-    function serialize()
+    /**
+     * シリアライズされた文字列を返す
+     * @return string
+     */
+    public function serialize()
     {
         $res    = '';
 
@@ -97,17 +132,36 @@ class Field
         return substr($res, 5);
     }
 
-    function isNull($fd = null, $i = 0)
+    /**
+     * 指定したフィールド名のフィールドがnullかどうかを判定する
+     * $fdにnullを指定した場合は、フィールドが一つも存在しない場合にtrueを返す
+     *
+     * @param string|null $fd
+     * @param int $i
+     * @return bool
+     */
+    public function isNull($fd = null, $i = 0)
     {
         return is_null($fd) ? !count($this->_aryField) : !isset($this->_aryField[$fd][$i]);
     }
 
-    function isGroup($fd)
+    /**
+     * 指定したフィールド名のフィールドがフィールドグループかどうかを判定する
+     * @param string $fd
+     * @return bool
+     */
+    public function isGroup($fd)
     {
         return false;
     }
 
-    function isExists($fd, $i = null)
+    /**
+     * 指定した名前のフィールドが存在するかどうかを判定する
+     * @param string $fd
+     * @param int|null $i
+     * @return bool
+     */
+    public function isExists($fd, $i = null)
     {
         if (!array_key_exists($fd, $this->_aryField)) {
             return false;
@@ -118,7 +172,15 @@ class Field
         return true;
     }
 
-    function get($fd, $def = null, $i = 0)
+    /**
+     * 指定したフィールド名の値を取得する
+     * フィールド名に文字列以外を指定した場合はfalseを返す
+     * @param string $fd
+     * @param string|int|null $def
+     * @param int $i
+     * @return string|false
+     */
+    public function get($fd, $def = null, $i = 0)
     {
         if (!is_string($fd)) {
             return false;
@@ -130,17 +192,23 @@ class Field
         return is_array($fdvalue) ? '' : strval($fdvalue);
     }
 
-    function getArray($fd, $strict = false)
+    /**
+     * 指定したフィールド名の値を配列で取得する
+     * @param string $fd
+     * @param bool $strict falseの場合、空文字、null、フィールドグループを削除した配列を返す。デフォルトはfalse
+     * @return array
+     */
+    public function getArray($fd, $strict = false)
     {
         if (!is_string($fd)) {
-            return '';
+            return [];
         }
-        $fds = isset($this->_aryField[$fd]) ? $this->_aryField[$fd] : array();
+        $fds = isset($this->_aryField[$fd]) ? $this->_aryField[$fd] : [];
         if (!$cnt = count($fds)) {
-            return array();
+            return [];
         }
         if (1 === $cnt and !isset($fds[0])) {
-            return array();
+            return [];
         }
 
         if (!$strict) {
@@ -158,23 +226,33 @@ class Field
         return $fds;
     }
 
-    function listFields()
+    /**
+     * フィールド名を列挙する
+     * @return string[]
+     */
+    public function listFields()
     {
         return array_keys($this->_aryField);
     }
 
-    function setField($fd, $vals = null)
+    /**
+     * フィールドの値を設定する
+     * @param string $fd フィールド名
+     * @param array|string|null $vals
+     * @return bool
+     */
+    public function setField($fd, $vals = null)
     {
         if (!is_string($fd)) {
             return false;
         }
         if (empty($vals) and 0 !== $vals and '0' !== $vals) {
-            $this->_aryField[$fd]   = array();
+            $this->_aryField[$fd]   = [];
         } else {
             if (!is_array($vals)) {
-                $vals   = array($vals);
+                $vals   = [$vals];
             }
-            $this->_aryField[$fd]   = array();
+            $this->_aryField[$fd]   = [];
             $max = max(array_keys($vals));
             $max = intval($max);
             for ($i = 0; $i <= $max; $i++) {
@@ -183,27 +261,53 @@ class Field
         }
         return true;
     }
-    function set($fd, $vals = null)
+
+    /**
+     * フィールドの値を設定する
+     * @param string $fd フィールド名
+     * @param array|string $vals
+     * @return bool
+     */
+    public function set($fd, $vals = null)
     {
         return $this->setField($fd, $vals);
     }
 
-    function addField($fd, $vals)
+    /**
+     * 指定したフィールド名のフィールドに値を追加する
+     * @param string $fd フィールド名
+     * @param array|string $vals
+     * @return bool
+     */
+    public function addField($fd, $vals)
     {
         if (!is_array($vals)) {
-            $vals = array($vals);
+            $vals = [$vals];
         }
         foreach ($vals as $val) {
             $this->_aryField[$fd][] = $val;
         }
         return true;
     }
-    function add($fd, $vals)
+
+    /**
+     * alias for addField
+     *
+     * @param string $fd フィールド名
+     * @param array|string $vals
+     * @return bool
+     */
+    public function add($fd, $vals)
     {
         return $this->addField($fd, $vals);
     }
 
-    function deleteField($fd)
+    /**
+     * 指定したフィールド名のフィールドを削除する
+     * @param string $fd
+     * @return bool
+     */
+    public function deleteField($fd)
     {
         if (!is_string($fd)) {
             return false;
@@ -212,12 +316,24 @@ class Field
         unset($this->_aryMeta[$fd]);
         return true;
     }
-    function delete($fd)
+
+    /**
+     * alias for deleteField
+     *
+     * @param string $fd
+     * @return bool
+     */
+    public function delete($fd)
     {
         return $this->deleteField($fd);
     }
 
-    function & getChild($name)
+    /**
+     * 指定した名前の子フィールドを取得する
+     * @param string $name
+     * @return Field
+     */
+    public function & getChild($name)
     {
         if (!isset($this->_aryChild[$name])) {
             $class  = get_class($this);
@@ -227,32 +343,60 @@ class Field
         return $this->_aryChild[$name];
     }
 
-    function addChild($name, &$Field)
+    /**
+     * 指定した名前の子フィールドを設定する
+     * @param string $name
+     * @param Field $Field
+     * @return true
+     */
+    public function addChild($name, &$Field)
     {
         $this->_aryChild[$name] =& $Field;
         return true;
     }
 
-    function removeChild($name)
+    /**
+     * 指定した名前の子フィールドを削除する
+     * @return true
+     */
+    public function removeChild($name)
     {
         unset($this->_aryChild[$name]);
         return true;
     }
 
-    function listChildren()
+    /**
+     * 子フィールド名を列挙する
+     * @return string[]
+     */
+    public function listChildren()
     {
         return array_keys($this->_aryChild);
     }
 
-    function isChildExists($name = null)
+    /**
+     * 指定した名前の子フィールドが存在するかどうかを判定する
+     * 名前を指定しない場合は、子フィールドが一つも存在しない場合にtrueを返す
+     *
+     * @param string|null $name
+     * @return bool
+     */
+    public function isChildExists($name = null)
     {
         return is_null($name) ? !!count($this->_aryChild) : !!isset($this->_aryChild[$name]);
     }
 
-    function setMeta($fd, $key = null, $val = null)
+    /**
+     * 指定したフィールド名のフィールドにメタ情報を設定する
+     * @param string $fd フィールド名
+     * @param string|null $key メタ情報のキー
+     * @param string|null $val メタ情報の値
+     * @return true
+     */
+    public function setMeta($fd, $key = null, $val = null)
     {
         if (empty($key)) {
-            $this->_aryMeta[$fd]    = array();
+            $this->_aryMeta[$fd]    = [];
         } else {
             $this->_aryMeta[$fd][$key]  = $val;
         }
@@ -260,16 +404,34 @@ class Field
         return true;
     }
 
-    function getMeta($fd, $key = null)
+    /**
+     * 指定したフィールド名のフィールドに設定されたメタ情報を取得する
+     * $keyを指定しない場合は、指定したフィールド名のメタ情報すべてを配列で返す
+     *
+     * @param string $fd フィールド名
+     * @param string|null $key メタ情報のキー
+     * @return array|string|null
+     */
+    public function getMeta($fd, $key = null)
     {
         if (empty($key)) {
-            return isset($this->_aryMeta[$fd]) ? $this->_aryMeta[$fd] : array();
+            return isset($this->_aryMeta[$fd]) ? $this->_aryMeta[$fd] : [];
         } else {
             return isset($this->_aryMeta[$fd][$key]) ? $this->_aryMeta[$fd][$key] : null;
         }
     }
 
-    function &dig($scp = 'field')
+    /**
+     * 指定されたスコープ名に基づいてフィールド構造を深掘りし、関連するフィールドデータを整理します。
+     *
+     * 指定されたスコープ名の子フィールドを生成または取得し、
+     * そのスコープ内で定義されているフィールドの値を元フィールドから新しい子フィールドに追加します。
+     * 返り値として、新しい子フィールドを返します。
+     *
+     * @param string $scp スコープ名
+     * @return Field 新たに生成された子フィールドの参照を返す
+     */
+    public function &dig($scp = 'field')
     {
         $Field  = $this->getChild($scp);
 
@@ -305,9 +467,22 @@ class Field
         return $Field;
     }
 
-    function retouchCustomUnit($id = '')
+    /**
+     * カスタムユニットのフィールド名と値を調整します。
+     *
+     * フィールド名と値のペアを走査し、フィールド名に指定されたIDが含まれている場合に、
+     * そのIDを除去して新しいフィールド名として設定します。IDがフィールド値にも含まれている場合（フィールド名が'@'で始まる場合）、
+     * 値に対しても同様の処理を行います。
+     *
+     * 処理の結果、フィールド名からIDが除去された新しい配列が`_aryField`プロパティに設定されます。
+     * また、メタデータを格納する`_aryMeta`プロパティは空の配列にリセットされます。
+     *
+     * @param string $id ユニットID。デフォルトは空文字列です。
+     * @return void
+     */
+    public function retouchCustomUnit($id = '')
     {
-        $aryField = array();
+        $aryField = [];
         foreach ($this->_aryField as $key => $val) {
             $key = preg_replace("/^(.*)$id([^\d]*)$/", '$1$2', $key);
             if (preg_match('/^@/', $key)) {
@@ -316,35 +491,55 @@ class Field
             $aryField[$key] = $val;
         }
         $this->_aryField = $aryField;
-        $this->_aryMeta  = array();
+        $this->_aryMeta  = [];
     }
 
-    function reset()
+    /**
+     * @param bool $isDeep 非推奨の引数です。使用しないでください。
+     * @return true
+     */
+    public function reset(bool $isDeep = false)
     {
+        return true;
     }
 }
 
 class Field_Search extends Field
 {
-    public $_aryOperator   = array(); // phpcs:ignore
-    public $_aryConnector  = array(); // phpcs:ignore
-    public $_arySeparator  = array(); // phpcs:ignore
+    /**
+     * @var array<string, array>
+     */
+    public $_aryOperator = [];
 
-    function overload($Field, $isDeep = false)
+    /**
+     * @var array<string, array>
+     */
+    public $_aryConnector = [];
+
+    /**
+     * @var array<string, array>
+     */
+    public $_arySeparator = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function overload($Field, $isDeep = false)
     {
         if (!is_null($Field)) {
             parent::overload($Field, $isDeep);
-            if (is_object($Field) and (strtoupper(__CLASS__) === strtoupper(get_class($Field)))) {
+            if ($Field instanceof Field_Search) {
                 $this->_aryOperator     = $Field->_aryOperator;
                 $this->_aryConnector    = $Field->_aryConnector;
                 $this->_arySeparator    = $Field->_arySeparator;
             }
         }
-
-        return true;
     }
 
-    function parse($query)
+    /**
+     * @inheritDoc
+     */
+    public function parse($query)
     {
         $tokens = preg_split('@(?<!\\\\)/@', $query);
 
@@ -360,7 +555,7 @@ class Field_Search extends Field
             if (is_null($field)) {
                 $field      = $token;
 
-                if (in_array($tmpSeparator, array('or', 'and'), true)) {
+                if (in_array($tmpSeparator, ['or', 'and'], true)) {
                     $this->addSeparator($field, $tmpSeparator);
                 } else {
                     $this->addSeparator($field, 'and');
@@ -450,7 +645,7 @@ class Field_Search extends Field
 
             //-----------
             // separator
-            } elseif (in_array($token, array('and', '_and_', '_or_'), true)) {
+            } elseif (in_array($token, ['and', '_and_', '_or_'], true)) {
                 if ($token == '_or_') {
                     $tmpSeparator = 'or';
                 } else {
@@ -475,72 +670,124 @@ class Field_Search extends Field
         }
     }
 
-    function addConnector($fd, $connector)
+    /**
+     * 指定したフィールド名のフィールドに対する結合子を追加する
+     * @param string $fd
+     * @param 'and' | 'or' $connector
+     */
+    public function addConnector($fd, $connector)
     {
         $this->_aryConnector[$fd][] = $connector;
     }
 
-    function addOperator($fd, $operator)
+    /**
+     * 指定したフィールド名のフィールドに対する演算子を追加する
+     * @param string $fd
+     * @param 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'lk' | 'nlk' | 're' | 'nre' | 'em' | 'nem' | null $operator
+     */
+    public function addOperator($fd, $operator)
     {
-        $this->_aryOperator[$fd][]  = $operator;
+        $this->_aryOperator[$fd][] = $operator;
     }
 
-    function addSeparator($fd, $separator)
+
+    /**
+     * 指定したフィールド名のフィールドに対する論理演算子を追加する
+     * @param string $fd
+     * @param 'and' | 'or' $separator
+     */
+    public function addSeparator($fd, $separator)
     {
-        $this->_arySeparator[$fd]   = $separator;
+        $this->_arySeparator[$fd] = $separator;
     }
 
-    function setConnector($fd, $connector = null)
+    /**
+     * 指定したフィールド名のフィールドに対する結合子を設定する
+     * @param string $fd
+     * @param 'and' | 'or' | null $connector
+     */
+    public function setConnector($fd, $connector = null)
     {
         if (is_null($connector)) {
-            $this->_aryConnector[$fd]   = array();
+            $this->_aryConnector[$fd] = [];
         } else {
-            $this->_aryConnector[$fd]   = array($connector);
+            $this->_aryConnector[$fd] = [$connector];
         }
     }
 
-    function setOperator($fd, $operator = null)
+    /**
+     * 指定したフィールド名のフィールドに対する演算子を設定する
+     * @param string $fd
+     * @param 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'lk' | 'nlk' | 're' | 'nre' | 'em' | 'nem' | null $operator
+     */
+    public function setOperator($fd, $operator = null)
     {
         if (is_null($operator)) {
-            $this->_aryOperator[$fd]    = array();
+            $this->_aryOperator[$fd] = [];
         } else {
-            $this->_aryOperator[$fd]    = array($operator);
+            $this->_aryOperator[$fd] = [$operator];
         }
     }
 
-    function setSeparator($separator = null)
+    /**
+     * 指定したフィールド名のフィールドに対する論理演算子を設定する
+     * @param string $fd
+     * @param string $separator
+     * @param 'and' | 'or' | null $separator
+     */
+    public function setSeparator($fd, $separator = null)
     {
         if (is_null($separator)) {
-            $this->_arySeparator        = array();
+            $this->_arySeparator[$fd] = [];
         } else {
-            $this->_arySeparator        = array($separator);
+            $this->_arySeparator[$fd] = [$separator];
         }
     }
 
-    function getOperator($fd, $i = 0)
+    /**
+     * 指定したフィールド名のフィールドに対する結合子を取得する
+     * @param string $fd
+     * @param int|null $i
+     * @return 'and' | 'or' | null
+     */
+    public function getOperator($fd, $i = 0)
     {
         return is_null($i) ?
             (!is_null($this->_aryOperator[$fd]) ? $this->_aryOperator[$fd] : null) :
             (isset($this->_aryOperator[$fd][$i]) ? $this->_aryOperator[$fd][$i] : null);
     }
 
-    function getConnector($fd, $i = 0)
+    /**
+     * 指定したフィールド名のフィールドに対する演算子を取得する
+     * @param string $fd
+     * @param int|null $i
+     * @return 'and' | 'or' | null
+     */
+    public function getConnector($fd, $i = 0)
     {
         return is_null($i) ?
             (!is_null($this->_aryConnector[$fd]) ? $this->_aryConnector[$fd] : null) :
             (isset($this->_aryConnector[$fd][$i]) ? $this->_aryConnector[$fd][$i] : null);
     }
 
-    function getSeparator($fd)
+    /**
+     * 指定したフィールド名のフィールドに対する論理演算子を取得する
+     * @param string $fd
+     * @return 'and' | 'or'
+     */
+    public function getSeparator($fd)
     {
         return isset($this->_arySeparator[$fd]) ? $this->_arySeparator[$fd] : 'and';
     }
 
-    function serialize()
+    /**
+     * @inheritDoc
+     */
+    public function serialize()
     {
-        $aryQuery   = array();
+        $aryQuery   = [];
 
-        foreach ($this->listFields() as $j => $fd) {
+        foreach ($this->listFields() as $fd) {
             $aryValue       = $this->getArray($fd);
             $aryOperator    = $this->getOperator($fd, null);
             $aryConnector   = $this->getConnector($fd, null);
@@ -551,7 +798,7 @@ class Field_Search extends Field
             }
 
             $empty  = 0;
-            $buf    = array();
+            $buf    = [];
 
             for ($i = 0; $i < $cnt; $i++) {
                 $value      = isset($aryValue[$i]) ? $aryValue[$i] : '';
@@ -606,7 +853,7 @@ class Field_Search extends Field
                 }
             }
 
-            $aryTmp = array();
+            $aryTmp = [];
             if (!empty($buf)) {
                 if ($separator === 'or') {
                     $aryTmp[] = '_or_';
@@ -618,11 +865,11 @@ class Field_Search extends Field
                     $aryTmp[] = $token;
                 }
 
-                $buf    = array();
+                $buf    = [];
                 $aryQuery = array_merge($aryQuery, $aryTmp);
             }
         }
-        if (!empty($aryQuery) and in_array($aryQuery[0], array('_or_', '_and_', 'and'), true)) {
+        if (!empty($aryQuery) && in_array($aryQuery[0], ['_or_', '_and_', 'and'], true)) {
             array_shift($aryQuery);
         }
 
@@ -632,32 +879,45 @@ class Field_Search extends Field
 
 class Field_Validation extends Field
 {
-    public $_aryV      = array(); // phpcs:ignore
-    public $_aryMethod = array(); // phpcs:ignore
-    public $_aryGroup  = array(); // phpcs:ignore
+    /**
+     * @var array<string, array<string, array<int, bool>>>
+     */
+    public $_aryV = [];
 
-    function overload($Field, $isDeep = false)
+    /**
+     * @var array<string, array<string, array<string, mixed> | null>>
+     */
+    public $_aryMethod = [];
+
+    /**
+     * @var array<string, string>
+     */
+    public $_aryGroup = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function overload($Field, $isDeep = false)
     {
         if (!is_null($Field)) {
             parent::overload($Field, $isDeep);
-            if (is_object($Field) and strtoupper(__CLASS__) === strtoupper(get_class($Field))) {
+            if ($Field instanceof Field_Validation) {
                 $this->_aryV        = $Field->_aryV;
                 $this->_aryMethod   = $Field->_aryMethod;
                 $this->_aryGroup    = $Field->_aryGroup;
             }
         }
-        return true;
     }
 
     /**
      * @static
      * @param string $key
-     * @param null|Field_Validation $Field
-     * @return Field
+     * @param null|Field $Field
+     * @return Field_Validation
      */
     public static function & singleton($key, $Field = null)
     {
-        static $aryField  = array();
+        static $aryField  = [];
 
         if (!isset($aryField[$key]) || $Field !== null) {
             $aryField[$key] = new Field_Validation($Field);
@@ -666,7 +926,13 @@ class Field_Validation extends Field
         return $aryField[$key];
     }
 
-    function listFields($validator = false)
+    /**
+     * $validatorがtrueの場合は、バリデーションの値を含めたフィールド名を返す
+     *
+     * @param bool $validator
+     * @return string[]
+     */
+    public function listFields($validator = false)
     {
         $aryFd  = parent::listFields();
         if (!!$validator) {
@@ -675,7 +941,10 @@ class Field_Validation extends Field
         return $aryFd;
     }
 
-    function delete($fd)
+    /**
+     * @inheritDoc
+     */
+    public function delete($fd)
     {
         if (!is_string($fd)) {
             return false;
@@ -688,10 +957,16 @@ class Field_Validation extends Field
         return true;
     }
 
-    function setMethod($fd = null, $name = null, $arg = null)
+    /**
+     * バリデーションメソッドを設定する
+     * @param string|null $fd
+     * @param string|null $name
+     * @param mixed|null $arg
+     */
+    public function setMethod($fd = null, $name = null, $arg = null)
     {
         if (is_null($fd) || !is_string($fd)) {
-            $this->_aryMethod = array();
+            $this->_aryMethod = [];
         } elseif (is_null($name)) {
             $this->_aryMethod[$fd]    = null;
         } else {
@@ -699,10 +974,15 @@ class Field_Validation extends Field
         }
     }
 
-    function setGroup($fd = null, $group = null)
+    /**
+     * 指定したフィールド名のフィールドをフィールドグループに属するフィールドとして設定する
+     * @param string $fd
+     * @return void
+     */
+    public function setGroup($fd = null, $group = null)
     {
         if (is_null($fd) || !is_string($fd)) {
-            $this->_aryGroup = array();
+            $this->_aryGroup = [];
         } elseif (is_null($group)) {
             $this->_aryGroup[$fd] = null;
         } else {
@@ -710,7 +990,12 @@ class Field_Validation extends Field
         }
     }
 
-    function isGroup($fd)
+    /**
+     * 指定したフィールド名のフィールドがフィールドグループに属するフィールドかどうかを判定する
+     * @param string $fd
+     * @return bool
+     */
+    public function isGroup($fd)
     {
         if (isset($this->_aryGroup[$fd]) && !!$this->_aryGroup[$fd]) {
             return true;
@@ -718,22 +1003,41 @@ class Field_Validation extends Field
         return false;
     }
 
-    function listMethods($fd)
+    /**
+     * 指定したフィールド名のフィールドに対するバリデーションメソッドを配列で取得する
+     * @param string $fd
+     * @return string[]
+     */
+    public function listMethods($fd)
     {
         if (!is_string($fd)) {
-            return array();
+            return [];
         }
         if (!isset($this->_aryV[$fd])) {
-            return array();
+            return [];
         }
         return array_keys($this->_aryV[$fd]);
     }
-    function getMethods($fd)
+
+    /**
+     * ailas for listMethods
+     * @param string $fd
+     * @return array
+     */
+    public function getMethods($fd)
     {
         return $this->listMethods($fd);
     }
 
-    function setValidator($fd, $method = null, $validation = null, $i = 0)
+    /**
+     * 指定したフィールド名のフィールドに対するバリデーションメソッドのバリデーション結果を設定する
+     * @param string $fd
+     * @param string $method
+     * @param bool $validation
+     * @param int $i
+     * @return bool
+     */
+    public function setValidator($fd, $method = null, $validation = null, $i = 0)
     {
         if (!is_string($fd)) {
             return false;
@@ -742,11 +1046,16 @@ class Field_Validation extends Field
         return true;
     }
 
-    function reset($isDeep = false)
+    /**
+     * バリデーションをリセットする
+     * @param bool $isDeep 非推奨の引数です。使用しないでください。
+     * @return true
+     */
+    public function reset($isDeep = false)
     {
-        $this->_aryV        = array();
-        $this->_aryMethod   = array();
-        $this->_aryGroup    = array();
+        $this->_aryV        = [];
+        $this->_aryMethod   = [];
+        $this->_aryGroup    = [];
         foreach ($this->listChildren() as $child) {
             $Child  = $this->getChild($child);
             $Child->reset($isDeep);
@@ -754,42 +1063,79 @@ class Field_Validation extends Field
         return true;
     }
 
-    function isValid($fd = null, $method = null, $i = null)
+    /**
+     * 指定したフィールド名のフィールドの指定したバリデーションメソッドによる検証結果を判定する
+     * $fdを指定しない場合は、すべてのフィールドに対するバリデーションメソッドによる検証結果を判定する
+     * @param string|null $fd
+     * @param string|null $method
+     * @param int|null $i
+     * @return bool
+     */
+    public function isValid($fd = null, $method = null, $i = null)
     {
         if (empty($fd)) {
-            $res    = true;
+            // フィールド名が指定されていない場合は、すべてのフィールドに対するバリデーションメソッドによる検証結果を判定する
             foreach ($this->_aryV as $fdata) {
                 foreach ($fdata as $vdata) {
                     foreach ($vdata as $validation) {
-                        $res    &= $validation;
-                    }
-                }
-            }
-        } else {
-            if (!is_string($fd)) {
-                return false;
-            }
-            if (empty($method)) {
-                $res    = true;
-                if (isset($this->_aryV[$fd])) {
-                    foreach ($this->_aryV[$fd] as $vdata) {
-                        foreach ($vdata as $validation) {
-                            $res    &= $validation;
+                        if ($validation === false) {
+                            return false;
                         }
                     }
                 }
-            } elseif (is_null($i)) {
-                $res    = true;
-                if (isset($this->_aryV[$fd][$method])) {
-                    foreach ($this->_aryV[$fd][$method] as $validation) {
-                        $res    &= $validation;
+            }
+            return true;
+        }
+
+        if (!is_string($fd)) {
+            return false;
+        }
+
+        if (empty($method)) {
+            // メソッド名が指定されていない場合は、指定したフィールドに対するすべてのバリデーションメソッドによる検証結果を判定する
+            if (isset($this->_aryV[$fd])) {
+                foreach ($this->_aryV[$fd] as $vdata) {
+                    foreach ($vdata as $validation) {
+                        if ($validation === false) {
+                            return false;
+                        }
                     }
                 }
-            } else {
-                if (isset($this->_aryV[$fd][$method][$i])) {
-                    $res    = $this->_aryV[$fd][$method][$i];
-                } else {
-                    $res    = true;
+            }
+            return true;
+        }
+
+        if (is_null($i)) {
+            // インデックスが指定されていない場合は、指定したフィールドに対する指定したバリデーションメソッドによる検証結果を判定する
+            if (isset($this->_aryV[$fd][$method])) {
+                foreach ($this->_aryV[$fd][$method] as $validation) {
+                    if ($validation === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        if (isset($this->_aryV[$fd][$method][$i])) {
+            return $this->_aryV[$fd][$method][$i];
+        }
+
+        return true;
+    }
+
+    /**
+     * 子フィールドも含めすべてのフィールドに対するバリデーションメソッドによる検証結果を判定する
+     * @return bool
+     */
+    public function isValidAll()
+    {
+        $res = $this->isValid();
+        foreach ($this->listChildren() as $child) {
+            $Child  = $this->getChild($child);
+            if ($Child instanceof Field_Validation) {
+                if (!$Child->isValidAll()) {
+                    return false;
                 }
             }
         }
@@ -797,35 +1143,28 @@ class Field_Validation extends Field
         return $res;
     }
 
-    function isValidAll()
+    /**
+     * すべてのフィールドに対して、バリデーションメソッドによる検証を実行する
+     * @param \ACMS_Validator|null $V
+     */
+    public function validate($V = null)
     {
-        $res    = $this->isValid();
-        foreach ($this->listChildren() as $child) {
-            $Child  = $this->getChild($child);
-            $res    &= $Child->isValidAll();
-        }
-
-        return $res;
-    }
-
-    function validate($V = null)
-    {
-        $this->_aryV    = array();
+        $this->_aryV    = [];
         foreach ($this->_aryMethod as $fd => $method) {
             foreach ($method as $name => $arg) {
                 if ($aryFd = $this->getArray($fd)) {
                     if (substr($name, 0, 4) == 'all_') {
-                        $res = is_callable(array($V, $name)) ? $V->$name($aryFd, $arg, $this) : !!$arg; // @phpstan-ignore-line
+                        $res = is_callable([$V, $name]) ? $V->$name($aryFd, $arg, $this) : !!$arg; // @phpstan-ignore-line
                         $this->setValidator($fd, $name, $res, 0);
                     } else {
                         foreach ($aryFd as $i => $val) {
-                            $res = is_callable(array($V, $name)) ? $V->$name($val, $arg, $this) : !!$arg; // @phpstan-ignore-line
+                            $res = is_callable([$V, $name]) ? $V->$name($val, $arg, $this) : !!$arg; // @phpstan-ignore-line
                             $this->setValidator($fd, $name, $res, $i);
                         }
                     }
                 } elseif (!$this->isGroup($fd)) {
                     $value = substr($name, 0, 4) === 'all_' ? [] : null;
-                    $res = is_callable(array($V, $name)) ? $V->$name($value, $arg, $this) : !!$arg; // @phpstan-ignore-line
+                    $res = is_callable([$V, $name]) ? $V->$name($value, $arg, $this) : !!$arg; // @phpstan-ignore-line
                     $this->setValidator($fd, $name, $res, 0);
                 }
             }
@@ -833,9 +1172,16 @@ class Field_Validation extends Field
         return true;
     }
 
-    function &dig($scp = 'field')
+    /**
+     * @inheritDoc
+     */
+    public function &dig($scp = 'field')
     {
         $Field =& $this->getChild($scp);
+
+        if (!($Field instanceof Field_Validation)) {
+            return parent::dig($scp);
+        }
 
         if ($aryFd = $this->getArray($scp, true)) {
             //-------

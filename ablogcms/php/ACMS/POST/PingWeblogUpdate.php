@@ -28,27 +28,27 @@ class ACMS_POST_PingWeblogUpdate extends ACMS_POST
         $tpl = setGlobalVars($tpl);
 
         $siteName = ACMS_RAM::blogName(BID);
-        $siteUrl = acmsLink(array('bid' => BID, 'protocol' => 'http'), false);
-        $checkLink = acmsLink(array('bid' => BID, 'cid' => CID, 'eid' => EID, 'protocol' => 'http'), false);
+        $siteUrl = acmsLink(['bid' => BID, 'protocol' => 'http'], false);
+        $checkLink = acmsLink(['bid' => BID, 'cid' => CID, 'eid' => EID, 'protocol' => 'http'], false);
 
         //------
         // ping
         if ($aryEndpoint = configArray('ping_weblog_updates_endpoint')) {
             $Tpl = new Template($tpl);
-            $Tpl->add(null, array(
+            $Tpl->add(null, [
                 'method' => 'ping',
                 'siteName' => $siteName,
                 'siteLink' => $siteUrl,
-            ));
+            ]);
             $xml = $Tpl->get();
 
             foreach ($aryEndpoint as $endpoint) {
                 try {
                     $req = Http::init($endpoint, 'post');
-                    $req->setRequestHeaders(array(
+                    $req->setRequestHeaders([
                         'Content-Type: text/xml',
                         'User-Agent: a-blog cms',
-                    ));
+                    ]);
                     $req->setPostData($xml);
                     $response = $req->send();
                     if (strpos(Http::getResponseHeader('http_code'), '200') === false) {
@@ -69,21 +69,21 @@ class ACMS_POST_PingWeblogUpdate extends ACMS_POST
                 $Tpl->add('cid');
                 $Tpl->add('category');
             }
-            $Tpl->add(null, array(
+            $Tpl->add(null, [
                 'method' => 'extendedPing',
                 'siteName' => $siteName,
                 'siteLink' => $siteUrl,
                 'checkLink' => $checkLink,
-            ));
+            ]);
             $xml = $Tpl->get();
 
             foreach ($aryEndpoint as $endpoint) {
                 try {
                     $req = Http::init($endpoint, 'post');
-                    $req->setRequestHeaders(array(
+                    $req->setRequestHeaders([
                         'Content-Type: text/xml',
                         'User-Agent: a-blog cms',
-                    ));
+                    ]);
                     $req->setPostData($xml);
                     $response = $req->send();
                     if (strpos(Http::getResponseHeader('http_code'), '200') === false) {

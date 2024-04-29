@@ -2,13 +2,13 @@
 
 class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
 {
-    function get()
+    public function get()
     {
         if (!sessionWithContribution()) {
-            return false;
+            return '';
         }
-        if ('form2-edit' <> ADMIN) {
-            return false;
+        if ('form2-edit' !== ADMIN) {
+            return '';
         }
         if (!EID) {
             return false;
@@ -30,7 +30,7 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
         } else {
             $Form       = new Field();
             $Field      = new Field();
-            $Column     = array();
+            $Column     = [];
             $step       = 'reapply';
             $action     = 'update';
 
@@ -49,7 +49,7 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
             }
         }
 
-        $vars   = array();
+        $vars   = [];
         $rootBlock  = 'step#' . $step;
 
         //----------
@@ -66,7 +66,7 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
                 if ($val['form_id'] === $formId) {
                     $val['selected'] = config('attr_selected');
                 }
-                $Tpl->add(array('form:loop', $rootBlock), $val);
+                $Tpl->add(['form:loop', $rootBlock], $val);
             }
         }
 
@@ -92,27 +92,27 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
                         //------
                         // sort
                 for ($i = 1; $i <= $cnt; $i++) {
-                    $_vars  = array(
-                    'value' => $i,
-                    'label' => $i,
-                    );
+                    $_vars  = [
+                        'value' => $i,
+                        'label' => $i,
+                    ];
                     if ($sort == $i) {
                         $_vars['selected']   = config('attr_selected');
                     }
-                    $Tpl->add(array('sort:loop', $rootBlock), $_vars);
+                    $Tpl->add(['sort:loop', $rootBlock], $_vars);
                 }
 
-                $Tpl->add(array('column:loop', $rootBlock), array(
-                'uniqid'    => $id,
-                'clid'      => $clid,
-                'cltype'    => $type,
-                'clname'    => ite($aryTypeLabel, $type),
-                ));
+                $Tpl->add(['column:loop', $rootBlock], [
+                    'uniqid'    => $id,
+                    'clid'      => $clid,
+                    'cltype'    => $type,
+                    'clname'    => ite($aryTypeLabel, $type),
+                ]);
             }
         } else {
             //-----------
             // [CMS-608]
-            $Tpl->add(array('adminEntryColumn', $rootBlock));
+            $Tpl->add(['adminEntryColumn', $rootBlock]);
         }
 
         //--------------
@@ -123,11 +123,11 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
         //--------
         // action
         if (IS_LICENSED) {
-            $Tpl->add(array('action#confirm', $rootBlock));
-            $Tpl->add(array('action#' . $action, $rootBlock));
+            $Tpl->add(['action#confirm', $rootBlock]);
+            $Tpl->add(['action#' . $action, $rootBlock]);
         }
         if ('update' == $action) {
-            $Tpl->add(array('action#delete', $rootBlock));
+            $Tpl->add(['action#delete', $rootBlock]);
         }
 
         //--------

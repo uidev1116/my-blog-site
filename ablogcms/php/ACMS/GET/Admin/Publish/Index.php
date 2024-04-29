@@ -7,15 +7,15 @@ class ACMS_GET_Admin_Publish_Index extends ACMS_GET_Admin_Publish
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
         if (!IS_LICENSED) {
-            return false;
+            return '';
         }
         if (roleAvailableUser()) {
             if (!roleAuthorization('publish_edit', BID) && !roleAuthorization('publish_exec', BID)) {
-                return false;
+                return '';
             }
         } else {
             if (!sessionWithAdministration()) {
-                return false;
+                return '';
             }
         }
 
@@ -23,7 +23,7 @@ class ACMS_GET_Admin_Publish_Index extends ACMS_GET_Admin_Publish
             $ParentConfig = loadConfig(ACMS_RAM::blogParent(BID));
             if ('on' != $ParentConfig->get('publish_children_allow')) {
                 $Tpl->add('notAllow');
-                $Tpl->add(null, array('notice_mess' => 'show'));
+                $Tpl->add(null, ['notice_mess' => 'show']);
                 return $Tpl->get();
             }
         }
@@ -51,12 +51,12 @@ class ACMS_GET_Admin_Publish_Index extends ACMS_GET_Admin_Publish
         $max    = min($resourceCnt, $layoutOnlyCnt, $tgtThemeCnt, $tgtPathCnt);
 
         for ($i = 0; $i < $max; $i++) {
-            $vars   = array(
+            $vars   = [
                 'publish_resource_uri'  => $resources[$i],
                 'publish_layout_only'   => $layoutOnly[$i],
                 'publish_target_theme'  => $tgtTheme[$i],
                 'publish_target_path'   => $tgtPath[$i],
-            );
+            ];
 
             $p  = md5(implode('', $vars));
 
@@ -70,13 +70,13 @@ class ACMS_GET_Admin_Publish_Index extends ACMS_GET_Admin_Publish
         }
 
         $childAllow = $Config->get('publish_children_allow');
-        $Tpl->add('allow', array(
+        $Tpl->add('allow', [
             'publish_children_allow:checked#' . $childAllow => config('attr_checked')
-        ));
+        ]);
 
         if ($Apply) {
             $Tpl->add('apply');
-            $Tpl->add(null, array('notice_mess' => 'show'));
+            $Tpl->add(null, ['notice_mess' => 'show']);
         }
 
         return $Tpl->get();

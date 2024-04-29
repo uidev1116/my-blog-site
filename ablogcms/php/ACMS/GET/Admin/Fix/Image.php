@@ -24,21 +24,21 @@ class ACMS_GET_Admin_Fix_Image extends ACMS_GET_Admin_Fix
             if (empty($size)) {
                 continue;
             }
-            $loop = array(
+            $loop = [
                 'size'  => $size,
-            );
+            ];
             if ($size === $target) {
                 $loop['selected'] = config('attr_selected');
             }
-            $Tpl->add(array_merge(array('normalSize:loop'), $block), $loop);
+            $Tpl->add(array_merge(['normalSize:loop'], $block), $loop);
         }
 
-        $vars = array(
+        $vars = [
             'largeSize'     => config('image_size_large'),
             'tinySize'      => config('image_size_tiny'),
             'squareSize'    => config('image_size_square'),
-        );
-        $Tpl->add(array_merge(array('size'), $block), $vars);
+        ];
+        $Tpl->add(array_merge(['size'], $block), $vars);
 
         return true;
     }

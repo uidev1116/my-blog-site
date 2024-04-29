@@ -2,8 +2,8 @@
 
 class ACMS_GET_Touch_Ssl extends ACMS_GET
 {
-    function get()
+    public function get()
     {
-        return HTTPS ? $this->tpl : false;
+        return HTTPS ? $this->tpl : '';
     }
 }

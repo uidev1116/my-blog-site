@@ -22,17 +22,17 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
             $paramStr = ' ';
 
             foreach ($params as $param) {
-                $Tpl->add(array('param:loop', 'comment:loop'), $param);
+                $Tpl->add(['param:loop', 'comment:loop'], $param);
                 $paramStr .= $param['param'] . '="" ';
             }
 
-            $annotation = array(
+            $annotation = [
                 'id' => $id,
                 'numberOfParam' => count($params),
                 'comment' => $text,
                 'preview' => "<!-- GET_Template id=\"$id\" -->",
                 'snippet' => "<!-- GET_Template id=\"$id\"$paramStr-->",
-            );
+            ];
 
             if ($author = $this->getAuthor($comment)) {
                 $annotation['author'] = $author;
@@ -42,10 +42,10 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
             }
 
             $Tpl->add('comment:loop', $annotation);
-            $Tpl->add('search:loop', array(
+            $Tpl->add('search:loop', [
                 'label' => $id,
                 'link'  => '#' . $id,
-            ));
+            ]);
         }
 
         return $Tpl->get();
@@ -85,14 +85,14 @@ class ACMS_User_GET_Template_VarsTable extends ACMS_GET
 
     function getParam($comment)
     {
-        $params = array();
+        $params = [];
 
         if (preg_match_all('/@param(?:[\t 　]+)([^\|]*)(?:[\t\s]*)(?:\|?)(?:[\t\s]*)(.*)/i', $comment, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $params[] = array(
+                $params[] = [
                     'param' => trim($match[1]),
                     'label' => trim($match[2]),
-                );
+                ];
             }
         }
         return $params;

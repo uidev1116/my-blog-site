@@ -48,14 +48,14 @@ class ACMS_GET_Admin_Rule_Edit extends ACMS_GET_Admin_Edit
         }
 
         foreach (configArray('ua_value', true) as $id => $value) {
-            $vars  = array(
+            $vars  = [
                 'value' => $value,
                 'label' => config('ua_label', '', $id),
-            );
+            ];
             if ($ua == $value) {
                 $vars['selected'] = config('attr_selected');
             }
-            $Tpl->add(array('uaoption:loop'), $vars);
+            $Tpl->add(['uaoption:loop'], $vars);
         }
 
         $this->buildArgLabels($Rule);

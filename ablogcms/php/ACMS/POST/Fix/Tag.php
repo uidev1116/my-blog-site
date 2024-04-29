@@ -2,22 +2,22 @@
 
 class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
 {
-    function init()
+    protected function init()
     {
         return true;
     }
 
-    function process($data, $word)
+    protected function process($data, $word)
     {
         return true;
     }
 
-    function success()
+    protected function success()
     {
         return true;
     }
 
-    function post()
+    public function post()
     {
         if (!sessionWithAdministration()) {
             return false;
@@ -42,13 +42,14 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
             $certainly      = $Fix->get('certainly');
             $ignoreEntries  = $Fix->getArray('ignore');
 
-            $words = array();
+            $words = [];
             if (empty($tagSource)) {
                 try {
                     /**
                      * detect convert encoding
                      */
-                    $raw = Storage::get($_FILES['source']['tmp_name']);
+                    $uploadPath = $_FILES['source']['tmp_name'];
+                    $raw = Storage::get($uploadPath, dirname($uploadPath));
 
                     if ($enc = mb_detect_encoding($raw, 'UTF-8, EUC-JP, SJIS-win, SJIS, EUCJP-win')) {
                         $raw = mb_convert_encoding($raw, 'UTF-8', $enc);
@@ -56,7 +57,7 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
 
                     $fixed = preg_replace('@,| |　@', '', $raw);
                     $words = preg_split('@[\x0D\x0A|\x0D|\x0A/]@', $fixed);
-                    $words = array_unique(array_merge(array_diff($words, array(''))));
+                    $words = array_unique(array_merge(array_diff($words, [''])));
 
                     $Fix->set('tagSource', implode(',', $words));
                 } catch (\Exception $e) {
@@ -103,7 +104,7 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
                     $sort   = $e['tag_max'] + 1;
 
                     // continue when "is not set eid" OR "found on ignores list"
-                    if (empty($eid) || array_search($eid . '@' . $word, $ignoreEntries) !== false) {
+                    if (empty($eid) || array_search($eid . '@' . $word, $ignoreEntries, true) !== false) {
                         continue;
                     }
 

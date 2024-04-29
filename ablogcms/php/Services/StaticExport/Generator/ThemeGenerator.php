@@ -4,7 +4,12 @@ namespace Acms\Services\StaticExport\Generator;
 
 use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
+use Acms\Services\StaticExport\Entities\Page;
 use Symfony\Component\Finder\Finder;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class ThemeGenerator extends Generator
 {
@@ -14,97 +19,122 @@ class ThemeGenerator extends Generator
     protected $sourceTheme;
 
     /**
-     * @var int
+     * @var string[]
      */
-    protected $numberOfTasks;
+    protected $exclusionList = [];
 
     /**
-     * @var array
+     * @param string $sourceTheme
+     * @return void
      */
-    protected $exclusionList = array();
-
-    /**
-     * @param mixed $sourceTheme
-     */
-    public function setSourceTheme($sourceTheme)
+    public function setSourceTheme(string $sourceTheme): void
     {
+        if ($sourceTheme === '') {
+            throw new \InvalidArgumentException('source theme is empty.');
+        }
         $this->sourceTheme = $sourceTheme;
     }
 
-    protected function getName()
+    protected function getName(): string
     {
-        return 'テンプレートの書き出し';
+        return 'テンプレートの書き出し ( ' . $this->sourceTheme . ' )';
     }
 
-    protected function getTasks()
-    {
-        return $this->numberOfTasks;
-    }
-
-    public function setExclusionList($list)
+    /**
+     * @param string[] $list
+     * @return void
+     */
+    public function setExclusionList(array $list): void
     {
         $this->exclusionList = $list;
     }
 
     /**
+     * @inheritDoc
+     */
+    public function run(): PromiseInterface
+    {
+        return new Promise(
+            function (callable $resolve, callable $reject) {
+                if (!$this->sourceTheme) {
+                    $reject(new \RuntimeException('no selected source theme.'));
+                    return;
+                }
+                $finder = new Finder();
+                $iterator = $finder
+                ->in($this->sourceTheme)
+                ->notPath('include')
+                ->notPath('admin')
+                ->name('/\.(html|htm|json)$/');
+
+                if (config('forbid_direct_access_tpl') !== 'off') {
+                    $iterator->notPath(config('forbid_direct_access_tpl'));
+                    $iterator->notName(config('forbid_direct_access_tpl'));
+                }
+                foreach ($this->exclusionList as $path) {
+                    if (!empty($path)) {
+                        $iterator->notPath($path);
+                    }
+                }
+                $iterator->files();
+
+                $pages = $this->createPages($iterator);
+                $this->logger->start($this->getName(), count($pages));
+
+                await($this->handle($pages));
+                $resolve(null);
+            }
+        );
+    }
+
+    /**
+     * @param string $path
+     * @param string $data
      * @return void
      */
-    protected function main()
+    protected function writeContents(string $path, string $data): void
     {
-        if (!$this->sourceTheme) {
-            throw new \RuntimeException('no selected source theme.');
-        }
-        $finder = new Finder();
-        $iterator = $finder
-            ->in($this->sourceTheme)
-            ->notPath('include')
-            ->notPath('admin')
-            ->name('/\.(html|htm|json)$/');
-
-        if (config('forbid_direct_access_tpl') !== 'off') {
-            $iterator->notPath(config('forbid_direct_access_tpl'));
-            $iterator->notName(config('forbid_direct_access_tpl'));
-        }
-        foreach ($this->exclusionList as $path) {
-            if (!empty($path)) {
-                $iterator->notPath($path);
-            }
-        }
-        $iterator->files();
-        $this->numberOfTasks = iterator_count($iterator);
-        $this->logger->start($this->getName(), $this->getTasks());
-
-        foreach ($iterator as $file) {
-            try {
-                $url = acmsLink(array('bid' => BID), false) . $file->getRelativePathname();
-                $this->request($url, $file);
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage(), $file->getRelativePathname());
-            }
+        $baseDir = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
+        $destPath = $baseDir . $path;
+        try {
+            Storage::makeDirectory(dirname($destPath));
+            Storage::put($destPath, $data);
+        } catch (\Exception $e) {
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
     }
 
     /**
-     * @param string $data
-     * @param string $code
-     * @param object $info
-     * @return void
+     * @param \Throwable $th
+     * @param string $url
      */
-    protected function callback($data, $code, $info)
+    protected function handleError(\Throwable $th, string $url): void
     {
-        if ($this->logger) {
-            $this->logger->processing($info->getRelativePathname());
+        if ($th instanceof \React\Http\Message\ResponseException) {
+            $response = $th->getResponse();
+            $this->logger->error(
+                'データの取得に失敗しました。',
+                $url,
+                $response->getStatusCode()
+            );
+            return;
         }
-        if (empty($data) || $code != '200') {
-            $this->logger->error('データの取得に失敗しました。', $info->getRelativePathname(), $code);
-        } else {
-            try {
-                $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-                Storage::makeDirectory($destination . $info->getRelativePath());
-                Storage::put($destination . $info->getRelativePathname(), $data);
-            } catch (\Exception $e) {
-                $this->logger->error('データの書き込みに失敗しました。', $info->getRelativePathname());
-            }
-        }
+        $this->logger->error($th->getMessage(), $url);
+    }
+
+    /**
+     * @param \Symfony\Component\Finder\Finder $iterator
+     * @return Page[]
+     */
+    protected function createPages(\Symfony\Component\Finder\Finder $iterator): array
+    {
+        return array_map(
+            function (\Symfony\Component\Finder\SplFileInfo $file) {
+                $pathname = $file->getRelativePathname();
+                $url = acmsLink(['bid' => BID], false) . $pathname;
+                return new Page($url, $pathname);
+            },
+            iterator_to_array($iterator, false)
+        );
     }
 }

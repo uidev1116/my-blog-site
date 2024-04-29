@@ -3,7 +3,7 @@
 class ACMS_GET_Layout extends ACMS_GET
 {
     private static $onlyLayout  = false;
-    public $aryTypeLabel           = array();
+    public $aryTypeLabel           = [];
 
     function build($Doc = '', $parentID = 0, $parentHash = '', $colNum = 1)
     {
@@ -35,13 +35,13 @@ class ACMS_GET_Layout extends ACMS_GET
                     $typeVars['blockLabel']  = $label;
 
                     if ($type === 'type#module') {
-                        $Tpl->add(array('moduleLabel', 'block:loop'));
+                        $Tpl->add(['moduleLabel', 'block:loop']);
                     } else {
                         $vars['label']  = $label;
                     }
                 }
 
-                $Tpl->add(array($type, 'block:loop'), $typeVars);
+                $Tpl->add([$type, 'block:loop'], $typeVars);
 
 
                 $Tpl->add('block:loop', $vars);
@@ -80,10 +80,10 @@ class ACMS_GET_Layout extends ACMS_GET
             $SQL->setOrder('layout_grid_row', 'ASC');
             $all    = $DB->query($SQL->get(dsn()), 'all');
             if (empty($all)) {
-                return array();
+                return [];
             } else {
                 foreach ($all as $data) {
-                    $row = array();
+                    $row = [];
                     foreach ($data as $key => $val) {
                         $row[str_replace('layout_grid_', '', $key)] = $val;
                     }
@@ -95,7 +95,7 @@ class ACMS_GET_Layout extends ACMS_GET
         if (isset($Map[$parent][$col])) {
             return $Map[$parent][$col];
         }
-        return array();
+        return [];
     }
 
     function module($tpl, $layout)
@@ -115,11 +115,11 @@ class ACMS_GET_Layout extends ACMS_GET
             if ($all = $DB->query($SQL->get(dsn()), 'all')) {
                 foreach ($all as $row) {
                     $mid    = strval($row['module_id']);
-                    $Map[$mid] = array(
+                    $Map[$mid] = [
                         'mid'           => $row['module_id'],
                         'name'          => $row['module_name'],
                         'identifier'    => $row['module_identifier'],
-                    );
+                    ];
                 }
             }
         }
@@ -186,16 +186,16 @@ class ACMS_GET_Layout extends ACMS_GET
                     $response   = $this->build();
                     $response   = preg_replace('/<!-- BEGIN block:loop -->(.*)<!-- END block:loop -->/s', str_replace('$', '\$', $response), $editTpl);
                 }
-                $response = str_replace('{preview}', acmsLink(array(
+                $response = str_replace('{preview}', acmsLink([
                     'bid'   => BID,
                     'cid'   => CID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/layout/preview.html',
-                    'query' => array(
+                    'query' => [
                         'preview'   => 'enable',
                         'url'       => $this->srcUrl(),
-                    ),
-                ), true), $response);
+                    ],
+                ], true), $response);
                 $response = str_replace('{url}', $this->srcUrl(), $response);
             }
         } else {
@@ -216,26 +216,26 @@ class ACMS_GET_Layout extends ACMS_GET
     {
         if ($type === 'dummy') {
             $mTpl    = preg_replace(
-                array(
+                [
                     '/<!--[\t 　]*BEGIN[\t 　]+layout\#display[^>]*?-->.*<!--[\t 　]*END[\t 　]+layout\#display[^>]*?-->/is',
                     '/<!--[\t 　]*(BEGIN|END)[\t 　]+layout\#dummy[^>]*?-->/is',
-                ),
-                array(
+                ],
+                [
                     '',
                     '',
-                ),
+                ],
                 $mTpl
             );
         } else {
             $mTpl    = preg_replace(
-                array(
+                [
                     '/<!--[\t 　]*BEGIN[\t 　]+layout\#dummy[^>]*?-->.*<!--[\t 　]*END[\t 　]+layout\#dummy[^>]*?-->/is',
                     '/<!--[\t 　]*(BEGIN|END)[\t 　]+layout\#display[^>]*?-->/is',
-                ),
-                array(
+                ],
+                [
                     '',
                     '',
-                ),
+                ],
                 $mTpl
             );
         }

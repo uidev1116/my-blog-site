@@ -26,7 +26,7 @@ class ACMS_POST_App_Activate extends ACMS_POST
             if ($row = $DB->query($SQL->get(dsn()), 'one')) {
                 $SQL = SQL::newUpdate('app');
                 $SQL->addUpdate('app_status', 'on');
-                $SQL->addupdate('app_activate_datetime', date('Y-m-d H:i:s'));
+                $SQL->addUpdate('app_activate_datetime', date('Y-m-d H:i:s'));
                 $SQL->addWhereOpr('app_name', get_class($App));
                 $SQL->addWhereOpr('app_blog_id', BID);
                 $DB->query($SQL->get(dsn()), 'exec');

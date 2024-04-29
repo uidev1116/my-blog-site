@@ -26,7 +26,7 @@ class Helper
 
     public function getAttributeMap($attributes, $values)
     {
-        $map = array();
+        $map = [];
         foreach ($attributes as $i => $attribute) {
             //コーテーションを削除
             $map[$attribute] = preg_replace('/[\'\"]/', '', $values[$i]);
@@ -47,7 +47,7 @@ class Helper
     public function fix($value)
     {
         $value = preg_replace_callback('/<img(.*?)>/', function ($match) {
-            $attrs = array();
+            $attrs = [];
             preg_match_all('/(\S+)=[\"\']?((?:.(?![\"\']?\s+(?:\S+)=|[>\"\']))+.)[\"\']?/', $match[1], $attrs);
             $attributes = $attrs[1];
             $values = $attrs[2];

@@ -5,6 +5,7 @@ namespace Acms\Services\Approval;
 use DB;
 use SQL;
 use ACMS_RAM;
+use ACMS_Filter;
 
 class Helper
 {
@@ -51,12 +52,13 @@ class Helper
     /**
      * 通知の絞り込み
      *
-     * @return SQL_Select
+     * @return \SQL_Select
      */
     public function buildSql()
     {
         $SQL = SQL::newSelect('approval_notification');
         $SQL->addLeftJoin('approval', 'notification_approval_id', 'approval_id');
+        $SQL->addLeftJoin('blog', 'blog_id', 'notification_blog_id');
         $SQL->addInnerJoin('entry_rev', 'notification_rev_id', 'entry_rev_id');
         $SQL->addWhereOpr('notification_entry_id', SQL::newField('entry_id'));
         $WHERE = SQL::newWhere();
@@ -83,6 +85,12 @@ class Helper
             if (isSessionContributor(false)) {
                 $SQL->addWhereOpr('notification_type', 'request', '<>');
             }
+            if (config('blog_manage_approval') === 'on') {
+                ACMS_Filter::blogTree($SQL, ACMS_RAM::userBlog(SUID), 'self-descendant');
+            } else {
+                $SQL->addWhereOpr('user_blog_id', ACMS_RAM::userBlog(SUID));
+            }
+
             $W = SQL::newWhere();
             $W->addWhereOpr('notification_type', 'reject', '=', 'OR');
             $W->addWhereOpr('notification_receive_user_id', SUID, '=', 'OR');
@@ -95,6 +103,7 @@ class Helper
         }
         $SQL->addWhere($WHERE);
 
+
         return $SQL;
     }
 
@@ -104,7 +113,7 @@ class Helper
      */
     protected function getGroupList($uid = SUID)
     {
-        $groupsList = array();
+        $groupsList = [];
         if (empty($uid)) {
             return $groupsList;
         }

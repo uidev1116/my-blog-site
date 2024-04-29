@@ -8,7 +8,7 @@ class ACMS_GET_Admin_Usergroup_UserList extends ACMS_GET
         $SQL    = SQL::newSelect('user');
         $SQL->addWhereOpr('user_pass', '', '<>');
         $SQL->addWhereOpr('user_blog_id', 1);
-        $SQL->addWhereNotIn('user_auth', array('administrator', 'subscriber'));
+        $SQL->addWhereNotIn('user_auth', ['administrator', 'subscriber']);
         $SQL->setOrder('user_id', 'ASC');
 
         // amount
@@ -42,18 +42,6 @@ class ACMS_GET_Admin_Usergroup_UserList extends ACMS_GET
             }
             $vars['icon']   = loadUserIcon($row['user_id']);
             $Tpl->add('user:loop', $vars);
-        }
-
-        // pager
-        if (empty($uid) and 'random' <> config('user_search_order')) {
-            $Tpl->add(null, $this->buildPager(
-                $this->page,
-                config('user_search_limit'),
-                $itemsAmount,
-                config('user_search_pager_delta'),
-                config('user_search_pager_cur_attr'),
-                $Tpl
-            ));
         }
 
         return $Tpl->get();

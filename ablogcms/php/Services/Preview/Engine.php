@@ -28,7 +28,7 @@ class Engine implements Base
     protected $session;
 
     /**
-     * @var
+     * @var \Field
      */
     protected $get;
 
@@ -108,7 +108,7 @@ class Engine implements Base
     /**
      * 偽装ユーザーエージェントの取得
      *
-     * @return string | bool
+     * @return string|false
      */
     public function getFakeUserAgent()
     {

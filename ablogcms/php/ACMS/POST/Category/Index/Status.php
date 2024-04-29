@@ -2,16 +2,16 @@
 
 class ACMS_POST_Category_Index_Status extends ACMS_POST
 {
-    function post()
+    public function post()
     {
-        $aryCid = $this->Post->getArray('checks');
+        $aryCid = array_map('intval', $this->Post->getArray('checks'));
         $status = $this->Post->get('status');
 
         $this->Post->reset(true);
         $this->Post->setMethod('category', 'operable', ( 1
             and sessionWithCompilation()
             and !empty($aryCid)
-            and in_array($status, array('open', 'close', 'secret'))
+            and in_array($status, ['open', 'close', 'secret'], true)
         ));
         $this->Post->validate();
 
@@ -28,12 +28,12 @@ class ACMS_POST_Category_Index_Status extends ACMS_POST
                     $SQL->addWhereOpr('category_right', ACMS_RAM::categoryRight($cid), '<=');
 
                     if (!!($all = $DB->query($SQL->get(dsn()), 'all'))) {
-                        $_aryCid = array();
+                        $_aryCid = [];
                         foreach ($all as $row) {
                             if (!($_cid = intval($row['category_id']))) {
                                 continue;
                             }
-                            if (!is_bool($key = array_search($_cid, $aryCid))) {
+                            if (!is_bool($key = array_search($_cid, $aryCid, true))) {
                                 unset($aryCid[$key]);
                             }
                             $_aryCid[]  = $_cid;

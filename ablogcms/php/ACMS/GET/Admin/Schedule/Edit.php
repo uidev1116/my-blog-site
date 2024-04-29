@@ -11,16 +11,16 @@ class ACMS_GET_Admin_Schedule_Edit extends ACMS_GET_Admin_Edit
         for ($x = 1; $x < 3; $x++) {
             $year   = date('Y');
             for ($i = 0; $i < 5; $i++) {
-                $Tpl->add(array('year:loop#' . $x), array('year' => $year + $i));
+                $Tpl->add(['year:loop#' . $x], ['year' => $year + $i]);
             }
 
             $month  = date('m');
             for ($i = 1; $i < 13; $i++) {
-                $vars = array('month' => sprintf("%02d", $i));
+                $vars = ['month' => sprintf("%02d", $i)];
                 if (sprintf("%02d", $i) == $month) {
-                    $vars += array('selected' => config('attr_selected'));
+                    $vars += ['selected' => config('attr_selected')];
                 }
-                $Tpl->add(array('month:loop#' . $x), $vars);
+                $Tpl->add(['month:loop#' . $x], $vars);
             }
         }
 

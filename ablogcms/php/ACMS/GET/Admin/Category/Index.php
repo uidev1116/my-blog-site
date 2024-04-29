@@ -2,22 +2,22 @@
 
 class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if (roleAvailableUser()) {
             if (!roleAuthorization('category_edit', BID)) {
-                return false;
+                return '';
             }
         } else {
             if (!sessionWithCompilation()) {
-                return false;
+                return '';
             }
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $limits = configArray('admin_limit_option');
         $limit = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
-        $vars = array();
+        $vars = [];
 
         //----------------------
         // category create auth
@@ -60,7 +60,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         //-------
         // limit
         foreach ($limits as $val) {
-            $_vars = array('limit' => $val);
+            $_vars = ['limit' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -140,8 +140,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 config('admin_pager_delta'),
                 config('admin_pager_cur_attr'),
                 $Tpl,
-                array(),
-                array('admin' => ADMIN)
+                [],
+                ['admin' => ADMIN]
             );
             $SQL->setLimit($limit, (PAGE - 1) * $limit);
         }
@@ -156,8 +156,8 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
         $DB->query($q, 'fetch');
         $row = $DB->fetch($q);
 
-        $categoryIds = array();
-        $childCategories = array();
+        $categoryIds = [];
+        $childCategories = [];
         do {
             if (!empty($row['category_id'])) {
                 $categoryIds[] = $row['category_id'];
@@ -178,10 +178,10 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
             }
         }
 
-        $all = array();
-        $amount = array();
-        $parent = array();
-        $last = array();
+        $all = [];
+        $amount = [];
+        $parent = [];
+        $last = [];
         $DB->query($q, 'fetch');
         while ($row = $DB->fetch($q)) {
             $bid = intval($row['category_blog_id']);
@@ -196,9 +196,9 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
             $amount[$bid][$pid] += 1;
         };
 
-        $stack = array();
+        $stack = [];
         if ($layered) {
-            $stack = isset($all[$_cid]) ? $all[$_cid] : array();
+            $stack = isset($all[$_cid]) ? $all[$_cid] : [];
         } elseif (isset($all[0])) {
             $stack = $all[0];
         }
@@ -219,7 +219,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 $disabled = '';
             }
 
-            $blocks = array();
+            $blocks = [];
             if (!empty($parent[$cid])) {
                 $blocks[] = isset($last[$cid]) ? 'child#last' : 'child';
                 $_pid = $cid;
@@ -240,7 +240,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
 
             $Tpl->add('scope:touch#' . $row['category_scope']);
 
-            $cvars = array(
+            $cvars = [
                 'cid' => $cid,
                 'sort' => $sort,
                 'pcid' => $pid,
@@ -256,30 +256,30 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 'editorSetScope' => $row['category_editor_set_scope'],
                 'disabled' => $disabled,
                 'level' => $level,
-            );
+            ];
 
             $cbid = intval($row['category_blog_id']);
             if (BID === $cbid) {
-                $Tpl->add('mine', array(
-                    'itemLink' => acmsLink(array(
+                $Tpl->add('mine', [
+                    'itemLink' => acmsLink([
                         'bid' => BID,
                         'cid' => $cid,
                         'admin' => 'category_edit',
-                    ))
-                ));
+                    ])
+                ]);
             } else {
                 if (
                     0
                     or (roleAvailableUser() && roleAuthorization('category_edit', $cbid))
                     or sessionWithAdministration($cbid)
                 ) {
-                    $Tpl->add('notMinePermit', array(
-                        'itemLink' => acmsLink(array(
+                    $Tpl->add('notMinePermit', [
+                        'itemLink' => acmsLink([
                             'bid' => $cbid,
                             'cid' => $cid,
                             'admin' => 'category_edit',
-                        ))
-                    ));
+                        ])
+                    ]);
                 } else {
                     $Tpl->add('notMine');
                 }
@@ -295,18 +295,18 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
                 && isset($childCategories[$cid])
                 && $childCategories[$cid] > 0
             ) {
-                $Tpl->add(array('childLink', 'category:loop'), array(
+                $Tpl->add(['childLink', 'category:loop'], [
                     'parent_cid' => $cid,
                     'pre_cid' => $_cid,
-                    'childLink' => acmsLink(array(
+                    'childLink' => acmsLink([
                         'admin' => 'category_index',
                         'page' => 1,
-                        'query' => array(
+                        'query' => [
                             '_cid' => $cid,
                             'pre' => $_cid,
-                        ),
-                    ), true),
-                ));
+                        ],
+                    ], true),
+                ]);
             }
             $Tpl->add('category:loop', $cvars);
 

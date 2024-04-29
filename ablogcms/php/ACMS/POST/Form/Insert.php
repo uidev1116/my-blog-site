@@ -21,7 +21,7 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
             if (!($val = $Mail->get($fd))) {
                 $Mail->delete($fd);
             } else {
-                $aryVal = array();
+                $aryVal = [];
                 foreach (explode(',', $val) as $_val) {
                     $_val   = trim($_val);
                     if (empty($_val)) {
@@ -34,9 +34,9 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
         }
 
         $Option = $this->extract('option');
-        $aryFd  = array();
-        $aryMd  = array();
-        $aryVal = array();
+        $aryFd  = [];
+        $aryMd  = [];
+        $aryVal = [];
         foreach ($Option->getArray('field') as $i => $fd) {
             if (empty($fd)) {
                 continue;
@@ -65,10 +65,12 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
             $SQL->addInsert('form_code', $Form->get('code'));
             $SQL->addInsert('form_name', $Form->get('name'));
             $SQL->addInsert('form_scope', $Form->get('scope', 'local'));
+            $SQL->addInsert('form_log', $Form->get('log', '1'));
             $SQL->addInsert('form_blog_id', BID);
             $Data   = new Field($Form, true);
             $Data->delete('code');
             $Data->delete('name');
+            $Data->delete('log');
             $SQL->addInsert('form_data', serialize($Data));
             $DB->query($SQL->get(dsn()), 'exec');
 

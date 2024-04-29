@@ -12,6 +12,7 @@ class ACMS_GET_Member_Update_Tfa extends ACMS_GET_Member
         if (!SUID) {
             page404();
         }
+        /* @phpstan-ignore-next-line */
         if (!Tfa::isAvailable()) {
             page404();
         }

@@ -184,9 +184,9 @@ class Repository
      * @param string $key
      * @param array $authorities
      * @param int $blogId
-     * @return void
+     * @return bool
      */
-    public function authorizationExists(string $key, array $authorities = [], int $blogId = BID)
+    public function authorizationExists(string $key, array $authorities = [], int $blogId = BID): bool
     {
         $sql = SQL::newSelect('dashboard');
         $sql->setSelect('dashboard_key');
@@ -207,7 +207,10 @@ class Repository
      *  rid: int|null,
      *  mid: int|null,
      *  scid: int|null,
-     *  setid: int|null
+     *  setid: int|null,
+     *  admin: string,
+     *  key: string,
+     *  type: string
      * }
      */
     protected function parseShortcutKey(string $key): array
@@ -245,15 +248,15 @@ class Repository
             $rows,
             function (array $shortcuts, array $row) {
                 [
-                   'key' => $key,
-                   'admin' => $admin,
-                   'type' => $type,
-                   'bid' => $bid,
-                   'cid' => $cid,
-                   'rid' => $rid,
-                   'mid' => $mid,
-                   'setid' => $setid,
-                   'scid' => $scid,
+                    'key' => $key,
+                    'admin' => $admin,
+                    'type' => $type,
+                    'bid' => $bid,
+                    'cid' => $cid,
+                    'rid' => $rid,
+                    'mid' => $mid,
+                    'setid' => $setid,
+                    'scid' => $scid,
                 ] = $this->parseShortcutKey($row['dashboard_key']);
 
                 if (!in_array($key, array_column($shortcuts, 'key'), true)) {

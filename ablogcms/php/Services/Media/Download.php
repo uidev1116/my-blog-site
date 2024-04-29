@@ -17,7 +17,12 @@ class Download
     protected $mid;
 
     /**
-     * @var int
+     * @var array{
+     *   path: string,
+     *   name: string,
+     *   extension: string,
+     *   status: string
+     * }
      */
     protected $media;
 
@@ -134,7 +139,7 @@ class Download
      */
     protected function findEntriesUseMedia()
     {
-        $entryIds = array();
+        $entryIds = [];
         $entryIds = array_merge($entryIds, $this->findUnitsUseMedia());
         $entryIds = array_merge($entryIds, $this->findFieldsUseMedia());
         $entryIds = array_merge($entryIds, $this->findCustomUnitsUseMedia());
@@ -154,7 +159,7 @@ class Download
         $sql->addWhereOpr('column_type', 'media%', 'LIKE');
         $sql->addWhereOpr('column_field_1', $this->mid);
 
-        return DB::query($sql->get(dsn()), 'list') ?: array();
+        return DB::query($sql->get(dsn()), 'list') ?: [];
     }
 
     /**
@@ -170,7 +175,7 @@ class Download
         $sql->addWhereOpr('field_key', '%@media', 'LIKE');
         $sql->addWhereOpr('field_value', $this->mid);
 
-        return DB::query($sql->get(dsn()), 'list') ?: array();
+        return DB::query($sql->get(dsn()), 'list') ?: [];
     }
 
     /**
@@ -180,7 +185,7 @@ class Download
      */
     protected function findCustomUnitsUseMedia()
     {
-        $entryIds = array();
+        $entryIds = [];
         $db = DB::singleton(dsn());
         $sql = SQL::newSelect('column');
         $sql->addSelect('column_entry_id');

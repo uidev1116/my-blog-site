@@ -10,7 +10,7 @@ class ACMS_POST_Member_Signup_Submit extends ACMS_POST_Member_Signup_Confirm
     /**
      * 管理者宛の場合true
      *
-     * @var false
+     * @var bool
      */
     protected $toAdmin = false;
 

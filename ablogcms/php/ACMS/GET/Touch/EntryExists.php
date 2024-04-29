@@ -12,6 +12,6 @@ class ACMS_GET_Touch_EntryExists extends ACMS_GET
         ) {
             return $this->tpl;
         }
-        return false;
+        return '';
     }
 }

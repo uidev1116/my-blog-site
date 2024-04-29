@@ -2,21 +2,21 @@
 
 class ACMS_GET_Approval_RevisionInfo extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!enableApproval()) {
-            return false;
+            return '';
         }
         if (!sessionWithApprovalPublic(BID, CID)) {
-            return false;
+            return '';
         }
         if (!RVID || !EID) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
-        $vars   = array();
+        $vars   = [];
 
         $SQL    = SQL::newSelect('entry_rev');
         $SQL->addWhereOpr('entry_id', EID);

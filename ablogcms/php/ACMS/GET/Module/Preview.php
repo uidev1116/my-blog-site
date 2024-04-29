@@ -18,9 +18,9 @@ class ACMS_GET_Module_Preview extends ACMS_GET_Layout
         $module = $DB->query($SQL->get(dsn()), 'row');
 
         $html   = $this->spreadModule($module['module_name'], $module['module_identifier'], $tpl);
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'html'  => buildIF($html),
-        ));
+        ]);
 
         return $Tpl->get();
     }

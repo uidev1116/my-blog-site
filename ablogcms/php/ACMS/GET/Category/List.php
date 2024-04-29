@@ -1,18 +1,21 @@
 <?php
 
+/**
+ * Todo: array_serachの第3引数をtrueにする（型チェックのため）
+ */
 class ACMS_GET_Category_List extends ACMS_GET
 {
-    public $_axis  = array(
+    public $_axis  = [
         'cid'   => 'descendant-or-self',
         'bid'   => 'descendant-or-self',
-    );
+    ];
 
-    function getAncestorsMap($Map, $root, &$i = 0)
+    protected function getAncestorsMap($Map, $root, &$i = 0)
     {
         foreach ($Map as $c => $p) {
             if (!isset($Map[$p]) && $p !== $root) {
-                $Front      = array();
-                $Back       = array();
+                $Front      = [];
+                $Back       = [];
                 $Tmp[$p]    = ACMS_RAM::categoryParent($p);
 
                 $j = 0;
@@ -37,9 +40,9 @@ class ACMS_GET_Category_List extends ACMS_GET
         return $Map;
     }
 
-    function get()
+    public function get()
     {
-        $categoryIds = array();
+        $categoryIds = [];
 
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('category');
@@ -88,6 +91,7 @@ class ACMS_GET_Category_List extends ACMS_GET
             return '';
         }
 
+        $All = [];
         //-------------
         // restructure
         foreach ($all as $row) {
@@ -102,7 +106,8 @@ class ACMS_GET_Category_List extends ACMS_GET
 
         //--------------------------
         // indexing ( swap parent )
-        while (!!($cid = intval(array_search('off', $All['category_indexing'])))) {
+        while (!!($cid = intval(array_search('off', $All['category_indexing'], true)))) {
+            // @phpstan-ignore-next-line
             while (!!($_cid = intval(array_search($cid, $All['category_parent'])))) {
                 $All['category_parent'][$_cid]  = $All['category_parent'][$cid];
             }
@@ -144,7 +149,8 @@ class ACMS_GET_Category_List extends ACMS_GET
         //-----------------------------
         // amount zero ( swap parent )
         if ('on' <> config('category_list_amount_zero')) {
-            while (!!($cid = array_search(0, $All['all_amount']))) {
+            while (!!($cid = array_search(0, $All['all_amount'], true))) {
+                // @phpstan-ignore-next-line
                 while (!!($_cid = intval(array_search($cid, $All['category_parent'])))) {
                     $All['category_parent'][$_cid]  = $All['category_parent'][$cid];
                 }
@@ -177,7 +183,7 @@ class ACMS_GET_Category_List extends ACMS_GET
             arsort($All[$key]);
         }
 
-        $Map    = array();
+        $Map    = [];
         foreach ($All[$key] as $cid => $kipple) {
             $Map[$cid]  = intval($All['category_parent'][$cid]);
         }
@@ -185,7 +191,7 @@ class ACMS_GET_Category_List extends ACMS_GET
         //-------
         // stack
         $root   = ACMS_RAM::categoryParent($this->cid) ? intval(ACMS_RAM::categoryParent($this->cid)) : 0;
-        $stack  = array($root);
+        $stack  = [$root];
 
         //-------------------------
         // restructure (ancestors)
@@ -202,10 +208,6 @@ class ACMS_GET_Category_List extends ACMS_GET
         $Tpl->add('ul#front');
         $Tpl->add('category:loop');
 
-        //-----------
-        // protocol
-        $protocol   = HTTPS ? 'https' : 'http';
-
         //-------
         // level
         $level  = intval(config('category_list_level'));
@@ -218,17 +220,19 @@ class ACMS_GET_Category_List extends ACMS_GET
         // descendant
         $descendant = $this->categoryAxis() === 'descendant';
         $countValues = array_count_values($Map);
-        $indexValues = array();
+        $indexValues = [];
         while (count($stack)) {
             $pid = array_pop($stack);
             if (!isset($indexValues[$pid])) {
                 $indexValues[$pid] = 0;
             }
             $count = isset($countValues[$pid]) ? $countValues[$pid] : 0;
+            // @phpstan-ignore-next-line
             while (!!($cid = array_search($pid, $Map))) {
                 unset($Map[$cid]);
 
                 if (!isset($All['category_id'][$cid])) {
+                    // @phpstan-ignore-next-line
                     if (!!array_search($cid, $Map)) {
                         $stack[] = $pid;
                         $stack[] = $cid;
@@ -241,11 +245,11 @@ class ACMS_GET_Category_List extends ACMS_GET
 
                 if (isset($All['category_id'][$cid])) {
                     $domain = blogDomain($this->bid);
-                    $url    = acmsLink(array(
+                    $url    = acmsLink([
                         'bid'   => $this->bid,
                         'cid'   => $cid,
-                    ));
-                    $vars   = array(
+                    ]);
+                    $vars   = [
                         'bid'       => $this->bid,
                         'cid'       => $cid,
                         'ccd'       => $All['category_code'][$cid],
@@ -255,7 +259,7 @@ class ACMS_GET_Category_List extends ACMS_GET
                         'level'     => $depth,
                         'url'       => $url,
                         'category:loop.class' => config('category_list_loop_class'),
-                    );
+                    ];
 
                     if (config('category_list_geolocation_on') === 'on') {
                         $Geo = loadGeometry('cid', $cid, null, $this->bid);
@@ -277,24 +281,25 @@ class ACMS_GET_Category_List extends ACMS_GET
                         $vars += $this->buildField($eagerLoadingCategoryFields[$cid], $Tpl);
                     }
 
-                    $Tpl->add(array('li#front', 'category:loop'), $vars);
+                    $Tpl->add(['li#front', 'category:loop'], $vars);
 
                     //------
                     // glue
                     $indexValues[$pid]++;
                     if ($indexValues[$pid] < $count) {
-                        $Tpl->add(array('glue', 'category:loop'));
+                        $Tpl->add(['glue', 'category:loop']);
                     }
 
                     $Tpl->add('category:loop', $vars);
                 } else {
-                    $Tpl->add(array('li#front', 'category:loop'));
+                    $Tpl->add(['li#front', 'category:loop']);
                     $Tpl->add('category:loop');
                 }
 
                 if ($level >= $depth) {
+                    // @phpstan-ignore-next-line
                     if (!!array_search($cid, $Map)) {
-                        $Tpl->add(array('ul#front', 'category:loop'));
+                        $Tpl->add(['ul#front', 'category:loop']);
                         $Tpl->add('category:loop');
                         $stack[] = $pid;
                         $stack[] = $cid;
@@ -302,18 +307,18 @@ class ACMS_GET_Category_List extends ACMS_GET
                     }
                 }
 
-                $Tpl->add(array('li#rear', 'category:loop'));
+                $Tpl->add(['li#rear', 'category:loop']);
                 $Tpl->add('category:loop');
             }
 
             if (!$descendant || count($stack) !== 1) {
                 if (count($stack) > 0) {
-                    $Tpl->add(array('ul#rear:glue', 'ul#rear', 'category:loop'));
+                    $Tpl->add(['ul#rear:glue', 'ul#rear', 'category:loop']);
                 }
-                $Tpl->add(array('ul#rear', 'category:loop'));
+                $Tpl->add(['ul#rear', 'category:loop']);
                 $Tpl->add('category:loop');
                 if (!empty($stack)) {
-                    $Tpl->add(array('li#rear', 'category:loop'));
+                    $Tpl->add(['li#rear', 'category:loop']);
                     $Tpl->add('category:loop');
                 }
             }

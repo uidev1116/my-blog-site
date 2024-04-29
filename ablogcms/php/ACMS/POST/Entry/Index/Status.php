@@ -13,7 +13,7 @@ class ACMS_POST_Entry_Index_Status extends ACMS_POST
         }
         $this->Post->setMethod('checks', 'required');
         $this->Post->setMethod('status', 'required');
-        $this->Post->setMethod('status', 'in', array('open', 'close', 'draft'));
+        $this->Post->setMethod('status', 'in', ['open', 'close', 'draft']);
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {

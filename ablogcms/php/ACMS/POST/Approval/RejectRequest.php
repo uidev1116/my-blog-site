@@ -74,7 +74,7 @@ class ACMS_POST_Approval_RejectRequest extends ACMS_POST_Approval
 
             //---------------------
             // Update Notification
-            $exceptUser     = array();
+            $exceptUser     = [];
             $exceptUser[]   = SUID;
             $SQL    = SQL::newSelect('approval_notification');
             $SQL->addSelect('notification_request_user_id');

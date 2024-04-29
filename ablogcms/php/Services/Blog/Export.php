@@ -20,7 +20,7 @@ class Export extends ExportBase
 
     public function __construct()
     {
-        $this->setTables(array(
+        $this->setTables([
             'category',
             'column',
             'config',
@@ -38,20 +38,20 @@ class Export extends ExportBase
             'schedule',
             'layout_grid',
             'blog',
-        ));
+        ]);
         $dsn = dsn();
         $this->prefix = $dsn['prefix'];
     }
 
     public function export($fp, $bid)
     {
-        $queryList = array();
+        $queryList = [];
         foreach ($this->tables as $table) {
             $sql = SQL::newSelect($table);
             $sql->addWhereOpr($table . '_blog_id', $bid);
             $method = 'fixQuery' . ucfirst($table);
-            if (is_callable(array($this, $method))) {
-                $sql = call_user_func_array(array($this, $method), array($sql, $bid));
+            if (is_callable([$this, $method])) {
+                $sql = call_user_func_array([$this, $method], [$sql, $bid]);
             }
             $q = $sql->get(dsn());
             $queryList[$table] = $q;
@@ -62,7 +62,7 @@ class Export extends ExportBase
     /**
      * fix data
      *
-     * @param &array $records
+     * @param array &$record
      * @param string $table
      *
      * @return void

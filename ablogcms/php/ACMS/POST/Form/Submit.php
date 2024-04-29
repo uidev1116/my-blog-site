@@ -12,10 +12,9 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
     /**
      * Run
      *
-     * @return false|Field
-     * @throws Exception
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         // フォーム情報のロード
         $id = $this->Post->get('id');
@@ -83,7 +82,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
 
         try {
             // ログを記憶
-            if (!(isset($info['log']) && $info['log'] === '0')) {
+            if (!($info['log'] === '0')) {
                 $this->updateLog($info, $log, $admin_log, $Field);
             }
         } catch (Exception $e) {
@@ -101,7 +100,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param int $fmid
      * @param Field & $Field
      */
-    function updateCount($fmid, &$Field)
+    protected function updateCount($fmid, &$Field)
     {
         if (!!$fmid) {
             $DB = DB::singleton(dsn());
@@ -124,12 +123,12 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param Field $Config
      * @return Field & $Mail
      */
-    function & mergeMainConfig($Config)
+    protected function & mergeMainConfig($Config)
     {
-        $this->Post->set('acms_field_mail', array(
+        $this->Post->set('acms_field_mail', [
             'To', 'SubjectTpl', 'BodyTpl', 'BodyHTMLTpl', 'Charset', 'CharsetHTML', 'Obfuscation', 'Sender', 'From', 'Reply-To', 'Cc', 'Bcc',
             'AdminTo', 'AdminSubjectTpl', 'AdminBodyTpl', 'AdminFrom', 'AdminReply-To', 'AdminCc', 'AdminBcc',
-        ));
+        ]);
         $Mail = $this->extract('acms_field_mail');
         foreach ($Mail->listFields() as $fd) {
             if ($Config->get('template' . $fd) === 'forbidden') {
@@ -137,7 +136,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             }
         }
         if ($Config->get('InvalidMultipleAddress') === '1') {
-            foreach (array('To', 'From', 'Reply-To', 'Cc', 'Bcc', 'AdminTo', 'AdminFrom', 'AdminReply-To', 'AdminCc', 'AdminBcc') as $field) {
+            foreach (['To', 'From', 'Reply-To', 'Cc', 'Bcc', 'AdminTo', 'AdminFrom', 'AdminReply-To', 'AdminCc', 'AdminBcc'] as $field) {
                 $txt = $Mail->get($field);
                 $emails = preg_split('/,/', $txt);
                 if (is_array($emails) && count($emails) > 1) {
@@ -148,10 +147,10 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
         $Mail->overload($Config);
 
         if (!!$Mail->get('Obfuscation')) {
-            foreach (array('To', 'Sender', 'From', 'Reply-To', 'Cc', 'Bcc', 'AdminTo', 'AdminFrom', 'AdminReply-To', 'AdminCc', 'AdminBcc') as $field) {
-                $values = array();
+            foreach (['To', 'Sender', 'From', 'Reply-To', 'Cc', 'Bcc', 'AdminTo', 'AdminFrom', 'AdminReply-To', 'AdminCc', 'AdminBcc'] as $field) {
+                $values = [];
                 foreach ($Mail->getArray($field) as $value) {
-                    $values[] = base64_decode($value);
+                    $values[] = base64_decode($value); // @phpstan-ignore-line
                 }
                 $Mail->set($field, $values);
             }
@@ -187,7 +186,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             return $info;
         }
 
-        $info = array_merge($info, array(
+        $info = array_merge($info, [
             'from' => $Mail->get('From'),
             'to' => $to,
             'subject' => $subject,
@@ -195,7 +194,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             'bcc' => $Mail->getArray('Bcc'),
             'reply-to' => $Mail->getArray('Reply-To'),
             'body' => $body,
-        ));
+        ]);
 
         $mailer = Mailer::init();
 
@@ -237,7 +236,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
     {
         $to = $Mail->getArray('AdminTo');
         $htmlBodyConfigPath = $Mail->get('AdminBodyHTMLTpl');
-        $attached_files = array();
+        $attached_files = [];
         $subject = $this->getSubjectTemplate($Mail, $Field, 'AdminSubject', 'AdminSubjectTpl');
         $body = $this->getBodyTemplate($Mail, $Field, 'AdminBody', 'AdminBodyTpl');
         $info = $this->getBaseMailInfo($Mail);
@@ -246,7 +245,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             return $info;
         }
 
-        $info = array_merge($info, array(
+        $info = array_merge($info, [
             'from' => $Mail->get('AdminFrom'),
             'to' => $to,
             'subject' => $subject,
@@ -255,7 +254,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
             'reply-to' => $Mail->getArray('AdminReply-To'),
             'body' => $body,
             'attached_file' => false,
-        ));
+        ]);
         $mailer = Mailer::init();
 
         // 基本設定を追加
@@ -304,31 +303,31 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      * @param Field $Mail
      * @return array
      */
-    function getBaseMailInfo($Mail)
+    protected function getBaseMailInfo($Mail)
     {
-        return array(
+        return [
             'sender' => $Mail->get('Sender'),
             'charset' => 'UTF-8',
             'charset-html' => 'UTF-8',
             'from' => '',
-            'to' => array(),
+            'to' => [],
             'subject' => '',
-            'cc' => array(),
-            'bcc' => array(),
-            'reply-to' => array(),
+            'cc' => [],
+            'bcc' => [],
+            'reply-to' => [],
             'body' => '',
             'body-html' => '',
             'attached_file' => false,
-        );
+        ];
     }
 
     /**
      * 基本のメールパラメータを追加
      *
-     * @param Acms\Services\Mailer\Engine & $FromMail
+     * @param \Acms\Services\Mailer\Engine &$FormMail
      * @param array $info
      */
-    function addBaseMailParam(Acms\Services\Mailer\Engine &$FormMail, $info)
+    protected function addBaseMailParam(\Acms\Services\Mailer\Engine &$FormMail, $info)
     {
         $FormMail->setFrom($info['from'])
             ->setTo(implode(', ', $info['to']))
@@ -348,7 +347,7 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
      *
      * @return void
      */
-    function updateLog($info, $log, $admin_log, $Field)
+    protected function updateLog($info, $log, $admin_log, $Field)
     {
         if (empty($info)) {
             return;
@@ -379,9 +378,9 @@ class ACMS_POST_Form_Submit extends ACMS_POST_Form
 
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('formSubmit', array($log, $admin_log));
+            $Hook->call('formSubmit', [$log, $admin_log]);
 
-            Webhook::call(BID, 'form', 'form:sent', array($log, $admin_log, $Field->_aryField));
+            Webhook::call(BID, 'form', 'form:sent', [$log, $admin_log, $Field->_aryField]);
         }
     }
 

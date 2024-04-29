@@ -17,7 +17,7 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return bool|Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -61,6 +61,6 @@ class ACMS_POST_Comment_Update extends ACMS_POST_Comment
             return $this->Post;
         }
 
-        return true;
+        return $this->Post;
     }
 }

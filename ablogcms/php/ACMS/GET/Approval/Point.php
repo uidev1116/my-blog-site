@@ -2,21 +2,21 @@
 
 class ACMS_GET_Approval_Point extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!enableApproval()) {
-            return false;
+            return '';
         }
         if (!editionIsEnterprise()) {
-            return false;
+            return '';
         }
         if (!RVID) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
-        $vars   = array();
+        $vars   = [];
         $workflow = loadWorkflow(BID, CID);
         if ($workflow->isNull()) {
             return '';

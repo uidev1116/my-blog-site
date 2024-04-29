@@ -12,15 +12,15 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
         return Approval::buildSql();
     }
 
-    function get()
+    public function get()
     {
         if (!editionWithProfessional()) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
-        $vars   = array();
+        $vars   = [];
 
         $SQL    = $this->buildSql();
 
@@ -31,9 +31,9 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
 
         $empty = true;
         foreach ($all as $row) {
-            $exceptUsers    = explode(',', $row['notification_except_user_ids']);
+            $exceptUsers = explode(',', $row['notification_except_user_ids']);
             if (
-                in_array(strval(SUID), $exceptUsers)
+                in_array(strval(SUID), $exceptUsers, true)
             ) {
                 continue;
             }
@@ -60,12 +60,12 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             //--------------
             // 操作ユーザ情報
             $reqUserField   = loadUser($row['approval_request_user_id']);
-            $reqUser        = $this->buildField($reqUserField, $Tpl, array('requestUser', 'approval:loop'));
-            $Tpl->add(array('requestUser', 'approval:loop'), $reqUser);
+            $reqUser        = $this->buildField($reqUserField, $Tpl, ['requestUser', 'approval:loop']);
+            $Tpl->add(['requestUser', 'approval:loop'], $reqUser);
 
             //------------------
             // 担当者 承認依頼のみ
-            $receive = array();
+            $receive = [];
             if ($row['approval_type'] === 'request') {
                 if (!!$row['approval_receive_user_id']) {
                     $receive['userOrGroup'] = ACMS_RAM::userName($row['approval_receive_user_id']);
@@ -76,7 +76,7 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
                     $groupName = $DB->query($SQL->get(dsn()), 'one');
                     $receive['userOrGroup'] = $groupName;
                 }
-                $Tpl->add(array('receiveUser', 'approval:loop'), $receive);
+                $Tpl->add(['receiveUser', 'approval:loop'], $receive);
             }
 
             //---------
@@ -98,7 +98,7 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
                 }
             }
 
-            $approval   = $this->buildField($approvalField, $Tpl, array('approval:loop'));
+            $approval   = $this->buildField($approvalField, $Tpl, ['approval:loop']);
             $approval   += $receive;
             $approval['rev_id']         = $row['notification_rev_id'];
             $approval['entry_id']       = $row['notification_entry_id'];
@@ -106,14 +106,14 @@ class ACMS_GET_Approval_Notification extends ACMS_GET
             $approval['approval_id']    = $row['notification_approval_id'];
             $approval['datetime']       = $row['notification_datetime'];
 
-            $approval['url'] = acmsLink(array(
+            $approval['url'] = acmsLink([
                 'bid'           => $row['approval_blog_id'],
                 'eid'           => $row['notification_entry_id'],
                 'tpl'           => 'ajax/revision-preview.html',
-                'query'         => array(
+                'query'         => [
                     'rvid'  => $row['notification_rev_id'],
-                ),
-            ), false, false, true);
+                ],
+            ], false, false, true);
 
             $Tpl->add('approval:loop', $approval);
             $empty = false;

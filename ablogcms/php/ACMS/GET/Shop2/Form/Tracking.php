@@ -21,27 +21,27 @@ class ACMS_GET_Shop2_Form_Tracking extends ACMS_GET_Shop2
                 $sku    = !empty($item[$this->item_sku])    ? $item[$this->item_sku]    : 0;
                 $cate   = !empty($item[$this->item_category]) ? $item[$this->item_category] : 'unknown';
 
-                $vars = array(
-                            'code'      => $SESSION->get('code'),
-                            'price'     => $price,
-                            'quantity'  => $qty,
-                            'name'      => $name,
-                            'stock'     => $sku,
-                            'category'  => $cate,
-                            );
+                $vars = [
+                    'code'      => $SESSION->get('code'),
+                    'price'     => $price,
+                    'quantity'  => $qty,
+                    'name'      => $name,
+                    'stock'     => $sku,
+                    'category'  => $cate,
+                ];
                 $Tpl->add('item:loop', $vars);
             }
 
-            $vars = array(
-                        'code'      => $SESSION->get('code'),
-                        'payment'   => $SESSION->get('payment', 'unknown'),
-                        'total'     => $SESSION->get('total', 0),
-                        'tax'       => $SESSION->get('tax-only', 0),
-                        'shipping'  => $SESSION->get('charge#deliver', 0),
-                        'city'      => $ADDRESS->get('city', 'unknown'),
-                        'prefecture' => $ADDRESS->get('prefecture', 'unknown'),
-                        'country'   => $ADDRESS->get('country', 'Japan'),
-                        );
+            $vars = [
+                'code'      => $SESSION->get('code'),
+                'payment'   => $SESSION->get('payment', 'unknown'),
+                'total'     => $SESSION->get('total', 0),
+                'tax'       => $SESSION->get('tax-only', 0),
+                'shipping'  => $SESSION->get('charge#deliver', 0),
+                'city'      => $ADDRESS->get('city', 'unknown'),
+                'prefecture' => $ADDRESS->get('prefecture', 'unknown'),
+                'country'   => $ADDRESS->get('country', 'Japan'),
+            ];
 
             $Tpl->add(null, $vars);
 

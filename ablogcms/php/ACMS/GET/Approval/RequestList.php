@@ -2,15 +2,15 @@
 
 class ACMS_GET_Approval_RequestList extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!enableApproval()) {
-            return false;
+            return '';
         }
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
-        $vars   = array();
+        $vars   = [];
         $limit  = 20;
 
         $SQL    = SQL::newSelect('approval');
@@ -33,8 +33,8 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -57,9 +57,9 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                 //--------------
                 // 操作ユーザ情報
                 $reqUserField   = loadUser($row2['approval_request_user_id']);
-                $reqUser        = $this->buildField($reqUserField, $Tpl, array('requestUser', 'approval:loop'));
+                $reqUser        = $this->buildField($reqUserField, $Tpl, ['requestUser', 'approval:loop']);
 
-                $Tpl->add(array('requestUser', 'history:loop', 'approval:loop'), $reqUser);
+                $Tpl->add(['requestUser', 'history:loop', 'approval:loop'], $reqUser);
 
                 //------------------
                 // 担当者 承認依頼のみ
@@ -75,7 +75,7 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                         $receive['userOrGroupp'] = $groupName;
                     }
                     if ($receive) {
-                        $Tpl->add(array('receiveUser', 'history:loop', 'approval:loop'), $receive);
+                        $Tpl->add(['receiveUser', 'history:loop', 'approval:loop'], $receive);
                     }
                 }
 
@@ -97,9 +97,9 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                         $approvalField->set('type', 'trash');
                     }
                 }
-                $approval  = $this->buildField($approvalField, $Tpl, array('history:loop', 'approval:loop'));
+                $approval  = $this->buildField($approvalField, $Tpl, ['history:loop', 'approval:loop']);
 
-                $Tpl->add(array('history:loop', 'approval:loop'), $approval);
+                $Tpl->add(['history:loop', 'approval:loop'], $approval);
             }
 
             //-------------
@@ -119,14 +119,14 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
                 $loop['version'] = $rev['entry_rev_memo'];
                 $loop['rvid'] = $row['approval_revision_id'];
                 $loop['eid'] = $row['approval_entry_id'];
-                $loop['url'] = acmsLink(array(
+                $loop['url'] = acmsLink([
                     'bid' => $row['approval_blog_id'],
                     'eid' => $row['approval_entry_id'],
                     'tpl' => 'ajax/revision-preview.html',
-                    'query' => array(
+                    'query' => [
                         'rvid' => $row['approval_revision_id'],
-                    ),
-                ), false, false, true);
+                    ],
+                ], false, false, true);
             }
             $Tpl->add('approval:loop', $loop);
         }

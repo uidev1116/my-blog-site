@@ -167,17 +167,17 @@ class General implements Contracts\Guard
 
         switch ($Config->get('snslogin_auth')) {
             case 'subscriber':
-                if (in_array($auth, array('contributor', 'editor', 'administrator'), true)) {
+                if (in_array($auth, ['contributor', 'editor', 'administrator'], true)) {
                     return false;
                 }
                 break;
             case 'contributor':
-                if (in_array($auth, array('editor', 'administrator'), true)) {
+                if (in_array($auth, ['editor', 'administrator'], true)) {
                     return false;
                 }
                 break;
             case 'editor':
-                if (in_array($auth, array('administrator'), true)) {
+                if (in_array($auth, ['administrator'], true)) {
                     return false;
                 }
                 break;
@@ -190,7 +190,7 @@ class General implements Contracts\Guard
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function checkShortcut(array $ids): bool
     {
@@ -236,7 +236,7 @@ class General implements Contracts\Guard
     public function getAuthorizedBlog($uid)
     {
         if (ACMS_RAM::userGlobalAuth($uid) !== 'on') {
-            return array(SBID);
+            return [SBID];
         }
         $SQL = SQL::newSelect('blog');
         $SQL->setSelect('blog_id');
@@ -248,7 +248,7 @@ class General implements Contracts\Guard
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function roleAuthorization($action, $bid = BID, $eid = 0, $uid = SUID)
     {

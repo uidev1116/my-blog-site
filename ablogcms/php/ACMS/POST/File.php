@@ -76,12 +76,12 @@ class ACMS_POST_File extends ACMS_POST
         $this->delete       = null;
         $this->old          = is_string($old) ? ltrim($old, './') : $old;
         $this->edit         = $edit;
-        $this->pathArray    = array();
+        $this->pathArray    = [];
         $this->num          = $n;
 
         //----------------
         // build and save
-        $fileArray = array();
+        $fileArray = [];
 
         foreach ($this->buildFileData($FILES, $name) as $fileData) {
             if (empty($fileData)) {
@@ -97,7 +97,7 @@ class ACMS_POST_File extends ACMS_POST
 
     private function buildFileData($FILES, $name)
     {
-        $files = array();
+        $files = [];
 
         if ('delete' === $this->edit) {
             $this->delete      = $this->ARCHIVES_DIR . $this->old;
@@ -110,10 +110,10 @@ class ACMS_POST_File extends ACMS_POST
             ) {
                 for ($m = 0; $m < count($FILES); $m++) {
                     if ((is_uploaded_file($FILES[$m])) and preg_match('@^([^/]+)\.([^./]+)$@', $name[$m])) {
-                        $files[]    = array(
+                        $files[]    = [
                             'tmp_name'  => $FILES[$m],
                             'name'      => $name[$m],
-                        );
+                        ];
                     }
                 }
             } elseif (
@@ -121,10 +121,10 @@ class ACMS_POST_File extends ACMS_POST
                 && isset($FILES)
                 && ($this->directAdd || is_uploaded_file($FILES)) and preg_match('@^([^/]+)\.([^./]+)$@', $name)
             ) {
-                $files[]  = array(
+                $files[]  = [
                     'tmp_name'  => $FILES,
                     'name'      => $name,
-                );
+                ];
             }
 
             if (empty($files)) {
@@ -134,7 +134,7 @@ class ACMS_POST_File extends ACMS_POST
         return $files;
     }
 
-    private function editAndSaveFiles($files = array())
+    private function editAndSaveFiles($files = [])
     {
         foreach ($files as $value) {
             $ufile  = $value['tmp_name'];
@@ -153,7 +153,7 @@ class ACMS_POST_File extends ACMS_POST
                         configArray('file_extension_archive'),
                         configArray('file_extension_movie'),
                         configArray('file_extension_audio')
-                    ))
+                    ), true)
                 ) {
                     $dir    = Storage::archivesDir();
                     Storage::makeDirectory($this->ARCHIVES_DIR . $dir);

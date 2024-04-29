@@ -28,7 +28,7 @@ class ACMS_GET_Admin_App_Menu extends ACMS_GET_Admin_App_Index
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function build($Tpl, $lists)
     {
@@ -63,11 +63,11 @@ class ACMS_GET_Admin_App_Menu extends ACMS_GET_Admin_App_Index
                 continue;
             }
 
-            $vars = array(
+            $vars = [
                 'name'      => $app->name,
-                'url'       => acmsLink(array('admin' => 'app_' . $app->menu, 'bid' => BID)),
+                'url'       => acmsLink(['admin' => 'app_' . $app->menu, 'bid' => BID]),
                 'className' => $className,
-            );
+            ];
             $reg = '/^app_' . $app->menu . '/';
             if (preg_match($reg, ADMIN)) {
                 $vars['stay'] = ' class="stay"';

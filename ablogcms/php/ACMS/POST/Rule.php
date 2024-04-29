@@ -4,8 +4,8 @@ class ACMS_POST_Rule extends ACMS_POST
 {
     protected function fix(&$Rule)
     {
-        foreach (array('u', 'c', 'e') as $mode) {
-            foreach (array('id', 'cd') as $type) {
+        foreach (['u', 'c', 'e'] as $mode) {
+            foreach (['id', 'cd'] as $type) {
                 switch (strval($Rule->get($mode . $type . '_case'))) {
                     case '':
                     case 'IS NULL':

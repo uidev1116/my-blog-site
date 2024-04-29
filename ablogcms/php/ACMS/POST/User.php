@@ -2,7 +2,7 @@
 
 class ACMS_POST_User extends ACMS_POST
 {
-    function isLimit($update = false)
+    protected function isLimit($update = false)
     {
         if (!IS_LICENSED) {
             return false;
@@ -12,12 +12,16 @@ class ACMS_POST_User extends ACMS_POST
         return $update ? (LICENSE_BLOG_LIMIT >= $amount) : (LICENSE_BLOG_LIMIT > $amount);
     }
 
-    function countOfLimitedAuthUsers()
+    /**
+     * 現在の制限数対象のユーザー数を取得する
+     * @return int
+     */
+    protected function countOfLimitedAuthUsers()
     {
         $DB     = DB::singleton(dsn());
         $SQL    = SQL::newSelect('user');
         $SQL->setSelect('user_id', 'user_amount', null, 'count');
-        $SQL->addWhereIn('user_auth', array('administrator', 'editor', 'contributor'));
+        $SQL->addWhereIn('user_auth', ['administrator', 'editor', 'contributor']);
         return  intval($DB->query($SQL->get(dsn()), 'one'));
     }
 }

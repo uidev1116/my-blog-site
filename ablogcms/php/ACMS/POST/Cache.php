@@ -24,15 +24,15 @@ class ACMS_POST_Cache extends ACMS_POST
     /**
      * ページキャッシュを設定に従いクリア
      *
-     * @param int $eid
+     * @param int $blogId
      */
-    public static function clearPageCache($bid = BID)
+    public static function clearPageCache($blogId = BID)
     {
         $targetBlog = config('cache_clear_target', 'self');
         $pageCache = Cache::page();
 
         if ($targetBlog === 'self') {
-            $tagBid = 'bid-' . $bid;
+            $tagBid = 'bid-' . $blogId;
             $pageCache->invalidateTags([$tagBid]);
         } elseif ($targetBlog === 'all') {
             $pageCache->flush();
@@ -40,15 +40,15 @@ class ACMS_POST_Cache extends ACMS_POST
             $sql = SQL::newSelect('blog');
             $sql->setSelect('blog_id');
             if ($targetBlog === 'self-descendant') {
-                ACMS_Filter::blogTree($sql, $bid, 'descendant-or-self');
+                ACMS_Filter::blogTree($sql, $blogId, 'descendant-or-self');
             }
             if ($targetBlog === 'self-ancestor') {
-                ACMS_Filter::blogTree($sql, $bid, 'ancestor-or-self');
+                ACMS_Filter::blogTree($sql, $blogId, 'ancestor-or-self');
             }
             $targetBlogIDs = DB::query($sql->get(dsn()), 'list');
             $tags = [];
-            foreach ($targetBlogIDs as $bid) {
-                $tags[] = 'bid-' . $bid;
+            foreach ($targetBlogIDs as $targetBlogId) {
+                $tags[] = 'bid-' . $targetBlogId;
             }
             $pageCache->invalidateTags($tags);
         }

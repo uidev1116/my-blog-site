@@ -336,7 +336,7 @@ class CheckForUpdate
      *
      * @param object $packages
      * @param string $php_version
-     * @return bool|object
+     * @return false|object
      */
     protected function checkPhpVersion($packages, $php_version)
     {
@@ -358,7 +358,7 @@ class CheckForUpdate
      * a-blog cmsのバージョンチェック
      *
      * @param 1|2|3 $type
-     * @return bool|object
+     * @return false|object
      */
     protected function checkAcmsVersion($type = self::PATCH_VERSION)
     {
@@ -376,7 +376,7 @@ class CheckForUpdate
         }
         foreach ($this->data->versions as $item) {
             $version = $item->version;
-            if (call_user_func(array($this, $method), $version, $current)) {
+            if (call_user_func([$this, $method], $version, $current)) {
                 return $item;
             }
         }
@@ -386,7 +386,7 @@ class CheckForUpdate
     /**
      * a-blog cmsのダウングレードバージョンチェック
      *
-     * @return bool|object
+     * @return false|object
      */
     protected function checkAcmsDownGradeVersion()
     {
@@ -407,13 +407,13 @@ class CheckForUpdate
     protected function createReleaseNote($updateCmsVersion)
     {
         if (!property_exists($this->data, 'releaseNote')) {
-            return array();
+            return [];
         }
         $allNote = $this->data->releaseNote;
         if (empty($allNote)) {
-            return array();
+            return [];
         }
-        $partOfNote = array();
+        $partOfNote = [];
         foreach ($allNote as $note) {
             if (
                 1

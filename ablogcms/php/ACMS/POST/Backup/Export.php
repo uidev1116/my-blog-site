@@ -30,9 +30,9 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
     protected $hashFilePath;
 
     /**
-     * @return bool|Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         ignore_user_abort(true);
         set_time_limit(0);
@@ -108,14 +108,15 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
     protected function dumpSql($logger)
     {
         $logger->addMessage('データベースのバックアップを開始...', 5);
-        $except_table = array(
-            '/cache/',
-            '/log_access/',
-            '/session/',
+        $except_table = [
+            '/cache_data/',
+            '/cache_tag/',
+            '/user_session/',
+            '/session_php/',
             '/lock/',
             '/lock_source/',
-            '/logger/',
-        );
+            '/audit_log/',
+        ];
 
         try {
             $this->replication->authorityValidation();
@@ -133,7 +134,7 @@ class ACMS_POST_Backup_Export extends ACMS_POST_Backup_Base
             fwrite($tmp_fp, $this->convertStr($sql_str));
 
             $tables = $this->replication->getTableList();
-            $filteredTables = array();
+            $filteredTables = [];
             foreach ($tables as $table) {
                 if (!preg_match('/^' . DB_PREFIX . '.*/', $table)) {
                     continue;

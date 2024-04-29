@@ -34,7 +34,7 @@ class DatabaseInfo
         $q = "SHOW TABLES FROM `" . $this->dsn['name'] . "` LIKE '" . $this->dsn['prefix'] . "%'";
         $DB->query($q, 'fetch');
 
-        $tables = array();
+        $tables = [];
         while ($tb = $DB->fetch($q)) {
             $tables[] = implode($tb);
         }
@@ -53,7 +53,7 @@ class DatabaseInfo
         $q = "SHOW COLUMNS FROM `{$table}`";
         $DB->query($q, 'fetch');
 
-        $columns = array();
+        $columns = [];
         while ($fd = $DB->fetch($q)) {
             $columns[$fd['Field']] = $fd;
         }
@@ -72,7 +72,7 @@ class DatabaseInfo
         $q = "SHOW INDEX FROM `{$table}`";
         $DB->query($q, 'fetch');
 
-        $index = array();
+        $index = [];
         while ($fd = $DB->fetch($q)) {
             $index[] = $fd['Key_name'];
         }
@@ -148,7 +148,7 @@ class DatabaseInfo
         $q = "SHOW INDEX FROM `$table`";
         $DB->query($q, 'fetch');
 
-        $fds = array();
+        $fds = [];
         while ($fd = $DB->fetch($q)) {
             $fds[] = $fd;
         }
@@ -224,7 +224,7 @@ class DatabaseInfo
      *
      * @throws \RuntimeException
      */
-    public function createTables($tables, $idx = null, $define = array())
+    public function createTables($tables, $idx = null, $define = [])
     {
         foreach ($tables as $tb) {
             $def = $define[$tb];

@@ -44,7 +44,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
 
         //---------
         // module
-        $this->Post->set('module', array(
+        $this->Post->set('module', [
             'name', 'status', 'identifier', 'label', 'description', 'cache', 'scope', 'custom_field', 'layout_use', 'api_use',
             'bid', 'uid', 'cid', 'eid', 'keyword', 'tag', 'field_',
             'start_date', 'start_time', 'end_date', 'end_time',
@@ -52,7 +52,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             'uid_scope', 'cid_scope', 'eid_scope', 'keyword_scope', 'tag_scope', 'field_scope',
             'start_scope', 'end_scope', 'page_scope', 'order_scope',
             'bid_axis', 'cid_axis',
-        ));
+        ]);
         $Module = $this->extract('module');
 
         $Module->setMethod('name', 'required');
@@ -106,7 +106,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             $SQL->addUpdate('module_eid', $Module->get('eid'));
             $SQL->addUpdate('module_keyword', $Module->get('keyword'));
             $SQL->addUpdate('module_tag', $Module->get('tag'));
-            $SQL->addupdate('module_field', $Module->get('field_'));
+            $SQL->addUpdate('module_field', $Module->get('field_'));
             $SQL->addUpdate('module_start', $start);
             $SQL->addUpdate('module_end', $end);
             $SQL->addUpdate('module_page', $Module->get('page'));
@@ -116,7 +116,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
             $SQL->addUpdate('module_eid_scope', $Module->get('eid_scope'));
             $SQL->addUpdate('module_keyword_scope', $Module->get('keyword_scope'));
             $SQL->addUpdate('module_tag_scope', $Module->get('tag_scope'));
-            $SQL->addupdate('module_field_scope', $Module->get('field_scope'));
+            $SQL->addUpdate('module_field_scope', $Module->get('field_scope'));
             $SQL->addUpdate('module_start_scope', $Module->get('start_scope'));
             $SQL->addUpdate('module_end_scope', $Module->get('end_scope'));
             $SQL->addUpdate('module_page_scope', $Module->get('page_scope'));

@@ -24,10 +24,10 @@ class ACMS_GET_Admin_Rule_List extends ACMS_GET
         do {
             $id     = intval($row['rule_id']);
             $name   = $row['rule_name'];
-            $vars   = array(
+            $vars   = [
                 'id'    => $id,
                 'name'  => $name,
-            );
+            ];
             if ($rid === $id) {
                 $vars['selected'] = config('attr_selected');
             }

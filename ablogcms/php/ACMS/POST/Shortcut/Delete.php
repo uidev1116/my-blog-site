@@ -22,9 +22,7 @@ class ACMS_POST_Shortcut_Delete extends ACMS_POST
 
     public function post()
     {
-        /** @var Repository $ShortcutRepository */
         $this->ShortcutRepository = Application::make('shortcut.repository');
-        /** @var Helper $ShortcutService */
         $this->ShortcutService = Application::make('shortcut.helper');
 
         $shortcut = $this->extract('shortcut');

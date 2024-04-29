@@ -17,9 +17,9 @@ class Engine
     protected $responseBody;
 
     /**
-     * @var \CurlHandle
+     * @var resource|\CurlHandle
      */
-    protected $curl;
+    protected $curl; // @phpstan-ignore-line
 
     /**
      * Constructor
@@ -47,7 +47,7 @@ class Engine
         }
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true); // Locationを辿る
         curl_setopt($this->curl, CURLOPT_MAXREDIRS, 10);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Expect:'));
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Expect:']);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, MAX_EXECUTION_TIME);
 
         $this->setCurlOption();
@@ -60,7 +60,7 @@ class Engine
      *
      * @param array $headers
      */
-    public function setRequestHeaders($headers = array())
+    public function setRequestHeaders($headers = [])
     {
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
     }
@@ -72,7 +72,7 @@ class Engine
      *
      * @return self
      */
-    public function setPostData($data = array())
+    public function setPostData($data = [])
     {
         curl_setopt($this->curl, CURLOPT_POST, true);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
@@ -121,7 +121,7 @@ class Engine
         if (isset($this->responseHeaders[$name])) {
             return $this->responseHeaders[$name];
         }
-        return false;
+        return '';
     }
 
     /**
@@ -143,7 +143,7 @@ class Engine
      */
     protected function getHeadersFromCurlResponse($header_string)
     {
-        $headers = array();
+        $headers = [];
 
         foreach (preg_split("/(\r|\n|\r\n)/", $header_string) as $i => $line) {
             if ($i === 0) {

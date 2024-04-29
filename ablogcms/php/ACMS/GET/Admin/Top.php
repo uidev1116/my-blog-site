@@ -4,10 +4,10 @@ use Acms\Services\Update\System\CheckForUpdate;
 
 class ACMS_GET_Admin_Top extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
-        if ('top' <> ADMIN) {
-            return false;
+        if ('top' !== ADMIN) {
+            return '';
         }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $checkUpdateService = App::make('update.check');

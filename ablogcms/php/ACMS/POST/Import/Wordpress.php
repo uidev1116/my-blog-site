@@ -4,10 +4,7 @@ use Acms\Services\Facades\Storage;
 
 class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
 {
-    protected $importCid;
-    protected $csvLabels;
-
-    function init()
+    public function init()
     {
         @set_time_limit(-1);
         $this->importType = 'WordPress';
@@ -20,16 +17,16 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
         }
     }
 
-    function import()
+    public function import()
     {
-        $this->httpFile->validateFormat(array('text/xml', 'application/xml'));
+        $this->httpFile->validateFormat(['text/xml', 'application/xml']);
         $path = $this->httpFile->getPath();
-        $data = Storage::get($path);
+        $data = Storage::get($path, dirname($path));
         $data = Storage::removeIllegalCharacters($data); // 不正な文字コードを削除
         $this->validateXml($data);
 
         $xml = new XMLReader();
-        $xml->xml($data);
+        $xml->XML($data); // @phpstan-ignore-line
 
         while ($xml->read()) {
             if ($xml->name === 'item' and intval($xml->nodeType) === XMLReader::ELEMENT) {
@@ -43,17 +40,17 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
                     continue; // 投稿タイプが「投稿」「固定ページ」でなかった場合はスキップ
                 }
 
-                $tags = array();
-                $fields = array();
+                $tags = [];
+                $fields = [];
                 $status = $this->convertStatus($status);
 
                 // 本文からサムネイル画像のパスを抜き出し
                 if (preg_match('/<\s*img(?:"[^"]*"|\'[^\']*\'|[^\'">])*\s+src\s*=\s*("[^"]+"|\'[^\']+\'|[^\'"\s>]+)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>/ui', $content, $matches)) {
                     if (isset($matches[1])) {
-                        $fields[] = array(
+                        $fields[] = [
                             'key' => 'wp_thumbnail_url',
                             'value' => trim($matches[1], '"\''),
-                        );
+                        ];
                     }
                 }
 
@@ -70,14 +67,14 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
                         if (empty($status)) {
                             $status = 'close';
                         }
-                        $entry = array(
+                        $entry = [
                             'title'     => $title,
                             'content'   => $this->buildMoreContent($content),
                             'date'      => $date,
                             'status'    => $status,
                             'tags'      => $tags,
                             'fields'    => $fields,
-                        );
+                        ];
                         $this->insertEntry($entry);
                         break;
                     }
@@ -91,16 +88,16 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
                         $key    = $this->getNodeValue($xml, 'wp:meta_key');
                         $value  = $this->getNodeValue($xml, 'wp:meta_value');
                         if (!preg_match('/^_.*/', $key)) {
-                            $fields[] = array(
+                            $fields[] = [
                                 'key' => $key,
                                 'value' => $value,
-                            );
+                            ];
                         } elseif ($key === '_thumbnail_id') {
                             // アイキャッチの画像IDを保存
-                            $fields[] = array(
+                            $fields[] = [
                                 'key' => 'wp_thumbnail_id',
                                 'value' => $value,
-                            );
+                            ];
                         }
                     }
                 }
@@ -109,7 +106,7 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
         $xml->close();
     }
 
-    function convertStatus($status)
+    protected function convertStatus($status)
     {
         switch ($status) {
             case 'publish':
@@ -124,7 +121,7 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
         return $status;
     }
 
-    function getNodeValue(&$xml, $node)
+    protected function getNodeValue(&$xml, $node)
     {
         $nodeValue = '';
         while ($xml->read()) {
@@ -140,15 +137,15 @@ class ACMS_POST_Import_Wordpress extends ACMS_POST_Import
         return $nodeValue;
     }
 
-    function buildMoreContent($content)
+    protected function buildMoreContent($content)
     {
         return explode('<!--more-->', $content, 2);
     }
 
-    function validateXml($data)
+    protected function validateXml($data)
     {
         $reader = new XMLReader();
-        $reader->xml($data);
+        $reader->XML($data);
         $reader->setParserProperty(XMLReader::VALIDATE, true);
         if (!$reader->isValid()) {
             $reader->close();

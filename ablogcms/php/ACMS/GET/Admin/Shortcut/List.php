@@ -21,9 +21,7 @@ class ACMS_GET_Admin_Shortcut_List extends ACMS_GET_Admin
 
     public function get()
     {
-        /** @var Repository $ShortcutRepository */
         $this->ShortcutRepository = Application::make('shortcut.repository');
-        /** @var Helper $ShortcutService */
         $this->ShortcutService = Application::make('shortcut.helper');
 
         if (!sessionWithContribution()) {

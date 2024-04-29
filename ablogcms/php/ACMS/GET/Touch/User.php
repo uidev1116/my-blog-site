@@ -2,8 +2,8 @@
 
 class ACMS_GET_Touch_User extends ACMS_GET
 {
-    function get()
+    public function get()
     {
-        return UID ? $this->tpl : false;
+        return UID ? $this->tpl : '';
     }
 }

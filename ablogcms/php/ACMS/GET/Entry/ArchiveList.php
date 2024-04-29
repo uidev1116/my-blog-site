@@ -3,7 +3,7 @@
 class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
 {
     /**
-     *  @var string
+     *  @var int
      */
     protected $limit;
 
@@ -13,12 +13,12 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
     protected $chunk;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public $_axis = array( // phpcs:ignore
+    public $_axis = [ // phpcs:ignore
         'bid'   => 'self',
         'cid'   => 'self',
-    );
+    ];
 
     public function initVars()
     {
@@ -72,7 +72,7 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
         ACMS_Filter::blogStatus($SQL);
 
         $SQL->addSelect('entry_datetime');
-        $SQL->addSelect(SQL::newFunction('entry_datetime', array('SUBSTR', 0, $substr)), 'entry_date');
+        $SQL->addSelect(SQL::newFunction('entry_datetime', ['SUBSTR', 0, $substr]), 'entry_date');
         $SQL->addSelect('entry_id', 'entry_amount', null, 'count');
         $SQL->addGroup('entry_date');
         $SQL->addOrder('entry_date', $this->order);
@@ -124,14 +124,15 @@ class ACMS_GET_Entry_ArchiveList extends ACMS_GET_Entry
                     break;
             }
 
-            $vars = array(
-                        'amount'    => $row['entry_amount'],
-                        'chunkDate' => $row['entry_date'],
-                        'url'       => acmsLink(array(
-                                        'bid'   => $this->bid,
-                                        'cid'   => $this->cid,
-                                        'date'  => array($y, $m, $d))),
-                        );
+            $vars = [
+                'amount'    => $row['entry_amount'],
+                'chunkDate' => $row['entry_date'],
+                'url'       => acmsLink([
+                    'bid'   => $this->bid,
+                    'cid'   => $this->cid,
+                    'date'  => [$y, $m, $d]
+                ]),
+            ];
 
             $vars += $this->buildDate(date('Y-m-d H:i:s', strtotime($row['entry_date'])), $Tpl, 'archive:loop');
 

@@ -2,9 +2,9 @@
 
 class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
 {
-    public $_scope = array(
+    public $_scope = [
         'page' => 'global',
-    );
+    ];
 
     /**
      * Main

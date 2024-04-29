@@ -2,12 +2,12 @@
 
 class ACMS_GET_Entry_Continue extends ACMS_GET_Entry
 {
-    public $_axis = array(
+    public $_axis = [
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -18,7 +18,7 @@ class ACMS_GET_Entry_Continue extends ACMS_GET_Entry
         'start'     => 'global',
         'end'       => 'global',
         'page'      => 'global',
-    );
+    ];
 
     function get()
     {
@@ -44,11 +44,11 @@ class ACMS_GET_Entry_Continue extends ACMS_GET_Entry
         $eid    = $row['entry_id'];
         $link   = $row['entry_link'];
         $datetime   = $row['entry_datetime'];
-        $inheritUrl = acmsLink(array(
+        $inheritUrl = acmsLink([
             'eid'       => $eid,
-        ));
+        ]);
 
-        $vars   = array();
+        $vars   = [];
 
         //---------
         // column
@@ -65,7 +65,7 @@ class ACMS_GET_Entry_Continue extends ACMS_GET_Entry
             $vars   += $this->buildField(loadEntryField($this->eid), $Tpl, null, 'entry');
         }
 
-        $vars   += array(
+        $vars   += [
             'status'    => $row['entry_status'],
             'url'       => !empty($link) ? $link : $inheritUrl,
             'title'     => addPrefixEntryTitle(
@@ -78,7 +78,7 @@ class ACMS_GET_Entry_Continue extends ACMS_GET_Entry
             'bid'       => $bid,
             'cid'       => $cid,
             'eid'       => $eid,
-        );
+        ];
 
         //------
         // date

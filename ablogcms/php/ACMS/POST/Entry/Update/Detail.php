@@ -27,21 +27,20 @@ class ACMS_POST_Entry_Update_Detail extends ACMS_POST_Entry_Update
         if (is_array($updatedResponse)) {
             $Session =& Field::singleton('session');
             $Session->add('entry_action', 'update');
-            $info = array(
+            $info = [
                 'bid'   => BID,
                 'cid'   => $updatedResponse['cid'],
                 'eid'   => EID,
-            );
+            ];
             if ($updatedResponse['trash'] == 'trash') {
-                $info['query'] = array('trash' => 'show');
+                $info['query'] = ['trash' => 'show'];
             }
             $this->redirect(acmsLink($info));
         }
-        $this->redirect(acmsLink(array(
-                'bid' => BID,
-                'eid' => EID,
-                'admin' => 'entry-edit',
-        )));
-        return $this->Post;
+        $this->redirect(acmsLink([
+            'bid' => BID,
+            'eid' => EID,
+            'admin' => 'entry-edit',
+        ]));
     }
 }

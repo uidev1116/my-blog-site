@@ -46,7 +46,7 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
                 }
                 $data['upload_date'] = $oldData['upload_date'];
             } else {
-                if (in_array($oldData['type'], array('file', 'svg'))) {
+                if (in_array($oldData['type'], ['file', 'svg'], true)) {
                     $data = array_merge($oldData, Media::copyFiles($mid));
                 } else {
                     $data = array_merge($oldData, Media::copyImages($mid));
@@ -90,11 +90,10 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
         } catch (\Exception $e) {
             AcmsLogger::info('新しいメディアとして作成に失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));
 
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
-        die();
     }
 }

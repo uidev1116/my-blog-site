@@ -7,9 +7,9 @@ class ACMS_POST_Search_Items extends ACMS_POST
     /**
      * @var array
      */
-    public $_scope = array(
+    public $_scope = [
         'keyword' => 'global',
-    );
+    ];
 
     /**
      * @var int
@@ -26,7 +26,7 @@ class ACMS_POST_Search_Items extends ACMS_POST
      */
     function post()
     {
-        $json = array();
+        $json = [];
         $this->keyword = $this->Post->get('word');
 
         if (
@@ -34,26 +34,26 @@ class ACMS_POST_Search_Items extends ACMS_POST
             && !empty($this->keyword)
             && !!SUID
         ) {
-            $json[] = array(
+            $json[] = [
                 'title' => gettext('ブログ'),
                 'enTitle' => 'Blogs',
                 'items' => $this->blogJSON(),
-            );
-            $json[] = array(
+            ];
+            $json[] = [
                 'title' => gettext('エントリー'),
                 'enTitle' => 'Entries',
                 'items' => $this->entryJSON(),
-            );
-            $json[] = array(
+            ];
+            $json[] = [
                 'title' => gettext('カテゴリー'),
                 'enTitle' => 'Categories',
                 'items' => $this->categoryJSON(),
-            );
-            $json[] = array(
+            ];
+            $json[] = [
                 'title' => gettext('モジュール'),
                 'enTitle' => 'Modules',
                 'items' => $this->moduleJSON(),
-            );
+            ];
         }
         Common::responseJson($json);
     }
@@ -63,7 +63,7 @@ class ACMS_POST_Search_Items extends ACMS_POST
      */
     protected function blogJSON()
     {
-        $json = array();
+        $json = [];
 
         $SQL = SQL::newSelect('blog');
         ACMS_Filter::blogTree($SQL, SBID, 'descendant-or-self');
@@ -73,16 +73,16 @@ class ACMS_POST_Search_Items extends ACMS_POST
 
         foreach ($all as $item) {
             $bid = $item['blog_id'];
-            $json[] = array(
+            $json[] = [
                 'bid' => $bid,
                 'blogName' => ACMS_RAM::blogName($bid),
                 'title' => $item['blog_name'],
                 'subtitle' => $item['blog_code'],
-                'url' => acmsLink(array(
+                'url' => acmsLink([
                     'bid' => $bid,
                     'admin' => 'top',
-                )),
-            );
+                ]),
+            ];
         }
         return $json;
     }
@@ -92,7 +92,7 @@ class ACMS_POST_Search_Items extends ACMS_POST
      */
     protected function entryJSON()
     {
-        $json = array();
+        $json = [];
 
         $SQL = SQL::newSelect('entry');
         $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
@@ -105,18 +105,18 @@ class ACMS_POST_Search_Items extends ACMS_POST
         foreach ($all as $item) {
             $id = $item['entry_id'];
             $bid = $item['entry_blog_id'];
-            $json[] = array(
+            $json[] = [
                 'id' => $id,
                 'bid' => $bid,
                 'blogName' => ACMS_RAM::blogName($bid),
                 'title' => $item['entry_title'],
                 'subtitle' => $item['entry_code'],
-                'url' => acmsLink(array(
+                'url' => acmsLink([
                     'eid' => $id,
                     'bid' => $bid,
                     'admin' => 'entry_editor',
-                )),
-            );
+                ]),
+            ];
         }
         return $json;
     }
@@ -127,9 +127,9 @@ class ACMS_POST_Search_Items extends ACMS_POST
     protected function categoryJSON()
     {
         if (!sessionWithCompilation()) {
-            return array();
+            return [];
         }
-        $json = array();
+        $json = [];
 
         $SQL = SQL::newSelect('category');
         $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
@@ -141,18 +141,18 @@ class ACMS_POST_Search_Items extends ACMS_POST
         foreach ($all as $item) {
             $id = $item['category_id'];
             $bid = $item['category_blog_id'];
-            $json[] = array(
+            $json[] = [
                 'id' => $id,
                 'bid' => $bid,
                 'blogName' => ACMS_RAM::blogName($bid),
                 'title' => $item['category_name'],
                 'subtitle' => $item['category_code'],
-                'url' => acmsLink(array(
+                'url' => acmsLink([
                     'cid' => $id,
                     'bid' => $bid,
                     'admin' => 'category_edit',
-                )),
-            );
+                ]),
+            ];
         }
         return $json;
     }
@@ -163,9 +163,9 @@ class ACMS_POST_Search_Items extends ACMS_POST
     protected function moduleJSON()
     {
         if (!sessionWithAdministration()) {
-            return array();
+            return [];
         }
-        $json = array();
+        $json = [];
         $word = '%' . $this->keyword . '%';
 
         $SQL = SQL::newSelect('module');
@@ -183,20 +183,20 @@ class ACMS_POST_Search_Items extends ACMS_POST
         foreach ($all as $item) {
             $id = $item['module_id'];
             $bid = $item['module_blog_id'];
-            $json[] = array(
+            $json[] = [
                 'id' => $id,
                 'bid' => $bid,
                 'blogName' => ACMS_RAM::blogName($bid),
                 'title' => $item['module_label'],
                 'subtitle' => $item['module_identifier'],
-                'url' => acmsLink(array(
+                'url' => acmsLink([
                     'bid'   => $bid,
                     'admin' => 'module_edit',
-                    'query' => array(
+                    'query' => [
                         'mid' => $id,
-                    ),
-                )),
-            );
+                    ],
+                ]),
+            ];
         }
         return $json;
     }

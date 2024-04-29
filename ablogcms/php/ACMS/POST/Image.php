@@ -8,7 +8,7 @@ class ACMS_POST_Image extends ACMS_POST
     public $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $old;
 
@@ -149,7 +149,7 @@ class ACMS_POST_Image extends ACMS_POST
                 }
                 try {
                     $tmpFile    = uniqueString() . '.jpeg';
-                    $data       = base64_decode($row);
+                    $data       = base64_decode($row); // @phpstan-ignore-line
                     $dest       = ARCHIVES_DIR . 'tmp/' . $tmpFile;
 
                     Storage::put($dest, $data);
@@ -172,7 +172,7 @@ class ACMS_POST_Image extends ACMS_POST
             try {
                 $tmpFile    = uniqueString() . '.jpeg';
                 $base64     = self::getBase64Data($base64);
-                $data       = base64_decode($base64);
+                $data       = base64_decode($base64); // @phpstan-ignore-line
                 $dest       = ARCHIVES_DIR . 'tmp/' . $tmpFile;
 
                 Storage::put($dest, $data);
@@ -201,13 +201,13 @@ class ACMS_POST_Image extends ACMS_POST
             return false;
         }
 
-        $_FILES[$id] = array(
+        $_FILES[$id] = [
             'name'      => $name,
             'type'      => $type,
             'tmp_name'  => $tmp_name,
             'error'     => $error,
             'size'      => $size,
-        );
+        ];
     }
 
     /**
@@ -254,7 +254,7 @@ class ACMS_POST_Image extends ACMS_POST
 
         //----------------
         // build and save
-        $imageFiles = array();
+        $imageFiles = [];
 
         $this->buildSize($size);
         foreach ($this->buildInsertData($FILES) as $imageData) {
@@ -279,10 +279,10 @@ class ACMS_POST_Image extends ACMS_POST
     private function buildInsertData($FILES)
     {
         $file   = null;
-        $Edit   = array();
+        $Edit   = [];
 
-        $uploadFiles    = array();
-        $imageFiles     = array();
+        $uploadFiles    = [];
+        $imageFiles     = [];
         do {
             if (!empty($this->delete)) {
                 break;
@@ -364,25 +364,25 @@ class ACMS_POST_Image extends ACMS_POST
                 $this->target   = $upload;
                 $dir            = Storage::archivesDir();
                 Storage::makeDirectory($this->ARCHIVES_DIR . $dir);
-                $exts   = array(
+                $exts   = [
                     'image/gif'         => 'gif',
                     'image/png'         => 'png',
                     'image/vnd.wap.wbmp' => 'bmp',
                     'image/xbm'         => 'xbm',
                     'image/jpeg'        => 'jpg',
-                );
+                ];
                 $ext    = isset($exts[$mime]) ? $exts[$mime] : 'jpg';
                 $path   = $dir . uniqueString(8) . '.' . $ext;
                 $file   = $this->ARCHIVES_DIR . $path;
 
                 Entry::addUploadedFiles($path); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
 
-                $imageFiles[] = array(
+                $imageFiles[] = [
                     'edit'      => $Edit,
                     'target'    => $this->target,
                     'file'      => $file,
                     'path'      => $path,
-                );
+                ];
             }
         } while (false);
 
@@ -392,8 +392,8 @@ class ACMS_POST_Image extends ACMS_POST
     private function buildUpdateData()
     {
         $file       = null;
-        $Edit       = array();
-        $imageFiles = array();
+        $Edit       = [];
+        $imageFiles = [];
 
         if (!empty($this->old) && ($xy = Storage::getImageSize($this->ARCHIVES_DIR . $this->old))) {
             $longSide   = max($xy[0], $xy[1]);
@@ -416,23 +416,21 @@ class ACMS_POST_Image extends ACMS_POST
                 $Edit['normal']['angle'] = $this->angle;
             }
 
-            if (!empty($Edit)) {
-                $path   = $this->old;
-                $file   = $this->ARCHIVES_DIR . $this->old;
-                $this->target = $file;
-                $large  = preg_replace('@(.*/)([^/]*)$@', '$1large-$2', $this->old);
+            $path   = $this->old;
+            $file   = $this->ARCHIVES_DIR . $this->old;
+            $this->target = $file;
+            $large  = preg_replace('@(.*/)([^/]*)$@', '$1large-$2', $this->old);
 
-                if (Storage::getImageSize($this->ARCHIVES_DIR . $large)) {
-                    if (!empty($this->angle)) {
-                        $Edit['large']['size']  = $this->largeSize;
-                        $Edit['large']['angle'] = $this->angle;
-                        if (empty($this->size)) {
-                            $xy = Storage::getImageSize($file);
-                            $Edit['normal']['size'] = max($xy[0], $xy[1]);
-                        }
+            if (Storage::getImageSize($this->ARCHIVES_DIR . $large)) {
+                if (!empty($this->angle)) {
+                    $Edit['large']['size']  = $this->largeSize;
+                    $Edit['large']['angle'] = $this->angle;
+                    if (empty($this->size)) {
+                        $xy = Storage::getImageSize($file);
+                        $Edit['normal']['size'] = max($xy[0], $xy[1]);
                     }
-                    $this->target = $this->ARCHIVES_DIR . $large;
                 }
+                $this->target = $this->ARCHIVES_DIR . $large;
             }
 
             if (!empty($this->angle)) {
@@ -446,22 +444,22 @@ class ACMS_POST_Image extends ACMS_POST
             ) {
                 $file = null;
             }
-            $imageFiles[] = array(
+            $imageFiles[] = [
                 'edit'      => $Edit,
                 'target'    => $this->target,
                 'file'      => $file,
                 'path'      => $path,
-            );
+            ];
         }
 
         return $imageFiles;
     }
 
-    private function editAndSaveImage($imageFiles = array())
+    private function editAndSaveImage($imageFiles = [])
     {
         foreach ($imageFiles as $k => $imageEdit) {
             if (!empty($imageEdit['target']) && !empty($imageEdit['file'])) {
-                foreach (array('tiny', 'square', 'normal', 'large') as $type_) {
+                foreach (['tiny', 'square', 'normal', 'large'] as $type_) {
                     if (!isset($imageEdit['edit'][$type_])) {
                         continue;
                     }

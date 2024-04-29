@@ -54,7 +54,7 @@ class Helper
     protected $deleteField;
 
     /**
-     * @var Cache
+     * @var \Acms\Services\Cache\Contracts\AdapterInterface
      */
     protected $cacheField;
 
@@ -71,7 +71,7 @@ class Helper
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getEncryptIv()
     {
@@ -106,9 +106,14 @@ class Helper
         $cipher->setKey(PASSWORD_SALT_1);
         $cipher->setIV($iv);
 
-        return $cipher->decrypt(base64_decode($cipherText));
+        return $cipher->decrypt(base64_decode($cipherText)); // @phpstan-ignore-line
     }
 
+    /**
+     * マークダウン文字列を解析する
+     * @param string $txt
+     * @return string
+     */
     public function parseMarkdown($txt)
     {
         static $parser = null;
@@ -300,18 +305,17 @@ class Helper
      *
      * @param string $path
      * @param Field $field
-     * @param string $charset
+     * @param string|null $charset
      *
      * @return string
      */
-    public function getMailTxt($path, $field = null, $charset = null)
+    public function getMailTxt($path, $field, $charset = null)
     {
         if (empty($path)) {
             return '';
         }
-
         try {
-            $tpl = Storage::get($path);
+            $tpl = Storage::get($path, THEMES_DIR);
             $charset = detectEncode($tpl);
             $tpl = mb_convert_encoding($tpl, 'UTF-8', $charset);
             return $this->getMailTxtFromTxt($tpl, $field);
@@ -333,14 +337,14 @@ class Helper
     {
         try {
             global $extend_section_stack;
-            $extend_section_stack = array();
+            $extend_section_stack = [];
             $txt = buildVarBlocks($txt, true);
             $txt = spreadTemplate(setGlobalVars($txt));
             if (isTemplateCacheEnabled()) {
                 $txt = setGlobalVars($txt);
             }
             $tpl = build($txt, Field_Validation::singleton('post'), true);
-            $extend_section_stack = array();
+            $extend_section_stack = [];
 
             $Tpl = new Template($tpl, new ACMS_Corrector());
             $vars = Tpl::buildField($field, $Tpl);
@@ -358,23 +362,39 @@ class Helper
     /**
      * メール設定の取得
      *
-     * @param array $argConfig
+     * @param array{
+     *   smtp-host?: string,
+     *   smtp-port?: string,
+     *   smtp-user?: string,
+     *   smtp-pass?: string,
+     *   mail_from?: string,
+     *   sendmail_path?: string,
+     *   additional_headers?: string
+     * } $argConfig
      *
-     * @return array
+     * @return array{
+     *   smtp-host: string,
+     *   smtp-port: string,
+     *   smtp-user: string,
+     *   smtp-pass: string,
+     *   mail_from: string,
+     *   sendmail_path: string,
+     *   additional_headers: string
+     * }
      */
-    public function mailConfig($argConfig = array())
+    public function mailConfig($argConfig = [])
     {
-        $config = array();
+        $config = [];
 
         foreach (
-            array(
-            'mail_smtp-host' => 'smtp-host',
-            'mail_smtp-port' => 'smtp-port',
-            'mail_smtp-user' => 'smtp-user',
-            'mail_smtp-pass' => 'smtp-pass',
-            'mail_from' => 'mail_from',
-            'mail_sendmail_path' => 'sendmail_path',
-            ) as $cmsConfigKey => $mailConfigKey
+            [
+                'mail_smtp-host' => 'smtp-host',
+                'mail_smtp-port' => 'smtp-port',
+                'mail_smtp-user' => 'smtp-user',
+                'mail_smtp-pass' => 'smtp-pass',
+                'mail_from' => 'mail_from',
+                'mail_sendmail_path' => 'sendmail_path',
+            ] as $cmsConfigKey => $mailConfigKey
         ) {
             $config[$mailConfigKey] = config($cmsConfigKey, '');
         }
@@ -426,7 +446,7 @@ class Helper
      *
      * @param $string
      * @param bool $checkReserved
-     * @return array|array[]|false|string[]
+     * @return string[]
      */
     public function getTagsFromString($string, $checkReserved = true)
     {
@@ -473,7 +493,7 @@ class Helper
                 } elseif ('custom' == $type) {
                     $Custom = acmsUnserialize($row['column_field_6']);
                     foreach ($Custom->listFields() as $f) {
-                        $text   .= $Custom->get($f) . ' ';
+                        $text   .= implode(' ', $Custom->getArray($f)) . ' ';
                     }
                 } else {
                     $meta   .= $row['column_field_1'] . ' ';
@@ -515,10 +535,10 @@ class Helper
         $DB = DB::singleton(dsn());
 
         // ユーザーフィールド
-        $user = array();
+        $user = [];
 
         // カスタムフィールド
-        $meta = array();
+        $meta = [];
 
         $user[] = ACMS_RAM::userName($uid);
         $user[] = ACMS_RAM::userCode($uid);
@@ -555,10 +575,10 @@ class Helper
         $DB = DB::singleton(dsn());
 
         // カテゴリーフィールド
-        $category = array();
+        $category = [];
 
         // カスタムフィールド
-        $meta = array();
+        $meta = [];
 
         $category[] = ACMS_RAM::categoryName($cid);
         $category[] = ACMS_RAM::categoryCode($cid);
@@ -583,7 +603,7 @@ class Helper
     /**
      * ブログのフルテキストを取得
      *
-     * @param int $cid
+     * @param int $bid
      *
      * @return string
      */
@@ -592,10 +612,10 @@ class Helper
         $DB = DB::singleton(dsn());
 
         // ブログフィールド
-        $blog = array();
+        $blog = [];
 
         // カスタムフィールド
-        $meta = array();
+        $meta = [];
 
         $blog[] = ACMS_RAM::blogName($bid);
         $blog[] = ACMS_RAM::blogCode($bid);
@@ -630,10 +650,10 @@ class Helper
         $DB = DB::singleton(dsn());
 
         // ユーザーフィールド
-        $user = array();
+        $user = [];
 
         // カスタムフィールド
-        $meta = array();
+        $meta = [];
 
         $SQL = SQL::newSelect('crm_customer');
         $SQL->addWhereOpr('customer_id', $cuid);
@@ -664,7 +684,7 @@ class Helper
      *
      * @param string $type フルテキストのタイプ
      * @param int $id
-     * @param string $fulltext
+     * @param string|null $fulltext
      * @param int $targetBid
      *
      * @return void
@@ -696,7 +716,7 @@ class Helper
      *
      * @param string $type フルテキストのタイプ
      * @param int $id
-     * @param string $fulltext
+     * @param string|null $fulltext
      * @param int $targetBid
      *
      * @return void
@@ -724,8 +744,9 @@ class Helper
      *
      * @param string $path
      * @param string $fileName
-     * @param string | boolean $extension // 指定すると、Content-Disposition: inline になります。
+     * @param string|boolean $extension // 指定すると、Content-Disposition: inline になります。
      * @param boolean $remove
+     * @return void
      */
     public function download($path, $fileName, $extension = false, $remove = false)
     {
@@ -803,9 +824,9 @@ class Helper
      *
      * @param 'bid' | 'uid' | 'cid' | 'mid' | 'eid' $type
      * @param int $id
-     * @param int $rvid
+     * @param int|null $rvid
      */
-    public function deleteFieldCache($type, $id, $rvid = '')
+    public function deleteFieldCache($type, $id, $rvid = null)
     {
         // キャッシュ削除
         if ($type) {
@@ -831,7 +852,7 @@ class Helper
      *
      * @param string $type
      * @param int $id
-     * @param int $rvid
+     * @param int|null $rvid
      */
     public function deleteField($type, $id, $rvid = null)
     {
@@ -907,9 +928,9 @@ class Helper
         $q  = $SQL->get(dsn());
         $DB->query($q, 'fetch');
 
-        $mediaList = array();
-        $mediaIds = array();
-        $useMediaField = array();
+        $mediaList = [];
+        $mediaIds = [];
+        $useMediaField = [];
         while ($row = $DB->fetch($q)) {
             $fixPaht    = '';
             $fd         = $row['field_key'];
@@ -944,9 +965,9 @@ class Helper
      *
      * @param string $type
      * @param int $id
-     * @param Field $Field
-     * @param Field $deleteField
-     * @param int $rvid
+     * @param Field|null $Field
+     * @param Field|null $deleteField
+     * @param int|null $rvid
      * @param int $targetBid
      *
      * @return bool
@@ -988,7 +1009,7 @@ class Helper
             $SQL->addWhereOpr('field_rev_id', $rvid);
         }
         if ($Field && $Field->get('updateField') === 'on') {
-            $fkey   = array();
+            $fkey   = [];
             $Field->delete('updateField');
             foreach ($Field->listFields() as $fd) {
                 $fkey[] = $fd;
@@ -1093,26 +1114,26 @@ class Helper
         //-----
         // arg
         if (!$aryFd = $Post->getArray('arg')) {
-            $aryFd  = array_diff($Post->listFields(), $Post->getArray('field'), $Post->getArray('query'));
+            $aryFd = array_diff($Post->listFields(), $Post->getArray('field'), $Post->getArray('query'));
         }
         foreach ($aryFd as $fd) {
             //---------
             // field
-            if ('field' == $fd and $aryField = $Post->getArray('field')) {
-                $Field  = new Field_Search();
-                foreach ($aryField as $j => $fd) {
-                    $Field->set($fd);
-                    $Field->setConnector($fd);
-                    $Field->setOperator($fd);
-                    $aryValue       = $Post->getArray($fd);
-                    $aryConnector   = $Post->getArray($fd . '@connector');
-                    $aryOperator    = $Post->getArray($fd . '@operator');
-                    $Field->addSeparator($fd, $Post->get($fd . '@separator', 'and'));
+            if ('field' === $fd and $aryField = $Post->getArray('field')) {
+                $Field = new Field_Search();
+                foreach ($aryField as $field) {
+                    $Field->set($field);
+                    $Field->setConnector($field);
+                    $Field->setOperator($field);
+                    $aryValue       = $Post->getArray($field);
+                    $aryConnector   = $Post->getArray($field . '@connector');
+                    $aryOperator    = $Post->getArray($field . '@operator');
+                    $Field->addSeparator($field, $Post->get($field . '@separator', 'and'));
 
                     if (!!($cnt = max(count($aryValue), count($aryConnector), count($aryOperator)))) {
                         $defaultConnector   = 'and';
                         $defaultOperator    = 'eq';
-                        if (empty($aryConnector) and empty($aryOperator) /*and 2 <= count($aryValue)*/) {
+                        if (empty($aryConnector) && empty($aryOperator) /*and 2 <= count($aryValue)*/) {
                             $defaultConnector   = 'or';
                         }
                         if (!empty($aryConnector)) {
@@ -1122,9 +1143,9 @@ class Helper
                             $defaultOperator    = $aryOperator[0];
                         }
                         for ($i = 0; $i < $cnt; $i++) {
-                            $Field->add($fd, isset($aryValue[$i]) ? $aryValue[$i] : '');
-                            $Field->addConnector($fd, isset($aryConnector[$i]) ? $aryConnector[$i] : $defaultConnector);
-                            $Field->addOperator($fd, isset($aryOperator[$i]) ? $aryOperator[$i] : $defaultOperator);
+                            $Field->add($field, isset($aryValue[$i]) ? $aryValue[$i] : '');
+                            $Field->addConnector($field, isset($aryConnector[$i]) ? $aryConnector[$i] : $defaultConnector);
+                            $Field->addOperator($field, isset($aryOperator[$i]) ? $aryOperator[$i] : $defaultOperator);
                         }
                     }
                 }
@@ -1132,10 +1153,10 @@ class Helper
 
             //-------
             // query
-            } elseif ('query' == $fd and $aryQuery = $Post->getArray('query')) {
+            } elseif ('query' === $fd && $aryQuery = $Post->getArray('query')) {
                 $Query  = new Field();
-                foreach ($aryQuery as $fd) {
-                    $Query->set($fd, $Post->getArray($fd));
+                foreach ($aryQuery as $query) {
+                    $Query->set($query, $Post->getArray($query));
                 }
                 $Uri->addChild('query', $Query);
 
@@ -1152,9 +1173,9 @@ class Helper
      * POSTデータからデータの抜き出し
      *
      * @param string $scp
-     * @param \Field $V
-     * @param \Field $deleteField
-     * @return \Field
+     * @param \ACMS_Validator|null $V
+     * @param \Field|null $deleteField
+     * @return \Field_Validation
      */
     public function extract($scp = 'field', $V = null, $deleteField = null)
     {
@@ -1203,7 +1224,7 @@ class Helper
                 and $Field->isExists($match[1])
             ) {
                 $fd = $match[1];
-                $aryVal = array();
+                $aryVal = [];
                 foreach ($Field->getArray($fd) as $val) {
                     $aryVal[] = mb_convert_kana($val, $this->Post->get($metaFd), 'UTF-8');
                 }
@@ -1284,46 +1305,46 @@ class Helper
 
                     if (empty($_FILES[$fd])) {
                         foreach (
-                            array(
-                            'path', 'x', 'y', 'alt', 'fileSize',
-                            'largePath', 'largeX', 'largeY', 'largeAlt', 'largeFileSize',
-                            'tinyPath', 'tinyX', 'tinyY', 'tinyAlt', 'tinyFileSize',
-                            'squarePath', 'squareX', 'squareY', 'squareAlt', 'squareFileSize',
-                            'secret'
-                            ) as $key
+                            [
+                                'path', 'x', 'y', 'alt', 'fileSize',
+                                'largePath', 'largeX', 'largeY', 'largeAlt', 'largeFileSize',
+                                'tinyPath', 'tinyX', 'tinyY', 'tinyAlt', 'tinyFileSize',
+                                'squarePath', 'squareX', 'squareY', 'squareAlt', 'squareFileSize',
+                                'secret'
+                            ] as $key
                         ) {
                             $key    = $fd . '@' . $key;
-                            $this->deleteField->set($key, array());
+                            $this->deleteField->set($key, []);
                             $Field->deleteField($fd . '@' . $key);
                         }
                         continue;
                     }
 
-                    $aryC   = array();
+                    $aryC   = [];
                     if (!is_array($_FILES[$fd]['tmp_name'])) {
-                        $aryC[] = array(
+                        $aryC[] = [
                             '_tmp_name' => $_FILES[$fd]['tmp_name'],
                             '_name'     => $_FILES[$fd]['name'],
-                        );
+                        ];
                     } else {
                         foreach ($_FILES[$fd]['tmp_name'] as $i => $tmp_name) {
-                            $aryC[] = array(
+                            $aryC[] = [
                                 '_tmp_name' => $tmp_name,
                                 '_name'     => $_FILES[$fd]['name'][$i],
-                            );
+                            ];
                         }
                     }
 
                     foreach (
-                        array(
-                        'str'   => array('old', 'edit', 'alt', 'filename', 'extension', 'secret'),
-                        'int'   => array(
-                            'width', 'height', 'size',
-                            'tinyWidth', 'tinyHeight', 'tinySize',
-                            'largeWidth', 'largeHeight', 'largeSize',
-                            'squareWidth', 'squareHeight', 'squareSize',
-                        ),
-                        ) as $_type => $keys
+                        [
+                            'str'   => ['old', 'edit', 'alt', 'filename', 'extension', 'secret'],
+                            'int'   => [
+                                'width', 'height', 'size',
+                                'tinyWidth', 'tinyHeight', 'tinySize',
+                                'largeWidth', 'largeHeight', 'largeSize',
+                                'squareWidth', 'squareHeight', 'squareSize',
+                            ],
+                        ] as $_type => $keys
                     ) {
                         foreach ($keys as $key) {
                             foreach ($aryC as $i => $c) {
@@ -1337,9 +1358,9 @@ class Helper
                         }
                     }
 
-                    $aryData    = array();
+                    $aryData    = [];
                     foreach ($aryC as $c) {
-                        $aryData[]  = array();
+                        $aryData[]  = [];
                     }
                     $cnt    = count($aryData);
                     for ($i = 0; $i < $cnt; $i++) {
@@ -1482,9 +1503,9 @@ class Helper
                                 $data[$fd . '@alt']   = $c['alt'];
                                 $data[$fd . '@fileSize'] = filesize($normalPath);
 
-                                $tmpMedia[] = array(
+                                $tmpMedia[] = [
                                     'path'  => $normalPath,
-                                );
+                                ];
                                 Entry::addUploadedFiles($normal); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
                             }
 
@@ -1503,9 +1524,9 @@ class Helper
                                     $data[$fd . '@largeAlt']  = $c['alt'];
                                     $data[$fd . '@largeFileSize']  = filesize($largePath);
 
-                                    $tmpMedia[] = array(
+                                    $tmpMedia[] = [
                                         'path'  => $normalPath,
-                                    );
+                                    ];
                                 }
                             }
 
@@ -1524,9 +1545,9 @@ class Helper
                                     $data[$fd . '@tinyAlt']   = $c['alt'];
                                     $data[$fd . '@tinyFileSize']  = filesize($tinyPath);
 
-                                    $tmpMedia[] = array(
+                                    $tmpMedia[] = [
                                         'path'  => $normalPath,
-                                    );
+                                    ];
                                 }
                             }
 
@@ -1554,9 +1575,9 @@ class Helper
                                     $data[$fd . '@squareAlt']   = $c['alt'];
                                     $data[$fd . '@squareFileSize']  = filesize($squarePath);
 
-                                    $tmpMedia[] = array(
+                                    $tmpMedia[] = [
                                         'path'  => $normalPath,
-                                    );
+                                    ];
                                 }
                             }
 
@@ -1639,18 +1660,18 @@ class Helper
                     // save field
                     $cnt        = count($aryData);
                     foreach (
-                        array(
-                        'path', 'x', 'y', 'alt', 'fileSize',
-                        'largePath', 'largeX', 'largeY', 'largeAlt', 'largeFileSize',
-                        'tinyPath', 'tinyX', 'tinyY', 'tinyAlt', 'tinyFileSize',
-                        'squarePath', 'squareX', 'squareY', 'squareAlt', 'squareFileSize',
-                        'secret'
-                        ) as $key
+                        [
+                            'path', 'x', 'y', 'alt', 'fileSize',
+                            'largePath', 'largeX', 'largeY', 'largeAlt', 'largeFileSize',
+                            'tinyPath', 'tinyX', 'tinyY', 'tinyAlt', 'tinyFileSize',
+                            'squarePath', 'squareX', 'squareY', 'squareAlt', 'squareFileSize',
+                            'secret'
+                        ] as $key
                     ) {
                         $key    = $fd . '@' . $key;
-                        $value  = array();
+                        $value  = [];
                         for ($i = 0; $cnt > $i; $i++) {
-                            $value[] = !empty($aryData[$i][$key]) ? $aryData[$i][$key] : '';
+                            $value[] = !empty($aryData[$i][$key]) ? $aryData[$i][$key] : ''; // @phpstan-ignore-line
                         }
                         $Field->set($key, $value);
 
@@ -1669,11 +1690,11 @@ class Helper
                 // file
                 } elseif ('file' == $type) {
                     if (empty($_FILES[$fd])) {
-                        $this->deleteField->setField($fd . '@path', array());
-                        $this->deleteField->setField($fd . '@baseName', array());
-                        $this->deleteField->setField($fd . '@fileSize', array());
-                        $this->deleteField->setField($fd . '@secret', array());
-                        $this->deleteField->setField($fd . '@downloadName', array());
+                        $this->deleteField->setField($fd . '@path', []);
+                        $this->deleteField->setField($fd . '@baseName', []);
+                        $this->deleteField->setField($fd . '@fileSize', []);
+                        $this->deleteField->setField($fd . '@secret', []);
+                        $this->deleteField->setField($fd . '@downloadName', []);
 
                         $Field->deleteField($fd . '@path');
                         $Field->deleteField($fd . '@baseName');
@@ -1684,29 +1705,29 @@ class Helper
                         continue;
                     }
 
-                    $aryC   = array();
+                    $aryC   = [];
                     if (!is_array($_FILES[$fd]['tmp_name'])) {
-                        $aryC[] = array(
+                        $aryC[] = [
                             '_tmp_name' => $_FILES[$fd]['tmp_name'],
                             '_name'     => $_FILES[$fd]['name'],
-                        );
+                        ];
                     } else {
                         foreach ($_FILES[$fd]['tmp_name'] as $i => $tmp_name) {
-                            $aryC[] = array(
+                            $aryC[] = [
                                 '_tmp_name' => $tmp_name,
                                 '_name'     => $_FILES[$fd]['name'][$i],
-                            );
+                            ];
                         }
                     }
 
                     //--------------------------
                     // field copy to local vars
-                    foreach (array('old', 'edit', 'extension', 'filename', 'secret', 'fileSize', 'downloadName', 'originalName') as $key) {
+                    foreach (['old', 'edit', 'extension', 'filename', 'secret', 'fileSize', 'downloadName', 'originalName'] as $key) {
                         foreach ($aryC as $i => $c) {
                             $_field = $fd . '@' . $key;
                             if ($key === 'extension') {
                                 $c[$key] = $this->Post->isExists($_field, $i) ?
-                                    $this->Post->getArray($_field, '', $i) : '';
+                                    $this->Post->getArray($_field) : '';
                             } else {
                                 $c[$key] = $this->Post->isExists($_field, $i) ?
                                     $this->Post->get($_field, '', $i) : '';
@@ -1717,12 +1738,12 @@ class Helper
                     }
 
                     // 参照用の配列を作成して，ファイル数の分だけインデックスを初期化
-                    $aryPath    = array();
-                    $aryName    = array();
-                    $aryOriginalName = array();
-                    $aryDownloadName = array();
-                    $arySize    = array();
-                    $arySecret  = array();
+                    $aryPath    = [];
+                    $aryName    = [];
+                    $aryOriginalName = [];
+                    $aryDownloadName = [];
+                    $arySize    = [];
+                    $arySecret  = [];
                     foreach ($aryC as $c) {
                         $aryPath[] = $aryName[] = $aryOriginalName[] = $aryDownloadName[] = $arySize[] = $arySecret[] = '';
                     }
@@ -1912,9 +1933,9 @@ class Helper
 
                                 Storage::copy($tmp_name, $realpath);
 
-                                $tmpMedia[] = array(
+                                $tmpMedia[] = [
                                     'path'  => $realpath,
-                                );
+                                ];
 
                                 if (HOOK_ENABLE) {
                                     $Hook = ACMS_Hook::singleton();
@@ -2036,6 +2057,7 @@ class Helper
         jsModule('edition', LICENSE_EDITION);
         jsModule('urlPreviewExpire', config('url_preview_expire'));
         jsModule('timemachinePreviewDefaultDevice', config('timemachine_preview_default_device'));
+        jsModule('timemachinePreviewHasHistoryDevice', config('timemachine_preview_has_history_device'));
 
         if ($Session->get('timemachine_datetime')) {
             jsModule('timeMachineMode', 'true');
@@ -2061,7 +2083,7 @@ class Helper
         //----------
         // category
         if ($cid = CID) {
-            $ccds   = array(ACMS_RAM::categoryCode($cid));
+            $ccds   = [ACMS_RAM::categoryCode($cid)];
             while ($cid = ACMS_RAM::categoryParent($cid)) {
                 if ('on' == ACMS_RAM::categoryIndexing($cid)) {
                     $ccds[] = htmlspecialchars(ACMS_RAM::categoryCode($cid), ENT_QUOTES);
@@ -2084,7 +2106,7 @@ class Helper
             jsModule('cache', uniqueString());
         }
 
-        $jsModules  = array();
+        $jsModules  = [];
         foreach (jsModule() as $key => $value) {
             if (empty($value)) {
                 continue;
@@ -2249,7 +2271,7 @@ class Helper
      */
     public function camelize($str)
     {
-        return lcfirst(strtr(ucwords(strtr($str, array('_' => ' '))), array(' ' => '')));
+        return lcfirst(strtr(ucwords(strtr($str, ['_' => ' '])), [' ' => '']));
     }
 
     /**
@@ -2295,7 +2317,7 @@ class Helper
 
         if (
             0
-            || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE)
+            || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE) // @phpstan-ignore-line
             || strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET'
         ) {
             $no_cache_page = true;
@@ -2322,19 +2344,19 @@ class Helper
     /**
      * 例外情報を連想配列に変換
      *
-     * @param Exception $e
+     * @param \Throwable $th
      * @param array $add
      * @return (string|int)[]
      */
-    public function exceptionArray(\Exception $e, array $add = []): array
+    public function exceptionArray(\Throwable $th, array $add = []): array
     {
-        $exception = [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => getExceptionTraceAsString($e),
+        $array = [
+            'message' => $th->getMessage(),
+            'file' => $th->getFile(),
+            'line' => $th->getLine(),
+            'trace' => getExceptionTraceAsString($th),
         ];
-        return array_merge($exception, $add);
+        return array_merge($array, $add);
     }
 
     /**

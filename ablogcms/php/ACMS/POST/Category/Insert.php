@@ -7,14 +7,14 @@ class ACMS_POST_Category_Insert extends ACMS_POST_Category
         $Category = $this->extract('category');
         $Category->setMethod('name', 'required');
         $Category->setMethod('code', 'required');
-        $Category->setMethod('code', 'double', array($Category->get('scope'),  $Category->get('parent')));
+        $Category->setMethod('code', 'double', [$Category->get('scope'),  $Category->get('parent')]);
         $Category->setMethod('code', 'reserved', !isReserved($Category->get('code')));
         $Category->setMethod('code', 'string', isValidCode($Category->get('code')));
         $Category->setMethod('status', 'required');
-        $Category->setMethod('status', 'in', array('open', 'close', 'secret'));
+        $Category->setMethod('status', 'in', ['open', 'close', 'secret']);
         $Category->setMethod('scope', 'required');
         $Category->setMethod('indexing', 'required');
-        $Category->setMethod('indexing', 'in', array('on', 'off'));
+        $Category->setMethod('indexing', 'in', ['on', 'off']);
         $Category->setMethod('config_set_id', 'value', $this->checkConfigSetScope($Category->get('config_set_id')));
         $Category->setMethod('config_set_scope', 'in', ['local', 'global']);
         $Category->setMethod('theme_set_id', 'value', $this->checkConfigSetScope($Category->get('theme_set_id')));

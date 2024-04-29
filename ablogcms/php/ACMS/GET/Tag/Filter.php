@@ -2,15 +2,15 @@
 
 class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
 {
-    public $_scope = array(
+    public $_scope = [
         'tag' => 'global',
-    );
+    ];
 
-    function get()
+    public function get()
     {
         $cnt = count($this->tags);
         if ($cnt === 0) {
-            return false;
+            return '';
         }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
         $DB = DB::singleton(dsn());
@@ -36,7 +36,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
             }
             // 現在選択中のタグの中から該当の$tagを除いたものを表示
             $rejects = $stack;
-            unset($rejects[array_search($tag, $tags)]);
+            unset($rejects[array_search($tag, $tags, true)]);
 
             $context['tag'] = [$tag];
             $context2['tag'] = array_merge($rejects); // indexを振り直し（unsetで空いた分）
@@ -125,7 +125,7 @@ class ACMS_GET_Tag_Filter extends ACMS_GET_Tag_Cloud
             $tags = $this->tags;
             $tags[] = $tag;
             if ($cnt <> ++$i) {
-                $Tpl->add(array('glue', 'choice:loop'));
+                $Tpl->add(['glue', 'choice:loop']);
             }
             $context['tag'] = $tags;
             $Tpl->add('choice:loop', [

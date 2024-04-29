@@ -21,7 +21,7 @@ class NoCache implements AdapterInterface
      * キャッシュを取得
      *
      * @param string $key
-     * @return any
+     * @return mixed
      */
     public function get($key)
     {

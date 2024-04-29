@@ -21,29 +21,29 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
         if (!!$_config) {
             $config->overload($_config);
             foreach (
-                array(
-                  'media_banner_limit',
-                  'media_banner_status',
-                  'media_banner_src',
-                  'media_banner_img',
-                  'media_banner_alt',
-                  'media_banner_attr1',
-                  'media_banner_attr2',
-                  'media_banner_target',
-                  'media_banner_type',
-                  'media_banner_link',
-                  'media_banner_datestart',
-                  'media_banner_timestart',
-                  'media_banner_dateend',
-                  'media_banner_timeend',
-                  'media_banner_order',
-                  'media_banner_label_attr1',
-                  'media_banner_label_attr2',
-                  'media_banner_hide_attr1',
-                  'media_banner_hide_attr2',
-                  'media_banner_tooltip_attr1',
-                  'media_banner_tooltip_attr2'
-                ) as $fd
+                [
+                    'media_banner_limit',
+                    'media_banner_status',
+                    'media_banner_src',
+                    'media_banner_img',
+                    'media_banner_alt',
+                    'media_banner_attr1',
+                    'media_banner_attr2',
+                    'media_banner_target',
+                    'media_banner_type',
+                    'media_banner_link',
+                    'media_banner_datestart',
+                    'media_banner_timestart',
+                    'media_banner_dateend',
+                    'media_banner_timeend',
+                    'media_banner_order',
+                    'media_banner_label_attr1',
+                    'media_banner_label_attr2',
+                    'media_banner_hide_attr1',
+                    'media_banner_hide_attr2',
+                    'media_banner_tooltip_attr1',
+                    'media_banner_tooltip_attr2'
+                ] as $fd
             ) {
                 $config->setField($fd, $_config->getArray($fd));
             }
@@ -69,14 +69,14 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
         }
 
         $Config =& $this->getConfig($rid, $mid, $setid);
-        $ary_vars = array();
+        $ary_vars = [];
         $ary_vars['notice_mess'] = $this->Post->get('notice_mess');
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
         $aryStatus = $Config->getArray('media_banner_status');
-        $items = array();
-        $mids = array();
+        $items = [];
+        $mids = [];
 
         foreach ($aryStatus as $i => $status) {
             $type = $Config->get('media_banner_type', '', $i);
@@ -91,7 +91,7 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
                 $source = html_entity_decode($source);
             }
 
-            $items[] = array(
+            $items[] = [
                 'media_banner_datestart' => $Config->get('media_banner_datestart', '', $i),
                 'media_banner_timestart' => $Config->get('media_banner_timestart', '', $i),
                 'media_banner_dateend' => $Config->get('media_banner_dateend', '', $i),
@@ -105,7 +105,7 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
                 'media_banner_source' => $source,
                 "media_banner_type" => $type,
                 "media_banner_mid" => $mid,
-            );
+            ];
         }
 
         $SQL = SQL::newSelect('media');
@@ -133,7 +133,7 @@ class ACMS_GET_Admin_Config_Media_Banner extends ACMS_GET_Admin
             }
         }
 
-        $ary_vars = array();
+        $ary_vars = [];
         $hide1 = $Config->get('media_banner_hide_attr1');
         $hide2 = $Config->get('media_banner_hide_attr2');
         $order = $Config->get('media_banner_order');

@@ -2,9 +2,9 @@
 
 class ACMS_GET_Trackback_Url extends ACMS_GET
 {
-    public $_scope    = array(
+    public $_scope    = [
         'eid'   => 'global',
-    );
+    ];
 
     function get()
     {
@@ -16,13 +16,13 @@ class ACMS_GET_Trackback_Url extends ACMS_GET
         }
 
         $Tpl    = new Template($this->tpl);
-        $Tpl->add(null, array(
-            'url'   => acmsLink(array(
+        $Tpl->add(null, [
+            'url'   => acmsLink([
                 'bid'   => BID,
                 'eid'   => $this->eid,
                 'trackback' => true,
-            )),
-        ));
+            ]),
+        ]);
 
         return $Tpl->get();
     }

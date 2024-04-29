@@ -20,7 +20,7 @@ class Logger
     /**
      * @var array
      */
-    protected $processList = array();
+    protected $processList = [];
 
     /**
      * @var string
@@ -40,13 +40,19 @@ class Logger
     /**
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * @var string
      */
     protected $current;
 
+    /**
+     * @var array{
+     *   path: string
+     * }[]
+     */
+    protected $removedFiles = [];
 
     /**
      * @param string $path
@@ -54,7 +60,7 @@ class Logger
      */
     public function init($path, $terminate_flag)
     {
-        if (!is_writable(dirname($path))) {
+        if (!Storage::isWritable(dirname($path))) {
             throw new \RuntimeException($path . ' is not writable.');
         }
         $this->destinationPath = $path;
@@ -85,9 +91,9 @@ class Logger
         $this->processingName = $name;
         $this->max = $max;
         $this->count = 0;
-        $this->processList[] = array(
+        $this->processList[] = [
             'message' => $name,
-        );
+        ];
     }
 
     public function processing($current = '')
@@ -102,13 +108,13 @@ class Logger
         $this->terminateFlag->check();
     }
 
-    public function error($message, $path = '', $code = 0)
+    public function error($message, $path = '', $code = null)
     {
-        $this->errors[] = array(
+        $this->errors[] = [
             'message' => $message,
             'path' => $path,
             'code' => $code,
-        );
+        ];
 
         $data = $this->build();
 
@@ -118,9 +124,21 @@ class Logger
         Storage::put($this->destinationPath, $json);
     }
 
+    public function removedFile(string $path)
+    {
+        $this->removedFiles[] = [
+            'path' => $path,
+        ];
+
+        $data = $this->build();
+
+        $json = json_encode($data);
+        Storage::put($this->destinationPath, $json);
+    }
+
     protected function build()
     {
-        return array(
+        return [
             "inProcess" => $this->processingName,
             "max" => $this->max,
             "count" => $this->count,
@@ -128,6 +146,7 @@ class Logger
             'processList' => $this->processList,
             'current' => $this->current,
             'errorList' => $this->errors,
-        );
+            'removedFiles' => $this->removedFiles
+        ];
     }
 }

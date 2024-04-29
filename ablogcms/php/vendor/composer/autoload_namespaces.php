@@ -7,5 +7,5 @@ $baseDir = dirname(dirname($vendorDir));
 
 return array(
     'ImageOptimizer' => array($vendorDir . '/ps/image-optimizer/src'),
-    'Evenement' => array($vendorDir . '/evenement/evenement/src'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

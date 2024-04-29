@@ -2,10 +2,10 @@
 
 class ACMS_GET_Timemachine extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (!timemachineMode()) {
-            return false;
+            return '';
         }
 
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
@@ -13,10 +13,10 @@ class ACMS_GET_Timemachine extends ACMS_GET
         $datetime   = $Session->get('timemachine_datetime');
         list($date, $time)  = preg_split('/\s/', $datetime);
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'date'  => $date,
             'time'  => $time,
-        ));
+        ]);
 
         return $Tpl->get();
     }

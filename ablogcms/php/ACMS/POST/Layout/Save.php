@@ -12,14 +12,14 @@ class ACMS_POST_Layout_Save extends ACMS_POST_Layout
         $SQL->addWhereOpr('layout_grid_identifier', $identifier);
         $DB->query($SQL->get(dsn()), 'exec');
 
-        $map = array();
+        $map = [];
         foreach ($ids as $i => $id) {
             $map[$id] = $i + 1;
         }
         foreach ($ids as $i => $id) {
             $pid = $this->Post->get('parent_' . $id);
             $pid = !empty($pid) ? $map[$pid] : 0;
-            $data = array(
+            $data = [
                 'id'        => $id,
                 'serial'    => $i + 1,
                 'identifier' => $identifier,
@@ -29,7 +29,7 @@ class ACMS_POST_Layout_Save extends ACMS_POST_Layout
                 'row'       => $this->Post->get('row_' . $id),
                 'mid'       => $this->Post->get('mid_' . $id),
                 'tpl'       => $this->Post->get('tpl_' . $id),
-            );
+            ];
             $this->save($data);
         }
 

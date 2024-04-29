@@ -66,13 +66,13 @@ class ImageResize
 
     private function getExtension()
     {
-        $exts = array(
+        $exts = [
             'image/gif' => self::MIME_GIF,
             'image/png' => self::MIME_PNG,
             'image/vnd.wap.wbmp' => self::MIME_BMP,
             'image/xbm' => self::MIME_XBM,
             'image/jpeg' => self::MIME_JPEG,
-        );
+        ];
         return isset($exts[$this->mimeType]) ? $exts[$this->mimeType] : self::MIME_JPEG;
     }
 
@@ -145,6 +145,8 @@ class ImageResize
 
     private function createDestImageForImagick($destPath)
     {
+        $this->srcImg->setImageCompression(Imagick::COMPRESSION_JPEG);
+        $this->srcImg->setImageCompressionQuality($this->qualityJpeg);
         $this->srcImg->cropImage($this->srcW, $this->srcH, $this->srcX, $this->srcY);
         $this->srcImg->resizeImage($this->destW, $this->destH, Imagick::FILTER_LANCZOS, 0.9, false);
 

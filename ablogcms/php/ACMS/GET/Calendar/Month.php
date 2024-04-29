@@ -2,16 +2,16 @@
 
 class ACMS_GET_Calendar_Month extends ACMS_GET
 {
-    public $_axis  = array(
+    public $_axis  = [
         'bid'   => 'self',
         'cid'   => 'self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'date'  => 'global',
         'start' => 'global',
         'end'   => 'global',
-    );
+    ];
 
     function get()
     {
@@ -27,7 +27,7 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
 
-        $SQL->addSelect(SQL::newFunction('entry_datetime', array('SUBSTR', 0, 10)), 'entry_date', null, 'DISTINCT');
+        $SQL->addSelect(SQL::newFunction('entry_datetime', ['SUBSTR', 0, 10]), 'entry_date', null, 'DISTINCT');
 
         $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
@@ -39,7 +39,7 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
         ACMS_Filter::entrySpan($SQL, $ym . '-01 00:00:00', $ym . '-31 23:59:59');
         $q  = $SQL->get(dsn());
 
-        $exists = array();
+        $exists = [];
         $all    = $DB->query($q, 'all');
         foreach ($all as $row) {
             $exists[]   = $row['entry_date'];
@@ -50,10 +50,10 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
         $label  = configArray('calendar_week_label');
         for ($i = 0; $i < 7; $i++) {
             $w  = ($beginW + $i) % 7;
-            $Tpl->add('weekLabel:loop', array(
+            $Tpl->add('weekLabel:loop', [
                 'w'     => $w,
                 'label' => $label[$w],
-            ));
+            ]);
         }
 
         //--------
@@ -74,22 +74,22 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
         for ($day = 1; $day <= $lastDay; $day++) {
             $date   = $ym . '-' . sprintf('%02d', $day);
             if (in_array($date, $exists, true)) {
-                $Tpl->add('link', array(
+                $Tpl->add('link', [
                     'w'     => $curW,
-                    'url'   => acmsLink(array(
+                    'url'   => acmsLink([
                         'bid'   => $this->bid,
                         'cid'   => $this->cid,
-                        'date'  => array(
+                        'date'  => [
                             intval($y), intval($m), intval($day)
-                        ),
-                    )),
+                        ],
+                    ]),
                     'day'   => $day,
-                ));
+                ]);
             } else {
-                $Tpl->add('none', array(
+                $Tpl->add('none', [
                     'w'     => $curW,
                     'day'   => $day,
-                ));
+                ]);
             }
             $Tpl->add('day:loop');
             $curW   = ($curW + 1) % 7;
@@ -112,36 +112,36 @@ class ACMS_GET_Calendar_Month extends ACMS_GET
 
         $prevtime   = mktime(0, 0, 0, intval($m) - 1, 1, intval($y));
         $nexttime   = mktime(0, 0, 0, intval($m) + 1, 1, intval($y));
-        $vars   = array(
-            'monthUrl'  => acmsLink(array(
+        $vars   = [
+            'monthUrl'  => acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
-                'date'  => array($y, $m),
-            )),
+                'date'  => [$y, $m],
+            ]),
             'month' => intval($m),
-            'yearUrl'   => acmsLink(array(
+            'yearUrl'   => acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
                 'date'  => $y,
-            )),
+            ]),
             'year'  => $y,
-            'prevUrl'   => acmsLink(array(
+            'prevUrl'   => acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
-                'date'  => array(
+                'date'  => [
                     date('Y', $prevtime),
                     date('m', $prevtime),
-                ),
-            )),
-            'nextUrl'   => acmsLink(array(
+                ],
+            ]),
+            'nextUrl'   => acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
-                'date'  => array(
+                'date'  => [
                     date('Y', $nexttime),
                     date('m', $nexttime),
-                ),
-            )),
-        );
+                ],
+            ]),
+        ];
         $Tpl->add(null, $vars);
 
         return $Tpl->get();

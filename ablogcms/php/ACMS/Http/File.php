@@ -116,7 +116,7 @@ class ACMS_Http_File extends ACMS_Http
      *
      * @param array $mimeTypes
      */
-    public function validateFormat($mimeTypes = array())
+    public function validateFormat($mimeTypes = [])
     {
         // 許可ファイル拡張子をまとめておく
         if (empty($mimeTypes)) {
@@ -165,7 +165,7 @@ class ACMS_Http_File extends ACMS_Http
      */
     public function getCsv()
     {
-        $this->validateFormat(array('csv', 'text/csv', 'text/plain', 'html', 'text/html', 'application/csv'));
+        $this->validateFormat(['csv', 'text/csv', 'text/plain', 'html', 'text/html', 'application/csv']);
         $path = $this->getPath();
 
         $csv = $this->convertEncoding($path);

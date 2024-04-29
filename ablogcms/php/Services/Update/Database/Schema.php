@@ -60,7 +60,7 @@ class Schema
     protected $engineDefine;
 
     /**
-     * @var \Acms\Services\Update\DatabaseInfo
+     * @var \Acms\Services\Update\Database\DatabaseInfo
      */
     protected $dbInfo;
 
@@ -103,7 +103,7 @@ class Schema
         $now_tbs = $this->listUp($this->schema);
         $def_tbs = $this->listUp($this->define);
 
-        $haystack = array();
+        $haystack = [];
         foreach ($def_tbs as $tb) {
             if (array_search($tb, $now_tbs, true) === false) {
                 $haystack[] = $tb;
@@ -123,8 +123,8 @@ class Schema
     {
         $now = null;
         $def = null;
-        $addRam = array();
-        $changeRam = array();
+        $addRam = [];
+        $changeRam = [];
 
         if (isset($this->schema[$table])) {
             $now = $this->schema[$table];
@@ -134,10 +134,10 @@ class Schema
         }
 
         if (empty($def)) {
-            return array(
-                'add' => array(),
-                'change' => array(),
-            );
+            return [
+                'add' => [],
+                'change' => [],
+            ];
         }
 
         $defineFields = $this->listUp($def);
@@ -167,10 +167,10 @@ class Schema
             }
         }
 
-        return array(
+        return [
             'add' => $addRam,
             'change' => $changeRam,
-        );
+        ];
     }
 
     /**
@@ -182,9 +182,9 @@ class Schema
      */
     public function compareIndex($table)
     {
-        $currentIndex = array();
-        $updateIndex = array();
-        $resultIndex = array();
+        $currentIndex = [];
+        $updateIndex = [];
+        $resultIndex = [];
         if (isset($this->dbIndex[$table])) {
             $currentIndex = $this->dbIndex[$table];
         }
@@ -329,7 +329,7 @@ class Schema
         }
 
         $columns = $this->listUp($now);
-        $unused = array();
+        $unused = [];
         foreach ($columns as $key) {
             /**
              * ALTER TABLE DROP ( TEMP )
@@ -355,7 +355,7 @@ class Schema
             return;
         }
 
-        $ary = array();
+        $ary = [];
         foreach ($index as $idx) {
             $name = $idx['Key_name'];
             $ary[$name] = $name;
@@ -397,10 +397,10 @@ class Schema
     public function listUp($ary)
     {
         if (empty($ary)) {
-            return array();
+            return [];
         }
 
-        return array_merge(array_diff(array_keys($ary), array('')));
+        return array_merge(array_diff(array_keys($ary), ['']));
     }
 
     /**
@@ -420,10 +420,10 @@ class Schema
     {
         $tables = $this->dbInfo->getTables();
         if (!is_array($tables)) {
-            return array();
+            return [];
         }
 
-        $def = array();
+        $def = [];
         foreach ($tables as $table) {
             $columns = $this->dbInfo->getColumns($table);
             $def[$table] = $columns;
@@ -440,10 +440,10 @@ class Schema
     {
         $tables = $this->dbInfo->getTables();
         if (!is_array($tables)) {
-            return array();
+            return [];
         }
 
-        $def = array();
+        $def = [];
         foreach ($tables as $table) {
             $columns = $this->dbInfo->getIndex($table);
             $def[$table] = $columns;

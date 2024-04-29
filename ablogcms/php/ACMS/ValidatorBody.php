@@ -2,13 +2,22 @@
 
 class ACMS_ValidatorBody
 {
-    function required($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function required($val)
     {
         $tmp = preg_replace('/^[\s　]*(.*?)[\s　]*$/u', '\1', $val ?? '');
         return !empty($tmp) or ('0' === $tmp);
     }
 
-    function minlength($val, $arg)
+    /**
+     * @param string|null $val
+     * @param string $arg 最小文字数
+     * @return bool
+     */
+    public function minlength($val, $arg)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -19,7 +28,12 @@ class ACMS_ValidatorBody
         return intval($arg) <= mb_strlen($string, 'UTF-8');
     }
 
-    function maxlength($val, $arg)
+    /**
+     * @param string|null $val
+     * @param string $arg 最大文字数
+     * @return bool
+     */
+    public function maxlength($val, $arg)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -30,7 +44,12 @@ class ACMS_ValidatorBody
         return intval($arg) >= mb_strlen($string, 'UTF-8');
     }
 
-    function min($val, $arg)
+    /**
+     * @param string|null $val
+     * @param string $arg 最小値
+     * @return bool
+     */
+    public function min($val, $arg)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -38,6 +57,11 @@ class ACMS_ValidatorBody
         return intval($arg) <= intval($val);
     }
 
+    /**
+     * @param string|null $val
+     * @param string $arg 最大値
+     * @return bool
+     */
     function max($val, $arg)
     {
         if ('' === $val || null === $val) {
@@ -46,7 +70,12 @@ class ACMS_ValidatorBody
         return intval($arg) >= intval($val);
     }
 
-    function regex($val, $regex)
+    /**
+     * @param string|null $val
+     * @param string $regex 正規表現文字列 デリミタは@を使用
+     * @return bool
+     */
+    public function regex($val, $regex)
     {
         if (empty($regex)) {
             return false;
@@ -64,13 +93,20 @@ class ACMS_ValidatorBody
         return preg_match($regex, $val) || multiBytePregMatch($regex . 'u', $val);
     }
 
-    function regexp($val, $regexp)
+    /**
+     * @param string|null $val
+     * @param string $regexp 正規表現文字列 デリミタは@を使用
+     */
+    public function regexp($val, $regexp)
     {
-        $validator = new ACMS_Validator();
-        return $validator->regex($val, $regexp);
+        return $this->regex($val, $regexp);
     }
 
-    function digits($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function digits($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -78,7 +114,11 @@ class ACMS_ValidatorBody
         return is_numeric($val);
     }
 
-    function email($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function email($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -87,7 +127,11 @@ class ACMS_ValidatorBody
         return preg_match($ptn, $val);
     }
 
-    function url($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function url($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -95,12 +139,22 @@ class ACMS_ValidatorBody
         return multiBytePregMatch('@^(https?|ftp)(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)$@u', $val);
     }
 
-    function equalTo($val, $name, $Field)
+    /**
+     * @param string|null $val
+     * @param string $name 比較対象のフィールド名
+     * @param Field $Field
+     * @return bool
+     */
+    public function equalTo($val, $name, $Field)
     {
         return $val == $Field->get($name);
     }
 
-    function dates($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function dates($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -109,7 +163,11 @@ class ACMS_ValidatorBody
         return preg_match($ptn, $val);
     }
 
-    function times($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function times($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -118,7 +176,12 @@ class ACMS_ValidatorBody
         return preg_match($ptn, $val);
     }
 
-    function in($val, $choice)
+    /**
+     * @param string|null $val
+     * @param array $choice 選択肢
+     * @return bool
+     */
+    public function in($val, $choice)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -126,10 +189,14 @@ class ACMS_ValidatorBody
         if (!is_array($choice)) {
             return false;
         }
-        return in_array($val, $choice);
+        return in_array($val, $choice, true);
     }
 
-    function katakana($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function katakana($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -140,7 +207,11 @@ class ACMS_ValidatorBody
         return false;
     }
 
-    function hiragana($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function hiragana($val)
     {
         if ('' === $val || null === $val) {
             return true;
@@ -151,31 +222,54 @@ class ACMS_ValidatorBody
         return false;
     }
 
-    function all_justChecked($ary, $cnt)
+    /**
+     * @param array $ary
+     * @param string $cnt
+     * @return bool
+     */
+    public function all_justChecked($ary, $cnt)
     {
         return intval($cnt) == count($ary);
     }
 
-    function all_minChecked($ary, $min)
+    /**
+     * @param array $ary
+     * @param string $min
+     * @return bool
+     */
+    public function all_minChecked($ary, $min)
     {
         return intval($min) <= count($ary);
     }
 
-    function all_maxChecked($ary, $max)
+    /**
+     * @param array $ary
+     * @param string $max
+     * @return bool
+     */
+    public function all_maxChecked($ary, $max)
     {
         return intval($max) >= count($ary);
     }
 
-    function all_unique($ary)
+    /**
+     * @param array $ary
+     * @return bool
+     */
+    public function all_unique($ary)
     {
-        if (! is_array($ary)) {
+        if (!is_array($ary)) {
             return true;
         }
         $_ary = array_unique($ary);
         return count($ary) === count($_ary);
     }
 
-    function password($val)
+    /**
+     * @param string|null $val
+     * @return bool
+     */
+    public function password($val)
     {
         if ('' === $val || null === $val) {
             return true;

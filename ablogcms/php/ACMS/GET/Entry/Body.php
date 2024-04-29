@@ -7,7 +7,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 {
     /**
      * 階層設定
-     * @inheritdoc
+     * @inheritDoc
      */
     public $_axis = [ // phpcs:ignore
         'bid' => 'descendant-or-self',
@@ -16,7 +16,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 
     /**
      * スコープ設定
-     * @inheritdoc
+     * @inheritDoc
      */
     public $_scope = [ // phpcs:ignore
         'uid' => 'global',
@@ -84,7 +84,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     /**
      * 会員限定記事
      *
-     * @var false
+     * @var bool
      */
     protected $membersOnly = false;
 
@@ -164,7 +164,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($tpl);
 
-        if (in_array(ADMIN, ['entry-edit', 'entry_editor'])) {
+        if (in_array(ADMIN, ['entry-edit', 'entry_editor'], true)) {
             // 編集ページ
             $this->editPage($tpl);
         } elseif (ADMIN === 'form2-edit') {
@@ -236,6 +236,13 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $sql = SQL::newSelect('entry');
         }
         $sql->addWhereOpr('entry_id', $this->eid);
+        /**
+         * @var false|array{
+         *   entry_id: int,
+         *   entry_title: string,
+         *   entry_members_only: string,
+         * } $entry
+         */
         $entry = DB::query($sql->get(dsn()), 'row');
 
         if (empty($entry)) {
@@ -422,19 +429,19 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $tpl->add('entry:loop', $vars);
         }
 
+        $rootVars = [];
         if ('random' <> strtolower($this->config['order'][0]) && ($this->config['pager_on'] === 'on')) {
             $itemsAmount = intval(DB::query($entryAmountSql->get(dsn()), 'one'));
 
-            $vars = [];
             $delta = intval($this->config['pager_delta']);
             $curAttr = $this->config['pager_cur_attr'];
             if (is_numeric($this->config['offset'])) {
                 $itemsAmount -= $this->config['offset'];
             }
             $limit = idval($this->config['limit']);
-            $vars += $this->buildPager($this->page, $limit, $itemsAmount, $delta, $curAttr, $tpl);
+            $rootVars += $this->buildPager($this->page, $limit, $itemsAmount, $delta, $curAttr, $tpl);
         }
-        $tpl->add(null, $vars);
+        $tpl->add(null, $rootVars);
     }
 
     /**
@@ -645,9 +652,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                     )
                 )
             ) {
-                $tpl->add('edit_inplace', array(
+                $tpl->add('edit_inplace', [
                     'class' => 'js-edit_inplace'
-                ));
+                ]);
             }
         }
     }
@@ -678,9 +685,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         }
         $sql->addWhere($where2);
         if ($sortOrder === 'desc') {
-            ACMS_Filter::entryOrder($sql, array($sortFieldName . '-desc', 'id-desc'), $this->uid, $this->cid);
+            ACMS_Filter::entryOrder($sql, [$sortFieldName . '-desc', 'id-desc'], $this->uid, $this->cid);
         } else {
-            ACMS_Filter::entryOrder($sql, array($sortFieldName . '-asc', 'id-asc'), $this->uid, $this->cid);
+            ACMS_Filter::entryOrder($sql, [$sortFieldName . '-asc', 'id-asc'], $this->uid, $this->cid);
         }
         ACMS_Filter::entrySession($sql);
         $q = $sql->get(dsn());
@@ -731,9 +738,9 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         }
         $sql->addWhere($where2);
         if ($sortOrder === 'desc') {
-            ACMS_Filter::entryOrder($sql, array($sortFieldName . '-asc', 'id-asc'), $this->uid, $this->cid);
+            ACMS_Filter::entryOrder($sql, [$sortFieldName . '-asc', 'id-asc'], $this->uid, $this->cid);
         } else {
-            ACMS_Filter::entryOrder($sql, array($sortFieldName . '-desc', 'id-desc'), $this->uid, $this->cid);
+            ACMS_Filter::entryOrder($sql, [$sortFieldName . '-desc', 'id-desc'], $this->uid, $this->cid);
         }
         ACMS_Filter::entrySession($sql);
         $q = $sql->get(dsn());
@@ -903,7 +910,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 $_all = array_reverse($_all);
                 break;
             case 'current_order':
-                $_all = array(array_shift($_all));
+                $_all = [array_shift($_all)];
                 break;
             default:
                 break;
@@ -937,7 +944,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $subCategories = loadSubCategoriesAll($eid, $rvid);
         foreach ($subCategories as $i => $category) {
             if ($i !== count($subCategories) - 1) {
-                $tpl->add(array('glue', 'sub_category:loop'));
+                $tpl->add(['glue', 'sub_category:loop']);
             }
             $tpl->add('sub_category:loop', [
                 'name' => $category['category_name'],
@@ -1076,7 +1083,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             || (roleAvailableUser() && (roleAuthorization('entry_edit_all', BID) || (roleAuthorization('entry_edit', BID) && $uid == SUID)))
         ) {
             $entry = ACMS_RAM::entry($eid);
-            $val = array(
+            $val = [
                 'bid' => $bid,
                 'cid' => $cid,
                 'eid' => $eid,
@@ -1088,11 +1095,11 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                     'cid' => $cid,
                     'eid' => $eid,
                 ]),
-            );
+            ];
 
             if (!(sessionWithApprovalAdministrator() && $entry['entry_approval'] === 'pre_approval')) {
-                $tpl->add(array_merge(array('edit'), $block), $val);
-                $tpl->add(array_merge(array('revision'), $block), $val);
+                $tpl->add(array_merge(['edit'], $block), $val);
+                $tpl->add(array_merge(['revision'], $block), $val);
                 if (BID === $bid) {
                     $types = configArray('column_add_type');
                     if (is_array($types)) {
@@ -1211,20 +1218,20 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         // build primary image
         $clid = intval($row['entry_primary_image']);
         if (config('entry_body_image_on') === 'on') {
-            $config = array(
+            $config = [
                 'imageX' => config('entry_body_image_x', 200),
                 'imageY' => config('entry_body_image_y', 200),
                 'imageTrim' => config('entry_body_image_trim', 'off'),
                 'imageCenter' => config('entry_body_image_zoom', 'off'),
                 'imageZoom' => config('entry_body_image_center', 'off'),
-            );
+            ];
             $tpl->add('mainImage', TplHelper::buildImage($tpl, $clid, $config, $this->mainImageEagerLoadingData));
         }
         // build related entry
         if ($this->config['related_entry_on'] === 'on') {
-            TplHelper::buildRelatedEntriesList($tpl, $eid, $this->relatedEntryEagerLoadingData, array('relatedEntry', 'entry:loop'));
+            TplHelper::buildRelatedEntriesList($tpl, $eid, $this->relatedEntryEagerLoadingData, ['relatedEntry', 'entry:loop']);
         } else {
-            $tpl->add(array('relatedEntry', 'entry:loop'));
+            $tpl->add(['relatedEntry', 'entry:loop']);
         }
         // admin
         $this->buildAdminEntryEdit($bid, $uid, $cid, $eid, $tpl, 'entry:loop');
@@ -1255,10 +1262,10 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $Field = ($this->config['category_field_on'] === 'on') ? loadCategoryField($cid) : new Field();
             $Field->setField('fieldCategoryName', ACMS_RAM::categoryName($cid));
             $Field->setField('fieldCategoryCode', ACMS_RAM::categoryCode($cid));
-            $Field->setField('fieldCategoryUrl', acmsLink(array(
+            $Field->setField('fieldCategoryUrl', acmsLink([
                 'bid' => $bid,
                 'cid' => $cid,
-            )));
+            ]));
             $Field->setField('fieldCategoryId', $cid);
             $tpl->add('categoryField', $this->buildField($Field, $tpl));
         }
@@ -1267,11 +1274,11 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $Field = ($this->config['blog_field_on'] === 'on') ? loadBlogField($bid) : new Field();
             $Field->setField('fieldBlogName', ACMS_RAM::blogName($bid));
             $Field->setField('fieldBlogCode', ACMS_RAM::blogCode($bid));
-            $Field->setField('fieldBlogUrl', acmsLink(array('bid' => $bid)));
+            $Field->setField('fieldBlogUrl', acmsLink(['bid' => $bid]));
             $tpl->add('blogField', $this->buildField($Field, $tpl));
         }
         $link = (config('entry_body_link_url') === 'on') ? $row['entry_link'] : '';
-        $vars += array(
+        $vars += [
             'status' => $row['entry_status'],
             'titleUrl' => !empty($link) ? $link : $permalink,
             'title' => addPrefixEntryTitle(
@@ -1296,7 +1303,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             'sort' => $row['entry_sort'],
             'usort' => $row['entry_user_sort'],
             'csort' => $row['entry_category_sort']
-        );
+        ];
         if (!empty($link)) {
             $vars += [
                 'link' => $link,
@@ -1314,8 +1321,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         }
         // build new
         if (strtotime($row['entry_datetime']) + intval($this->config['newtime']) > requestTime()) {
-            $tpl->add(array('new:touch', 'entry:loop')); // 後方互換
-            $tpl->add(array('new', 'entry:loop'));
+            $tpl->add(['new:touch', 'entry:loop']); // 後方互換
+            $tpl->add(['new', 'entry:loop']);
         }
     }
 
@@ -1323,7 +1330,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      * Not Found
      *
      * @param Template $tpl
-     * @return void
+     * @return string
      */
     protected function resultsNotFound(Template $tpl): string
     {

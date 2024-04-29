@@ -18,8 +18,14 @@ use AcmsLogger;
 
 class CacheManager
 {
+    /**
+     * @var array
+     */
     protected $config;
 
+    /**
+     * @var string
+     */
     protected $cacheDir;
 
     /**
@@ -33,6 +39,7 @@ class CacheManager
 
     /**
      * テンプレート用キャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function template()
     {
@@ -41,6 +48,7 @@ class CacheManager
 
     /**
      * フィールド用キャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function field()
     {
@@ -49,6 +57,7 @@ class CacheManager
 
     /**
      * 一時的に使えるキャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function temp()
     {
@@ -57,6 +66,7 @@ class CacheManager
 
     /**
      * モジュール用キャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function module()
     {
@@ -65,6 +75,7 @@ class CacheManager
 
     /**
      * コンフィグ用キャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function config()
     {
@@ -98,6 +109,7 @@ class CacheManager
 
     /**
      * ページ用キャッシュ
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     public function page()
     {
@@ -182,6 +194,7 @@ class CacheManager
      *
      * @param string $name
      * @param array $config
+     * @return \Acms\Services\Cache\Contracts\AdapterInterface
      */
     protected function createStandardCache($name, $config)
     {
@@ -223,6 +236,7 @@ class CacheManager
      * @param string $drivers
      * @param string $namespace
      * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\AdapterInterface
      *
      * @throws NotFoundException
      */
@@ -254,6 +268,7 @@ class CacheManager
      *
      * @param string $drivers
      * @param string $namespace
+     * @return \Symfony\Component\Cache\Adapter\TagAwareAdapterInterface
      *
      * @throws NotFoundException
      */
@@ -282,6 +297,7 @@ class CacheManager
 
     /**
      * phpキャッシュドライバーが使用可能か
+     * @return boolean
      */
     protected function canPhpDriver()
     {
@@ -290,6 +306,9 @@ class CacheManager
 
     /**
      * phpキャッシュドライバーの作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\PhpFilesAdapter
      */
     protected function createPhpDriver($namespace, $lifetime)
     {
@@ -302,6 +321,7 @@ class CacheManager
 
     /**
      * ファイルキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canFileDriver()
     {
@@ -310,6 +330,9 @@ class CacheManager
 
     /**
      * ファイルキャッシュドライバーの作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\FilesystemAdapter
      */
     protected function createFileDriver($namespace, $lifetime)
     {
@@ -317,7 +340,8 @@ class CacheManager
     }
 
     /**
-     * ファイルキャッシュドライバーが使用可能か
+     * データベースキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canDatabaseDriver()
     {
@@ -325,7 +349,10 @@ class CacheManager
     }
 
     /**
-     * ファイルキャッシュドライバーの作成
+     * データベースキャッシュドライバーの作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Acms\Services\Cache\Adapters\Custom\DatabaseTagAwareAdapter
      */
     protected function createDatabaseDriver($namespace, $lifetime)
     {
@@ -334,6 +361,7 @@ class CacheManager
 
     /**
      * メモリーキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canMemoryDriver()
     {
@@ -342,6 +370,9 @@ class CacheManager
 
     /**
      * メモリーキャッシュドライバーの作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\ArrayAdapter
      */
     protected function createMemoryDriver($namespace, $lifetime)
     {
@@ -350,6 +381,7 @@ class CacheManager
 
     /**
      * APCuキャッシュドライバーが使用可能か
+     * @return boolean
      */
     protected function canApcuDriver()
     {
@@ -358,6 +390,9 @@ class CacheManager
 
     /**
      * APCuキャッシュドライバーを作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\ApcuAdapter
      */
     protected function createApcuDriver($namespace, $lifetime)
     {
@@ -366,6 +401,7 @@ class CacheManager
 
     /**
      * Redisキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canRedisDriver()
     {
@@ -374,6 +410,9 @@ class CacheManager
 
     /**
      * Redisキャッシュドライバーを作成
+     * @param string $namespace
+     * @param int $lifetime
+     * @return \Symfony\Component\Cache\Adapter\RedisAdapter
      */
     protected function createRedisDriver($namespace, $lifetime)
     {
@@ -385,6 +424,7 @@ class CacheManager
 
     /**
      * ファイルキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canFileTagDriver()
     {
@@ -393,6 +433,8 @@ class CacheManager
 
     /**
      * ファイルキャッシュドライバーの作成
+     * @param string $namespace
+     * @return \Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter
      */
     protected function createFileTagDriver($namespace)
     {
@@ -401,6 +443,7 @@ class CacheManager
 
     /**
      * DBキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canDatabaseTagDriver()
     {
@@ -408,7 +451,9 @@ class CacheManager
     }
 
     /**
-     * ファイルキャッシュドライバーの作成
+     * DBキャッシュドライバーの作成
+     * @param string $namespace
+     * @return \Acms\Services\Cache\Adapters\Custom\DatabaseTagAwareAdapter
      */
     protected function createDatabaseTagDriver($namespace)
     {
@@ -417,6 +462,7 @@ class CacheManager
 
     /**
      * Redisキャッシュドライバーが使用可能か
+     * @return true
      */
     protected function canRedisTagDriver()
     {
@@ -425,6 +471,8 @@ class CacheManager
 
     /**
      * Redisキャッシュドライバーを作成
+     * @param string $namespace
+     * @return \Symfony\Component\Cache\Adapter\RedisTagAwareAdapter
      */
     protected function createRedisTagDriver($namespace)
     {
@@ -436,6 +484,12 @@ class CacheManager
 
     /**
      * Redisクライアントを作成
+     * @param string $host
+     * @param int $port
+     * @param string $password
+     * @param string $db
+     *
+     * @return \Redis|\RedisArray|\RedisCluster|\Symfony\Component\Cache\Traits\RedisClusterProxy|\Symfony\Component\Cache\Traits\RedisProxy
      */
     protected function createRedisClient($host, $port, $password = '', $db = '')
     {
@@ -455,6 +509,7 @@ class CacheManager
     /**
      * 他システムの衝突を避けるため、ネームスペースにドメインからのハッシュを付与
      *
+     * @param string $namespace
      * @return string
      */
     protected function getNameSpace($namespace)

@@ -22,7 +22,7 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
         $limit  = LIMIT ? LIMIT : $limits[config('admin_limit_default')];
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         //----------
         // init SQL
@@ -37,7 +37,7 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
         //-------
         // limit
         foreach ($limits as $val) {
-            $_vars  = array('limit' => $val);
+            $_vars  = ['limit' => $val];
             if ($limit == $val) {
                 $_vars['selected'] = config('attr_selected');
             }
@@ -60,8 +60,8 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
             config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
-            array(),
-            array('admin' => ADMIN)
+            [],
+            ['admin' => ADMIN]
         );
 
         $SQL->setLimit($limit, (PAGE - 1) * $limit);
@@ -71,7 +71,7 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
         $DB->query($q, 'fetch');
 
         while ($row = $DB->fetch($q)) {
-            $_vars  = array();
+            $_vars  = [];
             $rvid   = $row['approval_revision_id'];
             $type   = $row['approval_type'];
 
@@ -88,7 +88,7 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
                 }
             }
 
-            $_vars   += array(
+            $_vars   += [
                 'eid'               => EID,
                 'rvid'              => $rvid,
                 'type'              => $type,
@@ -96,18 +96,18 @@ class ACMS_GET_Admin_Entry_ApprovalHistory extends ACMS_GET_Admin_Entry
                 'requestUser'       => ACMS_RAM::userName($row['approval_request_user_id']),
                 'requestUserIcon'   => loadUserIcon($row['approval_request_user_id']),
                 'comment'           => $row['approval_comment'],
-                'revisionUrl'       => acmsLink(array(
+                'revisionUrl'       => acmsLink([
                     'bid'   => BID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/revision-preview.html',
-                    'query' => array(
+                    'query' => [
                         'rvid'  => $rvid,
                         'trash' => 'show',
-                    ),
-                )),
-            );
+                    ],
+                ]),
+            ];
             $type = 'type#' . $type;
-            $Tpl->add(array($type, 'history:loop'));
+            $Tpl->add([$type, 'history:loop']);
             $Tpl->add('history:loop', $_vars);
         }
 

@@ -17,12 +17,11 @@ class ACMS_GET_Admin_Media_ItemJson extends ACMS_GET
         } catch (\Exception $e) {
             AcmsLogger::notice('メディアの詳細情報のJSON取得に失敗しました', Common::exceptionArray($e));
 
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
-        die();
     }
 
 
@@ -31,8 +30,8 @@ class ACMS_GET_Admin_Media_ItemJson extends ACMS_GET
         $data = Media::getMedia($mid);
         $tags = Media::getMediaLabel($mid);
 
-        return array(
+        return [
             'item' => Media::buildJson($mid, $data, $tags, $data['bid']),
-        );
+        ];
     }
 }

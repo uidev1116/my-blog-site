@@ -52,13 +52,13 @@ class Line
             $session->save();
         }
 
-        $this->loginUrlParam = array(
+        $this->loginUrlParam = [
             'response_type' => 'code',
             'client_id' => $this->appId,
             'redirect_uri' => $this->getRedirectUrl(),
             'state' => $this->state,
             'scope' => 'profile',
-        );
+        ];
     }
 
     /**
@@ -68,7 +68,7 @@ class Line
      */
     public function getAuthUrl(): string
     {
-        $query = array();
+        $query = [];
         foreach ($this->loginUrlParam as $key => $val) {
             $query[] = "{$key}={$val}";
         }
@@ -89,16 +89,16 @@ class Line
         if (empty($code)) {
             throw new \RuntimeException('Empty code.');
         }
-        $postData = array(
+        $postData = [
             'grant_type'    => 'authorization_code',
             'code'          => $code,
             'redirect_uri'  => $this->getRedirectUrl(),
             'client_id'     => $this->appId,
             'client_secret' => $this->appSecret,
-        );
+        ];
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
         curl_setopt($ch, CURLOPT_URL, 'https://api.line.me/oauth2/v2.1/token');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
@@ -125,7 +125,7 @@ class Line
     public function getLineAccount($accessToken): array
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $accessToken));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $accessToken]);
         curl_setopt($ch, CURLOPT_URL, 'https://api.line.me/v2/profile');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

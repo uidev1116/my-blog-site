@@ -12,30 +12,30 @@ class ApiEngine implements Contracts\ViewInterface
     /**
      * @var array
      */
-    protected $json = array();
+    protected $json = [];
 
     /**
      * @var array
      */
-    protected $blockData = array();
+    protected $blockData = [];
 
     /**
      * @var array
      */
-    protected $childData = array();
+    protected $childData = [];
 
     /**
      * @var array
      */
-    protected $stackData = array();
+    protected $stackData = [];
 
     /**
      * テンプレートの初期化
      *
      * @param string $txt
-     * @param ACMS_Corrector $Corrector
+     * @param \ACMS_Corrector $Corrector
      *
-     * @return bool|self
+     * @return self
      */
     public function init($txt, $Corrector = null)
     {
@@ -69,18 +69,18 @@ class ApiEngine implements Contracts\ViewInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function add($blocks = array(), $vars = array())
+    public function add($blocks = [], $vars = [])
     {
         if (!is_array($blocks)) {
-            $blocks = is_string($blocks) ? array($blocks) : null;
+            $blocks = is_string($blocks) ? [$blocks] : null;
         }
         if (!is_array($vars)) {
-            $vars = array();
+            $vars = [];
         }
         if (empty($vars)) {
-            $vars = array();
+            $vars = [];
         }
 
         if (empty($blocks)) {
@@ -96,22 +96,22 @@ class ApiEngine implements Contracts\ViewInterface
             if (count($blocks) > 1) {
                 // ルートブロックでないので、スタック
                 if (isset($this->stackData[$blocks[1]])) {
-                    $this->stackData[$blocks[1]] = $this->mergeLevel1($this->stackData[$blocks[1]], array($blocks[0] => $vars));
+                    $this->stackData[$blocks[1]] = $this->mergeLevel1($this->stackData[$blocks[1]], [$blocks[0] => $vars]);
                 } else {
                     if (false !== strpos($blocks[1], ':loop')) {
-                        $this->stackData[$blocks[1]] = array();
-                        $this->stackData[$blocks[1]][] = array($blocks[0] => $vars);
+                        $this->stackData[$blocks[1]] = [];
+                        $this->stackData[$blocks[1]][] = [$blocks[0] => $vars];
                     } else {
-                        $this->stackData[$blocks[1]] = array($blocks[0] => $vars);
+                        $this->stackData[$blocks[1]] = [$blocks[0] => $vars];
                     }
                 }
             } else {
                 // ルートブロックを処理
                 if (isset($this->blockData[$blocks[0]])) {
-                    $this->blockData = $this->mergeLevel1($this->blockData, array($blocks[0] => $vars));
+                    $this->blockData = $this->mergeLevel1($this->blockData, [$blocks[0] => $vars]);
                 } else {
                     if (false !== strpos($blocks[0], ':loop')) {
-                        $this->blockData[$blocks[0]] = array();
+                        $this->blockData[$blocks[0]] = [];
                         $this->blockData[$blocks[0]][] = $vars;
                     } else {
                         $this->blockData[$blocks[0]] = $vars;
@@ -131,7 +131,7 @@ class ApiEngine implements Contracts\ViewInterface
         foreach ($arr1 as $key => $value) {
             if (isset($arr2[$key])) {
                 if (!$this->isVectorArray($arr1[$key])) {
-                    $arr1[$key] = array();
+                    $arr1[$key] = [];
                     $arr1[$key][] = $value;
                 }
                 $arr1[$key][] = $arr2[$key];

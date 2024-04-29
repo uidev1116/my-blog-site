@@ -2,9 +2,9 @@
 
 class ACMS_GET_Admin_User_Select extends ACMS_GET_Admin
 {
-    public $_scope = array(
+    public $_scope = [
         'uid'   => 'global',
-    );
+    ];
     function get()
     {
         $Tpl = new Template($this->tpl, new ACMS_Corrector());
@@ -13,7 +13,7 @@ class ACMS_GET_Admin_User_Select extends ACMS_GET_Admin
             BID,
             $this->uid,
             'loop',
-            array('administrator', 'editor', 'contributor'),
+            ['administrator', 'editor', 'contributor'],
             false,
             'sort-asc'
         ));

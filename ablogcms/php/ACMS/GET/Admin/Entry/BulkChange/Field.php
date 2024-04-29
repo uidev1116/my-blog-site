@@ -17,11 +17,11 @@ class ACMS_GET_Admin_Entry_BulkChange_Field extends ACMS_GET_Admin_Entry_BulkCha
     {
         foreach (configArray('bulkChangeFieldKey') as $i => $key) {
             $block = 'field#' . $key;
-            $tpl->add(array($block, 'changeField:loop'));
-            $tpl->add('changeField:loop', array(
+            $tpl->add([$block, 'changeField:loop']);
+            $tpl->add('changeField:loop', [
                 'label' => config('bulkChangeFieldLabel', 'ラベルを設定してください', $i),
                 'key' => $key,
-            ));
+            ]);
         }
     }
 }

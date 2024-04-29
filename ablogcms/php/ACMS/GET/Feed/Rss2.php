@@ -2,12 +2,12 @@
 
 class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
 {
-    public $_axis = array(
+    public $_axis = [
         'bid'   => 'descendant-or-self',
         'cid'   => 'descendant-or-self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'uid'       => 'global',
         'cid'       => 'global',
         'eid'       => 'global',
@@ -18,9 +18,9 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
         'start'     => 'global',
         'end'       => 'global',
         'page'      => 'global',
-    );
+    ];
 
-    function get()
+    public function get()
     {
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
@@ -37,7 +37,7 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
         $SQL->addSelect('blog_id');
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
         $blogArray  = $DB->query($SQL->get(dsn()), 'all');
-        $exceptBlog = array();
+        $exceptBlog = [];
 
         foreach ($blogArray as $bid) {
             $bid    = $bid['blog_id'];
@@ -73,15 +73,9 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
         if (!empty($this->keyword)) {
             ACMS_Filter::entryKeyword($SQL, $this->keyword);
         }
-        if (!empty($blogField)) {
-            ACMS_Filter::blogField($SQL, $blogField);
-        }
-        if (!empty($categoryField)) {
-            ACMS_Filter::categoryField($SQL, $categoryField);
-        }
-        if (!empty($entryField)) {
-            ACMS_Filter::entryField($SQL, $entryField);
-        }
+        ACMS_Filter::blogField($SQL, $blogField);
+        ACMS_Filter::categoryField($SQL, $categoryField);
+        ACMS_Filter::entryField($SQL, $entryField);
 
         $Amount = new SQL_Select($SQL);
         $Amount->setSelect('*', 'entry_amount', null, 'COUNT');
@@ -106,25 +100,25 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
             $link   = $row['entry_link'];
             $title  = $row['entry_title'];
             $summaryRange   = $row['entry_summary_range'];
-            $permalink  = acmsLink(array(
+            $permalink  = acmsLink([
                 'bid'   => $bid,
                 'cid'   => $cid,
                 'eid'   => $eid,
-            ));
+            ]);
 
-            $vars   = array(
+            $vars   = [
                 'title'     => $row['entry_title'],
                 'link'      => !empty($link) ? $link : $permalink,
                 'creator'   => ACMS_RAM::userName($uid),
                 'permalink' => $permalink,
                 'pubDate'   => date('r', strtotime($row['entry_datetime'])),
-            );
+            ];
 
             if (!empty($cid)) {
                 $vars['category'] = ACMS_RAM::categoryName($cid);
             }
 
-            $vars += $this->buildField(loadEntryField($eid), $Tpl, array('item:loop'));
+            $vars += $this->buildField(loadEntryField($eid), $Tpl, ['item:loop']);
 
             //--------
             // column
@@ -151,9 +145,9 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
             }
         }
 
-        $Tpl->add(null, array(
+        $Tpl->add(null, [
             'lastBuildDate' => date('r', strtotime($lastBuildDate))
-        ));
+        ]);
         return $Tpl->get();
     }
 }

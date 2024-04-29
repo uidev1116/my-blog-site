@@ -5,17 +5,17 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
     /**
      * @var array
      */
-    protected $eids = array();
+    protected $eids = [];
 
     /**
      * @var array
      */
-    protected $entryActions = array();
+    protected $entryActions = [];
 
     /**
      * @var array
      */
-    protected $fieldActions = array();
+    protected $fieldActions = [];
 
     /**
      * Run
@@ -62,7 +62,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
         if (empty($this->entryActions) && empty($this->fieldActions)) {
             throw new \RuntimeException('Process empty.');
         }
-        if (!in_array($this->Post->get('step'), array('3', '4'), true)) {
+        if (!in_array($this->Post->get('step'), ['3', '4'], true)) {
             throw new \RuntimeException('Access denied.');
         }
     }
@@ -91,18 +91,18 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
      */
     protected function buildData($q)
     {
-        $data = array();
+        $data = [];
         $DB = DB::singleton(dsn());
         $DB->query($q, 'fetch');
 
-        $entries = array();
+        $entries = [];
 
         while ($row = $DB->fetch($q)) {
             $eid = $row['entry_id'];
             $uid = $row['entry_user_id'];
-            $entries[] = array(
+            $entries[] = [
                 'eid' => $eid,
-                'url' => acmsLink(array('eid' => $eid)),
+                'url' => acmsLink(['eid' => $eid]),
                 'code' => $row['entry_code'],
                 'datetime' => $row['entry_datetime'],
                 'title' => addPrefixEntryTitle(
@@ -116,7 +116,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
                 'userIcon' => loadUserIcon($uid),
                 'userName' => $row['user_name'],
                 'status#' . $row['entry_status'] => (object)[],
-            );
+            ];
         }
         $data['entry'] = $entries;
 
@@ -132,7 +132,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
     protected function buildChangeField($data)
     {
         // base entry
-        $actions = array();
+        $actions = [];
         $entry = Common::extract('entry');
         foreach ($this->entryActions as $action) {
             $method = Common::camelize($action);
@@ -141,20 +141,20 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
             } else {
                 $value = $entry->get($action);
             }
-            $actions[] = array(
+            $actions[] = [
                 'action' => $action,
                 'value' => $value,
-            );
+            ];
         }
         $data['action'] = $actions;
 
         // entry field
-        $field_actions = array();
+        $field_actions = [];
         foreach ($this->fieldActions as $action) {
-            $field_actions[] = array(
+            $field_actions[] = [
                 'field#' . $action => (object)[],
                 'label' => $this->Post->get('action_field_label_' . $action),
-            );
+            ];
         }
         $data['action_field'] = $field_actions;
 
@@ -176,7 +176,7 @@ class ACMS_GET_Admin_Entry_BulkChange_Confirm extends ACMS_GET_Admin_Entry_BulkC
     protected function entrySubCategoryId($entry)
     {
         $subCategory = $entry->get('entry_sub_category_id');
-        $temp = array();
+        $temp = [];
         foreach (explode(',', $subCategory) as $cid) {
             $temp[] = ACMS_RAM::categoryName($cid);
         }

@@ -2,9 +2,9 @@
 
 class ACMS_GET_Blog_GeoList extends ACMS_GET_Blog_ChildList
 {
-    public $_scope = array(
+    public $_scope = [
         'bid' => 'global',
-    );
+    ];
 
     /**
      * 緯度
@@ -25,19 +25,19 @@ class ACMS_GET_Blog_GeoList extends ACMS_GET_Blog_ChildList
      */
     protected function initVars()
     {
-        return array(
+        return [
             'referencePoint' => config('blog_geo-list_reference_point'),
             'within'  => floatval(config('blog_geo-list_within')),
             'order' => config('blog_geo-list_order'),
             'limit' => intval(config('blog_geo-list_limit')),
             'loop_class' => config('blog_geo-list_loop_class'),
-        );
+        ];
     }
 
     /**
-     * @return mixed
+     * @inheritDoc
      */
-    function get()
+    public function get()
     {
         if (!$this->setConfig()) {
             return '';
@@ -77,8 +77,8 @@ class ACMS_GET_Blog_GeoList extends ACMS_GET_Blog_ChildList
                 $this->lng = $data['lng'];
             }
         } elseif ($this->config['referencePoint'] === 'url_query_string') {
-            $this->lat = $this->Get->get('lat');
-            $this->lng = $this->Get->get('lng');
+            $this->lat = (float)$this->Get->get('lat');
+            $this->lng = (float)$this->Get->get('lng');
         }
     }
 

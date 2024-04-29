@@ -2,15 +2,15 @@
 
 class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if (roleAvailableUser()) {
             if (!roleAuthorization('rule_edit', BID)) {
-                return false;
+                return '';
             }
         } else {
             if (!sessionWithAdministration()) {
-                return false;
+                return '';
             }
         }
 
@@ -37,7 +37,7 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
 
         if (!$all = $DB->query($SQL->get(dsn()), 'all')) {
             $Tpl->add('index#notFound');
-            $Tpl->add(null, array('notice_mess' => 'show'));
+            $Tpl->add(null, ['notice_mess' => 'show']);
             return $Tpl->get();
         }
         $cnt    = count($all);
@@ -55,23 +55,23 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
             $Tpl->add('scope:touch#' . $row['rule_scope']);
 
             for ($i = 1; $i <= $cnt; $i++) {
-                $vars   = array(
+                $vars   = [
                     'value' => $i,
                     'label' => $i,
-                );
+                ];
                 if ($sort == $i) {
                     $vars['selected'] = config('attr_selected');
                 }
                 $Tpl->add('sort:loop', $vars);
             }
 
-            $vars   = array(
+            $vars   = [
                 'rid'   => $rid,
                 'sort'  => $sort,
                 'scope' => $row['rule_scope'],
                 'name'  => $row['rule_name'],
                 'disabled'  => $disabled,
-            );
+            ];
 
             $rbid       = intval($row['rule_blog_id']);
             if (BID === $rbid) {
@@ -92,7 +92,7 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
         }
 
         if (!$this->Post->isNull()) {
-            $Tpl->add(null, array('notice_mess' => 'show'));
+            $Tpl->add(null, ['notice_mess' => 'show']);
         }
 
         return $Tpl->get();
@@ -100,42 +100,42 @@ class ACMS_GET_Admin_Rule_Index extends ACMS_GET_Admin
 
     protected function getLinkVars($bid, $rid)
     {
-        return array(
-            'itemUrl'   => acmsLink(array(
+        return [
+            'itemUrl'   => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'rule_edit',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'configSetBaseUrl' => acmsLink(array(
+                ]),
+            ]),
+            'configSetBaseUrl' => acmsLink([
                 'bid'   => BID,
                 'admin' => 'config_set_base_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'configSetThemeUrl' => acmsLink(array(
+                ]),
+            ]),
+            'configSetThemeUrl' => acmsLink([
                 'bid'   => BID,
                 'admin' => 'config_set_theme_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'configSetEditorUrl' => acmsLink(array(
+                ]),
+            ]),
+            'configSetEditorUrl' => acmsLink([
                 'bid'   => BID,
                 'admin' => 'config_set_editor_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-            'moduleUrl' => acmsLink(array(
+                ]),
+            ]),
+            'moduleUrl' => acmsLink([
                 'bid'   => BID,
                 'admin' => 'module_index',
-                'query' => new Field(array(
+                'query' => new Field([
                     'rid'   => $rid,
-                )),
-            )),
-        );
+                ]),
+            ]),
+        ];
     }
 }

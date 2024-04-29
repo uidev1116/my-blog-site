@@ -46,203 +46,203 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
     function roleAuth(&$Tpl)
     {
-        $Tpl->add('dashboard', array(
-            'url'   => acmsLink(array('admin' => 'top', 'bid' => BID)),
+        $Tpl->add('dashboard', [
+            'url'   => acmsLink(['admin' => 'top', 'bid' => BID]),
             'stay'  => $this->linkCheck('top'),
-        ));
+        ]);
 
         if (roleAuthorization('entry_edit', BID, EID)) {
             if (editionWithProfessional()) {
-                $approval = array(
-                    'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
+                $approval = [
+                    'url'   => acmsLink(['admin' => 'approval_notification', 'bid' => BID]),
                     'stay'  => $this->linkCheck('approval_notification'),
-                );
+                ];
                 if ($badge = Approval::notificationCount()) {
                     $approval['badge'] = $badge;
                 }
                 $Tpl->add('approval#notification', $approval);
             }
 
-            $Tpl->add('entry#index', array(
-                'url'   => acmsLink(array('admin' => 'entry_index', 'bid' => BID)),
+            $Tpl->add('entry#index', [
+                'url'   => acmsLink(['admin' => 'entry_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('entry_index'),
-            ));
-            $Tpl->add('entry#trash', array(
-                'url'   => acmsLink(array('admin' => 'entry_trash', 'bid' => BID)),
+            ]);
+            $Tpl->add('entry#trash', [
+                'url'   => acmsLink(['admin' => 'entry_trash', 'bid' => BID]),
                 'stay'  => $this->linkCheck('entry_trash'),
-            ));
+            ]);
             if (IS_LICENSED) {
                 $Tpl->add('entry#insert');
             }
         }
 
         if (roleAuthorization('category_edit', BID)) {
-            $Tpl->add('category#index', array(
-                'url'   => acmsLink(array('admin' => 'category_index', 'bid' => BID)),
+            $Tpl->add('category#index', [
+                'url'   => acmsLink(['admin' => 'category_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('category'),
-            ));
+            ]);
             if (IS_LICENSED) {
-                $Tpl->add('category#insert', array(
-                    'url'   => acmsLink(array('admin' => 'category_edit', 'bid' => BID)),
+                $Tpl->add('category#insert', [
+                    'url'   => acmsLink(['admin' => 'category_edit', 'bid' => BID]),
                     'stay'  => $this->linkCheck('category'),
-                ));
+                ]);
             }
         }
 
         if (roleAuthorization('tag_edit', BID)) {
-            $Tpl->add('tag', array(
-                'url'   => acmsLink(array('admin' => 'tag_index', 'bid' => BID)),
+            $Tpl->add('tag', [
+                'url'   => acmsLink(['admin' => 'tag_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('tag'),
-            ));
+            ]);
         }
 
         if (roleAuthorization('media_upload', BID) || roleAuthorization('media_edit', BID)) {
             if (config('media_library') === 'on') {
-                $Tpl->add('media#index', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
+                $Tpl->add('media#index', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'media_index']),
                     'stay'  => $this->linkCheck('media'),
-                ));
+                ]);
             }
         }
 
         if (roleAuthorization('rule_edit', BID)) {
-            $Tpl->add('rule#index', array(
-                'url'   => acmsLink(array('admin' => 'rule_index', 'bid' => BID)),
+            $Tpl->add('rule#index', [
+                'url'   => acmsLink(['admin' => 'rule_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('rule'),
-            ));
+            ]);
             if (IS_LICENSED) {
-                $Tpl->add('rule#insert', array(
-                    'url'   => acmsLink(array('admin' => 'rule_edit', 'bid' => BID)),
+                $Tpl->add('rule#insert', [
+                    'url'   => acmsLink(['admin' => 'rule_edit', 'bid' => BID]),
                     'stay'  => $this->linkCheck('rule'),
-                ));
+                ]);
             }
         }
 
         if (roleAuthorization('publish_edit', BID) || roleAuthorization('publish_exec', BID)) {
-            $Tpl->add('publish#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'publish_index')),
+            $Tpl->add('publish#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'publish_index']),
                 'stay'  => $this->linkCheck('publish'),
-            ));
+            ]);
         }
 
         if (roleAuthorization('config_edit', BID) && IS_LICENSED) {
-            $Tpl->add('config#set_base_index', array(
-                'url'   => acmsLink(array('admin' => 'config_set_base_index', 'bid' => BID)),
+            $Tpl->add('config#set_base_index', [
+                'url'   => acmsLink(['admin' => 'config_set_base_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('config_set_base'),
-            ));
-            $Tpl->add('config#set_theme_index', array(
-                'url'   => acmsLink(array('admin' => 'config_set_theme_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('config#set_theme_index', [
+                'url'   => acmsLink(['admin' => 'config_set_theme_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('config_set_theme'),
-            ));
-            $Tpl->add('config#set_editor_index', array(
-                'url'   => acmsLink(array('admin' => 'config_set_editor_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('config#set_editor_index', [
+                'url'   => acmsLink(['admin' => 'config_set_editor_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('config_set_editor'),
-            ));
+            ]);
         }
 
         if (roleAuthorization('module_edit', BID)) {
-            $Tpl->add('module#index', array(
-                'url'   => acmsLink(array('admin' => 'module_index', 'bid' => BID)),
+            $Tpl->add('module#index', [
+                'url'   => acmsLink(['admin' => 'module_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('module'),
-            ));
+            ]);
             if (IS_LICENSED) {
-                $Tpl->add('module#insert', array(
-                    'url'   => acmsLink(array('admin' => 'module_edit', 'bid' => BID)),
+                $Tpl->add('module#insert', [
+                    'url'   => acmsLink(['admin' => 'module_edit', 'bid' => BID]),
                     'stay'  => $this->linkCheck('module'),
-                ));
+                ]);
             }
         }
 
         if (roleAuthorization('backup_export', BID) || roleAuthorization('backup_import', BID)) {
-            $Tpl->add('backup#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'backup_index')),
+            $Tpl->add('backup#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'backup_index']),
                 'stay'  => $this->linkCheck('backup'),
-            ));
+            ]);
         }
 
         if (roleAuthorization('form_view', BID) || roleAuthorization('form_edit', BID)) {
-            $Tpl->add('form#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'form_index')),
+            $Tpl->add('form#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'form_index']),
                 'stay'  => $this->linkCheck('form'),
-            ));
+            ]);
         }
 
         if (roleAuthorization('admin_etc', BID)) {
-            $Tpl->add('comment', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'comment_index')),
+            $Tpl->add('comment', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'comment_index']),
                 'stay'  => $this->linkCheck('comment'),
-            ));
-            $Tpl->add('trackback', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'trackback_index')),
+            ]);
+            $Tpl->add('trackback', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'trackback_index']),
                 'stay'  => $this->linkCheck('trackback'),
-            ));
-            $Tpl->add('blog#index', array(
-                'url'   => acmsLink(array('admin' => 'blog_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('blog#index', [
+                'url'   => acmsLink(['admin' => 'blog_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('blog_index'),
-            ));
-            $Tpl->add('blog#edit', array(
-                'url'   => acmsLink(array('admin' => 'blog_edit', 'bid' => BID)),
+            ]);
+            $Tpl->add('blog#edit', [
+                'url'   => acmsLink(['admin' => 'blog_edit', 'bid' => BID]),
                 'stay'  => $this->linkCheck('blog_edit'),
-            ));
-            $Tpl->add('webhook#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'webhook_index')),
+            ]);
+            $Tpl->add('webhook#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'webhook_index']),
                 'stay'  => $this->linkCheck('webhook'),
-            ));
-            $Tpl->add('alias#index', array(
-                'url'   => acmsLink(array('admin' => 'alias_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('alias#index', [
+                'url'   => acmsLink(['admin' => 'alias_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('alias'),
-            ));
-            $Tpl->add('user#index', array(
-                'url'   => acmsLink(array('admin' => 'user_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('user#index', [
+                'url'   => acmsLink(['admin' => 'user_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('user'),
-            ));
-            $Tpl->add('member#index', array(
-                'url'   => acmsLink(array('admin' => 'member_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('member#index', [
+                'url'   => acmsLink(['admin' => 'member_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('member'),
-            ));
-            $Tpl->add('shortcut#index', array(
-                'url'   => acmsLink(array('admin' => 'shortcut_index', 'bid' => BID)),
+            ]);
+            $Tpl->add('shortcut#index', [
+                'url'   => acmsLink(['admin' => 'shortcut_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('shortcut'),
-            ));
-            $Tpl->add('schedule#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'schedule_index')),
+            ]);
+            $Tpl->add('schedule#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'schedule_index']),
                 'stay'  => $this->linkCheck('schedule'),
-            ));
-            $Tpl->add('import#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'import_index')),
+            ]);
+            $Tpl->add('import#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'import_index']),
                 'stay'  => $this->linkCheck('import'),
-            ));
-            $Tpl->add('app#index', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'app_index')),
+            ]);
+            $Tpl->add('app#index', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'app_index']),
                 'stay'  => $this->linkCheck('app_index'),
-            ));
-            $Tpl->add('checklist', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'checklist')),
+            ]);
+            $Tpl->add('checklist', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'checklist']),
                 'stay'  => $this->linkCheck('checklist'),
-            ));
-            $Tpl->add('cart#menu', array(
-                'url'   => acmsLink(array('bid' => BID, 'admin' => 'cart_menu')),
+            ]);
+            $Tpl->add('cart#menu', [
+                'url'   => acmsLink(['bid' => BID, 'admin' => 'cart_menu']),
                 'stay'  => $this->linkCheck('cart_menu'),
-            ));
+            ]);
             if (BID === RBID) {
-                $Tpl->add('audit_log', array(
-                    'url' => acmsLink(array('bid' => BID, 'admin' => 'audit_log')),
+                $Tpl->add('audit_log', [
+                    'url' => acmsLink(['bid' => BID, 'admin' => 'audit_log']),
                     'stay' => $this->linkCheck('audit_log'),
-                ));
+                ]);
             }
             if (IS_LICENSED) {
-                $Tpl->add('user#insert', array(
-                    'url'   => acmsLink(array('admin' => 'user_edit', 'bid' => BID)),
+                $Tpl->add('user#insert', [
+                    'url'   => acmsLink(['admin' => 'user_edit', 'bid' => BID]),
                     'stay'  => $this->linkCheck('user#insert'),
-                ));
+                ]);
                 if (isBlogGlobal(SBID)) {
-                    $Tpl->add('blog#insert', array(
-                        'url'   => acmsLink(array(
+                    $Tpl->add('blog#insert', [
+                        'url'   => acmsLink([
                             'admin' => 'blog_edit',
                             'alt'   => 'insert',
-                        )),
+                        ]),
                         'stay'  => $this->linkCheck('blog'),
-                    ));
+                    ]);
                 }
             }
         }
@@ -250,38 +250,38 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
     function normalAuth(&$Tpl)
     {
-        $Tpl->add('dashboard', array(
-            'url'   => acmsLink(array('admin' => 'top', 'bid' => BID)),
+        $Tpl->add('dashboard', [
+            'url'   => acmsLink(['admin' => 'top', 'bid' => BID]),
             'stay'  => $this->linkCheck('top'),
-        ));
+        ]);
 
         //--------------
         // contribution
         if (sessionWithContribution()) {
             if (editionWithProfessional()) {
-                $approval = array(
-                    'url'   => acmsLink(array('admin' => 'approval_notification', 'bid' => BID)),
+                $approval = [
+                    'url'   => acmsLink(['admin' => 'approval_notification', 'bid' => BID]),
                     'stay'  => $this->linkCheck('approval_notification'),
-                );
+                ];
                 if ($badge = Approval::notificationCount()) {
                     $approval['badge'] = $badge;
                 }
                 $Tpl->add('approval#notification', $approval);
             }
 
-            $Tpl->add('entry#index', array(
-                'url'   => acmsLink(array('admin' => 'entry_index', 'bid' => BID)),
+            $Tpl->add('entry#index', [
+                'url'   => acmsLink(['admin' => 'entry_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('entry_index'),
-            ));
-            $Tpl->add('entry#trash', array(
-                'url'   => acmsLink(array('admin' => 'entry_trash', 'bid' => BID)),
+            ]);
+            $Tpl->add('entry#trash', [
+                'url'   => acmsLink(['admin' => 'entry_trash', 'bid' => BID]),
                 'stay'  => $this->linkCheck('entry_trash'),
-            ));
+            ]);
             if (config('media_library') === 'on') {
-                $Tpl->add('media#index', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
+                $Tpl->add('media#index', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'media_index']),
                     'stay'  => $this->linkCheck('media'),
-                ));
+                ]);
             }
             if (IS_LICENSED) {
                 $Tpl->add('entry#insert');
@@ -290,154 +290,154 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             //--------------
             // compilation
             if (sessionWithCompilation()) {
-                $Tpl->add('category#index', array(
-                    'url'   => acmsLink(array('admin' => 'category_index', 'bid' => BID)),
+                $Tpl->add('category#index', [
+                    'url'   => acmsLink(['admin' => 'category_index', 'bid' => BID]),
                     'stay'  => $this->linkCheck('category'),
-                ));
-                $Tpl->add('tag', array(
-                    'url'   => acmsLink(array('admin' => 'tag_index', 'bid' => BID)),
+                ]);
+                $Tpl->add('tag', [
+                    'url'   => acmsLink(['admin' => 'tag_index', 'bid' => BID]),
                     'stay'  => $this->linkCheck('tag'),
-                ));
-                $Tpl->add('comment', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'comment_index')),
+                ]);
+                $Tpl->add('comment', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'comment_index']),
                     'stay'  => $this->linkCheck('comment'),
-                ));
-                $Tpl->add('trackback', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'trackback_index')),
+                ]);
+                $Tpl->add('trackback', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'trackback_index']),
                     'stay'  => $this->linkCheck('trackback'),
-                ));
+                ]);
                 if (IS_LICENSED) {
-                    $Tpl->add('category#insert', array(
-                        'url'   => acmsLink(array('admin' => 'category_edit', 'bid' => BID)),
+                    $Tpl->add('category#insert', [
+                        'url'   => acmsLink(['admin' => 'category_edit', 'bid' => BID]),
                         'stay'  => $this->linkCheck('category'),
-                    ));
+                    ]);
                 }
                 if (config('media_library') === 'on') {
-                    $Tpl->add('media#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'media_index')),
+                    $Tpl->add('media#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'media_index']),
                         'stay'  => $this->linkCheck('media'),
-                    ));
+                    ]);
                 }
-                $Tpl->add('form#index', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'form_index')),
+                $Tpl->add('form#index', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'form_index']),
                     'stay'  => $this->linkCheck('form'),
-                ));
-                $Tpl->add('schedule#index', array(
-                    'url'   => acmsLink(array('bid' => BID, 'admin' => 'schedule_index')),
+                ]);
+                $Tpl->add('schedule#index', [
+                    'url'   => acmsLink(['bid' => BID, 'admin' => 'schedule_index']),
                     'stay'  => $this->linkCheck('schedule'),
-                ));
+                ]);
 
                 //----------------
                 // administration
                 if (sessionWithAdministration()) {
-                    $Tpl->add('blog#index', array(
-                        'url'   => acmsLink(array('admin' => 'blog_index', 'bid' => BID)),
+                    $Tpl->add('blog#index', [
+                        'url'   => acmsLink(['admin' => 'blog_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('blog_index'),
-                    ));
-                    $Tpl->add('blog#edit', array(
-                        'url'   => acmsLink(array('admin' => 'blog_edit', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('blog#edit', [
+                        'url'   => acmsLink(['admin' => 'blog_edit', 'bid' => BID]),
                         'stay'  => $this->linkCheck('blog_edit'),
-                    ));
-                    $Tpl->add('alias#index', array(
-                        'url'   => acmsLink(array('admin' => 'alias_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('alias#index', [
+                        'url'   => acmsLink(['admin' => 'alias_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('alias'),
-                    ));
-                    $Tpl->add('user#index', array(
-                        'url'   => acmsLink(array('admin' => 'user_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('user#index', [
+                        'url'   => acmsLink(['admin' => 'user_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('user'),
-                    ));
-                    $Tpl->add('member#index', array(
-                        'url'   => acmsLink(array('admin' => 'member_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('member#index', [
+                        'url'   => acmsLink(['admin' => 'member_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('member'),
-                    ));
-                    $Tpl->add('rule#index', array(
-                        'url'   => acmsLink(array('admin' => 'rule_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('rule#index', [
+                        'url'   => acmsLink(['admin' => 'rule_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('rule'),
-                    ));
-                    $Tpl->add('module#index', array(
-                        'url'   => acmsLink(array('admin' => 'module_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('module#index', [
+                        'url'   => acmsLink(['admin' => 'module_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('module'),
-                    ));
-                    $Tpl->add('shortcut#index', array(
-                        'url'   => acmsLink(array('admin' => 'shortcut_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('shortcut#index', [
+                        'url'   => acmsLink(['admin' => 'shortcut_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('shortcut'),
-                    ));
-                    $Tpl->add('publish#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'publish_index')),
+                    ]);
+                    $Tpl->add('publish#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'publish_index']),
                         'stay'  => $this->linkCheck('publish'),
-                    ));
-                    $Tpl->add('backup#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'backup_index')),
+                    ]);
+                    $Tpl->add('backup#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'backup_index']),
                         'stay'  => $this->linkCheck('backup'),
-                    ));
-                    $Tpl->add('import#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'import_index')),
+                    ]);
+                    $Tpl->add('import#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'import_index']),
                         'stay'  => $this->linkCheck('import'),
-                    ));
-                    $Tpl->add('app#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'app_index')),
+                    ]);
+                    $Tpl->add('app#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'app_index']),
                         'stay'  => $this->linkCheck('app_index'),
-                    ));
-                    $Tpl->add('webhook#index', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'webhook_index')),
+                    ]);
+                    $Tpl->add('webhook#index', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'webhook_index']),
                         'stay'  => $this->linkCheck('webhook'),
-                    ));
-                    $Tpl->add('checklist', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'checklist')),
+                    ]);
+                    $Tpl->add('checklist', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'checklist']),
                         'stay'  => $this->linkCheck('checklist'),
-                    ));
-                    $Tpl->add('cart#menu', array(
-                        'url'   => acmsLink(array('bid' => BID, 'admin' => 'cart_menu')),
+                    ]);
+                    $Tpl->add('cart#menu', [
+                        'url'   => acmsLink(['bid' => BID, 'admin' => 'cart_menu']),
                         'stay'  => $this->linkCheck('cart_menu'),
-                    ));
-                    $Tpl->add('fix#index', array(
-                        'url'   => acmsLink(array('admin' => 'fix_index', 'bid' => BID)),
+                    ]);
+                    $Tpl->add('fix#index', [
+                        'url'   => acmsLink(['admin' => 'fix_index', 'bid' => BID]),
                         'stay'  => $this->linkCheck('fix'),
-                    ));
+                    ]);
 
                     if (IS_LICENSED) {
-                        $Tpl->add('user#insert', array(
-                            'url'   => acmsLink(array('admin' => 'user_edit', 'bid' => BID)),
+                        $Tpl->add('user#insert', [
+                            'url'   => acmsLink(['admin' => 'user_edit', 'bid' => BID]),
                             'stay'  => $this->linkCheck('user#insert'),
-                        ));
-                        $Tpl->add('config#set_base_index', array(
-                            'url'   => acmsLink(array('admin' => 'config_set_base_index', 'bid' => BID)),
+                        ]);
+                        $Tpl->add('config#set_base_index', [
+                            'url'   => acmsLink(['admin' => 'config_set_base_index', 'bid' => BID]),
                             'stay'  => $this->linkCheck('config_set_base'),
-                        ));
-                        $Tpl->add('config#set_theme_index', array(
-                            'url'   => acmsLink(array('admin' => 'config_set_theme_index', 'bid' => BID)),
+                        ]);
+                        $Tpl->add('config#set_theme_index', [
+                            'url'   => acmsLink(['admin' => 'config_set_theme_index', 'bid' => BID]),
                             'stay'  => $this->linkCheck('config_set_theme'),
-                        ));
-                        $Tpl->add('config#set_editor_index', array(
-                            'url'   => acmsLink(array('admin' => 'config_set_editor_index', 'bid' => BID)),
+                        ]);
+                        $Tpl->add('config#set_editor_index', [
+                            'url'   => acmsLink(['admin' => 'config_set_editor_index', 'bid' => BID]),
                             'stay'  => $this->linkCheck('config_set_editor'),
-                        ));
-                        $Tpl->add('rule#insert', array(
-                            'url'   => acmsLink(array('admin' => 'rule_edit', 'bid' => BID)),
+                        ]);
+                        $Tpl->add('rule#insert', [
+                            'url'   => acmsLink(['admin' => 'rule_edit', 'bid' => BID]),
                             'stay'  => $this->linkCheck('rule'),
-                        ));
-                        $Tpl->add('module#insert', array(
-                            'url'   => acmsLink(array('admin' => 'module_edit', 'bid' => BID)),
+                        ]);
+                        $Tpl->add('module#insert', [
+                            'url'   => acmsLink(['admin' => 'module_edit', 'bid' => BID]),
                             'stay'  => $this->linkCheck('module'),
-                        ));
+                        ]);
                     }
 
                     if (BID === RBID) {
-                        $Tpl->add('audit_log', array(
-                            'url' => acmsLink(array('bid' => BID, 'admin' => 'audit_log')),
+                        $Tpl->add('audit_log', [
+                            'url' => acmsLink(['bid' => BID, 'admin' => 'audit_log']),
                             'stay' => $this->linkCheck('audit_log'),
-                        ));
+                        ]);
                     }
 
                     if (IS_LICENSED) {
                         if (isBlogGlobal(SBID)) {
-                            $Tpl->add('blog#insert', array(
-                                'url'   => acmsLink(array(
+                            $Tpl->add('blog#insert', [
+                                'url'   => acmsLink([
                                     'admin' => 'blog_edit',
                                     'alt'   => 'insert',
-                                )),
+                                ]),
                                 'stay'  => $this->linkCheck('blog'),
-                            ));
+                            ]);
                         }
                     }
                 }
@@ -469,43 +469,43 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             if ($checkUpdateService->checkUseCache(phpversion(), $range)) {
                 $update = 1;
             }
-            $Tpl->add('update', array(
-                'url' => acmsLink(array('admin' => 'update', 'bid' => BID)),
+            $Tpl->add('update', [
+                'url' => acmsLink(['admin' => 'update', 'bid' => BID]),
                 'stay' => $this->linkCheck('update'),
                 'update' => $update,
-            ));
+            ]);
         }
 
         //--------------
         // subscription
         if (IS_LICENSED) {
-            $Tpl->add('user#profile', array(
-                'url'   => acmsLink(array(
+            $Tpl->add('user#profile', [
+                'url'   => acmsLink([
                     'bid'   => SBID,
                     'uid'   => SUID,
                     'admin' => 'user_edit',
-                )),
+                ]),
                 'icon'  => loadUserIcon(SUID),
-            ));
+            ]);
         }
 
         //------------
         // enterprise
         if (sessionWithEnterpriseAdministration()) {
             if (BID == RBID) {
-                $Tpl->add('role#index', array(
-                    'url'   => acmsLink(array('admin' => 'role_index', 'bid' => RBID)),
+                $Tpl->add('role#index', [
+                    'url'   => acmsLink(['admin' => 'role_index', 'bid' => RBID]),
                     'stay'  => $this->linkCheck('role'),
-                ));
-                $Tpl->add('usergroup#index', array(
-                    'url'   => acmsLink(array('admin' => 'usergroup_index', 'bid' => RBID)),
+                ]);
+                $Tpl->add('usergroup#index', [
+                    'url'   => acmsLink(['admin' => 'usergroup_index', 'bid' => RBID]),
                     'stay'  => $this->linkCheck('usergroup'),
-                ));
+                ]);
                 if (enableApproval()) {
-                    $Tpl->add('approval#index', array(
-                        'url'   => acmsLink(array('admin' => 'approval_index', 'bid' => RBID)),
+                    $Tpl->add('approval#index', [
+                        'url'   => acmsLink(['admin' => 'approval_index', 'bid' => RBID]),
                         'stay'  => $this->linkCheck('approval_index'),
-                    ));
+                    ]);
                 }
             }
         }
@@ -518,19 +518,19 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
             && sessionWithProfessionalAdministration()
             && BID == RBID
         ) {
-            $Tpl->add('approval#index', array(
-                'url'   => acmsLink(array('admin' => 'approval_index', 'bid' => RBID)),
+            $Tpl->add('approval#index', [
+                'url'   => acmsLink(['admin' => 'approval_index', 'bid' => RBID]),
                 'stay'  => $this->linkCheck('approval_index'),
-            ));
+            ]);
         }
 
         //----------------------------
         // professional or enterprise
         if (sessionWithProfessionalAdministration() || sessionWithEnterpriseAdministration()) {
-            $Tpl->add('static_export#index', array(
-                'url'   => acmsLink(array('admin' => 'static-export_index', 'bid' => BID)),
+            $Tpl->add('static_export#index', [
+                'url'   => acmsLink(['admin' => 'static-export_index', 'bid' => BID]),
                 'stay'  => $this->linkCheck('static-export_index'),
-            ));
+            ]);
         }
 
         if (roleAvailableUser()) {

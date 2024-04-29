@@ -135,11 +135,11 @@ trait CreateAuthUrl
         $context = acmsSerialize($data);
         $prk = hash_hmac('sha256', PASSWORD_SALT_1, $salt);
         $derivedKey = hash_hmac('sha256', $prk, $context);
-        $params = http_build_query(array(
+        $params = http_build_query([
             'key' => $derivedKey,
             'salt' => $salt,
             'context' => $context,
-        ));
+        ]);
         return $params;
     }
 

@@ -14,8 +14,8 @@ class ACMS_POST_Fix_CategoryAlign extends ACMS_POST
             @set_time_limit(0);
             $DB = DB::singleton(dsn());
 
-            $que    = array(0);    // FIFO
-            $aryPid = array();
+            $que    = [0];    // FIFO
+            $aryPid = [];
             while (true) {
                 $pid    = array_shift($que);
 

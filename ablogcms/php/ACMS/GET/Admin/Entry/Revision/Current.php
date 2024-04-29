@@ -33,10 +33,10 @@ class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry_Revisio
             'eid' => EID,
             'cid' => CID,
             'aid' => $this->Get->get('aid'),
-            'query' => array(
+            'query' => [
                 'rvid' => RVID,
                 'aid' => $this->Get->get('aid'),
-            ),
+            ],
         ]);
         if ($count > 0) {
             $vars['amount'] = $count;

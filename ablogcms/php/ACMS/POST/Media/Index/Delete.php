@@ -38,9 +38,9 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
                     'targetMIDs' => $targetMIDs,
                 ]);
             }
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'success'
-            ));
+            ]);
         } catch (\Exception $e) {
             if (!$this->Post->isValid('media', 'operable')) {
                 AcmsLogger::info('権限がないため、メディアを一覧から削除できませんでした');
@@ -49,10 +49,10 @@ class ACMS_POST_Media_Index_Delete extends ACMS_POST
             } else {
                 AcmsLogger::warning($e->getMessage(), Common::exceptionArray($e));
             }
-            Common::responseJson(array(
+            Common::responseJson([
                 'status' => 'failure',
                 'message' => $e->getMessage(),
-            ));
+            ]);
         }
     }
 }

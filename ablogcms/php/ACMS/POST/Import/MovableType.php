@@ -22,7 +22,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
 
     function import()
     {
-        $this->httpFile->validateFormat(array('text/plain', 'text/html'));
+        $this->httpFile->validateFormat(['text/plain', 'text/html']);
         $path = $this->httpFile->getPath();
 
         $this->validate($path);
@@ -68,7 +68,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
         $content    = preg_split('@^-----$@m', $entryBlock);
         $meta       = array_splice($content, 0, 1);
         $body       = array_splice($content, 0);
-        $entry      = array();
+        $entry      = [];
 
         /**
         * get meta data
@@ -98,8 +98,8 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
 
     function convertMtContents($entry)
     {
-        $tags       = array();
-        $content    = array();
+        $tags       = [];
+        $content    = [];
         $category   = null;
         $ecode      = null;
 
@@ -125,7 +125,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
             $category = null;
         }
 
-        $entry = array(
+        $entry = [
             'title'     => $entry['TITLE'],
             'content'   => $content,
             'date'      => $date,
@@ -133,7 +133,7 @@ class ACMS_POST_Import_MovableType extends ACMS_POST_Import
             'tags'      => $tags,
             'category'  => $category,
             'ecode'     => $ecode,
-        );
+        ];
 
         $this->insertEntry($entry);
     }

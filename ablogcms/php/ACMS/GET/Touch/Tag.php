@@ -2,8 +2,8 @@
 
 class ACMS_GET_Touch_Tag extends ACMS_GET
 {
-    function get()
+    public function get()
     {
-        return !!TAG ? $this->tpl : false;
+        return !!TAG ? $this->tpl : '';
     }
 }

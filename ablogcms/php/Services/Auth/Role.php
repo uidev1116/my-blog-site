@@ -10,19 +10,19 @@ class Role extends General
     /**
      * @var array
      */
-    protected $cache = array();
+    protected $cache = [];
 
     /**
      * @var array
      */
-    protected $attached = array();
+    protected $attached = [];
 
     /**
      * @param $method
      * @param array $args
      * @return mixed
      */
-    protected function cacheMethod($method, $args = array())
+    protected function cacheMethod($method, $args = [])
     {
         $key = $method . '_' . md5(serialize($args));
 
@@ -30,7 +30,7 @@ class Role extends General
             return $this->cache[$key];
         }
         $this->attached[$method] = true;
-        $ret = call_user_func_array(array($this, $method), $args);
+        $ret = call_user_func_array([$this, $method], $args);
         $this->attached[$method] = false;
         $this->cache[$key] = $ret;
 
@@ -237,9 +237,9 @@ class Role extends General
         }
         $userGroups = $this->getUserGroup($uid);
         if (empty($userGroups)) {
-            return array();
+            return [];
         }
-        $authorizedBlog = array();
+        $authorizedBlog = [];
         $isAdministrator = $this->isAdministrator($uid);
 
         foreach ($userGroups as $group) {
@@ -270,7 +270,7 @@ class Role extends General
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function roleAuthorization($action, $bid = BID, $eid = 0, $uid = SUID)
     {
@@ -365,7 +365,7 @@ class Role extends General
             return $this->cacheMethod(__FUNCTION__, func_get_args());
         }
         $DB = DB::singleton(dsn());
-        $blogs = array();
+        $blogs = [];
         $check = false;
         $roleid = $role['role_id'];
 
@@ -419,7 +419,7 @@ class Role extends General
 
         if (
             1
-            && in_array($action, array('role_entry_edit', 'role_entry_delete'), true)
+            && in_array($action, ['role_entry_edit', 'role_entry_delete'], true)
             && $eid
             && $role['role_entry_edit_all'] !== 'on'
         ) {

@@ -115,7 +115,10 @@
 		<!-- BEGIN_MODULE Touch_SessionWithCompilation -->
 		<!-- BEGIN_MODULE Touch_NotTimemachineMode -->
 		<div class="acms-admin-inline-btn" id="action-timemachine-mode">
-			<button class="js-acms-timemachine acms-admin-btn"><!--T-->タイムマシーンモード<!--/T--></button>
+			<button
+        class="js-acms-timemachine acms-admin-btn">
+        <!--T-->タイムマシーンモード<!--/T-->
+      </button>
 		</div>
 		<!-- END_MODULE Touch_NotTimemachineMode -->
 		<!-- END_MODULE Touch_SessionWithCompilation -->
@@ -125,7 +128,13 @@
 		@section("preview-mode")
 		<!-- BEGIN_MODULE Touch_SessionWithContribution -->
 		<div class="acms-admin-inline-btn" id="action-preview-mode">
-			<button class="js-acms-preview-button acms-admin-btn" data-url="%{CURRENT_URL}" data-default-device="%{PREVIEW_DEFAULT_DEVICE}"><!--T-->プレビュー<!--/T--></button>
+			<button
+        class="js-acms-preview-button acms-admin-btn"
+        data-url="%{CURRENT_URL}"
+        data-default-device="%{PREVIEW_DEFAULT_DEVICE}"
+        data-has-history-device="%{PREVIEW_HAS_HISTORY_DEVICE}">
+        <!--T-->プレビュー<!--/T-->
+      </button>
 		</div>
 		<!-- END_MODULE Touch_SessionWithContribution -->
 		@endsection

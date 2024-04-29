@@ -65,7 +65,7 @@ class Import
         }
         $this->yaml = $yaml;
         $this->bid = $bid;
-        $this->failedMeta = array();
+        $this->failedMeta = [];
 
         try {
             $this->valid();
@@ -311,9 +311,9 @@ class Import
      */
     protected function registerNewIDs()
     {
-        $tables = array(
+        $tables = [
             'config_set', 'rule', 'module'
-        );
+        ];
 
         foreach ($tables as $table) {
             $this->registerNewID($table);
@@ -356,8 +356,8 @@ class Import
             $SQL = SQL::newInsert($table);
             $id = 0;
             foreach ($record as $field => $value) {
-                if (is_callable(array($this, $table . 'Fix'))) {
-                    $value = call_user_func_array(array($this, $table . 'Fix'), array($field, $value));
+                if (is_callable([$this, $table . 'Fix'])) {
+                    $value = call_user_func_array([$this, $table . 'Fix'], [$field, $value]);
                 }
                 if ($value !== false) {
                     $SQL->addInsert($field, $value);
@@ -371,6 +371,7 @@ class Import
             }
             if ($table === 'config') {
                 $mid = $record['config_module_id'];
+                // @phpstan-ignore-next-line
                 if (!empty($mid) && isset($this->yaml['meta']['banner']) && in_array($mid, $this->yaml['meta']['banner'])) {
                     continue; // バナーモジュールのコンテンツはインポートしない
                 }
@@ -379,25 +380,25 @@ class Import
                 $identifier = isset($record['module_identifier']) ? $record['module_identifier'] : '';
                 $scope = isset($record['module_scope']) ? $record['module_scope'] : 'local';
                 if (!Module::double($identifier, $id, $scope)) {
-                    $this->failedContents[] = array(
+                    $this->failedContents[] = [
                         'table' => 'module',
                         'type' => 'overlap',
                         'id' => $id,
                         'identifier' => $identifier,
-                    );
-                    $this->failedMeta = array();
+                    ];
+                    $this->failedMeta = [];
                     continue;
                 }
             }
             if (!empty($this->failedMeta)) {
-                $this->failedContents[] = array(
+                $this->failedContents[] = [
                     'table' => $table,
                     'type' => 'conversion',
                     'id' => $id,
                     'unlink' => $this->failedMeta,
-                );
+                ];
             }
-            $this->failedMeta = array();
+            $this->failedMeta = [];
 
             DB::query($SQL->get(dsn()), 'exec');
         }
@@ -536,7 +537,7 @@ class Import
      * @param string $table
      * @param int $id
      *
-     * @return int
+     * @return int|null
      */
     protected function getNewID($table, $id)
     {
@@ -553,7 +554,7 @@ class Import
      * @param string $type
      * @param int $id
      *
-     * @return int
+     * @return int|null
      */
     protected function getCurrentID($type, $id)
     {
@@ -565,10 +566,10 @@ class Import
         }
         if (!isset($this->meta[$type][$id])) {
             $code = isset($this->yaml['meta'][$type][$id]) ? $this->yaml['meta'][$type][$id] : 'unknown';
-            $this->failedMeta[] = array(
+            $this->failedMeta[] = [
                 'type' => $type,
                 'code' => $code,
-            );
+            ];
             return null;
         }
         return $this->meta[$type][$id];

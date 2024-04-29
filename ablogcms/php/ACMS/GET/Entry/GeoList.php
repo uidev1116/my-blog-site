@@ -2,14 +2,14 @@
 
 class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
 {
-    public $_axis = array(
+    public $_axis = [
         'bid' => 'self',
         'cid' => 'self',
-    );
+    ];
 
-    public $_scope = array(
+    public $_scope = [
         'eid' => 'global',
-    );
+    ];
 
     protected $lat;
     protected $lng;
@@ -21,7 +21,7 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
      */
     function initVars()
     {
-        return array(
+        return [
             'referencePoint'        => config('entry_geo-list_reference_point'),
             'within'                => floatval(config('entry_geo-list_within')),
 
@@ -63,7 +63,7 @@ class ACMS_GET_Entry_GeoList extends ACMS_GET_Entry_Summary
             'hiddenCurrentEntry'    => config('entry_geo-list_hidden_current_entry'),
             'hiddenPrivateEntry'    => config('entry_geo-list_hidden_private_entry'),
             'loop_class'            => config('entry_geo-list_loop_class'),
-        );
+        ];
     }
 
     /**

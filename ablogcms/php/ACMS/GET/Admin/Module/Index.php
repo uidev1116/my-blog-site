@@ -2,15 +2,15 @@
 
 class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
 {
-    function get()
+    public function get()
     {
         if (roleAvailableUser()) {
             if (!roleAuthorization('module_edit', BID)) {
-                return false;
+                return '';
             }
         } else {
             if (!sessionWithAdministration()) {
-                return false;
+                return '';
             }
         }
 
@@ -76,7 +76,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
             return $Tpl->get();
         }
 
-        $themes         = array();
+        $themes         = [];
         $theme          = config('theme');
         $tplModuleDir   = 'include/module/template/';
         while (!empty($theme)) {
@@ -98,14 +98,14 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
             $Tpl->add('scope:touch#' . $row['module_scope']);
 
             $mbid   = intval($row['module_blog_id']);
-            $vars   = array(
+            $vars   = [
                 'mid'       => $mid,
                 'bid'       => $mbid,
                 'identifier' => $identifier,
                 'label'     => $row['module_label'],
                 'name'      => $name,
                 'scope'     => $row['module_scope'],
-            );
+            ];
 
             if (BID === $mbid) {
                 $Tpl->add('mine', $this->getLinkVars(BID, $row));
@@ -121,11 +121,11 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
 
             //---------------
             // layout module
-            $tplAry     = array();
-            $tplLabels  = array();
+            $tplAry     = [];
+            $tplLabels  = [];
             $fix        = false;
-            foreach ($themes as $theme) {
-                $dir = SCRIPT_DIR . THEMES_DIR . $theme . '/' . $tplModuleDir . $name . '/';
+            foreach ($themes as $themeName) {
+                $dir = SCRIPT_DIR . THEMES_DIR . $themeName . '/' . $tplModuleDir . $name . '/';
                 if (Storage::isDirectory($dir)) {
                     $templateDir    = opendir($dir);
                     while ($tpl = readdir($templateDir)) {
@@ -135,7 +135,7 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                         }
                         $pattern = '/^(' . $info[1] . '|' . $info[1] . config('module_identifier_duplicate_suffix') . '.*)$/';
                         if (preg_match($pattern, $identifier)) {
-                            $tplAry = array();
+                            $tplAry = [];
                             $fix    = true;
                             break;
                         }
@@ -155,22 +155,22 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
             }
             $tplAry = array_unique($tplAry);
 
-            $tplSort = array();
+            $tplSort = [];
             foreach ($tplLabels as $tpl => $label) {
-                $key = array_search($tpl, $tplAry);
+                $key = array_search($tpl, $tplAry, true);
                 if ($key !== false) {
-                    $tplSort[] = array(
+                    $tplSort[] = [
                         'template' => $tpl,
                         'tplLabel' => $label,
-                    );
+                    ];
                     unset($tplAry[$key]);
                 }
             }
             foreach ($tplAry as $tpl) {
-                $tplSort[] = array(
+                $tplSort[] = [
                     'template' => $tpl,
                     'tplLabel' => $tpl,
-                );
+                ];
             }
             foreach ($tplSort as $loop) {
                 if (
@@ -180,13 +180,13 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
                 ) {
                     $loop['selected'] = config('attr_selected');
                 }
-                $Tpl->add(array('template:loop', 'module:loop'), $loop);
+                $Tpl->add(['template:loop', 'module:loop'], $loop);
             }
             if (empty($tplSort)) {
                 if ($fix) {
-                    $Tpl->add(array('fixTmpl', 'module:loop'));
+                    $Tpl->add(['fixTmpl', 'module:loop']);
                 } else {
-                    $Tpl->add(array('notEmptyTmpl', 'module:loop'));
+                    $Tpl->add(['notEmptyTmpl', 'module:loop']);
                 }
             }
             $Tpl->add('module:loop', $vars);
@@ -203,39 +203,39 @@ class ACMS_GET_Admin_Module_Index extends ACMS_GET_Admin_Module
         $rid    = intval($this->Get->get('rid'));
         $name   = $module['module_name'];
 
-        $linkVars   = array(
-            'itemUrl'   => acmsLink(array(
+        $linkVars   = [
+            'itemUrl'   => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'module_edit',
-                'query' => array(
+                'query' => [
                     'mid'   => $mid,
                     'rid'   => $rid,
-                ),
-            )),
-            'exportUrl' => acmsLink(array(
+                ],
+            ]),
+            'exportUrl' => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'config_export',
-                'query' => array(
+                'query' => [
                     'mid'   => $mid,
-                ),
-            )),
-            'importUrl' => acmsLink(array(
+                ],
+            ]),
+            'importUrl' => acmsLink([
                 'bid'   => $bid,
                 'admin' => 'config_import',
-                'query' => array(
+                'query' => [
                     'mid'   => $mid,
-                ),
-            )),
-        );
-        if (!in_array($name, array('Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field', 'Module_Field'))) {
-            $linkVars['configUrl'] = acmsLink(array(
+                ],
+            ]),
+        ];
+        if (!in_array($name, ['Blog_Field', 'Entry_Field', 'Category_Field', 'User_Field', 'Module_Field'], true)) {
+            $linkVars['configUrl'] = acmsLink([
                 'bid'   => $bid,
                 'admin' => 'config_' . strtolower(preg_replace('@(?<=[a-zA-Z0-9])([A-Z])@', '-$1', $name)),
-                'query' => array(
+                'query' => [
                     'mid'   => $mid,
                     'rid'   => $rid,
-                ),
-            ));
+                ],
+            ]);
         }
         return $linkVars;
     }

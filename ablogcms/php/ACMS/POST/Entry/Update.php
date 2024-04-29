@@ -10,9 +10,9 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     protected $fieldNames = [];
 
     /**
-     * @param Acms\Services\Entry\Lock
+     * @var \Acms\Services\Entry\Lock
      */
-    protected $lockService = null;
+    protected $lockService;
 
     /**
      * 専用のカスタムフィールドを別テーブルに保存する
@@ -29,15 +29,16 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     /**
      * エントリーを更新
      *
-     * @return Field
+     * @inheritDoc
      */
     public function post()
     {
         if (!Entry::validateMediaUnit()) {
             httpStatusCode('500 Internal Server Error');
-            return;
+            return $this->Post;
         }
         $this->lockService = App::make('entry.lock');
+        assert($this->lockService instanceof \Acms\Services\Entry\Lock);
         $updatedResponse = $this->update();
         $redirect = $this->Post->get('redirect');
         $backend = $this->Post->get('backend');
@@ -167,6 +168,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         /**
          * バージョンの保存
          */
+        $rvid = null;
         if (enableRevision(false) && get_called_class() !== 'ACMS_POST_Entry_Update_Detail') {
             $rvid = Entry::saveEntryRevision(EID, RVID, $entryData, $postEntry->get('revision_type'), $postEntry->get('revision_memo'));
             $this->saveRevisionUnit($units, $postEntry, EID, $rvid);
@@ -223,8 +225,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         // Hook
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', array(EID, $rvid));
-            $events = array('entry:updated');
+            $Hook->call('saveEntry', [EID, $rvid]);
+            $events = ['entry:updated'];
             if (
                 1
                 && !$isNewVersion
@@ -236,10 +238,10 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             ) {
                 $events[] = 'entry:opened';
             }
-            Webhook::call(BID, 'entry', $events, array(EID, $rvid));
+            Webhook::call(BID, 'entry', $events, [EID, $rvid]);
         }
 
-        return array(
+        return [
             'eid' => EID,
             'cid' => $cid,
             'ecd' => $this->getEntryCode($postEntry),
@@ -249,7 +251,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             'updateApproval' => $isApproved,
             'isNewVersion' => $isNewVersion,
             'success' => 1,
-        );
+        ];
     }
 
     /**
@@ -295,7 +297,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     /**
      * バリデーション
      *
-     * @param \Field $postEntry
+     * @param \Field_Validation $postEntry
      * @return void
      */
     protected function validate($postEntry)
@@ -305,7 +307,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         }
 
         $postEntry->setMethod('status', 'required');
-        $postEntry->setMethod('status', 'in', array('open', 'close', 'draft', 'trash'));
+        $postEntry->setMethod('status', 'in', ['open', 'close', 'draft', 'trash']);
         $postEntry->setMethod('status', 'category', true);
         $postEntry->setMethod('title', 'required');
         if (!!($code = strval($postEntry->get('code')))) {
@@ -318,7 +320,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         }
         $postEntry->setMethod('code', 'string', isValidCode($postEntry->get('code')));
         $postEntry->setMethod('indexing', 'required');
-        $postEntry->setMethod('indexing', 'in', array('on', 'off'));
+        $postEntry->setMethod('indexing', 'in', ['on', 'off']);
         $postEntry->setMethod('entry', 'operable', $this->isOperable());
         $postEntry->setMethod('entry', 'lock', !$this->isLocked());
         $postEntry = Entry::validTag($postEntry);
@@ -329,7 +331,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     /**
      * バリデーション失敗時の処理
      *
-     * @param \Field $field
+     * @param \Field_Validation $field
      * @param int $range
      * @return void
      */
@@ -472,10 +474,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 
     /**
      * エントリーをメインデータに保存
-     * @param \Field $preEntry
-     * @param \Field $postEntry
-     * @param int $range
-     * @param int $primaryImageId
+     *
+     * @param array $row
      * @return void
      */
     protected function updateEntry($row)

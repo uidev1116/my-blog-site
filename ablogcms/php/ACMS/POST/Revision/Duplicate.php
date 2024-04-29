@@ -2,7 +2,7 @@
 
 class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
 {
-    function post()
+    public function post()
     {
         try {
             if (roleAvailableUser()) {
@@ -51,27 +51,28 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
             ]);
 
             if ($this->Post->get('redirect', '') == 'approval') {
-                $this->redirect(acmsLink(array(
+                $this->redirect(acmsLink([
                     'bid'   => BID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/revision-preview.html',
-                    'query' => array(
+                    'query' => [
                         'rvid'  => $rvid,
-                    ),
-                )));
+                    ],
+                ]));
             } else {
-                $this->redirect(acmsLink(array(
+                $this->redirect(acmsLink([
                     'bid'   => BID,
                     'eid'   => EID,
                     'tpl'   => 'ajax/revision-index-list.html',
-                )));
+                ]));
             }
         } catch (\Exception $e) {
             AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリの作業領域からバージョンを作成できませんでした。' . $e->getMessage(), Common::exceptionArray($e));
+            return $this->Post;
         }
     }
 
-    function entryDupe($rvid, $revisionName)
+    protected function entryDupe($rvid, $revisionName)
     {
         $DB     = DB::singleton(dsn());
 
@@ -85,9 +86,13 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
         if ($row = $DB->query($q, 'row')) {
             foreach ($row as $key => $val) {
                 if (
-                    !in_array($key, array(
-                    'entry_rev_id', 'entry_rev_status', 'entry_rev_user_id', 'entry_rev_datetime', 'entry_rev_memo'
-                    ))
+                    !in_array($key, [
+                        'entry_rev_id',
+                        'entry_rev_status',
+                        'entry_rev_user_id',
+                        'entry_rev_datetime',
+                        'entry_rev_memo'
+                    ], true)
                 ) {
                     $Entry->addInsert($key, $val);
                 }
@@ -124,7 +129,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function unitDupe($rvid)
+    protected function unitDupe($rvid)
     {
         $DB     = DB::singleton(dsn());
 
@@ -144,7 +149,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                             break;
                         }
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $info   = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -177,7 +182,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                             break;
                         }
                         $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = array();
+                        $newAry = [];
                         foreach ($oldAry as $old) {
                             $info   = pathinfo($old);
                             $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
@@ -244,7 +249,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
         }
     }
 
-    function fieldDupe($rvid)
+    protected function fieldDupe($rvid)
     {
         $revisionField  = loadEntryField(EID, 1);
         foreach ($revisionField->listFields() as $fd) {
@@ -257,21 +262,36 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
             ) {
                 continue;
             }
-            foreach ($revisionField->getArray($fd, true) as $i => $val) {
-                $path   = $val;
-                if (!Storage::isFile(ARCHIVES_DIR . $path)) {
+            $imageFields = $revisionField->getArray($fd, true);
+            foreach ($imageFields as $i => $val) {
+                $old = $val;
+                if (!Storage::isFile(ARCHIVES_DIR . $old)) {
                     continue;
                 }
-                $info       = pathinfo($path);
-                $dirname    = empty($info['dirname']) ? '' : $info['dirname'] . '/';
+                $info = pathinfo($old);
+                $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
                 Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                Storage::copy(ARCHIVES_DIR . $path, ARCHIVES_DIR . $path);
+                $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
+                $new = $dirname . uniqueString() . $ext;
+
+                $path = ARCHIVES_DIR . $old;
+                $newPath = ARCHIVES_DIR . $new;
+                copyFile($path, $newPath);
+
+                $imageFields[$i] = $new;
+            }
+            foreach ($imageFields as $i => $val) {
+                if ($i === 0) {
+                    $revisionField->setField($fd, $val);
+                } else {
+                    $revisionField->addField($fd, $val);
+                }
             }
         }
         Entry::saveFieldRevision(EID, $revisionField, $rvid);
     }
 
-    function tagsDupe($rvid)
+    protected function tagsDupe($rvid)
     {
         $DB     = DB::singleton(dsn());
 

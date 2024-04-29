@@ -2,11 +2,11 @@
 
 class ACMS_Session
 {
-    protected static $instance = array();
+    protected static $instance = [];
 
     protected $session = null;
 
-    public static function singleton($config = array())
+    public static function singleton($config = [])
     {
         if (!self::$instance) {
             $obj = new self();

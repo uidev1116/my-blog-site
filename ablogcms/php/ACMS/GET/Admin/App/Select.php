@@ -2,7 +2,7 @@
 
 class ACMS_GET_Admin_App_Select extends ACMS_GET_Admin
 {
-    function get()
+    public function get()
     {
         if (!sessionWithAdministration()) {
             return '';
@@ -28,14 +28,13 @@ class ACMS_GET_Admin_App_Select extends ACMS_GET_Admin
                 }
                 $className = 'App_' . $appName;
 
-                $DB     = DB();
-                $SQL    = SQL::newSelect('app');
+                $SQL = SQL::newSelect('app');
                 $SQL->addWhereOpr('app_name', 'AAPP_' . $appName);
 
                 // DBになければインストール前として扱う
                 $status = 'init';
 
-                if (!!($all = $DB->query($SQL->get(dsn()), 'all'))) {
+                if (!!($all = DB::query($SQL->get(dsn()), 'all'))) {
                     $existsOnThisBlog = false;
                     foreach ($all as $row) {
                         if (intval($row['app_blog_id']) === BID) {
@@ -49,18 +48,18 @@ class ACMS_GET_Admin_App_Select extends ACMS_GET_Admin
                         $status = 'off';
                     }
 
-                    if (version_compare($row['app_version'], $App->version)) {
+                    if ($existsOnThisBlog !== false && version_compare($existsOnThisBlog['app_version'], $App->version)) {
                         $status = 'update';
                     }
                 }
-                if (!in_array($status, array('on', 'update'), true)) {
+                if (!in_array($status, ['on', 'update'], true)) {
                     continue;
                 }
 
-                $vars = array(
+                $vars = [
                     'name'      => $App->name,
                     'className' => $className,
-                );
+                ];
                 $Tpl->add('app:loop', $vars);
                 $exsits = true;
             }

@@ -17,9 +17,9 @@ class ACMS_POST_Comment_Confirm_Insert extends ACMS_POST_Comment
     protected $checkDoubleSubmit = true;
 
     /**
-     * @return false|Field
+     * @inheritDoc
      */
-    function post()
+    public function post()
     {
         $Comment    =& $this->extractComment();
         $this->Post->set('action', 'insert');

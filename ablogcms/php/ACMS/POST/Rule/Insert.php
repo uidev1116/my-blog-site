@@ -9,7 +9,7 @@ class ACMS_POST_Rule_Insert extends ACMS_POST_Rule
             $Rule->set('scope', 'local');
         }
         $Rule->setMethod('name', 'required');
-        $Rule->setMethod('status', 'in', array('open', 'close'));
+        $Rule->setMethod('status', 'in', ['open', 'close']);
         $Rule->setMethod('rule', 'invalidLicence', IS_LICENSED);
         $Rule->validate(new ACMS_Validator());
         $this->fix($Rule);

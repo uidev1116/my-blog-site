@@ -18,7 +18,7 @@ class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
             if (empty($file_name)) {
                 throw new \RuntimeException(gettext('バックアップファイルが指定されていません。'));
             }
-            Common::backgroundRedirect(acmsLink(array('bid' => RBID)));
+            Common::backgroundRedirect(acmsLink(['bid' => RBID]));
             $this->run($file_name);
             die();
         } catch (\Exception $e) {

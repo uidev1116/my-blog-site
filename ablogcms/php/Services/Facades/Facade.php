@@ -77,8 +77,8 @@ abstract class Facade
             $class::$instance = $instance;
         }
 
-        if (is_callable(array($instance, $method))) {
-            return call_user_func_array(array($instance, $method), $arguments);
+        if (is_callable([$instance, $method])) {
+            return call_user_func_array([$instance, $method], $arguments);
         }
 
         throw new \BadMethodCallException("Method {$method} does not exist on " . get_class($instance));

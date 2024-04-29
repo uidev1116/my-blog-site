@@ -22,10 +22,10 @@ class ACMS_GET_Admin_Dashboard_Log_Login extends ACMS_GET
         if ($DB->query($q, 'fetch') and $row = $DB->fetch($q)) {
             do {
                 $Tpl->add('auth:touch#' . $row['user_auth']);
-                $Tpl->add('log:loop', array(
-                'datetime'  => $row['user_login_datetime'],
-                'name'      => $row['user_name'],
-                ));
+                $Tpl->add('log:loop', [
+                    'datetime'  => $row['user_login_datetime'],
+                    'name'      => $row['user_name'],
+                ]);
             } while ($row = $DB->fetch($q));
         } else {
             return '';

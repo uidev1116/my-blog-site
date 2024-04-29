@@ -2,7 +2,7 @@
 
 class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
 {
-    function post()
+    public function post()
     {
         $this->initVars();
 
@@ -30,13 +30,13 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             */
             $ADDRESS = $SESSION->getChild('address');
             $TEMP = $this->openCart();
-            $amount = array(
+            $amount = [
                 'amount' => 0,
                 'subtotal' => 0,
                 'tax-omit' => 0,
                 'tax-only' => 0,
-            );
-            $tax_rate = array();
+            ];
+            $tax_rate = [];
 
             $tax_rate_array = configArray('shop_tax_rate_array');
             foreach ($tax_rate_array as $rate) {
@@ -184,7 +184,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             /*
             * 諸費用の計算（送料／支払い手数料）
             */
-            $charge = array();
+            $charge = [];
             $charge['deliver'] = $this->deliverCharge($SESSION->get('deliver'), $ADDRESS->get('prefecture'));
             $charge['payment'] = $this->paymentCharge($SESSION->get('payment'));
             $charge['others']  = $this->othersCharge($SESSION->get('request_others'));
@@ -250,7 +250,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         return $this->Post;
     }
 
-    function othersCharge($request)
+    protected function othersCharge($request)
     {
         $labels = configArray('shop_order_request_others_label');
         $charge = configArray('shop_order_request_others_charge');
@@ -264,7 +264,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         return 0;
     }
 
-    function deliverCharge($deliver, $prefecture = null)
+    protected function deliverCharge($deliver, $prefecture = null)
     {
         $labels = configArray('shop_order_deliver_label');
         $charge = configArray('shop_order_deliver_charge');
@@ -284,7 +284,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         return 0;
     }
 
-    function paymentCharge($payment)
+    protected function paymentCharge($payment)
     {
         $labels = configArray('shop_order_payment_label');
         $charge = configArray('shop_order_payment_charge');
@@ -297,16 +297,16 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         return 0;
     }
 
-    function settleMethod($payment)
+    protected function settleMethod($payment)
     {
         $labels = configArray('shop_order_payment_label');
-        $index  = array_search($payment, $labels);
+        $index  = array_search($payment, $labels, true);
         $block  = config('shop_order_payment_block', 'default', $index);
 
         return empty($block) ? 'default' : $block;
     }
 
-    function shipping($prefecture)
+    protected function shipping($prefecture)
     {
         $labels = configArray('shop_order_shipping_label');
         $charge = configArray('shop_order_shipping_charge');
@@ -318,7 +318,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
         }
     }
 
-    function taxCalc($amount)
+    protected function taxCalc($amount)
     {
         $rate = config('shop_tax_rate') + 1;
 

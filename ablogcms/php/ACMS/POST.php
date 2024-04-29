@@ -143,6 +143,9 @@ class ACMS_POST
         $session->addChild('messages', $this->messages);
     }
 
+    /**
+     * @return Field_Validation
+     */
     public function fire()
     {
         $app = App::getInstance();
@@ -157,11 +160,11 @@ class ACMS_POST
         // takeover
         if ($takeover = $this->Post->get('takeover')) {
             $Post = acmsUnserialize($takeover);
-            if (method_exists($Post, 'deleteField') && method_exists($Post, 'overload')) {
+            if ($Post instanceof \Field && method_exists($Post, 'deleteField') && method_exists($Post, 'overload')) {
                 $Post->reset(true);
                 $this->Post->deleteField('takeover');
                 $Post->overload($this->Post, true);
-                $this->Post = $Post;
+                $this->Post = new Field_Validation($Post, true);
             } else {
                 AcmsLogger::error('POSTデータの「takeover」が復元できません');
                 $this->addSystemError('IllegalAccess');
@@ -219,9 +222,9 @@ class ACMS_POST
         // execute & hook
         if (HOOK_ENABLE) {
             $Hook = ACMS_Hook::singleton();
-            $Hook->call('beforePostFire', array($this));
+            $Hook->call('beforePostFire', [$this]);
             $res = $this->post();
-            $Hook->call('afterPostFire', array($this));
+            $Hook->call('afterPostFire', [$this]);
         } else {
             $res = $this->post();
         }
@@ -237,19 +240,22 @@ class ACMS_POST
 
         if ($this->Post->get('ajaxUploadImageAccess') === 'true') {
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode(array(
+            echo json_encode([
                 'action' => 'post',
                 'throughPost' => acmsSerialize($this->Post),
-            ));
+            ]);
             die();
         }
 
         return $res;
     }
 
+    /**
+     * @return Field_Validation|never
+     */
     public function post()
     {
-        return false;
+        throw new \BadMethodCallException('Method post() is not implemented.');
     }
 
     public function redirect($url = null, $sid = null, $auth = false)
@@ -257,24 +263,10 @@ class ACMS_POST
         redirect($url);
     }
 
-    public function moduleCacheSensitivity()
-    {
-        $axis = 'self';
-        if ($mid = $this->Post->get('mid')) {
-            $DB = DB::singleton(dsn());
-            $SQL = SQL::newSelect('module');
-            $SQL->addSelect('module_scope');
-            $SQL->addWhereOpr('module_id', $mid);
-            $scope = $DB->query($SQL->get(dsn()), 'one');
-            if ($scope == 'global') {
-                $axis = 'self-descendant';
-            }
-        }
-        return $axis;
-    }
-
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @return string
      */
     public function archivesDir()
     {
@@ -283,6 +275,10 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param string $path
+     * @param int $mod 未使用の引数
+     * @return bool
      */
     public function setupDir($path, $mod)
     {
@@ -291,14 +287,26 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param string $dir
+     * @return bool
      */
     public function removeDir($dir)
     {
-        Storage::removeDirectory($dir);
+        return Storage::removeDirectory($dir);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @deprecated
+     * @param string $from
+     * @param string $to
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
+     *
+     * @return bool
      */
     public function copyImage($from, $to, $width = null, $height = null, $size = null, $angle = null)
     {
@@ -307,22 +315,44 @@ class ACMS_POST
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @deprecated
+     * @param string $rsrc
+     * @param string $file
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
+     *
+     * @return void
+     * @throws \ImagickException
      */
     public function editImageForImagick($rsrc, $file, $width = null, $height = null, $size = null, $angle = null)
     {
-        return Image::editImageForImagick($rsrc, $file, $width, $height, $size, $angle);
+        Image::editImageForImagick($rsrc, $file, $width, $height, $size, $angle);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @deprecated
+     * @param resource|\GdImage $rsrc
+     * @param int|null $width
+     * @param int|null $height
+     * @param int|null $size
+     * @param int|null $angle
+     *
+     * @return resource|\GdImage
      */
-    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null)
+    public function editImage($rsrc, $width = null, $height = null, $size = null, $angle = null) // @phpstan-ignore-line
     {
         return Image::editImage($rsrc, $width, $height, $size, $angle);
     }
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @deprecated
+     * @param string $path
+     *
+     * @return void
      */
     public function deleteImageAllSize($path)
     {
@@ -331,6 +361,10 @@ class ACMS_POST
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @deprecated
+     * @param string $mime
+     *
+     * @return 'gif' | 'png' | 'bmp' | 'xbm' | 'jpg' | ''
      */
     public function detectImageExtenstion($mime)
     {
@@ -339,6 +373,10 @@ class ACMS_POST
 
     /**
      * ToDo: deplicated mehod Ver. 2.7.0
+     * @param string $scp
+     * @param \ACMS_Validator|null $V
+     * @param \Field|null $deleteField
+     * @return \Field_Validation
      */
     public function extract($scp = 'field', $V = null, &$deleteField = null): Field_Validation
     {
@@ -350,6 +388,9 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param \Field $Post
+     * @return \Field
      */
     public function getUriObject($Post)
     {
@@ -358,6 +399,9 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $len パスワードの長さ
+     * @return string
      */
     public function genPass($len)
     {
@@ -366,22 +410,51 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param array{
+     *   smtp-host?: string,
+     *   smtp-port?: string,
+     *   smtp-user?: string,
+     *   smtp-pass?: string,
+     *   mail_from?: string,
+     *   sendmail_path?: string,
+     *   additional_headers?: string
+     * } $argConfig
+     *
+     * @return array{
+     *   smtp-host: string,
+     *   smtp-port: string,
+     *   smtp-user: string,
+     *   smtp-pass: string,
+     *   mail_from: string,
+     *   sendmail_path: string,
+     *   additional_headers: string
+     * }
      */
-    public function mailConfig($argConfig = array())
+    public function mailConfig($argConfig = [])
     {
         return Common::mailConfig($argConfig);
     }
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param string $tplFile
+     * @param Field $Field
+     * @param string|null $charset
+     *
+     * @return string
      */
-    public function getMailTxt($tplFile, $Field = null, $charset = null)
+    public function getMailTxt($tplFile, $Field, $charset = null)
     {
         return Common::getMailTxt($tplFile, $Field, $charset);
     }
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $eid
+     * @return string
      */
     public function loadEntryFulltext($eid)
     {
@@ -390,6 +463,9 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $uid
+     * @return string
      */
     public function loadUserFulltext($uid)
     {
@@ -398,6 +474,9 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $cid
+     * @return string
      */
     public function loadCategoryFulltext($cid)
     {
@@ -406,6 +485,9 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $bid
+     * @return string
      */
     public function loadBlogFulltext($bid)
     {
@@ -414,16 +496,28 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param int $cuid
+     * @return string
      */
     public function loadPluginFulltext($cuid)
     {
         return Common::loadPluginFulltext($cuid);
     }
 
+    /**
+     * 位置情報を保存する
+     * @param string $type
+     * @param int $id
+     * @param Field|null $Field
+     * @param int|null $rvid
+     *
+     * @return void
+     */
     public function saveGeometry($type, $id, $Field = null, $rvid = null)
     {
         if (empty($type) || empty($id)) {
-            return false;
+            return;
         }
 
         $table = 'geo';
@@ -445,7 +539,7 @@ class ACMS_POST
         }
 
         if (!$Field->get('geo_lat') || !$Field->get('geo_lng')) {
-            return false;
+            return;
         }
         $SQL = SQL::newInsert($table);
         $SQL->addInsert('geo_geometry', SQL::newGeometry($Field->get('geo_lat'), $Field->get('geo_lng')));
@@ -458,6 +552,16 @@ class ACMS_POST
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
+    /**
+     * カスタムフィールドを保存する
+     * @param string $type
+     * @param int $id
+     * @param Field|null $Field
+     * @param Field|null $deleteField
+     * @param int|null $rvid
+     *
+     * @return bool
+     */
     public function saveField($type, $id, $Field = null, $deleteField = null, $rvid = null)
     {
         return Common::saveField($type, $id, $Field, $deleteField, $rvid);
@@ -465,6 +569,12 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param string $type フルテキストのタイプ
+     * @param int $id
+     * @param string|null $fulltext
+     *
+     * @return bool
      */
     public function saveFulltext($type, $id, $fulltext = null)
     {
@@ -474,6 +584,12 @@ class ACMS_POST
 
     /**
      * ToDo: deprecated method 2.7.0
+     * @deprecated
+     * @param string $type フルテキストのタイプ
+     * @param int $id
+     * @param string|null $fulltext
+     *
+     * @return bool
      */
     public function savePluginFulltext($type, $id, $fulltext = null)
     {
@@ -482,7 +598,8 @@ class ACMS_POST
     }
 
     /**
-     *
+     * ワークフローのデータをPostから抽出する
+     * @return Field_Validation
      */
     protected function extractWorkflow()
     {
@@ -505,7 +622,7 @@ class ACMS_POST
                 $workflow->setMethod('workflow_start_group', 'required');
                 $workflow->setMethod('workflow_last_group', 'required');
 
-                $groups = array();
+                $groups = [];
                 if ($workflow->get('workflow_start_group')) {
                     $groups = array_merge($groups, $workflow->getArray('workflow_start_group'));
                 }
@@ -530,6 +647,13 @@ class ACMS_POST
         return $workflow;
     }
 
+    /**
+     * ワークフローのデータを保存する
+     * @param \Field $workflow
+     * @param int $bid
+     * @param int|null $cid
+     * @return void
+     */
     protected function saveWorkflow($workflow, $bid, $cid = null)
     {
         $DB = DB::singleton(dsn());
@@ -585,6 +709,11 @@ class ACMS_POST
         $this->Post->set('edit', 'update');
     }
 
+    /**
+     * エイリアスのスコープが正しいか判定
+     * @param string $scope
+     * @return bool
+     */
     protected function checkScope($scope = 'local')
     {
         $DB = DB::singleton(dsn());
@@ -615,6 +744,11 @@ class ACMS_POST
         return true;
     }
 
+    /**
+     * コンフィグセットのスコープが正しいか判定
+     * @param int $setid
+     * @return bool
+     */
     protected function checkConfigSetScope($setid)
     {
         if (empty($setid)) {
@@ -628,24 +762,6 @@ class ACMS_POST
         $Where->addWhereOpr('config_set_blog_id', BID, '=', 'OR');
         $Where->addWhereOpr('config_set_scope', 'global', '=', 'OR');
         $SQL->addWhere($Where);
-        $SQL->addWhereOpr('config_set_id', $setid);
-
-        if (DB::query($SQL->get(dsn()), 'one')) {
-            return true;
-        }
-        return false;
-    }
-
-    protected function checkConfigSetBlogChild($setid)
-    {
-        if (empty($setid)) {
-            return true;
-        }
-        $SQL = SQL::newSelect('config_set');
-        $SQL->addSelect('config_set_id');
-        $SQL->addLeftJoin('blog', 'blog_id', 'config_set_blog_id');
-        ACMS_Filter::blogTree($SQL, BID, 'ancestor-or-self');
-        $SQL->addWhereOpr('config_set_scope', 'global');
         $SQL->addWhereOpr('config_set_id', $setid);
 
         if (DB::query($SQL->get(dsn()), 'one')) {

@@ -20,7 +20,7 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
         $key    = $Config->getArray('schedule_label_key');
 
         $rows   = count($name);
-        $fds    = array();
+        $fds    = [];
 
         /**
          * build Labels
@@ -33,7 +33,7 @@ class ACMS_POST_Schedule_EditLabel extends ACMS_POST
                 $key[$i] = uniqueString();
             }
 
-            $_tmp   = array($name[$i], $key[$i]);
+            $_tmp   = [$name[$i], $key[$i]];
             if (!empty($class[$i])) {
                 $_tmp[] = $class[$i];
             }

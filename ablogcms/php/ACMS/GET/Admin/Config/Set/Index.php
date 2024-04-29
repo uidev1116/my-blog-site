@@ -80,24 +80,24 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
             $Tpl->add('scope:touch#' . $row['config_set_scope']);
 
             for ($i = 1; $i <= $cnt; $i++) {
-                $vars = array(
+                $vars = [
                     'value' => $i,
                     'label' => $i,
-                );
+                ];
                 if ($sort == $i) {
                     $vars['selected'] = config('attr_selected');
                 }
                 $Tpl->add('sort:loop', $vars);
             }
 
-            $vars = array(
+            $vars = [
                 'setid' => $setid,
                 'sort' => $sort,
                 'scope' => $row['config_set_scope'],
                 'name' => $row['config_set_name'],
                 'description' => $row['config_set_description'],
                 'disabled' => $disabled,
-            );
+            ];
 
             $setbid = intval($row['config_set_blog_id']);
             if (BID === $setbid) {
@@ -121,23 +121,23 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
 
     protected function getLinkVars($bid, $setid)
     {
-        return array(
+        return [
             'configSetId' => $setid,
-            'itemUrl' => acmsLink(array(
+            'itemUrl' => acmsLink([
                 'bid' => $bid,
                 'admin' => $this->editPage,
-                'query' => new Field(array(
+                'query' => new Field([
                     'setid' => $setid,
-                )),
-            )),
-            'configUrl' => acmsLink(array(
+                ]),
+            ]),
+            'configUrl' => acmsLink([
                 'bid' => $bid,
                 'admin' => $this->configPage,
-                'query' => new Field(array(
+                'query' => new Field([
                     'setid' => $setid,
                     'rid'   => $this->Get->get('rid'),
-                )),
-            ))
-        );
+                ]),
+            ])
+        ];
     }
 }

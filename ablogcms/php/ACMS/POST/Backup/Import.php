@@ -24,10 +24,10 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
     /**
      * @var array
      */
-    protected $errorMsg = array();
+    protected $errorMsg = [];
 
     /**
-     * @return bool|Field
+     * @inheritDoc
      */
     public function post()
     {
@@ -44,7 +44,8 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
             $this->versionCheck = $this->Post->get('version_check');
 
             $this->decompress();
-            $hash = Storage::get($this->backupTempDir . 'md5_hash.txt');
+            $hashFilePath = $this->backupTempDir . 'md5_hash.txt';
+            $hash = Storage::get($hashFilePath, dirname($hashFilePath));
 
             if ($this->fileHashTest($this->backupTempDir . 'sql_query.sql', $hash)) {
                 if ($sql_fp = fopen($this->backupTempDir . 'sql_query.sql', 'r')) {
@@ -52,7 +53,7 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
                     $this->readLineSql(trim(fgets($sql_fp)));
                     $this->validation();
 
-                    Common::backgroundRedirect(acmsLink(array('bid' => RBID)));
+                    Common::backgroundRedirect(acmsLink(['bid' => RBID]));
                     $this->run($sql_fp);
                     die();
                 } else {

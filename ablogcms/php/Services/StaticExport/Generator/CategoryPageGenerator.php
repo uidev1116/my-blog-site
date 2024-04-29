@@ -2,68 +2,90 @@
 
 namespace Acms\Services\StaticExport\Generator;
 
-use Acms\Services\StaticExport\Contracts\Generator;
 use Acms\Services\Facades\Storage;
+use Acms\Services\StaticExport\Entities\Page;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Async\await;
 
 class CategoryPageGenerator extends PageGenerator
 {
     /**
-     * @var string
+     * @var int|null
      */
     protected $categoryId;
 
     /**
-     * @param int $cid
+     * @param int $categoryId
      */
-    public function setCategoryId($cid)
+    public function setCategoryId(int $categoryId)
     {
-        $this->categoryId = $cid;
+        if ($categoryId < 1) {
+            throw new \InvalidArgumentException('Invalid category id.');
+        }
+        $this->categoryId = $categoryId;
     }
 
     /**
-     * @return void
+     * @inheritDoc
      */
-    protected function main()
+    public function run(): PromiseInterface
     {
-        if (empty($this->categoryId)) {
-            throw new \RuntimeException('no selected category.');
-        }
-        if (empty($this->maxPage)) {
-            throw  new \RuntimeException('no selected max page.');
-        }
+        return new Promise(
+            function (callable $resolve, callable $reject) {
+                if (is_null($this->categoryId)) {
+                    $reject(new \RuntimeException('no selected category.'));
+                    return;
+                }
+                if (is_null($this->maxPage)) {
+                    $reject(new \RuntimeException('no selected max page.'));
+                    return;
+                }
+                if ($this->maxPage < 2) {
+                    $reject(new \RuntimeException('max page is less than 2.'));
+                    return;
+                }
 
-        for ($page = 2; $page <= $this->maxPage; $page++) {
-            $info = array(
-                'bid' => BID,
-                'cid' => $this->categoryId,
-                'page' => $page,
-            );
-            $url = acmsLink($info);
-            $this->request($url, $info);
-        }
+                $pages = array_map(
+                    function (int $page) {
+                        $url = acmsLink([
+                            'bid' => BID,
+                            'cid' => $this->categoryId,
+                            'page' => $page,
+                        ]);
+                        $blogUrl = acmsLink(['bid' => BID]);
+                        $categoryUrl = acmsLink(['bid' => BID, 'cid' => $this->categoryId]);
+                        $categoryDir = substr($categoryUrl, strlen($blogUrl));
+                        $filepath = $categoryDir . 'page' . $page . '.html';
+                        return new Page($url, $filepath);
+                    },
+                    range(2, $this->maxPage)
+                );
+                $this->logger->start(
+                    'カテゴリーの2ページ目以降を生成 【' . \ACMS_RAM::categoryName($this->categoryId) . '（' . $this->categoryId . '）】',
+                    count($pages)
+                );
+                await($this->handle($pages));
+                $resolve(null);
+            }
+        );
     }
 
     /**
+     * @param string $path
      * @param string $data
-     * @param string $code
-     * @param object $info
      * @return void
      */
-    protected function callback($data, $code, $info)
+    protected function writeContents(string $path, string $data): void
     {
-        if ($code != '200') {
-            return;
-        }
         $destination = $this->destination->getDestinationPath() . $this->destination->getBlogCode();
-        $blog_url = acmsLink(array('bid' => BID));
-        $category_url = acmsLink(array('bid' => BID, 'cid' => $info['cid']));
-        $dir = substr($category_url, strlen($blog_url));
-
+        $destPath = $destination . $path;
         try {
-            Storage::makeDirectory($destination . $dir);
-            Storage::put($destination . $dir . 'page' . $info['page'] . '.html', $data);
+            Storage::makeDirectory(dirname($destPath));
+            Storage::put($destPath, $data);
         } catch (\Exception $e) {
-            $this->logger->error('データの書き込みに失敗しました。', $destination . $dir . 'page' . $info['page'] . '.html');
+            $this->logger->error('データの書き込みに失敗しました。', $destPath);
         }
     }
 }

@@ -10,15 +10,15 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected $blogSubQuery;
     protected $categorySubQuery;
     protected $filterCategoryFieldName = 'entry_category_id';
-    protected $sortFields = array();
+    protected $sortFields = [];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public $_axis = array( // phpcs:ignore
+    public $_axis = [ // phpcs:ignore
         'bid'   => 'self',
         'cid'   => 'self',
-    );
+    ];
 
     /**
      * コンフィグの取得
@@ -27,11 +27,11 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
      */
     function initVars()
     {
-        return array(
-            'order' => array(
+        return [
+            'order' => [
                 $this->order ? $this->order : config('entry_summary_order'),
                 config('entry_summary_order2'),
-            ),
+            ],
             'orderFieldName'        => config('entry_summary_order_field_name'),
             'noNarrowDownSort'      => config('entry_summary_no_narrow_down_sort', 'off'),
             'limit'                 => intval(config('entry_summary_limit')),
@@ -75,7 +75,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
             'loop_class'            => config('entry_summary_loop_class'),
             'relational'            => config('entry_summary_relational'),
             'relationalType'        => config('entry_summary_relational_type')
-        );
+        ];
     }
 
     /**
@@ -165,11 +165,12 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
 
     function setSelect(&$SQL)
     {
-        $list = array('entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
+        $list = ['entry_id', 'entry_code', 'entry_status', 'entry_approval', 'entry_form_status', 'entry_sort', 'entry_user_sort', 'entry_category_sort', 'entry_title',
             'entry_link', 'entry_datetime', 'entry_start_datetime', 'entry_end_datetime', 'entry_posted_datetime', 'entry_updated_datetime', 'entry_summary_range', 'entry_indexing',
             'entry_members_only', 'entry_primary_image', 'entry_current_rev_id', 'entry_last_update_user_id', 'entry_category_id', 'entry_user_id', 'entry_form_id', 'entry_blog_id',
             'blog_id', 'blog_code', 'blog_status', 'blog_parent', 'blog_name', 'blog_domain', 'blog_indexing', 'blog_alias_status', 'blog_alias_sort', 'blog_alias_primary',
-            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id', 'geo_geometry', 'geo_zoom');
+            'category_id', 'category_code', 'category_status', 'category_parent', 'category_sort', 'category_name', 'category_scope', 'category_indexing', 'category_blog_id', 'geo_geometry', 'geo_zoom'
+        ];
 
         foreach ($list as $name) {
             $SQL->addSelect($name);
@@ -518,21 +519,21 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
         }
         // prev page
         if ($this->page > 1) {
-            $Tpl->add('prevPage', array(
-                'url'    => acmsLink(array(
+            $Tpl->add('prevPage', [
+                'url'    => acmsLink([
                     'page' => $this->page - 1,
-                ), true),
-            ));
+                ], true),
+            ]);
         } else {
             $Tpl->add('prevPageNotFound');
         }
         // next page
         if ($next_page) {
-            $Tpl->add('nextPage', array(
-                'url'    => acmsLink(array(
+            $Tpl->add('nextPage', [
+                'url'    => acmsLink([
                     'page' => $this->page + 1,
-                ), true),
-            ));
+                ], true),
+            ]);
         } else {
             $Tpl->add('nextPageNotFound');
         }
@@ -564,7 +565,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
         $eagerLoad = $this->eagerLoad();
         foreach ($this->entries as $i => $row) {
             $i++;
-            $this->buildSummary($Tpl, $row, $i, $gluePoint, $this->config, array(), $eagerLoad);
+            $this->buildSummary($Tpl, $row, $i, $gluePoint, $this->config, [], $eagerLoad);
         }
     }
 
@@ -599,27 +600,27 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     function getRootVars()
     {
         $blogName   = ACMS_RAM::blogName($this->bid);
-        $vars = array(
-            'indexUrl'  => acmsLink(array(
+        $vars = [
+            'indexUrl'  => acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
-            )),
+            ]),
             'indexBlogName' => $blogName,
             'blogName'      => $blogName,
             'blogCode'      => ACMS_RAM::blogCode($this->bid),
-            'blogUrl'       => acmsLink(array(
+            'blogUrl'       => acmsLink([
                 'bid'   => $this->bid,
-            )),
-        );
+            ]),
+        ];
         if (!empty($this->cid)) {
             $categoryName   = ACMS_RAM::categoryName($this->cid);
             $vars['indexCategoryName']  = $categoryName;
             $vars['categoryName']       = $categoryName;
             $vars['categoryCode']       = ACMS_RAM::categoryCode($this->cid);
-            $vars['categoryUrl']        = acmsLink(array(
+            $vars['categoryUrl']        = acmsLink([
                 'bid'   => $this->bid,
                 'cid'   => $this->cid,
-            ));
+            ]);
         }
         return $vars;
     }
@@ -632,7 +633,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
      */
     function buildFullspecPager(&$Tpl)
     {
-        $vars = array();
+        $vars = [];
         if (isset($this->config['order'][0]) && 'random' === $this->config['order'][0]) {
             return $vars;
         }
@@ -653,11 +654,11 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
      */
     protected function eagerLoad()
     {
-        $eagerLoadingData = array();
-        $entryIds = array();
-        $userIds = array();
-        $blogIds = array();
-        $categoryIds = array();
+        $eagerLoadingData = [];
+        $entryIds = [];
+        $userIds = [];
+        $blogIds = [];
+        $categoryIds = [];
         foreach ($this->entries as $entry) {
             if (!empty($entry['entry_id'])) {
                 $entryIds[] = $entry['entry_id'];
@@ -732,7 +733,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function fullTextEagerLoad()
     {
         if (!isset($this->config['fullTextOn']) || $this->config['fullTextOn'] === 'on') {
-            $entryIds = array();
+            $entryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_id'])) {
                     $entryIds[] = $entry['entry_id'];
@@ -751,7 +752,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function tagEagerLoad()
     {
         if (isset($this->config['tagOn']) && $this->config['tagOn'] === 'on') {
-            $entryIds = array();
+            $entryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_id'])) {
                     $entryIds[] = $entry['entry_id'];
@@ -770,7 +771,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function entryFieldEagerLoad()
     {
         if (!isset($this->config['entryFieldOn']) || $this->config['entryFieldOn'] === 'on') {
-            $entryIds = array();
+            $entryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_id'])) {
                     $entryIds[] = $entry['entry_id'];
@@ -789,7 +790,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function relatedEntryEagerLoad()
     {
         if (isset($this->config['relatedEntryOn']) && $this->config['relatedEntryOn'] === 'on') {
-            $entryIds = array();
+            $entryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_id'])) {
                     $entryIds[] = $entry['entry_id'];
@@ -808,7 +809,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function userFieldEagerLoad()
     {
         if (isset($this->config['userInfoOn']) && $this->config['userInfoOn'] === 'on') {
-            $userIds = array();
+            $userIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_user_id'])) {
                     $userIds[] = $entry['entry_user_id'];
@@ -827,7 +828,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function blogFieldEagerLoad()
     {
         if (isset($this->config['blogInfoOn']) && $this->config['blogInfoOn'] === 'on') {
-            $blogIds = array();
+            $blogIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_blog_id'])) {
                     $blogIds[] = $entry['entry_blog_id'];
@@ -846,7 +847,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function categoryFieldEagerLoad()
     {
         if (isset($this->config['categoryInfoOn']) && $this->config['categoryInfoOn'] === 'on') {
-            $categoryIds = array();
+            $categoryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_category_id'])) {
                     $categoryIds[] = $entry['entry_category_id'];
@@ -865,7 +866,7 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
     protected function subCategoryFieldEagerLoad()
     {
         if (isset($this->config['categoryInfoOn']) && $this->config['categoryInfoOn'] === 'on') {
-            $entryIds = array();
+            $entryIds = [];
             foreach ($this->entries as $entry) {
                 if (!empty($entry['entry_id'])) {
                     $entryIds[] = $entry['entry_id'];
@@ -881,6 +882,6 @@ class ACMS_GET_Entry_Summary extends ACMS_GET_Entry
      */
     protected function dsn()
     {
-        return dsn(array('prefix' => ''));
+        return dsn(['prefix' => '']);
     }
 }

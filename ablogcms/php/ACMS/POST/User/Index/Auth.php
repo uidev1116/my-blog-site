@@ -7,12 +7,12 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
         $this->Post->setMethod('user', 'operative', sessionWithAdministration());
         $this->Post->setMethod('checks', 'required');
         $this->Post->setMethod('auth', 'required');
-        $this->Post->setMethod('auth', 'in', array(
+        $this->Post->setMethod('auth', 'in', [
             'administrator',
             'editor',
             'contributor',
             'subscriber',
-        ));
+        ]);
         $this->Post->setMethod('user', 'limit', $this->isLimit());
         $this->Post->validate(new ACMS_Validator());
 
@@ -68,7 +68,7 @@ class ACMS_POST_User_Index_Auth extends ACMS_POST_User
         $SQL->addSelect('*', 'count', null, 'COUNT');
         $SQL->addWhereIn('user_id', $this->Post->getArray('checks'));
         $SQL->addWhereOpr('user_auth', 'subscriber');
-        $add_amount = $DB->query($SQL->get(dsn()), 'one');
+        $add_amount = intval($DB->query($SQL->get(dsn()), 'one'));
 
         // 現在の制限数対象のユーザー
         $now_amount = $this->countOfLimitedAuthUsers();

@@ -4,11 +4,11 @@ class ACMS_GET_Entry_List extends ACMS_GET_Entry_Summary
 {
     function initVars()
     {
-        return array(
-            'order'            => array(
+        return [
+            'order'            => [
                 $this->order ? $this->order : config('entry_list_order'),
                 config('entry_list_order2'),
-            ),
+            ],
             'orderFieldName'   => config('entry_list_order_field_name'),
             'noNarrowDownSort' => config('entry_list_no_narrow_down_sort', 'off'),
             'limit'            => intval(config('entry_list_limit')),
@@ -33,6 +33,6 @@ class ACMS_GET_Entry_List extends ACMS_GET_Entry_Summary
             'hiddenPrivateEntry'    => config('entry_list_hidden_private_entry'),
             'loop_class'            => config('entry_list_loop_class'),
             'mainImageOn'      => 'off',
-        );
+        ];
     }
 }

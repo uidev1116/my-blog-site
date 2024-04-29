@@ -10,19 +10,19 @@ class ACMS_GET_Admin_Import_Message extends ACMS_GET
         $successFlag = $this->Post->get('success');
 
         if ($successFlag === 'on') {
-            $Tpl->add('import:data', array(
+            $Tpl->add('import:data', [
                 'blog'          => $this->Post->get('blogName'),
                 'category'      => $this->Post->get('categoryName'),
                 'entry_count'   => $this->Post->get('entryCount'),
-            ));
+            ]);
         }
 
         if (!empty($importMess)) {
-            $Tpl->add(null, array(
+            $Tpl->add(null, [
                 'importMessage' => $importMess,
                 'success'       => $successFlag,
                 'notice_mess'   => 'show',
-            ));
+            ]);
         }
 
         return $Tpl->get();

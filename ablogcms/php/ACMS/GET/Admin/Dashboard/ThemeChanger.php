@@ -5,7 +5,7 @@ class ACMS_GET_Admin_Dashboard_ThemeChanger extends ACMS_GET
     function get()
     {
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
-        $vars   = array();
+        $vars   = [];
 
         $thmPath = SCRIPT_DIR . THEMES_DIR;
         $curThm = config('theme');
@@ -13,7 +13,7 @@ class ACMS_GET_Admin_Dashboard_ThemeChanger extends ACMS_GET
         if (Storage::isDirectory($thmPath)) {
             $dh = opendir($thmPath);
             while (false != ($dir = readdir($dh))) {
-                $vars = array('theme' => $dir, 'label' => $dir);
+                $vars = ['theme' => $dir, 'label' => $dir];
 
                 if (!Storage::isDirectory($thmPath . $dir)) {
                     continue;

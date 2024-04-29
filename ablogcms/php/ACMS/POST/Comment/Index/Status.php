@@ -7,7 +7,7 @@ class ACMS_POST_Comment_Index_Status extends ACMS_POST_Comment
         $this->Post->setMethod('comment', 'operable', sessionWithCompilation());
         $this->Post->setMethod('checks', 'required');
         $this->Post->setMethod('status', 'required');
-        $this->Post->setMethod('status', 'in', array('open', 'close', 'awaiting'));
+        $this->Post->setMethod('status', 'in', ['open', 'close', 'awaiting']);
         $this->Post->validate(new ACMS_Validator());
 
         if ($this->Post->isValidAll()) {

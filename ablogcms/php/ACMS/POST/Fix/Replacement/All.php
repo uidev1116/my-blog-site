@@ -76,21 +76,21 @@ class ACMS_POST_Fix_Replacement_All extends ACMS_POST
 
         switch ($target) {
             case 'title':
-                $REP = SQL::newFunction('entry_title', array('REPLACE', $pattern, $replacement));
+                $REP = SQL::newFunction('entry_title', ['REPLACE', $pattern, $replacement]);
                 $SQL = SQL::newUpdate('entry');
                 $SQL->addUpdate('entry_title', $REP);
                 $SQL->addWhereOpr('entry_title', '%' . $pattern . '%', 'LIKE');
                 $SQL->addWhereIn('entry_blog_id', $blogIds);
                 break;
             case 'unit':
-                $REP = SQL::newFunction('column_field_1', array('REPLACE', $pattern, $replacement));
+                $REP = SQL::newFunction('column_field_1', ['REPLACE', $pattern, $replacement]);
                 $SQL = SQL::newUpdate('column');
                 $SQL->addUpdate('column_field_1', $REP);
                 $SQL->addWhereOpr('column_field_1', '%' . $pattern . '%', 'LIKE');
                 $SQL->addWhereIn('column_blog_id', $blogIds);
                 break;
             case 'field':
-                $REP = SQL::newFunction('field_value', array('REPLACE', $pattern, $replacement));
+                $REP = SQL::newFunction('field_value', ['REPLACE', $pattern, $replacement]);
                 $SQL = SQL::newUpdate('field');
                 $SQL->addUpdate('field_value', $REP);
                 $SQL->addWhereOpr('field_eid', null, '<>');

@@ -8,7 +8,7 @@ class ACMS_GET_Admin_Trim extends ACMS_GET
 
         $Tpl = strip_tags($Tpl);
         $Tpl = trim(mb_convert_kana($Tpl, "s"));
-        $Tpl = str_replace(array("\r\n","\r","\n"), '', $Tpl);
+        $Tpl = str_replace(["\r\n","\r","\n"], '', $Tpl);
 
         return $Tpl;
     }

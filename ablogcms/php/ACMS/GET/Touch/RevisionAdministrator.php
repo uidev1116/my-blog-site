@@ -2,7 +2,7 @@
 
 class ACMS_GET_Touch_RevisionAdministrator extends ACMS_GET
 {
-    function get()
+    public function get()
     {
         if (
             0
@@ -11,6 +11,6 @@ class ACMS_GET_Touch_RevisionAdministrator extends ACMS_GET
         ) {
             return $this->tpl;
         }
-        return false;
+        return '';
     }
 }

@@ -58,10 +58,10 @@ class ACMS_POST_Entry extends ACMS_POST
     function responseRedirect($url, $ajax = false)
     {
         if ($ajax) {
-            die(json_encode(array(
+            die(json_encode([
                 'action' => 'redirect',
                 'url' => $url,
-            )));
+            ]));
         } else {
             $this->redirect($url);
         }
@@ -69,15 +69,15 @@ class ACMS_POST_Entry extends ACMS_POST
 
     /**
      * @param bool $ajax
-     * @return Field
+     * @return Field_Validation
      */
     function responseGet($ajax = false)
     {
         if ($ajax) {
-            die(json_encode(array(
+            die(json_encode([
                 'action' => 'post',
                 'throughPost' => acmsSerialize($this->Post),
-            )));
+            ]));
         }
         return $this->Post;
     }
@@ -149,7 +149,7 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function saveRelatedEntries($eid, $entryAry = array(), $rvid = null)
+    function saveRelatedEntries($eid, $entryAry = [], $rvid = null)
     {
         Entry::saveRelatedEntries($eid, $entryAry, $rvid);
     }

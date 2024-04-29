@@ -9,7 +9,7 @@ class Factory extends Singleton
     /**
      * @var array
      */
-    protected $_collection = array();
+    protected $_collection = [];
 
     /**
      * @param string $ns

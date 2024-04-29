@@ -37,7 +37,7 @@ class ACMS_GET_Admin_Blog_Fix extends ACMS_GET_Admin
                 foreach ($DB->query($SQL->get(dsn()), 'all') as $row) {
                     $Tpl->add('status:touch#' . $row['blog_status']);
                     $Tpl->add('indexing:touch#' . $row['blog_indexing']);
-                    $Tpl->add('blog:loop', array(
+                    $Tpl->add('blog:loop', [
                         'i'         => $i++,
                         'bid'       => $row['blog_id'],
                         'code'      => $row['blog_code'],
@@ -49,7 +49,7 @@ class ACMS_GET_Admin_Blog_Fix extends ACMS_GET_Admin
                         'name'      => $row['blog_name'],
                         'domain'    => $row['blog_domain'],
                         'indexing'  => $row['blog_indexing'],
-                    ));
+                    ]);
                 }
             } else {
                 $Tpl->add('align');

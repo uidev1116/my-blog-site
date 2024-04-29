@@ -7,5 +7,6 @@ class ACMS_POST_Update_InitLog extends ACMS_POST_Update_Base
         $logger = App::make('update.logger');
         $logger->terminate();
         $this->removeLockFile();
+        return $this->Post;
     }
 }

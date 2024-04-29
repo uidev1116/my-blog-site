@@ -114,7 +114,7 @@ class Tfa
         if (empty($txt)) {
             return false;
         }
-        return Common::decrypt($txt, base64_decode($iv));
+        return Common::decrypt($txt, base64_decode($iv)); // @phpstan-ignore-line
     }
 
     /**

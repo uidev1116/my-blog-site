@@ -19,42 +19,42 @@ class FeedParser
     /**
      * @var array
      */
-    private $rss20_channel_elements = array(
+    private $rss20_channel_elements = [
         'title', 'link', 'description', 'language', 'copyright', 'managingEditor', 'webMaster', 'pubDate',
         'lastBuildDate', 'category', 'generator', 'docs', 'cloud', 'ttl', 'image', 'rating', 'textinput',
         'skipHours', 'skipDays',
-    );
+    ];
 
     /**
      * @var array
      */
-    private $rss20_item_elements = array(
+    private $rss20_item_elements = [
         'title', 'link', 'description', 'author', 'category', 'comments', 'enclosure', 'guid',
         'pubDate', 'sourse', 'dc:creator', 'dc:date', 'dc:subject',
-    );
+    ];
 
     /**
      * @var array
      */
-    private $atom10_feed_elements = array(
+    private $atom10_feed_elements = [
         'author', 'category', 'conributor', 'generator', 'icon', 'id', 'link', 'logo', 'rights',
         'subtitle', 'title', 'updated', 'modified',
-    );
+    ];
 
     /**
      * @var array
      */
-    private $atom10_entry_elements = array(
+    private $atom10_entry_elements = [
         'author', 'category', 'content', 'contributor', 'id', 'link', 'published', 'rights',
         'source', 'summary', 'title', 'updated', 'issued', 'modified', 'created'
-    );
+    ];
 
     /**
      * @var array
      */
-    private $kind_of_datetime = array(
+    private $kind_of_datetime = [
         'published', 'updated', 'pubDate', 'dc:date', 'issued'
-    );
+    ];
 
     public function __construct($url, $kind)
     {
@@ -64,7 +64,7 @@ class FeedParser
 
     public function setKind($kind)
     {
-        if (array_search($kind, array('rss20', 'atom10'), true) !== false) {
+        if (array_search($kind, ['rss20', 'atom10'], true) !== false) {
             $this->kind = $kind;
             return true;
         }
@@ -92,8 +92,8 @@ class FeedParser
         } else {
             $meta_term = '';
             $item_term = '';
-            $meta_elem = array();
-            $item_elem = array();
+            $meta_elem = [];
+            $item_elem = [];
         }
         // get encoding
         $res['meta']['encoding'] = preg_match('@encoding=[\'\"](.*?)[\'\"]@', $this->feed, $match) ? $match[1] : false;
@@ -120,7 +120,7 @@ class FeedParser
                     "@<$element.*?>(.*?)</$element>@si",
                     $row,
                     $match
-                ) ? str_replace(array('<![CDATA[', ']]>', '\r\n', '	'), '', $match[1]) : null;
+                ) ? str_replace(['<![CDATA[', ']]>', '\r\n', '	'], '', $match[1]) : null;
 
                 if (empty($res['items'][$i][$element])) {
                     $attr = preg_match("@<$element(.*?)>@si", $row, $match) ? $match[1] : null;

@@ -9,9 +9,9 @@ class ACMS_GET_Admin_Preview_Share extends ACMS_GET
         $tpl = new Template($this->tpl, new ACMS_Corrector());
         try {
             $url = Preview::getSharePreviewUrl();
-            return $tpl->render(array(
+            return $tpl->render([
                 'url' => $url,
-            ));
+            ]);
         } catch (\Exception $e) {
         }
 

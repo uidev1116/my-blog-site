@@ -2,6 +2,9 @@
 
 use Acms\Services\Common\CorrectorFactory;
 
+/**
+ * @mixin \ACMS_CorrectorBody
+ */
 class ACMS_Corrector
 {
     /**
@@ -31,64 +34,77 @@ class ACMS_Corrector
     public function correct($txt, $opt, $name)
     {
         if (
-            !( 0
-            or 'selected' == $name
-            or 'checked' == $name
-            or 'disabled' == $name
-            or 'class' == $name
-            or 'attr' == $name
-            or is_int(strpos($name, ':selected'))
-            or is_int(strpos($name, ':checked'))
-            )
+            'selected' == $name ||
+            'checked' == $name ||
+            'disabled' == $name ||
+            'class' == $name ||
+            'attr' == $name ||
+            is_int(strpos($name, ':selected')) ||
+            is_int(strpos($name, ':checked'))
         ) {
+            // 特殊な名前の変数は強制的にraw校正オプションを付与
             if (empty($opt)) {
-                $opt = 'escape';
+                $opt = 'raw';
             } elseif (
-                1
-                && strpos($opt, 'escape') === false
-                && strpos($opt, 'raw') === false
-                && strpos($opt, 'resizeImg') === false
+                strpos($opt, 'escape') === false &&
+                strpos($opt, 'raw') === false
             ) {
-                $opt = 'escape|' . $opt;
-            }
-            // [allow_dangerous_tag]校正オプションが指定されてなければ、危険なタグを削除する校正オプションを付与
-            if (config('strip_dangerous_tag') === 'on' && strpos($opt, 'allow_dangerous_tag') === false) {
-                $dangerousTags = configArray('dangerous_tags');
-                if (empty($dangerousTags)) {
-                    $dangerousTags = ['script', 'iframe'];
-                }
-                $opt = 'strip_select_tags(\'' . implode('\',\'', $dangerousTags) . '\')|' . $opt;
+                $opt = 'raw|' . $opt;
             }
         }
-        if (!empty($opt)) {
-            $opt    = '|' . $opt;
-            while (preg_match('@\s*\|\s*([^(|\s]+)\s*(\()?\s*(.*)@', $opt, $match)) {
-                $method = $match[1];
-                $opt    = $match[3];
-                $args   = array();
-                if (!empty($match[2])) {
-                    while (
-                        preg_match('@' . '(?:'
-                        . '([-\d.]+)' . '|'
-                        . '"((?:[^"]|\\\")*)"' . '|'
-                        . "'((?:[^']|\\\')*)'"
-                        . ')' . '\s*(,|\))\s*(.*)@', $opt, $match)
-                    ) {
-                        $args[] = $match[1] | $match[2] | $match[3];
-                        $opt    = $match[5];
-                        if (')' == $match[4]) {
-                            break;
-                        }
+
+        // デフォルトで、escapeオプションを付与
+        if (empty($opt)) {
+            $opt = 'escape';
+        } elseif (
+            strpos($opt, 'escape') === false &&
+            strpos($opt, 'raw') === false &&
+            strpos($opt, 'resizeImg') === false
+        ) {
+            $opt = 'escape|' . $opt;
+        }
+
+        if (
+            config('strip_dangerous_tag') === 'on' &&
+            strpos($opt, 'allow_dangerous_tag') === false &&
+            strpos($opt, 'raw') !== false
+        ) {
+            // [raw]校正オプションがあり、かつ[allow_dangerous_tag]校正オプションが指定されてなければ、危険なタグを削除する校正オプションを付与
+            $dangerousTags = configArray('dangerous_tags');
+            if (empty($dangerousTags)) {
+                $dangerousTags = ['script', 'iframe'];
+            }
+            $opt = 'strip_select_tags(\'' . implode('\',\'', $dangerousTags) . '\')|' . $opt;
+        }
+
+        // 校正オプションをコール
+        $opt = '|' . $opt;
+        while (preg_match('@\s*\|\s*([^(|\s]+)\s*(\()?\s*(.*)@', $opt, $match)) {
+            $method = $match[1];
+            $opt = $match[3];
+            $args = [];
+            if (!empty($match[2])) {
+                while (
+                    preg_match('@' . '(?:'
+                    . '([-\d.]+)' . '|'
+                    . '"((?:[^"]|\\\")*)"' . '|'
+                    . "'((?:[^']|\\\')*)'"
+                    . ')' . '\s*(,|\))\s*(.*)@', $opt, $match)
+                ) {
+                    $args[] = $match[1] | $match[2] | $match[3];
+                    $opt    = $match[5];
+                    if (')' == $match[4]) {
+                        break;
                     }
                 }
-                if ('list' == $method) {
-                    $method = 'acms_corrector_list';
-                }
-                $res = $this->factory->call($method, $txt, $args);
+            }
+            if ('list' == $method) {
+                $method = 'acms_corrector_list';
+            }
+            $res = $this->factory->call($method, $txt, $args);
 
-                if ($res !== false) {
-                    $txt = $res;
-                }
+            if ($res !== false) {
+                $txt = $res;
             }
         }
         return $txt;

@@ -2,15 +2,15 @@
 
 class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
 {
-    function get()
+    public function get()
     {
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
-        $utid           = $this->Post->get('utid', UTID);
-        $ary_utid       = $this->Post->getArray('utid', UTID);
+        $utid           = (int)$this->Post->get('utid', UTID);
+        $ary_utid       = array_map('intval', $this->Post->getArray('utid'));
         $eid            = $this->Post->get('eid', EID);
         $renderGroup    = $this->Post->get('renderGroup', 'off');
-        $renderGroup    = ( $renderGroup == 'on' ) ? true : false;
+        $renderGroup    = ($renderGroup === 'on') ? true : false;
 
         $seeked     = false;
         $preAlign   = null;
@@ -32,8 +32,8 @@ class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
                     $preAlign = $row['align'];
                     $seeked   = false;
                 }
-                if (is_array($ary_utid) && ( count($ary_utid) > 0 )) {
-                    if (in_array($row['clid'], $ary_utid) === false) {
+                if (is_array($ary_utid) && (count($ary_utid) > 0)) {
+                    if (in_array($row['clid'], $ary_utid, true) === false) {
                         unset($Column[$i]);
                     } else {
                         $seeked = true;

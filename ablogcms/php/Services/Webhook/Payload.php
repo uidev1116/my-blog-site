@@ -27,19 +27,19 @@ class Payload extends PayloadContract
         }
         $sql->addWhereOpr('entry_id', $eid);
         $entry = DB::query($sql->get(dsn()), 'row');
-        $entryData = array();
+        $entryData = [];
         foreach ($entry as $key => $value) {
             $entryData[substr($key, strlen('entry_'))] = $value;
         }
-        $contents = array(
+        $contents = [
             'entry' => $entryData,
             'field' => loadEntryField($eid, $revisionId)->_aryField,
-        );
-        $url = acmsLink(array(
+        ];
+        $url = acmsLink([
             'bid' => $entryData['blog_id'],
             'cid' => $entryData['category_id'],
             'eid' => $eid,
-        ), false);
+        ], false);
         return $this->basicPayload('entry', $events, $contents, $url);
     }
 
@@ -53,11 +53,11 @@ class Payload extends PayloadContract
      */
     public function formHook(array $events, array $mail, array $mailAdmin, array $field): array
     {
-        $contents = array(
+        $contents = [
             'mail' => $mail,
             'mailAdmin' => $mailAdmin,
             'field' => $field,
-        );
+        ];
         return $this->basicPayload('form', $events, $contents, REQUEST_URL);
     }
 
@@ -71,17 +71,17 @@ class Payload extends PayloadContract
         $sql = SQL::newSelect('user');
         $sql->addWhereOpr('user_id', $uid);
         $user = DB::query($sql->get(dsn()), 'row');
-        $userData = array();
+        $userData = [];
         foreach ($user as $key => $value) {
             if (in_array($key, ['user_pass', 'user_pass_reset', 'user_tfa_secret', 'user_tfa_secret_iv', 'user_tfa_recovery', 'user_session_data'], true)) {
                 continue;
             }
             $userData[substr($key, strlen('user_'))] = $value;
         }
-        $contents = array(
+        $contents = [
             'user' => $userData,
             'field' => loadEntryField($uid)->_aryField,
-        );
+        ];
         return $this->basicPayload('user', $events, $contents, '');
     }
 }
