@@ -14,11 +14,11 @@
 forbid_direct_access_tpl: /^_/ # off | /^_/  パスのディレクトリまたはファイルがこの正規表現に一致したものは直接表示させない
 forbid_tpl_inheritance_when_path_unresolved: on # on | off パス解決に失敗した時、テンプレートを継承しないようにする
 forbid_tpl_url_context: on # on | off 読者以下のURLコンテキストのtplを許可しない。（例: https://example.com/news/tpl/custom.html）
-allow_tpl_path: [include/summary.html] # forbid_tpl_inheritance_when_path_unresolved や forbid_tpl_url_context が on の場合、除外するパスを設定します。例: [news.html,hoge/custom.html] カンマ区切りで指定
+allow_tpl_path: [] # forbid_tpl_inheritance_when_path_unresolved や forbid_tpl_url_context が on の場合、除外するパスを設定します。例: [news.html,hoge/custom.html] カンマ区切りで指定
 
 image_magick: off
 
-system_update_repository: http://www.a-blogcms.jp/api/update-edge.json
+# system_update_repository: http://www.a-blogcms.jp/api/update-edge.json
 
 ## V2_Entry_Body
 v2_entry_body_limit: 5
