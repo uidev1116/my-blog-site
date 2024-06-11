@@ -1,4 +1,5 @@
-import axios, { CancelToken } from 'axios';
+import { CancelToken } from 'axios'
+import axiosLib from './axios'
 
 /**
  * e.g.
@@ -16,14 +17,14 @@ export default class IncrementalSearch {
     const defaults = {
       interval: 200,
       keyName: 'word',
-    };
-    const opt = { ...defaults, ...options };
+    }
+    const opt = { ...defaults, ...options }
 
-    this.timer = null;
-    this.cancel = null;
-    this.source = {};
-    this.interval = opt.interval;
-    this.keyName = opt.keyName;
+    this.timer = null
+    this.cancel = null
+    this.source = {}
+    this.interval = opt.interval
+    this.keyName = opt.keyName
   }
 
   /**
@@ -32,22 +33,23 @@ export default class IncrementalSearch {
    * @param callback
    */
   addRequest(selector, endpoint, callback = () => {}) {
-    const input = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    const input =
+      typeof selector === 'string' ? document.querySelector(selector) : selector
     input.addEventListener('keyup', (e) => {
-      const { value } = e.target;
-      e.preventDefault();
-      clearTimeout(this.timer);
+      const { value } = e.target
+      e.preventDefault()
+      clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         if (typeof this.source.cancel === 'function') {
-          this.source.cancel();
+          this.source.cancel()
         }
         this.request(endpoint, value).then((json) => {
           if (Array.isArray(json)) {
-            callback(json);
+            callback(json)
           }
-        });
-      }, this.interval);
-    });
+        })
+      }, this.interval)
+    })
   }
 
   /**
@@ -56,15 +58,15 @@ export default class IncrementalSearch {
    * @return Promise
    */
   request(endpoint, value) {
-    const params = new URLSearchParams();
-    params.append('ACMS_POST_Search_Items', true);
-    params.append(this.keyName, value);
-    params.append('formToken', window.csrfToken);
+    const params = new URLSearchParams()
+    params.append('ACMS_POST_Search_Items', true)
+    params.append(this.keyName, value)
+    params.append('formToken', window.csrfToken)
 
-    this.source = CancelToken.source();
+    this.source = CancelToken.source()
 
     return new Promise((resolve, reject) => {
-      axios({
+      axiosLib({
         method: 'POST',
         url: endpoint,
         responseType: 'json',
@@ -72,13 +74,13 @@ export default class IncrementalSearch {
         data: params,
       })
         .then((response) => {
-          resolve(response.data);
+          resolve(response.data)
         })
         .catch((thrown) => {
-          if (!axios.isCancel(thrown)) {
-            reject(thrown.message);
+          if (!axiosLib.isCancel(thrown)) {
+            reject(thrown.message)
           }
-        });
-    });
+        })
+    })
   }
 }

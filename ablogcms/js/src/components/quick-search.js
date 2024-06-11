@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import keyboardJS from 'keyboardjs'
 import classnames from 'classnames'
-import axios from 'axios'
 import copy from 'copy-to-clipboard'
 import unescape from 'unescape'
+import axiosLib from '../lib/axios'
 import IncrementalSearch from '../lib/incremental-search'
 import ACMSModal from './modal'
 import Notify from './notify'
@@ -375,7 +375,7 @@ export default class QuickSearch extends Component {
       })
       this.setGlobalVars()
     } else {
-      axios
+      axiosLib
         .get(endpoint)
         .then((res) => {
           this.setState({
@@ -395,7 +395,7 @@ export default class QuickSearch extends Component {
     const params = new URLSearchParams()
     params.append('ACMS_POST_Search_GlobalVars', true)
     params.append('formToken', window.csrfToken)
-    axios({
+    axiosLib({
       method: 'POST',
       url: window.location.href,
       responseType: 'json',
@@ -434,7 +434,7 @@ export default class QuickSearch extends Component {
 
   showSnippets(item) {
     if (item) {
-      axios.get(item.url).then((res) => {
+      axiosLib.get(item.url).then((res) => {
         const parser = new DOMParser()
         let html = parser.parseFromString(res.data, 'text/html')
         html = html.querySelector('textarea').innerHTML
@@ -449,7 +449,7 @@ export default class QuickSearch extends Component {
 
   showVars(item) {
     if (item) {
-      axios.get(item.url).then((res) => {
+      axiosLib.get(item.url).then((res) => {
         const parser = new DOMParser()
         const html = parser.parseFromString(res.data, 'text/html')
         this.setState({

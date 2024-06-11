@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  テーブル
@@ -60,9 +60,7 @@
   .acms-table-admin-edit th {
     line-height: 1.7;
   }
-
 }
-
 
 // ------------------------------
 // テーブル 見出し
@@ -81,7 +79,6 @@
   }
 }
 
-
 // ------------------------------
 // テーブル ボーダー
 // ------------------------------
@@ -95,7 +92,6 @@
     border-bottom: global.$acms-table-bordered-border;
   }
 }
-
 
 // ------------------------------
 // テーブル striped
@@ -112,13 +108,12 @@
   }
 }
 
-
 // ------------------------------
 // テーブル hover
 // ------------------------------
 .acms-table-hover td,
 .acms-table-hover-line tr {
-  transition: .2s background-color;
+  transition: 0.2s background-color;
 }
 
 .acms-table-hover tr:hover td,
@@ -133,7 +128,6 @@
 .acms-table-hover tr.hover {
   background: global.$acms-table-hover-line-bg;
 }
-
 
 // ------------------------------
 // テーブル 入力テーブル
@@ -151,7 +145,6 @@
   }
 }
 
-
 // ------------------------------
 // テーブル 入れ替え
 // ------------------------------
@@ -166,15 +159,13 @@
   }
 }
 
-
 // ------------------------------
 // テーブル スクロール
 // ------------------------------
-[class*="acms-table-scroll-"],
+[class*='acms-table-scroll-'],
 .acms-table-responsive {
   border: 1px solid global.$acms-color-gray50;
 }
-
 
 // global.$breakpoint-sm-max 以下
 @media (max-width: global.$breakpoint-sm-max) {
@@ -221,13 +212,16 @@
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 
-    th, td {
+    th,
+    td {
       white-space: nowrap;
     }
   }
 
-  .acms-table-scrollable, .js-table-unit-scroll-hint {
-    th, td {
+  .acms-table-scrollable,
+  .js-table-unit-scroll-hint {
+    th,
+    td {
       display: table-cell !important;
       white-space: nowrap;
     }
@@ -263,9 +257,7 @@
   }
 }
 
-
 @if global.$admin == true {
-
   // ------------------------------
   // テーブル 管理画面
   // ------------------------------
@@ -321,7 +313,6 @@
     }
   }
 
-
   // ------------------------------
   // テーブル 編集画面
   // ------------------------------
@@ -356,14 +347,6 @@
       padding: 2px 5px;
     }
 
-    // デスクトップの時
-    @media (min-width: global.$breakpoint-md-min) {
-      th {
-        padding-right: 25px;
-      }
-    }
-
-
     // 下階層のtableは線なし
     table {
       width: 100%;
@@ -389,7 +372,6 @@
           }
         }
       }
-
     }
 
     @media (min-width: global.$breakpoint-md-min) {
@@ -401,53 +383,60 @@
       td {
         padding: 5px 10px;
       }
+    }
+  }
 
-      th {
-        padding-right: 25px;
-      }
-
-
-      tr {
-        &:first-child th,
-        &:first-child td {
-          padding: 10px 10px 5px;
-        }
-
-        &:first-child th {
+  .is-admin-page, // 管理ページ内にのみ適用
+  .acms-form {
+    // モーダルで開く編集画面内と、エントリーのカスタムフィールドとユニット編集画面内を考慮
+    .acms-table-admin-edit {
+      @media (min-width: global.$breakpoint-md-min) {
+        th {
           padding-right: 25px;
         }
 
-        &:last-child th,
-        &:last-child td {
-          padding: 5px 10px 10px;
+        tr {
+          &:first-child th,
+          &:first-child td {
+            padding: 10px 10px 5px;
+          }
+
+          &:first-child th {
+            padding-right: 25px;
+          }
+
+          &:last-child th,
+          &:last-child td {
+            padding: 5px 10px 10px;
+          }
+
+          &:last-child th {
+            padding-right: 25px;
+          }
+
+          &:only-child th,
+          &:only-child td {
+            padding: 10px 10px;
+          }
+
+          &:only-child th {
+            padding-right: 25px;
+          }
         }
 
-        &:last-child th {
-          padding-right: 25px;
-        }
-
-        &:only-child th,
-        &:only-child td {
-          padding: 10px 10px;
-        }
-
-        &:only-child th {
-          padding-right: 25px;
-        }
-      }
-      thead {
-        tr:first-child,
-        tr:last-child,
-        tr:only-child {
-          th,
-          td {
-            padding: 3px 10px;
+        thead {
+          tr:first-child,
+          tr:last-child,
+          tr:only-child {
+            th,
+            td {
+              padding: 3px 10px;
+            }
           }
         }
       }
     }
   }
-
 
   // メディア機能 テーブル
   .acms-table-admin-media-edit-wrap {
@@ -512,7 +501,6 @@
       border-right: global.$acms-table-admin-edit-bordered-border;
     }
 
-
     // 下階層のtableは線なし
     table {
       tr {
@@ -528,7 +516,6 @@
       }
     }
   }
-
 
   // ---------------
   // テーブル ミニ
@@ -573,7 +560,7 @@
     }
   }
 
-  [class*="acms-table-scroll-"],
+  [class*='acms-table-scroll-'],
   .acms-table-responsive {
     .acms-admin-mini-table {
       border: 0;
@@ -584,14 +571,13 @@
     width: 50px;
   }
 
-  [class*="acms-table-scroll-"] .acms-table-admin,
+  [class*='acms-table-scroll-'] .acms-table-admin,
   .acms-table-responsive .acms-table-admin {
     tr:last-child td {
       border-bottom: 0;
     }
   }
 }
-
 
 // ---------------
 // テーブル カラー
@@ -643,7 +629,6 @@
     background: global.$acms-table-danger-bg;
   }
 }
-
 
 // ---------------
 // ユーティリティ

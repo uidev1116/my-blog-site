@@ -215,7 +215,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
             $amount['charge#payment-tax'] = $this->taxCalc($charge['payment']);
             $amount['charge#others-tax']  = $this->taxCalc($charge['others']);
 
-            $rate = config('shop_tax_rate') * 100;
+            $rate = floatval(config('shop_tax_rate')) * 100;
 
             $chargeTax = $amount['charge#deliver-tax'] + $amount['charge#payment-tax'] + $amount['charge#others-tax'];
 
@@ -320,7 +320,7 @@ class ACMS_POST_Shop2_Form_Confirm extends ACMS_POST_Shop2
 
     protected function taxCalc($amount)
     {
-        $rate = config('shop_tax_rate') + 1;
+        $rate = floatval(config('shop_tax_rate')) + 1;
 
         if (config('shop_tax_rounding') == 'ceil') {
             // 切り上げ

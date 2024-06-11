@@ -286,7 +286,10 @@ class Filesystem extends Base implements FilesystemInterface
         $to = $this->convertStrToLocal($to);
         $from = $this->convertStrToLocal($from);
 
-        return @rename($from, $to);
+        $res = @rename($from, $to);
+        $this->changeMod($to);
+
+        return $res;
     }
 
     /**

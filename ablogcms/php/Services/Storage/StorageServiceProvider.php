@@ -18,6 +18,16 @@ class StorageServiceProvider extends ServiceProvider
      */
     public function register(Container $container)
     {
-        $container->singleton('storage', 'Acms\Services\Storage\Filesystem');
+        $container->singleton('storage', function () {
+            $filesystem = new Filesystem();
+
+            if (defined('CHMOD_DIR')) {
+                $filesystem->setDirectoryMod(CHMOD_DIR);
+            }
+            if (defined('CHMOD_FILE')) {
+                $filesystem->setFileMod(CHMOD_FILE);
+            }
+            return $filesystem;
+        });
     }
 }

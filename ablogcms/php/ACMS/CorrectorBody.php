@@ -491,7 +491,7 @@ class ACMS_CorrectorBody
             if (Storage::isReadable($destPath)) {
                 return Media::urlencode($destPathVars);
             }
-            if (Storage::isReadable($largePath)) {
+            if (strpos($largePath, MEDIA_LIBRARY_DIR) !== 0 && Storage::isReadable($largePath)) {
                 $srcPath = $largePath;
                 break;
             }

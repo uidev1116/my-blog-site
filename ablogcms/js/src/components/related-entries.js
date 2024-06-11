@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import axios from 'axios'
 import debounce from 'debounce-promise'
 import {
   SortableContainer,
@@ -9,6 +8,7 @@ import {
   SortableHandle,
   arrayMove,
 } from 'react-sortable-hoc'
+import axiosLib from '../lib/axios'
 
 const DragHandle = SortableHandle(() => (
   <td
@@ -98,7 +98,7 @@ export default class RelatedEntry extends Component {
     }
     this.getItemRequest = debounce(
       (keyword, moduleId, ctx) =>
-        axios({
+        axiosLib({
           method: 'GET',
           url: ACMS.Library.acmsLink(
             {

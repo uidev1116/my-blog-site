@@ -50,6 +50,11 @@ class ACMS_POST_Media_Upload extends ACMS_POST
             $json = Media::buildJson($mid, $data, $tags, BID);
             $json['status'] = 'success';
 
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('saveMedia', [$mid, 'insert', true]);
+            }
+
             AcmsLogger::info('メディアをアップロードしました', [
                 'mid' => $mid,
                 'data' => $data,

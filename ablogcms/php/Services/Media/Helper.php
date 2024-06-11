@@ -125,11 +125,14 @@ class Helper
         $size = [
             'normal' => 0,
             'tiny' => 330,
+            'square' => -1,
         ];
         if ($original) {
             $size['large'] = 99999;
         }
         $isRamdomFileName = config('media_image_ramdom_filename', 'off') === 'on';
+        $forceLarge = isset($size['large']);
+
         /**
          * @var array{
          *  path: string,
@@ -144,7 +147,7 @@ class Helper
             MEDIA_LIBRARY_DIR,
             $isRamdomFileName,
             null,
-            true
+            $forceLarge
         );
         $data['extension'] = $data['type'];
         $data['type'] = 'image';

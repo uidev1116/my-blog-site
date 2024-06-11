@@ -30,15 +30,18 @@ class ConfigServer
                 $string .= '// ' . $val . $EOL;
             } else {
                 if (!defined($def)) {
-                    define($def, $val);               // use default
+                    define($def, $val); // use default
                 }
-                $const = constant($def);                                // get constant
+                $const = constant($def); // get constant
                 if (is_bool($const)) {
                     $const = $const ? 1 : 0;
+                } elseif ($def === 'CHMOD_DIR' || $def === 'CHMOD_FILE') {
+                    $const = $val;
+                } else {
+                    $const = is_string($const) ? "'$const'" : $const; // fix strings
+                    $const = $const === null ? 'null' : $const; // fix null
                 }
-                $const = is_string($const) ? "'$const'" : $const;       // fix strings
-                $const = $const === null ? 'null' : $const;             // fix null
-                $string .= "define('$def', $const);" . $EOL;            // add row
+                $string .= "define('$def', $const);" . $EOL; // add row
             }
         }
 
@@ -50,7 +53,7 @@ class ConfigServer
         return [
             'DOMAIN' => '',
             'DOMAIN_BASE' => '',
-            '1' => 'BR',
+            'DB_BR' => 'BR',
             'DB_TYPE' => 'mysql',
             'DB_HOST' => '',
             'DB_NAME' => '',
@@ -61,20 +64,24 @@ class ConfigServer
             'DB_CONNECTION_CHARSET' => null,
             'DB_PREFIX' => '',
             'DB_SLOW_QUERY_TIME' => 0.2,
-            '2' => 'BR',
-            'COMMENT_2' => 'GETTEXT_TYPE: fix|user|auto',
+            'GETTEXT_BR' => 'BR',
+            'COMMENT_1' => 'GETTEXT_TYPE: fix|user|auto',
             'GETTEXT_TYPE' => 'user',
-            'COMMENT_3' => 'GETTEXT_APPLICATION_RANGE: admin|login|all',
+            'COMMENT_2' => 'GETTEXT_APPLICATION_RANGE: admin|login|all',
             'GETTEXT_APPLICATION_RANGE' => 'all',
             'GETTEXT_DEFAULT_LOCALE' => 'ja_JP.UTF-8',
             'GETTEXT_DOMAIN' => 'messages',
             'GETTEXT_PATH' => 'lang',
             'PROXY_BR' => 'BR',
-            'COMMENT_4' => 'プロキシが入っている場合、X-Forwarded-ForヘッダーからクライアントIPアドレスを特定するため、',
-            'COMMENT_5' => '信頼できるプロキシのIPを設定します。 例: xxx.xxx.xxx.xxx,yyy.yyy.yyy.yyy',
+            'COMMENT_3' => 'プロキシが入っている場合、X-Forwarded-ForヘッダーからクライアントIPアドレスを特定するため、',
+            'COMMENT_4' => '信頼できるプロキシのIPを設定します。 例: xxx.xxx.xxx.xxx,yyy.yyy.yyy.yyy',
             'TRUSTED_PROXY_LIST' => '',
             'PROXY_IP_HEADER' => 'HTTP_X_FORWARDED_FOR',
-            '3' => 'BR',
+            'CHMOD_BR' => 'BR',
+            'COMMENT_5' => 'CMSで作成するディレクトリ・ファイルのパーミッションを設定します',
+            'CHMOD_DIR' => '(0775 & ~ umask())',
+            'CHMOD_FILE' => '(0664 & ~ umask())',
+            'SSL_BR' => 'BR',
             'SSL_ENABLE' => 0,
             'FULLTIME_SSL_ENABLE' => 0,
             'COOKIE_SECURE' => 0,
@@ -91,7 +98,7 @@ class ConfigServer
             'DEFAULT_TIMEZONE' => 'Asia/Tokyo',
             'DOCUMENT_ROOT_FORCE' => null,
             'PHP_SESSION_USE_DB' => 0,
-            '4' => 'BR',
+            'DIR_BR' => 'BR',
             'THEMES_DIR' => 'themes/',
             'ARCHIVES_DIR' => 'archives/',
             'MEDIA_LIBRARY_DIR' => 'media/',
@@ -101,7 +108,7 @@ class ConfigServer
             'PHP_DIR' => 'php/',
             'JS_DIR' => 'js/',
             'IMAGES_DIR' => 'images/',
-            '5' => 'BR',
+            'PATH_BR' => 'BR',
             'CONFIG_FILE' => 'private/config.system.yaml',
             'CONFIG_DEFAULT_FILE' => 'private/config.system.default.yaml',
             'MIME_TYPES_FILE' => 'private/mime.types',
@@ -110,7 +117,7 @@ class ConfigServer
             'ASYNC_PROCESS_LOG_PATH' => '',
             'COMMENT_6' => '非同期処理でPHPパスが合わない場合に使用。例1: PHP_BINDIR . \'/php -c /path/to/php.ini\' 例2: \'C:\xampp\php\php.exe\'',
             'PHP_PROCESS_BINARY' => '',
-            '6' => 'BR',
+            'SEGMENT_BR' => 'BR',
             'BID_SEGMENT' => 'bid',
             'AID_SEGMENT' => 'aid',
             'UID_SEGMENT' => 'uid',
@@ -135,7 +142,7 @@ class ConfigServer
             'ADMIN_RESET_PASSWORD_SEGMENT' => 'admin-reset-password',
             'ADMIN_RESET_PASSWORD_AUTH_SEGMENT' => 'admin-reset-password-auth',
             'ADMIN_TFA_RECOVERY_SEGMENT' => 'admin-tfa-recovery',
-            '7' => 'BR',
+            'SEGMENT2_BR' => 'BR',
             'SIGNIN_SEGMENT' => 'signin',
             'SIGNUP_SEGMENT' => 'signup',
             'RESET_PASSWORD_SEGMENT' => 'reset-password',
@@ -146,12 +153,12 @@ class ConfigServer
             'EMAIL_UPDATE_SEGMENT' => 'mypage/update-email',
             'TFA_UPDATE_SEGMENT' => 'mypage/update-tfa',
             'WITHDRAWAL_SEGMENT' => 'mypage/withdrawal',
-            '8' => 'BR',
+            'SEGMENT3_BR' => 'BR',
             'LIMIT_SEGMENT' => 'limit',
             'DOMAIN_SEGMENT' => 'domain',
             'API_SEGMENT' => 'api',
             'IOS_APP_UA' => 'acms_iOS_app',
-            '9' => 'BR',
+            'ETC_BR' => 'BR',
             'COMMENT_7' => '本番運用時に DEBUG_MODE を必ず 0 に設定して下さい',
             'DEBUG_MODE' => 0,
             'BENCHMARK_MODE' => 0,

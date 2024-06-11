@@ -38,7 +38,7 @@ class ACMS_GET_Admin_Category_Index extends ACMS_GET_Admin
             $layered = false;
         }
 
-        $_cid = $this->Get->get('_cid', 0);
+        $_cid = (int)$this->Get->get('_cid', 0);
 
         //---------
         // refresh

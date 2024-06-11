@@ -21,7 +21,7 @@ class Helper
      *
      * @param array $data
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -67,7 +67,7 @@ class Helper
      *
      * @param array $data
      * @param \Acms\Services\View\Contracts\ViewInterface & $Tpl
-     * @param array $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -103,7 +103,7 @@ class Helper
      *
      * @param array $data
      * @param \Acms\Services\View\Contracts\ViewInterface & $Tpl
-     * @param array $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -156,7 +156,7 @@ class Helper
      *
      * @param int|string $datetime
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $block
+     * @param string[]|string $block
      * @param string $prefix
      *
      * @return array
@@ -252,7 +252,7 @@ class Helper
      *
      * @param \Field $Field
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $block
+     * @param string[]|string $block
      * @param string|null $scp
      * @param array $loop_vars
      *
@@ -468,7 +468,7 @@ class Helper
      * @param int $delta 前後ページ数
      * @param string $curAttr
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $block
+     * @param string[]|string $block
      * @param array $Q
      *
      * @return array
@@ -736,7 +736,7 @@ class Helper
      * @param \Acms\Services\View\Contracts\ViewInterface $tpl
      * @param int $eid
      * @param array $eagerLoadingData
-     * @param array $blocks
+     * @param string[] $blocks
      */
     public function buildTag($tpl, $eid, $eagerLoadingData, $blocks = [])
     {
@@ -1081,10 +1081,10 @@ class Helper
     /**
      * 関連記事を組み立て
      *
-     * @param $Tpl
-     * @param $eid
-     * @param $eagerLoadingData
-     * @param array $block
+     * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
+     * @param int $eid
+     * @param array<int, array<string, array<array>>> $eagerLoadingData
+     * @param string[]|string $block
      */
     public function buildRelatedEntriesList($Tpl, $eid, $eagerLoadingData, $block = [])
     {
@@ -1123,8 +1123,8 @@ class Helper
      * 関連記事の組み立て
      *
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $eids
-     * @param array $block
+     * @param int[] $eids
+     * @param string[]|string $block
      * @param string $start
      * @param string $end
      * @param string $relatedBlock
@@ -1597,7 +1597,7 @@ class Helper
      *
      * @param array $data
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $rootBlock
+     * @param string[]|string $rootBlock
      * @param array $mediaData
      *
      * @return bool
@@ -2150,7 +2150,7 @@ class Helper
      *
      * @param array $data
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param array $rootBlock
+     * @param string[]|string $rootBlock
      *
      * @return bool
      */
@@ -2242,7 +2242,7 @@ class Helper
      * レイアウトモジュールの1モジュールを組み立て
      *
      * @param string $moduleName
-     * @param int $moduleID
+     * @param string $moduleID
      * @param string $moduleTpl
      * @param bool $onlyLayout
      *

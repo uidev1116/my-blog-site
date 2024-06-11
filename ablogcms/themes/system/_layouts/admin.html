@@ -217,6 +217,100 @@
               </ul>
             </li>
             @endsection
+
+            @section("navbar-admin-usefull")
+            <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+            <li class="js-acms-dropdown-toggle acms-admin-dropdown-right acms-admin-dropdown-toggle-sp">
+              <a href="#" class="js-acms-dropdown-btn">
+                <i class="acms-admin-icon acms-admin-icon-config_function" aria-hidden="true"></i>
+                <span class="acms-admin-hide-visually">開発</span>
+              </a>
+              <ul class="js-acms-dropdown-menu acms-admin-navbar-admin-nav-dropdown-menu">
+                <li>
+                  <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/customfield_maker/">カスタムフィールドメーカー</a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/tools/escape.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    エスケープメーカー
+                  </a>
+                </li>
+                <li>
+                  <hr>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/built_in.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ビルトインモジュール
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/field.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    フィールドモジュール
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/touch.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    タッチモジュール
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/global_variable.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    グローバル変数
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/proofreading.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    校正オプション
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/form_option.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    フォームオプション
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.a-blogcms.jp/document/reference/acms_path.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    acmsパス
+                  </a>
+                </li>
+                <li>
+                  <a href="%{ADMIN_BASE_URL}bid/%{BID}/admin/styleguide_acms-admin/">スタイルガイド</a>
+                </li>
+              </ul>
+            </li>
+            <!-- END_MODULE Touch_SessionWithAdministration -->
+            @endsection
           </ul>
         </div>
       </nav>

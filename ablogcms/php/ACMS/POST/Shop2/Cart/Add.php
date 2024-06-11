@@ -84,7 +84,7 @@ class ACMS_POST_Shop2_Cart_Add extends ACMS_POST_Shop2
                 if (isset($item['item_tax'])) {
                     $tax_rate = $item['item_tax']; // 商品毎の消費税を適用
                 } else {
-                    $tax_rate = config('shop_tax_rate'); // 標準設定の消費税
+                    $tax_rate = floatval(config('shop_tax_rate')); // 標準設定の消費税
                 }
                 @$item[$this->item_price . '#rate'] = $tax_rate * 100;
 

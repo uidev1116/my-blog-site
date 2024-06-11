@@ -38,7 +38,7 @@ class ACMS_POST_Shop2_Form_Checkout extends ACMS_POST_Shop2
 
             $efield = loadEntryField(intval($row[$this->item_id]));
             $item_stock = $efield->get($this->item_sku);
-            if ($item_stock !== false && (intval($item_stock) > 0)) {
+            if (intval($item_stock) > 0) {
                 if (intval($item_stock) < intval($row[$this->item_qty])) {
                     return false;
                 }

@@ -22,6 +22,11 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         ]));
     }
 
+    /**
+     * エントリーを複製する
+     * @param int $eid 複製元のエントリーID
+     * @return int 複製先のエントリーID
+     */
     protected function duplicate($eid)
     {
         $DB = DB::singleton(dsn());
@@ -34,6 +39,11 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         return $newEid;
     }
 
+    /**
+     * エントリーの複製を許可するかどうかを検証する
+     * @param int $eid エントリーID
+     * @return bool
+     */
     protected function validate($eid)
     {
         if (empty($eid)) {
@@ -57,102 +67,90 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         return true;
     }
 
-    protected function _filesDupe(&$Field, &$Old_Field, $info, $int_filedindex)
-    {
-        $key            = $info['name'];
-        $pfx            = $info['pfx'];
-        $_fd            = $info['field'];
-        $dirname        = $info['dirname'];
-        $newBasename    = $info['newBasename'];
-        $extension      = $info['extension'];
-
-        if (
-            1
-            and $path = $Old_Field->get($_fd . $key, null, $int_filedindex)
-            and Storage::isFile(ARCHIVES_DIR . $path)
-        ) {
-            $newPath   = $dirname . $pfx . $newBasename . $extension;
-
-            Storage::copy(ARCHIVES_DIR . $path, ARCHIVES_DIR . $newPath);
-            if (HOOK_ENABLE) {
-                $Hook = ACMS_Hook::singleton();
-                $Hook->call('mediaCreate', ARCHIVES_DIR . $newPath);
-            }
-
-            if ($int_filedindex == 0) {
-                $Field->setField($_fd . $key, $newPath);
-            } else {
-                $Field->addField($_fd . $key, $newPath);
-            }
-        }
-    }
-
+    /**
+     * カスタムフィールドを複製する
+     * @param \Field &$Field
+     * @return void
+     */
     protected function fieldDupe(&$Field)
     {
         foreach ($Field->listFields() as $fd) {
             if (preg_match('/(.*?)@path$/', $fd, $match)) {
-                $_fd    = $match[1];
-
-                // カスタムフィールドグループ対応
-                $ary_path = $Field->getArray($_fd . '@path');
-                if (is_array($ary_path) && count($ary_path) > 0) {
-                    $int_filedindex = 0;
-                    $Old_Field = new Field();
-                    $Old_Field->set($_fd . '@path', $Field->getArray($_fd . '@path'));
-                    $Old_Field->set($_fd . '@largePath', $Field->getArray($_fd . '@largePath'));
-                    $Old_Field->set($_fd . '@tinyPath', $Field->getArray($_fd . '@tinyPath'));
-                    $Old_Field->set($_fd . '@squarePath', $Field->getArray($_fd . '@squarePath'));
-
-                    foreach ($ary_path as $path) {
-                        if (
-                            1
-                            and Storage::isFile(ARCHIVES_DIR . $path)
-                            and preg_match('@^(.*?)([^/]+)(\.[^.]+)$@', $path, $match)
-                        ) {
-                            $dirname    = $match[1];
-                            $extension  = $match[3];
-
-                            $info = [
-                                'field'         => $_fd,
-                                'dirname'       => $dirname,
-                                'newBasename'   => uniqueString(),
-                                'extension'     => $extension,
-                            ];
-
-                            foreach (
-                                [
-                                    ''          => '@path',
-                                    'large-'    => '@largePath',
-                                    'tiny-'     => '@tinyPath',
-                                    'square-'   => '@squarePath',
-                                ] as $pfx => $name
-                            ) {
-                                $info['name']   = $name;
-                                $info['pfx']    = $pfx;
-                                $this->_filesDupe($Field, $Old_Field, $info, $int_filedindex);
-                            }
-                        } else {
-                            foreach (
-                                [
-                                    ''          => '@path',
-                                    'large-'    => '@largePath',
-                                    'tiny-'     => '@tinyPath',
-                                    'square-'   => '@squarePath',
-                                ] as $pfx => $name
-                            ) {
-                                if ($int_filedindex === 0) {
-                                    $Field->deleteField($_fd . $name);
-                                }
-                                $Field->addField($_fd . $name, '');
-                            }
+                $fieldBase = $match[1];
+                $set = false;
+                foreach ($Field->getArray($fieldBase . '@path') as $i => $path) {
+                    $fullpath = ARCHIVES_DIR . $path;
+                    if (!Storage::isFile($fullpath)) {
+                        if ($i === 0) {
+                            $Field->deleteField($fieldBase . '@path');
+                            $Field->deleteField($fieldBase . '@largePath');
+                            $Field->deleteField($fieldBase . '@tinyPath');
+                            $Field->deleteField($fieldBase . '@squarePath');
                         }
-                        $int_filedindex++;
+
+                        $Field->addField($fieldBase . '@path', '');
+                        $Field->addField($fieldBase . '@largePath', '');
+                        $Field->addField($fieldBase . '@tinyPath', '');
+                        $Field->addField($fieldBase . '@squarePath', '');
+
+                        continue;
+                    }
+
+                    if (!$set) {
+                        $Field->delete($fieldBase . '@path');
+                        $Field->delete($fieldBase . '@largePath');
+                        $Field->delete($fieldBase . '@tinyPath');
+                        $Field->delete($fieldBase . '@squarePath');
+                        $set = true;
+                    }
+
+                    $info = pathinfo($path);
+                    $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
+                    Storage::makeDirectory(ARCHIVES_DIR . $dirname);
+
+                    $largeFullpath = otherSizeImagePath($fullpath, 'large');
+                    $tinyFullpath = otherSizeImagePath($fullpath, 'tiny');
+                    $squareFullpath = otherSizeImagePath($fullpath, 'square');
+
+                    $newFullpath = $this->createUniqueFilepath($fullpath);
+                    $newLargeFullpath = otherSizeImagePath($newFullpath, 'large');
+                    $newTinyFullpath = otherSizeImagePath($newFullpath, 'tiny');
+                    $newSquareFullpath = otherSizeImagePath($newFullpath, 'square');
+
+                    if (Storage::isReadable($fullpath)) {
+                        copyFile($fullpath, $newFullpath);
+                        $newPath = substr($newFullpath, strlen(ARCHIVES_DIR));
+                        $Field->add($fieldBase . '@path', $newPath);
+                    }
+
+                    if (Storage::isReadable($largeFullpath)) {
+                        copyFile($largeFullpath, $newLargeFullpath);
+                        $newLargePath = substr($newLargeFullpath, strlen(ARCHIVES_DIR));
+                        $Field->add($fieldBase . '@largePath', $newLargePath);
+                    }
+
+                    if (Storage::isReadable($tinyFullpath)) {
+                        copyFile($tinyFullpath, $newTinyFullpath);
+                        $newTinyPath = substr($newTinyFullpath, strlen(ARCHIVES_DIR));
+                        $Field->add($fieldBase . '@tinyPath', $newTinyPath);
+                    }
+
+                    if (Storage::isReadable($squareFullpath)) {
+                        copyFile($squareFullpath, $newSquareFullpath);
+                        $newSquarePath = substr($newSquareFullpath, strlen(ARCHIVES_DIR));
+                        $Field->add($fieldBase . '@squarePath', $newSquarePath);
                     }
                 }
             }
         }
     }
 
+    /**
+     * 関連エントリーの複製
+     * @param int $eid 複製元のエントリーID
+     * @param int $newEid 複製先のエントリーID
+     * @return void
+     */
     protected function relationDupe($eid, $newEid)
     {
         $DB     = DB::singleton(dsn());
@@ -171,6 +169,12 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
+    /**
+     * 位置情報の複製
+     * @param int $eid 複製元のエントリーID
+     * @param int $newEid 複製先のエントリーID
+     * @return void
+     */
     protected function geoDuplicate($eid, $newEid)
     {
         $DB = DB::singleton(dsn());
@@ -186,12 +190,17 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         }
     }
 
+    /**
+     * 承認機能が有効な場合のエントリーの複製
+     * @param int $eid 複製元のエントリーID
+     * @param int $newEid 複製先のエントリーID
+     * @return void
+     */
     protected function approvalDupe($eid, $newEid)
     {
         $DB         = DB::singleton(dsn());
         $bid        = ACMS_RAM::entryBlog($eid);
         $approval   = ACMS_RAM::entryApproval($eid);
-        $sourceDir  = ARCHIVES_DIR;
         $sourceRev  = false;
 
         if ($approval === 'pre_approval') {
@@ -215,105 +224,18 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 $type = detectUnitTypeSpecifier($row['column_type']);
                 switch ($type) {
                     case 'image':
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-                            $path   = $sourceDir . $old;
-                            $large  = otherSizeImagePath($path, 'large');
-                            $tiny   = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-                            $newPath    = ARCHIVES_DIR . $newOld;
-                            $newLarge   = otherSizeImagePath($newPath, 'large');
-                            $newTiny    = otherSizeImagePath($newPath, 'tiny');
-                            $newSquare  = otherSizeImagePath($newPath, 'square');
-                            copyFile($path, $newPath);
-                            copyFile($large, $newLarge);
-                            copyFile($tiny, $newTiny);
-                            copyFile($square, $newSquare);
-
-                            $newAry[]   = $newOld;
-                        }
-                        $row['column_field_2']  = implodeUnitData($newAry);
+                        $row['column_field_2']  = $this->duplicateImageUnit($row['column_field_2']);
                         break;
                     case 'file':
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $old    = $row['column_field_2'];
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-                            $path   = $sourceDir . $old;
-                            $newPath    = ARCHIVES_DIR . $newOld;
-                            copyFile($path, $newPath);
-
-                            $newAry[]   = $newOld;
-                        }
-                        $row['column_field_2']  = implodeUnitData($newAry);
+                        $row['column_field_2'] = $this->duplicateFileUnit($row['column_field_2']);
                         break;
                     case 'custom':
-                        $Field = acmsUnserialize($row['column_field_6']);
-                        foreach ($Field->listFields() as $fd) {
-                            if (!strpos($fd, '@path')) {
-                                continue;
-                            }
-                            $base = substr($fd, 0, (-1 * strlen('@path')));
-                            $set = false;
-                            foreach ($Field->getArray($fd, true) as $i => $path) {
-                                if (!Storage::isFile($sourceDir . $path)) {
-                                    continue;
-                                }
-                                $info       = pathinfo($path);
-                                $dirname    = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                                $ext        = empty($info['extension']) ? '' : '.' . $info['extension'];
-                                $newPath    = $dirname . uniqueString() . $ext;
-
-                                $path       = $sourceDir . $path;
-                                $largePath  = otherSizeImagePath($path, 'large');
-                                $tinyPath   = otherSizeImagePath($path, 'tiny');
-                                $squarePath = otherSizeImagePath($path, 'square');
-
-                                $newLargePath   = otherSizeImagePath($newPath, 'large');
-                                $newTinyPath    = otherSizeImagePath($newPath, 'tiny');
-                                $newSquarePath  = otherSizeImagePath($newPath, 'square');
-
-                                Storage::copy($path, ARCHIVES_DIR . $newPath);
-                                Storage::copy($largePath, ARCHIVES_DIR . $newLargePath);
-                                Storage::copy($tinyPath, ARCHIVES_DIR . $newTinyPath);
-                                Storage::copy($squarePath, ARCHIVES_DIR . $newSquarePath);
-
-
-                                if (!$set) {
-                                    $Field->delete($fd);
-                                    $Field->delete($base . '@largePath');
-                                    $Field->delete($base . '@tinyPath');
-                                    $Field->delete($base . '@squarePath');
-                                    $set = true;
-                                }
-                                $Field->add($fd, $newPath);
-                                if (Storage::isReadable($largePath)) {
-                                    $Field->add($base . '@largePath', $newLargePath);
-                                }
-                                if (Storage::isReadable($tinyPath)) {
-                                    $Field->add($base . '@tinyPath', $newTinyPath);
-                                }
-                                if (Storage::isReadable($squarePath)) {
-                                    $Field->add($base . '@squarePath', $newSquarePath);
-                                }
-                            }
-                        }
-                        $row['column_field_6'] = acmsSerialize($Field);
+                        $row['column_field_6'] = $this->duplicateCustomUnit($row['column_field_6']);
                         break;
                     default:
                         break;
                 }
-                $newClid    = $DB->query(SQL::nextval('column_id', dsn()), 'seq');
+                $newClid = $DB->query(SQL::nextval('column_id', dsn()), 'seq');
                 $map[intval($row['column_id'])] = $newClid;
                 $row['column_id']       = $newClid;
                 $row['column_entry_id'] = $newEid;
@@ -471,58 +393,16 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         } else {
             $Field  = loadEntryField($eid);
         }
-        foreach ($Field->listFields() as $fd) {
-            if (!strpos($fd, '@path')) {
-                continue;
-            }
-            $set = false;
-            $base   = substr($fd, 0, (-1 * strlen('@path')));
-            foreach ($Field->getArray($fd, true) as $i => $path) {
-                if (!Storage::isFile($sourceDir . $path)) {
-                    continue;
-                }
-                $info       = pathinfo($path);
-                $dirname    = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                $ext        = empty($info['extension']) ? '' : '.' . $info['extension'];
-                $newPath    = $dirname . uniqueString() . $ext;
-
-                $path       = $sourceDir . $path;
-                $largePath  = otherSizeImagePath($path, 'large');
-                $tinyPath   = otherSizeImagePath($path, 'tiny');
-                $squarePath = otherSizeImagePath($path, 'square');
-
-                $newLargePath   = otherSizeImagePath($newPath, 'large');
-                $newTinyPath    = otherSizeImagePath($newPath, 'tiny');
-                $newSquarePath  = otherSizeImagePath($newPath, 'square');
-
-                Storage::copy($path, ARCHIVES_DIR . $newPath);
-                Storage::copy($largePath, ARCHIVES_DIR . $newLargePath);
-                Storage::copy($tinyPath, ARCHIVES_DIR . $newTinyPath);
-                Storage::copy($squarePath, ARCHIVES_DIR . $newSquarePath);
-
-                if (!$set) {
-                    $Field->delete($fd);
-                    $Field->delete($base . '@largePath');
-                    $Field->delete($base . '@tinyPath');
-                    $Field->delete($base . '@squarePath');
-                    $set = true;
-                }
-                $Field->add($fd, $newPath);
-                if (Storage::isReadable($largePath)) {
-                    $Field->add($base . '@largePath', $newLargePath);
-                }
-                if (Storage::isReadable($tinyPath)) {
-                    $Field->add($base . '@tinyPath', $newTinyPath);
-                }
-                if (Storage::isReadable($squarePath)) {
-                    $Field->add($base . '@squarePath', $newSquarePath);
-                }
-            }
-        }
+        $this->fieldDupe($Field);
         Entry::saveFieldRevision($newEid, $Field, 1);
     }
 
+    /**
+     * エントリーの複製
+     * @param int $eid 複製元のエントリーID
+     * @param int $newEid 複製先のエントリーID
+     * @return void
+     */
     protected function dupe($eid, $newEid)
     {
         $DB     = DB::singleton(dsn());
@@ -540,49 +420,13 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                 $type = detectUnitTypeSpecifier($row['column_type']);
                 switch ($type) {
                     case 'image':
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-                            $path   = ARCHIVES_DIR . $old;
-                            $large  = otherSizeImagePath($path, 'large');
-                            $tiny   = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-                            $newPath    = ARCHIVES_DIR . $newOld;
-                            $newLarge   = otherSizeImagePath($newPath, 'large');
-                            $newTiny    = otherSizeImagePath($newPath, 'tiny');
-                            $newSquare  = otherSizeImagePath($newPath, 'square');
-                            copyFile($path, $newPath);
-                            copyFile($large, $newLarge);
-                            copyFile($tiny, $newTiny);
-                            copyFile($square, $newSquare);
-                            $newAry[]   = $newOld;
-                        }
-                        $row['column_field_2']  = implodeUnitData($newAry);
+                        $row['column_field_2'] = $this->duplicateImageUnit($row['column_field_2']);
                         break;
                     case 'file':
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-                            $path   = ARCHIVES_DIR . $old;
-                            $newPath    = ARCHIVES_DIR . $newOld;
-                            copyFile($path, $newPath);
-
-                            $newAry[]   = $newOld;
-                        }
-                        $row['column_field_2']  = implodeUnitData($newAry);
+                        $row['column_field_2'] = $this->duplicateFileUnit($row['column_field_2']);
                         break;
                     case 'custom':
-                        $Field = acmsUnserialize($row['column_field_6']);
-                        $this->fieldDupe($Field);
-                        $row['column_field_6'] = acmsSerialize($Field);
+                        $row['column_field_6'] = $this->duplicateCustomUnit($row['column_field_6']);
                         break;
                     default:
                         break;
@@ -702,5 +546,92 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         //----------
         // geo data
         $this->geoDuplicate($eid, $newEid);
+    }
+
+    /**
+     * 画像ユニットの複製
+     * @param string $data ユニットデータ
+     * @return string 複製後のユニットデータ
+     */
+    protected function duplicateImageUnit(string $data): string
+    {
+        $imagePaths = explodeUnitData($data);
+        $newImagePaths = [];
+        foreach ($imagePaths as $imagePath) {
+            $fullpath = ARCHIVES_DIR . $imagePath;
+            $newFullpath = $this->createUniqueFilepath($fullpath);
+
+            $largeFullpath = otherSizeImagePath($fullpath, 'large');
+            $tinyFullpath = otherSizeImagePath($fullpath, 'tiny');
+            $squareFullpath = otherSizeImagePath($fullpath, 'square');
+
+            $newLargeFullpath = otherSizeImagePath($newFullpath, 'large');
+            $newTinyFullpath = otherSizeImagePath($newFullpath, 'tiny');
+            $newSquareFullpath = otherSizeImagePath($newFullpath, 'square');
+            if (Storage::isReadable($fullpath)) {
+                copyFile($fullpath, $newFullpath);
+            }
+            if (Storage::isReadable($largeFullpath)) {
+                copyFile($largeFullpath, $newLargeFullpath);
+            }
+            if (Storage::isReadable($tinyFullpath)) {
+                copyFile($tinyFullpath, $newTinyFullpath);
+            }
+            if (Storage::isReadable($squareFullpath)) {
+                copyFile($squareFullpath, $newSquareFullpath);
+            }
+            $newImagePaths[] = substr($newFullpath, strlen(ARCHIVES_DIR));
+        }
+        return implodeUnitData($newImagePaths);
+    }
+
+    /**
+     * ファイルユニットの複製
+     * @param string $data ユニットデータ
+     * @return string 複製後のユニットデータ
+     */
+    protected function duplicateFileUnit(string $data): string
+    {
+        $filePaths = explodeUnitData($data);
+        $newFilePaths = [];
+        foreach ($filePaths as $filePath) {
+            $fullpath = ARCHIVES_DIR . $filePath;
+            $newFullpath = $this->createUniqueFilepath($fullpath);
+            if (Storage::isReadable($fullpath)) {
+                copyFile($fullpath, $newFullpath);
+            }
+
+            $newFilePaths[] = substr($newFullpath, strlen(ARCHIVES_DIR));
+        }
+        return implodeUnitData($newFilePaths);
+    }
+
+    /**
+     * カスタムユニットの複製
+     * @param string $data ユニットデータ
+     * @return string 複製後のユニットデータ
+     */
+    protected function duplicateCustomUnit(string $data): string
+    {
+        $field = acmsUnserialize($data);
+        if (!($field instanceof Field)) {
+            return $data;
+        }
+        $this->fieldDupe($field);
+        return acmsSerialize($field);
+    }
+
+    /**
+     * 複製時に衝突しないファイル名を生成する
+     * @param string $path ファイルパス
+     * @return string 衝突しないファイルパス
+     */
+    private function createUniqueFilepath(string $path): string
+    {
+        if (config('entry_duplicate_random_filename') !== 'off') {
+            $fileinfo = pathinfo($path);
+            return $fileinfo['dirname'] . '/' . uniqueString() . '.' . $fileinfo['extension'];
+        }
+        return Storage::uniqueFilePath($path);
     }
 }

@@ -120,7 +120,7 @@ class ACMS_GET_Calendar_Year extends ACMS_GET
 
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $this->buildModuleField($Tpl);
-        $unit   = config('calendar_year_unit', 1);
+        $unit   = intval(config('calendar_year_unit', 1)) ?: 1;
 
         for ($mo = 0; $mo < 12; $mo++) {
             $this->buildMonth($Tpl, $y . '-' . sprintf('%02d', $mo + 1), ['month:loop', 'unit:loop']);

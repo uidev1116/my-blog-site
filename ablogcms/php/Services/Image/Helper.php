@@ -2,11 +2,11 @@
 
 namespace Acms\Services\Image;
 
-use Storage;
 use Imagick;
 use ACMS_Hook;
 use ImageOptimizer\OptimizerFactory;
 use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Storage;
 
 class Helper
 {
@@ -369,12 +369,14 @@ class Helper
         imagealphablending($resource, false);
         imagesavealpha($resource, true);
 
-        if (!imagewebp($resource, $distPath, $imageQuality)) {
-            throw new \RuntimeException('Failed to create webp with GD.');
+        if (imagewebp($resource, $distPath, $imageQuality)) {
+            Storage::changeMod($distPath);
+        } else {
             Logger::error('GDによるWebP画像の生成に失敗しました', [
                 'distPath' => $distPath,
                 'imageQuality' => $imageQuality,
             ]);
+            throw new \RuntimeException('Failed to create webp with GD.');
         }
     }
 
@@ -395,6 +397,8 @@ class Helper
         $imagick->setFormat('webp');
         $imagick->writeImages($distPath, true);
         $imagick->destroy();
+
+        Storage::changeMod($distPath);
     }
 
     /**

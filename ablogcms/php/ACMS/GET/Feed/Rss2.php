@@ -26,7 +26,7 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
         $this->buildModuleField($Tpl);
         $DB     = DB::singleton(dsn());
 
-        $limit  = config('feed_rss2_limit');
+        $limit  = intval(config('feed_rss2_limit'));
         $order  = ORDER ? ORDER : config('feed_rss2_order');
 
         $blogField      = new Field_Search(config('feed_rss2_blog_field'));

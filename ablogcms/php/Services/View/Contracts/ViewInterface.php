@@ -33,7 +33,7 @@ interface ViewInterface
     /**
      * ブロック・変数を追加する
      *
-     * @param array|null $blocks
+     * @param string[]|string|null $blocks
      * @param array $vars
      *
      * @return false|void

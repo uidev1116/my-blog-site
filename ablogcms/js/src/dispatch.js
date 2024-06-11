@@ -1,7 +1,7 @@
 import DocumentOutliner from 'document-outliner'
 import { FocusedImage } from 'image-focus'
 import ScrollHint from 'scroll-hint'
-import axios from 'axios'
+import axiosLib from './lib/axios'
 import lazyLoad from './lib/lazy-load'
 import tooltip from './lib/tooltip'
 import ResizeImage from './lib/resize-image/resize-image'
@@ -35,7 +35,7 @@ export default (context) => {
     const data = new FormData()
     data.append('ACMS_POST_Login_Check', 'exec')
     data.append('formToken', window.csrfToken)
-    const response = await axios.post(location.href, data)
+    const response = await axiosLib.post(location.href, data)
     const isLogin = response.data && response.data.isLogin
 
     if (isLogin) {
@@ -59,7 +59,7 @@ export default (context) => {
         page,
         Query: query,
       })
-      const response = await axios.post(url, data)
+      const response = await axiosLib.post(url, data)
       if (response && response.status === 200) {
         // ログインしていて、会員限定記事が閲覧できる
         membersOnlyEntryDom.innerHTML = response.data
@@ -97,7 +97,7 @@ export default (context) => {
     const data = new FormData()
     data.append('ACMS_POST_Login_Check', 'exec')
     data.append('formToken', window.csrfToken)
-    const response = await axios.post(location.href, data)
+    const response = await axiosLib.post(location.href, data)
     const isLogin = response.data && response.data.isLogin
 
     // ログイン状態の時、非表示にする

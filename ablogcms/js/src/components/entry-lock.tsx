@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { render } from 'react-dom'
-import axios from 'axios'
 import { throttle } from 'throttle-debounce'
 import Modal from './modal'
+import axiosLib from '../lib/axios'
 
 /**
  * エントリーの排他制御
@@ -25,7 +25,7 @@ const dispatchEntryExclusiveControl = () => {
           params.append('eid', ACMS.Config.eid || 0)
           params.append('formToken', window.csrfToken)
 
-          await axios({
+          await axiosLib({
             method: 'POST',
             url: window.location.href,
             data: params,
@@ -46,7 +46,7 @@ const checkEntryLock = async () => {
   params.append('eid', ACMS.Config.eid || 0)
   params.append('formToken', window.csrfToken)
 
-  const response = await axios({
+  const response = await axiosLib({
     method: 'POST',
     url: window.location.href,
     responseType: 'json',

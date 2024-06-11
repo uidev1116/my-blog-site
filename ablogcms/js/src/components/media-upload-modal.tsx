@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import classNames from 'classnames'
 import * as DOMPurify from 'dompurify'
 import { Creatable } from './react-select-styled'
 import { ExtendedFile, MediaItem } from '../types/media'
+import axiosLib from '../lib/axios'
 import DropZone from './drop-zone'
 import ProgressBar from './progress-bar'
 import ResizeImage from '../lib/resize-image/util'
@@ -11,7 +11,6 @@ import { random, getExt, dataURItoBlob } from '../lib/utility'
 import readFiles from '../lib/read-files'
 import * as actions from '../actions/media'
 
-axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 const delimiter = ','
 
 type MediaUploadItem = {
@@ -124,7 +123,7 @@ export default class MediaUploadModal extends Component<
       fd.append('file', blob, name)
       fd.append('formToken', window.csrfToken)
       this.setProgressBar(item, 0)
-      axios
+      axiosLib
         .post(location.href, fd, {
           onUploadProgress: (e) => {
             this.setProgressBar(item, 70 * (e.loaded / e.total))

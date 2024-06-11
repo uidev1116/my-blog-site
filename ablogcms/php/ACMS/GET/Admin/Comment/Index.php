@@ -45,7 +45,7 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
         //--------
         // limit
         $aryLimit   = configArray('admin_limit_option');
-        $limit      = $this->Q->get('limit', $aryLimit[config('admin_limit_default')]);
+        $limit      = (int)$this->Q->get('limit', $aryLimit[config('admin_limit_default')]);
         foreach ($aryLimit as $val) {
             $_vars  = ['value' => $val];
             if ($limit == $val) {
@@ -66,7 +66,7 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
         if (
             in_array($status, [
                 'open', 'close', 'awaiting'
-            ])
+            ], true)
         ) {
             $SQL->addWhereOpr('comment_status', $status);
         }
@@ -85,7 +85,7 @@ class ACMS_GET_Admin_Comment_Index extends ACMS_GET_Admin
             PAGE,
             $limit,
             $pageAmount,
-            config('admin_pager_delta'),
+            (int)config('admin_pager_delta'),
             config('admin_pager_cur_attr'),
             $Tpl,
             [],

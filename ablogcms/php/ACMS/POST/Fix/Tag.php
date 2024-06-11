@@ -24,7 +24,6 @@ class ACMS_POST_Fix_Tag extends ACMS_POST_Fix
         }
         $Fix = $this->extract('fix', new ACMS_Validator());
         $tagSource  = $Fix->get('tagSource');
-        // var_dump($tagSource);
         $source     = ( 1
             && isset($_FILES['source']['tmp_name'])
             && Storage::isReadable($_FILES['source']['tmp_name'])

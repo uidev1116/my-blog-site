@@ -1,44 +1,47 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import RichSelect from './rich-select';
-import ACMSModal from './modal';
+import React, { Component } from 'react'
+import axiosLib from '../lib/axios'
+import RichSelect from './rich-select'
+import ACMSModal from './modal'
 
 interface CategorySelectProp {
-  creation: boolean;
-  noneOption: boolean;
-  targetDom: HTMLElement;
-  etcTargetDoms: HTMLElement;
+  creation: boolean
+  noneOption: boolean
+  targetDom: HTMLElement
+  etcTargetDoms: HTMLElement
 }
 
 interface CategorySelectState {
-  showModal: boolean;
-  categoryAddParent: string;
-  currentValue: number;
+  showModal: boolean
+  categoryAddParent: string
+  currentValue: number
   addCategoryError: {
-    nameRequired: boolean;
-    codeRequired: boolean;
-    codeDouble: boolean;
-    codeReserved: boolean;
-    scopeRequired: boolean;
-  };
+    nameRequired: boolean
+    codeRequired: boolean
+    codeDouble: boolean
+    codeReserved: boolean
+    scopeRequired: boolean
+  }
 }
 
-export default class CategorySelect extends Component<CategorySelectProp, CategorySelectState> {
+export default class CategorySelect extends Component<
+  CategorySelectProp,
+  CategorySelectState
+> {
   constructor(props) {
-    super(props);
+    super(props)
 
-    let currentValue = props.targetDom.value;
+    let currentValue = props.targetDom.value
     if (props.noneOption && !currentValue) {
-      const s = window.location.href.split('?');
+      const s = window.location.href.split('?')
       if (s.length > 1) {
-        const query = ACMS.Library.parseQuery(s[1]);
+        const query = ACMS.Library.parseQuery(s[1])
         if (query._cid) {
-          currentValue = query._cid;
-          props.targetDom.value = query._cid;
+          currentValue = query._cid
+          props.targetDom.value = query._cid
           if (props.etcTargetDoms) {
-            [].forEach.call(props.etcTargetDoms, (dom) => {
-              dom.value = query._cid;
-            });
+            ;[].forEach.call(props.etcTargetDoms, (dom) => {
+              dom.value = query._cid
+            })
           }
         }
       }
@@ -54,31 +57,31 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
         codeReserved: true,
         scopeRequired: true,
       },
-    };
-    this.addCategoryFormRef = React.createRef();
-    this.handleShowModal = this.handleShowModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.handleAddCategory = this.handleAddCategory.bind(this);
+    }
+    this.addCategoryFormRef = React.createRef()
+    this.handleShowModal = this.handleShowModal.bind(this)
+    this.handleCloseModal = this.handleCloseModal.bind(this)
+    this.handleAddCategory = this.handleAddCategory.bind(this)
   }
 
   handleShowModal(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.setState({
       showModal: true,
-    });
+    })
   }
 
   handleCloseModal(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.setState({
       showModal: false,
-    });
+    })
   }
 
   handleAddCategory(e) {
-    e.preventDefault();
-    const { targetDom, etcTargetDoms } = this.props;
-    const $form = $(this.addCategoryFormRef.current);
+    e.preventDefault()
+    const { targetDom, etcTargetDoms } = this.props
+    const $form = $(this.addCategoryFormRef.current)
     const url = ACMS.Library.acmsLink(
       {
         tpl: 'ajax/edit/category-add-response.json',
@@ -87,8 +90,8 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
         },
       },
       true,
-    );
-    const data = ACMS.Library.getPostData($form);
+    )
+    const data = ACMS.Library.getPostData($form)
     $.ajax({
       url,
       type: 'post',
@@ -99,12 +102,12 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
           this.setState({
             showModal: false,
             currentValue: data.id,
-          });
-          targetDom.value = data.id;
+          })
+          targetDom.value = data.id
           if (etcTargetDoms) {
-            [].forEach.call(etcTargetDoms, (dom) => {
-              dom.value = data.id;
-            });
+            ;[].forEach.call(etcTargetDoms, (dom) => {
+              dom.value = data.id
+            })
           }
         } else {
           this.setState({
@@ -115,19 +118,17 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
               codeReserved: data.codeReserved !== '0',
               scopeRequired: data.scopeRequired !== '0',
             },
-          });
+          })
         }
       },
-    });
+    })
   }
 
   render() {
-    const {
-      creation, noneOption, targetDom, etcTargetDoms, narrowDown,
-    } = this.props;
-    const {
-      showModal, categoryAddParent, currentValue, addCategoryError,
-    } = this.state;
+    const { creation, noneOption, targetDom, etcTargetDoms, narrowDown } =
+      this.props
+    const { showModal, categoryAddParent, currentValue, addCategoryError } =
+      this.state
 
     return (
       <div>
@@ -158,33 +159,37 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
                   },
                 },
                 false,
-              );
-              const response = await axios.get(endpoint);
+              )
+              const response = await axiosLib.get(endpoint)
               if (noneOption) {
                 response.data.unshift({
                   label: 'カテゴリーなし',
                   value: 0,
-                });
+                })
               }
-              return { options: response.data };
+              return { options: response.data }
             }}
             onChange={(data) => {
               if (data && !isNaN(data.value)) {
-                targetDom.value = data.value;
+                targetDom.value = data.value
               } else {
-                targetDom.value = '';
+                targetDom.value = ''
               }
               if (etcTargetDoms) {
-                [].forEach.call(etcTargetDoms, (dom) => {
-                  dom.value = targetDom.value;
-                });
+                ;[].forEach.call(etcTargetDoms, (dom) => {
+                  dom.value = targetDom.value
+                })
               }
             }}
           />
         </div>
         {creation && (
           <div
-            style={{ display: 'inline-block', verticalAlign: 'top', marginLeft: '3px' }}
+            style={{
+              display: 'inline-block',
+              verticalAlign: 'top',
+              marginLeft: '3px',
+            }}
             id="entry-create-category-display"
           >
             <button
@@ -203,15 +208,23 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
           onClose={this.handleCloseModal}
           title={<h3>カテゴリー追加</h3>}
           dialogStyle={{ maxWidth: '400px', borderRadius: '5px' }}
-          footer={(
+          footer={
             <div>
-              <button type="button" className="acms-admin-btn" onClick={this.handleAddCategory}>
+              <button
+                type="button"
+                className="acms-admin-btn"
+                onClick={this.handleAddCategory}
+              >
                 追加
               </button>
             </div>
-          )}
+          }
         >
-          <form className="acms-admin-form" style={{ marginTop: '20px' }} ref={this.addCategoryFormRef}>
+          <form
+            className="acms-admin-form"
+            style={{ marginTop: '20px' }}
+            ref={this.addCategoryFormRef}
+          >
             <input type="hidden" name="category[]" value="name" />
             <input type="hidden" name="category[]" value="code" />
             <input type="hidden" name="category[]" value="parent" />
@@ -219,11 +232,31 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
             <input type="hidden" name="category[]" value="status" />
             <input type="hidden" name="category[]" value="indexing" />
 
-            <input type="hidden" name="name:validator#required" id="validator-name-required" />
-            <input type="hidden" name="code:validator#required" id="validator-code-required" />
-            <input type="hidden" name="code:validator#double" id="validator-code-double" />
-            <input type="hidden" name="code:validator#reserved" id="validator-code-reserved" />
-            <input type="hidden" name="scope:validator#required" id="validator-scope-required" />
+            <input
+              type="hidden"
+              name="name:validator#required"
+              id="validator-name-required"
+            />
+            <input
+              type="hidden"
+              name="code:validator#required"
+              id="validator-code-required"
+            />
+            <input
+              type="hidden"
+              name="code:validator#double"
+              id="validator-code-double"
+            />
+            <input
+              type="hidden"
+              name="code:validator#reserved"
+              id="validator-code-reserved"
+            />
+            <input
+              type="hidden"
+              name="scope:validator#required"
+              id="validator-scope-required"
+            />
 
             <input type="hidden" name="status" value="open" />
             <input type="hidden" name="indexing" value="on" />
@@ -231,7 +264,11 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
 
             <div className="acms-admin-form-group acms-admin-select2 is-single">
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}>親カテゴリー</label>
+              <label
+                style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}
+              >
+                親カテゴリー
+              </label>
               <RichSelect
                 defaultValue={null}
                 className="admin-admin-category-select"
@@ -256,19 +293,19 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
                       },
                     },
                     false,
-                  );
-                  const response = await axios.get(endpoint);
-                  return { options: response.data };
+                  )
+                  const response = await axiosLib.get(endpoint)
+                  return { options: response.data }
                 }}
                 onChange={(data) => {
                   if (data && data.value) {
                     this.setState({
                       categoryAddParent: data.value,
-                    });
+                    })
                   } else {
                     this.setState({
                       categoryAddParent: '',
-                    });
+                    })
                   }
                 }}
               />
@@ -277,11 +314,22 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
 
             <div className="acms-admin-form-group">
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}>カテゴリー名</label>
-              <input type="text" name="name" className="acms-admin-form-width-full" />
+              <label
+                style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}
+              >
+                カテゴリー名
+              </label>
+              <input
+                type="text"
+                name="name"
+                className="acms-admin-form-width-full"
+              />
               {!addCategoryError.nameRequired && (
                 <div role="alert" aria-live="assertive">
-                  <div data-validator-label="validator-name-required" className="validator-result-0">
+                  <div
+                    data-validator-label="validator-name-required"
+                    className="validator-result-0"
+                  >
                     <p className="error-text">名前が入力されていません。</p>
                   </div>
                 </div>
@@ -290,22 +338,45 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
 
             <div className="acms-admin-form-group">
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}>コードネーム</label>
-              <input type="text" name="code" className="acms-admin-form-width-full" />
+              <label
+                style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}
+              >
+                コードネーム
+              </label>
+              <input
+                type="text"
+                name="code"
+                className="acms-admin-form-width-full"
+              />
               <div role="alert" aria-live="assertive">
                 {!addCategoryError.codeRequired && (
-                  <div data-validator-label="validator-code-required" className="validator-result-0">
-                    <p className="error-text">コードネームが入力されていません。</p>
+                  <div
+                    data-validator-label="validator-code-required"
+                    className="validator-result-0"
+                  >
+                    <p className="error-text">
+                      コードネームが入力されていません。
+                    </p>
                   </div>
                 )}
                 {!addCategoryError.codeDouble && (
-                  <div data-validator-label="validator-code-double" className="validator-result-0">
-                    <p className="error-text">既に使用されているコードネームです。</p>
+                  <div
+                    data-validator-label="validator-code-double"
+                    className="validator-result-0"
+                  >
+                    <p className="error-text">
+                      既に使用されているコードネームです。
+                    </p>
                   </div>
                 )}
                 {!addCategoryError.codeReserved && (
-                  <div data-validator-label="validator-code-reserved" className="validator-result-0">
-                    <p className="error-text">システムで予約されているキーワードです。</p>
+                  <div
+                    data-validator-label="validator-code-reserved"
+                    className="validator-result-0"
+                  >
+                    <p className="error-text">
+                      システムで予約されているキーワードです。
+                    </p>
                   </div>
                 )}
               </div>
@@ -313,11 +384,20 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
 
             <div className="acms-admin-form-group">
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}>スコープ</label>
+              <label
+                style={{ marginBottom: '3px', fontSize: '11px', color: '#666' }}
+              >
+                スコープ
+              </label>
               <br />
               <input type="hidden" name="scope" value="local" />
               <div className="acms-admin-form-checkbox">
-                <input type="checkbox" name="scope" value="global" id="input-checkbox-global" />
+                <input
+                  type="checkbox"
+                  name="scope"
+                  value="global"
+                  id="input-checkbox-global"
+                />
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="input-checkbox-global">
                   <i className="acms-admin-ico-checkbox" />
@@ -326,8 +406,13 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
               </div>
               {!addCategoryError.scopeRequired && (
                 <div role="alert" aria-live="assertive">
-                  <div data-validator-label="validator-scope-tree" className="validator-result-0">
-                    <p className="error-text">親カテゴリーと異なる共有設定にすることはできません。</p>
+                  <div
+                    data-validator-label="validator-scope-tree"
+                    className="validator-result-0"
+                  >
+                    <p className="error-text">
+                      親カテゴリーと異なる共有設定にすることはできません。
+                    </p>
                   </div>
                 </div>
               )}
@@ -336,6 +421,6 @@ export default class CategorySelect extends Component<CategorySelectProp, Catego
           </form>
         </ACMSModal>
       </div>
-    );
+    )
   }
 }

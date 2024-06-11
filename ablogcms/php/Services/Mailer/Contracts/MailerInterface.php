@@ -15,7 +15,7 @@ interface MailerInterface
     /**
      * Toを設定
      *
-     * @param array $to
+     * @param string $to
      * @return self
      */
     public function setTo($to);

@@ -172,7 +172,7 @@ ACMS.Dispatch = function (context) {
     $('pre').size() &&
     typeof ACMS.Library.googleCodePrettify === 'function'
   ) {
-    ACMS.Library.googleCodePrettify()
+    ACMS.Library.googleCodePrettifyPost()
   }
   var $aImg = $(Config.adaptiveImageMark)
   if ($aImg.size()) {

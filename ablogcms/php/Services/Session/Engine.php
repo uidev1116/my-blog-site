@@ -97,7 +97,7 @@ class Engine
      *
      * @param string $key
      *
-     * @return bool
+     * @return mixed
      */
     public function get($key)
     {

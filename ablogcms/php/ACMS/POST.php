@@ -1,6 +1,7 @@
 <?php
 
 use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
 
 class ACMS_POST
 {
@@ -56,8 +57,7 @@ class ACMS_POST
      */
     protected function csrfTokenExists()
     {
-        $session = Session::handle();
-        return !!$session->get('formToken');
+        return Common::csrfTokenExists();
     }
 
     /**
@@ -67,11 +67,7 @@ class ACMS_POST
      */
     protected function checkCsrfToken()
     {
-        $session = Session::handle();
-        if (!!$session->get('formToken') && $session->get('formToken') === $this->Post->get('formToken')) {
-            return true;
-        }
-        return false;
+        return Common::checkCsrfToken($this->Post->get('formToken'));
     }
 
     /**

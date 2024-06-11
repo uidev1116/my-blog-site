@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Session;
+
 class ACMS_GET_Touch_SwitchingUser extends ACMS_GET
 {
     public function get()
@@ -13,13 +15,15 @@ class ACMS_GET_Touch_SwitchingUser extends ACMS_GET
     /**
      * Get original user id.
      *
-     * @return bool
+     * @return bool|int
      */
     protected function getOriginalUserId()
     {
-        $session = Session::handle();
-        if ($uid = $session->get(ACMS_LOGIN_SESSION_ORGINAL_UID)) {
-            return $uid;
+        if (SUID) { // @phpstan-ignore-line
+            $session = Session::handle();
+            if ($uid = $session->get(ACMS_LOGIN_SESSION_ORGINAL_UID)) {
+                return intval($uid);
+            }
         }
         return false;
     }

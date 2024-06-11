@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // テーブル
@@ -143,17 +143,6 @@
 
   .day {
     width: 100px;
-  }
-}
-
-// iPad 縦のとき
-@media only screen and (min-device-width: global.$breakpoint-md-max) and (max-device-width: global.$breakpoint-lg-max) and (orientation: portrait) {
-  .acms-table-admin-edit {
-    th,
-    td {
-      display: block;
-      text-align: left;
-    }
   }
 }
 

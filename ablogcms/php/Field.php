@@ -175,10 +175,11 @@ class Field
     /**
      * 指定したフィールド名の値を取得する
      * フィールド名に文字列以外を指定した場合はfalseを返す
-     * @param string $fd
+     * @template T
+     * @param T $fd
      * @param string|int|null $def
      * @param int $i
-     * @return string|false
+     * @return (T is string ? string : false)
      */
     public function get($fd, $def = null, $i = 0)
     {
@@ -238,7 +239,7 @@ class Field
     /**
      * フィールドの値を設定する
      * @param string $fd フィールド名
-     * @param array|string|null $vals
+     * @param array|string|int|float|null $vals
      * @return bool
      */
     public function setField($fd, $vals = null)
@@ -265,7 +266,7 @@ class Field
     /**
      * フィールドの値を設定する
      * @param string $fd フィールド名
-     * @param array|string $vals
+     * @param array|string|int|float|null $vals
      * @return bool
      */
     public function set($fd, $vals = null)
@@ -276,7 +277,7 @@ class Field
     /**
      * 指定したフィールド名のフィールドに値を追加する
      * @param string $fd フィールド名
-     * @param array|string $vals
+     * @param array|string|int|float|null $vals
      * @return bool
      */
     public function addField($fd, $vals)
@@ -294,7 +295,7 @@ class Field
      * alias for addField
      *
      * @param string $fd フィールド名
-     * @param array|string $vals
+     * @param array|string|int|float|null $vals
      * @return bool
      */
     public function add($fd, $vals)
@@ -346,7 +347,7 @@ class Field
     /**
      * 指定した名前の子フィールドを設定する
      * @param string $name
-     * @param Field $Field
+     * @param Field &$Field
      * @return true
      */
     public function addChild($name, &$Field)
@@ -408,9 +409,10 @@ class Field
      * 指定したフィールド名のフィールドに設定されたメタ情報を取得する
      * $keyを指定しない場合は、指定したフィールド名のメタ情報すべてを配列で返す
      *
+     * @template T of string|null
      * @param string $fd フィールド名
-     * @param string|null $key メタ情報のキー
-     * @return array|string|null
+     * @param T $key メタ情報のキー
+     * @return (T is non-empty-string ? string|null : array)
      */
     public function getMeta($fd, $key = null)
     {
@@ -507,17 +509,17 @@ class Field
 class Field_Search extends Field
 {
     /**
-     * @var array<string, array>
+     * @var array<string, array<'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'lk' | 'nlk' | 're' | 'nre' | 'em' | 'nem' | null>>
      */
     public $_aryOperator = [];
 
     /**
-     * @var array<string, array>
+     * @var array<string, array<'and' | 'or' | null>>
      */
     public $_aryConnector = [];
 
     /**
-     * @var array<string, array>
+     * @var array<string, array<'and' | 'or'>>
      */
     public $_arySeparator = [];
 
@@ -746,9 +748,15 @@ class Field_Search extends Field
 
     /**
      * 指定したフィールド名のフィールドに対する結合子を取得する
-     * @param string $fd
-     * @param int|null $i
-     * @return 'and' | 'or' | null
+     * 第2引数を指定しない場合は、フィールドに対する結合子の配列を返す
+     *
+     * @template T of int|null
+     * @param string $fd フィールド名
+     * @param T $i 結合子の指定 (省略可能)
+     * @return (T is null ?
+     *     array<'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'lk' | 'nlk' | 're' | 'nre' | 'em' | 'nem' | null> :
+     *     'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'lk' | 'nlk' | 're' | 'nre' | 'em' | 'nem' | null
+     * )
      */
     public function getOperator($fd, $i = 0)
     {
@@ -759,9 +767,11 @@ class Field_Search extends Field
 
     /**
      * 指定したフィールド名のフィールドに対する演算子を取得する
+     * 第2引数を指定しない場合は、フィールドに対する演算子の配列を返す
+     * @template T of int|null
      * @param string $fd
-     * @param int|null $i
-     * @return 'and' | 'or' | null
+     * @param T $i
+     * @return (T is null ? array<'and' | 'or' | null> : 'and' | 'or' | null)
      */
     public function getConnector($fd, $i = 0)
     {
@@ -885,7 +895,7 @@ class Field_Validation extends Field
     public $_aryV = [];
 
     /**
-     * @var array<string, array<string, array<string, mixed> | null>>
+     * @var array<string, array<string, mixed>>
      */
     public $_aryMethod = [];
 
@@ -961,7 +971,7 @@ class Field_Validation extends Field
      * バリデーションメソッドを設定する
      * @param string|null $fd
      * @param string|null $name
-     * @param mixed|null $arg
+     * @param mixed $arg
      */
     public function setMethod($fd = null, $name = null, $arg = null)
     {
@@ -976,7 +986,8 @@ class Field_Validation extends Field
 
     /**
      * 指定したフィールド名のフィールドをフィールドグループに属するフィールドとして設定する
-     * @param string $fd
+     * @param string|null $fd
+     * @param string|null $group
      * @return void
      */
     public function setGroup($fd = null, $group = null)
@@ -1022,7 +1033,7 @@ class Field_Validation extends Field
     /**
      * ailas for listMethods
      * @param string $fd
-     * @return array
+     * @return string[]
      */
     public function getMethods($fd)
     {
@@ -1146,6 +1157,7 @@ class Field_Validation extends Field
     /**
      * すべてのフィールドに対して、バリデーションメソッドによる検証を実行する
      * @param \ACMS_Validator|null $V
+     * @return true
      */
     public function validate($V = null)
     {

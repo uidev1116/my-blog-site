@@ -2,8 +2,16 @@
 
 class ACMS_GET_Unit extends ACMS_GET_Entry
 {
-    function buildUnit(&$Column, &$Tpl, $rootBlock = [], $preAlign = null, $renderGroup = true)
+    /**
+     * @param array<array<string, mixed>> &$Column
+     * @param Template &$Tpl
+     * @param int $eid
+     * @param string|null $preAlign
+     * @param bool $renderGroup
+     * @return true
+     */
+    public function buildUnit(&$Column, &$Tpl, $eid, $preAlign = null, $renderGroup = true)
     {
-        return $this->buildColumn($Column, $Tpl, $rootBlock, $preAlign, $renderGroup);
+        return $this->buildColumn($Column, $Tpl, $eid, $preAlign, $renderGroup);
     }
 }

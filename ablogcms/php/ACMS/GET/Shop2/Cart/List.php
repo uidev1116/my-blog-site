@@ -187,7 +187,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             // 在庫チェック
             $EntryField = loadEntryField(intval($row[$this->item_id]));
             $item_stock = $EntryField->get($this->item_sku);
-            if ($item_stock !== false && (intval($item_stock) > 0)) {
+            if (intval($item_stock) > 0) {
                 if (intval($item_stock) < intval($row[$this->item_qty])) {
                     $Tpl->add([$this->item_qty . ':validator', 'item:loop', 'contents']);
                 }

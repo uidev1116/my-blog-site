@@ -348,8 +348,17 @@
     </div>
   </form>
 </div>
+
 <!-- BEGIN config -->
+<!-- BEGIN notFound -->
+<p class="acms-admin-announce-text">
+  <span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当するキー、バリューが見つかりませんでした<!--/T-->
+</p>
+<!-- END notFound -->
+
+<!-- BEGIN_IF [<!-- BEGIN notFound -->1<!-- END notFound -->/em] -->
 <div class="acms-admin-table-responsive acms-admin-margin-bottom-large">
+
   <table class="acms-admin-table-admin">
     <thead class="acms-admin-table-heading">
       <th class="acms-admin-table-nowrap"><!--T-->ブログID<!--/T--></th>
@@ -376,6 +385,6 @@
       <!-- END config:loop -->
     </tbody>
   </table>
-</div><!-- END config -->
+</div><!-- END_IF --><!-- END config -->
 <!-- END_MODULE Admin_CheckList -->
 @include("/admin/tooltip/config/general.html")

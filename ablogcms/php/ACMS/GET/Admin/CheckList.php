@@ -72,8 +72,10 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
                     ]);
                     $Tpl->add(['config:loop', 'config'], $configVars);
                 }
-                $Tpl->add('config');
+            } else {
+                $Tpl->add(['notFound', 'config']);
             }
+            $Tpl->add('config');
         }
 
         if (LICENSE_BLOG_LIMIT == 2147483647) {

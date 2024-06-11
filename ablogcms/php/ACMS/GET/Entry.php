@@ -4,6 +4,14 @@ use Acms\Services\Facades\RichEditor;
 
 class ACMS_GET_Entry extends ACMS_GET
 {
+    /**
+     * @param array<array<string, mixed>> $Column
+     * @param Template $Tpl
+     * @param int $eid
+     * @param string|null $preAlign
+     * @param bool $renderGroup
+     * @return true
+     */
     protected function buildColumn(&$Column, &$Tpl, $eid, $preAlign = null, $renderGroup = true)
     {
         $entry = ACMS_RAM::entry($eid);
@@ -218,7 +226,7 @@ class ACMS_GET_Entry extends ACMS_GET
                                 array_merge(['link' . $j . '#front', 'unit#' . $actualType], $rootBlock),
                                 [
                                     'url' . $j    => BASE_URL . $large,
-                                    'viewer' . $j => str_replace('{unit_eid}', $eid, config('entry_body_image_viewer')),
+                                    'viewer' . $j => str_replace('{unit_eid}', strval($eid), config('entry_body_image_viewer')),
                                     'caption' . $j => $data['caption'],
                                     'link_eid' . $j => $eid
                                 ]
@@ -494,7 +502,7 @@ class ACMS_GET_Entry extends ACMS_GET
                         ];
 
                         if (empty($link_)) {
-                            $vars['viewer' . $j] = str_replace('{unit_eid}', $eid, config('entry_body_image_viewer'));
+                            $vars['viewer' . $j] = str_replace('{unit_eid}', strval($eid), config('entry_body_image_viewer'));
                         }
 
                         $Tpl->add(array_merge(['link' . $j . '#front', 'unit#' . $actualType], $rootBlock), $vars);
@@ -705,7 +713,7 @@ class ACMS_GET_Entry extends ACMS_GET
                             if (!$link) {
                                 $varsLink['viewer' . $fx] = str_replace(
                                     '{unit_eid}',
-                                    $eid,
+                                    strval($eid),
                                     config('entry_body_image_viewer')
                                 );
                             }

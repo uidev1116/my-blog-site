@@ -3041,10 +3041,14 @@ label {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
   }
-  .acms-admin-table-responsive th, .acms-admin-table-responsive td {
+  .acms-admin-table-responsive th,
+  .acms-admin-table-responsive td {
     white-space: nowrap;
   }
-  .acms-admin-table-scrollable th, .acms-admin-table-scrollable td, .js-table-unit-scroll-hint th, .js-table-unit-scroll-hint td {
+  .acms-admin-table-scrollable th,
+  .acms-admin-table-scrollable td,
+  .js-table-unit-scroll-hint th,
+  .js-table-unit-scroll-hint td {
     display: table-cell !important;
     white-space: nowrap;
   }
@@ -3146,11 +3150,6 @@ label {
 .acms-admin-table-admin-edit td {
   padding: 2px 5px;
 }
-@media (min-width: 768px) {
-  .acms-admin-table-admin-edit th {
-    padding-right: 25px;
-  }
-}
 .acms-admin-table-admin-edit table {
   width: 100%;
 }
@@ -3178,33 +3177,52 @@ label {
   .acms-admin-table-admin-edit td {
     padding: 5px 10px;
   }
-  .acms-admin-table-admin-edit th {
+}
+
+@media (min-width: 768px) {
+  .is-admin-page .acms-admin-table-admin-edit th,
+  .acms-admin-form .acms-admin-table-admin-edit th {
     padding-right: 25px;
   }
-  .acms-admin-table-admin-edit tr:first-child th, .acms-admin-table-admin-edit tr:first-child td {
+  .is-admin-page .acms-admin-table-admin-edit tr:first-child th, .is-admin-page .acms-admin-table-admin-edit tr:first-child td,
+  .acms-admin-form .acms-admin-table-admin-edit tr:first-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:first-child td {
     padding: 10px 10px 5px;
   }
-  .acms-admin-table-admin-edit tr:first-child th {
+  .is-admin-page .acms-admin-table-admin-edit tr:first-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:first-child th {
     padding-right: 25px;
   }
-  .acms-admin-table-admin-edit tr:last-child th, .acms-admin-table-admin-edit tr:last-child td {
+  .is-admin-page .acms-admin-table-admin-edit tr:last-child th, .is-admin-page .acms-admin-table-admin-edit tr:last-child td,
+  .acms-admin-form .acms-admin-table-admin-edit tr:last-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:last-child td {
     padding: 5px 10px 10px;
   }
-  .acms-admin-table-admin-edit tr:last-child th {
+  .is-admin-page .acms-admin-table-admin-edit tr:last-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:last-child th {
     padding-right: 25px;
   }
-  .acms-admin-table-admin-edit tr:only-child th, .acms-admin-table-admin-edit tr:only-child td {
+  .is-admin-page .acms-admin-table-admin-edit tr:only-child th, .is-admin-page .acms-admin-table-admin-edit tr:only-child td,
+  .acms-admin-form .acms-admin-table-admin-edit tr:only-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:only-child td {
     padding: 10px 10px;
   }
-  .acms-admin-table-admin-edit tr:only-child th {
+  .is-admin-page .acms-admin-table-admin-edit tr:only-child th,
+  .acms-admin-form .acms-admin-table-admin-edit tr:only-child th {
     padding-right: 25px;
   }
-  .acms-admin-table-admin-edit thead tr:first-child th,
-  .acms-admin-table-admin-edit thead tr:first-child td,
-  .acms-admin-table-admin-edit thead tr:last-child th,
-  .acms-admin-table-admin-edit thead tr:last-child td,
-  .acms-admin-table-admin-edit thead tr:only-child th,
-  .acms-admin-table-admin-edit thead tr:only-child td {
+  .is-admin-page .acms-admin-table-admin-edit thead tr:first-child th,
+  .is-admin-page .acms-admin-table-admin-edit thead tr:first-child td,
+  .is-admin-page .acms-admin-table-admin-edit thead tr:last-child th,
+  .is-admin-page .acms-admin-table-admin-edit thead tr:last-child td,
+  .is-admin-page .acms-admin-table-admin-edit thead tr:only-child th,
+  .is-admin-page .acms-admin-table-admin-edit thead tr:only-child td,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:first-child th,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:first-child td,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:last-child th,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:last-child td,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:only-child th,
+  .acms-admin-form .acms-admin-table-admin-edit thead tr:only-child td {
     padding: 3px 10px;
   }
 }
@@ -8557,7 +8575,8 @@ a.acms-admin-label-danger:focus {
   }
 }
 @media all and (-ms-high-contrast: none) {
-  *::-ms-backdrop, .acms-admin-filter-content-fit {
+  *::-ms-backdrop,
+  .acms-admin-filter-content-fit {
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
   }
@@ -9224,7 +9243,8 @@ a.acms-admin-label-danger:focus {
   padding: 5px 10px;
   background: #E2E2E8;
 }
-.entryFormWrapper .acms-admin-table-admin th, .entryFormWrapper .acms-admin-table-admin td {
+.entryFormWrapper .acms-admin-table-admin th,
+.entryFormWrapper .acms-admin-table-admin td {
   background: transparent;
 }
 .entryFormWrapper .acms-admin-table-heading th {
@@ -12382,6 +12402,40 @@ a.acms-admin-label-danger:focus {
   .acms-admin-entry-lock-modal-note {
     font-size: 14px;
   }
+}
+
+:root {
+  --tbw-cell-vertical-padding: 4px;
+  --tbw-cell-horizontal-padding: 8px;
+  --tbw-cell-line-height: 1.5em;
+  --tbw-box-min-height: 100px;
+  --tbw-box-max-height: 500px;
+}
+
+.trumbowyg-box {
+  min-height: var(--tbw-box-min-height) !important;
+}
+.trumbowyg-box:not(.trumbowyg-fullscreen) {
+  max-height: var(--tbw-box-max-height) !important;
+}
+.trumbowyg-box .trumbowyg-button-pane {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.trumbowyg-fullscreen {
+  z-index: 100049 !important;
+}
+
+.trumbowyg-editor-box table {
+  margin-bottom: var(--tbw-cell-line-height);
+}
+.trumbowyg-editor-box th,
+.trumbowyg-editor-box td {
+  min-width: calc(var(--tbw-cell-horizontal-padding) * 8);
+  height: calc(var(--tbw-cell-vertical-padding) * 2 + var(--tbw-cell-line-height));
+  padding: var(--tbw-cell-vertical-padding) var(--tbw-cell-horizontal-padding);
+  border: 1px solid #e7eaec;
 }
 
 /* ------------------------------

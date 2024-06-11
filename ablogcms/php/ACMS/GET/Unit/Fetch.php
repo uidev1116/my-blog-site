@@ -8,7 +8,7 @@ class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
 
         $utid           = (int)$this->Post->get('utid', UTID);
         $ary_utid       = array_map('intval', $this->Post->getArray('utid'));
-        $eid            = $this->Post->get('eid', EID);
+        $eid            = (int)$this->Post->get('eid', EID);
         $renderGroup    = $this->Post->get('renderGroup', 'off');
         $renderGroup    = ($renderGroup === 'on') ? true : false;
 

@@ -46,7 +46,7 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
                 'memo' => $rev['entry_rev_memo'],
                 'status' => $rev['entry_status'],
                 'rev_status' => $rev['entry_rev_status'],
-                'author' => $author['user_name'],
+                'author' => $author['user_name'] ?? '存在しないユーザー',
                 'icon' => loadUserIcon($auid),
                 'datetime' => $rev['entry_rev_datetime'],
                 'start_datetime' => $rev['entry_start_datetime'],

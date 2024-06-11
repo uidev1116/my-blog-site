@@ -223,8 +223,8 @@ class Schema
     /**
      * テーブルを作成する
      *
-     * @param $tables
-     * @param null $idx
+     * @param string[] $tables
+     * @param array|null $idx
      */
     public function createTables($tables, $idx = null)
     {

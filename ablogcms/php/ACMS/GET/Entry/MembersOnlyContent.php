@@ -65,7 +65,7 @@ class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
      * 限定内容のユニットの位置を取得
      *
      * @param array $entry
-     * @return null|int
+     * @return int
      * @throws RuntimeException
      */
     protected function getSummaryRange(array $entry): ?int

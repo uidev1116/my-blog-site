@@ -205,7 +205,7 @@ class CheckForUpdate
      *
      * @param string $php_version
      * @param int $type
-     * @return bool|self
+     * @return bool
      */
     public function check($php_version, $type = self::PATCH_VERSION)
     {
@@ -269,7 +269,7 @@ class CheckForUpdate
      * @param string $string
      * @param string $php_version
      * @param int $type
-     * @return bool|self
+     * @return bool
      */
     protected function checkForUpdate($string, $php_version, $type = self::PATCH_VERSION)
     {
@@ -304,7 +304,7 @@ class CheckForUpdate
      *
      * @param string $string
      * @param string $php_version
-     * @return bool|self
+     * @return bool
      */
     protected function checkForDownGrade($string, $php_version)
     {
@@ -357,7 +357,7 @@ class CheckForUpdate
     /**
      * a-blog cmsのバージョンチェック
      *
-     * @param 1|2|3 $type
+     * @param int<1, 3> $type
      * @return false|object
      */
     protected function checkAcmsVersion($type = self::PATCH_VERSION)
@@ -457,7 +457,7 @@ class CheckForUpdate
      *
      * @param string $version
      * @param string $current
-     * @return bool|object
+     * @return bool
      */
     protected function isPatchVersion($version, $current)
     {
@@ -505,7 +505,7 @@ class CheckForUpdate
      *
      * @param string $version
      * @param string $current
-     * @return bool|object
+     * @return bool
      */
     protected function isMajorVersion($version, $current)
     {
@@ -525,7 +525,7 @@ class CheckForUpdate
     /**
      * JSONをバリデート & デコード
      *
-     * @param $string
+     * @param string $string
      */
     protected function decode($string)
     {

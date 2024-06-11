@@ -149,7 +149,9 @@ class Helper
             $SQL->addWhereOpr('config_rule_id', $rid);
             $SQL->addWhereOpr('config_module_id', $mid);
             $SQL->addWhereOpr('config_set_id', $setid);
-            $SQL->addWhereOpr('config_blog_id', $bid);
+            if (empty($mid) && empty($setid)) {
+                $SQL->addWhereOpr('config_blog_id', $bid);
+            }
             $DB->query($SQL->get(dsn()), 'exec');
         }
         $this->forgetCache($bid, $rid, $mid, $setid);
@@ -652,11 +654,12 @@ class Helper
      * 現在のコンテキストにおける，指定されたキーのコンフィグを返す
      * モジュール内で使用した場合は，モジュールIDで設定されたコンフィグを返す
      *
-     * @param string $key
+     * @template T
+     * @param T $key
      * @param string|int|null $default
      * @param int $i
      *
-     * @return string|false
+     * @return (T is string ? string : false)
      */
     public function get($key, $default = null, $i = 0)
     {

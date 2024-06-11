@@ -145,7 +145,7 @@ class ACMS_Http_File extends ACMS_Http
     public function convertEncoding($path)
     {
         try {
-            $data = mb_convert_encoding(Storage::get($path), 'UTF-8', 'UTF-8, SJIS-win, SJIS');
+            $data = mb_convert_encoding(Storage::get($path, dirname($path)), 'UTF-8', 'UTF-8, SJIS-win, SJIS');
             $data = preg_replace('/^\xEF\xBB\xBF/', '', $data); // remove BOM
 
             $temp = new SplTempFileObject();

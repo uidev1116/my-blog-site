@@ -22,7 +22,7 @@
       &lt;!-- BEGIN unit:loop --&gt;
       &lt;!-- BEGIN entry:loop --&gt;
       &lt;div class=&quot;acms-col-md-4 js-autoheight-r&quot;&gt;
-        &lt;!-- BEGIN image:veil --&gt;
+        &lt;!-- BEGIN_IF [{path}/nem] --&gt;
         &lt;img
           src=&quot;&#x0025;{ROOT_DIR}{path}[resizeImg({x}, {y})]&quot;
           alt=&quot;{alt}&quot;
@@ -30,7 +30,7 @@
           width=&quot;{x}&quot;
           height=&quot;{y}&quot;
         &gt;
-        &lt;!-- END image:veil --&gt;
+        &lt;!-- ELSE --&gt;
         &lt;!-- BEGIN noimage --&gt;
         &lt;img
           src=&quot;/images/default/noimage.gif&quot;
@@ -40,6 +40,7 @@
           height=&quot;{noImgY}&quot;
         &gt;
         &lt;!-- END noimage --&gt;
+        &lt;!-- END_IF --&gt;
         &lt;h3&gt;{title}&lt;/h3&gt;
         &lt;p&gt;{summary}&lt;/p&gt;
         &lt;p&gt;&lt;a href=&quot;{url}&quot; class=&quot;acms-btn&quot;&gt;詳細をみる&lt;/a&gt;&lt;/p&gt;

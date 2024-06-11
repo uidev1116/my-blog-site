@@ -23,15 +23,15 @@
       &lt;!-- BEGIN entry:loop --&gt;
       &lt;div class=&quot;acms-col-md-4&quot;&gt;
         &lt;a href=&quot;{url}&quot; class=&quot;acms-thumbnail&quot;&gt;
-          &lt;!-- BEGIN image:veil --&gt;
+          &lt;!-- BEGIN_IF [{path}/nem] --&gt;
           &lt;img
             src=&quot;&#x0025;{ROOT_DIR}{path}[resizeImg({x}, {y})]&quot;
             alt=&quot;{alt}&quot;
             class=&quot;acms-img-responsive&quot;
             width=&quot;{x}&quot;
             height=&quot;{y}&quot;
-          /&gt;
-          &lt;!-- END image:veil --&gt;
+          &gt;
+          &lt;!-- ELSE --&gt;
           &lt;!-- BEGIN noimage --&gt;
           &lt;img
             src=&quot;/images/noImage.png&quot;
@@ -39,8 +39,9 @@
             class=&quot;acms-img-responsive&quot;
             width=&quot;{noImgX}&quot;
             height=&quot;{noImgY}&quot;
-          /&gt;
+          &gt;
           &lt;!-- END noimage --&gt;
+          &lt;!-- END_IF --&gt;
           &lt;p&gt;{title}&lt;/p&gt;
         &lt;/a&gt;
       &lt;/div&gt;

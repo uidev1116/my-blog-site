@@ -20,6 +20,7 @@ subscriber_access_admin_page: [] # 読者権限でアクセスできる管理ペ
 strip_dangerous_tag: off # on | off 変数から標準で危険なタグ（dangerous_tagsで指定）を削除するか指定
 dangerous_tags: ['script', 'iframe', 'form'] # 変数から標準で削除するタグを指定
 secret_file_name: [config.server.php, .env, .htaccess] # CMSのStorageサービスで取得できないファイル名を指定
+ajax_security_level: 1 # ajaxリクエストのセキュリティレベルを設定します。（0: チェックなし 1: RefererとHttpヘッダーを確認 2: CSRFトークン確認）
 
 ## ログイン・セッション
 subscribe_login_anywhere: off # on | off
@@ -110,7 +111,7 @@ directory_index: []
 url_preview_expire: 48
 allow_unregistered_domain: off # on | off システムに登録されていないドメインでも表示する（デバッグモード時のみ有効）
 category_order_strict_mode: off # on | off カテゴリー親子関係を厳密に指定したURLでないと404になるモード。onだと同ブログ内でも同じ階層でなければ同名のカテゴリーコードを設定可能
-allow_template_extension: [html, htm, csv, xml, json, css, yaml] # ここで指定した以外の拡張子のテンプレートファイルは404として処理をする
+allow_template_extension: [html, htm, csv, xml, json, css, yaml, txt, js] # ここで指定した以外の拡張子のテンプレートファイルは404として処理をする
 
 ## エントリーロック
 entry_lock_enable: on # on | off エントリーのロック（排他制御）が利用可能か設定します
@@ -955,10 +956,6 @@ image_jpeg_quality  : 85
 
 # ファイル
 
-# writableなパーミッションを指定します。10進数で記述してください。
-permission_file : 438 # ( 0666 = 438 | 0644 = 420 | 0604 = 388)
-permission_dir  : 511 # ( 0777 = 511 | 0755 = 493 | 0705 = 453)
-
 file_extension_document : [txt, doc, pdf, ppt, xls, csv, docx, pptx, xlsx]
 file_extension_archive  : [lzh, zip, rar, gca, sit]
 file_extension_movie  : [3gp, 3g2, asf, avi, dat, fli, flc, flv, mkv, mpg, mov, mp4, ogg, qt, rm, ram, rmvb, str, swf, ts, viv, vob, wmv, amc]
@@ -971,6 +968,7 @@ file_prohibit_textfile  : on
 category_code_prefix  : category-
 
 entry_title_duplicate_suffix: のコピー
+entry_duplicate_random_filename: 'on'
 
 entry_code_title    : off
 entry_code_prefix   : entry-
@@ -1037,10 +1035,6 @@ column_table_attr_label :
 entry_edit_inplace : on
 entry_edit_inplace_enable : off
 entry_edit_action_direct : on
-action_direct_def_image : /images/default/noimage.gif
-action_direct_def_image_extension : gif
-action_direct_def_file : /images/default/nofile.pdf
-action_direct_def_file_extension : pdf
 action_direct_def_text : ここをクリックしてテキストを変更します。ここをクリックしてテキストを変更します。ここをクリックしてテキストを変更します。ここをクリックしてテキストを変更します。
 action_direct_def_eximage : http://www.a-blogcms.jp/images/ablogcms.gif
 action_direct_def_eximage_size : 265x65

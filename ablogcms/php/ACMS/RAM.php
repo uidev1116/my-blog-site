@@ -11,11 +11,24 @@
  */
 class ACMS_RAM
 {
+    /**
+     * 関数キャッシュの存在フラグ
+     * @var array<string, bool>
+     */
     private static $cacheAttached = [];
 
+    /**
+     * 関数キャッシュ
+     * @var array<string, mixed>
+     */
     private static $funcCache = [];
 
+    /**
+     * キャッシュ
+     * @var \Acms\Services\Cache\Contracts\AdapterInterface|null
+     */
     private static $cache = null;
+
     /**
      * functionキャッシュ
      * 指定されたメソッドのキャッシュを取得、設定する
@@ -41,6 +54,11 @@ class ACMS_RAM
         return $ret;
     }
 
+    /**
+     * 関数キャッシュが存在するか
+     * @param string $method
+     * @return bool
+     */
     public static function cacheAttached($method)
     {
         if (timemachineMode()) {
@@ -52,6 +70,10 @@ class ACMS_RAM
         return false;
     }
 
+    /**
+     * 関数キャッシュを削除する
+     * @return void
+     */
     public static function cacheDelete()
     {
         self::$funcCache = [];
@@ -60,10 +82,11 @@ class ACMS_RAM
     /**
      * 各種レコードの静的なキャッシュテーブルに対するセッター兼ゲッターメソッド
      *
+     * @template T
      * @param string $key
      * @param int $id
-     * @param mixed $val
-     * @return string|int|bool|null
+     * @param T $val
+     * @return (T is null ? string|int|false|null : true)
      */
     public static function _mapping($key, $id, $val = null)
     {
@@ -140,9 +163,10 @@ class ACMS_RAM
      * 指定されたidから該当するブログのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $bid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function blog($bid, $val = null)
     {
@@ -157,7 +181,7 @@ class ACMS_RAM
      * $code = ACMS_RAM::blogCode($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogCode($bid)
     {
@@ -169,7 +193,7 @@ class ACMS_RAM
      * $domain = ACMS_RAM::blogDomain($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogDomain($bid)
     {
@@ -205,7 +229,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::blogStatus($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogStatus($bid)
     {
@@ -217,7 +241,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::blogName($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogName($bid)
     {
@@ -229,7 +253,7 @@ class ACMS_RAM
      * $indexing = ACMS_RAM::blogIndexing($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogIndexing($bid)
     {
@@ -241,7 +265,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::blogConfigSetId($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogConfigSetId($bid)
     {
@@ -253,7 +277,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::blogThemeSetId($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogThemeSetId($bid)
     {
@@ -265,7 +289,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::blogEditorSetId($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogEditorSetId($bid)
     {
@@ -301,7 +325,7 @@ class ACMS_RAM
      * $gen_datetime = ACMS_RAM::blogGeneratedDatetime($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogGeneratedDatetime($bid)
     {
@@ -313,7 +337,7 @@ class ACMS_RAM
      * $alias_status = ACMS_RAM::blogAliasStatus($bid);
      *
      * @param int $bid
-     * @return string
+     * @return string|null
      */
     public static function blogAliasStatus($bid)
     {
@@ -337,7 +361,7 @@ class ACMS_RAM
      * $alias_primary = ACMS_RAM::blogAliasPrimary$(bid);
      *
      * @param int $bid
-     * @return int
+     * @return int|null
      */
     public static function blogAliasPrimary($bid)
     {
@@ -347,7 +371,7 @@ class ACMS_RAM
 
     /**
      * @param int $bid
-     * @return bool
+     * @return string|false
      */
     public static function blogMaintenanceMode($bid)
     {
@@ -374,8 +398,8 @@ class ACMS_RAM
 
     /**
      * @param int $bid
-     * @param int $mode
-     * @return bool
+     * @param string $mode
+     * @return true
      */
     public static function setBlogMaintenanceMode($bid, $mode)
     {
@@ -385,7 +409,7 @@ class ACMS_RAM
     /**
      * @param int $bid
      * @param int $aid
-     * @return bool|null
+     * @return true
      */
     public static function setBlogAliasPrimary($bid, $aid)
     {
@@ -399,9 +423,10 @@ class ACMS_RAM
      * 指定されたidから該当するルールのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $rid
-     * @param null $row
-     * @return array|bool
+     * @param T $row
+     * @return (T is null ? array|null : true)
      */
     public static function rule($rid, $row = null)
     {
@@ -413,7 +438,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::ruleName($rid);
      *
      * @param int $rid
-     * @return string
+     * @return string|null
      */
     public static function ruleName($rid)
     {
@@ -427,9 +452,10 @@ class ACMS_RAM
      * 指定されたidから該当するエイリアスのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $aid
-     * @param null $row
-     * @return array|bool
+     * @param T $row
+     * @return (T is null ? array|null : true)
      */
     public static function alias($aid, $row = null)
     {
@@ -441,7 +467,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::aliasStatus($aid);
      *
      * @param int $aid
-     * @return string
+     * @return string|null
      */
     public static function aliasStatus($aid)
     {
@@ -465,7 +491,7 @@ class ACMS_RAM
      * $domain = ACMS_RAM::aliasDomain($aid);
      *
      * @param int $aid
-     * @return string
+     * @return string|null
      */
     public static function aliasDomain($aid)
     {
@@ -477,7 +503,7 @@ class ACMS_RAM
      * $code = ACMS_RAM::aliasCode($aid);
      *
      * @param int $aid
-     * @return string
+     * @return string|null
      */
     public static function aliasCode($aid)
     {
@@ -501,7 +527,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::aliasName($aid);
      *
      * @param int $aid
-     * @return string
+     * @return string|null
      */
     public static function aliasName($aid)
     {
@@ -515,9 +541,10 @@ class ACMS_RAM
      * 指定されたidから該当するユーザーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $uid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function user($uid, $val = null)
     {
@@ -529,7 +556,7 @@ class ACMS_RAM
      * $code = ACMS_RAM::userCode($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userCode($uid)
     {
@@ -541,7 +568,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::userStatus($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userStatus($uid)
     {
@@ -565,7 +592,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::userName($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userName($uid)
     {
@@ -577,7 +604,7 @@ class ACMS_RAM
      * $mail = ACMS_RAM::userMail($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userMail($uid)
     {
@@ -589,7 +616,7 @@ class ACMS_RAM
      * $mobile = ACMS_RAM::userMailMobile($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userMailMobile($uid)
     {
@@ -601,7 +628,7 @@ class ACMS_RAM
      * $url = ACMS_RAM::userUrl($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userUrl($uid)
     {
@@ -613,7 +640,7 @@ class ACMS_RAM
      * $auth = ACMS_RAM::userAuth($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userAuth($uid)
     {
@@ -625,7 +652,7 @@ class ACMS_RAM
      * $auth = ACMS_RAM::userLocale($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userLocale($uid)
     {
@@ -637,7 +664,7 @@ class ACMS_RAM
      * $indexing = ACMS_RAM::userIndexing($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userIndexing($uid)
     {
@@ -649,7 +676,7 @@ class ACMS_RAM
      * $anywhere = ACMS_RAM::userLoginAnywhere($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userLoginAnywhere($uid)
     {
@@ -661,7 +688,7 @@ class ACMS_RAM
      * $anywhere = ACMS_RAM::userGlobalAuth($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userGlobalAuth($uid)
     {
@@ -673,7 +700,7 @@ class ACMS_RAM
      * $expire = ACMS_RAM::userLoginExpire($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userLoginExpire($uid)
     {
@@ -685,7 +712,7 @@ class ACMS_RAM
      * $last_login = ACMS_RAM::userLoginDatetime($uid);
      *
      * @param int $uid
-     * @return string
+     * @return string|null
      */
     public static function userLoginDatetime($uid)
     {
@@ -712,9 +739,10 @@ class ACMS_RAM
      * 指定されたidから該当するカテゴリーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $cid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function category($cid, $val = null)
     {
@@ -726,7 +754,7 @@ class ACMS_RAM
      * $code = ACMS_RAM::categoryCode($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryCode($cid)
     {
@@ -786,7 +814,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::categoryName($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryName($cid)
     {
@@ -798,7 +826,7 @@ class ACMS_RAM
      * $indexing = ACMS_RAM::categoryIndexing($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryIndexing($cid)
     {
@@ -810,7 +838,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::categoryConfigSetId($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryConfigSetId($cid)
     {
@@ -822,7 +850,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::categoryThemeSetId($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryThemeSetId($cid)
     {
@@ -834,7 +862,7 @@ class ACMS_RAM
      * $configSetId = ACMS_RAM::categoryEditorSetId($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryEditorSetId($cid)
     {
@@ -846,7 +874,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::categoryStatus($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryStatus($cid)
     {
@@ -858,7 +886,7 @@ class ACMS_RAM
      * $scope = ACMS_RAM::categoryScope($cid);
      *
      * @param int $cid
-     * @return string
+     * @return string|null
      */
     public static function categoryScope($cid)
     {
@@ -884,9 +912,10 @@ class ACMS_RAM
      * 指定されたidから該当するエントリーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $eid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function entry($eid, $val = null)
     {
@@ -898,7 +927,7 @@ class ACMS_RAM
      * $code = ACMS_RAM::entryCode($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryCode($eid)
     {
@@ -946,7 +975,7 @@ class ACMS_RAM
      * $title = ACMS_RAM::entryTitle($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryTitle($eid)
     {
@@ -958,7 +987,7 @@ class ACMS_RAM
      * $datetime = ACMS_RAM::entryDatetime($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryDatetime($eid)
     {
@@ -970,7 +999,7 @@ class ACMS_RAM
      * $datetime = ACMS_RAM::entryUpdatedDatetime($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryUpdatedDatetime($eid)
     {
@@ -982,7 +1011,7 @@ class ACMS_RAM
      * $datetime = ACMS_RAM::entryPostedDatetime($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryPostedDatetime($eid)
     {
@@ -994,7 +1023,7 @@ class ACMS_RAM
      * $datetime = ACMS_RAM::entryStartDatetime($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryStartDatetime($eid)
     {
@@ -1006,7 +1035,7 @@ class ACMS_RAM
      * $datetime = ACMS_RAM::entryEndDatetime($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryEndDatetime($eid)
     {
@@ -1054,7 +1083,7 @@ class ACMS_RAM
      * $indexing = ACMS_RAM::entryIndexing($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryIndexing($eid)
     {
@@ -1066,7 +1095,7 @@ class ACMS_RAM
      * $indexing = ACMS_RAM::entryIndexing($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryMembersOnly($eid)
     {
@@ -1077,7 +1106,7 @@ class ACMS_RAM
      * 指定されたidから該当するエントリーのメイン画像のユニットIDを返します
      * $primaryImage = ACMS_RAM::entryPrimaryImage($eid);
      *
-     * @param  $eid
+     * @param int $eid
      * @return int
      */
     public static function entryPrimaryImage($eid)
@@ -1090,7 +1119,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::entryStatus($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryStatus($eid)
     {
@@ -1102,7 +1131,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::entryStatus($eid);
      *
      * @param int $eid
-     * @return string
+     * @return string|null
      */
     public static function entryApproval($eid)
     {
@@ -1116,9 +1145,10 @@ class ACMS_RAM
      * 指定されたidから該当するユニットのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $utid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function unit($utid, $val = null)
     {
@@ -1142,7 +1172,7 @@ class ACMS_RAM
      * $align = ACMS_RAM::unitAlign($utid);
      *
      * @param int $utid
-     * @return string
+     * @return string|null
      */
     public static function unitAlign($utid)
     {
@@ -1154,7 +1184,7 @@ class ACMS_RAM
      * $type = ACMS_RAM::unitType($utid);
      *
      * @param int $utid
-     * @return string
+     * @return string|null
      */
     public static function unitType($utid)
     {
@@ -1166,7 +1196,7 @@ class ACMS_RAM
      * $attr = ACMS_RAM::unitAttr($utid);
      *
      * @param int $utid
-     * @return string
+     * @return string|null
      */
     public static function unitAttr($utid)
     {
@@ -1178,7 +1208,7 @@ class ACMS_RAM
      * $size = ACMS_RAM::unitSize($utid);
      *
      * @param int $utid
-     * @return string
+     * @return string|null
      */
     public static function unitSize($utid)
     {
@@ -1190,7 +1220,7 @@ class ACMS_RAM
      * $field1 = ACMS_RAM::unitField1($utid);
      *
      * @param int $utid
-     * @return string
+     * @return string|null
      */
     public static function unitField1($utid)
     {
@@ -1250,7 +1280,7 @@ class ACMS_RAM
      * $unit_eid = ACMS_RAM::unitEntry($utid);
      *
      * @param int $utid
-     * @return int
+     * @return int|null
      */
     public static function unitEntry($utid)
     {
@@ -1262,7 +1292,7 @@ class ACMS_RAM
      * $unit_bid = ACMS_RAM::unitBlog($utid);
      *
      * @param int $utid
-     * @return int
+     * @return int|null
      */
     public static function unitBlog($utid)
     {
@@ -1276,9 +1306,10 @@ class ACMS_RAM
      * 指定されたidから該当するコメントのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $cmid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function comment($cmid, $val = null)
     {
@@ -1290,7 +1321,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::commentName($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentName($cmid)
     {
@@ -1302,7 +1333,7 @@ class ACMS_RAM
      * $mail = ACMS_RAM::commentMail($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentMail($cmid)
     {
@@ -1314,7 +1345,7 @@ class ACMS_RAM
      * $url = ACMS_RAM::commentUrl($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentUrl($cmid)
     {
@@ -1326,7 +1357,7 @@ class ACMS_RAM
      * $title = ACMS_RAM::commentTitle($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentTitle($cmid)
     {
@@ -1338,7 +1369,7 @@ class ACMS_RAM
      * $body = ACMS_RAM::commentBody($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentBody($cmid)
     {
@@ -1350,7 +1381,7 @@ class ACMS_RAM
      * $pass = ACMS_RAM::commentPass($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentPass($cmid)
     {
@@ -1362,7 +1393,7 @@ class ACMS_RAM
      * $comment_eid = ACMS_RAM::commentEntry($cmid);
      *
      * @param int $cmid
-     * @return int
+     * @return int|null
      */
     public static function commentEntry($cmid)
     {
@@ -1422,7 +1453,7 @@ class ACMS_RAM
      * $status = ACMS_RAM::commentStatus($cmid);
      *
      * @param int $cmid
-     * @return string
+     * @return string|null
      */
     public static function commentStatus($cmid)
     {
@@ -1432,7 +1463,7 @@ class ACMS_RAM
     /**
      * 指定されたidから該当するコンフィグセットの名前を返します
      * @param int $setid
-     * @return string
+     * @return string|null
      */
     public static function configSetName($setid)
     {
@@ -1442,7 +1473,7 @@ class ACMS_RAM
     /**
      * 指定されたidから該当するフォームのコードを返します
      * @param int $id
-     * @return string
+     * @return string|null
      */
     public static function formCode($id)
     {
@@ -1452,7 +1483,7 @@ class ACMS_RAM
     /**
      * 指定されたidから該当するフォームの名前を返します
      * @param int $id
-     * @return string
+     * @return string|null
      */
     public static function formName($id)
     {
@@ -1463,9 +1494,10 @@ class ACMS_RAM
      * 指定されたidから該当するトラックバックのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $tbid
-     * @param null $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function trackback($tbid, $val = null)
     {
@@ -1488,9 +1520,10 @@ class ACMS_RAM
      * 指定されたidから該当するメディアのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
+     * @template T of array|null
      * @param int $mid
-     * @param mixed $val
-     * @return array|bool
+     * @param T $val
+     * @return (T is null ? array|null : true)
      */
     public static function media($mid, $val = null)
     {
@@ -1502,7 +1535,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaStatus($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaStatus($mid)
     {
@@ -1514,7 +1547,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaType($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaType($mid)
     {
@@ -1526,7 +1559,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaExtension($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaExtension($mid)
     {
@@ -1538,7 +1571,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaPath($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaPath($mid)
     {
@@ -1550,7 +1583,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaThumbnail($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaThumbnail($mid)
     {
@@ -1562,7 +1595,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaOriginal($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaOriginal($mid)
     {
@@ -1574,7 +1607,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaFileName($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaFileName($mid)
     {
@@ -1586,7 +1619,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaImageSize($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaImageSize($mid)
     {
@@ -1598,7 +1631,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaFileSize($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaFileSize($mid)
     {
@@ -1610,7 +1643,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaUploadDate($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaUploadDate($mid)
     {
@@ -1622,7 +1655,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaUpdateDate($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaUpdateDate($mid)
     {
@@ -1634,7 +1667,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField1($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField1($mid)
     {
@@ -1646,7 +1679,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField2($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField2($mid)
     {
@@ -1658,7 +1691,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField3($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField3($mid)
     {
@@ -1670,7 +1703,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField4($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField4($mid)
     {
@@ -1682,7 +1715,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField5($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField5($mid)
     {
@@ -1694,7 +1727,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaField6($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaField6($mid)
     {
@@ -1706,7 +1739,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaUserId($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaUserId($mid)
     {
@@ -1718,7 +1751,7 @@ class ACMS_RAM
      * $name = ACMS_RAM::mediaBlogId($mid);
      *
      * @param int $mid
-     * @return string
+     * @return string|null
      */
     public static function mediaBlogId($mid)
     {

@@ -20,9 +20,9 @@ use ACMS_Corrector;
 use ACMS_POST_Image;
 use ACMS_RAM;
 use ACMS_Hook;
-use Session;
 use AcmsLogger;
 use Acms\Services\Facades\RichEditor;
+use Acms\Services\Facades\Session;
 use phpseclib\Crypt\AES;
 use phpseclib\Crypt\Random;
 use cebe\markdown\MarkdownExtra;
@@ -210,6 +210,28 @@ class Helper
     }
 
     /**
+     * CSRFトークンを生成
+     *
+     * @return string
+     */
+    public function createCsrfToken(): string
+    {
+        $session = Session::handle();
+        if ($session->get('formTokenExpireAt') && $session->get('formTokenExpireAt') < REQUEST_TIME) {
+            $session->delete('formToken'); // 更新期限がきれたCSRFトークンを削除
+        }
+        $token = $session->get('formToken');
+        if (empty($token)) {
+            $token = uniqueString();
+            $session->set('formToken', $token);
+        }
+        $session->set('formTokenExpireAt', (REQUEST_TIME + (60 * 60 * 6))); // CSRFトークンを更新間隔を6時間に設定
+        $session->save();
+
+        return $token;
+    }
+
+    /**
      * CSRFトークンをFromに付与
      *
      * @param string $tpl
@@ -231,23 +253,14 @@ class Helper
             && strpos($tpl, 'ACMS_POST_Form_') === false
             && strpos($tpl, 'ACMS_POST_Comment_') === false
             && strpos($tpl, 'ACMS_POST_Shop') === false
+            && strpos($tpl, 'ACMS_POST_2GET_Ajax') === false
             && strpos($tpl, 'check-csrf-token') === false
             && ACMS_RAM::blogStatus(BID) !== 'secret'
             && (!CID || ACMS_RAM::categoryStatus(CID) !== 'secret')
         ) {
             $token = uniqueString();
         } else {
-            $session = Session::handle();
-            if ($session->get('formTokenExpireAt') && $session->get('formTokenExpireAt') < REQUEST_TIME) {
-                $session->delete('formToken'); // 更新期限がきれたCSRFトークンを削除
-            }
-            $token = $session->get('formToken');
-            if (empty($token)) {
-                $token = uniqueString();
-                $session->set('formToken', $token);
-            }
-            $session->set('formTokenExpireAt', (REQUEST_TIME + (60 * 60 * 6))); // CSRFトークンを更新間隔を6時間に設定
-            $session->save();
+            $token = $this->createCsrfToken();
         }
 
         // form unique token の埋め込み
@@ -258,6 +271,81 @@ class Helper
         $tpl = preg_replace('@(?=<\s*/\s*head[^\w]*>)@i', '<meta name="csrf-token" content="' . $token . '">', $tpl);
 
         return $tpl;
+    }
+
+    /**
+     * CSRFトークンの存在チェック
+     *
+     * @return boolean
+     */
+    public function csrfTokenExists(): bool
+    {
+        $session = Session::handle();
+        return !!$session->get('formToken');
+    }
+
+    /**
+     * CSRFトークンのチェック
+     *
+     * @param string $token
+     * @return boolean
+     */
+    public function checkCsrfToken(string $token): bool
+    {
+        $session = Session::handle();
+        if (!!$session->get('formToken') && $session->get('formToken') === $token) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * ToDo: リファクタリング
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getHttpHeader(string $name): string
+    {
+        return $_SERVER[$name] ?? '';
+    }
+
+    /**
+     * 許可されたajaxアクセスか判定（どのようなtpl指定であっても許可する）
+     *
+     * level-0: チェックをしない
+     * level-1: RefererとAjaxリクエスト判定
+     * level-2: CSRFトークンチェック
+     *
+     * @param int $level
+     * @return bool
+     */
+    public function isAuthorizedAjaxRequest(int $level = 1): bool
+    {
+        try {
+            if ($level === 0) {
+                return true; // チェックを全くしない
+            }
+            if (!is_ajax()) {
+                return false; // Ajaxアクセスでない場合
+            }
+            if (isCSRF()) {
+                return false; // Refererが不正な場合
+            }
+            if ($level <= 1) {
+                return true;
+            }
+            if (!$this->csrfTokenExists()) {
+                return false; // CSRFトークンが存在しない
+            }
+            $token = $this->getHttpHeader('HTTP_X_CSRF_TOKEN');
+            if (!$this->checkCsrfToken($token)) {
+                return false; // CSRFトークンが一致しない
+            }
+            return true;
+        } catch (Exception $e) {
+        }
+        return false;
     }
 
     /**
@@ -1370,7 +1458,7 @@ class Helper
                         //-------------
                         // rawfilename
                         if (preg_match('/^@(.*)$/', $c['filename'], $match)) {
-                            $c['filename']  = ('rawfilename' == $match[1]) ? $c['_name'] : '';
+                            $c['filename']  = ('rawfilename' == $match[1]) ? date('Ym') . '/' . $c['_name'] : '';
                         }
 
                         //------------------------------------
@@ -2317,7 +2405,7 @@ class Helper
 
         if (
             0
-            || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE) // @phpstan-ignore-line
+            || (defined('NO_CACHE_PAGE') && NO_CACHE_PAGE)
             || strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET'
         ) {
             $no_cache_page = true;

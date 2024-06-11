@@ -2832,10 +2832,14 @@ a.acms-label-danger:focus {
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
   }
-  .acms-table-responsive th, .acms-table-responsive td {
+  .acms-table-responsive th,
+  .acms-table-responsive td {
     white-space: nowrap;
   }
-  .acms-table-scrollable th, .acms-table-scrollable td, .js-table-unit-scroll-hint th, .js-table-unit-scroll-hint td {
+  .acms-table-scrollable th,
+  .acms-table-scrollable td,
+  .js-table-unit-scroll-hint th,
+  .js-table-unit-scroll-hint td {
     display: table-cell !important;
     white-space: nowrap;
   }

@@ -5,37 +5,37 @@ class ACMS_GET
     /**
      * @var string
      */
-    public $tpl = null;
+    public $tpl = '';
 
     /**
-     * @var int
+     * @var int|string
      */
     public $bid = null;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
     public $uid = null;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
     public $cid = null;
 
     /**
-     * @var int|null
+     * @var string|int|null
      */
     public $eid = null;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $keyword = null;
+    public $keyword;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $tag = null;
+    public $tag;
 
     /**
      * @var string[]
@@ -43,34 +43,34 @@ class ACMS_GET
     public $tags = [];
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $field = null;
+    public $field;
 
     /**
-     * @var \Field_Search|null
+     * @var \Field_Search
      */
-    public $Field = null;
+    public $Field;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $start = null;
+    public $start;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $end = null;
+    public $end;
 
     /**
-     * @var int|null
+     * @var int<1, max>
      */
-    public $page = null;
+    public $page = 1;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $order = null;
+    public $order;
 
     /**
      * @deprecated 未使用のプロパティ
@@ -404,7 +404,7 @@ class ACMS_GET
      * @deprecated
      * @param int|string $datetime
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      * @param string $prefix
      *
      * @return array
@@ -420,7 +420,7 @@ class ACMS_GET
      * @deprecated
      * @param \Field $Field
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      * @param string|null $scp
      * @param array $root_vars
      *
@@ -437,7 +437,7 @@ class ACMS_GET
      * @deprecated
      * @param array $data
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -452,7 +452,7 @@ class ACMS_GET
      * @deprecated
      * @param array $data
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -467,7 +467,7 @@ class ACMS_GET
      * @deprecated
      * @param array $data
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      *
      * @return array
      */
@@ -486,7 +486,7 @@ class ACMS_GET
      * @param int $delta 前後ページ数
      * @param string $curAttr
      * @param Template &$Tpl
-     * @param string[] $block
+     * @param string[]|string $block
      * @param array $Q
      *
      * @return array
@@ -547,7 +547,7 @@ class ACMS_GET
      * @deprecated
      * @param Template $Tpl
      * @param int[] $eids
-     * @param string[] $block
+     * @param string[]|string $block
      *
      * @return mixed
      */

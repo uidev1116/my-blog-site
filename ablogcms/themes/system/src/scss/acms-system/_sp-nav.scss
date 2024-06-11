@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // スマートフォン メニューアイコン
 #nav-open-btn {
@@ -11,7 +11,7 @@
   border: none;
   @include global.font-size(30);
 
-  [class*="acms-icon-"] {
+  [class*='acms-icon-'] {
     display: block;
   }
 
@@ -37,7 +37,7 @@
   color: global.$header-nav-color;
   @include global.font-size(30);
 
-  [class*="acms-icon-"] {
+  [class*='acms-icon-'] {
     display: block;
   }
 }
@@ -64,11 +64,5 @@
   /* サイドバー */
   .acms-sidebar {
     padding-bottom: 40px;
-  }
-}
-
-@media only screen and (min-device-width: global.$breakpoint-md-max) and (max-device-width: global.$breakpoint-lg-max) and (orientation: portrait) {
-  #sidebar .acms-btn-login {
-    width: 75%;
   }
 }

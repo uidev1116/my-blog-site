@@ -4,10 +4,11 @@ import ContentLoader from 'react-content-loader'
 import ReactTooltip from 'react-tooltip'
 import Highlight from 'react-highlight'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import axios from 'axios'
 import nl2br from 'react-nl2br'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import 'react-highlight/node_modules/highlight.js/styles/atom-one-dark.css'
+import axios from 'axios'
+import axiosLib from '../lib/axios'
 import Modal from './modal'
 import { parseQuery } from '../utils'
 
@@ -99,7 +100,7 @@ const DetailLogModal = () => {
     }
 
     try {
-      const response: AxiosResponse<Log> = await axios(axiosOptions)
+      const response: AxiosResponse<Log> = await axiosLib(axiosOptions)
       const json = response.data
       if (response.status === 200) {
         if (json && json.success === true) {

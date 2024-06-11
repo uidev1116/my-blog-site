@@ -333,12 +333,9 @@ export default () => {
 
   //----------------------
   // google code prettify
-  ACMS.Library.googleCodePrettifyPost = function () {
+  ACMS.Library.googleCodePrettifyPost = () => {
     $('pre').addClass(ACMS.Config.googleCodePrettifyClass)
-    if (
-      !$('pre').hasClass('prettyprinted') &&
-      !$('pre').hasClass('acms-admin-customfield-maker')
-    ) {
+    if (!$('pre').hasClass('acms-admin-customfield-maker')) {
       if (typeof prettyPrint === 'function') {
         prettyPrint()
       } else {

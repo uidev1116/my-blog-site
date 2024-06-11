@@ -19,11 +19,11 @@ class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry_Revisio
 
         if ($currentRvid > 0) {
             $vars['currentVersion'] = $currentRvid;
-            if (isset($currentVersion['entry_rev_memo'])) {
-                $vars['currentVersionName'] = $currentVersion['entry_rev_memo'];
-            }
         } else {
             $Tpl->add('notExistCurrentVersion');
+        }
+        if (isset($currentVersion['entry_rev_memo'])) {
+            $vars['currentVersionName'] = $currentVersion['entry_rev_memo'];
         }
         if (isset($currentVersion['entry_rev_status'])) {
             $vars['rev_status'] = $currentVersion['entry_rev_status'];

@@ -41,7 +41,7 @@ class ACMS_POST_Comment_Insert extends ACMS_POST_Comment
         //-------------
         // save cookie
         if ('on' == $Comment->get('persistent')) {
-            $expire = strtotime(date('Y-m-d H:i:s', REQUEST_TIME)) + config('comment_cookie_lifetime');
+            $expire = strtotime(date('Y-m-d H:i:s', REQUEST_TIME)) + intval(config('comment_cookie_lifetime'));
             acmsSetCookie('acms_comment_name', $name, $expire, '/');
             acmsSetCookie('acms_comment_mail', $mail, $expire, '/');
             acmsSetCookie('acms_comment_url', $url, $expire, '/');

@@ -1,46 +1,54 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import Select, { Creatable, Async } from './react-select-styled';
-import 'react-select/dist/react-select.css';
+import React, { Component } from 'react'
+import styled from 'styled-components'
+import axiosLib from '../lib/axios'
+import Select, { Creatable, Async } from './react-select-styled'
+import 'react-select/dist/react-select.css'
 
 const CreatableWrap = styled.div`
   .Select.is-focused:not(.is-open) > .Select-control {
-    box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4), inset 0 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 0 0 2px rgba(19, 122, 243, 0.4),
+      inset 0 1px 1px rgba(0, 0, 0, 0.1);
   }
-`;
+`
 
 type RichSelectProp = {
-  isMulti?: boolean;
-  isAsync?: boolean;
-  name?: string;
-  className?: string;
-  closeOnSelect?: boolean;
-  creatable?: boolean;
-  clearable?: boolean;
-  dataUrl?: string;
-  defaultValue?: string;
+  isMulti?: boolean
+  isAsync?: boolean
+  name?: string
+  className?: string
+  closeOnSelect?: boolean
+  creatable?: boolean
+  clearable?: boolean
+  dataUrl?: string
+  defaultValue?: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  loadOptions?: (inputValue: string, callback: (options: any) => void) => Promise<any> | void;
-  placeholder?: string;
-  noResultsText?: string;
-  promptTextCreator?: (label: string) => string;
-  isValidNewOption?: boolean;
-  onChange?: (value: string) => void;
-};
+  loadOptions?: (
+    inputValue: string,
+    callback: (options: any) => void,
+  ) => Promise<any> | void
+  placeholder?: string
+  noResultsText?: string
+  promptTextCreator?: (label: string) => string
+  isValidNewOption?: boolean
+  onChange?: (value: string) => void
+}
 
 type Tag = {
-  label: string;
-  value: string;
-};
+  label: string
+  value: string
+}
 
 type RichSelectState = {
-  show: 'block' | 'none';
-  value: string;
-  options: Tag[];
-};
+  show: 'block' | 'none'
+  value: string
+  options: Tag[]
+}
 
-export default class RichSelect extends Component<RichSelectProp, RichSelectState> {
+export default class RichSelect extends Component<
+  RichSelectProp,
+  RichSelectState
+> {
   static defaultProps = {
     creatable: false,
     clearable: false,
@@ -57,40 +65,40 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
     onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
     loadOptions: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
     isValidNewOption: ({ label }) => !!label,
-  };
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       show: 'none',
       value: props.defaultValue,
       options: [],
-    };
-    this.handleChange = this.handleChange.bind(this);
+    }
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount() {
-    const { dataUrl } = this.props;
+    const { dataUrl } = this.props
     if (dataUrl) {
-      axios.get(dataUrl).then((res) => {
+      axiosLib.get(dataUrl).then((res) => {
         if (res.data) {
           this.setState({
             options: res.data,
-          });
+          })
         }
-      });
+      })
     }
     setTimeout(() => {
-      this.setState({ show: 'block' });
-    }, 100);
+      this.setState({ show: 'block' })
+    }, 100)
   }
 
   handleChange(value) {
-    const { onChange } = this.props;
+    const { onChange } = this.props
 
     this.setState({ value }, () => {
-      onChange(this.state.value);
-    });
+      onChange(this.state.value)
+    })
   }
 
   render() {
@@ -108,10 +116,10 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
       isValidNewOption,
       filterOption,
       loadOptions,
-    } = this.props;
-    const { options, value, show } = this.state;
+    } = this.props
+    const { options, value, show } = this.state
     // eslint-disable-next-line no-nested-ternary
-    const SelectComponent = creatable ? Creatable : isAsync ? Async : Select;
+    const SelectComponent = creatable ? Creatable : isAsync ? Async : Select
 
     return (
       <CreatableWrap style={{ display: show }}>
@@ -132,6 +140,6 @@ export default class RichSelect extends Component<RichSelectProp, RichSelectStat
           {...(filterOption && { filterOption })}
         />
       </CreatableWrap>
-    );
+    )
   }
 }

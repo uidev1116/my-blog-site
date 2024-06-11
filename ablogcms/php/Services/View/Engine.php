@@ -149,6 +149,11 @@ class Engine implements Contracts\ViewInterface
     public function add($blocks = [], $vars = [])
     {
         if (null != $this->_blockIdTxt[0]) {
+            /**
+             * ルート変数の追加後にadd()が呼ばれた場合にエラーを出力する
+             * $tpl->add(null, $vars);
+             * $tpl->add(['block'], $vars);
+             */
             trigger_error('root is already touched.', E_USER_NOTICE);
             return false;
         }

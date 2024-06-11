@@ -61,27 +61,6 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     protected $relatedEntryEagerLoadingData = [];
 
     /**
-     * マイクロページのページ数
-     *
-     * @var int
-     */
-    protected $micropage = 0;
-
-    /**
-     * マイクロページの改ページ場所（ユニット数）
-     *
-     * @var int
-     */
-    protected $micropageBreak = 0;
-
-    /**
-     * マイクロページのラベル
-     *
-     * @var array
-     */
-    protected $micropageLabel = [];
-
-    /**
      * 会員限定記事
      *
      * @var bool
@@ -155,7 +134,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     /**
      * Main
      */
-    function get()
+    public function get()
     {
         if (!$this->setConfig()) {
             return '';
@@ -226,6 +205,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      *
      * @param Template $tpl
      * @return void
+     * @throws NotFoundException
      */
     protected function entryPage(Template $tpl): void
     {
@@ -254,7 +234,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $vars = [];
 
         // ユニットを組み立て
-        $this->buildEntryUnit($tpl, $entry);
+        $micropageInfo = $this->buildEntryUnit($tpl, $entry);
 
         // フルテキストのEagerLoading
         if ($this->config['summary_on'] === 'on') {
@@ -281,13 +261,17 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         $this->buildSerialNavi($tpl, $entry);
 
         // マイクロページを組み立て
-        $this->buildMicroPage($tpl);
+        $this->buildMicroPage($tpl, $micropageInfo);
 
-        $tpl->add(null, [
-            'upperUrl' => acmsLink([
-                'eid' => false,
-            ]),
-        ]);
+        $rootVars = [];
+        if ($this->config['serial_navi_on'] === 'on') {
+            $rootVars = array_merge($rootVars, [
+                'upperUrl' => acmsLink([
+                    'eid' => null,
+                ]),
+            ]);
+        }
+        $tpl->add(null, $rootVars);
     }
 
     /**
@@ -577,15 +561,26 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      *
      * @param Template $tpl
      * @param array $entry
-     * @return void
+     * @return array{
+     *   amount: int,
+     *   unit: array{
+     *     label: string,
+     *   }|null,
+     * }
      */
-    protected function buildEntryUnit(Template $tpl, array $entry): void
+    protected function buildEntryUnit(Template $tpl, array $entry): array
     {
+        $micropage = $this->page;
+        $micropageAmount = 0;
+        $breakUnit = null;
         $eid = intval($entry['entry_id']);
         $RVID_ = RVID;
         if (!RVID && $entry['entry_approval'] === 'pre_approval') {
             $RVID_ = 1;
         }
+
+        $units = loadColumn($eid, null, $RVID_);
+        $publicUnits = $units;
 
         $summaryRange = null;
         if ($this->membersOnly) {
@@ -595,44 +590,24 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $tpl->add(['membersOnly', 'entry:loop']);
 
             if ($summaryRange !== null) {
-                $allColumn = loadColumn($eid, null, $RVID_);
-                $page = 1;
-                $this->micropageBreak = 1;
-                foreach ($allColumn as $i => $col) {
-                    if ('break' == $col['type']) {
-                        if ($i < $summaryRange) {
-                            $page += 1;
-                        }
-                        $this->micropageBreak += 1;
-                    }
-                }
-                if ($summaryRange < count($allColumn) && $page <= intval($this->page)) {
+                if ($this->containsMembersOnlyUnitOnMicroPage($units, $summaryRange, $micropage)) {
+                    // 会員限定ユニットが表示ページに含まれている場合、continueLinkブロックを追加
                     $tpl->add(['continueLink', 'entry:loop'], [
                         'dummy' => 'dummy',
                     ]);
                 }
+                // 会員限定ユニットを除外
+                $publicUnits = array_slice($units, 0, $summaryRange);
             }
         }
-        if ($units = loadColumn($eid, $summaryRange, $RVID_)) {
-            if ($this->config['micropager_on'] === 'on') {
-                // マイクロページャー有効時
-                $micropageBreakPage = 1;
-                $this->micropage = intval($this->page);
-                $_units = $units;
-                $units = [];
-                foreach ($_units as $unit) {
-                    if ('break' == $unit['type']) {
-                        if ($this->micropage === $micropageBreakPage) {
-                            buildUnitData($unit['label'], $this->micropageLabel, 'label');
-                        }
-                        $micropageBreakPage += 1;
-                    }
-                    if ($this->micropage === $micropageBreakPage) {
-                        $units[] = $unit;
-                    }
-                }
-            }
-            $this->buildColumn($units, $tpl, $eid);
+        if ($this->config['micropager_on'] === 'on') {
+            // マイクロページャー有効時
+            $micropageAmount = $this->countMicroPageAmount($units);
+            $breakUnit = $this->getBreakUnitOnMicroPage($units, $micropage);
+            $publicUnits = $this->filterUnitsByMicroPage($publicUnits, $micropage);
+        }
+        if (count($publicUnits) > 0) {
+            $this->buildColumn($publicUnits, $tpl, $eid);
         } else {
             // ユニットがない場合
             $tpl->add('unit:loop');
@@ -657,6 +632,10 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 ]);
             }
         }
+        return [
+            'amount' => $micropageAmount,
+            'unit' => $breakUnit
+        ];
     }
 
     /**
@@ -849,34 +828,41 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      * マイクロページネーションを組み立て
      *
      * @param Template $tpl
+     * @param array{
+     *   amount: int,
+     *   unit: array{
+     *     label: string,
+     *   }|null,
+     * } $info
      * @return void
      */
-    protected function buildMicroPage(Template $tpl): void
+    protected function buildMicroPage(Template $tpl, array $info): void
     {
         if ($this->config['micropager_on'] !== 'on') {
             return;
         }
-        if ($this->micropageBreak < 1) {
+        if ($info['amount'] < 1) {
             return;
         }
+        $micropage = $this->page;
         // micropage
-        if (!empty($this->micropageLabel)) {
-            $this->micropageLabel['url'] = acmsLink([
+        if (!is_null($info['unit'])) {
+            $linkVars = [];
+            buildUnitData($info['unit']['label'], $linkVars, 'label');
+            $linkVars['url'] = acmsLink([
                 '_inherit' => true,
                 'eid' => $this->eid,
-                'page' => $this->micropage + 1,
+                'page' => $micropage + 1,
             ]);
-            $tpl->add('micropageLink', $this->micropageLabel);
+            $tpl->add('micropageLink', $linkVars);
         }
 
         // micropager
-        if (!empty($this->micropage)) {
-            $vars = [];
-            $delta = $this->config['micropager_delta'];
-            $curAttr = $this->config['micropager_cur_attr'];
-            $vars += $this->buildPager($this->micropage, 1, $this->micropageBreak, $delta, $curAttr, $tpl, 'micropager');
-            $tpl->add('micropager', $vars);
-        }
+        $vars = [];
+        $delta = $this->config['micropager_delta'];
+        $curAttr = $this->config['micropager_cur_attr'];
+        $vars += $this->buildPager($micropage, 1, $info['amount'], $delta, $curAttr, $tpl, 'micropager');
+        $tpl->add('micropager', $vars);
     }
 
     /**
@@ -1339,5 +1325,111 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             httpStatusCode('404 Not Found');
         }
         return $tpl->get();
+    }
+
+    /**
+     * 指定したマイクロページで会員限定ユニットが含まれているかどうか
+     * @param array{
+     *   type: string,
+     * }[] $units エントリーが持つ全てのユニットを含む配列
+     * @param int $summaryRange
+     * @param int $micropage
+     * @return bool
+     */
+    protected function containsMembersOnlyUnitOnMicroPage(array $units, int $summaryRange, int $micropage): bool
+    {
+        if ($summaryRange >= count($units)) {
+            // 会員限定記事のバーが最後の場合は、会員限定ユニットは含まれない（ページ内のユニットはすべて公開ユニット）
+            return false;
+        }
+
+        // 公開ユニット内の合計ページ数を取得
+        $publicPageAmount = 1;
+        foreach ($units as $i => $unit) {
+            if ($unit['type'] === 'break' && $i < $summaryRange) {
+                // 会員限定記事のバーより前のユニット（= 公開ユニット）の場合のみカウント
+                $publicPageAmount += 1;
+            }
+        }
+        // 公開ユニット内の合計ページ数が表示ページより大きい場合は、会員限定ユニットは含まれない（ページ内のユニットはすべて公開ユニット）
+        if ($publicPageAmount > $micropage) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * マイクロページの総ページ数をカウント
+     * @param array{
+     *   type: string,
+     * }[] $units
+     * @return int
+     */
+    protected function countMicroPageAmount(array $units): int
+    {
+        $page = 1;
+        foreach ($units as $unit) {
+            if ($unit['type'] === 'break') {
+                $page += 1;
+            }
+        }
+        return $page;
+    }
+
+    /**
+     * 指定したマイクロページに表示するユニットで絞り込んで取得
+     *
+     * @param array{
+     *  type: string,
+     * }[] $units
+     * @param int<1, max> $micropage マイクロページ番号
+     * @return array<string, mixed>[]
+     */
+    protected function filterUnitsByMicroPage(array $units, int $micropage): array
+    {
+        $filteredUnits = [];
+        $micropageCount = 1;
+        foreach ($units as $unit) {
+            if ($unit['type'] === 'break') {
+                $micropageCount += 1;
+            }
+            if ($micropageCount === $micropage) {
+                $filteredUnits[] = $unit;
+            }
+            if ($micropageCount > $micropage) {
+                break;
+            }
+        }
+
+        return $filteredUnits;
+    }
+
+    /**
+     * 指定したマイクロページを分割する改ページユニットを取得
+     *
+     * @param array{
+     *  type: string,
+     * }[] $units
+     * @param int<1, max> $micropage マイクロページ番号
+     * @return array<string, mixed>|null
+     */
+    protected function getBreakUnitOnMicroPage(array $units, int $micropage): ?array
+    {
+        $breakUnits = array_filter(
+            $units,
+            function ($unit) {
+                return $unit['type'] === 'break';
+            }
+        );
+        $micropageCount = 1;
+        foreach ($breakUnits as $breakUnit) {
+            if ($micropageCount === $micropage) {
+                return $breakUnit;
+            }
+            $micropageCount += 1;
+        }
+
+        return null;
     }
 }

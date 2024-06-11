@@ -2,32 +2,57 @@
 
 class SQL_Field extends SQL
 {
-    public $_field         = null;
-    public $_scope         = null;
+    /**
+     * @var SQL_Field|string|null
+     */
+    public $_field = null;
 
-    function setField($fd)
+    /**
+     * @var string|null
+     */
+    public $_scope = null;
+
+    /**
+     * @param SQL_Field|string $fd
+     * @return true
+     */
+    public function setField($fd)
     {
         $this->_field   = $fd;
         return true;
     }
 
-    function setScope($scp)
+    /**
+     * @param string|null $scp
+     * @return true
+     */
+    public function setScope($scp)
     {
         $this->_scope   = $scp;
         return true;
     }
 
-    function getField()
+    /**
+     * @return SQL_Field|string|null
+     */
+    public function getField()
     {
         return $this->_field;
     }
 
-    function getScope()
+    /**
+     * @return string|null
+     */
+    public function getScope()
     {
         return $this->_scope;
     }
 
-    function _field($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
+    protected function _field($dsn = null)
     {
         if (empty($this->_field)) {
             return false;
@@ -35,7 +60,10 @@ class SQL_Field extends SQL
         return (!empty($this->_scope) ? $this->_scope . '.' : '') . $this->_field;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         return $this->_field($dsn);
     }
@@ -43,21 +71,46 @@ class SQL_Field extends SQL
 
 class SQL_Field_Function extends SQL_Field
 {
-//    public $_function  = null;
+    /**
+     * @var array|null
+     */
     public $_args  = null;
 
-    function setFunction($args)
+    /**
+     * SQL関数を設定する。<br>
+     * 引数には、配列 or 文字列を指定する。<br>
+     * 配列の場合、最初の要素は関数名、それ以降は引数となる。<br>
+     * $sqlFunction->setField('entry_title');<br>
+     * $sqlFunction->setFunction(['SUBSTR', 0, 10]);<br>
+     * SUBSTR(entry_title, 0, 10)<br>
+     *
+     * 文字列の場合、その文字列が関数名として渡される<br>
+     * $sqlFunction->setField('entry_id');<br>
+     * $sqlFunction->setFunction('COUNT');<br>
+     * COUNT(entry_id)
+     *
+     * @param array|string|null $args
+     * @return true
+     */
+    public function setFunction($args)
     {
         $this->_args = is_array($args) ? $args : func_get_args();
         return true;
     }
 
-    function getFunction($func)
+    /**
+     * @return array|null
+     */
+    public function getFunction($func)
     {
         return $this->_args;
     }
 
-    function _function($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
+    protected function _function($dsn = null)
     {
         $q  = SQL::isClass($this->_field, 'SQL_Field') ?
             $this->_field->get($dsn) :
@@ -108,7 +161,7 @@ class SQL_Field_Function extends SQL_Field
         return $q;
     }
 
-    function get($dsn = null)
+    public function get($dsn = null)
     {
         return $this->_function($dsn);
     }
@@ -116,32 +169,57 @@ class SQL_Field_Function extends SQL_Field
 
 class SQL_Field_Operator extends SQL_Field_Function
 {
-    public $_value     = null;
+    /**
+     * @var SQL|array|string|int|float|null
+     */
+    public $_value = null;
+
+    /**
+     * @var string|null
+     */
     public $_operator  = null;
 
-    function setValue($val)
+    /**
+     * @param SQL|string|int|float|null $val
+     * @return true
+     */
+    public function setValue($val)
     {
         $this->_value = $val;
         return true;
     }
 
-    function getValue()
+    /**
+     * @return SQL|string|int|float|null
+     */
+    public function getValue()
     {
         return $this->_value;
     }
 
-    function setOperator($opr)
+    /**
+     * @param string $opr
+     * @return true
+     */
+    public function setOperator($opr)
     {
         $this->_operator = $opr;
         return true;
     }
 
-    function getOperator()
+    /**
+     * @return string|null
+     */
+    public function getOperator()
     {
         return $this->_operator;
     }
 
-    function _right($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
+    protected function _right($dsn = null)
     {
         $val    = $this->_value;
         $opr    = $this->_operator;
@@ -158,7 +236,11 @@ class SQL_Field_Operator extends SQL_Field_Function
         return ' ' . $opr . ' ' . $val;
     }
 
-    function _operator($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
+    protected function _operator($dsn = null)
     {
         $q  = '';
         $q  = SQL::isClass($this->_field, 'SQL_Field') ? $this->_field->get($dsn) : $this->_function($dsn);
@@ -172,7 +254,10 @@ class SQL_Field_Operator extends SQL_Field_Function
         return $q;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         return $this->_operator($dsn);
     }
@@ -180,21 +265,34 @@ class SQL_Field_Operator extends SQL_Field_Function
 
 class SQL_Field_Operator_In extends SQL_Field_Operator
 {
-//    function
+    /**
+     * @var bool
+     */
+    public $_not = false;
 
-    public $_not   = false;
-
-    function setNot($not)
+    /**
+     * NOT IN句を生成するかどうかを設定する。
+     *
+     * @param bool $not
+     * @return void
+     */
+    public function setNot($not)
     {
         $this->_not = $not;
     }
 
-    function getNot()
+    /**
+     * @return bool
+     */
+    public function getNot()
     {
         return $this->_not;
     }
 
-    function _right($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    protected function _right($dsn = null)
     {
         $q  = '';
         $ope    = $this->_not ? 'NOT IN' : 'IN';
@@ -202,7 +300,7 @@ class SQL_Field_Operator_In extends SQL_Field_Operator
             $q  = ' ' . $ope . ' (' . "\n"
                 . $this->_value->get($dsn)
             . "\n" . ')';
-        } elseif (!empty($this->_value) and is_array($this->_value)) {
+        } elseif (!empty($this->_value) && is_array($this->_value) && isset($dsn['charset'])) {
             $q  = ' ' . $ope . ' (';
             $isString   = is_string($this->_value[0]);
             foreach ($this->_value as $i => $val) {
@@ -219,21 +317,34 @@ class SQL_Field_Operator_In extends SQL_Field_Operator
 
 class SQL_Field_Operator_Exists extends SQL_Field_Operator
 {
-//    function
-
+    /**
+     * @var bool
+     */
     public $_not   = false;
 
-    function setNot($not)
+    /**
+     * NOT EXISTS句を生成するかどうかを設定する。
+     *
+     * @param bool $not
+     * @return void
+     */
+    public function setNot($not)
     {
         $this->_not = $not;
     }
 
-    function getNot()
+    /**
+     * @return bool
+     */
+    public function getNot()
     {
         return $this->_not;
     }
 
-    function _right($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    protected function _right($dsn = null)
     {
         $q  = '';
         $ope    = $this->_not ? 'NOT EXISTS' : 'EXISTS';
@@ -248,7 +359,10 @@ class SQL_Field_Operator_Exists extends SQL_Field_Operator
         return $q;
     }
 
-    function _operator($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    protected function _operator($dsn = null)
     {
         $q  = '';
 
@@ -259,51 +373,114 @@ class SQL_Field_Operator_Exists extends SQL_Field_Operator
     }
 }
 
+/**
+ * @template T of string|int|float|null
+ */
 class SQL_Field_Operator_Between extends SQL_Field_Operator
 {
+    /**
+     * @var T
+     */
     public $_a = null;
+
+    /**
+     * @var T
+     */
     public $_b = null;
 
-    function setBetween($a, $b)
+    /**
+     * 指定されたa, bからBETWEEN句を生成する。<br>
+     * $SQL->setBetween(10, 20);<br>
+     * BETWEEN 10 AND 20
+     * @param T $a
+     * @param T $b
+     * @return true
+     */
+    public function setBetween($a, $b)
     {
         $this->_a   = $a;
         $this->_b   = $b;
         return true;
     }
 
-    function getBetween()
+    /**
+     * @return T[]
+     */
+    public function getBetween()
     {
         return [$this->_a, $this->_b];
     }
 
-    function _right($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    protected function _right($dsn = null)
     {
-        if (empty($this->_a) or empty($this->_b)) {
+        if (empty($this->_a) || empty($this->_b)) {
             return false;
         }
-        return  ( is_string($this->_a) or is_string($this->_b) ) ?
+        return  (is_string($this->_a) || is_string($this->_b)) ?
             " BETWEEN " . DB::quote($this->_a) . " AND " . DB::quote($this->_b) :
         ' BETWEEN ' . $this->_a . ' AND ' . $this->_b;
     }
 }
 
-class SQL_Field_Case
+class SQL_Field_Case extends SQL_Field
 {
+    /**
+     * @var array{
+     *   when: SQL|string|int|float|null,
+     *   then: SQL|string|int|float|null
+     * }[]
+     */
     public $_cases     = [];
+
+    /**
+     * @var SQL|string|null
+     */
     public $_simple    = null;
+
+    /**
+     * @var SQL|string|int|null
+     */
     public $_else      = null;
 
-    function setSimple($exp)
+    /**
+     * 単純CASE式を設定する。<br>
+     * $case->setSimple('entry_status');<br>
+     * CASE entry_status
+     *
+     * @param SQL|string|null $exp
+     * @return void
+     */
+    public function setSimple($exp)
     {
         $this->_simple  = $exp;
     }
 
-    function setElse($exp)
+    /**
+     * ELSE句を設定する。<br>
+     * $case->setElse('draft');<br>
+     * ELSE 'draft'
+     *
+     * @param SQL|string|int|float|null $exp
+     * @return void
+     */
+    public function setElse($exp)
     {
         $this->_else    = $exp;
     }
 
-    function add($when, $then)
+    /**
+     * WHEN句とTHEN句を追加する。<br>
+     * $case->add(SQL::newOpr('entry_status', 1, '='), 'open');<br>
+     * WHEN entry_status = 1 THEN 'open'
+     *
+     * @param SQL|string|int|float|null $when
+     * @param SQL|string|int|float|null $then
+     * @return true
+     */
+    public function add($when, $then)
     {
         $this->_cases[] = [
             'when'  => $when,
@@ -311,7 +488,17 @@ class SQL_Field_Case
         ];
         return true;
     }
-    function set($when = null, $then = null)
+
+    /**
+     * WHEN句とTHEN句を設定する。<br>
+     * $case->add(SQL::newOpr('entry_status', 1, '='), 'open');<br>
+     * WHEN entry_status = 1 THEN 'open'
+     *
+     * @param SQL|string|int|float|null $when
+     * @param SQL|string|int|float|null $then
+     * @return true
+     */
+    public function set($when = null, $then = null)
     {
         $this->_cases   = [];
         if (!empty($when)) {
@@ -320,7 +507,11 @@ class SQL_Field_Case
         return true;
     }
 
-    function _case($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
+    protected function _case($dsn = null)
     {
         if (empty($this->_cases)) {
             return false;
@@ -353,7 +544,10 @@ class SQL_Field_Case
         return $q;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         return $this->_case($dsn);
     }
@@ -369,9 +563,19 @@ class SQL_Field_Case
  */
 class SQL_Where extends SQL
 {
+    /**
+     * @var array{
+     *   where: SQL|string|int,
+     *   glue: 'AND' | 'OR'
+     * }[]
+     */
     public $_wheres    = [];
 
-    function addWhere($w, $gl = 'AND')
+    /**
+     * @param SQL|string|int $w
+     * @param 'AND' | 'OR' $gl
+     */
+    public function addWhere($w, $gl = 'AND')
     {
         $this->_wheres[]    = [
             'where' => $w,
@@ -379,7 +583,12 @@ class SQL_Where extends SQL
         ];
         return true;
     }
-    function setWhere($w, $gl = 'AND')
+
+    /**
+     * @param SQL|string|int $w
+     * @param 'AND' | 'OR' $gl
+     */
+    public function setWhere($w, $gl = 'AND')
     {
         $this->_wheres  = [];
         if (!empty($w)) {
@@ -388,7 +597,19 @@ class SQL_Where extends SQL
         return true;
     }
 
-    function getWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
+    /**
+     * @param \SQL_Field|string $fd
+     * @param \SQL_Field|string|int|float|null $val
+     * @param string $opr
+     * @param 'AND' | 'OR' $gl
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return array{
+     *   where: \SQL_Field_Operator,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
@@ -408,7 +629,18 @@ class SQL_Where extends SQL
         ];
     }
 
-    function getWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
+    /**
+     * @param \SQL_Field|string $fd
+     * @param array|SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return array{
+     *   where: \SQL_Field_Operator_In,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
@@ -428,7 +660,18 @@ class SQL_Where extends SQL
         ];
     }
 
-    function getWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
+    /**
+     * @param \SQL_Field|string $fd
+     * @param array|SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return array{
+     *   where: \SQL_Field_Operator_In,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
@@ -448,7 +691,15 @@ class SQL_Where extends SQL
         ];
     }
 
-    function getWhereExists($vals, $gl = 'AND')
+    /**
+     * @param \SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @return array{
+     *   where: \SQL_Field_Operator_Exists,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereExists($vals, $gl = 'AND')
     {
         return [
             'where' => SQL::newOprExists($vals),
@@ -456,7 +707,15 @@ class SQL_Where extends SQL
         ];
     }
 
-    function getWhereNotExists($vals, $gl = 'AND')
+    /**
+     * @param \SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @return array{
+     *   where: \SQL_Field_Operator_Exists,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereNotExists($vals, $gl = 'AND')
     {
         return [
             'where' => SQL::newOprNotExists($vals),
@@ -464,7 +723,23 @@ class SQL_Where extends SQL
         ];
     }
 
-    function getWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
+    /**
+     * 指定されたfieldとa, bからBETWEEN句を生成する。<br>
+     * $SQL->addWhereBw('entry_id', 10, 20, 'AND', 'entry', 'count');<br>
+     * WHERE 1 AND COUNT(entry.entry_id) BETWEEN 10 AND 20
+     *
+     * @param \SQL_Field|string $fd
+     * @param string|int $a
+     * @param string|int $b
+     * @param 'AND' | 'OR' $gl
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return array{
+     *   where: \SQL_Field_Operator_Between,
+     *   glue: 'AND' | 'OR'
+     * }
+     */
+    public function getWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
             $F  = $fd;
@@ -489,15 +764,15 @@ class SQL_Where extends SQL
      * $SQL->addWhereOpr('entry_id', 10, '=', 'OR', 'entry', 'count');<br>
      * WHERE 0 OR COUNT(entry.entry_id) = 10
      *
-     * @param string $fd
-     * @param string|int $val
+     * @param \SQL_Field|string $fd
+     * @param \SQL_Field|string|int|float|null $val
      * @param string $opr
-     * @param string $gl
+     * @param 'AND' | 'OR' $gl
      * @param string|null $scp
-     * @param string|null $func
+     * @param array|string|null $func
      * @return bool
      */
-    function addWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
+    public function addWhereOpr($fd, $val, $opr = '=', $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereOpr($fd, $val, $opr, $gl, $scp, $func);
         return true;
@@ -508,14 +783,14 @@ class SQL_Where extends SQL
      * $SQL->addWhereIn('entry_id', array(10, 20, 30), 'AND', 'entry');<br>
      * WHERE 1 AND entry.entry_id IN (10, 29, 30)
      *
-     * @param string $fd
-     * @param array $vals
-     * @param string $gl
+     * @param \SQL_Field|string $fd
+     * @param array|SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
      * @param string|null $scp
-     * @param string|null $func
+     * @param array|string|null $func
      * @return bool
      */
-    function addWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
+    public function addWhereIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         if (empty($vals)) {
             $vals = [-100];
@@ -529,14 +804,14 @@ class SQL_Where extends SQL
      * $SQL->addWhereNotIn('entry_id', array(10, 20, 30), 'AND', 'entry');<br>
      * WHERE 1 AND entry.entry_id NOT IN (10, 29, 30)
      *
-     * @param string $fd
-     * @param array $vals
-     * @param string $gl
+     * @param \SQL_Field|string $fd
+     * @param array|SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
      * @param string|null $scp
-     * @param string|null $func
+     * @param array|string|null $func
      * @return bool
      */
-    function addWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
+    public function addWhereNotIn($fd, $vals, $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereNotIn($fd, $vals, $gl, $scp, $func);
         return true;
@@ -547,11 +822,11 @@ class SQL_Where extends SQL
      * $SQL->addWhereExists(SQL_SELECT);<br>
      * WHERE 1 AND EXISTS (SELECT * ...)
      *
-     * @param array $vals
-     * @param string $gl
-     * @return bool
+     * @param \SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @return true
      */
-    function addWhereExists($vals, $gl = 'AND')
+    public function addWhereExists($vals, $gl = 'AND')
     {
         $this->_wheres[]    = $this->getWhereExists($vals, $gl);
         return true;
@@ -562,11 +837,11 @@ class SQL_Where extends SQL
      * $SQL->addWhereExists(SQL_SELECT);<br>
      * WHERE 1 AND NOT EXISTS (SELECT * ...)
      *
-     * @param array $vals
-     * @param string $gl
-     * @return bool
+     * @param \SQL_Select $vals
+     * @param 'AND' | 'OR' $gl
+     * @return true
      */
-    function addWhereNotExists($vals, $gl = 'AND')
+    public function addWhereNotExists($vals, $gl = 'AND')
     {
         $this->_wheres[]    = $this->getWhereNotExists($vals, $gl);
         return true;
@@ -577,21 +852,25 @@ class SQL_Where extends SQL
      * $SQL->addWhereOpr('entry_id', 10, 20, 'AND', 'entry');<br>
      * WHERE 1 AND entry.entry_id BETWEEN 100 AND 200
      *
-     * @param string $fd
+     * @param \SQL_Field|string $fd
      * @param string|int $a
      * @param string|int $b
-     * @param string $gl
+     * @param 'AND' | 'OR' $gl
      * @param string|null $scp
-     * @param string|null $func
+     * @param array|string|null $func
      * @return bool
      */
-    function addWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
+    public function addWhereBw($fd, $a, $b, $gl = 'AND', $scp = null, $func = null)
     {
         $this->_wheres[]    = $this->getWhereBw($fd, $a, $b, $gl, $scp, $func);
         return true;
     }
 
-    function where($dsn = null)
+    /**
+     * @param Dsn|null $dsn
+     * @return string
+     */
+    protected function where($dsn = null)
     {
         $q  = '';
         if (!empty($this->_wheres)) {
@@ -613,7 +892,10 @@ class SQL_Where extends SQL
         return $q;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         return $this->where($dsn);
     }
@@ -628,20 +910,103 @@ class SQL_Where extends SQL
  */
 class SQL_Select extends SQL_Where
 {
+    /**
+     * @var array{
+     *  table: \SQL_Select|string,
+     *  alias: string|null
+     * }[]
+     */
     public $_tables = [];
+
+    /**
+     * @var array{
+     *  table: \SQL_Select|string,
+     *  a: \SQL_Field|string,
+     *  b: \SQL_Field|string,
+     *  where: \SQL_Where|null
+     * }[]
+     */
     public $_leftJoins = [];
+
+    /**
+     * @var array{
+     *  table: \SQL_Select|string,
+     *  a: string,
+     *  b: string,
+     *  als: string|null,
+     *  scp: string|null,
+     *  where: \SQL_Where|null
+     * }[]
+     */
     public $_innerJoins = [];
+
+    /**
+     * @var array{
+     *  field: \SQL_Field_Function,
+     *  alias: string|null
+     * }[]
+     */
     public $_selects = [];
+
+    /**
+     * @var array{
+     *  having: \SQL|string,
+     *  glue: 'AND'|'OR'
+     * }[]
+     */
     public $_havings = [];
+
+    /**
+     * @var \SQL_Field[]
+     */
     public $_groups = [];
+
+    /**
+     * @var array{
+     *   limit: int,
+     *   offset: int
+     * }|null
+     */
     public $_limit = null;
+
+    /**
+     * @var array{
+     *   order: 'ASC'|'DESC',
+     *   field: \SQL_Field
+     * }[]
+     */
     public $_orders = [];
+
+    /**
+     * @var array{
+     *   fd: \SQL_Field,
+     *   values: array
+     * }|null
+     */
     public $_fdOrders = null;
+
+    /**
+     * @deprecated 未使用のため非推奨
+     */
     public $_where = null;
+
+    /**
+     * @var \SQL_Select[]
+     */
     public $_union = [];
+
+    /**
+     * @var bool
+     */
     public $_straightJoin = false;
 
-    function addTable($tb, $als = null, $straight_join = false)
+    /**
+     * @param \SQL_Select|string $tb
+     * @param string|null $als
+     * @param bool $straight_join
+     * @return true
+     */
+    public function addTable($tb, $als = null, $straight_join = false)
     {
         $this->_straightJoin = $straight_join;
         $this->_tables[] = [
@@ -650,7 +1015,14 @@ class SQL_Select extends SQL_Where
         ];
         return true;
     }
-    function setTable($tb = null, $als = null, $straight_join = false)
+
+    /**
+     * @param \SQL_Select|string|null $tb
+     * @param string|null $als
+     * @param bool $straight_join
+     * @return true
+     */
+    public function setTable($tb = null, $als = null, $straight_join = false)
     {
         $this->_tables  = [];
         if (!empty($tb)) {
@@ -664,14 +1036,15 @@ class SQL_Select extends SQL_Where
      * $SQL->addLeftJoin('category', 'category_id', 'entry_category_id', 'category', 'entry');<br>
      * LEFT JOIN acms_category AS category ON category.category_id = entry.entry_category_id
      *
-     * @param string $tb
-     * @param string|int $a
-     * @param string|int $b
-     * @param string $aScp
-     * @param string $bScp
-     * @return bool
+     * @param \SQL_Select|string $tb
+     * @param \SQL_Field|string $a
+     * @param \SQL_Field|string $b
+     * @param string|null $aScp
+     * @param string|null $bScp
+     * @param \SQL_Where|null $where
+     * @return true
      */
-    function addLeftJoin($tb, $a, $b, $aScp = null, $bScp = null, $where = null)
+    public function addLeftJoin($tb, $a, $b, $aScp = null, $bScp = null, $where = null)
     {
         $A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         $B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
@@ -684,11 +1057,20 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function setLeftJoin($tb = null, $a = null, $b = null, $aScp = null, $bScp = null, $where = null)
+    /**
+     * @param \SQL_Select|string|null $tb
+     * @param \SQL_Field|string|null $a
+     * @param \SQL_Field|string|null $b
+     * @param string|null $aScp
+     * @param string|null $bScp
+     * @param \SQL_Where|null $where
+     * @return true
+     */
+    public function setLeftJoin($tb = null, $a = null, $b = null, $aScp = null, $bScp = null, $where = null)
     {
         $this->_leftJoins   = [];
-        if (!empty($tb) and !empty($a) and !empty($b)) {
-            $this->addLeftJoin($tb, $a, $b, $aScp, $bScp);
+        if (!empty($tb) && !empty($a) && !empty($b)) {
+            $this->addLeftJoin($tb, $a, $b, $aScp, $bScp, $where);
         }
         return true;
     }
@@ -698,14 +1080,15 @@ class SQL_Select extends SQL_Where
      * $SQL->addInnerJoin('category', 'category_id', 'entry_category_id', 'category', 'acms_entry');<br>
      * INNER JOIN acms_category AS category ON category.category_id = entry.entry_category_id
      *
-     * @param string $tb
-     * @param string|int $a
-     * @param string|int $b
-     * @param string $als
-     * @param string $scp
-     * @return bool
+     * @param \SQL_Select|string $tb
+     * @param string $a
+     * @param string $b
+     * @param string|null $als
+     * @param string|null $scp
+     * @param \SQL_Where|null $where
+     * @return true
      */
-    function addInnerJoin($tb, $a, $b, $als = null, $scp = null, $where = null)
+    public function addInnerJoin($tb, $a, $b, $als = null, $scp = null, $where = null)
     {
         //$A  = SQL::isClass($a, 'SQL_Field') ? $a : SQL::newField($a, $aScp);
         //$B  = SQL::isClass($b, 'SQL_Field') ? $b : SQL::newField($b, $bScp);
@@ -720,16 +1103,28 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function setInnerJoin($tb = null, $a = null, $b = null, $als = null, $scp = null)
+    /**
+     * @param \SQL_Select|string|null $tb
+     * @param string|null $a
+     * @param string|null $b
+     * @param string|null $als
+     * @param string|null $scp
+     * @return true
+     */
+    public function setInnerJoin($tb = null, $a = null, $b = null, $als = null, $scp = null)
     {
         $this->_innerJoins   = [];
-        if (!empty($tb) and !empty($a) and !empty($b)) {
+        if (!empty($tb) && !empty($a) && !empty($b)) {
             $this->addInnerJoin($tb, $a, $b, $als, $scp);
         }
         return true;
     }
 
-    function addUnion($select)
+    /**
+     * @param \SQL_Select $select
+     * @return void
+     */
+    public function addUnion($select)
     {
         $this->_union[] = $select;
     }
@@ -739,25 +1134,18 @@ class SQL_Select extends SQL_Where
      * $SQL->addSelect('entry_id', 'entry_count', 'acms_entry', 'count');<br>
      * SELECT COUNT(acms_entry.entry_id) AS entry_count
      *
-     * @param string $fd
-     * @param string $als
-     * @param string $scp
-     * @param string $func
-     * @return bool
+     * @param SQL_Field|string $fd
+     * @param string|null $als
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return true
      */
-    function addSelect($fd, $als = null, $scp = null, $func = null)
+    public function addSelect($fd, $als = null, $scp = null, $func = null)
     {
-//        if ( SQL::isClass($fd, 'SQL_Field_Function') ) {
-//            $F  = $fd;
-//        } else if ( SQL::isClass($fd, 'SQL_Field') ) {
-//            $F  = new SQL_Field_Function($fd);
-//            $F->setFunction($func);
-//        } else {
-            $F  = new SQL_Field_Function();
-            $F->setField($fd);
-            $F->setScope($scp);
-            $F->setFunction($func);
-//        }
+        $F  = new SQL_Field_Function();
+        $F->setField($fd);
+        $F->setScope($scp);
+        $F->setFunction($func);
 
         $this->_selects[]   = [
             'field' => $F,
@@ -765,7 +1153,15 @@ class SQL_Select extends SQL_Where
         ];
         return true;
     }
-    function setSelect($fd = null, $als = null, $scp = null, $func = null)
+
+    /**
+     * @param SQL_Field|string|null $fd
+     * @param string|null $als
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return true
+     */
+    public function setSelect($fd = null, $als = null, $scp = null, $func = null)
     {
         $this->_selects = [];
         if (!empty($fd)) {
@@ -774,7 +1170,15 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function addGeoDistance($fd, $lat, $lng, $als = null, $scp = null)
+    /**
+     * @param string $fd
+     * @param float $lat
+     * @param float $lng
+     * @param string|null $als
+     * @param string|null $scp
+     * @return true
+     */
+    public function addGeoDistance($fd, $lat, $lng, $als = null, $scp = null)
     {
         $select = "ROUND(" . G_LENGTH . "(" . GEOM_FROM_TEXT . "(CONCAT('LineString($lat $lng, ', " . POINT_X . "($fd),  ' ', " . POINT_Y . "($fd),')'))) * 111000)";
         $this->addSelect($select, $als, $scp);
@@ -789,11 +1193,11 @@ class SQL_Select extends SQL_Where
      * $SQL->addHaving('entry_id > 5', 'AND');<br>
      * HAVING ( 1 AND entry_id > 5 )
      *
-     * @param string $h
-     * @param string $gl
-     * @return bool
+     * @param \SQL|string $h
+     * @param 'AND'|'OR' $gl
+     * @return true
      */
-    function addHaving($h, $gl = 'AND')
+    public function addHaving($h, $gl = 'AND')
     {
         $this->_havings[]   = [
             'having'    => $h,
@@ -801,7 +1205,13 @@ class SQL_Select extends SQL_Where
         ];
         return true;
     }
-    function setHaving($h = null, $gl = 'AND')
+
+    /**
+     * @param \SQL|string|null $h
+     * @param 'AND'|'OR' $gl
+     * @return true
+     */
+    public function setHaving($h = null, $gl = 'AND')
     {
         $this->_havings = [];
         if (!empty($h)) {
@@ -815,18 +1225,24 @@ class SQL_Select extends SQL_Where
      * $SQL->addGroup('blog_id', 'acms_blog');<br>
      * GROUP BY acms_blog.blog_id
      *
-     * @param string $fd
-     * @param string $scp
-     * @return bool
+     * @param \SQL_Field|string $fd
+     * @param string|null $scp
+     * @return true
      */
-    function addGroup($fd, $scp = null)
+    public function addGroup($fd, $scp = null)
     {
         $this->_groups[]    =
             SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp)
         ;
         return true;
     }
-    function setGroup($fd = null, $scp = null)
+
+    /**
+     * @param \SQL_Field|string|null $fd
+     * @param string|null $scp
+     * @return true
+     */
+    public function setGroup($fd = null, $scp = null)
     {
         $this->_groups  = [];
         if (!empty($fd)) {
@@ -844,7 +1260,7 @@ class SQL_Select extends SQL_Where
      * @param int $off
      * @return bool
      */
-    function setLimit($lmt, $off = 0)
+    public function setLimit($lmt, $off = 0)
     {
         $this->_limit   = [
             'limit'     => intval($lmt),
@@ -853,7 +1269,17 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function addOrder($fd, $ord = 'ASC', $scp = null)
+    /**
+     * 指定されたfieldでORDER BY句を生成する<br>
+     * $SQL->addOrder('entry_id', 'ASC', 'acms_entry');<br>
+     * ORDER BY acms_entry.entry_id ASC
+     *
+     * @param \SQL_Field|string $fd
+     * @param 'ASC'|'DESC'|'asc'|'desc' $ord
+     * @param string|null $scp
+     * @return true
+     */
+    public function addOrder($fd, $ord = 'ASC', $scp = null)
     {
         $this->_orders[]    = [
             'order' => (strtoupper($ord) == 'ASC') ? 'ASC' : 'DESC',
@@ -867,12 +1293,12 @@ class SQL_Select extends SQL_Where
      * $SQL->setOrder('entry_id', 'ASC', 'acms_entry');<br>
      * LIMIT 10, 30
      *
-     * @param string|null $fd
-     * @param string $ord
+     * @param \SQL_Field|string|null $fd
+     * @param 'ASC'|'DESC'|'asc'|'desc' $ord
      * @param string|null $scp
-     * @return bool
+     * @return true
      */
-    function setOrder($fd = null, $ord = 'ASC', $scp = null)
+    public function setOrder($fd = null, $ord = 'ASC', $scp = null)
     {
         $this->_orders  = [];
         if (!empty($fd)) {
@@ -881,7 +1307,13 @@ class SQL_Select extends SQL_Where
         return true;
     }
 
-    function setFieldOrder($fd = null, $values = [], $scp = null)
+    /**
+     * @param \SQL_Field|string|null $fd
+     * @param array $values
+     * @param string|null $scp
+     * @return void
+     */
+    public function setFieldOrder($fd = null, $values = [], $scp = null)
     {
         $this->_fdOrders    = [
             'fd'        => SQL::isClass($fd, 'SQL_Field') ? $fd : SQL::newField($fd, $scp),
@@ -889,7 +1321,10 @@ class SQL_Select extends SQL_Where
         ];
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_tables)) {
             return false;
@@ -988,7 +1423,7 @@ class SQL_Select extends SQL_Where
         // union
         $q  .= "\n ";
         foreach ($this->_union as $val) {
-            if (SQL::isClass($val, 'SQL_Select')) {
+            if (SQL::isClass($val, 'SQL_Select')) { // @phpstan-ignore-line
                 $q .= "UNION (\n" . $val->get($dsn);
                 $q .= "\n)";
             }
@@ -1064,8 +1499,15 @@ class SQL_Select extends SQL_Where
  */
 class SQL_Insert extends SQL
 {
-    public $_insert    = null;
-    public $_table     = null;
+    /**
+     * @var array<string, \SQL_Field_Function|string|int|float|null>|\SQL_Select|null
+     */
+    public $_insert = null;
+
+    /**
+     * @var string|null
+     */
+    public $_table = null;
 
     /**
      * 指定されたfieldにINSERT句を生成する。<br>
@@ -1073,10 +1515,10 @@ class SQL_Insert extends SQL
      * INSERT INTO acms_entry (entry_code) VALUES ('abc')
      *
      * @param string $fd
-     * @param string|int $val
+     * @param \SQL_Field_Function|string|int|float|null $val
      * @return bool
      */
-    function addInsert($fd, $val)
+    public function addInsert($fd, $val)
     {
         if (!is_string($fd)) {
             return false;
@@ -1084,7 +1526,14 @@ class SQL_Insert extends SQL
         $this->_insert[$fd] = $val;
         return true;
     }
-    function setInsert($fd = null, $val = null)
+
+    /**
+     * @deprecated 未使用のため非推奨（あとメンテナンスもされていない）
+     * @param \SQL_Select|string|null $fd
+     * @param \SQL_Field_Function|string|int|float|null $val
+     * @return bool
+     */
+    public function setInsert($fd = null, $val = null)
     {
         if (SQL::isClass($fd, 'SQL_Select')) {
             $this->_insert = $fd;
@@ -1099,12 +1548,19 @@ class SQL_Insert extends SQL
         return true;
     }
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     * @return void
+     */
+    public function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_table)) {
             return false;
@@ -1155,8 +1611,15 @@ class SQL_Insert extends SQL
  */
 class SQL_Replace extends SQL
 {
-    public $_replace    = null;
-    public $_table     = null;
+    /**
+     * @var array<string, string|int|float|null>|\SQL_Select|null
+     */
+    public $_replace = null;
+
+    /**
+     * @var string|null
+     */
+    public $_table = null;
 
     /**
      * 指定されたfieldにREPLACE句を生成する。<br>
@@ -1164,10 +1627,10 @@ class SQL_Replace extends SQL
      * REPLACE INTO acms_entry (entry_code) VALUES ('abc')
      *
      * @param string $fd
-     * @param string|int $val
+     * @param string|int|float|null $val
      * @return bool
      */
-    function addReplace($fd, $val)
+    public function addReplace($fd, $val)
     {
         if (!is_string($fd)) {
             return false;
@@ -1175,7 +1638,14 @@ class SQL_Replace extends SQL
         $this->_replace[$fd] = $val;
         return true;
     }
-    function setReplace($fd = null, $val = null)
+
+    /**
+     * @deprecated 未使用のため非推奨（あとメンテナンスもされていない）
+     * @param \SQL_Select|string|null $fd
+     * @param string|int|float|null $val
+     * @return bool
+     */
+    public function setReplace($fd = null, $val = null)
     {
         if (SQL::isClass($fd, 'SQL_Select')) {
             $this->_replace = $fd;
@@ -1190,12 +1660,19 @@ class SQL_Replace extends SQL
         return true;
     }
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     * @return void
+     */
+    public function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_table)) {
             return false;
@@ -1244,7 +1721,14 @@ class SQL_Replace extends SQL
  */
 class SQL_Update extends SQL_Where
 {
+    /**
+     * @var array<string, \SQL|string|int|float|null>|null
+     */
     public $_update    = [];
+
+    /**
+     * @var string|null
+     */
     public $_table     = null;
 
     /**
@@ -1253,10 +1737,10 @@ class SQL_Update extends SQL_Where
      * UPDATE acms_entry SET entry_code = 'abc'
      *
      * @param string $fd
-     * @param string|int $val
+     * @param \SQL|string|int|float|null $val
      * @return bool
      */
-    function addUpdate($fd, $val)
+    public function addUpdate($fd, $val)
     {
         if (!is_string($fd)) {
             return false;
@@ -1265,7 +1749,12 @@ class SQL_Update extends SQL_Where
         return true;
     }
 
-    function setUpdate($fd = null, $val = null)
+    /**
+     * @param string|null $fd
+     * @param \SQL|string|int|float|null $val
+     * @return true
+     */
+    public function setUpdate($fd = null, $val = null)
     {
         $this->_update  = [];
         if (!empty($fd)) {
@@ -1274,12 +1763,19 @@ class SQL_Update extends SQL_Where
         return true;
     }
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     * @return void
+     */
+    public function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_table)) {
             return false;
@@ -1326,8 +1822,19 @@ class SQL_Update extends SQL_Where
  */
 class SQL_InsertOrUpdate extends SQL_Insert
 {
+    /**
+     * @var array<string, SQL_Field_Function|string|int|float|null>|\SQL_Select|null
+     */
     public $_insert    = null;
+
+    /**
+     * @var array<string, \SQL|string|int|float|null>|null
+     */
     public $_update    = null;
+
+    /**
+     * @var string|null
+     */
     public $_table     = null;
 
     /**
@@ -1336,10 +1843,10 @@ class SQL_InsertOrUpdate extends SQL_Insert
      * ... ON DUPLICATE KEY UPDATE entry_code = 'abc'
      *
      * @param string $fd
-     * @param string|int $val
+     * @param \SQL|string|int|float|null $val
      * @return bool
      */
-    function addUpdate($fd, $val)
+    public function addUpdate($fd, $val)
     {
         if (!is_string($fd)) {
             return false;
@@ -1348,7 +1855,12 @@ class SQL_InsertOrUpdate extends SQL_Insert
         return true;
     }
 
-    function setUpdate($fd = null, $val = null)
+    /**
+     * @param string|null $fd
+     * @param \SQL|string|int|float|null $val
+     * @return true
+     */
+    public function setUpdate($fd = null, $val = null)
     {
         $this->_update  = [];
         if (!empty($fd)) {
@@ -1357,12 +1869,19 @@ class SQL_InsertOrUpdate extends SQL_Insert
         return true;
     }
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     * @return void
+     */
+    public function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_table)) {
             return false;
@@ -1384,7 +1903,7 @@ class SQL_InsertOrUpdate extends SQL_Insert
                 $fds[] = $fd;
                 if (is_null($val)) {
                     $val    = 'NULL';
-                } elseif (is_string($val)) {
+                } elseif (is_string($val) && isset($dsn['charset'])) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                     $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ? DB::quote($_val) : '0x' . bin2hex($val)
                     ;
@@ -1408,7 +1927,7 @@ class SQL_InsertOrUpdate extends SQL_Insert
                     $val    = 'NULL';
                 } elseif (SQL::isClass($val, 'SQL')) {
                     $val    = "(\n" . $val->get($dsn) . "\n)";
-                } elseif (is_string($val)) {
+                } elseif (is_string($val) && isset($dsn['charset'])) {
                     $_val   = mb_convert_encoding($val, $dsn['charset'], 'UTF-8');
                     $val    = ($val === mb_convert_encoding($_val, 'UTF-8', $dsn['charset'])) ?
                         DB::quote($_val) : '0x' . bin2hex($val)
@@ -1433,14 +1952,23 @@ class SQL_InsertOrUpdate extends SQL_Insert
  */
 class SQL_Delete extends SQL_Where
 {
+    /**
+     * @var string|null
+     */
     public $_table  = null;
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     */
+    public function setTable($tb)
     {
         $this->_table   = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_table)) {
             return false;
@@ -1468,14 +1996,23 @@ class SQL_Delete extends SQL_Where
  */
 class SQL_ShowTable extends SQL
 {
+    /**
+     * @var string|null
+     */
     public $_table  = null;
 
-    function setTable($tb)
+    /**
+     * @param string $tb
+     */
+    public function setTable($tb)
     {
         $this->_table = $tb;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         $tbPfx = !empty($dsn['prefix']) ? $dsn['prefix'] : '';
 
@@ -1497,36 +2034,70 @@ class SQL_ShowTable extends SQL
  */
 class SQL_Sequence extends SQL
 {
+    /**
+     * @var 'nextval'|'currval'|'setval'|'optimize'
+     */
     public $_method    = 'nextval';
+
+    /**
+     * @var string|null
+     */
     public $_sequence  = null;
+
+    /**
+     * @var int|null
+     */
     public $_value     = null;
+
+    /**
+     * @var bool
+     */
     public $_plugin    = false;
 
-    function setSequence($seq)
+    /**
+     * @param string $seq
+     * @return true
+     */
+    public function setSequence($seq)
     {
         $this->_sequence    = $seq;
         return true;
     }
 
-    function setMethod($method)
+    /**
+     * @param 'nextval'|'currval'|'setval'|'optimize' $method
+     * @return true
+     */
+    public function setMethod($method)
     {
         $this->_method  = $method;
         return true;
     }
 
-    function setValue($val)
+    /**
+     * @param int $val
+     * @return true
+     */
+    public function setValue($val)
     {
         $this->_value   = $val;
         return true;
     }
 
-    function setPluginFlag($plugin)
+    /**
+     * @param bool $plugin
+     * @return true
+     */
+    public function setPluginFlag($plugin)
     {
         $this->_plugin  = $plugin;
         return true;
     }
 
-    function get($dsn = null)
+    /**
+     * @inheritDoc
+     */
+    public function get($dsn = null)
     {
         if (empty($this->_sequence)) {
             return false;
@@ -1621,6 +2192,9 @@ class SQL_Binary
  */
 class SQL
 {
+    /**
+     * @param SQL|null $SQL
+     */
     public function __construct($SQL = null)
     {
         if (SQL::isClass($SQL, 'SQL')) {
@@ -1630,11 +2204,25 @@ class SQL
         }
     }
 
+    /**
+     * SQLクエリを生成する。<br />
+     * 失敗した場合はfalseを返す。
+     * @param Dsn|null $dsn
+     * @return string|false
+     */
     public function get($dsn = null)
     {
         throw new Exception('SQL::get() is not implemented.');
     }
 
+    /**
+     * 第一引数の値が特定の クラス のオブジェクトのインスタンスであるかどうかを判定
+     * @template T of object
+     * @param mixed $obj
+     * @param class-string<T> $className
+     * @return bool
+     * @phpstan-assert-if-true T $obj
+     */
     public static function isClass(&$obj, $className)
     {
         return (1
@@ -1643,6 +2231,13 @@ class SQL
         );
     }
 
+    /**
+     * SQL_Sequenceオブジェクトを生成する
+     * @param string $seq シーケンス名 例: entry_id, blog_id, category_id, user_id
+     * @param 'nextval'|'currval'|'setval'|'optimize' $method メソッド名 例: nextval, currval, setval, optimize
+     * @param int|null $val
+     * @return SQL_Sequence
+     */
     public static function newSeq($seq, $method = 'nextval', $val = null)
     {
         $Obj    = new SQL_Sequence();
@@ -1659,9 +2254,9 @@ class SQL
      *
      * @static
      * @param string|SQL_Sequence $seq
-     * @param null $dsn
+     * @param Dsn|null $dsn
      * @param bool $plugin
-     * @return int
+     * @return string
      */
     public static function optimizeSeq($seq, $dsn = null, $plugin = false)
     {
@@ -1684,8 +2279,8 @@ class SQL
      *
      * @static
      * @param string|SQL_Sequence $seq
-     * @param null $dsn
-     * @return int
+     * @param Dsn|null $dsn
+     * @return string
      */
     public static function nextval($seq, $dsn = null, $plugin = false)
     {
@@ -1708,8 +2303,9 @@ class SQL
      *
      * @static
      * @param string|SQL_Sequence $seq
-     * @param null $dsn
-     * @return int
+     * @param Dsn|null $dsn
+     * @param bool $plugin
+     * @return string
      */
     public static function currval($seq, $dsn = null, $plugin = false)
     {
@@ -1732,8 +2328,10 @@ class SQL
      *
      * @static
      * @param string|SQL_Sequence $seq
-     * @param null $dsn
-     * @return int
+     * @param int $val
+     * @param Dsn|null $dsn
+     * @param bool $plugin
+     * @return string
      */
     public static function setval($seq, $val, $dsn = null, $plugin = false)
     {
@@ -1750,6 +2348,15 @@ class SQL
         return $Seq->get($dsn);
     }
 
+    /**
+     * SQL_Fieldオブジェクトを生成する<br>
+     * SQL::newField('entry_title', 'entry')<br>
+     * entry.entry_title
+     *
+     * @param SQL_Field|string $fd
+     * @param string|null $scp
+     * @return SQL_Field
+     */
     public static function newField($fd, $scp = null)
     {
         $Obj    = new SQL_Field();
@@ -1758,6 +2365,21 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * 関数を生成するためのSQL_Field_Functionオブジェクトを生成する<br>
+     * $funcに配列を指定すると、添字0を関数名、添字1以降を関数の引数として渡される<br>
+     * SQL::newFunction('entry_title', ['SUBSTR', 0, 10])<br>
+     * SUBSTR(entry_title, 0, 10)<br>
+     *
+     * $funcに文字列を指定すると、その文字列が関数名として渡される<br>
+     * SQL::newFunction('entry_id', 'COUNT')<br>
+     * COUNT(entry_id)
+     *
+     * @param SQL_Field|string|null $fd
+     * @param array|string|null $func
+     * @param string|null $scp
+     * @return SQL_Field_Function
+     */
     public static function newFunction($fd, $func = null, $scp = null)
     {
         $Obj    = new SQL_Field_Function();
@@ -1767,6 +2389,13 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * SQLのGeometry関数を作成するためのSQL_Field_Functionオブジェクトを生成する
+     * @param float $lat
+     * @param float $lng
+     * @param string|null $scp
+     * @return SQL_Field_Function
+     */
     public static function newGeometry($lat, $lng, $scp = null)
     {
         $fd     = '\'POINT(' . $lng . ' ' . $lat . ')\'';
@@ -1777,6 +2406,17 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * 演算子を生成するためのSQL_Field_Operatorオブジェクトを生成する<br>
+     * SQL::newOpr('entry_id', 1, '>')<br>
+     * entry_id > 1
+     *
+     * @param string|SQL_Field $fd
+     * @param SQL_Field|string|int|float|null $val
+     * @param string $opr
+     * @param string|null $scp
+     * @param array|string|null $func
+     */
     public static function newOpr($fd, $val = null, $opr = '=', $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
@@ -1796,6 +2436,17 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * IN演算子を作成するためのSQL_Field_Operator_Inオブジェクトを生成する<br>
+     * SQL::newOprIn('entry_id', [1, 2, 3, 4, 5])<br>
+     * entry_id IN (1, 2, 3, 4, 5)
+     *
+     * @param string|SQL_Field $fd
+     * @param array|SQL_Select $val
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return SQL_Field_Operator_In
+     */
     public static function newOprIn($fd, $val, $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
@@ -1814,6 +2465,17 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * NOT IN演算子を作成するためのSQL_Field_Operator_Inオブジェクトを生成する<br>
+     * SQL::newOprNotIn('entry_id', [1, 2, 3, 4, 5])<br>
+     * entry_id NOT IN (1, 2, 3, 4, 5)
+     *
+     * @param string|SQL_Field $fd
+     * @param array|SQL_Select $val
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return SQL_Field_Operator_In
+     */
     public static function newOprNotIn($fd, $val, $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
@@ -1833,6 +2495,15 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * EXISTS演算子を作成するためのSQL_Field_Operator_Existsオブジェクトを生成する<br>
+     * SQL::newOprExists(SQL::newSelect('entry'))<br>
+     * EXISTS (SELECT * FROM acms_entry)
+     *
+     * @param \SQL_Select $val
+     * @param string|null $scp
+     * @return SQL_Field_Operator_Exists
+     */
     public static function newOprExists($val, $scp = null)
     {
         $Obj = new SQL_Field_Operator_Exists();
@@ -1842,6 +2513,15 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * NOT EXISTS演算子を作成するためのSQL_Field_Operator_Existsオブジェクトを生成する <br>
+     * SQL::newOprExists(SQL::newSelect('entry'))<br>
+     * NOT EXISTS (SELECT * FROM acms_entry)
+     *
+     * @param \SQL_Select $val
+     * @param string|null $scp
+     * @return SQL_Field_Operator_Exists
+     */
     public static function newOprNotExists($val, $scp = null)
     {
         $Obj = new SQL_Field_Operator_Exists();
@@ -1851,6 +2531,19 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * BETWEEN演算子を作成するためのSQL_Field_Operator_Betweenオブジェクトを生成する<br>
+     * SQL::newOprBw('entry_id', 1, 10)<br>
+     * entry_id BETWEEN 1 AND 10
+     *
+     * @template T of string|int|float|null
+     * @param string|SQL_Field $fd
+     * @param T $a 文字列（日付型の文字列）または数値
+     * @param T $b 文字列（日付型の文字列）または数値
+     * @param string|null $scp
+     * @param array|string|null $func
+     * @return SQL_Field_Operator_Between<T>
+     */
     public static function newOprBw($fd, $a, $b, $scp = null, $func = null)
     {
         if (SQL::isClass($fd, 'SQL_Field_Function')) {
@@ -1866,9 +2559,26 @@ class SQL
         }
         $Obj->setBetween($a, $b);
 
+        /** @var SQL_Field_Operator_Between<T> $Obj */
         return $Obj;
     }
 
+    /**
+     * CASE文を作成するためのSQL_Field_Caseオブジェクトを生成する <br />
+     * $case = SQL::newCase();<br>
+     * $case->add(SQL::newOpr('entry_status', 'draft' '='), '下書き');<br>
+     * $case->add(SQL::newOpr('entry_status', 'open' '='), '公開');<br>
+     * $case->add(SQL::newOpr('entry_status', 'close' '='), '非公開');<br>
+     * $case->setElse('下書き');<br>
+     * CASE<br>
+     *   WHEN entry_status = 'draft' THEN '下書き'<br>
+     *   WHEN entry_status = 'open' THEN '公開'<br>
+     *   WHEN entry_status = 'close' THEN '非公開'<br>
+     *   ELSE '下書き'
+     *
+     * @param SQL|string|null $simple 単純CASE文を作成する場合はSQLオブジェクトまたは文字列を指定する
+     * @return SQL_Field_Case
+     */
     public static function newCase($simple = null)
     {
         $Obj    = new SQL_Field_Case();
@@ -1876,6 +2586,10 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * WHERE句を生成するためのSQL_Whereオブジェクトを生成する
+     * @return SQL_Where
+     */
     public static function newWhere()
     {
         $Obj    = new SQL_Where();
@@ -1886,8 +2600,9 @@ class SQL
      * TABLEを指定してSELECT句を生成する為のSQL_Selectを返す
      *
      * @static
-     * @param string|null $tb
+     * @param \SQL_Select|string|null $tb
      * @param string|null $als
+     * @param bool $straight_join
      * @return SQL_Select
      */
     public static function newSelect($tb = null, $als = null, $straight_join = false)
@@ -1980,6 +2695,15 @@ class SQL
         return $Obj;
     }
 
+    /**
+     * Where句を指定してDelete句を生成する為のSQL文を返す
+     *
+     * @deprecated 未使用のため非推奨
+     * @param string|null $tb
+     * @param \SQL_Where|null $w
+     * @param Dsn|null $dsn
+     * @return string
+     */
     public static function delete($tb, $w = null, $dsn = null)
     {
         $Obj    = SQL::newDelete($tb);
@@ -1989,6 +2713,11 @@ class SQL
         return $Obj->get($dsn);
     }
 
+    /**
+     * TABLEを指定してSHOW TABLE句を生成する為のSQL_ShowTableを返す
+     * @param string|null $tb
+     * @return SQL_ShowTable
+     */
     public static function showTable($tb = null)
     {
         $obj = new SQL_ShowTable();

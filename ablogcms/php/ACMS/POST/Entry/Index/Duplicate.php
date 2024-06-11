@@ -2,7 +2,7 @@
 
 class ACMS_POST_Entry_Index_Duplicate extends ACMS_POST_Entry_Duplicate
 {
-    function post()
+    public function post()
     {
         $this->Post->reset(true);
         $this->Post->setMethod('entry', 'operative', sessionWithContribution());
@@ -13,7 +13,7 @@ class ACMS_POST_Entry_Index_Duplicate extends ACMS_POST_Entry_Duplicate
             $targetEIDs = [];
             foreach ($this->Post->getArray('checks') as $eid) {
                 $id = preg_split('@:@', $eid, 2, PREG_SPLIT_NO_EMPTY);
-                $eid = $id[1];
+                $eid = intval($id[1]);
                 if (!$this->validate($eid)) {
                     continue;
                 }

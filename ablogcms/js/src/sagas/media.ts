@@ -1,9 +1,7 @@
-import axios from 'axios';
-import {
-  call, put, takeEvery, select,
-} from 'redux-saga/effects';
+import { call, put, takeEvery, select } from 'redux-saga/effects'
+import axiosLib from '../lib/axios'
 
-import * as types from '../constants/media';
+import * as types from '../constants/media'
 import {
   setMediaList,
   setMediaLargeSize,
@@ -14,14 +12,14 @@ import {
   setMediaTotal,
   setLoading,
   setMediaExtensions,
-} from '../actions/media';
+} from '../actions/media'
 
 function fetchJSON(url) {
   return new Promise((resolve) => {
-    axios.get(url).then((res) => {
-      resolve(res.data);
-    });
-  });
+    axiosLib.get(url).then((res) => {
+      resolve(res.data)
+    })
+  })
 }
 
 function* fetchTagList() {
@@ -31,14 +29,14 @@ function* fetchTagList() {
       tpl: 'ajax/edit/media-tag.json',
     },
     false,
-  );
-  const data = yield call(fetchJSON, url);
-  yield put(setMediaTags(data));
+  )
+  const data = yield call(fetchJSON, url)
+  yield put(setMediaTags(data))
 }
 
 function* fetchMediaList({ config = {} }) {
-  const state = yield select();
-  const setting = { ...state.config, ...config };
+  const state = yield select()
+  const setting = { ...state.config, ...config }
   const url = ACMS.Library.acmsLink(
     {
       tpl: 'ajax/edit/media.json',
@@ -59,36 +57,36 @@ function* fetchMediaList({ config = {} }) {
       },
     },
     false,
-  );
-  yield put(setLoading(true));
-  yield put(setLoading(false));
-  const data = yield call(fetchJSON, url);
-  const { items } = data;
+  )
+  yield put(setLoading(true))
+  yield put(setLoading(false))
+  const data = yield call(fetchJSON, url)
+  const { items } = data
   const newItems = items.map((item) => {
     const find = state.items.find((stateItem) => {
       if (item.media_id === stateItem.media_id) {
-        return true;
+        return true
       }
-      return false;
-    });
+      return false
+    })
     if (find) {
-      return { ...item, checked: find.checked };
+      return { ...item, checked: find.checked }
     }
-    return item;
-  });
-  yield put(setMediaList(newItems));
-  yield put(setMediaLastPage(data.pageAmount));
-  yield put(setMediaTotal(data.total));
-  yield put(setMediaLargeSize(data.largeSize));
-  yield put(setMediaArchives(data.archives));
-  yield put(setMediaTags(data.tags));
-  yield put(setMediaExtensions(data.extensions));
+    return item
+  })
+  yield put(setMediaList(newItems))
+  yield put(setMediaLastPage(data.pageAmount))
+  yield put(setMediaTotal(data.total))
+  yield put(setMediaLargeSize(data.largeSize))
+  yield put(setMediaArchives(data.archives))
+  yield put(setMediaTags(data.tags))
+  yield put(setMediaExtensions(data.extensions))
   if (config) {
-    yield put(setMediaConfig(config));
+    yield put(setMediaConfig(config))
   }
 }
 
 export default function* rootSaga() {
-  yield takeEvery(types.FETCHMEDIALIST, fetchMediaList);
-  yield takeEvery(types.FETCHTAGLIST, fetchTagList);
+  yield takeEvery(types.FETCHMEDIALIST, fetchMediaList)
+  yield takeEvery(types.FETCHTAGLIST, fetchTagList)
 }

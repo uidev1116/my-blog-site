@@ -86,6 +86,12 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
             $tags = Media::getMediaLabel($mid);
             $json = Media::buildJson($mid, $data, $tags, BID);
             $json['status'] = 'success';
+
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('saveMedia', [$mid, 'insert', isset($_FILES[$this->uploadFieldName])]);
+            }
+
             Common::responseJson($json);
         } catch (\Exception $e) {
             AcmsLogger::info('新しいメディアとして作成に失敗しました。' . $e->getMessage(), Common::exceptionArray($e, ['mid' => $mid, 'data' => $data]));

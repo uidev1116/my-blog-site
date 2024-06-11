@@ -2,25 +2,25 @@
 
 namespace Acms\Services\Storage\Contracts;
 
-use Config;
-
 abstract class Base
 {
     /**
-     * @var int
-     */
-    protected $fileMod = 438; // ( 0666 = 438 | 0644 = 420 | 0604 = 388)
-
-    /**
      * @var int $directoryMod
      */
-    protected $directoryMod = 511; // ( 0777 = 511 | 0755 = 493 | 0705 = 453)
+    protected $directoryMod = 0;
+
+    /**
+     * @var int
+     */
+    protected $fileMod = 0;
 
     /**
      * Base constructor
      */
     public function __construct()
     {
+        $this->directoryMod = (0775 & ~ umask());
+        $this->fileMod = (0664 & ~ umask());
     }
 
     /**

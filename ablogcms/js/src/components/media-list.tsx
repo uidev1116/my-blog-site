@@ -1,7 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
 import RangeSlider from 'rc-slider'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import * as FreeStyle from 'free-style'
 import Select, { Creatable } from './react-select-styled'
@@ -9,6 +8,7 @@ import 'rc-slider/assets/index.css'
 import 'react-select/dist/react-select.css'
 
 import { MediaItem, MediaAjaxConfig } from '../types/media'
+import axiosLib from '../lib/axios'
 import { getFileName, formatBytes } from '../lib/utility'
 import { parseQuery } from '../utils'
 import { findAncestor } from '../lib/dom'
@@ -214,7 +214,7 @@ export default class MediaList extends React.Component<
     if ('history' in window) {
       history.replaceState(null, null, `#mid=${media_id}`)
     }
-    axios
+    axiosLib
       .get(url, {
         params: {
           _mid: media_id,
@@ -438,7 +438,7 @@ export default class MediaList extends React.Component<
   }
 
   getFilteredOptions(tags: string[]) {
-    axios({
+    axiosLib({
       method: 'GET',
       url: ACMS.Library.acmsLink(
         {
