@@ -1,5 +1,5 @@
-import SmartPhoto from 'smartphoto';
-import 'smartphoto/css/smartphoto.min.css';
+import SmartPhoto from 'smartphoto'
+import 'smartphoto/css/smartphoto.min.css'
 
 export default (context, options = {}) => {
   const defaultOptions = {
@@ -47,7 +47,7 @@ export default (context, options = {}) => {
     useOrientationApi: false,
     useHistoryApi: true,
     lazyAttribute: 'data-src',
-  };
+  }
 
-  new SmartPhoto(context, Object.assign(defaultOptions, options)); // eslint-disable-line no-new
-};
+  new SmartPhoto(context, Object.assign(defaultOptions, options))
+}

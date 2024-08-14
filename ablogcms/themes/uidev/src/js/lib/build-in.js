@@ -1,28 +1,31 @@
-import domContentLoaded from 'dom-content-loaded';
-import lazyLoadJs from './buildIn/lazy-load';
-import lazyLoadFn from './buildIn/lazy-load-fn';
-import alertUnloadFn from './buildIn/alert-unload';
-import scrollToFn from './buildIn/scroll-to';
-import validatorFn from './buildIn/validator';
-import { linkMatch, linkMatchFull, linkMatchContain } from './buildIn/link-match-location';
+import domContentLoaded from 'dom-content-loaded'
+import lazyLoadJs from './buildIn/lazy-load'
+import lazyLoadFn from './buildIn/lazy-load-fn'
+import alertUnloadFn from './buildIn/alert-unload'
+import scrollToFn from './buildIn/scroll-to'
+import validatorFn from './buildIn/validator'
+import {
+  linkMatch,
+  linkMatchFull,
+  linkMatchContain,
+} from './buildIn/link-match-location'
 
 /**
  * Validator
  * @param context
  * @param selector
  */
-const validator = (context, selector) => {
+const validator = (context, selector = 'form.js-validator') => {
   domContentLoaded(async () => {
-    const querySelector = selector || 'form.js-validator';
-    const targets = context.querySelectorAll(querySelector);
+    const targets = context.querySelectorAll(selector)
 
     if (targets.length > 0) {
-      [].forEach.call(targets, (target) => {
-        validatorFn(target);
-      });
+      ;[].forEach.call(targets, (target) => {
+        validatorFn(target)
+      })
     }
-  });
-};
+  })
+}
 
 /**
  * LinkMatchLocation
@@ -30,33 +33,34 @@ const validator = (context, selector) => {
  */
 const linkMatchLocation = (context) => {
   domContentLoaded(() => {
-    linkMatch(context, '.js-link_match_location'); // 部分一致
-    linkMatchFull(context, '.js-link_match_location-full'); // 完全一致
-    linkMatchContain(context, '.js-link_match_location-contain'); // data-match属性でカスタム判定
+    linkMatch(context, '.js-link_match_location') // 部分一致
+    linkMatchFull(context, '.js-link_match_location-full') // 完全一致
+    linkMatchContain(context, '.js-link_match_location-contain') // data-match属性でカスタム判定
     // ToDo: ブログ、カテゴリ、エントリのマッチも実装する
-  });
-};
+  })
+}
 
 /**
  * ExternalLinks
  * @param context
  */
 const externalLinks = (context) => {
-  const selector = 'a:not([target]):not([href^="javascript"]):not([href^="tel"])';
-  const targets = context.querySelectorAll(selector);
-  const innerlinkPtn = new RegExp(`${window.location.hostname}(:\\d+)*`);
-  [].forEach.call(targets, (target) => {
-    const href = target.getAttribute('href');
+  const selector =
+    'a:not([target]):not([href^="javascript"]):not([href^="tel"])'
+  const targets = context.querySelectorAll(selector)
+  const innerlinkPtn = new RegExp(`${window.location.hostname}(:\\d+)*`)
+  ;[].forEach.call(targets, (target) => {
+    const href = target.getAttribute('href')
     if (innerlinkPtn.exec(href)) {
-      return;
+      return
     }
     if (!/^(https?)?:/.test(href)) {
-      return;
+      return
     }
-    target.setAttribute('target', '_blank');
-    target.setAttribute('rel', 'noopener noreferrer');
-  });
-};
+    target.setAttribute('target', '_blank')
+    target.setAttribute('rel', 'noopener noreferrer')
+  })
+}
 
 /**
  * ScrollTo
@@ -65,13 +69,13 @@ const externalLinks = (context) => {
  */
 const scrollTo = (context, selector) => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.scrollTo';
-    const target = context.querySelector(querySelector);
+    const querySelector = selector || '.scrollTo'
+    const target = context.querySelector(querySelector)
     if (target) {
-      scrollToFn(context, querySelector);
+      scrollToFn(context, querySelector)
     }
-  });
-};
+  })
+}
 
 /**
  * AlertUnload
@@ -80,13 +84,13 @@ const scrollTo = (context, selector) => {
  */
 const alertUnload = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-unload_alert';
-    const target = context.querySelector(querySelector);
+    const querySelector = selector || '.js-unload_alert'
+    const target = context.querySelector(querySelector)
     if (target) {
-      alertUnloadFn(target);
+      alertUnloadFn(target)
     }
-  });
-};
+  })
+}
 
 /**
  * SmartPhoto
@@ -96,14 +100,16 @@ const alertUnload = (context, selector = '') => {
  */
 const smartPhoto = (context, selector = '', options = {}) => {
   domContentLoaded(async () => {
-    const querySelector = selector || 'a[data-rel^=SmartPhoto],.js-smartphoto';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || 'a[data-rel^=SmartPhoto],.js-smartphoto'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      const { default: run } = await import(/* webpackChunkName: "smart-photo" */'./buildIn/smart-photo');
-      run(targets, options);
+      const { default: run } = await import(
+        /* webpackChunkName: "smart-photo" */ './buildIn/smart-photo'
+      )
+      run(targets, options)
     }
-  });
-};
+  })
+}
 
 /**
  * LazyLoad
@@ -113,36 +119,39 @@ const smartPhoto = (context, selector = '', options = {}) => {
  */
 const lazyLoad = (context, selector = '', options = {}) => {
   domContentLoaded(() => {
-    const querySelector = selector || '.js-lazy-load';
+    const querySelector = selector || '.js-lazy-load'
     if (context.querySelector(querySelector)) {
-      lazyLoadJs(querySelector, options);
+      lazyLoadJs(querySelector, options)
     }
-  });
-};
+  })
+}
 
 /**
  * InView
  */
 const inView = (context, selector) => {
   domContentLoaded(() => {
-    const querySelector = selector || '.js-lazy-contents';
-    lazyLoadFn(querySelector, () => true,
+    const querySelector = selector || '.js-lazy-contents'
+    lazyLoadFn(
+      querySelector,
+      () => true,
       (item) => {
-        const type = item.getAttribute('data-type');
+        const type = item.getAttribute('data-type')
         if (!type) {
-          return;
+          return
         }
-        const script = document.createElement(type);
+        const script = document.createElement(type)
         item.attributes.forEach((data) => {
-          const matches = data.name.match(/^data-(.*)/);
+          const matches = data.name.match(/^data-(.*)/)
           if (matches && matches[1] !== 'type') {
-            script[matches[1]] = data.value;
+            script[matches[1]] = data.value
           }
-        });
-        item.appendChild(script);
-      });
-  });
-};
+        })
+        item.appendChild(script)
+      },
+    )
+  })
+}
 
 /**
  * ModalVideo
@@ -152,14 +161,16 @@ const inView = (context, selector) => {
  */
 const modalVideo = (context, selector = '', options = {}) => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-modal-video';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || '.js-modal-video'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      const { default: run } = await import(/* webpackChunkName: "modal-video" */'./buildIn/modal-video');
-      run(targets, options);
+      const { default: run } = await import(
+        /* webpackChunkName: "modal-video" */ './buildIn/modal-video'
+      )
+      run(targets, options)
     }
-  });
-};
+  })
+}
 
 /**
  * ScrollHint
@@ -167,13 +178,18 @@ const modalVideo = (context, selector = '', options = {}) => {
  */
 const scrollHint = (context) => {
   domContentLoaded(async () => {
-    if (context.querySelector('.js-scroll-hint') || context.querySelector('.js-table-unit-scroll-hint')) {
-      const { default: run } = await import(/* webpackChunkName: "scroll-hint" */'./buildIn/scroll-hint');
-      run('.js-scroll-hint', {});
-      run('.js-table-unit-scroll-hint', { applyToParents: true });
+    if (
+      context.querySelector('.js-scroll-hint') ||
+      context.querySelector('.js-table-unit-scroll-hint')
+    ) {
+      const { default: run } = await import(
+        /* webpackChunkName: "scroll-hint" */ './buildIn/scroll-hint'
+      )
+      run('.js-scroll-hint', {})
+      run('.js-table-unit-scroll-hint', { applyToParents: true })
     }
-  });
-};
+  })
+}
 
 /**
  * GoogleMap
@@ -182,16 +198,23 @@ const scrollHint = (context) => {
  */
 const googleMap = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '[class^="column-map-"]>img:not(.js-s2d-ready),.js-s2d-ready';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector =
+      selector || '[class^="column-map-"]>img:not(.js-s2d-ready),.js-s2d-ready'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      lazyLoadFn(querySelector, (elm) => elm.getAttribute('data-lazy') === 'true', async (item) => {
-        const { default: run } = await import(/* webpackChunkName: "google-map" */'./buildIn/google-map');
-        run(item);
-      });
+      lazyLoadFn(
+        querySelector,
+        (elm) => elm.getAttribute('data-lazy') === 'true',
+        async (item) => {
+          const { default: run } = await import(
+            /* webpackChunkName: "google-map" */ './buildIn/google-map'
+          )
+          run(item)
+        },
+      )
     }
-  });
-};
+  })
+}
 
 /**
  * OpenStreetMap
@@ -200,16 +223,22 @@ const googleMap = (context, selector = '') => {
  */
 const openStreetMap = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-open-street-map';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || '.js-open-street-map'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      lazyLoadFn(querySelector, (elm) => elm.getAttribute('data-lazy') === 'true', async (item) => {
-        const { default: run } = await import(/* webpackChunkName: "open-street-map" */'./buildIn/open-street-map');
-        run(item);
-      });
+      lazyLoadFn(
+        querySelector,
+        (elm) => elm.getAttribute('data-lazy') === 'true',
+        async (item) => {
+          const { default: run } = await import(
+            /* webpackChunkName: "open-street-map" */ './buildIn/open-street-map'
+          )
+          run(item)
+        },
+      )
     }
-  });
-};
+  })
+}
 
 /**
  * DatePicker
@@ -218,16 +247,22 @@ const openStreetMap = (context, selector = '') => {
  */
 const datePicker = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-datepicker2';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || '.js-datepicker2'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      lazyLoadFn(querySelector, () => true, async (item) => {
-        const { default: run } = await import(/* webpackChunkName: "date-picker" */'./buildIn/date-picker');
-        run(item);
-      });
+      lazyLoadFn(
+        querySelector,
+        () => true,
+        async (item) => {
+          const { default: run } = await import(
+            /* webpackChunkName: "date-picker" */ './buildIn/date-picker'
+          )
+          run(item)
+        },
+      )
     }
-  });
-};
+  })
+}
 
 /**
  * PostInclude
@@ -235,9 +270,13 @@ const datePicker = (context, selector = '') => {
  */
 const postInclude = (context) => {
   domContentLoaded(async () => {
-    const targets = context.querySelectorAll('.js-post_include,.js-post_include-ready,.js-post_include-bottom,.js-post_include-interval');
+    const targets = context.querySelectorAll(
+      '.js-post_include,.js-post_include-ready,.js-post_include-bottom,.js-post_include-interval',
+    )
     if (targets.length > 0) {
-      const { default: run } = await import(/* webpackChunkName: "post-include" */'./buildIn/post-include');
+      const { default: run } = await import(
+        /* webpackChunkName: "post-include" */ './buildIn/post-include'
+      )
       run(context, {
         postIncludeOnsubmitMark: '.js-post_include',
         postIncludeOnreadyMark: '.js-post_include-ready',
@@ -249,17 +288,19 @@ const postInclude = (context) => {
         postIncludeOffset: 60,
         postIncludeReadyDelay: 0,
         postIncludeIntervalTime: 20000,
-        postIncludeArray: [{
-          //        'mark'      : '.js-post_include-original',
-          //        'type'      : 'submit',
-          //        'method'    : 'swap',
-          //        'effect'    : 'slide',
-          //        'speed'     : 'slow'
-        }],
-      });
+        postIncludeArray: [
+          {
+            //        'mark'      : '.js-post_include-original',
+            //        'type'      : 'submit',
+            //        'method'    : 'swap',
+            //        'effect'    : 'slide',
+            //        'speed'     : 'slow'
+          },
+        ],
+      })
     }
-  });
-};
+  })
+}
 
 /**
  * PdfPreview
@@ -268,16 +309,22 @@ const postInclude = (context) => {
  */
 const pdfPreview = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-pdf-viewer';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || '.js-pdf-viewer'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      lazyLoadFn(querySelector, () => true, async (item) => {
-        const { default: run } = await import(/* webpackChunkName: "pdf-preview" */'./buildIn/pdf-preview');
-        run(item);
-      });
+      lazyLoadFn(
+        querySelector,
+        () => true,
+        async (item) => {
+          const { default: run } = await import(
+            /* webpackChunkName: "pdf-preview" */ './buildIn/pdf-preview'
+          )
+          run(item)
+        },
+      )
     }
-  });
-};
+  })
+}
 
 /**
  * FocusedImage
@@ -286,52 +333,75 @@ const pdfPreview = (context, selector = '') => {
  */
 const focusedImage = (context, selector = '') => {
   domContentLoaded(async () => {
-    const querySelector = selector || '.js-focused-image';
-    const targets = context.querySelectorAll(querySelector);
+    const querySelector = selector || '.js-focused-image'
+    const targets = context.querySelectorAll(querySelector)
     if (targets.length > 0) {
-      lazyLoadFn(querySelector, () => true, async (item) => {
-        const { default: run } = await import(/* webpackChunkName: "focused-image" */'./buildIn/focused-image');
-        run(item);
-      });
+      lazyLoadFn(
+        querySelector,
+        () => true,
+        async (item) => {
+          const { default: run } = await import(
+            /* webpackChunkName: "focused-image" */ './buildIn/focused-image'
+          )
+          run(item)
+        },
+      )
     }
-  });
-};
+  })
+}
 
 const unitGroupAlign = (context, selector = '.js-unit_group-align') => {
-  let timer;
+  let timer
   const align = () => {
-    const unitGroups = context.querySelectorAll(selector);
-    let currentWidth = 0;
-    let count = 0;
-    clearTimeout(timer);
+    const unitGroups = context.querySelectorAll(selector)
+    let currentWidth = 0
+    let count = 0
+    clearTimeout(timer)
     timer = setTimeout(() => {
-      [].forEach.call(unitGroups, (unit) => {
-        const containerWidth = parseFloat(getComputedStyle(unit.parentNode, null).width.replace('px', ''));
-        const unitW = unit.offsetWidth - 1;
-        unit.style.clear = 'none'; // eslint-disable-line no-param-reassign
-        if (!unit.previousElementSibling || !unit.previousElementSibling.classList.contains('js-unit_group-align')) {
-          currentWidth = 0;
-          count = 0;
+      ;[].forEach.call(unitGroups, (unit) => {
+        const containerWidth = parseFloat(
+          getComputedStyle(unit.parentNode, null).width.replace('px', ''),
+        )
+        const unitW = unit.offsetWidth - 1
+        unit.style.clear = 'none'
+        if (
+          !unit.previousElementSibling ||
+          !unit.previousElementSibling.classList.contains('js-unit_group-align')
+        ) {
+          currentWidth = 0
+          count = 0
         }
-        if (count > 0 && ((containerWidth - (currentWidth + unitW)) < -1)) {
-          unit.style.clear = 'both'; // eslint-disable-line no-param-reassign
-          currentWidth = unitW;
-          count = 1;
+        if (count > 0 && containerWidth - (currentWidth + unitW) < -1) {
+          unit.style.clear = 'both'
+          currentWidth = unitW
+          count = 1
         } else {
-          currentWidth += unitW;
-          count += 1;
+          currentWidth += unitW
+          count += 1
         }
-      });
-    }, 400);
-  };
-  window.addEventListener('resize', align);
-  align();
-};
+      })
+    }, 400)
+  }
+  window.addEventListener('resize', align)
+  align()
+}
 
-// eslint-disable-next-line import/prefer-default-export
 export {
-  validator, linkMatchLocation, externalLinks, scrollTo,
-  alertUnload, smartPhoto, lazyLoad, inView,
-  modalVideo, scrollHint, googleMap, openStreetMap,
-  datePicker, postInclude, pdfPreview, focusedImage, unitGroupAlign,
-};
+  validator,
+  linkMatchLocation,
+  externalLinks,
+  scrollTo,
+  alertUnload,
+  smartPhoto,
+  lazyLoad,
+  inView,
+  modalVideo,
+  scrollHint,
+  googleMap,
+  openStreetMap,
+  datePicker,
+  postInclude,
+  pdfPreview,
+  focusedImage,
+  unitGroupAlign,
+}

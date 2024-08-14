@@ -1,5 +1,5 @@
-import ScrollHint from 'scroll-hint';
-import 'scroll-hint/css/scroll-hint.css';
+import ScrollHint from 'scroll-hint'
+import 'scroll-hint/css/scroll-hint.css'
 
 export default (context, options = {}) => {
   const defaultOptions = {
@@ -20,7 +20,7 @@ export default (context, options = {}) => {
     i18n: {
       scrollable: 'スクロールできます',
     },
-  };
+  }
 
-  new ScrollHint(context, Object.assign(defaultOptions, options)); // eslint-disable-line no-new
-};
+  new ScrollHint(context, Object.assign(defaultOptions, options))
+}

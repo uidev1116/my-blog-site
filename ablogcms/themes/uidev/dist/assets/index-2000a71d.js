@@ -1,0 +1,24 @@
+function s(r, b) {
+  if (r == null) throw new TypeError('Cannot convert first argument to object')
+  for (var a = Object(r), n = 1; n < arguments.length; n++) {
+    var e = arguments[n]
+    if (e != null)
+      for (var f = Object.keys(Object(e)), i = 0, o = f.length; i < o; i++) {
+        var t = f[i],
+          l = Object.getOwnPropertyDescriptor(e, t)
+        l !== void 0 && l.enumerable && (a[t] = e[t])
+      }
+  }
+  return a
+}
+function u() {
+  Object.assign ||
+    Object.defineProperty(Object, 'assign', {
+      enumerable: !1,
+      configurable: !0,
+      writable: !0,
+      value: s,
+    })
+}
+var c = { assign: s, polyfill: u }
+export { c as e }

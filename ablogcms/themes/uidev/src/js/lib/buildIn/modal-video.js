@@ -1,5 +1,5 @@
-import ModalVideo from 'modal-video';
-import 'modal-video/css/modal-video.min.css';
+import ModalVideo from 'modal-video'
+import 'modal-video/css/modal-video.min.css'
 
 export default (context, options = {}) => {
   const defaultOptions = {
@@ -60,7 +60,7 @@ export default (context, options = {}) => {
       openMessage: 'ビデオを再生します',
       dismissBtnMessage: 'ビデオを閉じます',
     },
-  };
+  }
 
-  new ModalVideo(context, Object.assign(defaultOptions, options)); // eslint-disable-line no-new
-};
+  new ModalVideo(context, Object.assign(defaultOptions, options))
+}

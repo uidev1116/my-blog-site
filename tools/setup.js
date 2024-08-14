@@ -2,7 +2,7 @@
 
 const { systemCmd } = require('./lib/system.js')
 
-const plugins = ['V2', 'ApiPreview']
+const plugins = ['V2', 'ApiPreview', 'Vite']
 
 ;(async () => {
   try {

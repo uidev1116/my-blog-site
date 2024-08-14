@@ -4,19 +4,7 @@
 <script src="/acms.js{arguments}" charset="UTF-8" id="acms-js"></script><!-- END_MODULE Js -->
 <!-- END_MODULE Touch_SessionWithContribution -->
 
-
-<!-- BEGIN_MODULE Vite -->
-<!-- BEGIN_IF [{useDevServer}/eq/1] -->
-<script type="module" src="{devServerUrl}@vite/client"></script>
-<script type="module" src="{devServerUrl}src/js/index.js"></script>
-<!-- ELSE -->
-<!-- BEGIN manifest -->
-<!-- BEGIN src/js/index.js -->
-<script type="module" src="/dest/{file}"></script>
-<!-- END src/js/index.js -->
-<!-- END manifest -->
-<!-- END_IF -->
-<!-- END_MODULE Vite -->
+@vite('src/js/index.js')
 
 <!--BEGIN_MODULE Touch_Unlogin --><!-- BEGIN_MODULE Blog_Field id="BF_root" -->{google_analytics}[raw]<!-- END_MODULE Blog_Field --><!-- END_MODULE Touch_Unlogin -->
 

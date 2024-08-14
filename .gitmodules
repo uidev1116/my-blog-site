@@ -4,3 +4,6 @@
 [submodule "plugins/ApiPreview"]
 	path = plugins/ApiPreview
 	url = git@github.com:uidev1116/acms-api-prview.git
+[submodule "plugins/Vite"]
+	path = plugins/Vite
+	url = git@github.com:appleple/acms-vite.git
