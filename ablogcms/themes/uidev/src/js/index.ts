@@ -19,7 +19,7 @@ import {
  * スタイルの読み込み
  */
 // import 'normalize.css/normalize.css';
-import '../scss/index.scss'
+// import '../scss/index.scss'
 
 /**
  * FontAwesome 5
