@@ -122,7 +122,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::blogOrder($SQL, 'id-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param string|null $scp
      * @return void
@@ -175,7 +175,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::userOrder($SQL, 'code-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param string|null $scp
      * @return void
@@ -402,7 +402,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::categoryOrder($SQL, 'code-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param string|null $scope
      * @return void
@@ -566,7 +566,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::entryTag($SQL, $tags);
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string[] $tags
      * @param null $scope
      * @return void
@@ -629,7 +629,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::entryOrder($SQL, 'code-asc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string|string[] $order 表示順
      * @param int|null $uid ユーザーID
      * @param int|null $cid カテゴリーID
@@ -774,7 +774,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::tagOrder($SQL, 'name-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param null $scope
      * @return void
@@ -792,7 +792,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::tagOrder($SQL, 'name-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param null $scope
      * @return void
@@ -811,7 +811,7 @@ class ACMS_Filter
      *
      * ACMS_Filter::mediaOrder($SQL, 'name-desc');
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $order asc|desc
      * @param null $scope
      * @return void
@@ -950,7 +950,7 @@ class ACMS_Filter
     /**
      * field による絞り込みを行います
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete &$SQL
+     * @param SQL_Select &$SQL
      * @param Field_Search $Field
      * @param 'field_eid'|'field_cid'|'field_bid'|'field_uid'|null $fieldKey
      * @param string|null $tableKey 結合先のテーブルのキー
@@ -1053,7 +1053,7 @@ class ACMS_Filter
     /**
      * _keyword
      *
-     * @param SQL_Select|SQL_Update|SQL_Delete $SQL
+     * @param SQL_Select $SQL
      * @param string $keyword
      * @param 'fulltext_eid'|'fulltext_cid'|'fulltext_bid'|'fulltext_uid' $fulltextKey
      * @param string $tableKey 結合先のテーブルのキー

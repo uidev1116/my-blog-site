@@ -173,4 +173,4 @@ export default [
   'acms-admin-icon-x',
   'acms-admin-icon-x-square',
   'acms-admin-icon-x-circle',
-]
+];

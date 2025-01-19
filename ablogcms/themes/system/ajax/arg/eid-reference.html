@@ -7,14 +7,22 @@
       <div class="acms-admin-filter-group">
         <p class="acms-admin-filter-label"><!--T-->検索条件<!--/T--></p>
         <div class="acms-admin-filter-content acms-admin-filter-content-fit">
-          <div class="acms-admin-filter-item">
-            <select name="cid" id="js-entry_index_category_filter" class="js-select2">
-              <option value=""><!--T-->全てのカテゴリー<!--/T--></option>
-              <option value="0"{non_category#selected}><!--T-->カテゴリーなし<!--/T--></option><!-- BEGIN_MODULE Admin_Category_SelectGlobal --><!-- BEGIN loop -->
-              <option value="{value}"{selected}>{indent}[raw]{label} ( {amount} )</option><!-- END loop --><!-- END_MODULE Admin_Category_SelectGlobal -->
-            </select>
+          <div class="acms-admin-filter-item acms-admin-filter-item-full">
+              @include("/admin/include/category/select.html", {
+                "class": "acms-admin-form-width-full",
+                "target": "#eid-reference-filter-cid-value, #eid-reference-filter-_cid-value",
+                "defaultValue": "<!-- BEGIN_IF [%{_cid}/isset] -->%{_cid}<!-- ELSE -->%{CID}<!-- END_IF -->",
+                "noOption": "true",
+                "inputId": "input-select-category-id"
+              })
+            <input
+              id="eid-reference-filter-cid-value"
+              type="hidden"
+              name="cid"
+              value="<!-- BEGIN_IF [%{_cid}/isset] -->%{_cid}<!-- ELSE -->%{CID}<!-- END_IF -->"
+            >
             <!-- ↓カテゴリーなしで絞り込めるようにするために必要 -->
-            <input type="hidden" name="_cid" value="" id="js-entry_index_category_filter_dup"/>
+            <input id="eid-reference-filter-_cid-value" type="hidden" name="_cid" value="%{_cid}"/>
             <input type="hidden" name="query[]" value="_cid" />
           </div>
           <div class="acms-admin-filter-item acms-admin-filter-item-full">

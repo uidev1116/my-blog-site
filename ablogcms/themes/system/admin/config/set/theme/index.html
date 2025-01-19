@@ -20,6 +20,25 @@
 <!-- END message:loop -->
 <!-- END_MODULE Admin_Messages -->
 
+<!-- BEGIN notFound -->
+<div class="acms-admin-announce">
+  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->テーマセットがありません<!--/T--></h2>
+  <p class="acms-admin-announce-text"><!--T-->新しくテーマセットを作成してください。<!--/T--></p>
+  <div class="acms-admin-announce-action">
+    <form action="" method="post">
+      <input type="hidden" name="bid" value="%{BID}"/>
+      <input type="hidden" name="admin" value="config_set_theme_edit"/>
+      <input type="hidden" name="edit" value="insert"/>
+      <input type="hidden" name="query[]" value="edit"/>
+      <button type="submit" name="ACMS_POST_2GET" class="acms-admin-btn acms-admin-btn-success">
+        <!--T-->テーマセットの作成<!--/T-->
+      </button>
+    </form>
+  </div>
+</div>
+<!-- END notFound -->
+
+<!-- BEGIN existSet -->
 <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
 <form action="" method="post" class="acms-admin-margin-bottom-small clearfix">
   <input type="hidden" name="bid" value="%{BID}"/>
@@ -36,30 +55,13 @@
   <table class="acms-admin-table-admin acms-admin-table-hover">
     <thead class="acms-admin-table-heading">
       <tr>
-        <th><!--T-->セット名<!--/T--></th>
+        <th><!--T-->テーマセット名<!--/T--></th>
         <th class="acms-admin-table-nowrap"><!--T-->グローバル<!--/T--></th>
         <th><!--T-->詳細<!--/T--></th>
         <th class="acms-admin-table-nowrap"><!--T-->アクション<!--/T--></th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>
-          <a href="%{HTTP_ROOT}bid/%{BID}/admin/config_theme/<!-- BEGIN_IF [%{rid}/nem/] -->?rid=%{rid}<!-- END_IF -->">
-            <!--T-->このブログの初期テーマ（非推奨）<!--/T-->
-          </a>
-        </td>
-        <td class="acms-admin-table-nowrap"> -</td>
-        <td>
-          <!--T-->このブログの初期テーマです。<!--/T-->
-        </td>
-        <td class="acms-admin-table-nowrap">
-          <a class="acms-admin-btn-admin" href="%{HTTP_ROOT}bid/%{BID}/admin/config_theme/<!-- BEGIN_IF [%{rid}/nem/] -->?rid=%{rid}<!-- END_IF -->">
-            <!--T-->テーマ設定<!--/T-->
-          </a>
-        </td>
-      </tr>
-
       <!-- BEGIN config_set:loop -->
       <tr>
         <td class="acms-admin-title-sp">
@@ -162,4 +164,5 @@
     </tbody>
   </table>
 </div>
+<!-- END existSet -->
 <!-- END_MODULE Admin_Config_Set_Theme -->

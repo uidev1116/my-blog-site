@@ -425,14 +425,13 @@
             ></i>
           </th>
           <td>
-            <select name="parent" class="categoryWidth js-select2">
-              <option value="0"><!--T-->なし<!--/T--></option>
-              <!-- BEGIN_MODULE Admin_Category_Select --><!-- BEGIN loop -->
-              <option value="{value}" \{parent:selected#{value}\}>
-                {indent}[raw]{label} ( {amount} )
-              </option>
-              <!-- END loop --><!-- END_MODULE Admin_Category_Select -->
-            </select>
+            <div class="acms-admin-form-width-large">
+              @include("/admin/include/category/select.html", {
+                "target": "#parent-category-value",
+                "defaultValue": "<!-- BEGIN_IF [{parent}/isset] -->{parent}<!-- ELSE -->0<!-- END_IF -->"
+              })
+            </div>
+            <input id="parent-category-value" type="hidden" name="parent" value="<!-- BEGIN_IF [{parent}/isset] -->{parent}<!-- ELSE -->0<!-- END_IF -->">
             <input type="hidden" name="category[]" value="parent" />
             <div role="alert" aria-live="assertive">
               <!-- BEGIN parent:validator#isSelf -->

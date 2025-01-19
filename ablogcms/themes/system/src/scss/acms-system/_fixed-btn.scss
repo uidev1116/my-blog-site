@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // ボタンの固定
@@ -27,12 +27,14 @@
 .fixed.acms_fix_bg {
   z-index: global.zIndex(acms_fix_bg);
   width: 100%;
+
   @include global.box-sizing(border-box);
 }
 
 .acms_fix_bg_index {
   box-sizing: content-box;
-  @include global.clearfix();
+
+  @include global.clearfix;
 }
 
 /* 固定ボタン */
@@ -49,7 +51,6 @@
     top: 36px;
     left: 180px;
     padding: 0 20px 0 0;
-
   }
 }
 
@@ -66,7 +67,7 @@
   .fixed .acms_fix_bg_index {
     height: 32px;
     padding: 10px 0;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 0 rgb(0 0 0 / 10%);
   }
 }
 

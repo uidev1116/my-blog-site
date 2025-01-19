@@ -529,11 +529,11 @@
           <thead>
             <tr>
               <th class="acms-admin-table-left acms-admin-admin-config-table-item-handle acms-admin-table-nowrap">&nbsp;</th>
-              <th class="acms-admin-table-left">
-                <!--T-->カテゴリーID<!--/T-->
+              <th class="acms-admin-table-left" style="width: 300px">
+                <!--T-->カテゴリー<!--/T-->
                 <i
                   class="acms-admin-icon-tooltip js-acms-tooltip-hover acms-admin-margin-left-mini"
-                  data-acms-tooltip="<!--T-->ページを書き出すカテゴリーIDを指定<!--/T-->"
+                  data-acms-tooltip="<!--T-->ページを書き出すカテゴリーを指定<!--/T-->"
                 ></i>
               </th>
               <th class="acms-admin-table-left">
@@ -553,7 +553,12 @@
             <tr class="sortable-item">
               <td class="item-handle acms-admin-table-nowrap"><i class="acms-admin-icon-sort"></i></td>
               <td>
-                <input type="text" name="static_page_cid[]" value="{static_page_cid}" class="acms-admin-form-width-full"/>
+                @include("/admin/include/category/select.html", {
+                  "target": "#static-page-category-value-\\[{i}\\]",
+                  "defaultValue": "{static_page_cid}",
+                  "menuPortalTarget": "body"
+                })
+                <input id="static-page-category-value-[{i}]" type="hidden" name="static_page_cid[]" value="{static_page_cid}" />
                 <div role="alert" aria-live="assertive">
                   <div data-validator-label="static_page_cid-v-digits" class="validator-result-{static_page_cid:v#digits}">
                     <p class="error-text">
@@ -594,7 +599,12 @@
             <tr class="sortable-item item-template">
               <td class="item-handle acms-admin-table-nowrap"><i class="acms-admin-icon-sort"></i></td>
               <td>
-                <input type="text" name="static_page_cid[]" value="" class="acms-admin-form-width-full"/>
+                @include("/admin/include/category/select.html", {
+                  "target": "input[id^='static-page-category-value-']",
+                  "defaultValue": "",
+                  "menuPortalTarget": "body"
+                })
+                <input id="static-page-category-value-" type="hidden" name="static_page_cid[]" value="" />
                 <div role="alert" aria-live="assertive">
                   <div data-validator-label="static_page_cid-v-digits" class="validator-result-1">
                     <p class="error-text">
@@ -657,14 +667,14 @@
           <thead>
             <tr>
               <th class="acms-admin-table-left acms-admin-admin-config-table-item-handle acms-admin-table-nowrap">&nbsp;</th>
-              <th class="acms-admin-table-left">
-                <!--T-->カテゴリーID<!--/T-->
+              <th class="acms-admin-table-left" style="width: 300px;">
+                <!--T-->カテゴリー<!--/T-->
                 <i
                   class="acms-admin-icon-tooltip js-acms-tooltip-hover acms-admin-margin-left-mini"
-                  data-acms-tooltip="<!--T-->書き出すアーカイブのカテゴリーIDを指定<!--/T-->"
+                  data-acms-tooltip="<!--T-->書き出すアーカイブのカテゴリーを指定<!--/T-->"
                 ></i>
               </th>
-              <th class="acms-admin-table-left">
+              <th class="acms-admin-table-left" style="min-width: 100px;">
                 <!--T-->開始月<!--/T-->
                 <i
                   class="acms-admin-icon-tooltip js-acms-tooltip-hover acms-admin-margin-left-mini"
@@ -688,7 +698,12 @@
             <tr class="sortable-item">
               <td class="item-handle acms-admin-table-nowrap"><i class="acms-admin-icon-sort"></i></td>
               <td>
-                <input type="text" name="static_archive_cid[]" value="{static_archive_cid}" class="acms-admin-form-width-full"/>
+                @include("/admin/include/category/select.html", {
+                  "target": "#static-archive-category-value-\\[{i}\\]",
+                  "defaultValue": "{static_archive_cid}",
+                  "menuPortalTarget": "body"
+                })
+                <input id="static-archive-category-value-[{i}]" type="hidden" name="static_archive_cid[]" value="{static_archive_cid}"/>
                 <div role="alert" aria-live="assertive">
                   <div data-validator-label="static_archive_cid-v-digits" class="validator-result-{static_archive_cid:v#digits}">
                     <p class="error-text">
@@ -740,7 +755,12 @@
             <tr class="sortable-item item-template">
               <td class="item-handle acms-admin-table-nowrap"><i class="acms-admin-icon-sort"></i></td>
               <td>
-                <input type="text" name="static_archive_cid[]" value="" class="acms-admin-form-width-full"/>
+                @include("/admin/include/category/select.html", {
+                  "target": "[id='static-archive-category-value-']",
+                  "defaultValue": "",
+                  "menuPortalTarget": "body"
+                })
+                <input id="static-archive-category-value-" type="hidden" name="static_archive_cid[]" value=""/>
                 <div role="alert" aria-live="assertive">
                   <div data-validator-label="static_archive_cid-v-digits" class="validator-result-1">
                     <p class="error-text">

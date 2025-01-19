@@ -133,12 +133,12 @@
 <script type="text/template" id="js-navigation-json">
 [<!-- BEGIN Config_Navigation --><!-- BEGIN navigation:loop -->
 {
-	"navigation_uri": "{uri}[jsonEscape|raw]",
+	"navigation_uri": "{uri}[jsonEscape|raw|allow_dangerous_tag]",
 	"navigation_target": <!-- BEGIN_IF [{navigation_target:checked#_blank}/nem] -->true<!-- ELSE -->false<!-- END_IF -->,
 	"navigation_publish": <!-- BEGIN_IF [{navigation_publish:checked#on}/nem] -->true<!-- ELSE -->false<!-- END_IF -->,
-	"navigation_attr": "{attr}[jsonEscape|raw]",
-	"navigation_a_attr": "{a_attr}[jsonEscape|raw]",
-	"navigation_label": "{label}[jsonEscape|raw]",<!-- BEGIN parent:loop --><!-- BEGIN_IF [{selected}/nem] -->
+	"navigation_attr": "{attr}[jsonEscape|raw|allow_dangerous_tag]",
+	"navigation_a_attr": "{a_attr}[jsonEscape|raw|allow_dangerous_tag]",
+	"navigation_label": "{label}[jsonEscape|raw|allow_dangerous_tag]",<!-- BEGIN parent:loop --><!-- BEGIN_IF [{selected}/nem] -->
 	"parent": {value},<!-- END_IF --><!-- END parent:loop -->
 	"hide": true
 }<!-- BEGIN glue -->,<!-- END glue --><!-- END navigation:loop -->

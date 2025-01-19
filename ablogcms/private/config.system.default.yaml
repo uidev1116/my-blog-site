@@ -343,7 +343,7 @@ mail_reset_password_tpl_subject: mail/reset-password/subject.txt
 mail_reset_password_tpl_body: mail/reset-password/body.txt
 mail_reset_password_tpl_body_html: mail/reset-password/body.html
 
-## メールアドレス設定
+## メールアドレス変更
 mail_update_email_from: info@example.com
 mail_update_email_to:
 mail_update_email_cc:
@@ -397,6 +397,7 @@ mail_sendmail_path  :
 
 ## カテゴリーセレクト
 category_select_global_order: sort-desc
+category_select_limit: 999
 
 #############
 # モジュール
@@ -952,7 +953,9 @@ image_size_large  : w1400
 image_size_tiny_criterion  : width
 image_size_tiny   : w280
 image_size_square : 0
-image_jpeg_quality  : 85
+image_jpeg_quality: 75
+resize_image_jpeg_quality: 75
+
 
 # ファイル
 

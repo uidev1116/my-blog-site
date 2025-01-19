@@ -194,7 +194,7 @@ class ACMS_GET_Admin_MenuCustom extends ACMS_GET_Admin_Menu
         ) {
             $this->standardMenu('approval_index', 'approval_index');
         }
-        if (sessionWithProfessionalAdministration() || sessionWithEnterpriseAdministration()) {
+        if (sessionWithAdministration() && editionWithProfessional()) {
             $this->standardMenu('static-export_index', 'static-export_index');
         }
     }

@@ -1,7 +1,16 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Logger as AcmsLogger;
+
 class ACMS_POST_Revision_Delete extends ACMS_POST
 {
+    use \Acms\Traits\Common\AssetsTrait;
+
     public function post()
     {
         try {
@@ -16,8 +25,8 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
                     throw new \RuntimeException('権限がありません');
                 }
             } else {
-                if (!sessionWithCompilation(BID, false)) {
-                    if (!sessionWithContribution(BID, false)) {
+                if (!sessionWithCompilation(BID)) {
+                    if (!sessionWithContribution(BID)) {
                         throw new \RuntimeException('権限がありません');
                     }
                     if (SUID != ACMS_RAM::entryUser(EID)) {
@@ -30,8 +39,8 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
                     die();
                 }
             } else {
-                if (!sessionWithCompilation(BID, false)) {
-                    if (!sessionWithContribution(BID, false)) {
+                if (!sessionWithCompilation(BID)) {
+                    if (!sessionWithContribution(BID)) {
                         die();
                     }
 
@@ -50,74 +59,14 @@ class ACMS_POST_Revision_Delete extends ACMS_POST
             $SQL->addWhereOpr('entry_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');
 
-            // image, file
-            $SQL = SQL::newSelect('column_rev');
-            $SQL->addWhereOpr('column_entry_id', EID);
-            $SQL->addWhereOpr('column_rev_id', RVID);
-            $SQL->addWhereOpr('column_blog_id', BID);
-            $q = $SQL->get(dsn());
-            if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-                do {
-                    switch ($row['column_type']) {
-                        case 'image':
-                            if (empty($row['column_field_2'])) {
-                                break;
-                            }
-
-                            $oldAry = explodeUnitData($row['column_field_2']);
-                            foreach ($oldAry as $old) {
-                                $path = ARCHIVES_DIR . $old;
-                                $large = otherSizeImagePath($path, 'large');
-                                $tiny = otherSizeImagePath($path, 'tiny');
-                                $square = otherSizeImagePath($path, 'square');
-                                deleteFile($path);
-                                deleteFile($large);
-                                deleteFile($tiny);
-                                deleteFile($square);
-                            }
-                            break;
-                        case 'file':
-                            if (empty($row['column_field_2'])) {
-                                break;
-                            }
-
-                            $oldAry = explodeUnitData($row['column_field_2']);
-                            foreach ($oldAry as $old) {
-                                $path = ARCHIVES_DIR . $old;
-                                deleteFile($path);
-                            }
-                            break;
-                    }
-                } while ($row = $DB->fetch($q));
-            }
-
             // unit
-            $SQL = SQL::newDelete('column_rev');
-            $SQL->addWhereOpr('column_entry_id', EID);
-            $SQL->addWhereOpr('column_rev_id', RVID);
-            $SQL->addWhereOpr('column_blog_id', BID);
-            $DB->query($SQL->get(dsn()), 'exec');
+            $unitRepository = Application::make('unit-repository');
+            assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+            $unitRepository->removeUnits(EID, RVID, true);
 
             // field
-            $Field = loadEntryField(EID, RVID);
-            foreach ($Field->listFields() as $fd) {
-                if (
-                    1
-                    and !strpos($fd, '@path')
-                    and !strpos($fd, '@tinyPath')
-                    and !strpos($fd, '@largePath')
-                    and !strpos($fd, '@squarePath')
-                ) {
-                    continue;
-                }
-                foreach ($Field->getArray($fd, true) as $i => $path) {
-                    if (!Storage::isFile(ARCHIVES_DIR . $path)) {
-                        continue;
-                    }
-
-                    Storage::remove(ARCHIVES_DIR . $path);
-                }
-            }
+            $field = loadEntryField(EID, RVID);
+            $this->removeFieldAssetsTrait($field);
             Common::saveField('eid', EID, null, null, RVID);
 
             // tag

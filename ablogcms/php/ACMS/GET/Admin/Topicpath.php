@@ -203,9 +203,9 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             $topicVars = ['url' => $url];
 
             if ($admin === 'config_theme') {
-                if ($configSet = $this->getConfigSet('theme', 'このブログの初期テーマ')) {
+                if ($configSets = $this->getConfigSets('theme')) {
                     $topicVars['config_set'] = 1;
-                    foreach ($configSet as $set) {
+                    foreach ($configSets as $set) {
                         $Tpl->add(['configSet:loop', 'topic:loop'], [
                             'name' => $set['name'],
                             'configSetUrl' => acmsLink([
@@ -221,9 +221,9 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 }
             }
             if ($admin === 'config_editor') {
-                if ($configSet = $this->getConfigSet('editor', 'このブログの初期編集画面')) {
+                if ($configSets = $this->getConfigSets('editor')) {
                     $topicVars['config_set'] = 1;
-                    foreach ($configSet as $set) {
+                    foreach ($configSets as $set) {
                         $Tpl->add(['configSet:loop', 'topic:loop'], [
                             'name' => $set['name'],
                             'configSetUrl' => acmsLink([
@@ -239,21 +239,30 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
                 }
             }
             if ($admin === 'config_index') {
-                if ($configSet = $this->getConfigSet(null, 'このブログの初期コンフィグ')) {
-                    $topicVars['config_set'] = 1;
-                    foreach ($configSet as $set) {
-                        $Tpl->add(['configSet:loop', 'topic:loop'], [
-                            'name' => $set['name'],
-                            'configSetUrl' => acmsLink([
-                                'bid' => $set['bid'],
-                                'admin' => ADMIN,
-                                'query' => [
-                                    'rid' => $this->Get->get('rid'),
-                                    'setid' => $set['id'],
-                                ]
-                            ]),
-                        ]);
-                    }
+                $configSets = array_merge(
+                    [
+                        [
+                            'id' => null,
+                            'bid' => BID,
+                            'name' => 'このブログのコンフィグ（レガシー設定）',
+                        ]
+                    ],
+                    $this->getConfigSets(null)
+                );
+
+                $topicVars['config_set'] = 1;
+                foreach ($configSets as $set) {
+                    $Tpl->add(['configSet:loop', 'topic:loop'], [
+                        'name' => $set['name'],
+                        'configSetUrl' => acmsLink([
+                            'bid' => $set['bid'],
+                            'admin' => ADMIN,
+                            'query' => [
+                                'rid' => $this->Get->get('rid'),
+                                'setid' => $set['id'],
+                            ]
+                        ]),
+                    ]);
                 }
             }
             if ($admin === 'rule_edit') {
@@ -277,7 +286,7 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
             }
             $Tpl->add('topic:loop', $topicVars);
         }
-        $rootConfig = Config::loadBlogConfigSet(RBID);
+        $rootConfig = Config::loadBlogField(RBID);
         $Tpl->add(null, [
             'blog_theme_logo@squarePath' => $rootConfig->get('blog_theme_logo@squarePath'),
         ]);
@@ -285,7 +294,11 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         return $Tpl->get();
     }
 
-    protected function getConfigSet($type = null, $name = 'このブログの初期コンフィグ')
+    /**
+     * @param string|null $type
+     * @return array{bid: int, id: int, name: string}[]
+     */
+    protected function getConfigSets($type = null)
     {
         $SQL = SQL::newSelect('config_set');
         $SQL->addWhereOpr('config_set_type', $type);
@@ -293,12 +306,6 @@ class ACMS_GET_Admin_Topicpath extends ACMS_GET_Admin
         $SQL->setOrder('config_set_sort', 'ASC');
 
         $result = [];
-        $result[] = [
-            'id' => null,
-            'bid' => BID,
-            'name' => $name,
-        ];
-
         $all = DB::query($SQL->get(dsn()), 'all');
         foreach ($all as $item) {
             $result[] = [

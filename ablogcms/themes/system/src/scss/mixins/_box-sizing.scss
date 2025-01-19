@@ -2,6 +2,8 @@
 // ボックスサイズ
 // ------------------------------
 
-@mixin box-sizing($boxmodel){
-  box-sizing: $boxmodel;
+@mixin box-sizing($boxmodel) {
+  & {
+    box-sizing: $boxmodel;
+  }
 }

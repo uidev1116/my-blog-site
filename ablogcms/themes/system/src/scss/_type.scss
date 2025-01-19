@@ -1,39 +1,45 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  タイポグラフィ
 ------------------------------- */
+
 /* ---------------
  見出し
 --------------- */
 // h1
 .acms-h1,
-.acms-style h1{
+.acms-style h1 {
   @include global.font-size(30);
 }
+
 // h2
 .acms-h2,
-.acms-style h2{
+.acms-style h2 {
   @include global.font-size(24);
 }
+
 // h3
 .acms-h3,
-.acms-style h3{
+.acms-style h3 {
   @include global.font-size(18);
 }
+
 // h4
 .acms-h4,
-.acms-style h4{
+.acms-style h4 {
   @include global.font-size(16);
 }
+
 // h5
 .acms-h5,
-.acms-style h5{
+.acms-style h5 {
   @include global.font-size(14);
 }
+
 // h6
 .acms-h6,
-.acms-style h6{
+.acms-style h6 {
   @include global.font-size(12);
 }
 
@@ -42,9 +48,10 @@
 .acms-h3,
 .acms-h4,
 .acms-h5,
-.acms-h6{
+.acms-h6 {
   margin: 0 0 20px;
 }
+
 * + .acms-h1,
 * + .acms-h2,
 * + .acms-h3,
@@ -58,9 +65,10 @@
 // 段落
 // ---------------
 .acms-p,
-.acms-style p{
+.acms-style p {
   margin: 0 0 15px;
 }
+
 * + .acms-p,
 * + .acms-style p {
   margin-top: 15px;
@@ -74,21 +82,22 @@
 .acms-dl,
 .acms-style ul,
 .acms-style ol,
-.acms-style dl{
+.acms-style dl {
   margin-top: 0;
 }
 
 // リスト 点なし
-.acms-list-nostyle{
+.acms-list-nostyle {
   margin: 0;
   padding-left: 0;
   list-style: none;
 }
 
 // リスト インライン
-.acms-list-inline{
+.acms-list-inline {
   padding-left: 0;
-  li{
+
+  li {
     display: inline-block;
     margin-bottom: 5px;
     padding-right: 20px;
@@ -98,10 +107,11 @@
 // 定義リスト
 .acms-dl,
 .acms-style dl {
-  dt{
+  dt {
     font-weight: bold;
   }
-  dd{
+
+  dd {
     margin-bottom: 10px;
     margin-left: 0;
   }
@@ -109,7 +119,7 @@
 
 // 定義リスト 水平
 .acms-dl-horizontal dt,
-.acms-dl-line dt{
+.acms-dl-line dt {
   float: left;
   clear: left;
   width: 160px;
@@ -120,30 +130,32 @@
 }
 
 .acms-dl-horizontal dd,
-.acms-dl-line dd{
+.acms-dl-line dd {
   margin: 0;
   padding-left: 0;
-  @include global.clearfix();
+
+  @include global.clearfix;
 }
 
 .acms-dl-line dt {
   padding-top: 10px;
 }
 
-.acms-dl-line dd{
+.acms-dl-line dd {
   padding-top: 10px;
   padding-bottom: 10px;
   border-bottom: solid 1px global.$acms-color-gray60;
 }
 
-@media (min-width : global.$breakpoint-md-min) {
+@media (min-width: global.$breakpoint-md-min) {
   .acms-dl-horizontal dt,
-  .acms-dl-line dt{
+  .acms-dl-line dt {
     float: left;
     text-align: right;
   }
+
   .acms-dl-horizontal dd,
-  .acms-dl-line dd{
+  .acms-dl-line dd {
     padding-left: 180px;
   }
 }
@@ -165,20 +177,20 @@
 // ---------------
 // WebFont
 // ---------------
-.acms-icon{
+.acms-icon {
   padding-right: 8px;
 }
 
-[class*="acms-icon-"] {
-  display:inline-block;
-  font-weight:normal;
-  font-family:"acms-fonts";
-  font-style:normal;
-  line-height:1;
-  text-transform:none;
-  text-decoration:inherit;
-  vertical-align:middle;
-  speak:none;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+[class*='acms-icon-'] {
+  display: inline-block;
+  font-weight: normal;
+  font-family: acms-fonts;
+  font-style: normal;
+  line-height: 1;
+  text-transform: none;
+  text-decoration: inherit;
+  vertical-align: middle;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

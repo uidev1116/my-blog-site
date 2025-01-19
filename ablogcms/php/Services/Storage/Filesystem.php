@@ -136,18 +136,23 @@ class Filesystem extends Base implements FilesystemInterface
     {
         $cache = Cache::temp();
         $cacheKey = md5($path);
-        if ($cache->has($cacheKey)) {
-            return $cache->get($cacheKey);
+        $cacheItem = $cache->getItem($cacheKey);
+        if ($cacheItem && $cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         if ($this->exists($path) && $this->isFile($path)) {
             $imageSize = getimagesize($path);
-            $cache->put($cacheKey, $imageSize);
+            $cacheItem->set($imageSize);
+            $cache->putItem($cacheItem);
+
             return $imageSize;
         } elseif (preg_match('/^https?:\/\//', $path)) {
             $headers = get_headers($path);
             if (isset($headers[0]) && strpos($headers[0], '200 OK') !== false) {
                 $imageSize = getimagesize($path);
-                $cache->put($cacheKey, $imageSize);
+                $cacheItem->set($imageSize);
+                $cache->putItem($cacheItem);
+
                 return $imageSize;
             }
         }
@@ -249,7 +254,7 @@ class Filesystem extends Base implements FilesystemInterface
         $path = $this->convertStrToLocal($path);
         $byte = file_put_contents($path, $contents);
         if (is_int($byte)) {
-            $this->changeMod($path);
+            @$this->changeMod($path);
             return $byte;
         }
         throw new \RuntimeException('failed to put contents in ' . $path);
@@ -355,6 +360,7 @@ class Filesystem extends Base implements FilesystemInterface
     public function makeDirectory($path)
     {
         $dir = '';
+        $path = str_replace(DIRECTORY_SEPARATOR, '/', $path); // Windows環境対策でディレクトリ区切り文字を”/”に統一
         foreach (preg_split("@(/)@", $path, -1, PREG_SPLIT_DELIM_CAPTURE) as $i => $token) {
             $dir .= $token;
             if (empty($dir)) {

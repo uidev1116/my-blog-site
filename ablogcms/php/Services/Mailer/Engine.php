@@ -3,14 +3,17 @@
 namespace Acms\Services\Mailer;
 
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\File;
-use Storage;
-use Common;
-use RuntimeException;
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Config;
 use Acms\Services\Mailer\Contracts\MailerInterface;
+use Acms\Services\Mailer\Transport\GoogleApi;
+use ACMS_RAM;
+use RuntimeException;
 
 class Engine implements MailerInterface
 {
@@ -84,6 +87,23 @@ class Engine implements MailerInterface
             $passwd = urlencode($config['smtp-pass']);
 
             $transport = Transport::fromDsn("smtp://$user:$passwd@$host:$port");
+        } elseif (isset($config['smtp-google']) && $config['smtp-google'] === 'enable') {
+            // google-smtp
+            $api = Application::make('mailer.google.smtp.api');
+            assert($api instanceof GoogleApi);
+            $bid = BID;
+            $setid = Config::getCurrentConfigSetId();
+            if ($setid) {
+                $bid = ACMS_RAM::configSetBlog($setid);
+            }
+            $api->init($bid, $setid);
+            $accessToken = $api->getAccessToken();
+            if (empty($accessToken) || !isset($accessToken['access_token'])) {
+                throw new RuntimeException('Gmail API のアクセストークンの取得に失敗しました。');
+            }
+            $transport = new EsmtpTransport('smtp.gmail.com', 587);
+            $transport->setUsername($config['smtp-google-user']);
+            $transport->setPassword($accessToken['access_token']);
         } elseif (!empty($config['sendmail_path'])) {
             // sendmail
             $transport = Transport::fromDsn('native://default');

@@ -8,11 +8,11 @@ class ACMS_Validator_Approval extends ACMS_Validator
 {
     function date($date)
     {
-        return preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date);
+        return preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date) === 1;
     }
 
     function time($time)
     {
-        return preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $time);
+        return preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $time) === 1;
     }
 }

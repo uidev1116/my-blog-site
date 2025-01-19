@@ -1,56 +1,60 @@
-@use "sass:math";
+@use 'sass:math';
 
 // ------------------------------
 // grid
 // ------------------------------
-@mixin make-grid($name,$grid-name,$number){
-  @for $i from 1 through $number{
-    @if $grid-name{
-      .#{$name}-#{$grid-name}-#{$i}{
+@mixin make-grid($name, $grid-name, $number) {
+  @for $i from 1 through $number {
+    @if $grid-name {
+      .#{$name}-#{$grid-name}-#{$i} {
         @if $i != $number {
           float: left;
-        } @else{
+        } @else {
           float: none;
         }
+
         width: percentage(math.div($i, $number));
       }
     } @else {
-      .#{$name}-#{$i}{
+      .#{$name}-#{$i} {
         @if $i != $number {
           float: left;
-        } @else{
+        } @else {
           float: none;
         }
+
         width: percentage(math.div($i, $number));
       }
     }
   }
 }
 
-@mixin make-pulled-grid($name,$grid-name,$number){
-  $limit : $number - 1;
-  @for $i from 1 through $limit{
-    @if $grid-name{
-      .#{$name}-#{$grid-name}-#{$i}{
+@mixin make-pulled-grid($name, $grid-name, $number) {
+  $limit: $number - 1;
+
+  @for $i from 1 through $limit {
+    @if $grid-name {
+      .#{$name}-#{$grid-name}-#{$i} {
         right: percentage(math.div($i, $number));
       }
     } @else {
-      .#{$name}-#{$i}{
+      .#{$name}-#{$i} {
         right: percentage(math.div($i, $number));
       }
     }
   }
 }
 
-@mixin make-pushed-grid($name,$grid-name,$number){
-  $limit : $number - 1;
-  @for $i from 1 through $limit{
-    @if $grid-name{
-      .#{$name}-#{$grid-name}-#{$i}{
+@mixin make-pushed-grid($name, $grid-name, $number) {
+  $limit: $number - 1;
+
+  @for $i from 1 through $limit {
+    @if $grid-name {
+      .#{$name}-#{$grid-name}-#{$i} {
         left: percentage(math.div($i, $number));
       }
     } @else {
-      .#{$name}-#{$i}{
+      .#{$name}-#{$i} {
         left: percentage(math.div($i, $number));
       }
     }

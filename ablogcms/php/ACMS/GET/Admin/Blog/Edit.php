@@ -23,7 +23,7 @@ class ACMS_GET_Admin_Blog_Edit extends ACMS_GET_Admin_Edit
             if ('insert' <> $this->edit) {
                 $Blog->overload(loadBlog(BID));
                 $Field->overload(loadBlogField(BID));
-                $Config->overload(Config::loadBlogConfigSet(BID));
+                $Config->overload(Config::loadBlogField(BID));
                 $Geo->overload(loadGeometry('bid', BID));
             } else {
                 //---------

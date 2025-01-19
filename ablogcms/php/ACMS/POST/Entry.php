@@ -127,28 +127,6 @@ class ACMS_POST_Entry extends ACMS_POST
     /**
      * ToDo: deprecated method 2.7.0
      */
-    function extractColumn(&$summaryRange = null, $olddel = true, $directAdd = false)
-    {
-        $unit = Entry::extractColumn($summaryRange, $olddel, $directAdd);
-        $summaryRange = Entry::getSummaryRange();
-
-        return $unit;
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     */
-    function saveColumn(&$Column, $eid, $bid, $add = false, $rvid = null)
-    {
-        $main_image_id = Entry::saveColumn($Column, $eid, $bid, $add, $rvid);
-        $Column = Entry::getSavedColumn();
-
-        return $main_image_id;
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     */
     function saveRelatedEntries($eid, $entryAry = [], $rvid = null)
     {
         Entry::saveRelatedEntries($eid, $entryAry, $rvid);
@@ -160,17 +138,6 @@ class ACMS_POST_Entry extends ACMS_POST
     function saveEntryRevision($eid, $entryAry, $type = null, $memo = '')
     {
         return Entry::saveEntryRevision($eid, $entryAry, $type, $memo);
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     */
-    function saveUnitRevision(&$Unit, $eid, $bid, $rvid)
-    {
-        $main_image_id = Entry::saveUnitRevision($Unit, $eid, $bid, $rvid);
-        $Unit = Entry::getSavedColumn();
-
-        return $main_image_id;
     }
 
     /**

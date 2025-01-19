@@ -5,7 +5,7 @@
 <!-- BEGIN_MODULE Touch_Version -->
 <div class="acms-admin-revison-admin">
   <!-- BEGIN_MODULE Admin_Entry_Revision_Current -->
-	<form action="" method="post" class="acms-admin-inline-btn">
+	<form action="" method="post">
 		<input type="button" value="<!--T-->バージョン管理<!--/T-->" class="js-get_revisions acms-admin-btn-admin" />
 		<!-- BEGIN_MODULE Touch_NotsessionWithApprovalAdministrator -->
     <!-- BEGIN_IF [%{rvid}/eq/1/_or_/%{rvid}/em/] -->
@@ -30,21 +30,40 @@
 		<!-- END_MODULE Touch_NotsessionWithApprovalAdministrator -->
 	</form>
 
-	<hr class="clearHidden" />
-
   <!-- BEGIN_MODULE Touch_Approval -->
   <!-- BEGIN_IF [{rev_status}/eq/in_review] -->
   <span class="acms-admin-label acms-admin-label-warning">承認中</span>
   <!-- ELSE_IF [{rev_status}/eq/approved] -->
-  <span class="acms-admin-label acms-admin-label-info">承認済み</span>
+  <span class="acms-admin-label acms-admin-label-success">承認済み</span>
   <!-- ELSE_IF [{rev_status}/eq/reject] -->
   <span class="acms-admin-label acms-admin-label-danger">承認却下</span>
   <!-- END_IF -->
   <!-- END_MODULE Touch_Approval -->
 
-	<!-- BEGIN currentVersion:veil --><!--T-->公開バージョン<!--/T--> : <span class="acms-admin-label acms-admin-label-info">{currentVersion}</span><!-- END currentVersion:veil -->
-  <!-- BEGIN currentVersionName:veil --><!--T-->表示中のバージョン名<!--/T--> : <b>{currentVersionName}</b><!-- END currentVersionName:veil -->
-	<!-- BEGIN notExistCurrentVersion -->（<!--T-->公開されているバージョンはありません<!--/T-->）<!-- END notExistCurrentVersion -->
+  <!-- BEGIN currentVersionName:veil -->
+  <div>
+    <span class="acms-admin-label acms-admin-label-warning acms-admin-margin-right-mini">
+      <!-- BEGIN_IF [%{ADMIN}/nem] -->
+      <!--T-->編集中バージョン<!--/T-->
+      <!-- ELSE -->
+      <!--T-->表示中バージョン<!--/T-->
+      <!-- END_IF -->
+    </span>
+    <span class="acms-admin-revison-admin__label">{editVersionName}（ID={editVersion}）</span>
+  </div>
+  <!-- END currentVersionName:veil -->
+	<!-- BEGIN currentVersion:veil -->
+  <div>
+    <span class="acms-admin-label acms-admin-label-info acms-admin-margin-right-mini"><!--T-->公開中バージョン<!--/T--></span>
+    <span class="acms-admin-revison-admin__label">{currentVersionName}（ID={currentVersion}）</span>
+  </div>
+  <!-- END currentVersion:veil -->
+	<!-- BEGIN notExistCurrentVersion -->
+  <div>
+    <span class="acms-admin-label acms-admin-label-info acms-admin-margin-right-mini"><!--T-->公開中バージョン<!--/T--></span>
+    <span class="acms-admin-revison-admin__label">なし</span>
+  </div>
+  <!-- END notExistCurrentVersion -->
 	<!-- END_MODULE Admin_Entry_Revision_Current -->
 </div>
 <!-- END_MODULE Touch_Version -->

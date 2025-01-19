@@ -4,6 +4,7 @@
 /* ------------------------------
  ユニットグループ
 ------------------------------- */
+
 /* ------------------------------
  フロート解除
 ------------------------------ */
@@ -18,12 +19,6 @@
 }
 
 /* ------------------------------
- 動的フォーム
------------------------------- */
-.entryFormOption {
-}
-
-/* ------------------------------
  エントリー内 主な要素
 ------------------------------ */
 $text-unit-tags: 'h2', 'h3', 'h4', 'h5', 'h6', 'dl', 'p' !default;
@@ -31,8 +26,7 @@ $unit-type: 'image', 'file', 'map', 'yolp', 'street-view', 'youtube', 'video', '
 $align: 'left', 'right', 'center', 'auto' !default;
 $unit-gutter: 20px !default;
 $_unit-margin-bottom: $unit-gutter !default;
-
-$_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !default;
+$_hightlight-colors: #ff6, #a0ffff, #9f9, #f99, #f6f, #800 !default;
 
 .#{global.$entry-class} {
   [class*='#{global.$grid-column-name}'] {
@@ -50,8 +44,9 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
       margin-left: math.div($unit-gutter, 2);
     }
   }
+
   blockquote {
-    margin: 0 0 $unit-gutter 0;
+    margin: 0 0 $unit-gutter;
     padding: 10px 20px;
     border-left: solid 5px global.$acms-color-gray60;
   }
@@ -66,7 +61,7 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
     @if $unit == 'map' {
       border-right: math.div($unit-gutter, 2) solid transparent;
       border-left: math.div($unit-gutter, 2) solid transparent;
-      box-sizing: border-box;
+      box-sizing: border-box; // stylelint-disable-line order/properties-order
     } @else if $unit == 'quote' {
       margin-right: math.div($unit-gutter, 2);
       margin-left: math.div($unit-gutter, 2);
@@ -77,8 +72,8 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
       }
     } @else {
       padding-left: math.div($unit-gutter, 2);
-      padding-right: math.div($unit-gutter, 2);
-      box-sizing: border-box;
+      padding-right: math.div($unit-gutter, 2); // stylelint-disable-line order/properties-order
+      box-sizing: border-box; // stylelint-disable-line order/properties-order
     }
   }
 }
@@ -108,8 +103,9 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
     height: auto;
     vertical-align: top;
   }
+
   .caption {
-    margin: 5px 0 0 0;
+    margin: 5px 0 0;
   }
 }
 
@@ -134,6 +130,7 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
   > img {
     max-width: 100%;
   }
+
   // 地図ユニットのアイコンの調整
   img {
     width: auto;
@@ -155,6 +152,7 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
   blockquote {
     padding: 20px 10px 20px 20px;
   }
+
   /* 引用ユニット画像 */
   .quoteImageContainer {
     position: relative;
@@ -168,11 +166,13 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
     max-width: 100%;
     height: auto;
   }
+
   /* 引用ユニットテキスト */
   .quoteTitle {
-    margin: 0 0 5px 0;
+    margin: 0 0 5px;
     padding: 0;
     line-height: 1.4;
+
     @include global.font-size(18);
   }
 
@@ -181,9 +181,10 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
   }
 
   .quoteSiteName {
-    margin: 0 0 10px 0;
+    margin: 0 0 10px;
     padding: 0;
     color: global.$acms-color-gray90;
+
     @include global.font-size(11);
   }
 
@@ -192,6 +193,7 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
     padding: 0;
     color: global.$acms-color-black;
     line-height: 1.6;
+
     @include global.font-size(12);
   }
 }
@@ -202,36 +204,45 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
     .column-#{$unit}-#{$align-name} {
       @if $unit == 'file' {
         text-align: #{$align-name};
+
         & + .caption {
           text-align: #{$align-name};
         }
       } @else if $unit == 'media' {
-        :not([href*='media-download']):not([href*='storage']) + .caption {
+        :not([href*='media-download'], [href*='storage']) + .caption {
           /* 画像のキャプションを中央寄せにする記述(media-downloadは動的、storageは静的書き出しに対応しています) */
           text-align: center;
         }
       }
 
       @if $align-name == left {
-        float: left;
-        text-align: left;
+        & {
+          float: left;
+          text-align: left;
+        }
       }
 
       @if $align-name == right {
-        float: right;
-        text-align: right;
+        & {
+          float: right;
+          text-align: right;
+        }
       }
 
       @if $align-name == center {
-        display: block;
-        float: none;
-        margin-right: auto;
-        margin-left: auto;
-        text-align: center;
+        & {
+          display: block;
+          float: none;
+          margin-right: auto;
+          margin-left: auto;
+          text-align: center;
+        }
       }
 
       @if $align-name == auto {
-        float: none;
+        & {
+          float: none;
+        }
       }
     }
   }
@@ -257,6 +268,7 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
   [class*='acms-col-'][class*='-right'] {
     float: left;
   }
+
   [class*='acms-col-'][class*='-right'] + * {
     clear: both;
   }
@@ -308,11 +320,6 @@ $_hightlight-colors: #ffff66, #a0ffff, #99ff99, #ff9999, #ff66ff, #880000 !defau
 
 /* 検索結果のハイライト
 ------------------------------ */
-@for $i from 1 to 6 {
-  .highlight#{$i} {
-  }
-}
-
 @each $hightlight-color in $_hightlight-colors {
   $index: index($_hightlight-colors, $hightlight-color);
 

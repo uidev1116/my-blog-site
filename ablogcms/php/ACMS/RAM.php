@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Cache;
+
 /**
  * ACMS_RAM
  *
@@ -95,7 +97,7 @@ class ACMS_RAM
         if (!$id = intval($id)) {
             return false;
         }
-        if (empty(self::$cache)) {
+        if (self::$cache === null) {
             self::$cache = Cache::temp();
         }
         $s = explode('_', $key, 2);
@@ -103,34 +105,33 @@ class ACMS_RAM
         if (strpos($key, 'config_set') === 0) {
             $type = 'config_set';
         }
-        $all = $type === $key;
+        $isAll = $type === $key;
         $cacheKey = "cache-ram-$type-$id";
-        $nocache = ($type === 'unit' || $type === 'comment') ? true : false;
+        $isCacheType = in_array($type, ['unit', 'comment'], true);
+        $cacheItem = $isCacheType ? self::$cache->getItem($cacheKey) : null;
 
         if (3 <= func_num_args()) {
             if (empty($val)) {
                 self::$cache->forget($cacheKey);
             } else {
-                if ($all) {
+                if ($isAll) {
                     $table[$type][$id] = $val;
                 } else {
                     $table[$type][$id][$key] = $val;
                 }
-                if ($nocache) {
-                    self::$cache->put($cacheKey, $table[$type][$id]);
+                if ($isCacheType) {
+                    $cacheItem->set($table[$type][$id]);
+                    self::$cache->putItem($cacheItem);
                 }
             }
             return true;
         } else {
-            if (!isset($table[$type])) {
-                $table[$type] = [];
-            }
-            if (!isset($table[$type][$id])) {
-                $table[$type][$id] = [];
-            }
-            if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
-                if (self::$cache->has($cacheKey)) {
-                    $table[$type][$id] = self::$cache->get($cacheKey);
+            $table[$type] = $table[$type] ?? [];
+            $table[$type][$id] = $table[$type][$id] ?? [];
+
+            if ($isAll ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
+                if ($isCacheType && $cacheItem->isHit()) {
+                    $table[$type][$id] = $cacheItem->get();
                 } else {
                     DB::setThrowException(true);
                     try {
@@ -141,19 +142,20 @@ class ACMS_RAM
                             return null;
                         }
                         $table[$type][$id] = $row;
-                        if ($nocache) {
-                            self::$cache->put($cacheKey, $row);
+                        if ($isCacheType) {
+                            $cacheItem->set($row);
+                            self::$cache->putItem($cacheItem);
                         }
                     } catch (\Exception $e) {
                     }
                     DB::setThrowException(false);
                 }
-                if ($all ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
+                if ($isAll ? empty($table[$type][$id]) : !array_key_exists($key, $table[$type][$id])) {
                     AcmsLogger::error("$type テーブルのID「" . $id . "」に該当する $key カラムが取得できませんでした");
                     return null;
                 }
             }
-            return $all ? $table[$type][$id] : $table[$type][$id][$key];
+            return $isAll ? $table[$type][$id] : $table[$type][$id][$key];
         }
     }
 
@@ -1468,6 +1470,16 @@ class ACMS_RAM
     public static function configSetName($setid)
     {
         return ACMS_RAM::_mapping('config_set_name', $setid);
+    }
+
+    /**
+     * 指定されたidから該当するコンフィグセットのブログIDを返します
+     * @param int $setid
+     * @return string|null
+     */
+    public static function configSetBlog($setid)
+    {
+        return ACMS_RAM::_mapping('config_set_blog_id', $setid);
     }
 
     /**

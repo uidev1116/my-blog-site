@@ -83,6 +83,7 @@ class Engine implements Base
     public function __construct($lifetime, $shareUrl)
     {
         $app = App::getInstance();
+        assert($app instanceof \Acms\Application);
         $this->get = $app->getGetParameter();
         $this->lifetime = $lifetime;
         $this->shareUrl = $shareUrl;

@@ -22,7 +22,14 @@
 <body>
 <!-- BEGIN_MODULE Admin_Preview_Share -->
 <!-- BEGIN_IF [{url}/nem/] -->
-<div class="js-acms-preview check-csrf-token" data-url="{url}" data-share="0" style="position: relative; height: 100vh;" data-default-device="%{PREVIEW_DEFAULT_DEVICE}"></div>
+<div
+  class="js-acms-preview check-csrf-token"
+  style="width: 100vw; height: 100vh;"
+  data-url="{url}"
+  data-share="0"
+  data-enable-naked="1"
+  data-default-device="%{PREVIEW_DEFAULT_DEVICE}"
+></div>
 <!-- ELSE -->
 <div class="acms-admin-container">
 	<div class="acms-admin-grid">

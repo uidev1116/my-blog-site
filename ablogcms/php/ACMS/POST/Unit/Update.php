@@ -1,34 +1,42 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Database;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Webhook;
+
 class ACMS_POST_Unit_Update extends ACMS_POST_Unit
 {
     function post()
     {
-        $bid    = $this->Post->get('bid');
-        $eid    = $this->Post->get('eid');
-        $entry  = ACMS_RAM::entry($eid);
+        $bid = (int) $this->Post->get('bid');
+        $eid = (int) $this->Post->get('eid');
+        $entry = ACMS_RAM::entry($eid);
 
         if (!roleEntryUpdateAuthorization(BID, $entry)) {
             die();
         }
 
-        $Column = Entry::extractColumn();
-        $Res = Entry::saveColumn($Column, $eid, $bid, true);
+        /** @var \Acms\Services\Unit\Repository $unitRepository */
+        $unitRepository = Application::make('unit-repository');
 
-        $primaryImageId_p   = $this->Post->get('primary_image');
-        $primaryImageId     = empty($Res) ? null : (
-            !UTID ? reset($Res) : (
-                !empty($Res[UTID]) ? $Res[UTID] : reset($Res)
+        $units = $unitRepository->extractUnits(null);
+        $imageUnitIdTable = $unitRepository->saveUnits($units, $eid, $bid, true);
+
+        $primaryImageId_p = $this->Post->get('primary_image');
+        $primaryImageId = empty($imageUnitIdTable) ? null : (
+            !UTID ? reset($imageUnitIdTable) : (
+                !empty($imageUnitIdTable[UTID]) ? $imageUnitIdTable[UTID] : reset($imageUnitIdTable)
             )
         );
 
         if (intval($primaryImageId) > 0 && intval($primaryImageId_p) === intval($primaryImageId)) {
-            $DB     = DB::singleton(dsn());
-            $SQL    = SQL::newUpdate('entry');
-            $SQL->addUpdate('entry_primary_image', $primaryImageId);
-            $SQL->addWhereOpr('entry_id', EID);
-            $SQL->addWhereOpr('entry_blog_id', BID);
-            $DB->query($SQL->get(dsn()), 'exec');
+            $sql = SQL::newUpdate('entry');
+            $sql->addUpdate('entry_primary_image', $primaryImageId);
+            $sql->addWhereOpr('entry_id', EID);
+            $sql->addWhereOpr('entry_blog_id', BID);
+            Database::query($sql->get(dsn()), 'exec');
             ACMS_RAM::entry(EID, null);
         }
 
@@ -42,8 +50,9 @@ class ACMS_POST_Unit_Update extends ACMS_POST_Unit
             $Hook->call('saveEntry', [EID, 1]);
             Webhook::call(BID, 'entry', 'entry:updated', [EID, null]);
         }
+        $log = isset($units[0]) ? $units[0]->getLegacyData() : [];
 
-        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのユニットを更新しました', $Column);
+        Logger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーのユニットを更新しました', $log);
 
         return $this->Post;
     }

@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 /* ------------------------------
  管理画面の専用
@@ -15,6 +15,7 @@ body {
   height: 100%;
   margin: 0;
   font-family: global.$acms-admin-font-family;
+
   @include global.font-size(13);
 }
 
@@ -22,9 +23,9 @@ body {
 // フォント
 // ------------------------------
 .acms-font {
-  font-family: 'acms-fonts', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W6', Meiryo, 'メイリオ', 'ＭＳ Ｐゴシック', 'MS PGothic', Verdana, sans-serif;
+  font-family: acms-fonts, 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W6', Meiryo, 'メイリオ', 'ＭＳ Ｐゴシック',
+    'MS PGothic', Verdana, sans-serif;
 }
-
 
 // ------------------------------
 // リンクカラー
@@ -33,10 +34,6 @@ body {
 a {
   color: #006dec;
   text-decoration: none;
-}
-
-// visited
-a:visited {
 }
 
 // hover
@@ -59,7 +56,6 @@ a:active {
     padding-left: 170px;
   }
 
-
   #nav {
     position: fixed;
     width: 175px;
@@ -68,5 +64,4 @@ a:active {
   #outer-wrap {
     overflow: visible;
   }
-
 }

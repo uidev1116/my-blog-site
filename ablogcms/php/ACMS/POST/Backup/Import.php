@@ -39,7 +39,7 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
             ignore_user_abort(true);
             set_time_limit(0);
 
-            $this->backupTempDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_tmp/';
+            $this->backupTempDir = MEDIA_STORAGE_DIR . 'backup_tmp/';
             $this->replication = App::make('db.replication');
             $this->versionCheck = $this->Post->get('version_check');
 
@@ -164,7 +164,7 @@ class ACMS_POST_Backup_Import extends ACMS_POST_Backup_Base
             throw new \RuntimeException('無効なファイルです。DBエクスポートファイルを選択して下さい。');
         }
         Storage::removeDirectory($this->backupTempDir);
-        Storage::unzip($this->backupDatabaseDir . $file_name, SCRIPT_DIR . MEDIA_STORAGE_DIR);
+        Storage::unzip($this->backupDatabaseDir . $file_name, MEDIA_STORAGE_DIR);
 
         if (!Storage::exists($this->backupTempDir . 'sql_query.sql')) {
             $finder = new Finder();

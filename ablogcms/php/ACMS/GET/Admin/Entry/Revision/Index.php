@@ -15,7 +15,7 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
         $reserveRvid = $this->getReserveRevisionId(EID);
         $revisionAry = $this->getRevisionsData(EID);
         $vars = [
-            'current_rvid' => $currentRvid,
+            'current_rvid' => intval($currentRvid) > 1 ? $currentRvid : null,
             'reserve_rev_id' => $reserveRvid,
             'view_rvid' => RVID,
         ];
@@ -40,7 +40,7 @@ class ACMS_GET_Admin_Entry_Revision_Index extends ACMS_GET_Admin_Entry_Revision
 
             $revision = [
                 'rvid' => $rvid,
-                'current_rvid' => $currentRvid,
+                'current_rvid' => intval($currentRvid) > 1 ? $currentRvid : null,
                 'reserve_rvid' => $reserveRvid,
                 'view_rvid' => RVID,
                 'memo' => $rev['entry_rev_memo'],

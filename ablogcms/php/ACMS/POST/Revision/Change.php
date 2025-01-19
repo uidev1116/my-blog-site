@@ -17,8 +17,8 @@ class ACMS_POST_Revision_Change extends ACMS_POST_Entry
                     throw new \RuntimeException('権限がありません');
                 }
             } else {
-                if (!sessionWithCompilation(BID, false)) {
-                    if (!sessionWithContribution(BID, false)) {
+                if (!sessionWithCompilation(BID)) {
+                    if (!sessionWithContribution(BID)) {
                         throw new \RuntimeException('権限がありません');
                     }
                     if (SUID <> ACMS_RAM::entryUser(EID)) {

@@ -12,7 +12,7 @@ class Logger
     protected $destinationPath = '';
 
     /**
-     * @var object
+     * @var \stdClass
      */
     protected $json;
 

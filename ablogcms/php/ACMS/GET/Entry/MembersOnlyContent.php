@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Application;
+
 class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
 {
     public $_scope = [
@@ -95,13 +97,18 @@ class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
         if (!$rvid && $entry['entry_approval'] === 'pre_approval') {
             $rvid_ = 1;
         }
-        $allColumn = loadColumn($eid, null, $rvid_);
+        /** @var \Acms\Services\Unit\Repository $unitService */
+        $unitService = Application::make('unit-repository');
+        /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+        $unitRenderingService = Application::make('unit-rendering-front');
+
+        $allColumn = $unitService->loadUnits($eid, $rvid_);
         $page = 1;
         foreach ($allColumn as $i => $col) {
             if ($i >= $summaryRange) {
                 break;
             }
-            if ('break' === $col['type']) {
+            if ('break' === $col->getUnitType()) {
                 $page += 1;
             }
         }
@@ -111,14 +118,14 @@ class ACMS_GET_Entry_MembersOnlyContent extends ACMS_GET_Entry
             $micropage = intval($this->page);
             $column2 = [];
             foreach ($column as $col) {
-                if ('break' === $col['type']) {
+                if ('break' === $col->getUnitType()) {
                     $break++;
                 }
                 if ($micropage === $break) {
                     $column2[] = $col;
                 }
             }
-            $this->buildColumn($column2, $tpl, $eid);
+            $unitRenderingService->render($column2, $tpl, $eid);
         }
     }
 }

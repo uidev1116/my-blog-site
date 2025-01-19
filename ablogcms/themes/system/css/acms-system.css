@@ -1,6 +1,6 @@
 @charset "utf-8";
 /*!
- * acms.css Ver. 2.1.3
+ * acms.css Ver. 2.1.4
  * Copyright appleple
  * license: MIT
  *
@@ -8,11 +8,12 @@
  *
  */
 
+/* stylelint-disable value-keyword-case */
 /* ------------------------------
  管理画面の専用
 ------------------------------ */
 html.is-admin-page {
-  background: #FFF;
+  background: #fff;
 }
 
 html.is-login {
@@ -22,7 +23,9 @@ html.is-login {
 body {
   height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+body {
   font-size: 13px;
 }
 @media print {
@@ -32,7 +35,7 @@ body {
 }
 
 .acms-admin-font {
-  font-family: "acms-admin-fonts", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W6", Meiryo, "メイリオ", "ＭＳ Ｐゴシック", "MS PGothic", Verdana, sans-serif;
+  font-family: acms-fonts, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W6", Meiryo, "メイリオ", "ＭＳ Ｐゴシック", "MS PGothic", Verdana, sans-serif;
 }
 
 a {
@@ -63,6 +66,8 @@ a:active {
 .acms-admin-tab-text {
   display: block;
   max-width: 300px;
+}
+.acms-admin-tab-text {
   font-size: 12px;
 }
 @media print {
@@ -89,9 +94,9 @@ a:active {
 }
 
 #adminBox {
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 12px 20px 10px;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   border: none;
 }
 
@@ -103,6 +108,9 @@ a:active {
 .categoryTitle {
   display: inline-block;
   font-weight: bold;
+}
+.acms-admin-entryTitle,
+.categoryTitle {
   font-size: 13px;
 }
 @media print {
@@ -140,46 +148,46 @@ a:active {
   text-decoration: none;
   vertical-align: middle;
   border-radius: 3px;
-  -webkit-transition: background-color 0.2s, border-color 0.2s;
   transition: background-color 0.2s, border-color 0.2s;
+}
+#tagList li a {
   font-size: 14px;
-  color: #333333;
-  background-color: #F7F7F7;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-transition: background-color 0.2s;
-  transition: background-color 0.2s;
 }
 @media print {
   #tagList li a {
     font-size: 14px;
   }
 }
+#tagList li a {
+  color: #333;
+  background-color: #f7f7f7;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+}
 #tagList li a:link, #tagList li a:hover, #tagList li a:active, #tagList li a:visited {
-  color: #333333;
+  color: #333;
 }
 #tagList li a:hover {
   text-decoration: none;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   border-color: rgba(0, 0, 0, 0.3);
 }
 #tagList li a:active, #tagList li a-active {
-  color: #333333;
+  color: #333;
   text-decoration: none;
-  background-color: #E1E1E1;
+  background-color: #e1e1e1;
   border-color: rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 #tagList li a:active[disabled], #tagList li a-active[disabled] {
   opacity: 1;
   filter: alpha(opacity=1);
 }
 #tagList li a:focus {
-  background-color: #F7F7F7;
-  border-color: #137AF3;
+  background-color: #f7f7f7;
+  border-color: #137af3;
   outline: none;
-  -webkit-box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4);
-          box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4);
+  box-shadow: 0 0 0 2px rgba(19, 122, 243, 0.4);
 }
 @media screen and (min-width: 768px) {
   #tagList li a {
@@ -190,8 +198,9 @@ a:active {
     text-decoration: none;
     vertical-align: middle;
     border-radius: 3px;
-    -webkit-transition: background-color 0.2s, border-color 0.2s;
     transition: background-color 0.2s, border-color 0.2s;
+  }
+  #tagList li a {
     font-size: 12px;
   }
 }
@@ -203,7 +212,7 @@ a:active {
 }
 
 .admin-entry-index-val {
-  color: #666666;
+  color: #666;
 }
 
 .acms-admin-title-sp {
@@ -224,7 +233,7 @@ a:active {
 }
 
 .acms-admin-shortcut-btn {
-  padding: 7px 10px 6px 10px;
+  padding: 7px 10px 6px;
 }
 
 .acms-admin-form-side-select {
@@ -260,12 +269,12 @@ a:active {
 }
 
 .acms-admin-bg-light-gray {
-  background: #F2F2F5;
+  background: #f2f2f5;
 }
 
 .acms-admin-update-panel {
   padding: 15px 25px;
-  background: #F2F2F5;
+  background: #f2f2f5;
   border-radius: 6px;
 }
 
@@ -281,7 +290,7 @@ a:active {
   height: 30px;
   margin: 0 5px;
   background-image: none;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #ccc;
 }
 
 .acms-admin-config-name {
@@ -306,7 +315,9 @@ a:active {
 }
 .acms-admin-config-name .acms-admin-config-module-name-en {
   display: block;
-  color: #777777;
+  color: #777;
+}
+.acms-admin-config-name .acms-admin-config-module-name-en {
   font-size: 11px;
 }
 @media print {
@@ -321,9 +332,11 @@ a:active {
 .acms-admin-config-code a {
   display: none;
   margin-left: 10px;
-  font-size: 11px;
-  color: #888888;
+  color: #888;
   vertical-align: middle;
+}
+.acms-admin-config-code a {
+  font-size: 11px;
 }
 @media print {
   .acms-admin-config-code a {
@@ -347,7 +360,7 @@ a:active {
 }
 
 .acms-admin-dropdown-menu > li > a {
-  color: #333333;
+  color: #333;
 }
 
 .acms-admin-btn-admin + .acms-admin-dropdown-toggle {
@@ -379,19 +392,19 @@ a:active {
 .fixed.acms_fix_bg {
   z-index: 100002;
   width: 100%;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+}
+.fixed.acms_fix_bg {
+  box-sizing: border-box;
 }
 
 .acms_fix_bg_index {
-  -webkit-box-sizing: content-box;
-          box-sizing: content-box;
+  box-sizing: content-box;
 }
-.acms_fix_bg_index:before, .acms_fix_bg_index:after {
+.acms_fix_bg_index::before, .acms_fix_bg_index::after {
   display: table;
   content: " ";
 }
-.acms_fix_bg_index:after {
+.acms_fix_bg_index::after {
   clear: both;
 }
 
@@ -414,17 +427,15 @@ a:active {
   height: 32px;
   margin-right: 0;
   padding: 10px 0;
-  background-color: #FFF;
-  -webkit-box-shadow: 0 0 0 #FFF;
-          box-shadow: 0 0 0 #FFF;
+  background-color: #fff;
+  box-shadow: 0 0 0 #fff;
 }
 
 @media screen and (min-width: 768px) {
   .fixed .acms_fix_bg_index {
     height: 32px;
     padding: 10px 0;
-    -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
-            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
   }
 }
 .fixed .acms_fix_bg_index .acms-admin-btn-admin {
@@ -451,15 +462,14 @@ a:active {
 }
 .acms-admin-navbar-admin {
   z-index: 100010;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   width: 100vw;
   height: 60px;
   padding: 0 10px;
   padding-right: calc(5px + constant(safe-area-inset-right));
   padding-left: calc(5px + constant(safe-area-inset-left));
   text-align: center;
-  background: #35353A;
+  background: #35353a;
 }
 .acms-admin-navbar-admin .logo {
   float: left;
@@ -477,6 +487,8 @@ a:active {
 .acms-admin-navbar-admin-nav {
   margin: 0 -10px;
   padding-left: 0;
+}
+.acms-admin-navbar-admin-nav {
   font-size: 22px;
 }
 @media print {
@@ -493,11 +505,14 @@ a:active {
   display: block;
   margin: 0 auto;
   padding: 5px 0;
-  color: #FFF;
+  color: #fff;
   line-height: 1.2;
   text-align: center;
   background: 0;
   border: 0;
+}
+.acms-admin-navbar-admin-nav > li > a,
+.acms-admin-navbar-admin-nav > li > button {
   font-size: 22px;
 }
 @media print {
@@ -524,16 +539,19 @@ a:active {
 }
 
 .acms-admin-user-profile {
-  border: 2px solid #F1F1F1;
+  border: 2px solid #f1f1f1;
   border-radius: 100%;
 }
 
 .acms-admin-title-blog,
 .acms-admin-title-rule {
   margin: 0;
-  font-size: 13px;
   font-weight: bold;
   border-bottom: 1px solid #9e9e9e;
+}
+.acms-admin-title-blog,
+.acms-admin-title-rule {
+  font-size: 13px;
 }
 @media print {
   .acms-admin-title-blog,
@@ -545,7 +563,7 @@ a:active {
 .acms-admin-title-rule a {
   display: block;
   padding: 20px 10px 20px 20px;
-  color: #333333;
+  color: #333;
 }
 
 .acms-admin-navbar-admin-nav > li > a:hover,
@@ -557,7 +575,7 @@ a:active {
 .acms-admin-title-blog .acms-admin-arrow-right {
   position: absolute;
   right: 10px;
-  margin: 5px 0 0 0;
+  margin: 5px 0 0;
 }
 
 @media screen and (min-width: 768px) {
@@ -593,8 +611,10 @@ a:active {
   right: 15px;
   width: auto;
   margin: 0;
+  color: #fff;
+}
+.acms-admin-navbar-system .acms-admin-list-blog-sp {
   font-size: 30px;
-  color: #FFF;
 }
 @media print {
   .acms-admin-navbar-system .acms-admin-list-blog-sp {
@@ -604,7 +624,9 @@ a:active {
 
 .acms-admin-title-cms {
   margin: 0;
-  padding: 15px 0 20px 0;
+  padding: 15px 0 20px;
+}
+.acms-admin-title-cms {
   font-size: 26px;
 }
 @media print {
@@ -619,7 +641,7 @@ a:active {
 
 .acms-admin-icon-logo.acms-admin-blog-color {
   display: block;
-  color: #FFF;
+  color: #fff;
 }
 
 .js-acms-color-picker-target {
@@ -637,8 +659,10 @@ a:active {
   right: 15px;
   width: auto;
   margin: 0;
+  color: #fff;
+}
+.acms-admin-navbar-system .acms-admin-list-blog-sp {
   font-size: 30px;
-  color: #FFF;
 }
 @media print {
   .acms-admin-navbar-system .acms-admin-list-blog-sp {
@@ -679,18 +703,17 @@ a:active {
 
 .js-acms_fix_marker {
   z-index: 100004;
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  background: #FFF;
+  background: #fff;
 }
 .js-acms_fix_marker.js-acms-tab-select {
   margin-bottom: 0;
 }
 .js-acms_fix_marker[style*="position: fixed;"] {
   margin: 0;
-  -webkit-box-shadow: 0 3px 0 rgba(50, 50, 50, 0.1);
-          box-shadow: 0 3px 0 rgba(50, 50, 50, 0.1);
+  box-shadow: 0 3px 0 rgba(50, 50, 50, 0.1);
 }
 
 .acms-admin-fix-right {
@@ -707,7 +730,7 @@ a:active {
   }
 }
 .is-admin-page .smartphoto {
-  z-index: 100048;
+  z-index: 100049;
   background-color: rgba(0, 0, 0, 0.9);
 }
 
@@ -733,8 +756,8 @@ a:active {
 .acms-admin-login-container {
   max-width: 480px;
   margin: 0 auto 80px;
-  background-color: #FFF;
   overflow: hidden;
+  background-color: #fff;
 }
 
 @media (min-width: 480px) {
@@ -746,9 +769,9 @@ a:active {
 }
 /* メインコンテンツボックス */
 .acms-admin-login-main-box {
+  margin-bottom: var(--login-space-section-y);
   padding-right: var(--login-space-container-x);
   padding-left: var(--login-space-container-x);
-  margin-bottom: var(--login-space-section-y);
 }
 
 /* ネガティブアクションボタンボックス */
@@ -776,11 +799,11 @@ a:active {
   width: 100%;
   height: auto;
   max-height: 140px;
+  margin-bottom: var(--login-space-section-y);
   -o-object-fit: contain;
      object-fit: contain;
   -o-object-position: center;
      object-position: center;
-  margin-bottom: var(--login-space-section-y);
 }
 
 /* アクションボタンラップ */
@@ -791,8 +814,8 @@ a:active {
 
 /* 見出し */
 .acms-admin-login-page-title {
-  margin-bottom: var(--login-space-section-y);
   margin-top: 0;
+  margin-bottom: var(--login-space-section-y);
   font-weight: normal;
   text-align: center;
 }
@@ -808,7 +831,7 @@ a:active {
   margin: var(--login-space-section-y) 0;
   text-align: center;
 }
-.acms-admin-login-border-text-outer:before {
+.acms-admin-login-border-text-outer::before {
   position: absolute;
   left: 0;
   margin: 10px 0 0;
@@ -818,12 +841,14 @@ a:active {
 }
 
 .acms-admin-login-border-text {
-  font-size: 13px;
-  color: #333333;
-  line-height: 1.4;
   position: relative;
   padding: 0 10px;
-  background: #FFF;
+  color: #333;
+  line-height: 1.4;
+  background: #fff;
+}
+.acms-admin-login-border-text {
+  font-size: 13px;
 }
 @media print {
   .acms-admin-login-border-text {
@@ -833,11 +858,13 @@ a:active {
 
 /* 説明テキスト */
 .acms-admin-login-notice-text {
-  font-size: 13px;
   margin: 20px 0;
-  color: #333333;
-  line-height: 1.4;
+  color: #333;
   font-weight: bold;
+  line-height: 1.4;
+}
+.acms-admin-login-notice-text {
+  font-size: 13px;
 }
 @media print {
   .acms-admin-login-notice-text {
@@ -847,9 +874,11 @@ a:active {
 
 /* リンクテキスト */
 .acms-admin-login-text-link {
-  font-size: 14px;
   line-height: 1.5;
   text-decoration: none;
+}
+.acms-admin-login-text-link {
+  font-size: 14px;
 }
 @media print {
   .acms-admin-login-text-link {
@@ -857,7 +886,7 @@ a:active {
   }
 }
 .acms-admin-login-text-link:link, .acms-admin-login-text-link:visited, .acms-admin-login-text-link:focus, .acms-admin-login-text-link:active {
-  color: #006DEC;
+  color: #006dec;
 }
 .acms-admin-login-text-link:hover {
   color: #8ebef7;
@@ -868,14 +897,16 @@ a:active {
 ------------------------------- */
 /* フォームラベル */
 .acms-admin-login-form-label {
-  font-size: 14px;
   display: block;
   margin-top: 12px;
   margin-bottom: 3px;
-  line-height: 1.4;
   /* legendタグスタイルリセット */
   padding: 0;
+  line-height: 1.4;
   border: 0;
+}
+.acms-admin-login-form-label {
+  font-size: 14px;
 }
 @media print {
   .acms-admin-login-form-label {
@@ -885,11 +916,13 @@ a:active {
 
 /* 注意文 */
 .acms-admin-login-input-caution {
-  font-size: 13px;
   margin: 6px 0 0;
   color: var(--login-color-error);
-  line-height: 1.4;
   font-weight: bold;
+  line-height: 1.4;
+}
+.acms-admin-login-input-caution {
+  font-size: 13px;
 }
 @media print {
   .acms-admin-login-input-caution {
@@ -922,33 +955,22 @@ a:active {
 /* ソーシャルログインボタン */
 .acms-admin-login-sns-btn-item .acms-admin-btn {
   position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: stretch;
-      -ms-flex-align: stretch;
-          align-items: stretch;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-sizing: border-box;
   height: var(--login-height-sns-btn);
   padding: 0;
-  border-radius: 4px;
   overflow: hidden;
+  border-radius: 4px;
 }
 .acms-admin-login-sns-btn-item .acms-admin-btn::before {
   position: absolute;
+  inset: 0;
   z-index: 1;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   background-color: transparent;
-  content: "";
-  -webkit-transition: background-color 0.2s;
   transition: background-color 0.2s;
+  content: "";
 }
 .acms-admin-login-sns-btn-item .acms-admin-btn:hover::before {
   background-color: rgba(0, 0, 0, 0.1);
@@ -961,11 +983,9 @@ a:active {
 .acms-admin-login-sns-btn-icon-outer {
   position: relative;
   z-index: 2;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  width: calc(var(--login-height-sns-btn) - var(--login-border-width-btn-sns) * 2);
-  display: -ms-grid;
   display: grid;
+  box-sizing: border-box;
+  width: calc(var(--login-height-sns-btn) - var(--login-border-width-btn-sns) * 2);
   place-content: center;
 }
 
@@ -978,18 +998,10 @@ a:active {
 .acms-admin-login-sns-btn-text {
   position: relative;
   z-index: 2;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
   border-left-width: var(--login-border-width-btn-sns);
   border-left-style: solid;
 }
@@ -999,8 +1011,8 @@ a:active {
 /* Googleログインボタン */
 .acms-admin-login-sns-btn-google, .acms-admin-login-sns-btn-google:hover, .acms-admin-login-sns-btn-google:focus, .acms-admin-login-sns-btn-google:active {
   color: #333;
-  background-color: #FFF;
-  border-color: #CECECE;
+  background-color: #fff;
+  border-color: #cecece;
 }
 .acms-admin-login-sns-btn-google .acms-admin-login-sns-btn-text {
   border-color: rgba(0, 0, 0, 0.08);
@@ -1008,9 +1020,9 @@ a:active {
 
 /* LINEログインボタン */
 .acms-admin-login-sns-btn-line, .acms-admin-login-sns-btn-line:hover, .acms-admin-login-sns-btn-line:focus, .acms-admin-login-sns-btn-line:active {
-  color: #FFF;
-  background-color: #06C755;
-  border-color: #06C755;
+  color: #fff;
+  background-color: #06c755;
+  border-color: #06c755;
 }
 .acms-admin-login-sns-btn-line .acms-admin-login-sns-btn-text {
   border-color: rgba(0, 0, 0, 0.08);
@@ -1021,7 +1033,7 @@ a:active {
   /* Xのみダーク系のためhoverカラーを反転 */
 }
 .acms-admin-login-sns-btn-x, .acms-admin-login-sns-btn-x:hover, .acms-admin-login-sns-btn-x:focus, .acms-admin-login-sns-btn-x:active {
-  color: #FFF;
+  color: #fff;
   background-color: #000;
   border-color: #000;
 }
@@ -1038,9 +1050,9 @@ a:active {
 /* Facebookログインボタン */
 /* Facebookによるログイン機能は、将来廃止予定になります。 */
 .acms-admin-login-sns-btn-facebook, .acms-admin-login-sns-btn-facebook:hover, .acms-admin-login-sns-btn-facebook:focus, .acms-admin-login-sns-btn-facebook:active {
-  color: #FFF;
-  background-color: #1877F2;
-  border-color: #1877F2;
+  color: #fff;
+  background-color: #1877f2;
+  border-color: #1877f2;
 }
 .acms-admin-login-sns-btn-facebook .acms-admin-login-sns-btn-text {
   border-color: rgba(255, 255, 255, 0.35);
@@ -1050,7 +1062,7 @@ a:active {
   z-index: 100007;
   height: 100%;
   padding-right: 10px;
-  padding-right: calc((20px / 2) + constant(safe-area-inset-right));
+  padding-right: calc(20px / 2 + constant(safe-area-inset-right));
   padding-left: 10px;
 }
 
@@ -1071,7 +1083,7 @@ a:active {
 
 #sidebar {
   height: 100%;
-  background: #FFF;
+  background: #fff;
 }
 #sidebar .ps__rail-y {
   right: 0;
@@ -1079,7 +1091,7 @@ a:active {
 }
 #sidebar .ps__rail-y .ps__thumb-y {
   width: 8px;
-  background: #a6a6ae;
+  background: rgb(166.4324324324, 166.4324324324, 174.0675675676);
 }
 #sidebar.js-mobile {
   height: auto;
@@ -1087,7 +1099,7 @@ a:active {
 
 @media screen and (min-width: 768px) {
   #sidebar {
-    background: #F1F1F1;
+    background: #f1f1f1;
   }
 }
 .js-nav #acms-admin-main {
@@ -1097,7 +1109,7 @@ a:active {
 }
 
 .acms-admin-icon-admin-blog-children {
-  color: #999999;
+  color: #999;
 }
 
 .acms-admin-sidebar {
@@ -1113,21 +1125,21 @@ a:active {
 
 .acms-admin-sidebar-main {
   position: relative;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   height: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  overflow-scrolling: touch;
 }
 
 .acms-admin-sidebar-alert {
   position: relative;
   margin: 0;
   padding: 10px 10px 10px 15px;
-  color: #FFF;
+  color: #fff;
   font-weight: bold;
-  background: #CE5769;
+  background: #ce5769;
+}
+.acms-admin-sidebar-alert {
   font-size: 11px;
 }
 @media print {
@@ -1153,14 +1165,14 @@ a:active {
 }
 .acms-admin-sidebar-title {
   padding-left: calc(5px + constant(safe-area-inset-left));
-  background: #F1F1F1;
+  background: #f1f1f1;
 }
 
 .acms-admin-sidebar-sp-list {
   display: table;
   width: 100%;
   table-layout: fixed;
-  border-bottom: 1px solid #9E9E9E;
+  border-bottom: 1px solid #9e9e9e;
 }
 .acms-admin-sidebar-sp-list li {
   border-bottom: 0;
@@ -1169,11 +1181,13 @@ a:active {
 .acms-admin-sidebar-sp-list-item {
   display: table-cell;
   width: 33.3333333333%;
+  color: #333;
+  font-weight: bold;
   text-align: center;
   vertical-align: middle;
-  border-right: 1px solid #CCCCCC;
-  color: #333333;
-  font-weight: bold;
+  border-right: 1px solid #ccc;
+}
+.acms-admin-sidebar-sp-list-item {
   font-size: 20px;
 }
 @media print {
@@ -1186,17 +1200,17 @@ a:active {
 }
 .acms-admin-sidebar-sp-list-item a,
 .acms-admin-sidebar-sp-list-item button {
-  padding: 10px 2px;
   display: block;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  padding: 10px 2px;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
   cursor: pointer;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  border: 0;
-  background-color: transparent;
-  color: inherit;
 }
 .acms-admin-sidebar-sp-list-item a:hover,
 .acms-admin-sidebar-sp-list-item button:hover {
@@ -1214,6 +1228,8 @@ a:active {
 .acms-admin-sidebar-sp-list-text {
   display: block;
   margin-top: 5px;
+}
+.acms-admin-sidebar-sp-list-text {
   font-size: 11px;
 }
 @media print {
@@ -1225,11 +1241,13 @@ a:active {
 .acms-admin-sidebar-link a {
   padding: 20px 10px 20px 40px;
   padding-left: calc(10px + constant(safe-area-inset-left));
-  color: #333333;
+  color: #333;
   font-weight: bold;
   text-indent: -12px;
   word-break: break-all;
-  background: #FFF;
+  background: #fff;
+}
+.acms-admin-sidebar-link a {
   font-size: 14px;
 }
 @media print {
@@ -1242,11 +1260,13 @@ a:active {
 }
 
 .acms-admin-sidebar-item {
-  padding: 10px 10px;
-  font-size: 14px;
+  padding: 10px;
   font-weight: bold;
   line-height: 1.2;
-  border-bottom: 1px solid #CCCCCC;
+  border-bottom: 1px solid #ccc;
+}
+.acms-admin-sidebar-item {
+  font-size: 14px;
 }
 @media print {
   .acms-admin-sidebar-item {
@@ -1279,10 +1299,10 @@ a:active {
     padding: 10px 15px 10px 40px;
     padding-left: calc(10px + constant(safe-area-inset-left));
     text-indent: -12px;
-    background: #F1F1F1;
+    background: #f1f1f1;
   }
   .acms-admin-sidebar-link .stay a {
-    background: #FFF;
+    background: #fff;
   }
 }
 #nav-open-btn {
@@ -1290,9 +1310,11 @@ a:active {
   top: 15px !important;
   left: 15px !important;
   padding: 0;
-  color: #FFF;
+  color: #fff;
   background: 0;
   border: none;
+}
+#nav-open-btn {
   font-size: 30px;
 }
 @media print {
@@ -1304,8 +1326,7 @@ a:active {
   display: block;
 }
 #nav-open-btn:active {
-  -webkit-box-shadow: none;
-          box-shadow: none;
+  box-shadow: none;
 }
 #nav-open-btn .acms-admin-icon:focus {
   outline: 0;
@@ -1315,14 +1336,18 @@ a:active {
     display: none;
     padding: 15px 12px;
     color: #0085cc;
-    background-color: #eeeeee;
-    border: solid 1px #CCCCCC;
+    background-color: #eee;
+    border: solid 1px #ccc;
+  }
+  #nav-open-btn {
     font-size: 15px;
   }
 }
 
 .acms-admin-header-btn {
-  color: #FFF;
+  color: #fff;
+}
+.acms-admin-header-btn {
   font-size: 30px;
 }
 @media print {
@@ -1373,7 +1398,7 @@ a:active {
 
 @media screen and (max-width: 767.98px) {
   .acms-admin-table-heading {
-    background-color: #FFF;
+    background-color: #fff;
   }
   .acms-admin-table-heading .acms-admin-td-status,
   .acms-admin-table-heading .acms-admin-td-edit {
@@ -1402,7 +1427,7 @@ a:active {
     border-bottom: none;
   }
   .acms-admin-table-heading .acms-admin-td-edit {
-    border-bottom: 1px solid #CCCCCC;
+    border-bottom: 1px solid #ccc;
   }
   .acms-admin-table-admin .acms-admin-th-checkbox {
     text-align: left;
@@ -1412,7 +1437,7 @@ a:active {
     display: none;
   }
   .acms-admin-table-hover tr:hover td {
-    background-color: #FFF;
+    background-color: #fff;
   }
 }
 .acms-admin-table-admin-edit .tooltipIcon,
@@ -1430,7 +1455,7 @@ a:active {
 }
 
 .acms-admin-admin-mini-table td.caution {
-  background-color: #EFC1C8 !important;
+  background-color: #efc1c8 !important;
 }
 
 .acms-admin-admin-table-scroll {
@@ -1491,6 +1516,8 @@ a:active {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.acms-admin-system-topicpath {
   font-size: 14px;
 }
 @media print {
@@ -1504,10 +1531,10 @@ a:active {
 }
 .acms-admin-system-topicpath > li {
   display: inline-block;
-  color: #999999;
+  color: #999;
   vertical-align: middle;
 }
-.acms-admin-system-topicpath > li:not(.site-image) + li:before {
+.acms-admin-system-topicpath > li:not(.site-image) + li::before {
   display: inline-block;
   width: 8px;
   height: 17px;
@@ -1520,8 +1547,10 @@ a:active {
 .acms-admin-system-topicpath .link {
   display: inline-block;
   padding: 10px 5px;
-  color: #333333;
+  color: #333;
   line-height: 1;
+}
+.acms-admin-system-topicpath .link {
   font-size: 14px;
 }
 @media print {
@@ -1533,24 +1562,19 @@ a:active {
   text-decoration: none;
 }
 .acms-admin-system-topicpath .link:hover {
-  color: #333333;
+  color: #333;
   text-decoration: none;
-  background: #FFF;
+  background: #fff;
   border-radius: 3px;
 }
 
 .acms-admin-system-topicpath-wrap {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin: 0 0 20px 0;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0 20px;
   padding: 5px 15px;
-  background: #F1F1F1;
+  background: #f1f1f1;
   border-radius: 3px;
 }
 
@@ -1564,7 +1588,7 @@ a:active {
   margin: 0;
 }
 .acms-admin-system-view-site .acms-admin-btn {
-  background: #FFF;
+  background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .acms-admin-system-view-site .acms-admin-btn:hover {
@@ -1600,14 +1624,14 @@ a:active {
 }
 
 .acms-admin-module-title-sub {
-  margin: 0 0 5px 0;
+  margin: 0 0 5px;
   font-size: 14px;
 }
 
 .acms-admin-module-title-main {
   display: block;
   clear: both;
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
 }
 .acms-admin-module-title-main .acms-admin-module-title {
   margin: 0;
@@ -1635,16 +1659,16 @@ pre .linenums li {
 }
 
 .acms-admin-unitbox {
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 10px;
-  background: #FFF;
-  border: 1px solid #D2D2DB;
+  background: #fff;
+  border: 1px solid #d2d2db;
 }
 
 .acms-admin-table-container {
-  margin: 0 0 10px 0;
-  background: #F2F2F5;
-  border: 1px solid #D2D2DB;
+  margin: 0 0 10px;
+  background: #f2f2f5;
+  border: 1px solid #d2d2db;
 }
 .acms-admin-table-container .acms-admin-table {
   border: none;
@@ -1662,7 +1686,7 @@ pre .linenums li {
   border: 1px dashed #a7a7aa;
 }
 .acms-admin-unitbox .a-table td {
-  border: 1px solid #CCCCCC;
+  border: 1px solid #ccc;
 }
 .acms-admin-unitbox i.acms-admin-icon-sort {
   margin-right: 4px;
@@ -1707,7 +1731,7 @@ pre .linenums li {
 }
 
 .argRefLeft .js-acms_tab-active {
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 .argRefCenter {
@@ -1728,7 +1752,7 @@ pre .linenums li {
   height: 90%;
   padding: 0;
   overflow-y: auto;
-  background-color: #FFF;
+  background-color: #fff;
   border: 1px solid silver;
   border-left: none;
 }
@@ -1753,7 +1777,7 @@ pre .linenums li {
 .argRefCenter ul li a:hover,
 .argRefRight ul li a:hover {
   color: white;
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 .argRefRight:not(:target) {

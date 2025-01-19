@@ -80,16 +80,15 @@
         <!--T-->インポート先カテゴリー<!--/T-->
       </th>
       <td>
-        <select name="category_id" class="js-select2">
-          <option value="0">
-            <!--T-->なし<!--/T-->
-          </option>
-          <!-- BEGIN_MODULE Admin_Category_Select -->
-          <!-- BEGIN loop -->
-          <option value="{value}" {selected}>{indent}[raw]{label} ( {amount} )</option>
-          <!-- END loop -->
-          <!-- END_MODULE Admin_Category_Select -->
-        </select>
+        <div class="acms-admin-form-width-medium">
+          @include("/admin/include/category/select.html", {
+            "target": "#wordpress-import-category-value",
+            "defaultValue": "0",
+            "noOption": "true",
+            "isClearable": "false"
+          })
+        </div>
+        <input id="wordpress-import-category-value" type="hidden" name="category_id" value="0">
       </td>
     </tr>
     <tr>
@@ -124,13 +123,14 @@
         <!--T-->インポート<!--/T-->
       </th>
       <td>
-        <input
+        <button
           class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-btn-admin-save js-saving-splash"
           type="submit"
           name="ACMS_POST_Import_Wordpress"
-          value="<!--T-->インポートを実行する<!--/T-->"
           onclick="return confirm('<!--T-->インポートを実行します。よろしいですか？<!--/T-->');"
         >
+          <!--T-->インポートを実行する<!--/T-->
+        </button>
       </td>
     </tr>
   </table>

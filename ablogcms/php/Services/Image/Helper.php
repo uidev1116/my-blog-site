@@ -158,20 +158,20 @@ class Helper
                 $this->createWebpWithImagick($to, $to . '.webp');
             } elseif (empty($toFunc[$toExt])) {
                 $resource = $this->editImage($fromFunc[$fromExt]($from), $width, $height, $size, $angle);
-                $imageQuality = intval(config('image_jpeg_quality'));
+                $imageQuality = intval(config('image_jpeg_quality', 75));
                 imagejpeg($resource, $to, $imageQuality);
                 $this->createWebpWithGd($resource, $to . '.webp', $imageQuality);
             } else {
                 $resource = $this->editImage($fromFunc[$fromExt]($from), $width, $height, $size, $angle);
                 $toFunc[$toExt]($resource, $to);
-                $this->createWebpWithGd($resource, $to . '.webp', intval(config('image_jpeg_quality')));
+                $this->createWebpWithGd($resource, $to . '.webp', intval(config('image_jpeg_quality', 75)));
             }
             //----------
             // raw copy
         } else {
             if (empty($toFunc[$toExt])) {
-                imagejpeg(imagecreatefromjpeg($from), $to, config('image_jpeg_quality'));
-                $this->createWebpWithGd(imagecreatefromjpeg($from), $to . '.webp', config('image_jpeg_quality'));
+                imagejpeg(imagecreatefromjpeg($from), $to, config('image_jpeg_quality', 75));
+                $this->createWebpWithGd(imagecreatefromjpeg($from), $to . '.webp', config('image_jpeg_quality', 75));
             } else {
                 Storage::copy($from, $to);
             }
@@ -199,7 +199,7 @@ class Helper
      */
     public function resizeImg($srcPath, $distPath, $ext, $width = null, $height = null, $size = null, $angle = null)
     {
-        $imageQuality = intval(config('image_jpeg_quality'));
+        $imageQuality = intval(config('image_jpeg_quality', 75));
 
         if (class_exists('Imagick') && config('image_magick') == 'on') {
             $this->editImageForImagick($srcPath, $distPath, $width, $height, $size, $angle);
@@ -517,7 +517,7 @@ class Helper
     {
         $imagick    = new Imagick($rsrc);
         $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
-        $imagick->setImageCompressionQuality(intval(config('image_jpeg_quality')));
+        $imagick->setImageCompressionQuality(intval(config('image_jpeg_quality', 75)));
         // $imagick->sharpenimage(0.8, 0.6); // シャープネス
         $imageprops = $imagick->getImageGeometry();
 
@@ -586,8 +586,9 @@ class Helper
         if ($angle = intval($angle)) {
             $imagick->rotateImage('none', -1 * $angle);
         }
-
+        $imagick->stripImage();
         $imagick->writeImages($file, true);
+        $imagick->clear();
         $imagick->destroy();
     }
 

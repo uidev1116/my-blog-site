@@ -146,15 +146,32 @@
 
     <div class="acms-admin-float-left">
       <div id="action-order" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
-        <input type="submit" name="ACMS_POST_Category_Index_Sort" value="<!--T-->変更<!--/T-->" class="acms-admin-btn acms-admin-btn-primary" />
+        <button
+          type="submit"
+          name="ACMS_POST_Category_Index_Sort"
+          class="acms-admin-btn acms-admin-btn-primary"
+        >
+          <!--T-->変更<!--/T-->
+        </button>
       </div>
 
       <div id="action-parent" class="js-acms-tab-select-panel acms-admin-float-left acms-admin-margin-bottom-small">
-        <select name="parent" class="categoryWidth js-select2">
-          <option value="0"><!--T-->なし<!--/T--></option><!-- BEGIN_MODULE Admin_Category_Select --><!-- BEGIN loop -->
-          <option value="{value}"{selected}>{indent}[raw]{label} ( {amount} )</option><!-- END loop --><!-- END_MODULE Admin_Category_Select -->
-        </select>
-        <input type="submit" name="ACMS_POST_Category_Index_Parent" value="<!--T-->変更<!--/T-->" class="acms-admin-btn acms-admin-btn-primary" />
+        <div style="display: inline-block; width: 350px;">
+          @include("/admin/include/category/select.html", {
+            "target": "#index-parent-category-value",
+            "defaultValue": "0",
+            "noOption": "true",
+            "isClearable": "false"
+          })
+        </div>
+        <input id="index-parent-category-value" type="hidden" name="parent" value="0" />
+        <button
+          type="submit"
+          name="ACMS_POST_Category_Index_Parent"
+          class="acms-admin-btn acms-admin-btn-primary"
+        >
+          <!--T-->変更<!--/T-->
+        </button>
       </div>
 
       <div id="action-status" class="js-acms-tab-select-panel acms-admin-float-left acms-admin-margin-bottom-small">
@@ -164,17 +181,33 @@
           <option value="secret"><!--T-->シークレット<!--/T--></option>
         </select>
 
-        <input type="submit" name="ACMS_POST_Category_Index_Status" value="<!--T-->変更<!--/T-->" onclick="if ( 'close' == $(':input[name=status]', $(this).parents('form')).val() ) return confirm('<!--T-->カテゴリーのステータスを非公開にすると\nサブカテゴリーのステータスも非公開になります。\nよろしいですか？<!--/T-->');" class="acms-admin-btn acms-admin-btn-primary" />
+        <button
+          type="submit"
+          name="ACMS_POST_Category_Index_Status"
+          onclick="if ( 'close' == $(':input[name=status]', $(this).parents('form')).val() ) return confirm('<!--T-->カテゴリーのステータスを非公開にすると\nサブカテゴリーのステータスも非公開になります。\nよろしいですか？<!--/T-->');"
+          class="acms-admin-btn acms-admin-btn-primary"
+        >
+          <!--T-->変更<!--/T-->
+        </button>
       </div>
 
       <div id="action-config" class="js-acms-tab-select-panel acms-admin-float-left acms-admin-margin-bottom-small">
         <!-- BEGIN_MODULE Admin_Config_Set_Index -->
         <select name="config_set_id" class="js-select2">
-          <option value=""><!--T-->設定なし<!--/T--></option><!-- BEGIN config_set:loop -->
-          <option value="{setid}"\{config_set_id:selected#{setid}\}>{name}</option><!-- END config_set:loop -->
+          <option value=""><!--T-->設定なし<!--/T--></option>
+          <!-- BEGIN config_set:loop -->
+          <option value="{setid}"\{config_set_id:selected#{setid}\}>{name}</option>
+          <!-- END config_set:loop -->
         </select>
         <!-- END_MODULE Admin_Config_Set_Index -->
-        <input type="submit" name="ACMS_POST_Category_Index_ConfigSet" value="<!--T-->変更<!--/T-->" onclick="if ( 'close' == $(':input[name=status]', $(this).parents('form')).val() ) return confirm('<!--T-->カテゴリーのコンフィグセットを変更します。\nよろしいですか？<!--/T-->');" class="acms-admin-btn-admin acms-admin-btn-admin-primary" />
+        <button
+          type="submit"
+          name="ACMS_POST_Category_Index_ConfigSet"
+          onclick="if ( 'close' == $(':input[name=status]', $(this).parents('form')).val() ) return confirm('<!--T-->カテゴリーのコンフィグセットを変更します。\nよろしいですか？<!--/T-->');"
+          class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+        >
+          <!--T-->変更<!--/T-->
+        </button>
       </div>
     </div>
   </div>

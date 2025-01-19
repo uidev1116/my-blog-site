@@ -1,6 +1,10 @@
 <?php
 
 use Acms\Services\Facades\Media;
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Template as TemplateHelper;
 
 class ACMS_GET_Ogp extends ACMS_GET
 {
@@ -204,29 +208,40 @@ class ACMS_GET_Ogp extends ACMS_GET
         }
         if ($primary_img_id = ACMS_RAM::entryPrimaryImage(EID)) {
             if ($unit = ACMS_RAM::unit($primary_img_id)) {
-                if ($unit['column_align'] === 'hidden') {
+                $unitRepository = Application::make('unit-repository');
+                assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+
+                /** @var \Acms\Services\Unit\Contracts\Model $unitModel */
+                $unitModel = $unitRepository->loadModel($unit);
+                if (empty($unitModel)) {
                     return false;
                 }
-                $type = detectUnitTypeSpecifier($unit['column_type']);
-                if ($type === 'media') {
-                    if ($media = Media::getMedia($unit['column_field_1'])) {
-                        if ($media['type'] === 'image' || $media['type'] === 'svg') {
-                            return [
-                                'type' => 'media',
-                                'width' => $this->getSize($media['size'], 'width'),
-                                'height' => $this->getSize($media['size'], 'height'),
-                                'path' => $media['path'],
-                            ];
+                if ($unitModel->getAlign() === 'hidden') {
+                    return false;
+                }
+                $unitType = $unitModel->getUnitType();
+                if ($unitModel instanceof \Acms\Services\Unit\Contracts\PrimaryImageUnit) {
+                    $path = $unitModel->getPaths()[0] ?? '';
+                    if ($unitType === 'media') {
+                        if ($media = Media::getMedia($path)) {
+                            if ($media['type'] === 'image' || $media['type'] === 'svg') {
+                                return [
+                                    'type' => 'media',
+                                    'width' => $this->getSize($media['size'], 'width'),
+                                    'height' => $this->getSize($media['size'], 'height'),
+                                    'path' => $media['path'],
+                                ];
+                            }
                         }
+                    } else {
+                        [$width, $height] = Storage::getImageSize(ARCHIVES_DIR . $path);
+                        return [
+                            'type' => 'image',
+                            'width' => $width,
+                            'height' => $height,
+                            'path' => $path,
+                        ];
                     }
-                } else {
-                    list($width, $height) = Storage::getImageSize(ARCHIVES_DIR . $unit['column_field_2']);
-                    return [
-                        'type' => 'image',
-                        'width' => $width,
-                        'height' => $height,
-                        'path' => $unit['column_field_2'],
-                    ];
                 }
             }
         }
@@ -336,7 +351,7 @@ class ACMS_GET_Ogp extends ACMS_GET
             return false;
         }
         $vars = [];
-        if ($vars = Tpl::buildSummaryFulltext($vars, EID, Tpl::eagerLoadFullText([EID]))) {
+        if ($vars = TemplateHelper::buildSummaryFulltext($vars, EID, TemplateHelper::eagerLoadFullText([EID]))) {
             if (isset($vars['summary'])) {
                 return $vars['summary'];
             }

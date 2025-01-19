@@ -12,12 +12,12 @@ class ACMS_POST_Config_Set_Duplicate extends ACMS_POST_Config_Set_Insert
             $this->validate();
             $db = DB::singleton(dsn());
 
-            $name = 'このブログの初期コンフィグ';
+            $name = 'このブログのコンフィグ（レガシー設定）';
             if ($configSetType === 'theme') {
-                $name = 'このブログの初期テーマ';
+                $name = 'このブログのテーマ（レガシー設定）';
             }
             if ($configSetType === 'editor') {
-                $name = 'このブログの初期編集画面';
+                $name = 'このブログの編集画面（レガシー設定）';
             }
             $scope = 'local';
 

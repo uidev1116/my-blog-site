@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  プログレスバー
@@ -20,6 +20,7 @@
   color: global.$acms-progress-bar-text;
   text-align: center;
   background-color: global.$acms-progress-bar-color;
+
   @include global.transition(width 0.6s ease);
 }
 
@@ -31,12 +32,12 @@
 // danger
 .acms-progress-bar-danger {
   background-color: global.$acms-progress-bar-color-danger;
-
 }
 
 // striped
 .acms-progress-striped .acms-progress-bar {
-  @include global.striped();
+  @include global.striped;
+
   background-size: global.$acms-progress-bar-stripe-width global.$acms-progress-bar-stripe-width;
 }
 
@@ -46,10 +47,11 @@
 }
 
 // Keyframes
-@-webkit-keyframes progress-bar-stripes {
+@keyframes progress-bar-stripes {
   from {
     background-position: global.$acms-progress-bar-stripe-width 0;
   }
+
   to {
     background-position: 0 0;
   }
@@ -59,6 +61,7 @@
   from {
     background-position: global.$acms-progress-bar-stripe-width 0;
   }
+
   to {
     background-position: 0 0;
   }

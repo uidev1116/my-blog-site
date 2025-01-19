@@ -45,15 +45,15 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
             $dest = $this->backupArchivesDir . 'archives' . date('_Ymd_Hi') . '.zip';
 
             $logger->addMessage('archives をバックアップ中...', 5);
-            Storage::compress(SCRIPT_DIR . ARCHIVES_DIR, $dest, 'archives_tmp/archives');
+            Storage::compress(ARCHIVES_DIR, $dest, 'archives_tmp/archives');
             $logger->addMessage('archives のバックアップ完了', 25);
 
             $logger->addMessage('media をバックアップ中...', 5);
-            Storage::compress(SCRIPT_DIR . MEDIA_LIBRARY_DIR, $dest, 'archives_tmp/media');
+            Storage::compress(MEDIA_LIBRARY_DIR, $dest, 'archives_tmp/media');
             $logger->addMessage('media のバックアップ完了', 25);
 
             $logger->addMessage('storage をバックアップ中...', 5);
-            $storageTarget = SCRIPT_DIR . MEDIA_STORAGE_DIR;
+            $storageTarget = MEDIA_STORAGE_DIR;
             if ($dir = opendir($storageTarget)) {
                 while (($file = readdir($dir)) !== false) {
                     if ($file != "." && $file != ".." && substr($file, 0, 1) !== '.') {
@@ -61,7 +61,7 @@ class ACMS_POST_Backup_ArchiveExport extends ACMS_POST_Backup_Base
                             continue;
                         }
                         Storage::compress(
-                            SCRIPT_DIR . MEDIA_STORAGE_DIR . $file,
+                            MEDIA_STORAGE_DIR . $file,
                             $dest,
                             'archives_tmp/storage/' . $file
                         );

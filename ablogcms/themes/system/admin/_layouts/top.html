@@ -15,11 +15,11 @@
 </p>
 <!-- END_MODULE Touch_LoggerIsDevelopmentMode -->
 
-<!-- BEGIN_MODULE Touch_Debug -->
+<!-- BEGIN_MODULE Touch_DebugSetting -->
 <p class="acms-admin-alert acms-admin-alert-warning">
   デバッグモードで動作しています。本番環境の場合、「config.server.php」ファイルの「DEBUG_MODE」を「0」に設定してください。
 </p>
-<!-- END_MODULE Touch_Debug -->
+<!-- END_MODULE Touch_DebugSetting -->
 
 @include("/admin/include/error-alert.html")
 
@@ -147,34 +147,34 @@
     @endsection
 
     @section("dashboard-license-activation")
+    <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
     <h2 class="acms-admin-admin-title2"><!--T-->サブスクリプションライセンスの有効化<!--/T--></h2>
     <div class="acms-admin-admin-table-scroll">
       <table class="acms-admin-admin-mini-table">
         <thead>
-        <tr>
-          <th><!--T-->説明<!--/T--></th>
-          <th><!--T-->有効化<!--/T--></th>
-        </tr>
+          <tr>
+            <th><!--T-->説明<!--/T--></th>
+            <th><!--T-->有効化<!--/T--></th>
+          </tr>
         </thead>
         <tbody>
-        <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-        <tr>
-          <td>
-            <p class="acms-admin-margin-none">
-              <!--T-->ライセンスを有効化するには以下のエンドポイントに通信できる必要があります。<!--/T-->
-            </p>
-            <p class="acms-admin-margin-bottom-small"><strong>%{ACTIVATION_ENDPOINT}</strong></p>
-          </td>
-          <td>
-            <form method="post" class="acms-admin-form acms-admin-margin-bottom-small">
-              <input type="submit" name="ACMS_POST_License_Activation" value="<!--T-->アクティベーションを開始<!--/T-->" class="acms-admin-btn">
-            </form>
-          </td>
-        </tr>
-        <!-- END_MODULE Touch_SessionWithAdministration -->
+          <tr>
+            <td>
+              <p class="acms-admin-margin-none">
+                <!--T-->ライセンスを有効化するには以下のエンドポイントに通信できる必要があります。<!--/T-->
+              </p>
+              <p class="acms-admin-margin-bottom-small"><strong>%{ACTIVATION_ENDPOINT}</strong></p>
+            </td>
+            <td>
+              <form method="post" class="acms-admin-form acms-admin-margin-bottom-small">
+                <input type="submit" name="ACMS_POST_License_Activation" value="<!--T-->アクティベーションを開始<!--/T-->" class="acms-admin-btn">
+              </form>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
+    <!-- END_MODULE Touch_SessionWithAdministration -->
     @endsection
 
     @section("dashboard-maintenance-mode")

@@ -61,6 +61,7 @@ class TemplateGenerator extends Generator
     {
         $destPath = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $path;
         try {
+            Storage::makeDirectory(dirname($destPath));
             Storage::put($destPath, $data);
         } catch (\Exception $e) {
             $this->logger->error('データの書き込みに失敗しました。', $destPath);

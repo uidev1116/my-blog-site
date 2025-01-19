@@ -2,7 +2,6 @@
 
 use Acms\Services\Facades\Common;
 use Acms\Services\Facades\Media;
-use Acms\Services\Facades\Storage;
 
 class ACMS_POST_Media_Update extends ACMS_POST_Media
 {
@@ -29,6 +28,7 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
             $oldData = Media::getMedia($mid);
 
             if (isset($_FILES[$this->uploadFieldName])) {
+                // ファイルアップロードがある場合（メディアを変更機能 or メディア画像編集機能利用時）
                 $name = $Media->get('file_name');
                 Common::validateFileUpload($this->uploadFieldName);
 
@@ -36,13 +36,13 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                 $replaced = $Media->get('replaced') === 'true';
                 $type = mime_content_type($_FILES[$this->uploadFieldName]['tmp_name']);
 
+                $_FILES[$this->uploadFieldName]['name'] = $name; // ファイル名を設定
                 if (Media::isImageFile($type)) {
-                    $_FILES[$this->uploadFieldName]['name'] = $name;
+                    Media::deleteImage($mid, $replaced);
                     $data = Media::uploadImage($this->uploadFieldName, $replaced);
                     if ($replaced) {
                         $data['original'] = otherSizeImagePath($data['path'], 'large');
                     }
-                    Media::deleteImage($mid, $replaced);
                 } elseif (Media::isSvgFile($type)) {
                     $data = Media::uploadSvg($info['size'], $this->uploadFieldName);
                     Media::deleteFile($mid);
@@ -53,6 +53,13 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                 $data['upload_date'] = $oldData['upload_date'];
             } else {
                 $data = $oldData;
+
+                $filename = $Media->get('file_name');
+                if ($filename !== '' && $filename !== $oldData['file_name']) {
+                    // ファイルアップロードを行う場合は、アップロード時にファイル名を指定しているため、
+                    // ファイル名の変更はファイルアップロードを行わない場合のみ行う
+                    $data = Media::rename($data, $filename);
+                }
             }
             // pdf thumbnail
             if (isset($_FILES['media_pdf_thumbnail'])) {
@@ -63,16 +70,17 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                 }
             }
             $data['update_date'] = date('Y-m-d H:i:s', REQUEST_TIME);
+            $data['last_update_user_id'] = SUID;
             $data['status'] = $Media->get('status');
             $data['field_1'] = $Media->get('field_1');
             $data['field_2'] = $Media->get('field_2');
             $data['field_3'] = $Media->get('field_3');
             $data['field_4'] = $Media->get('field_4');
-            if ($rename = $Media->get('rename')) {
-                $data = Media::rename($data, $rename);
-            }
-            if ($Media->get('focal_x') && $Media->get('focal_y')) {
-                $data['field_5'] = $Media->get('focal_x') . ',' . $Media->get('focal_y');
+
+            $focalPoint = $this->detectFocalPoint($Media);
+            if ($focalPoint !== null) {
+                [$focalX, $focalY] = $focalPoint;
+                $data['field_5'] = $focalX . ',' . $focalY;
             } else {
                 $data['field_5'] = '';
             }
@@ -109,5 +117,23 @@ class ACMS_POST_Media_Update extends ACMS_POST_Media
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * 画像の焦点を検出する
+     * @param \Field $media
+     * @return array{0:float, 1:float} | null
+     */
+    protected function detectFocalPoint(\Field $media): ?array
+    {
+        if ($media->get('focal_x') === '' || $media->get('focal_y') === '') {
+            return null;
+        }
+        $focalX = (float)$media->get('focal_x');
+        $focalY = (float)$media->get('focal_y');
+        if ($focalX >= 0 && $focalX <= 100 && $focalY >= 0 && $focalY <= 100) {
+            return [$focalX, $focalY];
+        }
+        return null;
     }
 }

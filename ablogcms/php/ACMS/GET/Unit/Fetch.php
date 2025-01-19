@@ -1,53 +1,55 @@
 <?php
 
+use Acms\Services\Facades\Application;
+
 class ACMS_GET_Unit_Fetch extends ACMS_GET_Unit
 {
     public function get()
     {
-        $Tpl    = new Template($this->tpl, new ACMS_Corrector());
+        $Tpl = new Template($this->tpl, new ACMS_Corrector());
 
-        $utid           = (int)$this->Post->get('utid', UTID);
-        $ary_utid       = array_map('intval', $this->Post->getArray('utid'));
-        $eid            = (int)$this->Post->get('eid', EID);
-        $renderGroup    = $this->Post->get('renderGroup', 'off');
-        $renderGroup    = ($renderGroup === 'on') ? true : false;
+        $utid = (int) $this->Post->get('utid', UTID);
+        $ary_utid = array_map('intval', $this->Post->getArray('utid'));
+        $eid = (int) $this->Post->get('eid', EID);
+        $renderGroup = $this->Post->get('renderGroup', 'off');
+        $renderGroup = ($renderGroup === 'on') ? true : false;
 
-        $seeked     = false;
-        $preAlign   = null;
+        $seeked = false;
+        $preAlign = null;
+
+        /** @var \Acms\Services\Unit\Repository $unitRepository */
+        $unitRepository = Application::make('unit-repository');
+        /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+        $unitRenderingService = Application::make('unit-rendering-front');
 
         // if Add
         if (empty($utid)) {
-            $sort = $this->Get->get('sort');
-            $DB = DB::singleton(dsn());
-            $SQL = SQL::newSelect('column');
-            $SQL->addSelect('column_id');
-            $SQL->addWhereOpr('column_sort', $sort);
-            $SQL->addWhereOpr('column_entry_id', $eid);
-            $utid = $DB->query($SQL->get(dsn()), 'one');
+            $sort = (int) $this->Get->get('sort');
+            $unit = $unitRepository->getUnitBySortTrait($eid, $sort);
+            $utid = (int) ($unit['column_id'] ?? 0);
         }
-
-        if ($Column = array_reverse(loadColumn($eid))) {
-            foreach ($Column as $i => $row) {
+        if ($units = $unitRepository->loadUnits($eid)) {
+            foreach ($units as $i => $row) {
                 if ($seeked !== false) {
-                    $preAlign = $row['align'];
-                    $seeked   = false;
+                    $preAlign = $row->getAlign();
+                    $seeked = false;
                 }
                 if (is_array($ary_utid) && (count($ary_utid) > 0)) {
-                    if (in_array($row['clid'], $ary_utid, true) === false) {
-                        unset($Column[$i]);
+                    if (in_array($row->getId(), $ary_utid, true) === false) {
+                        unset($units[$i]);
                     } else {
                         $seeked = true;
                     }
                 } else {
-                    if ($row['clid'] != $utid) {
-                        unset($Column[$i]);
+                    if ($row->getId() !== $utid) {
+                        unset($units[$i]);
                     } else {
                         $seeked = true;
                     }
                 }
             }
-            $Column = array_reverse($Column);
-            $this->buildUnit($Column, $Tpl, $eid, $preAlign, $renderGroup);
+            $units = array_reverse($units);
+            $unitRenderingService->render($units, $Tpl, $eid, $preAlign, $renderGroup);
         }
         return $Tpl->get();
     }

@@ -447,7 +447,7 @@ class ACMS_GET_Admin_Menu extends ACMS_GET_Admin
 
     function get()
     {
-        if (!sessionWithSubscription(BID, false)) {
+        if (!sessionWithSubscription(BID)) {
             page404();
         }
         $Tpl = new Template($this->tpl, new ACMS_Corrector());

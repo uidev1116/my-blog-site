@@ -9,7 +9,7 @@ class CorrectorFactory extends Factory
      * @param string $txt
      * @param mixed  $params
      * @param bool $magic_call
-     * @return string|bool
+     * @return string|false
      */
     public function call($method, $txt, $params = [], $magic_call = false)
     {

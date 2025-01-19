@@ -8,72 +8,53 @@
 // ------------------------------
 //  基本設定
 // ------------------------------
-$base-bg-gray: #4B4B4B;
-$base-bg-light-gray: #F1F1F1;
-$base-bg-light-white: #FFF;
-$base-bg-link-color: #4B4B4B;
-
-$base-bg-primary: #35353A;
-
-$edit-entry-bg-color-white: #FFFFFF;
-$edit-entry-bg-color-lightest: #F7F7F7;
-$edit-entry-bg-color-light: #F2F2F5;
-$edit-entry-bg-color-base: #E2E2E8;
-$edit-entry-bg-color-dark: #D2D2DB;
-$edit-entry-bg-color-darker: #A2A2B3;
+$base-bg-gray: #4b4b4b;
+$base-bg-light-gray: #f1f1f1;
+$base-bg-light-white: #fff;
+$base-bg-link-color: #4b4b4b;
+$base-bg-primary: #35353a;
+$edit-entry-bg-color-white: #fff;
+$edit-entry-bg-color-lightest: #f7f7f7;
+$edit-entry-bg-color-light: #f2f2f5;
+$edit-entry-bg-color-base: #e2e2e8;
+$edit-entry-bg-color-dark: #d2d2db;
+$edit-entry-bg-color-darker: #a2a2b3;
 $edit-entry-bg-color-darkest: #595963;
-
 
 // ------------------------------
 //  ナビゲーション
 // ------------------------------
-$header-nav-color: #FFF;
-
+$header-nav-color: #fff;
 
 // ------------------------------
 //  システムの更新
 // ------------------------------
 $update-panel-border-radius: 6px;
 
-
 // ------------------------------
 //  パスワード 強度メーター
 // ------------------------------
-$password-strength-default-color       : #999999;
-$password-strength-danger-color        : #C5001D;
-$password-strength-anxiety-color       : #FFA342;
-$password-strength-warning-color       : #FFED60;
-$password-strength-reasonable-color    : #009812;
-$password-strength-secure-color        : #005CEE;
-
+$password-strength-default-color: #999;
+$password-strength-danger-color: #c5001d;
+$password-strength-anxiety-color: #ffa342;
+$password-strength-warning-color: #ffed60;
+$password-strength-reasonable-color: #009812;
+$password-strength-secure-color: #005cee;
 
 // ------------------------------
 //  レイアウトモジュール
 // ------------------------------
-$layout-placeholder-bg: #EECED6;
-$layout-placeholder-border: #D1263D;
-$layout-placeholder-color: #D1263D;
-
-$module-placeholder-bg: #CEDBEE;
-$module-placeholder-border: #73A4FC;
-$module-placeholder-color: #73A4FC;
-
-$layout-unit-color: #CEDBEE;
-$layout-unit-bg: #EFEFEF;
-$layout-unit-border: #CCCCCC;
-$layout-contents-border: #999999;
-
-$layout-module-unit-color: #FFFFFF;
-$layout-module-unit-bg: #7096CC;
-$layout-module-unit-border: #CCCCCC;
-
-$layout-edit-border: #CCCCCC;
-
-
-
-
-
-
-
-
-
+$layout-placeholder-bg: #eeced6;
+$layout-placeholder-border: #d1263d;
+$layout-placeholder-color: #d1263d;
+$module-placeholder-bg: #cedbee;
+$module-placeholder-border: #73a4fc;
+$module-placeholder-color: #73a4fc;
+$layout-unit-color: #cedbee;
+$layout-unit-bg: #efefef;
+$layout-unit-border: #ccc;
+$layout-contents-border: #999;
+$layout-module-unit-color: #fff;
+$layout-module-unit-bg: #7096cc;
+$layout-module-unit-border: #ccc;
+$layout-edit-border: #ccc;

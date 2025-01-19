@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // 文字のトリム
 .acms-text-ellipsis-container {
@@ -18,14 +18,14 @@
 }
 
 .acms-module-title-sub {
-  margin: 0 0 5px 0;
+  margin: 0 0 5px;
   font-size: 14px;
 }
 
 .acms-module-title-main {
   display: block;
   clear: both;
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
 
   .acms-module-title {
     margin: 0;
@@ -40,10 +40,10 @@ pre .linenums {
   padding-left: 30px;
   font-family: global.$acms-code-font-family;
 }
+
 pre .linenums li {
   line-height: 1.5;
 }
-
 
 // ------------------------------
 // acms-admin-title2
@@ -56,4 +56,3 @@ pre .linenums li {
 .acms-admin-title2.acms-margin-top-medium {
   margin-top: 10px;
 }
-

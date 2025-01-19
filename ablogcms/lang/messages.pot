@@ -5724,7 +5724,7 @@ msgid "拡張子"
 msgstr ""
 
 #: themes/system/admin/config/parts/header.html
-msgid "このブログの初期コンフィグ"
+msgid "このブログのコンフィグ（レガシー設定）"
 msgstr ""
 
 #: themes/system/admin/config/parts/module-id-header.html
@@ -7583,7 +7583,7 @@ msgid "エラーが発生しました。
 msgstr ""
 
 msgid "
-  $1 ブログ, 
+  $1 ブログ,
   $2 に
   $3件、インポートしました。
   "

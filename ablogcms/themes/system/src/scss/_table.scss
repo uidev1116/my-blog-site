@@ -8,6 +8,7 @@
   max-width: 100%;
   border-top: global.$acms-table-border;
   border-collapse: collapse;
+
   // データ
   th,
   td {
@@ -45,8 +46,8 @@
 }
 
 .acms-table,
-.acms-table:before,
-.acms-table:after,
+.acms-table::before,
+.acms-table::after,
 .acms-table-admin-edit,
 .acms-table-admin-edit th,
 .acms-table-admin-edit td,
@@ -170,35 +171,35 @@
 // global.$breakpoint-sm-max 以下
 @media (max-width: global.$breakpoint-sm-max) {
   .acms-table-scroll-xs {
-    @include global.table-scroll();
+    @include global.table-scroll;
   }
 }
 
 // global.$breakpoint-sm-max 以上 global.$breakpoint-md-max以下
 @media (min-width: global.$breakpoint-sm-min) and (max-width: global.$breakpoint-md-max) {
   .acms-table-scroll-sm {
-    @include global.table-scroll();
+    @include global.table-scroll;
   }
 }
 
 // global.$breakpoint-md-min 以上 global.$breakpoint-lg-max以下
 @media (min-width: global.$breakpoint-md-min) and (max-width: global.$breakpoint-lg-max) {
   .acms-table-scroll-md {
-    @include global.table-scroll();
+    @include global.table-scroll;
   }
 }
 
 // global.$breakpoint-lg-min 以上 global.$breakpoint-xl-max以下
 @media (min-width: global.$breakpoint-lg-min) and (max-width: global.$breakpoint-xl-max) {
   .acms-table-scroll-lg {
-    @include global.table-scroll();
+    @include global.table-scroll;
   }
 }
 
 // global.$breakpoint-xl-min以下
 @media (min-width: global.$breakpoint-xl-min) {
   .acms-table-scroll-xl {
-    @include global.table-scroll();
+    @include global.table-scroll;
   }
 }
 
@@ -208,8 +209,7 @@
   // ------------------------------
   .acms-table-responsive {
     margin-bottom: 15px;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow: scroll hidden;
     -webkit-overflow-scrolling: touch;
 
     th,
@@ -264,6 +264,7 @@
   .acms-table-admin {
     width: 100%;
     border-collapse: collapse;
+
     // 見出し
     thead {
       border-bottom: global.$acms-table-admin-border;
@@ -271,8 +272,9 @@
 
     thead th {
       padding: 5px;
-      @include global.font-size(13);
       font-weight: bold;
+
+      @include global.font-size(13);
     }
 
     th,
@@ -320,6 +322,7 @@
     width: 100%;
     background: global.$acms-table-admin-edit-bg;
     border: global.$acms-table-admin-edit-border;
+
     @include global.font-size(14);
 
     thead {
@@ -416,7 +419,7 @@
 
           &:only-child th,
           &:only-child td {
-            padding: 10px 10px;
+            padding: 10px;
           }
 
           &:only-child th {
@@ -442,10 +445,12 @@
   .acms-table-admin-media-edit-wrap {
     margin: 0 -5px;
   }
+
   .acms-table-admin-media-edit {
     width: 100%;
     border: none;
     border-collapse: collapse;
+
     @include global.font-size(14);
 
     th {
@@ -462,6 +467,7 @@
       th {
         text-align: left;
       }
+
       th,
       td {
         display: block;
@@ -479,6 +485,7 @@
 
   .acms-table-admin-edit-bordered {
     width: 100%;
+
     @include global.font-size(14);
 
     tr {

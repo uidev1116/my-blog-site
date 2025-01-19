@@ -51,7 +51,7 @@ class ACMS_GET_Member_Update_Email extends ACMS_GET_Member
         $vars = [];
         $data = [];
 
-        if ($this->isAuthUrl()) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $this->isAuthUrl()) {
             // メールアドレス認証画面
             try {
                 $data = $this->validateAuthUrl();

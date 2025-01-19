@@ -31,7 +31,7 @@
 	</div>
 
   <div class="acms-admin-alert acms-admin-alert-warning">
-    古い設定画面になります。テーマセットの設定があると、こちらの設定は無視されるのでお気をつけください。
+    レガシーな設定画面になります。テーマセットの設定があると、こちらの設定は使用されません。
   </div>
 
 	<!-- BEGIN_MODULE Admin_Config_Theme -->
@@ -41,7 +41,7 @@
 			<th><!--T-->テーマ ディレクトリ名<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->適用されるテーマのディレクトリ名です。「a-blog cms設置ディレクトリ/themes/」以下のディレクトリになります。<!--/T-->"></i></th>
 			<td>
 				<select name="theme" id="js-select_theme_action" class="js-select2"><!-- BEGIN theme:loop -->
-					<option value="{name}"{selected} id="{key}">{name}</option><!-- END theme:loop -->
+					<option value="{name}"{selected} data-index="{key}">{name}</option><!-- END theme:loop -->
 				</select>
 				<input type="hidden" name="config[]" value="theme" />
 				<input type="hidden" name="theme:validator#required" id="validator-theme-required" />

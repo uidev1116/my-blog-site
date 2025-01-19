@@ -3,27 +3,37 @@
 // ------------------------------
 
 // transition-property、 transition-duration、 transition-timing-function、 transition-delay の各プロパティの値
-@mixin transition($transition){
-  -webkit-transition: $transition;
-  transition: $transition;
+@mixin transition($transition) {
+  & {
+    transition: $transition;
+  }
 }
+
 // プロパティ
-@mixin transition-property($transition-property){
-  -webkit-transition-property: $transition-property;
-  transition-property: $transition-property;
+@mixin transition-property($transition-property) {
+  & {
+    transition-property: $transition-property;
+  }
 }
+
 // いつ始まるか
-@mixin transition-delay($transition-delay){
-  -webkit-transition-delay: $transition-delay;
-  transition-delay: $transition-delay;
+@mixin transition-delay($transition-delay) {
+  & {
+    transition-delay: $transition-delay;
+  }
 }
+
 // かかる時間
-@mixin transition-duration($transition-duration){
-  -webkit-transition-duration: $transition-duration;
-  transition-duration: $transition-duration;
+@mixin transition-duration($transition-duration) {
+  & {
+    transition-duration: $transition-duration;
+  }
 }
+
 // 時間変化
-@mixin transition-transform($transition){
-  -webkit-transition: -webkit-transform $transition;
-  transition: transform $transition;
+@mixin transition-transform($transition) {
+  & {
+    transition: -webkit-transform $transition;
+    transition: transform $transition;
+  }
 }

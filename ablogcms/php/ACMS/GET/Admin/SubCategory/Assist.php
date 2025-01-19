@@ -13,7 +13,8 @@ class ACMS_GET_Admin_SubCategory_Assist extends ACMS_GET_Admin_Category_Assist
         if (!empty($order2)) {
             $order = $order2;
         }
-        $q = $this->buildQuery($order, $filterCid);
+        $limit = (int)config('category_select_limit', 999);
+        $q = $this->buildQuery($order, $filterCid, $limit);
         $list = $this->buildList($q, $filterCid);
         die(json_encode($list));
     }

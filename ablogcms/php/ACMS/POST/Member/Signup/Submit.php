@@ -119,6 +119,7 @@ class ACMS_POST_Member_Signup_Submit extends ACMS_POST_Member_Signup_Confirm
         $this->validate($inputUserField);
         if (!$this->Post->isValidAll()) {
             $this->log($inputUserField, $inputField);
+            return $this->Post;
         }
 
         $uid = Login::findUser($inputUserField->get('mail'), BID);

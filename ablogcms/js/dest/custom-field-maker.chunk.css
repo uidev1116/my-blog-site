@@ -1,2 +1,90 @@
-.hljs{display:block;overflow-x:auto;padding:.5em;background:#f0f0f0}.hljs,.hljs-subst{color:#444}.hljs-comment{color:#888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-deletion{color:#800}.hljs-title,.hljs-section{color:#800;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#bc6060}.hljs-literal{color:#78a960}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}
-.hljs{display:block;overflow-x:auto;padding:.5em;background:#fff;color:#000}.xml .hljs-meta{color:silver}.hljs-comment,.hljs-quote{color:#007400}.hljs-tag,.hljs-attribute,.hljs-keyword,.hljs-selector-tag,.hljs-literal,.hljs-name{color:#aa0d91}.hljs-variable,.hljs-template-variable{color:#3f6e74}.hljs-code,.hljs-string,.hljs-meta-string{color:#c41a16}.hljs-regexp,.hljs-link{color:#0e0eff}.hljs-title,.hljs-symbol,.hljs-bullet,.hljs-number{color:#1c00cf}.hljs-section,.hljs-meta{color:#643820}.hljs-class .hljs-title,.hljs-type,.hljs-built_in,.hljs-builtin-name,.hljs-params{color:#5c2699}.hljs-attr{color:#836c28}.hljs-subst{color:#000}.hljs-formula{background-color:#eee;font-style:italic}.hljs-addition{background-color:#baeeba}.hljs-deletion{background-color:#ffc8bd}.hljs-selector-id,.hljs-selector-class{color:#9b703f}.hljs-doctag,.hljs-strong{font-weight:bold}.hljs-emphasis{font-style:italic}
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*
+
+XCode style (c) Angel Garcia <angelgarcia.mail@gmail.com>
+
+*/
+.hljs {
+  background: #fff;
+  color: black
+}
+/* Gray DOCTYPE selectors like WebKit */
+.xml .hljs-meta {
+  color: #c0c0c0
+}
+.hljs-comment,
+.hljs-quote {
+  color: #007400
+}
+.hljs-tag,
+.hljs-attribute,
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-name {
+  color: #aa0d91
+}
+.hljs-variable,
+.hljs-template-variable {
+  color: #3F6E74
+}
+.hljs-code,
+.hljs-string,
+.hljs-meta .hljs-string {
+  color: #c41a16
+}
+.hljs-regexp,
+.hljs-link {
+  color: #0E0EFF
+}
+.hljs-title,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-number {
+  color: #1c00cf
+}
+.hljs-section,
+.hljs-meta {
+  color: #643820
+}
+.hljs-title.class_,
+.hljs-class .hljs-title,
+.hljs-type,
+.hljs-built_in,
+.hljs-params {
+  color: #5c2699
+}
+.hljs-attr {
+  color: #836C28
+}
+.hljs-subst {
+  color: #000
+}
+.hljs-formula {
+  background-color: #eee;
+  font-style: italic
+}
+.hljs-addition {
+  background-color: #baeeba
+}
+.hljs-deletion {
+  background-color: #ffc8bd
+}
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #9b703f
+}
+.hljs-doctag,
+.hljs-strong {
+  font-weight: bold
+}
+.hljs-emphasis {
+  font-style: italic
+}

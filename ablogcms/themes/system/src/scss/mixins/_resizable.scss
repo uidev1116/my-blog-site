@@ -1,5 +1,5 @@
 // リサイズ
-@mixin resizable($direction){
+@mixin resizable($direction) {
   overflow: auto;
   resize: $direction;
 }

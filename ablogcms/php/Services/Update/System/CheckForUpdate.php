@@ -336,7 +336,7 @@ class CheckForUpdate
      *
      * @param object $packages
      * @param string $php_version
-     * @return false|object
+     * @return false|\StdClass
      */
     protected function checkPhpVersion($packages, $php_version)
     {
@@ -358,7 +358,7 @@ class CheckForUpdate
      * a-blog cmsのバージョンチェック
      *
      * @param int<1, 3> $type
-     * @return false|object
+     * @return false|\stdClass
      */
     protected function checkAcmsVersion($type = self::PATCH_VERSION)
     {

@@ -18,6 +18,11 @@ class Export extends ExportBase
      */
     protected $prefix;
 
+    /**
+     * @var int[]
+     */
+    protected $mediaIds = [];
+
     public function __construct()
     {
         $this->setTables([
@@ -30,8 +35,6 @@ class Export extends ExportBase
             'entry',
             'field',
             'form',
-            'media',
-            'media_tag',
             'module',
             'rule',
             'tag',
@@ -43,20 +46,69 @@ class Export extends ExportBase
         $this->prefix = $dsn['prefix'];
     }
 
-    public function export($fp, $bid)
+    /**
+     * エクスポートを実行
+     *
+     * @param resource $fp
+     * @param int $bid
+     * @return array<array{type: string, path: string}> エクスポートしたメディアで違うブログのメディアのパス
+     */
+    public function export($fp, int $bid): array
     {
         $queryList = [];
         foreach ($this->tables as $table) {
             $sql = SQL::newSelect($table);
             $sql->addWhereOpr($table . '_blog_id', $bid);
             $method = 'fixQuery' . ucfirst($table);
-            if (is_callable([$this, $method])) {
-                $sql = call_user_func_array([$this, $method], [$sql, $bid]);
+            $callback = [$this, $method];
+            if (is_callable($callback)) {
+                $sql = call_user_func_array($callback, [$sql, $bid]);
             }
             $q = $sql->get(dsn());
             $queryList[$table] = $q;
         }
         $this->dumpYaml($fp, $queryList);
+        return $this->exportMedia($fp, $bid);
+    }
+
+    /**
+     * メディアをエクスポート
+     *
+     * @param resource $fp
+     * @return array<array{type: string, path: string}>  エクスポートしたメディアで違うブログのメディアのパス
+     */
+    protected function exportMedia($fp, int $bid): array
+    {
+        $mediaQueryList = [];
+        // メディアデータ
+        $sql = SQL::newSelect('media');
+        $where = SQL::newWhere();
+        $where->addWhereOpr('media_blog_id', $bid, '=', 'OR');
+        $where->addWhereIn('media_id', $this->mediaIds, 'OR');
+        $sql->addWhere($where);
+        $mediaSelectQuery = $sql->get(dsn());
+        $mediaQueryList['media'] = $mediaSelectQuery;
+        // メディアタグデータ
+        $sql = SQL::newSelect('media_tag');
+        $where = SQL::newWhere();
+        $where->addWhereOpr('media_tag_blog_id', $bid, '=', 'OR');
+        $where->addWhereIn('media_tag_media_id', $this->mediaIds, 'OR');
+        $sql->addWhere($where);
+        $mediaQueryList['media_tag'] = $sql->get(dsn());
+
+        $this->dumpYaml($fp, $mediaQueryList);
+
+        $mediaPaths = [];
+        DB::query($mediaSelectQuery, 'fetch', false);
+        while ($row = DB::fetch($mediaSelectQuery)) {
+            if (intval($row['media_blog_id']) !== $bid) {
+                $mediaPaths[] = [
+                    'type' => $row['media_type'],
+                    'path' => $row['media_path'],
+                ];
+            }
+        }
+        return $mediaPaths;
     }
 
     /**
@@ -78,6 +130,16 @@ class Export extends ExportBase
         }
         if ($table === 'fulltext') {
             $this->fixFulltext($record);
+        }
+        foreach ($record as $key => $value) {
+            $key = substr($key, strlen($table . '_'));
+            if ($key === 'media_id') {
+                $this->mediaIds[] = (int) $value;
+            }
+        }
+        $callback = [$this, "{$table}ExtractMediaId"];
+        if (is_callable($callback)) {
+            $value = call_user_func_array($callback, [$record]);
         }
     }
 
@@ -115,6 +177,7 @@ class Export extends ExportBase
 
     /**
      * ユニットデータからゴミ箱のデータを除外
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -134,6 +197,7 @@ class Export extends ExportBase
 
     /**
      * コメントデータからゴミ箱のデータを除外
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -153,6 +217,7 @@ class Export extends ExportBase
 
     /**
      * エントリーデータからゴミ箱のデータを除外
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -167,6 +232,7 @@ class Export extends ExportBase
 
     /**
      * フィールドデータからゴミ箱のデータを除外
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -190,6 +256,7 @@ class Export extends ExportBase
 
     /**
      * フルテキストデータからゴミ箱のデータを除外
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -209,6 +276,7 @@ class Export extends ExportBase
 
     /**
      * ブログデータを部分的エクスポートに修正
+     * This method is called dynamically via call_user_func_array().
      *
      * @param \SQL_Select $SQL
      * @param int $bid
@@ -226,5 +294,67 @@ class Export extends ExportBase
         $SQL->addWhereOpr('blog_id', $bid);
 
         return $SQL;
+    }
+
+    /**
+     * コンフィグテーブルからメディアIDを抽出
+     * This method is called dynamically via call_user_func_array().
+     *
+     * @param array $record
+     * @return void
+     * @phpstan-ignore-next-line
+     */
+    private function configExtractMediaId(array $record): void
+    {
+        if ($record['config_key'] === 'media_banner_mid' && !is_null($record['config_value'])) {
+            $this->mediaIds[] = (int) $record['config_value'];
+        }
+    }
+
+    /**
+     * ユニットテーブルからメディアIDを抽出
+     * This method is called dynamically via call_user_func_array().
+     *
+     * @param array $record
+     * @return void
+     * @phpstan-ignore-next-line
+     */
+    private function columnExtractMediaId(array $record): void
+    {
+        if (strncmp($record['column_type'], 'custom', 6) === 0) {
+            $data = acmsUnserialize($record['column_field_6']);
+            if ($data instanceof \Field) {
+                foreach ($data->listFields() as $fd) {
+                    foreach ($data->getArray($fd, true) as $i => $val) {
+                        if (strpos($fd, '@media') !== false) {
+                            $this->mediaIds[] = (int) $val;
+                        }
+                    }
+                }
+            }
+        } elseif (
+            strncmp($record['column_type'], 'media', 5) === 0 &&
+            !is_null($record['column_field_1'])
+        ) {
+            $this->mediaIds[] = (int) $record['column_field_1'];
+        }
+    }
+
+    /**
+     * フィールドテーブルからメディアIDを抽出
+     * This method is called dynamically via call_user_func_array().
+     *
+     * @param array $record
+     * @return void
+     * @phpstan-ignore-next-line
+     */
+    private function fieldExtractMediaId(array $record): void
+    {
+        if (
+            preg_match('/@media$/', $record['field_key']) &&
+            !is_null($record['field_value'])
+        ) {
+            $this->mediaIds[] = (int) $record['field_value'];
+        }
     }
 }

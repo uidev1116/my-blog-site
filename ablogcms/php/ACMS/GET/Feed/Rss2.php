@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Application;
+
 class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
 {
     public $_axis = [
@@ -123,13 +125,15 @@ class ACMS_GET_Feed_Rss2 extends ACMS_GET_Entry
             //--------
             // column
             if (empty($link) or 'on' == config('feed_rss2_outsidelink_description')) {
-                if ($Column = loadColumn($eid, $summaryRange)) {
-                    $this->buildColumn($Column, $Tpl, $eid);
+                /** @var \Acms\Services\Unit\Repository $unitRepository */
+                $unitRepository = Application::make('unit-repository');
+                /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+                $unitRenderingService = Application::make('unit-rendering-front');
+
+                if ($units = $unitRepository->loadUnits($eid, null, $summaryRange)) {
+                    $unitRenderingService->render($units, $Tpl, $eid);
                     if (!empty($summaryRange)) {
-                        $SQL    = SQL::newSelect('column');
-                        $SQL->addSelect('*', 'column_amount', null, 'COUNT');
-                        $SQL->addWhereOpr('column_entry_id', $eid);
-                        $amount = $DB->query($SQL->get(dsn()), 'one');
+                        $amount = $unitRepository->countUnitsTrait($eid);
                         if ($summaryRange < $amount) {
                             $vars['continueUrl']    = $permalink;
                             $vars['continueName']   = $title;

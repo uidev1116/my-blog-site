@@ -2479,6 +2479,13 @@
     Key:
     Default:
     Extra:
+  media_last_update_user_id:
+    Field: media_last_update_user_id
+    Type: int(11)
+    'Null': Yes
+    Key:
+    Default:
+    Extra:
 %{PREFIX}media_tag:
   media_tag_name:
     Field: media_tag_name

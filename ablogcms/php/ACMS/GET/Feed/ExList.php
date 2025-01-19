@@ -55,15 +55,17 @@ class ACMS_GET_Feed_ExList extends ACMS_GET
         // cache
         $id = md5($this->source);
         $cache = Cache::module();
-        if ($cache->has($id)) {
-            $feeds = acmsUnserialize($cache->get($id));
+        $cacheItem = $cache->getItem($id);
+        if ($cacheItem && $cacheItem->isHit()) {
+            $feeds = acmsUnserialize($cacheItem->get());
         }
         if (empty($feeds)) {
             $RSS   = new FeedParser($this->source, $this->kind);
             $feeds = $RSS->get();
             $cache->forget($id);
             if (!empty($this->feed_exlist_cache_expire)) {
-                $cache->put($id, acmsSerialize($feeds), $this->feed_exlist_cache_expire);
+                $cacheItem->set(acmsSerialize($feeds));
+                $cache->putItem($cacheItem, $this->feed_exlist_cache_expire);
             }
         }
 

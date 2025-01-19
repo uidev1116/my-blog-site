@@ -74,7 +74,7 @@
     <tr>
       <th class="acms-admin-table-nowrap"><!--T-->タイプ<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->イベントをフックするタイプを指定します。<!--/T-->"></i></th>
       <td>
-        <select name="type" class="js-webhook-type">
+        <select id="webhook-type" name="type">
           <option value=""><!--T-->選択してください<!--/T--></option>
           <!-- BEGIN type_group:loop -->
           <option value="{type_value}"{selected}>{type_label}</option>
@@ -91,9 +91,14 @@
     <tr>
       <th class="acms-admin-table-nowrap">イベント<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->フックするイベントを指定します。<!--/T-->"></i></th>
       <td>
-        <div class="js-webhook-event">
-          <div class="js-target"></div>
-          <input type="hidden" name="events" value="{events}" data-label="{events-label}" class="js-value">
+          <div
+            class="js-webhook-event-select"
+            data-target="#webhook-event-value"
+            data-default-value="{events}"
+            data-default-label="{events-label}"
+            data-type="#webhook-type"
+          ></div>
+          <input type="hidden" name="events" value="{events}" id="webhook-event-value">
           <input type="hidden" name="webhook[]" value="events">
           <input type="hidden" name="event:validator#required" id="validator-events-required">
         </div>

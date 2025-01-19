@@ -81,6 +81,84 @@
 		</tr>
 	</table>
 
+  <h2 class="acms-admin-admin-title2 "><!--T-->Google SMTPサーバー<!--/T--></h2>
+	<table class="adminTable acms-admin-table-admin-edit">
+    <tr>
+			<th>
+        <!--T-->Google SMTPを利用<!--/T-->
+        <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->チェックをつけるとメールをGoogleのSMTPを利用して送信します。（Google Cloud の Gmail API を有効・認証する必要があります）<!--/T-->"></i>
+      </th>
+      <td>
+        <div class="acms-admin-form-checkbox">
+          <input type="checkbox" name="mail_google_smtp" value="enable" {mail_google_smtp:checked#enable} id="input-checkbox-mail_google_smtp"/>
+          <label for="input-checkbox-mail_google_smtp"><i class="acms-admin-ico-checkbox"></i>
+            <!--T-->GoogleのSMTPを利用して送信します。<!--/T-->
+          </label>
+        </div>
+        <input type="hidden" name="config[]" value="mail_google_smtp"/>
+      </td>
+		</tr>
+    <tr>
+      <th><!--T-->認証メールアドレス<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->OAuth認証で利用するメールアドレスを設定します。<!--/T-->"></i></th>
+      <td>
+        <input type="text" name="mail_google_smtp_adrress" value="{mail_google_smtp_adrress}" size="60"/>
+        <input type="hidden" name="config[]" value="mail_google_smtp_adrress"/>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <!--T-->OAuthクライアント (json)<!--/T-->
+        <i
+          class="acms-admin-icon-tooltip js-acms-tooltip js-acms-tooltip-hover"
+          data-acms-tooltip="取得した OAuthクライアントJSON ファイルの絶対パスを指定します。JSONファイルはブラウザからアクセスできない場所に設置ください。"
+        ></i>
+      </th>
+      <td>
+        <input
+          type="text"
+          name="mail_google_smtp_clientid_json"
+          value="{mail_google_smtp_clientid_json}"
+          class="acms-admin-form-width-full"
+          placeholder="/var/www/xxxxxxxx.json"
+        />
+        <input type="hidden" name="config[]" value="mail_google_smtp_clientid_json" />
+      </td>
+    </tr>
+    <tr>
+      <th><!--T-->コールバックURL<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->Google Cloud プラットフォームで発行する「OauthクライアントID」に設定する「承認済みのリダイレクト URI」です。<!--/T-->"></i></th>
+      <td>
+        <strong>%{BLOG_URL}callback/smtp/google.html</strong>
+      </td>
+    </tr>
+    <!-- BEGIN_MODULE Admin_Config_GmailSmtp_Auth -->
+    <tr>
+      <th><!--T-->スコープ<!--/T--> <i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->Google Cloud プラットフォームの「Oauth同意画面」に設定する「スコープ」です。<!--/T-->"></i></th>
+      <td>
+        <strong>{scopes}</strong>
+      </td>
+    </tr>
+    <!-- BEGIN_IF [\{mail_google_smtp_clientid_json\}[md5]/nem] -->
+    <tr>
+      <th><!--T-->認証<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->Google Cloud プラットフォームの「Oauth同意画面」に設定する「スコープ」です。<!--/T-->"></i></th>
+      <td>
+        <!-- BEGIN_IF [{authorized}/eq/true] -->
+        <input
+          type="submit"
+          class="acms-admin-btn-admin acms-admin-btn-admin-danger"
+          value="認証解除"
+          name="ACMS_POST_Config_GmailSmtp_Deauthorize"
+        />
+        <!-- T -->認証済み<!-- /T -->
+        <!-- ELSE -->
+        <input type="submit" class="acms-admin-btn-admin" value="認証" name="ACMS_POST_Config_GmailSmtp_Auth"/>
+        <!-- T -->認証してください<!-- /T -->
+        <!-- END_IF -->
+      </td>
+    </tr>
+    <!-- END_IF -->
+    <!-- END_MODULE Admin_Config_GmailSmtp_Auth -->
+	</table>
+
   <h2 class="acms-admin-admin-title2 "><!--T-->エラー通知<!--/T--></h2>
 	<table class="adminTable acms-admin-table-admin-edit">
 		<tr>
@@ -523,6 +601,68 @@
 			<td>
 				<input type="text" name="mail_reset_password_tpl_body_html" value="{mail_reset_password_tpl_body_html}" size="40"/>
 				<input type="hidden" name="config[]" value="mail_reset_password_tpl_body_html"/>
+			</td>
+		</tr>
+	</table>
+
+  <h2 class="acms-admin-admin-title2 "><!--T-->メールアドレス変更<!--/T--></h2>
+	<table class="adminTable acms-admin-table-admin-edit">
+		<tr>
+			<th>From<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの差出人を指定します。<!--/T-->"></i></th>
+			<td>
+				<input type="text" name="mail_update_email_from" value="{mail_update_email_from}" size="60"/>
+				<input type="hidden" name="config[]" value="mail_update_email_from"/>
+			</td>
+		</tr>
+		<tr>
+			<th>To<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの宛先を指定します。<!--/T-->"></i></th>
+			<td>
+				(&nbsp;<!--T-->※メールアドレス変更時に入力されたメールアドレスに送信されます<!--/T-->&nbsp;)
+			</td>
+		</tr>
+		<tr>
+			<th>Bcc<i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールのBcc（ブラインドカーボンコピー）を指定します。<!--/T-->"></i></th>
+			<td>
+				<ul class="js-fieldgroup-sortable acms-admin-list-nostyle"><!-- BEGIN mail_update_email_bcc:loop -->
+					<li class="sortable-item acms-admin-margin-bottom-mini">
+						<i class="acms-admin-icon-sort item-handle acms-admin-hide-sp"></i>
+						<input type="text" name="mail_update_email_bcc[]" value="{mail_update_email_bcc}" size="60"/>
+						<input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp"/>
+					</li><!-- END mail_update_email_bcc:loop -->
+					<li class="sortable-item item-template acms-admin-margin-bottom-mini">
+						<i class="acms-admin-icon-sort item-handle acms-admin-hide-sp"></i>
+						<input type="text" name="mail_update_email_bcc[]" size="60"/>
+						<input type="button" value="<!--T-->削除<!--/T-->" class="item-delete acms-admin-btn-admin acms-admin-btn-admin-danger acms-admin-margin-top-bottom-sp"/>
+					</li>
+					<li>
+						<input type="button" value="<!--T-->追加<!--/T-->" class="item-insert acms-admin-btn-admin"/>
+					</li>
+				</ul>
+				<input type="hidden" name="config[]" value="mail_update_email_bcc"/>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->件名テンプレート<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの件名のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_update_email_tpl_subject" value="{mail_update_email_tpl_subject}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_update_email_tpl_subject"/>
+			</td>
+		</tr>
+		<tr>
+			<th><!--T-->本文テンプレート（TEXT）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_update_email_tpl_body" value="{mail_update_email_tpl_body}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_update_email_tpl_body"/>
+			</td>
+		</tr>
+    <tr>
+			<th><!--T-->本文テンプレート（HTML）<!--/T--><i class="acms-admin-icon-tooltip js-acms-tooltip-hover" data-acms-tooltip="<!--T-->ユーザーに送信されるメールの本文のテンプレートの場所を指定します。<!--/T-->"></i>
+			</th>
+			<td>
+				<input type="text" name="mail_update_email_tpl_body_html" value="{mail_update_email_tpl_body_html}" size="40"/>
+				<input type="hidden" name="config[]" value="mail_update_email_tpl_body_html"/>
 			</td>
 		</tr>
 	</table>

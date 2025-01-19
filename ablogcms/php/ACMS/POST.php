@@ -145,6 +145,7 @@ class ACMS_POST
     public function fire()
     {
         $app = App::getInstance();
+        assert($app instanceof \Acms\Application);
         $this->Q =& $app->getQueryParameter();
         $this->Get =& $app->getGetParameter();
         $this->Post =& $app->getPostParameter();
@@ -210,7 +211,7 @@ class ACMS_POST
             $field = $match[1];
             $validator = $this->Post->get($fd);
             $this->Post->deleteField($fd);
-            $V = class_exists($validator) ? (new $validator()) : null;
+            $V = $validator instanceof \ACMS_Validator ? (new $validator()) : null;
             $this->extract($field, $V);
         }
 

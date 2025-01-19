@@ -1,4 +1,4 @@
-import * as pdfjs from 'pdfjs-dist';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export default class Pdf2Image {
   /**
@@ -96,12 +96,15 @@ export default class Pdf2Image {
         } else {
           src.data = this.url;
         }
-        pdfjs.getDocument(src).promise.then((document) => {
-          this.document = document;
-          resolve(this.document);
-        }).catch((e) => {
-          reject(e);
-        });
+        pdfjs
+          .getDocument(src)
+          .promise.then((document) => {
+            this.document = document;
+            resolve(this.document);
+          })
+          .catch((e) => {
+            reject(e);
+          });
       } catch (e) {
         reject(e);
       }

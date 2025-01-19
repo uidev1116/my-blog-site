@@ -1,5 +1,9 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
 {
     /**
@@ -7,6 +11,9 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
      */
     public function post()
     {
+        $this->unitRepository = Application::make('unit-repository');
+        assert($this->unitRepository instanceof \Acms\Services\Unit\Repository);
+
         $insertedResponse = $this->insert();
         $redirect = $this->Post->get('redirect');
         $backend = $this->Post->get('backend');
@@ -77,7 +84,8 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
         }
 
         // ユニットを事前処理
-        $units = Entry::extractColumn($range);
+        /** @var \Acms\Services\Unit\Contracts\Model[] $units */
+        $units = $this->unitRepository->extractUnits($range, true, false);
 
         // エントリーの事前処理
         $entryData = $this->getInsertEntryData($postEntry);
@@ -293,6 +301,7 @@ class ACMS_POST_Entry_Insert extends ACMS_POST_Entry_Update
         $postEntry->setMethod('indexing', 'in', ['on', 'off']);
         $postEntry->setMethod('entry', 'operable', $this->isOperable());
         $postEntry = Entry::validTag($postEntry);
+        $postEntry = Entry::validSubCategory($postEntry);
         $postEntry->validate(new ACMS_Validator());
 
         return $code;

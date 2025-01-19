@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  ボタングループ
@@ -9,20 +9,21 @@
   padding-left: 0;
   vertical-align: middle;
 
-  > .js-acms-btn-admin:first-child:not(:last-child):not(.js-acms-dropdown-toggle) {
+  > .js-acms-btn-admin:first-child:not(:last-child, .js-acms-dropdown-toggle) {
     @include global.round-right(0);
   }
 
-  > .js-acms-btn-admin:first-child:not(:last-child):not(.js-acms-dropdown-toggle) {
+  > .js-acms-btn-admin:first-child:not(:last-child, .js-acms-dropdown-toggle) {
     @include global.round-right(0);
   }
 
-  > .js-acms-btn-admin:first-child:not(:last-child):not(.js-acms-dropdown-toggle) {
+  > .js-acms-btn-admin:first-child:not(:last-child, .js-acms-dropdown-toggle) {
     @include global.round-right(0);
   }
 
   > .js-acms-dropdown-toggle:not(:first-child) {
     border-left: 0;
+
     @include global.round-left(0);
   }
 
@@ -49,14 +50,13 @@
   }
 }
 
-@media screen and (min-width: global.$breakpoint-md-min){
+@media screen and (min-width: global.$breakpoint-md-min) {
   .acms-btn-group {
     > .acms-btn {
       height: global.$acms-form-height;
     }
   }
 }
-
 
 /* ------------------------------
  ドロップダウンメニュー
@@ -100,25 +100,24 @@
   list-style: none;
   background: global.$acms-color-white;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgb(0 0 0 / 15%);
   border-radius: 3px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 17.5%);
 
   // リンク
   > li > a,
   > li > button {
-    cursor: pointer;
-    white-space: nowrap;
     display: block;
+    box-sizing: border-box;
+    width: 100%;
     padding: 3px 20px;
     white-space: nowrap;
-    text-decoration: none;
-    appearance: none;
-    border: none;
-    background-color: transparent;
-    width: 100%;
     text-align: left;
-    box-sizing: border-box;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    appearance: none;
   }
 
   a:link,
@@ -140,21 +139,23 @@
     margin: 4px 0;
     background-color: global.$acms-color-gray40;
   }
+
   // 右基点
-  .acms-dropdown-right  & {
+  .acms-dropdown-right & {
     top: 5px;
     left: calc(100% + 5px);
   }
 
   .acms-nav .acms-dropdown-right & {
     left: 0;
+
     @media screen and (min-width: global.$breakpoint-md-min) {
       left: calc(100% - 5px);
     }
   }
 
   // 下基点
-  .acms-dropdown-bottom  & {
+  .acms-dropdown-bottom & {
     top: calc(100% + 10px);
     left: 0;
   }
@@ -162,6 +163,7 @@
   .acms-dropdown-current {
     background-color: global.$acms-color-info10;
   }
+
   .acms-dropdown-current-icon {
     position: absolute;
     top: 7px;
@@ -179,6 +181,7 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
+
   > li > a,
   > li > button {
     padding: 10px 20px;
@@ -200,22 +203,22 @@
 }
 
 .acms-navbar-admin-nav-username {
-  margin: 0 0 2px 0;
+  margin: 0 0 2px;
   font-weight: bold;
   font-size: 12px;
   word-break: break-word;
 }
 
 .acms-navbar-admin-nav-usercode {
-  margin: 0 0 2px 0;
+  margin: 0 0 2px;
   font-size: 10px;
 }
 
 .acms-navbar-admin-nav-dropdown-menu {
   margin: 0;
   padding: 0;
-  list-style: none;
   color: global.$acms-color-black;
+  list-style: none;
 }
 
 .acms-navbar-admin-nav-dropdown-menu li {
@@ -237,17 +240,17 @@
 
   a,
   button {
-    cursor: pointer;
     display: inline-block;
-    padding: 5px 20px;
-    white-space: nowrap;
-    text-decoration: none;
-    appearance: none;
-    border: none;
-    background-color: transparent;
-    text-align: left;
-    color: inherit;
     box-sizing: border-box;
+    padding: 5px 20px;
+    color: inherit;
+    white-space: nowrap;
+    text-align: left;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    appearance: none;
   }
 
   a:link,
@@ -264,6 +267,7 @@
     padding: 0;
     border-radius: 0;
     box-shadow: none;
+
     & > li > a,
     & > li > button {
       padding: 10px 20px;

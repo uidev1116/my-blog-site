@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  タイムライン
@@ -8,30 +8,33 @@
   padding-left: 20px;
   list-style: none;
 
-   &:before {
+  &::before {
     position: absolute;
     width: global.$timeline-line-width;
     height: 100%;
     background: global.$timeline-line-color;
-    content: "";
+    content: '';
   }
 }
 
 .acms-timeline-mark {
   position: absolute;
   left: -55px;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 3px rgb(0 0 0 / 15%);
 }
 
 .acms-timeline-side {
   position: relative;
-    left: -15px;
-  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.15);
+  left: -15px;
+  box-shadow: 0 2px 3px rgb(0 0 0 / 15%);
 }
+
 .acms-timeline-label {
   padding: 5px 10px;
+
   @include global.font-size(global.$timeline-label-font-size);
 }
+
 .acms-timeline-status-label {
   float: left;
   margin-right: 10px;
@@ -42,6 +45,7 @@
   margin-top: global.$timeline-itemgroup-margin-top;
   list-style: none;
 }
+
 .acms-timeline-item {
   position: relative;
 }
@@ -52,9 +56,10 @@
   border: global.$timeline-panel-border;
 
   [class*='acms-icon'] {
-    font-size:inherit;
+    font-size: inherit;
   }
 }
+
 .acms-timeline-time {
   float: right;
   color: global.$acms-color-gray70;

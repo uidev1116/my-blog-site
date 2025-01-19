@@ -4,7 +4,7 @@ class ACMS_GET_Admin_Entry_Revision_UrlContext extends ACMS_GET_Admin_Entry_Revi
 {
     public function get()
     {
-        if (!sessionWithContribution(BID, false)) {
+        if (!sessionWithContribution(BID)) {
             return 'Bad Access.';
         }
         if (!defined('EID')) {
@@ -14,7 +14,11 @@ class ACMS_GET_Admin_Entry_Revision_UrlContext extends ACMS_GET_Admin_Entry_Revi
             return '';
         }
         $tpl = new Template($this->tpl, new ACMS_Corrector());
-        $revision = $this->getRevision(EID, RVID);
+        /** @var array<string, mixed>|null $revision */
+        $revision = null;
+        if (RVID !== null && is_int(EID)) { // @phpstan-ignore-line
+            $revision = $this->getRevision(EID, RVID) ?: null;
+        }
 
         /**
          * そのまま公開保存できるか判定
@@ -30,6 +34,10 @@ class ACMS_GET_Admin_Entry_Revision_UrlContext extends ACMS_GET_Admin_Entry_Revi
             }
             $tpl->add('enbaleUpdateEntry');
         } while (false);
+
+        if (is_null($revision)) {
+            return $tpl->get();
+        }
 
         /**
          * バージョンを更新できるか判定

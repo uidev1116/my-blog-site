@@ -89,7 +89,7 @@ class CacheManager
         }
         try {
             $config = $this->config['type']['config'];
-            $driver = $this->createTagDriver($config['driver'], $this->getNameSpace($config['namespace']));
+            $driver = $this->createTagDriver($config['driver'], $this->getNameSpace($config['namespace']), $config['lifetime']);
             $cache = new Tag($driver);
         } catch (NotFoundException $e) {
             AcmsLogger::warning(
@@ -268,11 +268,12 @@ class CacheManager
      *
      * @param string $drivers
      * @param string $namespace
+     * @param int $lifetime
      * @return \Symfony\Component\Cache\Adapter\TagAwareAdapterInterface
      *
      * @throws NotFoundException
      */
-    protected function createTagDriver($drivers, $namespace)
+    protected function createTagDriver($drivers, $namespace, $lifetime = 0)
     {
         $drivers = array_map('trim', explode('|', $drivers));
         $useDriver = null;
@@ -290,7 +291,7 @@ class CacheManager
         }
         $createMethod = 'create' . ucwords($useDriver) . 'TagDriver';
         if (method_exists($this, $createMethod)) {
-            return $this->{$createMethod}($namespace); // @phpstan-ignore-line
+            return $this->{$createMethod}($namespace, $lifetime); // @phpstan-ignore-line
         }
         throw new NotFoundException('Cache driver is not found.');
     }
@@ -434,11 +435,12 @@ class CacheManager
     /**
      * ファイルキャッシュドライバーの作成
      * @param string $namespace
+     * @param int $lifetime
      * @return \Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter
      */
-    protected function createFileTagDriver($namespace)
+    protected function createFileTagDriver($namespace, $lifetime)
     {
-        return new FilesystemTagAwareAdapter($namespace, 120, $this->cacheDir);
+        return new FilesystemTagAwareAdapter($namespace, $lifetime, $this->cacheDir);
     }
 
     /**
@@ -453,11 +455,12 @@ class CacheManager
     /**
      * DBキャッシュドライバーの作成
      * @param string $namespace
+     * @param int $lifetime
      * @return \Acms\Services\Cache\Adapters\Custom\DatabaseTagAwareAdapter
      */
-    protected function createDatabaseTagDriver($namespace)
+    protected function createDatabaseTagDriver($namespace, $lifetime)
     {
-        return new DatabaseTagAwareAdapter($namespace, 120);
+        return new DatabaseTagAwareAdapter($namespace, $lifetime);
     }
 
     /**
@@ -472,14 +475,15 @@ class CacheManager
     /**
      * Redisキャッシュドライバーを作成
      * @param string $namespace
+     * @param int $lifetime
      * @return \Symfony\Component\Cache\Adapter\RedisTagAwareAdapter
      */
-    protected function createRedisTagDriver($namespace)
+    protected function createRedisTagDriver($namespace, $lifetime)
     {
         $redisInfo = $this->config['drivers']['redis']['connection'];
         $client = $this->createRedisClient($redisInfo['host'], $redisInfo['port'], $redisInfo['password'], $redisInfo['db']);
 
-        return new RedisTagAwareAdapter($client, $namespace, 120);
+        return new RedisTagAwareAdapter($client, $namespace, $lifetime);
     }
 
     /**
@@ -514,6 +518,6 @@ class CacheManager
      */
     protected function getNameSpace($namespace)
     {
-        return $namespace . '-' . md5(DOMAIN);
+        return $namespace . '-' . md5(DOMAIN . DIR_OFFSET);
     }
 }

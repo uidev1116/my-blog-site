@@ -68,9 +68,10 @@ class ACMS_POST_Blog_Update extends ACMS_POST_Blog
 
             //--------
             // config
-            Config::saveConfig($Config, BID, null, null, Config::getCurrentConfigSetId());
+            Config::saveConfig($Config, BID);
             Config::set('blog_theme_color', $Config->get('blog_theme_color'));
             Config::set('blog_theme_logo@squarePath', $Config->get('blog_theme_logo@squarePath'));
+
 
             //----------
             // geometry

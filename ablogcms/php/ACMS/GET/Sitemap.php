@@ -9,15 +9,15 @@ class ACMS_GET_Sitemap extends ACMS_GET
 
     function get()
     {
-        $Tpl    = new Template($this->tpl);
+        $Tpl = new Template($this->tpl);
         $this->buildModuleField($Tpl);
-        $DB     = DB::singleton(dsn());
+        $DB = DB::singleton(dsn());
 
-        $blogField      = new Field_Search(config('sitemap_blog_field'));
-        $categoryField  = new Field_Search(config('sitemap_category_field'));
-        $entryField     = new Field_Search(config('sitemap_entry_field'));
+        $blogField = new Field_Search(config('sitemap_blog_field'));
+        $categoryField = new Field_Search(config('sitemap_category_field'));
+        $entryField = new Field_Search(config('sitemap_entry_field'));
 
-        $SQL    = SQL::newSelect('blog');
+        $SQL = SQL::newSelect('blog');
         $SQL->addSelect('blog_id');
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
         $blogArray  = $DB->query($SQL->get(dsn()), 'all');
@@ -34,7 +34,7 @@ class ACMS_GET_Sitemap extends ACMS_GET
         /**
          * Blog
          */
-        $SQL    = SQL::newSelect('blog');
+        $SQL = SQL::newSelect('blog');
         $SQL->setSelect('blog_id');
         ACMS_Filter::blogStatus($SQL);
         ACMS_Filter::blogTree($SQL, $this->bid, $this->blogAxis());
@@ -56,12 +56,12 @@ class ACMS_GET_Sitemap extends ACMS_GET
 
         if ($DB->query($bQ, 'fetch')) {
             while ($bid = intval(ite($DB->fetch($bQ), 'blog_id'))) {
-                $data        = [
-                    'loc'   => acmsLink([
-                        'bid'   => $bid,
+                $blogData = [
+                    'loc' => acmsLink([
+                        'bid' => $bid,
                     ], false),
                 ];
-                $SQL        = SQL::newSelect('entry');
+                $SQL = SQL::newSelect('entry');
                 $SQL->addLeftJoin('blog', 'blog_id', 'entry_blog_id');
                 $SQL->addSelect('entry_updated_datetime');
                 ACMS_Filter::entrySession($SQL);
@@ -71,16 +71,15 @@ class ACMS_GET_Sitemap extends ACMS_GET
                 }
                 $SQL->setOrder('entry_updated_datetime', 'desc');
                 if ($lastmod = $DB->query($SQL->get(dsn()), 'one')) {
-                    $t          = strtotime($lastmod);
-                    $lastmod    = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
-                    $data['lastmod']    = $lastmod;
+                    $t = strtotime($lastmod);
+                    $lastmod = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
+                    $blogData['lastmod'] = $lastmod;
                 }
-                $Tpl->add('url:loop', $data);
 
-                        /**
-                         * Category
-                         */
-                $SQL    = SQL::newSelect('category');
+                /**
+                 * Category
+                 */
+                $SQL = SQL::newSelect('category');
                 $SQL->setSelect('category_id');
                 $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
 
@@ -88,12 +87,12 @@ class ACMS_GET_Sitemap extends ACMS_GET
                 ACMS_Filter::categoryStatus($SQL);
 
                 ACMS_Filter::categoryField($SQL, $categoryField);
-                $Where  = SQL::newWhere();
+                $Where = SQL::newWhere();
                 $Where->addWhereOpr('category_blog_id', $bid, '=', 'OR');
                 $Where->addWhereOpr('category_scope', 'global', '=', 'OR');
                 $SQL->addWhere($Where);
 
-                        // indexing
+                // indexing
                 if ('on' == config('sitemap_category_indexing')) {
                     $SQL->addWhereOpr('category_indexing', 'on');
                 }
@@ -102,29 +101,32 @@ class ACMS_GET_Sitemap extends ACMS_GET
                 list($sort) = explode('-', $order);
                 if ($sort === 'amount') {
                     $SQL->addLeftJoin('entry', 'entry_category_id', 'category_id');
-                    $Where  = SQL::newWhere();
+                    $Where = SQL::newWhere();
                     ACMS_Filter::entrySession($Where);
-                    $Case   = SQL::newCase();
+                    $Case = SQL::newCase();
                     $Case->add($Where, 1);
                     $Case->setElse('NULL');
                     $SQL->addSelect($Case, 'category_entry_amount', null, 'count');
                     $SQL->setGroup('category_id');
                 }
-                        // // order
+                // order
                 ACMS_Filter::categoryOrder($SQL, $order);
                 $cQ = $SQL->get(dsn());
                 $DB->query($cQ, 'fetch');
+                $cid = null;
+                $blogHasEmptyEntryCode = false;
 
-                $cid    = null;
                 do {
+                    $categoryHasEmptyEntryCode = false;
+                    $categoryData = null;
                     if (!empty($cid)) {
-                        $data        = [
-                            'loc'   => acmsLink([
-                                'bid'   => $bid,
-                                'cid'   => $cid,
+                        $data = [
+                            'loc' => acmsLink([
+                                'bid' => $bid,
+                                'cid' => $cid,
                             ], false),
                         ];
-                        $SQL        = SQL::newSelect('entry');
+                        $SQL = SQL::newSelect('entry');
                         $SQL->addLeftJoin('category', 'category_id', 'entry_category_id');
                         $SQL->addSelect('entry_updated_datetime');
                         ACMS_Filter::entrySession($SQL);
@@ -135,18 +137,19 @@ class ACMS_GET_Sitemap extends ACMS_GET
                         }
                         $SQL->setOrder('entry_updated_datetime', 'desc');
                         if ($lastmod = $DB->query($SQL->get(dsn()), 'one')) {
-                            $t          = strtotime($lastmod);
-                            $lastmod    = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
-                            $data['lastmod']    = $lastmod;
+                            $t = strtotime($lastmod);
+                            $lastmod = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
+                            $data['lastmod'] = $lastmod;
                         }
-                        $Tpl->add('url:loop', $data);
+                        $categoryData = $data;
                     }
 
                     /**
                      * Entry
                      */
-                    $SQL    = SQL::newSelect('entry');
+                    $SQL = SQL::newSelect('entry');
                     $SQL->addSelect('entry_id');
+                    $SQL->addSelect('entry_code');
                     $SQL->addSelect('entry_updated_datetime');
                     ACMS_Filter::entrySession($SQL);
                     ACMS_Filter::entryField($SQL, $entryField);
@@ -173,22 +176,35 @@ class ACMS_GET_Sitemap extends ACMS_GET
                     }
 
                     while ($row = $DB->fetch($eQ)) {
-                        $eid        = intval($row['entry_id']);
-                        $t          = strtotime($row['entry_updated_datetime']);
-                        $lastmod    = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
+                        $ecd = $row['entry_code'];
+                        if (!$ecd && $cid) {
+                            $categoryHasEmptyEntryCode = true;
+                        } elseif (!$ecd) {
+                            $blogHasEmptyEntryCode = true;
+                        }
+                        $eid = intval($row['entry_id']);
+                        $t = strtotime($row['entry_updated_datetime']);
+                        $lastmod = date('Y-m-d', $t) . 'T' . date('H:i:s', $t) . preg_replace('@(?=\d{2,2}$)@', ':', date('O', $t));
                         $Tpl->add('url:loop', [
-                            'loc'   => acmsLink([
-                                'bid'   => $bid,
-                                'cid'   => $cid,
-                                'eid'   => $eid,
+                            'loc' => acmsLink([
+                                'bid' => $bid,
+                                'cid' => $cid,
+                                'eid' => $eid,
                             ], false),
-                            'lastmod'   => $lastmod,
+                            'lastmod' => $lastmod,
                         ]);
                     }
+
+                    if (!empty($cid) && !$categoryHasEmptyEntryCode) {
+                        $Tpl->add('url:loop', $categoryData);
+                    }
                 } while ($cid = intval(ite($DB->fetch($cQ), 'category_id')));
+
+                if (!$blogHasEmptyEntryCode) {
+                    $Tpl->add('url:loop', $blogData);
+                }
             }
         }
-
         return $Tpl->get();
     }
 }

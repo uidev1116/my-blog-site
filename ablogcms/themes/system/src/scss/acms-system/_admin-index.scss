@@ -1,5 +1,5 @@
-@use "sass:math";
-@use "../global/common" as global;
+@use 'sass:math';
+@use '../global/common' as global;
 
 // ------------------------------
 // エントリ一覧ページ
@@ -8,6 +8,7 @@
 .categoryTitle {
   display: inline-block;
   font-weight: bold;
+
   @include global.font-size(13);
 }
 
@@ -33,16 +34,17 @@
 
 #tagList li {
   padding-right: 5px;
+
   a {
-    @include global.button-shape();
+    @include global.button-shape;
     @include global.button-decoration(
-      $border: 1px solid rgba(0,0,0,.2),
+      $border: 1px solid rgba(0, 0, 0, 0.2),
       $hover-bg-color: global.$acms-color-gray20,
-      $hover-border-color: rgba(0,0,0,.3),
+      $hover-border-color: rgba(0, 0, 0, 0.3),
       $text-color: global.$acms-btn-text-default-color,
       $active-border-color: global.$acms-btn-active-border-color,
-      $active-bg-color: #E1E1E1,
-      $active-box-shadow: inset 0 1px 2px rgba(0,0,0,.3),
+      $active-bg-color: #e1e1e1,
+      $active-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3),
       $active-text-color: global.$acms-color-black,
       $focus-border-color: global.$acms-btn-focus-border-color
     );
@@ -52,7 +54,10 @@
     a {
       @include global.button-shape(
         $font-size: global.$acms-btn-font-size-desktop,
-        $padding: (math.div(global.$acms-form-height - global.$acms-btn-font-size-desktop - 2px, 2)) global.$acms-btn-padding-x
+        $padding: (
+          math.div(global.$acms-form-height - global.$acms-btn-font-size-desktop - 2px, 2),
+        )
+        global.$acms-btn-padding-x
       );
     }
   }
@@ -66,7 +71,7 @@
 }
 
 .admin-entry-index-val {
-  color: #666666;
+  color: #666;
 }
 
 // ------------------------------
@@ -96,15 +101,13 @@
   text-align: right;
 }
 
-
 // ------------------------------
 // ショートカットボタン
 // ------------------------------
 // ボタン
 .acms-shortcut-btn {
-  padding: 7px 10px 6px 10px;
+  padding: 7px 10px 6px;
 }
-
 
 // ------------------------------
 // テンプレート書出し管理画面
@@ -120,12 +123,11 @@
   border-bottom-right-radius: 0;
 }
 
-.acms-form-action-width-select input[type=text]:last-child{
+.acms-form-action-width-select input[type='text']:last-child {
   border-left: global.$acms-form-border;
   border-top-left-radius: global.$acms-form-border-radius;
   border-bottom-left-radius: global.$acms-form-border-radius;
 }
-
 
 // ------------------------------
 // エクスポート・インポート
@@ -142,7 +144,6 @@
 .acms-exported-label {
   font-size: 13px;
 }
-
 
 // ------------------------------
 // チェックリスト

@@ -1,16 +1,25 @@
-import { ExtendedFile } from '../types/media';
+export type ExtendedFile =
+  | {
+      file: File;
+      filetype: 'image';
+      preview: string;
+    }
+  | {
+      file: File;
+      filetype: 'file';
+    };
 
-export default (files: FileList): Promise<ExtendedFile[]> => {
-  const promiseArr = [];
-  [].forEach.call(files, (f: File) => {
-    const promise = new Promise((resolve) => {
+export default function readFiles(files: File[] | FileList): Promise<ExtendedFile[]> {
+  const promises: Promise<ExtendedFile>[] = [];
+  Array.from(files).forEach((f) => {
+    const promise = new Promise<ExtendedFile>((resolve, reject) => {
       const objFileReader = new FileReader();
       if (f.type.match('image.*')) {
         objFileReader.onload = () => {
           resolve({
             file: f,
             filetype: 'image',
-            preview: objFileReader.result,
+            preview: objFileReader.result as string,
           });
         };
         objFileReader.readAsDataURL(f);
@@ -24,10 +33,10 @@ export default (files: FileList): Promise<ExtendedFile[]> => {
         objFileReader.readAsDataURL(f);
       }
       objFileReader.onerror = () => {
-        resolve(null);
+        reject(new Error(`Failed to read file: ${f.name}`));
       };
     });
-    promiseArr.push(promise);
+    promises.push(promise);
   });
-  return Promise.all(promiseArr);
-};
+  return Promise.all(promises);
+}

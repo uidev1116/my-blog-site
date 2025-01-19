@@ -1,11 +1,18 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+
+/// <reference types="i18next" />
+
 interface acms {
-  Dispatch: any
-  Dispatch2: any
-  Library: any
-  Config: any
-  Load: any
-  addListener(eventName: string, fn: Function): void
-  i18n(key: string): string
+  Dispatch: any;
+  Dispatch2: any;
+  Library: any;
+  Config: any;
+  Load: any;
+  dispatchEvent(eventName: string, dom?: HTMLElement | Document, obj?: object): void;
+  addListener(eventName: string, fn: (event: any) => void): void;
+  i18n: import('i18next').TFunction & {
+    lng: string;
+  };
 }
 
-declare var ACMS: acms
+declare let ACMS: acms;

@@ -2,6 +2,8 @@
 
 use Acms\Services\Facades\Common;
 use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Logger as AcmsLogger;
 
 class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
 {
@@ -66,7 +68,7 @@ class ACMS_POST_Entry_Index_Export extends ACMS_POST_Entry_Export
             $this->copyAssets('storage', MEDIA_STORAGE_DIR, $fileList['storage']);
             $this->copyAssets('archives', ARCHIVES_DIR, $fileList['archives']);
 
-            Storage::compress(SCRIPT_DIR . $this->srcPath, $this->destPath, 'acms_entry_data');
+            Storage::compress($this->srcPath, $this->destPath, 'acms_entry_data');
             Storage::removeDirectory($this->srcPath);
 
             AcmsLogger::info('指定されたエントリーのエクスポートをしました', [

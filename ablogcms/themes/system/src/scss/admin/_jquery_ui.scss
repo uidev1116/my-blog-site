@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 /* ------------------------------
  jQuery UI の上書き
@@ -8,9 +8,9 @@
 // dialog
 // ---------------
 body .ui-dialog {
-	z-index: global.zIndex(ui-dialog);
+  z-index: global.zIndex(ui-dialog);
 }
 
 body .ui-widget-overlay {
-	opacity: .3;
+  opacity: 0.3;
 }

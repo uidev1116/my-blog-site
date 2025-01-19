@@ -1,13 +1,15 @@
 <?php
 
+use Acms\Services\Facades\Application;
+
 class ACMS_POST_Entry_Update_Detail extends ACMS_POST_Entry_Update
 {
     /**
      * ユニットを保存せずプライマリーイメージを取得
      *
-     * @param array $units
+     * @param \Acms\Services\Unit\Contracts\Model[] $units
      * @param int $eid
-     * @param int $primary_image
+     * @param string|null $primary_image
      */
     protected function saveUnit($units, $eid, $primary_image)
     {
@@ -21,7 +23,11 @@ class ACMS_POST_Entry_Update_Detail extends ACMS_POST_Entry_Update
 
     function post()
     {
-        $this->lockService = App::make('entry.lock');
+        $this->unitRepository = Application::make('unit-repository');
+        $this->lockService = Application::make('entry.lock');
+        assert($this->unitRepository instanceof \Acms\Services\Unit\Repository);
+        assert($this->lockService instanceof \Acms\Services\Entry\Lock);
+
         $updatedResponse = $this->update();
 
         if (is_array($updatedResponse)) {

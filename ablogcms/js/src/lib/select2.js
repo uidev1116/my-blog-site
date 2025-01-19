@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import 'select2/dist/js/select2.full';
 import 'select2/dist/css/select2.css';
 
@@ -20,10 +19,8 @@ export default (context, option) => {
       $('.select2-results__options').css('max-height', `${margin}px`);
     })
     .on('select2:select', () => {
-      jQuery(context).change();
-      const event = document.createEvent('HTMLEvents');
-      event.initEvent('change', true, false);
-      context.dispatchEvent(event);
+      $(context).trigger('change');
+      context.dispatchEvent(new Event('change'));
     });
   if (findAncestor(context, '.acms-admin-modal-dialog')) {
     $(context).data('select2').$dropdown.addClass('select2-in-modal');

@@ -223,7 +223,10 @@ class ACMS_GET_Category_EntrySummary extends ACMS_GET_Category_EntryList
         }
         if (!empty($this->Field)) {
             if (config('category_entry_summary_field_search') == 'entry') {
-                ACMS_Filter::entryField($SQL, $this->Field);
+                $sortFields = ACMS_Filter::entryField($SQL, $this->Field);
+                foreach ($sortFields as $name) {
+                    $SQL->addSelect($name);
+                }
             } else {
                 ACMS_Filter::categoryField($SQL, $this->Field);
             }

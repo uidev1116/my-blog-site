@@ -13,6 +13,9 @@ class ACMS_POST_App_Update extends ACMS_POST
             return $this->Post;
         }
 
+        /**
+         * @var ACMS_App $App
+         */
         $App = new $appClassName();
 
         $className = get_class($App);

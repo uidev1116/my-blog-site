@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // ユーザーグループ編集
@@ -82,5 +82,6 @@
 }
 
 .argRefRight:not(:target) {
+  // stylelint-disable-next-line unit-no-unknown
   width: 260px\9; /* IE9・IE10 */
 }

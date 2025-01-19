@@ -45,7 +45,7 @@ class ACMS_GET_Member_Signin extends ACMS_GET_Member
         /**
          * メール認証によるサインイン
          */
-        if ($this->isAuthUrl()) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $this->isAuthUrl()) {
             $this->emailAuthSingin($tpl);
         }
 

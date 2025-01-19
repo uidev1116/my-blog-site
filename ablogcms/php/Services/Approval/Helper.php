@@ -82,7 +82,7 @@ class Helper
             $WHERE->addWhere($W3, 'OR');
             $WHERE->addWhereOpr('notification_receive_user_id', SUID, '=', 'OR');
         } elseif (editionIsProfessional()) {
-            if (isSessionContributor(false)) {
+            if (isSessionContributor()) {
                 $SQL->addWhereOpr('notification_type', 'request', '<>');
             }
             if (config('blog_manage_approval') === 'on') {

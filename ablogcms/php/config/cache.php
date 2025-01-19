@@ -4,9 +4,9 @@ return [
     'type' => [
         // テンプレートのキャッシュをするドライバーを選択します
         'template' => [
-            'driver' => env('CACHE_TEMPLATE_DRIVER', 'database'),
+            'driver' => env('CACHE_TEMPLATE_DRIVER', 'file'),
             'namespace' => env('CACHE_TEMPLATE_NAMESPACE', 'template'),
-            'lifetime' => intval(env('CACHE_TEMPLATE_LIFETIME', strval(60 * 60 * 24))),
+            'lifetime' => intval(env('CACHE_TEMPLATE_LIFETIME', strval(60 * 60 * 24 * 10))),
         ],
 
         // フィールド情報のキャッシュをするドライバーを選択します
@@ -34,6 +34,7 @@ return [
         'config' => [
             'driver' => env('CACHE_CONFIG_DRIVER', 'database'),
             'namespace' => env('CACHE_CONFIG_NAMESPACE', 'config'),
+            'lifetime' => intval(env('CACHE_CONFIG_LIFETIME', strval(60 * 60 * 24 * 10))),
         ],
 
         // ページキャッシュをするドライバーを選択します

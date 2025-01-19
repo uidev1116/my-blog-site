@@ -2,7 +2,7 @@
 // 不可視化
 // ------------------------------
 
-@mixin hide-visually(){
+@mixin hide-visually() {
   position: absolute;
   width: 1px;
   height: 1px;

@@ -90,7 +90,7 @@ class ACMS_ValidatorBody
             $regex  = '@' . $regex . '@';
         }
 
-        return preg_match($regex, $val) || multiBytePregMatch($regex . 'u', $val);
+        return preg_match($regex, $val) === 1 || multiBytePregMatch($regex . 'u', $val);
     }
 
     /**
@@ -124,7 +124,7 @@ class ACMS_ValidatorBody
             return true;
         }
         $ptn    = '/^(?:[^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff]+(?![^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff])|"[^\\\\\x80-\xff\n\015"]*(?:\\\\[^\x80-\xff][^\\\\\x80-\xff\n\015"]*)*")(?:\.(?:[^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff]+(?![^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff])|"[^\\\\\x80-\xff\n\015"]*(?:\\\\[^\x80-\xff][^\\\\\x80-\xff\n\015"]*)*"))*@(?:[^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff]+(?![^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff])|\[(?:[^\\\\\x80-\xff\n\015\[\]]|\\\\[^\x80-\xff])*\])(?:\.(?:[^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff]+(?![^(\040)<>@,;:".\\\\\[\]\000-\037\x80-\xff])|\[(?:[^\\\\\x80-\xff\n\015\[\]]|\\\\[^\x80-\xff])*\]))*$/';
-        return preg_match($ptn, $val);
+        return preg_match($ptn, $val) === 1;
     }
 
     /**
@@ -160,7 +160,7 @@ class ACMS_ValidatorBody
             return true;
         }
         $ptn    = '@^[sS]{1,2}(\d{2})\W{1}\d{1,2}\W{1}\d{0,2}$|^[hH]{1}(\d{1,2})\W{1}\d{1,2}\W{1}\d{0,2}$|^\d{1,2}$|^\d{1,2}\W{1}\d{1,2}$|^\d{2,4}\W{1}\d{1,2}\W{1}\d{0,2}$|^\d{4}\d{2}\d{2}$@';
-        return preg_match($ptn, $val);
+        return preg_match($ptn, $val) === 1;
     }
 
     /**
@@ -173,7 +173,7 @@ class ACMS_ValidatorBody
             return true;
         }
         $ptn    = '@^\d{1,2}$|^\d{1,2}\W{1}\d{1,2}$|^\d{1,2}\W{1}\d{1,2}\W{1}\d{1,2}$|^\d{2}\d{2}\d{2}$@';
-        return preg_match($ptn, $val);
+        return preg_match($ptn, $val) === 1;
     }
 
     /**

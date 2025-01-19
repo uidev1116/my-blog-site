@@ -59,7 +59,7 @@ class ACMS_GET_Member_Signup extends ACMS_GET_Member
         $data = [];
         $step = 'input';
 
-        if ($this->isAuthUrl()) {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $this->isAuthUrl()) {
             // メールアドレス認証画面
             $step = 'auth';
             $block = 'step#' . $step;

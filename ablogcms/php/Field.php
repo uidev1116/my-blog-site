@@ -1239,11 +1239,7 @@ class Field_Validation extends Field
                 foreach ($aryFdSearch as $search) {
                     if (
                         preg_match(
-                            '@^' . str_replace(
-                                '@',
-                                '\@',
-                                $fd
-                            ) . '(?:\:v#|\:validator#)(.+)$@',
+                            '@^' . preg_quote($fd, '@') . '(?:\:v#|\:validator#)(.+)$@',
                             $search,
                             $match
                         )

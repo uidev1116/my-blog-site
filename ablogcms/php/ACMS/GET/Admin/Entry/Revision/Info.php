@@ -4,7 +4,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
 {
     public function get()
     {
-        if (!sessionWithContribution(BID, false)) {
+        if (!sessionWithContribution(BID)) {
             return 'Bad Access.';
         }
         if (!EID) {
@@ -26,11 +26,16 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
         if (RVID === 1) {
         } elseif (RVID === intval($currentRevId)) {
         } elseif (roleAvailableUser()) {
-            if (
-                0
-                || (enableApproval(BID, $revision['entry_category_id']) && sessionWithApprovalPublic(BID, $revision['entry_category_id']))
-                || (!enableApproval(BID, $revision['entry_category_id']) && roleAuthorization('entry_edit', BID, EID))
-            ) {
+            // ロール管理下のユーザー
+            if (enableApproval(BID, $revision['entry_category_id']) && sessionWithApprovalAdministrator(BID, $revision['entry_category_id']) && isset($revision['entry_rev_status']) && $revision['entry_rev_status'] === 'approved') {
+                // 承認機能が有効でかつ承認済みの場合
+                $Tpl->add('revisionChange', [
+                    'canChange' => '1',
+                    'isReserve' => $isReserve ? '1' : '0',
+                    'reserveDatetime' => $isReserve ? $revision['entry_start_datetime'] : '',
+                ]);
+            } elseif (!enableApproval(BID, $revision['entry_category_id']) && roleAuthorization('entry_edit', BID, EID)) {
+                // 承認機能が無効でかつ編集権限がある場合
                 $Tpl->add('revisionChange', [
                     'canChange' => '1',
                     'isReserve' => $isReserve ? '1' : '0',
@@ -38,6 +43,7 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
                 ]);
             }
         } elseif (enableApproval(BID, $revision['entry_category_id'])) {
+            // 承認機能が有効
             if (sessionWithApprovalAdministrator(BID, $revision['entry_category_id']) && isset($revision['entry_rev_status']) && $revision['entry_rev_status'] === 'approved') {
                 $Tpl->add('revisionChange', [
                     'canChange' => '1',
@@ -47,8 +53,8 @@ class ACMS_GET_Admin_Entry_Revision_Info extends ACMS_GET_Admin_Entry_Revision
             }
         } else {
             do {
-                if (!sessionWithCompilation(BID, false)) {
-                    if (!sessionWithContribution(BID, false)) {
+                if (!sessionWithCompilation(BID)) {
+                    if (!sessionWithContribution(BID)) {
                         break;
                     }
                     if (SUID != ACMS_RAM::entryUser(EID)) {

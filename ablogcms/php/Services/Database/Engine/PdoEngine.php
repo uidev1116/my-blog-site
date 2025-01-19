@@ -2,9 +2,9 @@
 
 namespace Acms\Services\Database\Engine;
 
+use Acms\Services\Facades\Logger as AcmsLogger;
 use App;
 use PDO;
-use AcmsLogger;
 use PDOException;
 
 /**
@@ -125,6 +125,15 @@ class PdoEngine extends Base
     }
 
     /**
+     * 例外をスローするかの設定を取得
+     * @return bool
+     */
+    public function getThrowException()
+    {
+        return $this->throwException;
+    }
+
+    /**
      * クエリ用の文字列をクオートする
      *
      * @param string $string
@@ -148,7 +157,7 @@ class PdoEngine extends Base
             return $version;
         }
         $db = self::singleton(dsn());
-        $version = (string)$db->query('select version()', 'one');
+        $version = (string) $db->query('select version()', 'one');
         return $version;
     }
 
@@ -179,6 +188,8 @@ class PdoEngine extends Base
             $start_time = microtime(true);
             if ($buffered === false) {
                 $this->connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+            } else {
+                $this->connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
             }
             $res = $this->connection->query($sql);
             $exe_time = sprintf('%0.6f', microtime(true) - $start_time);
@@ -287,7 +298,7 @@ class PdoEngine extends Base
     {
         $all = [];
         while ($row = $response->fetch(\PDO::FETCH_ASSOC)) {
-            if (is_array($row) and 'UTF-8' <> $this->charset()) {
+            if (is_array($row) and 'UTF-8' != $this->charset()) {
                 foreach ($row as $key => $val) {
                     if (!is_null($val)) {
                         $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());
@@ -344,7 +355,7 @@ class PdoEngine extends Base
         $one = array_shift($row);
         $response->closeCursor();
 
-        if ('UTF-8' <> $this->charset()) {
+        if ('UTF-8' != $this->charset()) {
             if (!is_null($one)) {
                 $_one = mb_convert_encoding($one, 'UTF-8', $this->charset());
                 if ($one === mb_convert_encoding($_one, $this->charset(), 'UTF-8')) {
@@ -368,7 +379,7 @@ class PdoEngine extends Base
         $row = $response->fetch(\PDO::FETCH_ASSOC);
         $response->closeCursor();
 
-        if (is_array($row) and 'UTF-8' <> $this->charset()) {
+        if (is_array($row) and 'UTF-8' != $this->charset()) {
             foreach ($row as $key => $val) {
                 if (!is_null($val)) {
                     $_val = mb_convert_encoding($val, 'UTF-8', $this->charset());

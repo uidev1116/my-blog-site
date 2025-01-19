@@ -27,8 +27,8 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
 
             AcmsLogger::info('ユーザー「' . $preUser->get('name') . '」がユーザー情報を更新しました', [
                 'uid' => SUID,
-                'user' => $user->_aryV,
-                'field' => $field->_aryV,
+                'user' => $user->_aryField,
+                'field' => $field->_aryField,
             ]);
 
             Webhook::call(BID, 'user', ['user:updated'], SUID);
@@ -89,13 +89,23 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
     protected function updateUser(Field_Validation $user): void
     {
         $sql = SQL::newUpdate('user');
-        $sql->addUpdate('user_name', $user->get('name'));
-        $sql->addUpdate('user_code', strval($user->get('code')));
-        $sql->addUpdate('user_url', strval($user->get('url')));
+        if ($user->isExists('name')) {
+            $sql->addUpdate('user_name', $user->get('name'));
+        }
+        if ($user->isExists('code')) {
+            $sql->addUpdate('user_code', strval($user->get('code')));
+        }
+        if ($user->isExists('url')) {
+            $sql->addUpdate('user_url', strval($user->get('url')));
+        }
+        if ($user->isExists('mail_magazine')) {
+            $sql->addUpdate('user_mail_magazine', $user->get('mail_magazine'));
+        }
+        if ($user->isExists('mail_mobile_magazine')) {
+            $sql->addUpdate('user_mail_mobile_magazine', $user->get('mail_mobile_magazine'));
+        }
         $sql->addUpdate('user_updated_datetime', date('Y-m-d H:i:s', REQUEST_TIME));
-        $sql->addUpdate('user_mail_magazine', $user->get('mail_magazine'));
-        $sql->addUpdate('user_mail_mobile_magazine', $user->get('mail_mobile_magazine'));
-        if ($iconPath = Login::resizeUserIcon($user->get('icon@squarePath'))) {
+        if ($user->isExists('icon@squarePath') && $iconPath = Login::resizeUserIcon($user->get('icon@squarePath'))) {
             $sql->addUpdate('user_icon', $iconPath);
             $user->set('icon', $iconPath);
         }
@@ -144,7 +154,7 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
     protected function diff(Field_Validation $user, Field_Validation $field, Field_Validation $preUser, Field $preField): bool
     {
         $diff = false;
-        $targetColumn = ['name', 'code', 'mail', 'mail_mobile', 'url'];
+        $columns = ['name', 'code', 'mail', 'mail_mobile', 'url'];
 
         foreach ($field->listFields() as $key) {
             if ($field->get($key) !== $preField->get($key)) {
@@ -152,12 +162,12 @@ class ACMS_POST_Member_Update_Profile extends ACMS_POST_Member
                 $diff = true;
             }
         }
-        foreach ($targetColumn as $column) {
-            if ($user->get($column) !== $preUser->get($column)) {
+        foreach ($columns as $column) {
+            if ($user->isExists($column) && $user->get($column) !== $preUser->get($column)) {
                 $field->setField('old_' . $column, $preUser->get($column));
                 $diff = true;
             }
-            $field->setField($column, $user->get($column));
+            $field->setField($column, $user->get($column, $preUser->get($column)));
         }
         return $diff;
     }

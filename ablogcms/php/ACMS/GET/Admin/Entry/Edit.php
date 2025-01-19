@@ -1,5 +1,7 @@
 <?php
 
+use Acms\Services\Facades\Application;
+
 class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 {
     /**
@@ -22,22 +24,28 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
     function get()
     {
-        if (!sessionWithContribution(BID, false)) {
+        if (!sessionWithContribution(BID)) {
             return '';
         }
         if ('entry-edit' <> ADMIN && 'entry_editor' <> ADMIN && 'entry-field' <> ADMIN) {
             return '';
         }
+        if (!defined('IS_EDITING_ENTRY')) {
+            define('IS_EDITING_ENTRY', true);
+        }
+        /** @var \Acms\Services\Unit\Repository $unitService */
+        $unitService = Application::make('unit-repository');
+        /** @var \Acms\Services\Unit\Rendering\Edit $unitRenderingService */
+        $unitRenderingService = Application::make('unit-rendering-edit');
 
         $CustomFieldCollection = [];
-        $Column = acmsUnserialize($this->Post->get('column'));
+        $units = acmsUnserialize($this->Post->get('column'));
         $vars = [];
 
         if (
-            1
-            && !$this->Post->isNull()
-            && ( !$this->Post->get('backend') || !$this->Post->isValidAll() )
-            && is_array($Column)
+            !$this->Post->isNull() &&
+            (!$this->Post->get('backend') || !$this->Post->isValidAll()) &&
+            is_array($units)
         ) {
             $step   = $this->Post->get('step');
             $action = $this->Post->get('action');
@@ -55,7 +63,17 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                     $Entry->addField('related', $related);
                 }
             }
-            $Column = alignColumn($Column);
+
+            // サブカテゴリーの選択肢を保持する
+            /** @var int[] $subCategoryIds */
+            $subCategoryIds = array_map('intval', array_map('trim', explode(',', $Entry->get('sub_category_id'))));
+            if (count($subCategoryIds) > 0) {
+                $subCategories = $this->findCategories($subCategoryIds);
+                $entrySubCategoryIds = array_column($subCategories, 'id');
+                $entrySubCategoryLabels = array_column($subCategories, 'label');
+                $Entry->setField('sub_category_id', implode(',', $entrySubCategoryIds));
+                $Entry->setField('sub_category_label', implode(',', $entrySubCategoryLabels));
+            }
         } else {
             $Entry  = new Field_Validation();
             $Field  = new Field_Validation();
@@ -63,8 +81,9 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
             $DB = DB::singleton(dsn());
 
-            $Column = [];
+            $units = [];
             if (EID) {
+                // 更新
                 $step   = 'reapply';
                 $action = 'update';
 
@@ -134,18 +153,17 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                     $Entry->setField('tag', $tag);
                 }
 
-                //--------
-                // column
-                if (
-                    1
-                    && !is_ajax()
-                    && $Column = loadColumn(EID, null, $RVID_)
-                ) {
-                    $cnt    = count($Column);
-                    for ($i = 0; $i < $cnt; $i++) {
-                        $Column[$i]['id']   = uniqueString();
-                        $Column[$i]['sort'] = $i + 1;
-                    }
+                /**
+                 * ユニット
+                 * @var \Acms\Services\Unit\Contracts\Model[] $units
+                 */
+                $units = $unitService->loadUnits(EID, $RVID_);
+                if (!is_ajax() && $units) {
+                    // ユニット一時IDとソート番号を振り直し
+                    array_walk($units, function (&$unit, $i) {
+                        $unit->setTempId(uniqueString());
+                        $unit->setSort($i + 1);
+                    });
                 }
 
                 //--------------
@@ -177,29 +195,19 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 // geometry
                 $Geo = loadGeometry('eid', EID, $RVID_);
             } else {
-                $step   = 'apply';
+                // 新規エントリー
+                $step = 'apply';
                 $action = 'insert';
-                $aryType    = configArray('column_def_insert_type');
-                $Column     = [];
+
+                /** @var \Acms\Services\Unit\Repository $unitService */
+                $unitService = Application::make('unit-repository');
+                /** @var \Acms\Services\Unit\Rendering\Edit $unitRenderingService */
+                $unitRenderingService = Application::make('unit-rendering-edit');
+                $units = $unitService->loadDefaultUnit();
+
                 $vars['status:selected#' . config('initial_entry_status', 'draft')] = config('attr_selected');
                 $vars['indexing:checked#' . config('entry_edit_indexing_default', 'on')] = config('attr_checked');
                 $vars['members_only:checked#' . config('entry_edit_members_only_default', 'off')] = config('attr_checked'); // phpcs:ignore
-                foreach ($aryType as $i => $type) {
-                    if (!$data = Tpl::getAdminColumnDefinition('insert', $type, $i)) {
-                        continue;
-                    }
-                    $Column[]   = $data + [
-                        'id'    => uniqueString(),
-                        'type'  => $type,
-                        'sort'  => $i + 1,
-                        'align' => config('column_def_insert_align', 'auto', $i),
-                        'group' => config('column_def_insert_group', '', $i),
-                        'class' => config('column_def_insert_class', '', $i),
-                        'attr'  => config('column_def_insert_class', '', $i),
-                        'size'  => config('column_def_insert_size', '', $i),
-                        'edit'  => config('column_def_insert_edit', '', $i),
-                    ];
-                }
             }
         }
 
@@ -211,104 +219,9 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
 
         //--------
-        // column
-        $aryTypeLabel    = [];
-        foreach (configArray('column_add_type') as $i => $type) {
-            $aryTypeLabel[$type]    = config('column_add_type_label', '', $i);
-        }
-
-        if ($cnt = count($Column)) {
-            $mediaData = Media::mediaEagerLoadFromUnit($Column);
-            foreach ($Column as $data) {
-                $id     = $data['id'];
-                $clid   = intval(ite($data, 'clid'));
-                $type   = $data['type'];
-                $align  = $data['align'];
-                $group  = $data['group'];
-                $attr   = $data['attr'];
-                $sort   = $data['sort'];
-
-                // 特定指定子を含むユニットタイプ
-                $actualType = $type;
-                // 特定指定子を除外した、一般名のユニット種別
-                $type = detectUnitTypeSpecifier($type);
-
-                $data['primaryImage']   = $Entry->get('primary_image');
-
-                //--------------
-                // build column
-                if (!$this->buildColumn($data, $Tpl, $rootBlock, $mediaData)) {
-                    continue;
-                }
-
-                //------
-                // sort
-                for ($i = 1; $i <= $cnt; $i++) {
-                    $_vars  = [
-                        'value' => $i,
-                        'label' => $i,
-                    ];
-                    if ($sort == $i) {
-                        $_vars['selected']   = config('attr_selected');
-                    }
-                    $Tpl->add(['sort:loop', $rootBlock], $_vars);
-                }
-
-                //-------
-                // align
-                if (in_array($type, ['text', 'custom', 'module', 'table'])) {
-                    $Tpl->add(['align#liquid', $rootBlock], [
-                        'align:selected#' . $align => config('attr_selected')
-                    ]);
-                } else {
-                    $Tpl->add(['align#solid', $rootBlock], [
-                        'align:selected#' . $align => config('attr_selected')
-                    ]);
-                }
-
-                //-------
-                // group
-                if ('on' === config('unit_group')) {
-                    $labels  = configArray('unit_group_label');
-                    foreach ($labels as $i => $label) {
-                        $class = config('unit_group_class', '', $i);
-                        $Tpl->add(['group:loop', $rootBlock], [
-                            'value' => $class,
-                            'label' => $label,
-                            'selected' => ($class === $group) ? config('attr_selected') : '',
-                        ]);
-                    }
-                }
-
-                //------
-                // attr
-                if ($aryAttr = configArray('column_' . $type . '_attr')) {
-                    foreach ($aryAttr as $i => $_attr) {
-                        $label  = config('column_' . $type . '_attr_label', '', $i);
-                        $_vars  = [
-                            'value' => $_attr,
-                            'label' => $label,
-                        ];
-                        if ($attr == $_attr) {
-                            $_vars['selected'] = config('attr_selected');
-                        }
-                        $Tpl->add(['clattr:loop', $rootBlock], $_vars);
-                    }
-                } else {
-                    $Tpl->add(['clattr#none', $rootBlock]);
-                }
-
-                $Tpl->add(['column:loop', $rootBlock], [
-                    'uniqid'    => $id,
-                    'clid'      => $clid,
-                    'cltype'    => $actualType,
-                    'clattr'    => $attr,
-                    'clname'    => ite($aryTypeLabel, $actualType),
-                ]);
-            }
-        } else {
-            $Tpl->add(['adminEntryColumn', $rootBlock]);
-        }
+        // units
+        $primaryImageUnitId = $Entry->get('primary_image') ? (int) $Entry->get('primary_image') : null;
+        $unitRenderingService->render($units, $Tpl, $primaryImageUnitId, [$rootBlock]);
 
         //---------------
         // related entry
@@ -345,7 +258,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         //---------------
         // summary range
         $summaryRange   = $Entry->get('summary_range');
-        $columnAmount   = count($Column);
+        $columnAmount   = count($units);
         if ($columnAmount < $summaryRange) {
             $summaryRange = $columnAmount;
         }
@@ -375,7 +288,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         $vars   += $this->buildField($Entry, $Tpl, $rootBlock, 'entry');
         $vars   += $this->buildField($Field, $Tpl, $rootBlock, 'field');
         $vars   += $this->buildField($Geo, $Tpl, $rootBlock, 'geometry');
-        $vars['column:takeover']  = base64_encode(gzdeflate(serialize($Column)));
+        $vars['column:takeover']  = base64_encode(gzdeflate(serialize($units)));
 
         //--------------
         // custom field
@@ -412,5 +325,29 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 
         $Tpl->add($rootBlock, $vars);
         return $Tpl->get();
+    }
+
+    /**
+     * @param int[] $categoryIds
+     * @return array{
+     *  id: int,
+     *  label: string
+     * }[]
+     */
+    protected function findCategories(array $categoryIds): array
+    {
+        $categories = [];
+        $sql = SQL::newSelect('category');
+        $sql->addWhereIn('category_id', $categoryIds);
+        $q = $sql->get(dsn());
+        if (DB::query($q, 'fetch')) {
+            while ($row = DB::fetch($q)) {
+                $categories[] = [
+                    'id' => (int)$row['category_id'],
+                    'label' => (string)$row['category_name']
+                ];
+            }
+        }
+        return $categories;
     }
 }

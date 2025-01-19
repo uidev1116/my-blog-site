@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // トピックパス
@@ -8,39 +8,47 @@
   margin: 0;
   padding: 0;
   list-style: none;
+
   @include global.font-size(14);
+
   img {
     border: 0;
     border-radius: 3px;
   }
+
   // 中の要素
-  >li {
+  > li {
     display: inline-block;
     color: global.$acms-color-gray80;
     vertical-align: middle;
   }
-  >li:not(.site-image) {
-    +li:before {
+
+  > li:not(.site-image) {
+    + li::before {
       display: inline-block;
       width: 8px;
       height: 17px;
       margin-bottom: 3px;
       vertical-align: middle;
-      background: url("../images/common/topicpath.svg") no-repeat center center;
+      background: url('../images/common/topicpath.svg') no-repeat center center;
       background-size: 25px 25px;
       content: ' ';
     }
   }
+
   // リンク
   .link {
     display: inline-block;
     padding: 10px 5px;
     color: global.$acms-color-black;
     line-height: 1;
+
     @include global.font-size(14);
+
     &:link {
       text-decoration: none;
     }
+
     &:hover {
       color: global.$acms-color-black;
       text-decoration: none;
@@ -54,7 +62,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 5px 15px;
   background: global.$acms-color-gray20;
   border-radius: 3px;
@@ -71,25 +79,23 @@
 
   .acms-btn {
     background: global.$acms-color-white;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgb(0 0 0 / 10%);
 
     &:hover {
-      background: rgba(255,255,255,.5);
+      background: rgb(255 255 255 / 50%);
     }
   }
 
-  [class*="acms-icon"] {
+  [class*='acms-icon'] {
     margin: 0 5px 0 0;
   }
 }
 
-@media screen and (min-width: global.$breakpoint-md-min){
+@media screen and (min-width: global.$breakpoint-md-min) {
   .acms-system-view-site {
     display: inline-block;
   }
 }
-
-
 
 // ------------------------------
 // トピックパス

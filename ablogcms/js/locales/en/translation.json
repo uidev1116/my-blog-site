@@ -200,6 +200,7 @@
     "strong": "Strong password. Great!"
   },
   "quick_search": {
+    "title": "Quick Search",
     "input_placeholder": "Jump to...",
     "choice": "Choice",
     "move": "Move",
@@ -224,31 +225,67 @@
     "type_to_search": "Type to Search",
     "max_items": "Unable to select because it exceeds the limit that can be registered."
   },
+  "category": {
+    "name": "Category Name",
+    "code": "Codename",
+    "parent": "Parent Category",
+    "scope": "Scope",
+    "scope_global": "Share with lower blogs",
+    "add_title": "Add Category",
+    "add":"Add",
+    "error": {
+      "name": {
+        "required": "The name is not entered."
+      },
+      "code": {
+        "required": "Cord name is not entered.",
+        "double": "The code name is already used.",
+        "reserved": "The keyword is used in the system.",
+        "string": "It has invalid characters"
+      },
+      "scope": {
+        "tree": "You can't set this as global category, since the parent category is not global one.",
+        "shared": "hild blog's entries are registered"
+      }
+    },
+    "select_placeholder": "Select the category (filter categories by entering keyword)",
+    "select_notfound": "Category not found",
+    "select_no_option_label": "No category",
+    "select_mt_option_label": "Use MT's category"
+  },
+  "subcategory": {
+    "select_placeholder": "Select the subcategory (filter subcategories by entering keyword)",
+    "select_notfound": "Subcategory not found",
+    "select_limit_message": "The maximum number of subcategories you can select is {{limit}}."
+  },
+  "tag": {
+    "select_placeholder": "Select the tag or enter the new tag (filter tags by entering keyword)",
+    "select_notfound": "tag not found",
+    "add_tag": "Add new tag ({{name}})"
+  },
   "entry_editor": {
-    "category_placeholder": "Select the category (filter categories by entering keyword)",
-    "category_notfound": "Category not found",
-    "tag_placeholder": "Select the tag or enter the new tag (filter tags by entering keyword)",
-    "tag_notfound": "tag not found",
-    "subcategory_placeholder": "Select the subcategory (filter subcategories by entering keyword)",
-    "subcategory_notfound": "Subcategory not found",
-    "add_unit": "Add Unit",
-    "add_tag": "Add new tag ($1)"
+    "add_unit": "Add Unit"
   },
   "admin_menu": {
     "menu_remove_confirm": "Are you sure you want to remove the menu",
+    "lane_remove_confirm": "Are you sure you want to remove the lane",
     "enter_both_title_and_url": "You have to enter both title and URL.",
     "title": "Title",
     "icon": "Icon",
     "url": "URL",
     "complete": "Complete",
     "edit": "Edit",
-    "add_row": "Add lane",
+    "lane_title": "Title",
     "lane_alert": "Only empty lane can be removed.",
     "add_lane": "Add lane",
-    "add_title": "Add item",
+    "add_card": "Add Menu",
+    "add_icon": "Add icon",
+    "add_title": "Add Title",
     "add": "Add",
     "cancel": "Cancel",
-    "remove": "Remove"
+    "remove": "Remove",
+    "remove_lane": "Remove lane",
+    "card_add_alert": "You have to enter both title and URL."
   },
   "media": {
     "message1": "This contents can't insert the media.",
@@ -263,6 +300,7 @@
     "upload": "Upload",
     "drop_file": "Or drop files",
     "edit": "Edit",
+    "info": "Info",
     "media_id": "Media ID",
     "select_from_media": "Select from the media",
     "new_window": "Open with new window",
@@ -277,7 +315,9 @@
     "edit_image": "Edit image",
     "crop": "Crop",
     "rotate": "Rotate",
+    "custom": "Custom",
     "focal_point": "Focal point",
+    "focal_point_button_label": "You can set the center point of the image by dragging.",
     "initialize": "Initialize",
     "apply": "apply",
     "media_insert": "Insert media",
@@ -286,6 +326,7 @@
     "insert_selections": "insert the selected items",
     "update_date": "Updated date",
     "created_date": "Created date",
+    "clear_button_label": "Clear media",
     "file_name": "File name",
     "file_size": "File size",
     "select": "Select",
@@ -313,7 +354,11 @@
     "display_size": "Display size",
     "select_all": "Select all",
     "remove": "Remove",
-    "add_tags": "Add tags",
+    "add_tags": "Select the tag or enter the new tag (filter tags by entering keyword)",
+    "add_tag": "Add new tag ({{name}})",
+    "tag_select_no_options_message": "tag not found",
+    "tag_select_placeholder": "Select the tag or enter the new tag (filter tags by entering keyword)",
+    "tag_search_select_placeholder": "Select the tag (filter tags by entering keyword)",
     "action": "Action",
     "prev": "Prev",
     "next": "Next",
@@ -331,6 +376,7 @@
     "cannot_edit": "You do not have permission to edit this media.",
     "media_edit": "Edit Media",
     "media_change": "Change Media",
+    "managed_media_change": "You can change the media.",
     "file_select": "Select file",
     "upload_date": "Uploaded date",
     "image_size": "Image size",
@@ -352,12 +398,13 @@
     "filename_settings": "Rename the file.",
     "alt_settings": "Set the alt text",
     "title": "Title",
-    "details": "Details",
-    "details_settings": "Enter the details of the media",
+    "memo": "Memo",
+    "memo_settings": "Please use this as a memo for management purposes.",
     "cancel": "Cancel",
     "save_as_new": "Save as new",
     "save": "Save",
     "saving": "Saving...",
+    "intrinsic_link_copied": "The intrinsic link has been copied",
     "permalink_copied": "The permalink has been copied",
     "intrinsic_link": "Physical path",
     "intrinsic_link_attention": "Physical path under the storage directory.",
@@ -372,7 +419,20 @@
     "banner_open_date": "Enter the publication date and time of this banner. To display the banner, even if it is within the date and time range, the publishing setting needs to be checked.",
     "media_unit_use1": "To use media unit, you have to activate it from Media functionality from",
     "media_unit_use2": "here",
-    "media_unit_use3": ""
+    "media_unit_use3": "",
+    "open_config_menu": "Open the config menu",
+    "display_switch_list": "Display in list format",
+    "display_switch_grid": "Display in grid format",
+    "user_name": "User name",
+    "last_update_user_name": "Last updated by",
+    "last_modified": "Last updated",
+    "remove_file": "Remove the file",
+    "error": {
+      "unknown": "An unknown error occurred."
+    }
+  },
+  "media_banner": {
+    "remove_banner_item": "Remove the banner item."
   },
   "preview": {
     "change": "Change",
@@ -387,7 +447,9 @@
     "get_link_detail": "Get the link to share this screen for the people who are not signed in during the avairable period.",
     "expiration": "Expiration date",
     "hours": "hours",
-    "copy_to_clipboard": "Copied to the clipboard."
+    "copy_to_clipboard": "Copied to the clipboard.",
+    "capture": "Capture",
+    "open_share_modal": "Open the share modal"
   },
   "scrollhint": {
     "scrollable": "scrollable"
@@ -429,5 +491,20 @@
       "httpRequestBody": "HTTP Request Body",
       "extraInfo": "Extra info"
     }
+  },
+  "rich_editor": {
+    "placeholder": "Type Something..",
+    "titlePlaceholder": "Type Title here"
+  },
+  "icon_picker": {
+    "open": "Open Icon Picker",
+    "pick": "Select Icon"
+  },
+  "webhook": {
+    "event_select_placeholder": "Select the event",
+    "event_select_no_options_message": "No events available"
+  },
+  "modal": {
+    "close": "Close the modal"
   }
 }

@@ -15,19 +15,27 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
         }
         $filterCid = 0;
         if ($this->Get->get('narrowDown') === 'true') {
-            $filterCid = intval(config('entry_edit_category_filter', 0));
+            $filterCid = (int)config('entry_edit_category_filter', 0);
         }
         $order = 'sort-desc';
         $order2 = config('category_select_global_order');
         if (!empty($order2)) {
             $order = $order2;
         }
-        $q = $this->buildQuery($order, $filterCid);
+        $limit = (int)config('category_select_limit', 999);
+        $q = $this->buildQuery($order, $filterCid, $limit);
         $list = $this->buildList($q, $filterCid);
         die(json_encode($list));
     }
 
-    protected function buildQuery($order, $filterCid)
+    /**
+     * クエリを組み立て
+     * @param string $order
+     * @param int $filterCid
+     * @param int $limit
+     * @return string
+     */
+    protected function buildQuery(string $order, int $filterCid, int $limit = 999): string
     {
         $SQL = SQL::newSelect('category');
         $SQL->addLeftJoin('blog', 'blog_id', 'category_blog_id');
@@ -37,7 +45,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
         }
         $SQL->addGroup('category_id');
         $SQL->addOrder('blog_left');
-        $SQL->setLimit(200);
+        $SQL->setLimit($limit);
 
         if (!!$this->keyword) {
             $DB = DB::singleton(dsn());
@@ -66,7 +74,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
 
     protected function buildList($q, $filterCid)
     {
-        /** @var array{ label: string, value: int }[] */
+        /** @var array{ label: string, value: string }[] */
         $list = [];
         $DB = DB::singleton(dsn());
         if (!!$DB->query($q, 'fetch') and !!($row = $DB->fetch($q))) {
@@ -107,7 +115,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                 }
                 $list[] = [
                     'label' => $label,
-                    'value' => $cid,
+                    'value' => strval($cid),
                 ];
                 if (isset($row['category_entry_amount'])) {
                     $vars['amount'] = $row['category_entry_amount'];
@@ -122,7 +130,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
         }
         $currentCid = (int)$this->Get->get('currentCid');
         if ($currentCid > 0) {
-            if (array_search(intval($currentCid), array_column($list, 'value'), true) === false) {
+            if (array_search(strval($currentCid), array_column($list, 'value'), true) === false) {
                 $name = ACMS_RAM::categoryName($currentCid);
                 $tempCid = $currentCid;
                 do {
@@ -134,7 +142,7 @@ class ACMS_GET_Admin_Category_Assist extends ACMS_GET_Admin
                 } while (true);
                 $list[] = [
                     'label' => $name,
-                    'value' => $currentCid,
+                    'value' => strval($currentCid),
                 ];
             }
         }

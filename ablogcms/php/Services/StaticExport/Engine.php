@@ -677,7 +677,9 @@ class Engine
             if ($file->isReadable()) {
                 $data = Storage::get($theme . $relative_file_path);
                 if ($data = $this->compiler->compile($data)) {
-                    Storage::put($this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path, $data);
+                    $destPath = $this->destination->getDestinationPath() . $this->destination->getBlogCode() . $relative_file_path;
+                    Storage::makeDirectory(dirname($destPath));
+                    Storage::put($destPath, $data);
                 }
             }
         }

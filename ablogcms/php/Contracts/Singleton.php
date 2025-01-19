@@ -11,7 +11,7 @@ class Singleton
 
     /**
      * @static
-     * @return object
+     * @return static
      */
     public static function singleton()
     {

@@ -4,7 +4,7 @@ class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry_Revisio
 {
     public function get()
     {
-        if (!sessionWithContribution(BID, false)) {
+        if (!sessionWithContribution(BID)) {
             return 'Bad Access.';
         }
         if (!defined('EID')) {
@@ -14,19 +14,26 @@ class ACMS_GET_Admin_Entry_Revision_Current extends ACMS_GET_Admin_Entry_Revisio
         $vars = [];
 
         $currentRvid = $this->getCurrentRevisionId(EID);
-        $currentVersion = $this->getRevision(EID, RVID);
+        $currentRevision = $this->getRevision(EID, $currentRvid); // @phpstan-ignore-line
+        $editVersion = $this->getRevision(EID, RVID); // @phpstan-ignore-line
         $count = $this->countRevisions(EID);
 
-        if ($currentRvid > 0) {
+        if ($currentRvid > 1) {
             $vars['currentVersion'] = $currentRvid;
+            if (isset($currentRevision['entry_rev_memo'])) {
+                $vars['currentVersionName'] = $currentRevision['entry_rev_memo'];
+            }
         } else {
             $Tpl->add('notExistCurrentVersion');
         }
-        if (isset($currentVersion['entry_rev_memo'])) {
-            $vars['currentVersionName'] = $currentVersion['entry_rev_memo'];
-        }
-        if (isset($currentVersion['entry_rev_status'])) {
-            $vars['rev_status'] = $currentVersion['entry_rev_status'];
+        if (RVID > 1 && $editVersion) { // @phpstan-ignore-line
+            $vars['editVersion'] = RVID;
+            if (isset($editVersion['entry_rev_memo'])) {
+                $vars['editVersionName'] = $editVersion['entry_rev_memo'];
+            }
+            if (isset($editVersion['entry_rev_status'])) {
+                $vars['rev_status'] = $editVersion['entry_rev_status'];
+            }
         }
         $vars['confirmUrl'] = acmsLink([
             'bid' => BID,

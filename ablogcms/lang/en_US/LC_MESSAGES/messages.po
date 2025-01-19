@@ -2446,8 +2446,7 @@ msgstr "Allow user to use this ID in the children blogs."
 
 msgid "親カテゴリーと異なる共有設定にすることはできません。"
 msgstr ""
-"You can't set this as global category, since the parent category is not "
-"global one."
+"You can't set this as global category, since the parent category is not global one."
 
 msgid "子ブログのエントリーが登録されています。"
 msgstr "Child blog's entries are registered."
@@ -5829,8 +5828,8 @@ msgid "拡張子"
 msgstr "Extensions"
 
 #: themes/system/admin/config/parts/header.html
-msgid "このブログの初期コンフィグ"
-msgstr "Default config of this blog"
+msgid "このブログのコンフィグ（レガシー設定）"
+msgstr "Legacy config of this blog"
 
 #: themes/system/admin/config/parts/module-id-header.html
 msgid "新規モジュールID"
@@ -7504,6 +7503,9 @@ msgstr "Select subject ({mail_subject})"
 
 msgid "本文を表示"
 msgstr "Display Body"
+
+msgid "本文を非表示"
+msgstr "Hide Body"
 
 #: themes/system/admin/form2/edit.html
 msgid "フォームセット"

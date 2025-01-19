@@ -253,10 +253,9 @@ class ACMS_GET
         $keyword = $this->Q->get('keyword');
         $qkeyword = $this->Get->get(KEYWORD_SEGMENT);
         if (
-            1
-            && !empty($qkeyword)
-            && config('query_keyword') == 'on'
-            && ('global' == (!empty($scope['keyword']) ? $scope['keyword'] : (!empty($this->_scope['keyword']) ? $this->_scope['keyword'] : 'local')))
+            !empty($qkeyword) &&
+            config('query_keyword') == 'on' &&
+            ('global' == (!empty($scope['keyword']) ? $scope['keyword'] : (!empty($this->_scope['keyword']) ? $this->_scope['keyword'] : 'local')))
         ) {
             $keyword = $this->Get->get(KEYWORD_SEGMENT);
         }
@@ -321,7 +320,7 @@ class ACMS_GET
             'admin' => $config,
             'query' => [
                 'mid' => $this->mid,
-                'setid' => Config::getCurrentConfigSetId(),
+                'setid' => SETID,
             ],
         ], false);
 
@@ -340,7 +339,7 @@ class ACMS_GET
         ], $this->tpl);
 
         if (isSessionAdministrator()) {
-            $this->tpl = preg_replace('@<!--[\t 　]*(BEGIN|END)[\t 　]module_setting[\t 　]-->@', '', $this->tpl);
+            $this->tpl = (string)preg_replace('@<!--[\t 　]*(BEGIN|END)[\t 　]module_setting[\t 　]-->@', '', $this->tpl);
         }
 
         //----------------
@@ -367,13 +366,15 @@ class ACMS_GET
             assert($cache instanceof \Acms\Services\Cache\Contracts\AdapterInterface);
             $className = str_replace(['ACMS_GET_', 'ACMS_User_GET_'], '', get_class($this));
             $cacheKey = md5($className . $this->identifier);
-            if ($cache->has($cacheKey)) {
-                return $cache->get($cacheKey);
+            $cacheItem = $cache->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                return $cacheItem->get();
             }
         }
         $rendered = $this->get();
         if ($cacheOn) {
-            $cache->put($cacheKey, $rendered, $this->cache * 60);
+            $cacheItem->set($rendered);
+            $cache->putItem($cacheItem, $this->cache * 60);
         }
         return $rendered;
     }

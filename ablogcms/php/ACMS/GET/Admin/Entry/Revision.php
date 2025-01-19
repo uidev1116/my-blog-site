@@ -2,6 +2,11 @@
 
 class ACMS_GET_Admin_Entry_Revision extends ACMS_GET_Admin_Entry
 {
+    /**
+     * @param int $eid
+     * @param int $rvid
+     * @return array<string, mixed>|false
+     */
     protected function getRevision($eid, $rvid)
     {
         $sql = SQL::newSelect('entry_rev');

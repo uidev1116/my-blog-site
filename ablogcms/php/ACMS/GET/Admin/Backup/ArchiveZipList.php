@@ -10,9 +10,9 @@ class ACMS_GET_Admin_Backup_ArchiveZipList extends ACMS_GET
         $sql_list = [];
         $import_list = [];
 
-        $archivesBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_archives/';
-        $dbBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_database/';
-        $blogBackupDir = SCRIPT_DIR . MEDIA_STORAGE_DIR . 'backup_blog/';
+        $archivesBackupDir = MEDIA_STORAGE_DIR . 'backup_archives/';
+        $dbBackupDir = MEDIA_STORAGE_DIR . 'backup_database/';
+        $blogBackupDir = MEDIA_STORAGE_DIR . 'backup_blog/';
         $this->createList($archivesBackupDir, $zip_list);
         $this->createList($dbBackupDir, $sql_list);
         $this->createList($blogBackupDir, $import_list);

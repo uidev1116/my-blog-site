@@ -2,16 +2,22 @@
 
 namespace Acms\Services\Common;
 
-use App;
-use DB;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Image;
+use Acms\Services\Facades\Cache;
+use Acms\Services\Facades\Media;
+use Acms\Services\Facades\Logger as AcmsLogger;
+use Acms\Services\Facades\RichEditor;
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Session;
+use phpseclib\Crypt\AES;
+use phpseclib\Crypt\Random;
+use cebe\markdown\MarkdownExtra;
 use SQL;
 use Tpl;
-use Storage;
-use Entry;
-use Image;
 use Field;
-use Cache;
-use Media;
 use Field_Search;
 use Field_Validation;
 use Template;
@@ -20,12 +26,6 @@ use ACMS_Corrector;
 use ACMS_POST_Image;
 use ACMS_RAM;
 use ACMS_Hook;
-use AcmsLogger;
-use Acms\Services\Facades\RichEditor;
-use Acms\Services\Facades\Session;
-use phpseclib\Crypt\AES;
-use phpseclib\Crypt\Random;
-use cebe\markdown\MarkdownExtra;
 use Exception;
 use RuntimeException;
 
@@ -64,6 +64,7 @@ class Helper
     public function __construct()
     {
         $app = \App::getInstance();
+        assert($app instanceof \Acms\Application);
         $this->Q =& $app->getQueryParameter();
         $this->Get =& $app->getGetParameter();
         $this->Post =& $app->getPostParameter();
@@ -482,6 +483,8 @@ class Helper
                 'mail_smtp-pass' => 'smtp-pass',
                 'mail_from' => 'mail_from',
                 'mail_sendmail_path' => 'sendmail_path',
+                'mail_google_smtp' => 'smtp-google',
+                'mail_google_smtp_adrress' => 'smtp-google-user',
             ] as $cmsConfigKey => $mailConfigKey
         ) {
             $config[$mailConfigKey] = config($cmsConfigKey, '');
@@ -558,38 +561,13 @@ class Helper
      */
     public function loadEntryFulltext($eid)
     {
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereOpr('column_entry_id', $eid);
-        $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
-        $q = $SQL->get(dsn());
+        $unitRepository = Application::make('unit-repository');
+        assert($unitRepository instanceof \Acms\Services\Unit\Repository);
 
-        $text = '';
+        $text = $unitRepository->getUnitSearchText($eid);
         $meta = '';
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-            do {
-                if ($row['column_align'] === 'hidden') {
-                    continue;
-                }
-                $type = detectUnitTypeSpecifier($row['column_type']);
-                if ('text' == $type) {
-                    $_text  = $row['column_field_1'];
-                    if ('markdown' == $row['column_field_2']) {
-                        $_text = $this->parseMarkdown($_text);
-                    }
-                    $text   .= $_text . ' ';
-                } elseif ('custom' == $type) {
-                    $Custom = acmsUnserialize($row['column_field_6']);
-                    foreach ($Custom->listFields() as $f) {
-                        $text   .= implode(' ', $Custom->getArray($f)) . ' ';
-                    }
-                } else {
-                    $meta   .= $row['column_field_1'] . ' ';
-                }
-            } while ($row = $DB->fetch($q));
-        }
 
-        $meta .= $eid . ' ';
+        $meta .= "{$eid} ";
         $meta .= ACMS_RAM::entryTitle($eid) . ' ';
         $meta .= ACMS_RAM::entryCode($eid) . ' ';
 
@@ -599,10 +577,10 @@ class Helper
         $SQL->addWhereOpr('field_eid', $eid);
         $q = $SQL->get(dsn());
 
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+        if (DB::query($q, 'fetch') and ($row = DB::fetch($q))) {
             do {
                 $meta .= $row['field_value'] . ' ';
-            } while ($row = $DB->fetch($q));
+            } while ($row = DB::fetch($q));
         }
 
         $text = fulltextUnitData($text);
@@ -973,8 +951,13 @@ class Helper
         $cacheKey = "cache-field-bid_$bid-uid_$uid-cid_$cid-mid_$mid-eid_$eid-rvid_$rvid-";
         $cacheKey .= ($rewrite ? '1' : '0');
 
-        if (empty($rvid) && $this->cacheField->has($cacheKey)) {
-            return $this->cacheField->get($cacheKey);
+        $cacheItem = $this->cacheField->getItem($cacheKey);
+        if ($cacheItem && $cacheItem->isHit()) {
+            $cacheData = $cacheItem->get();
+            if ($cacheData instanceof Field) {
+                return $cacheData;
+            }
+            $this->cacheField->forget($cacheKey);
         }
         $Field = new Field();
         if (
@@ -1043,7 +1026,8 @@ class Helper
         }
         Media::injectMediaField($Field, $mediaList, $useMediaField);
 
-        $this->cacheField->put($cacheKey, $Field);
+        $cacheItem->set($Field);
+        $this->cacheField->putItem($cacheItem);
 
         return $Field;
     }
@@ -1075,17 +1059,15 @@ class Helper
         $DB = DB::singleton(dsn());
         $ARCHIVES_DIR_TO = ARCHIVES_DIR;
         $tableName = 'field';
-        $revision = false;
         $asNewVersion = false;
 
         if (
             1
-            && enableRevision(false)
+            && enableRevision()
             && $rvid
             && $type == 'eid'
         ) {
             $tableName = 'field_rev';
-            $revision = true;
             if (Entry::isNewVersion()) {
                 $asNewVersion = true;
             }
@@ -1810,7 +1792,7 @@ class Helper
 
                     //--------------------------
                     // field copy to local vars
-                    foreach (['old', 'edit', 'extension', 'filename', 'secret', 'fileSize', 'downloadName', 'originalName'] as $key) {
+                    foreach (['old', 'edit', 'extension', 'filename', 'secret', 'fileSize', 'downloadName', 'originalName', 'baseName'] as $key) {
                         foreach ($aryC as $i => $c) {
                             $_field = $fd . '@' . $key;
                             if ($key === 'extension') {
@@ -2046,9 +2028,10 @@ class Helper
 
                         //-----
                         // old
+                        // 非編集アップデートの時
                         if (!empty($c['old'])) {
                             $_path  = $c['old'];
-                            $_name = $c['filename'];
+                            $_name = $c['baseName'];
                             $_orginal_name = $c['originalName'];
                             $_download_name = $c['downloadName'];
                             $_size  = $c['fileSize'];
@@ -2140,7 +2123,7 @@ class Helper
         jsModule('pms', ini_get('post_max_size'));
         jsModule('mfu', ini_get('max_file_uploads'));
         jsModule('lgImg', config('image_size_large_criterion') . ':' . preg_replace('/[^0-9]/', '', config('image_size_large')));
-        jsModule('jpegQuality', config('image_jpeg_quality', 85));
+        jsModule('jpegQuality', config('image_jpeg_quality', 75));
         jsModule('mediaLibrary', config('media_library'));
         jsModule('edition', LICENSE_EDITION);
         jsModule('urlPreviewExpire', config('url_preview_expire'));
@@ -2153,8 +2136,9 @@ class Helper
         if (sessionWithAdministration()) {
             jsModule('rootTpl', ROOT_TPL);
         }
-
-        $Session->delete('webStorageDeleteKey');
+        if (defined('IS_EDITING_ENTRY') && IS_EDITING_ENTRY) {
+            $Session->delete('webStorageDeleteKey');
+        }
 
         //--------------
         // multi domain
@@ -2411,10 +2395,9 @@ class Helper
             $no_cache_page = true;
         }
         if (
-            1
-            && !!$chid
-            && !$no_cache_page
-            && '200 OK' === httpStatusCode()
+            !!$chid &&
+            !$no_cache_page &&
+            '200 OK' === httpStatusCode()
         ) {
             $tagBid = 'bid-' . BID;
             $tagEid = 'eid-' . EID;

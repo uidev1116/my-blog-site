@@ -2,10 +2,8 @@
 
 namespace Acms\Services\StaticExport;
 
-use DB;
-use SQL;
-use ACMS_RAM;
 use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Application;
 
 class CopyEntryArchive
 {
@@ -15,12 +13,19 @@ class CopyEntryArchive
     protected $destinationPaths;
 
     /**
+     * @var \Acms\Services\Unit\Repository
+     */
+    protected $unitRepository;
+
+    /**
      * CopyEntryArchive constructor.
      * @param array $destinationPaths
      */
     public function __construct($destinationPaths)
     {
         $this->destinationPaths = $destinationPaths;
+        $this->unitRepository = Application::make('unit-repository');
+        assert($this->unitRepository instanceof \Acms\Services\Unit\Repository);
     }
 
     /**
@@ -28,74 +33,31 @@ class CopyEntryArchive
      */
     public function copy($eid)
     {
-        $Field = loadEntryField($eid);
+        $field = loadEntryField($eid);
         $this->copyUnitArchives($eid);
-        $this->fieldDupe($Field);
+        $this->fieldDupe($field);
     }
 
+    /**
+     * @param int $eid
+     * @return void
+     */
     protected function copyUnitArchives($eid)
     {
-        $DB = DB::singleton(dsn());
-        $bid = ACMS_RAM::entryBlog($eid);
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereOpr('column_entry_id', $eid);
-        $SQL->addWhereOpr('column_blog_id', $bid);
-        $q = $SQL->get(dsn());
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-            do {
-                $type = detectUnitTypeSpecifier($row['column_type']);
-                switch ($type) {
-                    case 'image':
-                        $this->copyImageUnit($row);
-                        break;
-                    case 'file':
-                        $this->copyFileUnit($row);
-                        break;
-                    case 'custom':
-                        $this->copyCustomUnit($row);
-                        break;
+        $units = $this->unitRepository->loadUnits($eid);
+
+        foreach ($units as $unit) {
+            if ($unit instanceof \Acms\Services\Unit\Contracts\StaticExport) {
+                $paths = $unit->outputAssetPaths();
+                foreach ($paths as $path) {
+                    $this->allCopy($path);
                 }
-            } while ($row = $DB->fetch($q));
+            }
+            if ($unit->getUnitType() === 'custom') {
+                $field = acmsUnserialize($unit->getField6());
+                $this->fieldDupe($field);
+            }
         }
-    }
-
-    /**
-     * @param array $row
-     */
-    protected function copyImageUnit($row)
-    {
-        $oldAry = explodeUnitData($row['column_field_2']);
-        foreach ($oldAry as $old) {
-            $path = ARCHIVES_DIR . $old;
-            $large = otherSizeImagePath($path, 'large');
-            $tiny = otherSizeImagePath($path, 'tiny');
-            $square = otherSizeImagePath($path, 'square');
-
-            $this->allCopy($path);
-            $this->allCopy($large);
-            $this->allCopy($tiny);
-            $this->allCopy($square);
-        }
-    }
-
-    /**
-     * @param array $row
-     */
-    protected function copyFileUnit($row)
-    {
-        $oldAry = explodeUnitData($row['column_field_2']);
-        foreach ($oldAry as $old) {
-            $this->allCopy(ARCHIVES_DIR . $old);
-        }
-    }
-
-    /**
-     * @param array $row
-     */
-    protected function copyCustomUnit($row)
-    {
-        $Field = acmsUnserialize($row['column_field_6']);
-        $this->fieldDupe($Field);
     }
 
     /**

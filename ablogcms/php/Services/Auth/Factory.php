@@ -18,6 +18,7 @@ class Factory extends BaseFactory
             return App::make('auth.role');
         } elseif (SUID && config('subscriber_view_mode') === 'on') {
             $app = App::getInstance();
+            assert($app instanceof \Acms\Application);
             $Q =& $app->getQueryParameter();
             if (empty($Q->get('admin')) && empty($Q->get('bid')) && !preg_match('/ajax\//', $Q->get('tpl'))) {
                 return new SimulateSubscriber();

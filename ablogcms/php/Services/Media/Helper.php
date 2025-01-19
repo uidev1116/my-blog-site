@@ -3,14 +3,15 @@
 namespace Acms\Services\Media;
 
 use Rhukster\DomSanitizer\DOMSanitizer;
-use DB;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Image;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Unit\Contracts\Model;
 use SQL;
 use SQL_Select;
 use ACMS_RAM;
 use ACMS_Hook;
-use Acms\Services\Facades\Image;
-use Acms\Services\Facades\Storage;
-use Acms\Services\Facades\Common;
 use RuntimeException;
 
 class Helper
@@ -28,7 +29,7 @@ class Helper
                 return false;
             }
         } else {
-            if (!sessionWithContribution($bid, false)) {
+            if (!sessionWithContribution($bid)) {
                 return false;
             }
         }
@@ -70,14 +71,24 @@ class Helper
         ];
     }
 
-    public function copyImages($mid)
+    /**
+     * メディアをコピーして新しい画像ファイルを作成する
+     * @param int $mid
+     * @param string $filename
+     * @return array{
+     *   path: string,
+     *   name: string
+     * }
+     */
+    public function copyImages(int $mid, string $filename = ''): array
     {
         $oldData = $this->getMedia($mid);
         $oldPath = $oldData['path'];
+        $filename = $filename ?: $oldData['name'];
 
         $oldPath = MEDIA_LIBRARY_DIR . $oldPath;
         $info = pathinfo($oldPath);
-        $name = preg_replace('/\.[^.]*$/u', '', Storage::mbBasename($oldData['name']));
+        $name = preg_replace('/\.[^.]*$/u', '', Storage::mbBasename($filename));
         $name = preg_replace('/\s/u', '_', $name);
         $dir = empty($info['dirname']) ? '' : $info['dirname'] . '/';
         $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
@@ -92,19 +103,30 @@ class Helper
         return [
             'path' => substr($newPath, strlen(MEDIA_LIBRARY_DIR)),
             'name' => $newName . $ext,
+            'original' => substr($newPath, strlen(MEDIA_LIBRARY_DIR)),
         ];
     }
 
-    public function copyFiles($mid)
+    /**
+     * メディアをコピーして新しいファイルを作成する
+     * @param int $mid
+     * @param string $filename
+     * @return array{
+     *   path: string,
+     *   name: string
+     * }
+     */
+    public function copyFiles(int $mid, string $filename = ''): array
     {
         $oldData = $this->getMedia($mid);
         $oldPath = $oldData['path'];
         $status = $oldData['status'];
         $baseDir = $status ? MEDIA_STORAGE_DIR : MEDIA_LIBRARY_DIR;
+        $filename = $filename ?: $oldData['name'];
 
         $oldPath = $baseDir . $oldPath;
         $info = pathinfo($oldPath);
-        $name = preg_replace('/\.[^.]*$/u', '', Storage::mbBasename($oldPath));
+        $name = preg_replace('/\.[^.]*$/u', '', Storage::mbBasename($filename));
         $name = preg_replace('/\s/u', '_', $name);
         $dir = empty($info['dirname']) ? '' : $info['dirname'] . '/';
         $ext = empty($info['extension']) ? '' : $info['extension'];
@@ -295,19 +317,39 @@ class Helper
         return substr($path, 0, strlen($path) - strlen($name)) . rawurlencode($name);
     }
 
+    public function cacheBusting(string $updated): string
+    {
+        return '?v=' . date('YmdHis', strtotime($updated));
+    }
+
+    /**
+     * メディアタイプが画像かどうか
+     * @param string $type
+     * @return bool
+     */
     public function isImageFile($type)
     {
         return preg_match('/^image/', $type) && !preg_match('/svg/', $type);
     }
 
+    /**
+     * メディアタイプがSVGかどうか
+     * @param string $type
+     * @return bool
+     */
     public function isSvgFile($type)
     {
-        return preg_match('/svg/', $type);
+        return preg_match('/svg/', $type) === 1;
     }
 
+    /**
+     * メディアタイプがファイルかどうか
+     * @param string $type
+     * @return bool
+     */
     public function isFile($type)
     {
-        return preg_match('/^file/', $type);
+        return preg_match('/^file/', $type) === 1;
     }
 
     public function getEdited($path)
@@ -488,6 +530,7 @@ class Helper
         }
         $SQL->addInsert('media_upload_date', date('Y-m-d H:i:s', REQUEST_TIME));
         $SQL->addInsert('media_update_date', date('Y-m-d H:i:s', REQUEST_TIME));
+        $SQL->addInsert('media_last_update_user_id', SUID);
         $SQL->addInsert('media_user_id', SUID);
         $SQL->addInsert('media_blog_id', BID);
 
@@ -499,7 +542,10 @@ class Helper
         $DB = DB::singleton(dsn());
         if (isset($data['original'])) {
             $old = loadMedia($mid);
-            Storage::remove($old->get('original'));
+            if ($old->get('original') !== $data['original']) {
+                // オリジナル画像を更新する場合は古いファイルを削除
+                Storage::remove($old->get('original'));
+            }
         }
         $field = [
             'type' => 'media_type',
@@ -511,6 +557,7 @@ class Helper
             'filesize' => 'media_file_size',
             'size' => 'media_image_size',
             'update_date' => 'media_update_date',
+            'last_update_user_id' => 'media_last_update_user_id',
             'thumbnail' => 'media_thumbnail',
             'field_1' => 'media_field_1',
             'field_2' => 'media_field_2',
@@ -566,6 +613,10 @@ class Helper
             "media_id" => intval($mid),
             "media_bid" => intval($bid),
             "media_blog_name" => isset($data['blog_name']) ? $data['blog_name'] : ACMS_RAM::blogName($bid),
+            "media_user_id" => intval($data['user_id']),
+            "media_user_name" => $data['user_name'],
+            'media_last_update_user_id' => isset($data['last_update_user_id']) ? intval($data['last_update_user_id']) : '',
+            'media_last_update_user_name' => isset($data['last_update_user_name']) ? $data['last_update_user_name'] : '',
             "media_size" => $data['size'],
             "media_filesize" => intval($data['filesize']),
             "media_path" => $path,
@@ -648,19 +699,23 @@ class Helper
         return $label;
     }
 
-    public function mediaEagerLoadFromUnit($unit)
+    /**
+     * Summary of mediaEagerLoadFromUnit
+     * @param Model[] $units
+     * @return array
+     */
+    public function mediaEagerLoadFromUnit(array $units): array
     {
         $mediaList = [];
         $mediaDataList = [];
-        foreach ($unit as $data) {
-            $actualType = $data['type'];
-            $type = detectUnitTypeSpecifier($actualType);
+        foreach ($units as $unit) {
+            $type = $unit->getUnitType();
             if ($type === 'media') {
-                $mediaData = $data['media_id'];
+                $mediaData = $unit->getField1();
                 if (empty($mediaData)) {
                     continue;
                 }
-                $mediaAry = explodeUnitData($mediaData);
+                $mediaAry = $unit->explodeUnitData($mediaData);
                 foreach ($mediaAry as $i => $mediaId) {
                     $mediaList[] = $mediaId;
                 }
@@ -682,13 +737,52 @@ class Helper
 
     public function getMedia($mid)
     {
-        $sql = SQL::newSelect('media');
+        $sql = SQL::newSelect('media', 'm');
+        foreach (
+            [
+                [
+                    'field' => 'm.*',
+                    'alias' => null,
+                    'scope' => null,
+                    'function' => null
+                ],
+                [
+                    'field' => 'user_name',
+                    'alias' => 'user_name',
+                    'scope' => 'user',
+                    'function' => null
+                ],
+                [
+                    'field' => 'user_name',
+                    'alias' => 'last_update_user_name',
+                    'scope' => 'last_update_user',
+                    'function' => null
+                ],
+                [
+                    'field' => 'blog_name',
+                    'alias' => null,
+                    'scope' => null,
+                    'function' => null
+                ],
+            ] as $select
+        ) {
+            $sql->addSelect(
+                $select['field'],
+                $select['alias'],
+                $select['scope'],
+                $select['function']
+            );
+        }
+
         $sql->addLeftJoin('blog', 'blog_id', 'media_blog_id');
+        $sql->addLeftJoin('user', 'user_id', 'media_user_id', 'user');
+        $sql->addLeftJoin('user', 'user_id', 'media_last_update_user_id', 'last_update_user');
         $sql->addWhereOpr('media_id', $mid);
         $row = DB::query($sql->get(dsn()), 'row');
         if (empty($row)) {
             return [];
         }
+
         return [
             'mid' => $row['media_id'],
             'bid' => $row['media_blog_id'],
@@ -710,6 +804,10 @@ class Helper
             'field_5' => $row['media_field_5'],
             'field_6' => $row['media_field_6'],
             'blog_name' => $row['blog_name'],
+            'user_id' => $row['media_user_id'],
+            'user_name' => $row['user_name'],
+            'last_update_user_id' => $row['media_last_update_user_id'],
+            'last_update_user_name' => $row['last_update_user_name'],
             'editable' => intval($row['media_user_id']) === SUID
         ];
     }
@@ -804,6 +902,7 @@ class Helper
                     $typeAry[] = $type;
 
                     if ($type === 'image') {
+                        $path .= $this->cacheBusting($media['media_update_date']);
                         $pathAry[] = $path;
                         $thumbnailAry[] = $this->getImageThumbnail($path);
                         $imageSizeAry[] = $media['media_image_size'];
@@ -837,6 +936,7 @@ class Helper
                         $heightAry[] = $height;
                         $ratioAry[] = $ratio;
                     } elseif ($type === 'svg') {
+                        $path .= $this->cacheBusting($media['media_update_date']);
                         $pathAry[] = $path;
                         $thumbnailAry[] = $this->getSvgThumbnail($path);
                         $imageSizeAry[] = '';

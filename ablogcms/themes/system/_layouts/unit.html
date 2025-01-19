@@ -45,7 +45,7 @@
 <div class="column-image-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN link#front --><!-- BEGIN_IF [{url}/nem/] -->
   <a href="{url}" {viewer}[raw] data-group="{link_eid}" data-caption="{caption}[nl2br|delnl]"><!-- END_IF --><!-- END link#front -->
     <img
-      class="js-lazy-load columnImage"
+      class="js-lazy-load columnImage unit-id-{utid}"
       data-src="%{HTTP_ROOT}{path}"
       alt="{alt}[delnl]"
       width="{x}"
@@ -61,7 +61,7 @@
 <!-- ファイル -->
 <div class="column-file-{align} js_notStyle">
   <a href="%{HTTP_ROOT}{path}">
-    <img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="ファイルを開く" width="{x}" height="{y}">
+    <img class="columnIcon unit-id-{utid}" src="%{HTTP_ROOT}{icon}" alt="ファイルを開く" width="{x}" height="{y}">
   </a>
   <!-- BEGIN_IF [{caption}[delnl]/nem] --><p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 </div>
@@ -147,19 +147,20 @@
 <div class="column-media-{align}{display_size_class}"{display_size}[raw]><!-- BEGIN type#image --><!-- BEGIN link#front -->
   <a href="{url}" {viewer}[raw] data-group="{link_eid}"><!-- END link#front -->
     <img
-      class="js-lazy-load columnImage"
-      data-src="%{HTTP_ROOT}{path}[resizeImg({x})]"
+      class="js-lazy-load columnImage unit-id-{image_utid}"
+      data-src="%{HTTP_ROOT}{path}[resizeImg({resizeWidth})]"
       width="{x}"
       height="{y}"
       alt="{alt}"
-    ><!-- BEGIN link#rear -->
+    >
+    <!-- BEGIN link#rear -->
   </a><!-- END link#rear --><!-- BEGIN_IF [{caption}[delnl]/nem] -->
   <p class="caption">{caption}[raw|nl2br]</p><!-- END_IF -->
 
   <!-- END type#image --><!-- BEGIN type#svg --><!-- BEGIN link#front -->
   <a href="{url}" {viewer}[raw] data-group="{link_eid}"><!-- END link#front -->
     <img
-      class="js-lazy-load columnImage"
+      class="js-lazy-load columnImage unit-id-{svg_utid}"
       data-src="%{HTTP_ROOT}{path}"
       alt="{alt}"
       width="{x}"
@@ -170,7 +171,7 @@
 
   <!-- END type#svg --><!-- BEGIN type#file -->
   <a href="{url}" target="_blank" class="js-link_no_rewrite"><!-- BEGIN_IF [{thumbnail}/nem/_and_/{use_icon}/neq/yes] -->
-    <img class="column-pdf-image" src="%{MEDIA_ARCHIVES_DIR}{thumbnail}" alt="{alt}">
+    <img class="column-pdf-image unit-id-{file_utid}" src="%{MEDIA_ARCHIVES_DIR}{thumbnail}" alt="{alt}">
     <!-- ELSE -->
     <img class="columnIcon" src="%{HTTP_ROOT}{icon}" alt="{alt}" width="{x}" height="{y}">
     <!-- END_IF -->

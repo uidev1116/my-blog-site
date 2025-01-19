@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  ナビゲーション
@@ -7,7 +7,7 @@
   z-index: global.zIndex(acms-navbar);
   clear: both;
   width: 100%;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
   list-style: none outside none;
   background-color: global.$acms-color-black;
   border-top: solid 1px global.$acms-color-black;
@@ -36,38 +36,45 @@
     letter-spacing: 0 !important;
     text-decoration: none;
   }
+
   a:hover,
   #viewing {
     text-decoration: none;
     background: global.$acms-color-gray90;
   }
+
   .stay a,
   a:active {
     background: global.$acms-color-gray90;
   }
+
   #viewing {
     background: global.$acms-color-gray30;
   }
+
   /* リストの1段目 */
   li {
     position: relative;
-      top: 0;
+    top: 0;
     font-weight: bold;
     white-space: nowrap;
     border-left: solid 1px global.$acms-color-gray60;
-     &:last-child{
+
+    &:last-child {
       border-right: solid 1px global.$acms-color-gray60;
     }
   }
+
   /* 2段目以降 */
   ul ul {
     position: absolute;
-      top: 60px;
-      left: 0;
+    top: 60px;
+    left: 0;
     z-index: global.zIndex(acms-navbar-deep);
     display: none;
     width: auto;
     padding: 0;
+
     li {
       position: relative;
       clear: left;
@@ -77,34 +84,40 @@
       border-right: none;
       border-left: none;
     }
-    a{
+
+    a {
       *width: 240px;
       height: 40px !important;
       padding: 0 20px;
       *overflow: visible;
       font-size: 13px;
-      line-height: 3.0 !important;
+      line-height: 3 !important;
       background: global.$acms-color-black;
       border-top: solid 1px global.$acms-color-black;
       border-bottom: solid 1px global.$acms-color-gray80;
-       &:hover {
+
+      &:hover {
         background-color: global.$acms-color-gray90;
       }
     }
   }
-  ul li.stay ul a{
+
+  ul li.stay ul a {
     background-color: global.$acms-color-black;
-    box-shadow: 0 0 0 rgba(0,0,0,0.5);
-     &:hover{
+    box-shadow: 0 0 0 rgb(0 0 0 / 50%);
+
+    &:hover {
       background-color: global.$acms-color-gray90;
     }
   }
+
   /* 3段目以降 */
   ul ul ul {
     position: absolute;
-      top: 0;
-      left: 100%;
+    top: 0;
+    left: 100%;
     width: 100%;
+
     a {
       background: global.$acms-color-black;
       border-top: solid 1px global.$acms-color-black;
@@ -112,18 +125,22 @@
     }
   }
 }
+
 // 3段目を表示
 .acms-navbar ul li:hover > ul {
   display: block;
 }
-*+html .acms-navbar ul li ul a { /*IE用*/
-  width: 200px; /*（94-10-10-1-1）パディングとボーダーの分を引いた値*/
-  white-space: normal; /*幅に応じて改行*/
+
+* + html .acms-navbar ul li ul a {
+  /* IE用 */
+  width: 200px; /* （94-10-10-1-1）パディングとボーダーの分を引いた値 */
+  white-space: normal; /* 幅に応じて改行 */
 }
 
-@media (min-width : global.$breakpoint-md-min) {
+@media (min-width: global.$breakpoint-md-min) {
   .acms-navbar {
     height: 60px;
+
     ul {
       display: block;
       width: 940px;
@@ -131,9 +148,11 @@
       padding: 0;
       list-style: none;
     }
+
     li {
       float: left;
     }
+
     a:link,
     a:visited,
     a:hover,
@@ -141,17 +160,20 @@
     #viewing {
       height: 60px;
     }
+
     /* 2段目以降 */
     ul ul {
       position: absolute;
-        top: 60px;
-        left: 0;
+      top: 60px;
+      left: 0;
+
       li {
         position: relative;
         width: 100%;
         height: 40px;
       }
-      a{
+
+      a {
         *width: 240px;
         height: 40px !important;
         padding: 0 20px;

@@ -26,6 +26,7 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
             $oldData = Media::getMedia($mid);
 
             if (isset($_FILES[$this->uploadFieldName])) {
+                // ファイルアップロードがある場合（メディアを変更機能 or メディア画像編集機能利用時）
                 $name = $Media->get('file_name');
                 Common::validateFileUpload($this->uploadFieldName);
 
@@ -33,8 +34,8 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
                 $replaced = $Media->get('replaced') === 'true';
                 $type = mime_content_type($_FILES[$this->uploadFieldName]['tmp_name']);
 
+                $_FILES[$this->uploadFieldName]['name'] = $name; // ファイル名を設定
                 if (Media::isImageFile($type)) {
-                    $_FILES[$this->uploadFieldName]['name'] = $name;
                     $data = Media::uploadImage($this->uploadFieldName, $replaced);
                     if ($replaced) {
                         $data['original'] = otherSizeImagePath($data['path'], 'large');
@@ -46,10 +47,11 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
                 }
                 $data['upload_date'] = $oldData['upload_date'];
             } else {
+                $filename = $Media->get('file_name');
                 if (in_array($oldData['type'], ['file', 'svg'], true)) {
-                    $data = array_merge($oldData, Media::copyFiles($mid));
+                    $data = array_merge($oldData, Media::copyFiles($mid, $filename));
                 } else {
-                    $data = array_merge($oldData, Media::copyImages($mid));
+                    $data = array_merge($oldData, Media::copyImages($mid, $filename));
                 }
             }
             // pdf thumbnail
@@ -65,11 +67,11 @@ class ACMS_POST_Media_UpdateAsNew extends ACMS_POST_Media_Update
             $data['field_2'] = $Media->get('field_2');
             $data['field_3'] = $Media->get('field_3');
             $data['field_4'] = $Media->get('field_4');
-            if ($rename = $Media->get('rename')) {
-                $data = Media::rename($data, $rename);
-            }
-            if ($Media->get('focal_x') && $Media->get('focal_y')) {
-                $data['field_5'] = $Media->get('focal_x') . ',' . $Media->get('focal_y');
+
+            $focalPoint = $this->detectFocalPoint($Media);
+            if ($focalPoint !== null) {
+                [$focalX, $focalY] = $focalPoint;
+                $data['field_5'] = $focalX . ',' . $focalY;
             } else {
                 $data['field_5'] = '';
             }

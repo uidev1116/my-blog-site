@@ -115,7 +115,7 @@ class ACMS_GET_Media_Banner extends ACMS_GET
                     $size = $media['media_image_size'];
                     $items[$i]['banner#img']['x'] = preg_replace('/(\d*)?\sx\s(\d*)?/', '$1', $size);
                     $items[$i]['banner#img']['y'] = preg_replace('/(\d*)?\sx\s(\d*)?/', '$2', $size);
-                    $items[$i]['banner#img']['img'] = Media::urlencode($media['media_path']);
+                    $items[$i]['banner#img']['img'] = Media::urlencode($media['media_path']) . Media::cacheBusting($media['media_update_date']);
                     $items[$i]['banner#img']['caption'] = $media['media_field_1'];
                     if (!$items[$i]['banner#img']['url']) {
                         $items[$i]['banner#img']['url'] = $media['media_field_2'];

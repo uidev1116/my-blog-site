@@ -18,15 +18,19 @@ export default (item) => {
     shadowUrl: iconShadow,
   });
 
-  const geoPicker = new GeoPicker(item, {
-    searchInput: '.js-osm-search',
-    searchBtn: '.js-osm-search-btn',
-    lngInput: '.js-osm-lng',
-    latInput: '.js-osm-lat',
-    zoomInput: '.js-osm-zoom',
-    msgInput: '.js-osm-msg',
-    map: '.js-open-street-map-picker',
-  }, Leaflet);
+  const geoPicker = new GeoPicker(
+    item,
+    {
+      searchInput: '.js-osm-search',
+      searchBtn: '.js-osm-search-btn',
+      lngInput: '.js-osm-lng',
+      latInput: '.js-osm-lat',
+      zoomInput: '.js-osm-zoom',
+      msgInput: '.js-osm-msg',
+      map: '.js-open-street-map-picker',
+    },
+    Leaflet
+  );
   if (geoPicker.map) {
     geoPicker.run();
     ACMS.addListener('acmsAdminDelayedContents', () => {

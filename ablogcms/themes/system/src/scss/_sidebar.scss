@@ -1,54 +1,62 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  サイドバー
 ------------------------------- */
-.acms-sidebar{
+.acms-sidebar {
   padding-bottom: 40px;
-  ul{
+
+  ul {
     margin: 0;
     padding-left: 0;
     list-style: none;
   }
-  dl{
+
+  dl {
     margin-top: 0;
   }
-  dd{
+
+  dd {
     margin: 0;
   }
 }
 
 /* タイトル */
-.acms-sidebar-title{
+.acms-sidebar-title {
   padding: 10px 15px;
   color: global.$acms-color-gray90;
   font-weight: 400;
   background-color: global.$acms-color-system-gray90;
+
   @include global.font-size(14);
 
-  @media (min-width : global.$breakpoint-md-min){
+  @media (min-width: global.$breakpoint-md-min) {
     padding: 5px 15px;
     background-color: inherit;
     border-top: 1px solid global.$acms-color-gray80;
+
     @include global.font-size(11);
   }
 }
 
 /* リンク */
 .acms-sidebar-link {
-  a{
+  a {
     display: block;
     padding: 10px 15px;
     line-height: 1.2;
-     &:hover{
+
+    &:hover {
       background-color: global.$acms-color-white;
     }
   }
+
   // 現在いるとき
   .stay,
   .stay a:hover {
     background-color: global.$acms-color-white;
   }
+
   .stay a {
     color: global.$base-bg-primary;
   }
@@ -58,27 +66,31 @@
   background: global.$acms-color-system-gray90;
 }
 
-
 // ---------------
 // スマートフォンのとき
 // ---------------
-.acms-sidebar-sp{
+.acms-sidebar-sp {
   display: block;
+
   // 表示
-  @media (min-width : global.$breakpoint-md-min){
+  @media (min-width: global.$breakpoint-md-min) {
     display: none;
   }
-  p{
+
+  p {
     margin: 0;
   }
-  li{
+
+  li {
     border-bottom: solid 1px global.$acms-color-white;
   }
-  .acms-sidebar-box{
+
+  .acms-sidebar-box {
     padding: 15px 20px;
     border-bottom: solid 1px global.$acms-color-white;
   }
-  .acms-dropdown a{
+
+  .acms-dropdown a {
     background: url('#{global.$acms-path-marker}arrow_white03.png') no-repeat 95% center;
   }
 }

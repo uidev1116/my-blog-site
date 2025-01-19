@@ -5,11 +5,9 @@ import 'core-js/features/symbol';
 import 'core-js/features/array/from';
 import 'canvas-toBlob';
 
-window.addEventListener('unhandledrejection', () => {
-});
+window.addEventListener('unhandledrejection', () => {});
 
-window.onunhandledrejection = () => {
-};
+window.onunhandledrejection = () => {};
 
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;

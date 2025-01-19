@@ -87,8 +87,9 @@ class ACMS_GET_Json_2Tpl extends ACMS_GET
     {
         $id = $this->getCacheId($uri);
         $cache = Cache::module();
-        if ($cache->has($id)) {
-            return $cache->get($id);
+        $cacheItem = $cache->getItem($id);
+        if ($cacheItem && $cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         return false;
     }

@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  パネル
@@ -31,10 +31,13 @@
 
 .acms-panel-title {
   margin: 0;
+
   @include global.font-size(15);
-  >a {
+
+  > a {
     color: inherit;
-     &:hover {
+
+    &:hover {
       color: inherit;
       opacity: 0.6;
     }
@@ -53,30 +56,35 @@
 
 // info
 .acms-panel-info {
-   &.acms-panel {
+  &.acms-panel {
     border-color: global.$acms-panel-info-border;
   }
+
   .acms-panel-header,
   .acms-panel-header a {
     color: global.$acms-panel-info-text-color;
     background-color: global.$acms-panel-info-bg;
     border-color: global.$acms-panel-info-border;
   }
+
   .acms-panel-footer {
     border-color: global.$acms-panel-info-border;
   }
 }
+
 // danger
 .acms-panel-danger {
-   &.acms-panel {
+  &.acms-panel {
     border-color: global.$acms-panel-danger-border;
   }
+
   .acms-panel-header,
   .acms-panel-header a {
     color: global.$acms-panel-danger-text-color;
     background-color: global.$acms-panel-danger-bg;
     border-color: global.$acms-panel-danger-border;
   }
+
   .acms-panel-footer {
     border-color: global.$acms-panel-danger-border;
   }

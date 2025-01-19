@@ -101,7 +101,7 @@ class ImageResize
 
     private function createSrcImageForImagick($path)
     {
-        $this->srcImg = new \Imagick($path);
+        $this->srcImg = new Imagick($path);
         $this->originalW = $this->srcImg->getImageWidth();
         $this->originalH = $this->srcImg->getImageHeight();
     }
@@ -153,7 +153,7 @@ class ImageResize
         switch ($this->getExtension()) {
             case self::MIME_GIF:
             case self::MIME_PNG:
-                $this->srcImg->setImageBackgroundColor(new \ImagickPixel('transparent'));
+                $this->srcImg->setImageBackgroundColor(new ImagickPixel('transparent'));
                 break;
             default:
                 $this->srcImg->setImageBackgroundColor(new ImagickPixel("rgb($this->colorR, $this->colorG, $this->colorB)"));
@@ -167,7 +167,9 @@ class ImageResize
             $this->srcImg->spliceImage($this->destX, 0, 0, 0);
             $this->srcImg->spliceImage($this->destX, 0, $this->destX + $this->destW, 0);
         }
+        $this->srcImg->stripImage();
         $this->srcImg->writeImages($destPath, true);
+        $this->srcImg->clear();
         $this->srcImg->destroy();
     }
 

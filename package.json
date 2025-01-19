@@ -25,6 +25,7 @@
     "node": "20.16.0"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx}": "prettier --write"
+    "ablogcms/themes/**/*.{js,ts,jsx,tsx}": "prettier --write",
+    "tools/**/*.{js,ts,jsx,tsx}": "prettier --write"
   }
 }

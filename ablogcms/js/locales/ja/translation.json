@@ -183,6 +183,7 @@
     "strong": "安全なパスワードです"
   },
   "quick_search": {
+    "title": "クイックサーチ",
     "input_placeholder": "検索する",
     "choice": "選択",
     "move": "移動",
@@ -205,33 +206,70 @@
     "confirm_remove": "選択した項目を削除します。よろしいですか？",
     "placeholder": "検索キーワードを入力してください",
     "type_to_search": "入力することで検索を開始します。",
+    "no_options_message": "キーワードに関連するエントリーが見つかりませんでした。",
     "max_items": "登録できる制限を超えているため、選択できませんでした。"
   },
+  "category": {
+    "name": "カテゴリー名",
+    "code": "コードネーム",
+    "parent": "親カテゴリー",
+    "scope": "スコープ",
+    "scope_global": "下の階層のブログと共有する",
+    "add_title": "カテゴリー追加",
+    "add":"追加",
+    "error": {
+      "name": {
+        "required": "名前が入力されていません。"
+      },
+      "code": {
+        "required": "コードネームが入力されていません。",
+        "double": "既に使用されているコードネームです。",
+        "reserved": "システムで予約されているキーワードです。",
+        "string": "不正な文字が含まれています。"
+      },
+      "scope": {
+        "tree": "親カテゴリーと異なる共有設定にすることはできません。",
+        "shared": "子ブログのエントリーが登録されています。"
+      }
+    },
+    "select_placeholder": "カテゴリーを選択します（キーワードを入れて絞り込み）",
+    "select_notfound": "カテゴリーが見つかりません",
+    "select_no_option_label": "カテゴリーなし",
+    "select_mt_option_label": "MTのカテゴリーを使用"
+  },
+  "subcategory": {
+    "select_placeholder": "サブカテゴリーを選択します（キーワードを入れて絞り込み）",
+    "select_notfound": "サブカテゴリーが見つかりません",
+    "select_limit_message": "サブカテゴリーの最大選択数は{{limit}}つです。"
+  },
+  "tag": {
+    "select_placeholder": "タグを選択もしくは、新しいタグを入力します（キーワードを入れて絞り込み）",
+    "select_notfound": "タグが見つかりません",
+    "add_tag": "タグ「{{name}}」を作成"
+  },
   "entry_editor": {
-    "category_placeholder": "カテゴリーを選択します（キーワードを入れて絞り込み）",
-    "category_notfound": "カテゴリーが見つかりません",
-    "tag_placeholder": "タグを選択もしくは、新しいタグを入力します。（キーワードを入れて絞り込み）",
-    "tag_notfound": "タグが見つかりません",
-    "subcategory_placeholder": "サブカテゴリーを選択します。（キーワードを入れて絞り込み）",
-    "subcategory_notfound": "カテゴリーが見つかりません。",
-    "add_unit": "ユニットを追加する",
-    "add_tag": "タグ「$1」を作成"
+    "add_unit": "ユニットを追加する"
   },
   "admin_menu": {
     "menu_remove_confirm": "メニューを削除しますか？",
+    "lane_remove_confirm": "列を削除しますか？",
     "enter_both_title_and_url": "タイトルとURLの両方を入力してください。",
     "title": "タイトル",
     "icon": "アイコン",
     "url": "URL",
     "complete": "完了",
     "edit": "編集",
-    "add_row": "列を追加",
-    "lane_alert": "レーンは空じゃないと削除できません。",
-    "add_lane": "メニューを追加",
-    "add_title": "項目を追加",
+    "lane_title": "タイトル",
+    "lane_alert": "列は空でないと削除できません。",
+    "add_lane": "列を追加",
+    "add_card": "メニューを追加",
+    "add_icon": "アイコンを追加",
+    "add_title": "タイトルを追加",
     "add": "追加",
     "cancel": "キャンセル",
-    "remove": "削除"
+    "remove": "削除",
+    "remove_lane": "列を削除する",
+    "card_add_alert": "タイトルとURLの両方を入力してください。"
   },
   "media": {
     "message1": "このコンテンツにはメディアを挿入できません。",
@@ -246,6 +284,7 @@
     "upload": "アップロード",
     "drop_file": "またはファイルをドロップ",
     "edit": "編集",
+    "info": "詳細情報",
     "media_id": "メディアID",
     "select_from_media": "メディアから選択",
     "new_window": "新しいウィンドウで開く",
@@ -259,8 +298,10 @@
     "media_list": "メディア一覧",
     "edit_image": "画像編集",
     "crop": "切り抜き",
+    "custom": "カスタム",
     "rotate": "回転",
     "focal_point": "中心点",
+    "focal_point_button_label": "画像の中心点をドラッグで設定できます。",
     "initialize": "初期化",
     "apply": "適用",
     "media_insert": "メディア挿入",
@@ -269,6 +310,7 @@
     "insert_selections": "選択した項目を挿入",
     "update_date": "更新日時",
     "created_date": "登録日時",
+    "clear_button_label": "メディアの選択を解除",
     "file_name": "ファイル名",
     "file_size": "ファイルサイズ",
     "select": "選択してください",
@@ -297,6 +339,10 @@
     "select_all": "全選択",
     "remove": "削除",
     "add_tags": "タグを追加",
+    "add_tag": "タグ「{{name}}」を作成",
+    "tag_select_no_options_message": "タグが見つかりません",
+    "tag_select_placeholder": "タグを選択もしくは、新しいタグを入力します。（キーワードを入れて絞り込み）",
+    "tag_search_select_placeholder": "タグを選択します。（キーワードを入れて絞り込み）",
     "action": "アクション",
     "prev": "前へ",
     "next": "次へ",
@@ -314,12 +360,15 @@
     "cannot_edit": "このメディアを編集する権限がありません。",
     "media_edit": "メディア編集",
     "media_change": "メディアを変更",
+    "managed_media_change": "メディアの変更ができます。",
     "file_select": "ファイル選択",
     "upload_date": "アップロード日時",
     "image_size": "画像サイズ",
+    "entity_path": "実体パス",
+    "entity_path_attention": "storageディレクトリ以下の実体パスです。",
     "permalink": "パーマリンク",
+    "permalink_attention": "メディアまたはファイル名を変更するとパーマリンクも変更されます。直接パーマリンクを貼る場合はお気をつけください。",
     "copy": "コピー",
-    "copy_attention": "画像を変更するとパーマリンクも変更されます。直接パーマリンクを貼る場合はお気をつけください。",
     "status": "ステータス",
     "status_settings": "ステータスを変更できます。",
     "follow_media_status": "エントリーの公開状態に従う",
@@ -335,12 +384,13 @@
     "filename_settings": "ファイル名を変更できます。",
     "alt_settings": "代替テキストを設定します。設定した内容は、このメディアを使用時に継承して適用されます。",
     "title": "タイトル",
-    "details": "詳細情報",
-    "details_settings": "詳細な情報を入力できます。",
+    "memo": "メモ",
+    "memo_settings": "管理用のメモとして利用してください。",
     "cancel": "キャンセル",
     "save_as_new": "新しいメディアとして作成",
     "save": "上書き保存",
     "saving": "変更を保存中です。",
+    "intrinsic_link_copied": "実体パスをコピーしました。",
     "permalink_copied": "パーマリンクをコピーしました。",
     "intrinsic_link": "実体パス",
     "intrinsic_link_attention": "storageディレクトリ以下の実体パスです。",
@@ -354,7 +404,20 @@
     "banner_open_date": "このバナーの公開日時を指定します。バナーを表示するには、日時の設定に加え、公開ステータスを「公開」にする必要があります。",
     "media_unit_use1": "機能を利用するには",
     "media_unit_use2": "機能設定",
-    "media_unit_use3": "にてメディア管理を利用可能にしてください"
+    "media_unit_use3": "にてメディア管理を利用可能にしてください",
+    "open_config_menu": "設定メニューを開く",
+    "display_switch_list": "リスト形式で表示する",
+    "display_switch_grid": "グリッド形式で表示する",
+    "user_name": "アップロード者",
+    "last_update_user_name": "最終更新者",
+    "last_modified": "最終更新日時",
+    "remove_file": "ファイルを削除する",
+    "error": {
+      "unknown": "不明なエラーが発生しました。"
+    }
+  },
+  "media_banner": {
+    "remove_banner_item": "バナーアイテムを削除する"
   },
   "navigation": {
     "show_child_items": "このナビゲーション項目の子項目を表示",
@@ -386,7 +449,9 @@
     "get_link_detail": "この画面をログインしていない人へ有効期間中に限り共有できるリンクを取得します。",
     "expiration": "有効期間",
     "hours": "時間",
-    "copy_to_clipboard": "クリップボードにコピーしました"
+    "copy_to_clipboard": "クリップボードにコピーしました",
+    "capture": "キャプチャする",
+    "open_share_modal": "共有リンク取得用モーダルを開く"
   },
   "scrollhint": {
     "scrollable": "スクロールできます"
@@ -428,5 +493,20 @@
       "httpRequestBody": "リクエストボディ",
       "extraInfo": "追加情報"
     }
+  },
+  "rich_editor": {
+    "placeholder": "本文を入力しましょう",
+    "titlePlaceholder": "タイトルを入力しましょう"
+  },
+  "icon_picker": {
+    "open": "アイコンピッカーを開く",
+    "pick": "アイコンを選択する"
+  },
+  "webhook": {
+    "event_select_placeholder": "イベントを選択します",
+    "event_select_no_options_message": "イベントが見つかりません"
+  },
+  "modal": {
+    "close": "モーダルを閉じる"
   }
 }

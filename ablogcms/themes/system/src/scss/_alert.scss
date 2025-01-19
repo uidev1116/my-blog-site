@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  アラート
@@ -12,9 +12,10 @@
   background: global.$acms-alert-black-bg;
   border: 1px solid global.$acms-alert-black-border;
   border-radius: global.$acms-alert-border-radius;
-  box-shadow: 0 2px 5px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px 2px rgb(0 0 0 / 10%);
+
   @include global.font-size(13);
-  @include global.animation(anime1 .5s ease 1 alternate);
+  @include global.animation(anime1 0.5s ease 1 alternate);
 
   .acms-icon {
     color: global.$acms-alert-black-icon-color;
@@ -28,12 +29,12 @@
 // アニメーション
 @keyframes anime1 {
   0% {
-    transform: translate(0,-5px);
+    transform: translate(0, -5px);
     opacity: 0;
   }
 
   100% {
-    transform: translate(0,0);
+    transform: translate(0, 0);
     opacity: 1;
   }
 }
@@ -80,6 +81,7 @@
   .js-acms-alert-close {
     color: global.$acms-alert-warning-close-color;
   }
+
   .acms-alert-icon-before {
     color: global.$acms-alert-warning-icon-color;
   }
@@ -95,27 +97,30 @@
   .js-acms-alert-close {
     color: global.$acms-alert-success-close-color;
   }
+
   .acms-alert-icon-before {
     color: global.$acms-alert-success-icon-color;
   }
 }
 
-
 .acms-alert-icon {
   position: relative;
   padding: global.$acms-alert-icon-padding;
 }
+
 .acms-alert-icon-before {
   position: absolute;
   left: 20px;
-  @include global.font-size(20);
-}
-.acms-alert-icon-after {
-  position: absolute;
-  right: 20px;
+
   @include global.font-size(20);
 }
 
+.acms-alert-icon-after {
+  position: absolute;
+  right: 20px;
+
+  @include global.font-size(20);
+}
 
 // 閉じるボタン
 .js-acms-alert-close {
@@ -127,6 +132,7 @@
   background: transparent;
   border: 0;
   outline: 0;
-  -webkit-appearance: none;
+  appearance: none;
+
   @include global.font-size(18);
 }

@@ -18,6 +18,7 @@ class MailerServiceProvider extends ServiceProvider
     public function register(Container $container)
     {
         $container->bind('mailer', 'Acms\Services\Mailer\Engine');
+        $container->bind('mailer.google.smtp.api', 'Acms\Services\Mailer\Transport\GoogleApi');
     }
 
     /**

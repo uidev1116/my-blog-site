@@ -1,5 +1,9 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Media;
+
 class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
 {
     /**
@@ -274,21 +278,20 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
 
     public function loadPrimaryImage($clid, &$vars)
     {
-        $DB = DB::singleton(dsn());
-
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereOpr('column_id', $clid);
-        $unit = $DB->query($SQL->get(dsn()), 'row');
+        /** @var Acms\Services\Unit\Repository $unitRepository */
+        $unitRepository = Application::make('unit-repository');
+        $unit = $unitRepository->loadUnit($clid);
         $path = false;
-        $filename = $unit['column_field_2'];
-        $type = detectUnitTypeSpecifier($unit['column_type']);
-        if ($type === 'image') {
+        $filename = false;
+        if ($unit->getUnitType() === 'image') {
+            $data = $unit->explodeUnitData($unit->getField2());
+            $filename = $data[0] ?? $data;
             $path = ARCHIVES_DIR . $filename;
-        } elseif ($type === 'media') {
-            $SQL = SQL::newSelect('media');
-            $SQL->setSelect('media_path');
-            $SQL->addWhereOpr('media_id', $unit['column_field_1']);
-            $path = MEDIA_LIBRARY_DIR . $DB->query($SQL->get(dsn()), 'one');
+        } elseif ($unit->getUnitType() === 'media') {
+            $data = $unit->explodeUnitData($unit->getField1());
+            $mid = $data[0] ?? $data;
+            $media = Media::getMedia($mid);
+            $path = MEDIA_LIBRARY_DIR . $media['media_path'];
         }
         /**
          * if already deleted unit. when return false.
@@ -296,102 +299,101 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
         if (empty($path) || !Storage::exists($path) || $path === ARCHIVES_DIR || $path === MEDIA_LIBRARY_DIR) {
             return false;
         }
-        list($x, $y)    = Storage::getImageSize($path);
+        [$x, $y] = Storage::getImageSize($path);
 
         if (max($this->imageX, $this->imageY) > max($x, $y)) {
-            $_path  = preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $path);
+            $_path = preg_replace('@(.*?)([^/]+)$@', '$1large-$2', $path);
             if ($xy = Storage::getImageSize($_path)) {
-                $path   = $_path;
-                $x      = $xy[0];
-                $y      = $xy[1];
+                $path = $_path;
+                $x = $xy[0];
+                $y = $xy[1];
             }
         }
-
         $vars += [
-            'path'  => $path,
+            'path' => $path,
         ];
-        if ('on' == $this->imageTrim) {
-            $imgX   = $x;
-            $imgY   = $y;
+        if ('on' === $this->imageTrim) {
+            $imgX = $x;
+            $imgY = $y;
             if ($x > $this->imageX and $y > $this->imageY) {
                 //if ( ($x - $this->imageX) < ($y - $this->imageY) ) {
                 if (($x / $this->imageX) < ($y / $this->imageY)) {
-                    $imgX   = $this->imageX;
-                    $imgY   = round($y / ($x / $this->imageX));
+                    $imgX = $this->imageX;
+                    $imgY = round($y / ($x / $this->imageX));
                 } else {
-                    $imgY   = $this->imageY;
-                    $imgX   = round($x / ($y / $this->imageY));
+                    $imgY = $this->imageY;
+                    $imgX = round($x / ($y / $this->imageY));
                 }
             } else {
                 if ($x < $this->imageX) {
-                    $imgX   = $this->imageX;
-                    $imgY   = round($y * ($this->imageX / $x));
+                    $imgX = $this->imageX;
+                    $imgY = round($y * ($this->imageX / $x));
                 } elseif ($y < $this->imageY) {
-                    $imgY   = $this->imageY;
-                    $imgX   = round($x * ($this->imageY / $y));
+                    $imgY = $this->imageY;
+                    $imgX = round($x * ($this->imageY / $y));
                 } else {
                     if (($this->imageX - $x) > ($this->imageY - $y)) {
-                        $imgX   = $this->imageX;
-                        $imgY   = round($y * ($this->imageX / $x));
+                        $imgX = $this->imageX;
+                        $imgY = round($y * ($this->imageX / $x));
                     } else {
-                        $imgY   = $this->imageY;
-                        $imgX   = round($x * ($this->imageY / $y));
+                        $imgY = $this->imageY;
+                        $imgX = round($x * ($this->imageY / $y));
                     }
                 }
             }
-            $this->imageCenter  = 'on';
+            $this->imageCenter = 'on';
         } else {
             if ($x > $this->imageX) {
                 if ($y > $this->imageY) {
                     if (($x - $this->imageX) < ($y - $this->imageY)) {
-                        $imgY   = $this->imageY;
-                        $imgX   = round($x / ($y / $this->imageY));
+                        $imgY = $this->imageY;
+                        $imgX = round($x / ($y / $this->imageY));
                     } else {
-                        $imgX   = $this->imageX;
-                        $imgY   = round($y / ($x / $this->imageX));
+                        $imgX = $this->imageX;
+                        $imgY = round($y / ($x / $this->imageX));
                     }
                 } else {
-                    $imgX   = $this->imageX;
-                    $imgY   = round($y / ($x / $this->imageX));
+                    $imgX = $this->imageX;
+                    $imgY = round($y / ($x / $this->imageX));
                 }
             } elseif ($y > $this->imageY) {
-                $imgY   = $this->imageY;
-                $imgX   = round($x / ($y / $this->imageY));
+                $imgY = $this->imageY;
+                $imgX = round($x / ($y / $this->imageY));
             } else {
-                if ('on' == $this->imageZoom) {
+                if ('on' === $this->imageZoom) {
                     if (($this->imageX - $x) > ($this->imageY - $y)) {
-                        $imgY   = $this->imageY;
-                        $imgX   = round($x * ($this->imageY / $y));
+                        $imgY = $this->imageY;
+                        $imgX = round($x * ($this->imageY / $y));
                     } else {
-                        $imgX   = $this->imageX;
-                        $imgY   = round($y * ($this->imageX / $x));
+                        $imgX = $this->imageX;
+                        $imgY = round($y * ($this->imageX / $x));
                     }
                 } else {
-                    $imgX   = $x;
-                    $imgY   = $y;
+                    $imgX = $x;
+                    $imgY = $y;
                 }
             }
         }
 
         //-------
         // align
-        if ('on' == $this->imageCenter) {
+        if ('on' === $this->imageCenter) {
             if ($imgX > $this->imageX) {
-                $left   = round((-1 * ($imgX - $this->imageX)) / 2);
+                $left = round((-1 * ($imgX - $this->imageX)) / 2);
             } else {
-                $left   = round(($this->imageX - $imgX) / 2);
+                $left = round(($this->imageX - $imgX) / 2);
             }
             if ($imgY > $this->imageY) {
-                $top    = round((-1 * ($imgY - $this->imageY)) / 2);
+                $top = round((-1 * ($imgY - $this->imageY)) / 2);
             } else {
-                $top    = round(($this->imageY - $imgY) / 2);
+                $top = round(($this->imageY - $imgY) / 2);
             }
         } else {
-            $left   = 0;
-            $top    = 0;
+            $left = 0;
+            $top = 0;
         }
 
-        $vars   += [
+        $vars += [
             'imgX'  => $imgX,
             'imgY'  => $imgY,
             'left'  => $left,
@@ -400,17 +402,17 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
 
         //------
         // tiny
-        if ($type === 'image') {
+        if ($unit->getUnitType() === 'image') {
             $tiny = ARCHIVES_DIR . preg_replace('@(.*?)([^/]+)$@', '$1tiny-$2', $filename);
             if ($xy = Storage::getImageSize($tiny)) {
-                $vars   += [
-                    'tinyPath'  => $tiny,
-                    'tinyX'     => $xy[0],
-                    'tinyY'     => $xy[1],
+                $vars += [
+                    'tinyPath' => $tiny,
+                    'tinyX' => $xy[0],
+                    'tinyY' => $xy[1],
                 ];
             }
         }
-        $vars   += [
+        $vars += [
             'x' => $this->imageX,
             'y' => $this->imageY,
         ];

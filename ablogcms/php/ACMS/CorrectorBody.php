@@ -63,35 +63,40 @@ class ACMS_CorrectorBody
      */
     public function strip_select_tags($txt, $notAllowedTags = ['script', 'iframe', 'form']): string
     {
+        static $purifier;
+
         if (is_array($txt)) {
             $txt = implode($txt);
         }
         if (empty($txt)) {
             return strval($txt);
         }
-        $config = HTMLPurifier_HTML5Config::createDefault();
-        $config->set('HTML.Doctype', 'HTML5');
-        $config->set('Core.Encoding', 'UTF-8');
-        $config->set('Attr.EnableID', true); // id属性を許可する
-        $config->set('Attr.AllowedRel', ['noopener', 'noreferrer', 'alternate', 'author', 'bookmark', 'canonical', 'external', 'help', 'icon', 'license', 'manifest', 'me', 'next', 'nofollow', 'opener', 'preconnect', 'prefetch', 'preload', 'prerender', 'prev', 'privacy-policy', 'search', 'stylesheet', 'tag', 'terms-of-service']); // rel属性を許可する
-        $config->set('Attr.DefaultImageAlt', ''); // 自動でaltが入る機能をオフ
-        $config->set('Attr.ID.HTML5', true); // クラス命名規則を緩和
-        // $config->set('AutoFormat.Linkify', true); // URLを自動でリンク化
-        $config->set('CSS.AllowImportant', true); // CSSのimportantを許可
-        $config->set('CSS.AllowTricky', true); // トリッキーなCSSを許可（display:noneなど）
-        $config->set('CSS.MaxImgLength', '3000px'); // 画像の最大サイズを指定（HTML.MaxImgLength も同時に指定）
-        $config->set('CSS.Trusted', true); // 利用できるCSSを緩和
-        $config->set('Core.AllowHostnameUnderscore', true); // ホスト名にアンダースコアを許容
-        $config->set('Core.DisableExcludes', true);
-        $config->set('Core.EscapeInvalidTags', true); // 無効なタグを削除ではなく、エスケープして出力
-        $config->set('HTML.Attr.Name.UseCDATA', true); // name属性の命名規則の緩和
-        $config->set('HTML.MaxImgLength', 3000); // 画像の最大サイズを指定（CSS.MaxImgLength も同時に指定）
-        $config->set('HTML.Trusted', true); // 利用できるHTMLを緩和
-        $config->set('HTML.ForbiddenElements', $notAllowedTags); // 禁止にするタグ
-        $config->set('Output.FixInnerHTML', false); // http://htmlpurifier.org/live/configdoc/plain.html#Output.FixInnerHTML
-        $config->set('Cache.SerializerPath', CACHE_DIR); // キャッシュディレクトリの指定
+        if ($purifier === null) {
+            $config = HTMLPurifier_HTML5Config::createDefault();
+            $config->set('HTML.Doctype', 'HTML5');
+            $config->set('Core.Encoding', 'UTF-8');
+            $config->set('Attr.EnableID', true); // id属性を許可する
+            $config->set('Attr.AllowedRel', ['noopener', 'noreferrer', 'alternate', 'author', 'bookmark', 'canonical', 'external', 'help', 'icon', 'license', 'manifest', 'me', 'next', 'nofollow', 'opener', 'preconnect', 'prefetch', 'preload', 'prerender', 'prev', 'privacy-policy', 'search', 'stylesheet', 'tag', 'terms-of-service']); // rel属性を許可する
+            $config->set('Attr.DefaultImageAlt', ''); // 自動でaltが入る機能をオフ
+            $config->set('Attr.ID.HTML5', true); // クラス命名規則を緩和
+            // $config->set('AutoFormat.Linkify', true); // URLを自動でリンク化
+            $config->set('Attr.AllowedFrameTargets', ['_blank', '_self']); // target属性を緩和
+            $config->set('CSS.AllowImportant', true); // CSSのimportantを許可
+            $config->set('CSS.AllowTricky', true); // トリッキーなCSSを許可（display:noneなど）
+            $config->set('CSS.MaxImgLength', '3000px'); // 画像の最大サイズを指定（HTML.MaxImgLength も同時に指定）
+            $config->set('CSS.Trusted', true); // 利用できるCSSを緩和
+            $config->set('Core.AllowHostnameUnderscore', true); // ホスト名にアンダースコアを許容
+            $config->set('Core.DisableExcludes', true);
+            $config->set('Core.EscapeInvalidTags', true); // 無効なタグを削除ではなく、エスケープして出力
+            $config->set('HTML.Attr.Name.UseCDATA', true); // name属性の命名規則の緩和
+            $config->set('HTML.MaxImgLength', 3000); // 画像の最大サイズを指定（CSS.MaxImgLength も同時に指定）
+            $config->set('HTML.Trusted', true); // 利用できるHTMLを緩和
+            $config->set('HTML.ForbiddenElements', $notAllowedTags); // 禁止にするタグ
+            $config->set('Output.FixInnerHTML', false); // http://htmlpurifier.org/live/configdoc/plain.html#Output.FixInnerHTML
+            $config->set('Cache.SerializerPath', CACHE_DIR); // キャッシュディレクトリの指定
 
-        $purifier = new HTMLPurifier($config);
+            $purifier = new HTMLPurifier($config);
+        }
         return $purifier->purify($txt);
     }
 
@@ -465,6 +470,9 @@ class ACMS_CorrectorBody
             return $src;
         }
         $src = urldecode($src);
+        $parsedSrc = parse_url($src);
+        $src = $parsedSrc['path'];
+        $query = isset($parsedSrc['query']) ? '?' . $parsedSrc['query'] : '';
 
         $width = empty($args[0]) ? 0 : intval($args[0]);
         $height = (isset($args[1]) && !empty($args[1])) ? intval($args[1]) : 0;
@@ -489,7 +497,7 @@ class ACMS_CorrectorBody
             $largePath = otherSizeImagePath($tmpPath, 'large'); // large path
 
             if (Storage::isReadable($destPath)) {
-                return Media::urlencode($destPathVars);
+                return Media::urlencode($destPathVars) . $query;
             }
             if (strpos($largePath, MEDIA_LIBRARY_DIR) !== 0 && Storage::isReadable($largePath)) {
                 $srcPath = $largePath;
@@ -501,10 +509,10 @@ class ACMS_CorrectorBody
             }
         }
         if (empty($srcPath)) {
-            return Media::urlencode($src);
+            return Media::urlencode($src) . $query;
         }
         if (!$xy = Storage::getImageSize($srcPath)) {
-            return Media::urlencode($src);
+            return Media::urlencode($src) . $query;
         }
 
         if (!$stretch) {
@@ -519,7 +527,7 @@ class ACMS_CorrectorBody
         $image = new ImageResize($srcPath);
         $image = $image->setMode($mode)
             ->setBgColor($color)
-            ->setQuality(intval(config('resize_image_jpeg_quality', 100)));
+            ->setQuality(intval(config('resize_image_jpeg_quality', 75)));
         if (empty($width)) {
             $image = $image->resizeToHeight($height);
         } else {
@@ -531,7 +539,7 @@ class ACMS_CorrectorBody
         }
         $image->save($destPath);
 
-        return Media::urlencode($destPathVars);
+        return Media::urlencode($destPathVars) . $query;
     }
 
     public function fixChars($txt)
@@ -742,7 +750,7 @@ class ACMS_CorrectorBody
 
     public function jsonEscape($txt)
     {
-        $escapeTxt = json_encode($txt);
+        $escapeTxt = (string)json_encode($txt);
         return mb_substr($escapeTxt, 1, mb_strlen($escapeTxt) - 2);
     }
 

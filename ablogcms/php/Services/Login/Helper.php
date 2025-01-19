@@ -2,6 +2,7 @@
 
 namespace Acms\Services\Login;
 
+use Acms\Services\Facades\Application;
 use Acms\Services\Facades\Common;
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Image;
@@ -89,7 +90,9 @@ class Helper
         if (SUID && IS_AUTH_SYSTEM_PAGE) {
             httpStatusCode('303 Login With Session');
             header(PROTOCOL . ' ' . httpStatusCode());
-            redirect(BASE_URL);
+            redirect(acmsLink([
+                'bid' => BID,
+            ]));
         }
 
         $isAuthRequiredPage = $this->isAuthRequiredPage();
@@ -382,7 +385,7 @@ class Helper
      * @param \Field_Validation $user
      * @param bool $subscribeLoginAnywhere
      */
-    protected function updateUser($uid, $user, $subscribeLoginAnywhere)
+    public function updateUser($uid, $user, $subscribeLoginAnywhere = false)
     {
         $SQL = SQL::newUpdate('user');
         $SQL->addUpdate('user_name', $user->get('name'));
@@ -695,13 +698,19 @@ class Helper
     }
 
     /**
-     * ログインしている時、追加されるCookieを削除
+     * ログインしていない時、追加されるCookieを削除
      *
      * @return void
      */
     public function removeExtraLoggedInCookie(): void
     {
+        if (config('extra_logged_in_cookie') !== 'on') {
+            return;
+        }
         $name = config('extra_logged_in_cookie_name', 'acms-logged-in');
-        acmsSetCookie($name, null, REQUEST_TIME - 1);
+        $cookie = Application::getCookieParameter();
+        if ($cookie->get($name)) {
+            acmsSetCookie($name, null, REQUEST_TIME - 1);
+        }
     }
 }

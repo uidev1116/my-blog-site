@@ -1,17 +1,18 @@
 <div id="js-module_management" class="acms-admin-modal out js-visible-on-ui-expanding">
-  <div class="acms-admin-modal-dialog large">
+  <div class="acms-admin-modal-dialog large"  role="dialog" aria-modal aria-labelledby="acms-admin-module-edit-modal-title">
     <div class="acms-admin-modal-content">
       <!-- BEGIN_MODULE Admin_Module_Edit -->
-      <div class="acms-admin-modal-header">
-        <div class="acms-admin-title-wrapper">
-          <button type="button" class="acms-admin-modal-hide"><i class="acms-admin-modal-hide acms-admin-icon-delete"></i><span class="acms-admin-hide-visually">閉じる</span></button>
-          <!-- BEGIN_IF [{name}/nem/] -->
-          <h1 class="acms-admin-modal-heading">{identifier}（{label}）<span class="acms-admin-module-en">{name}</span></h1>
-          <!-- ELSE -->
-          <h1 class="acms-admin-modal-heading">新規モジュールID</h1>
-          <!-- END_IF -->
-        </div>
-      </div>
+      <header class="acms-admin-modal-header">
+        <!-- BEGIN_IF [{name}/nem/] -->
+        <h1 id="acms-admin-module-edit-modal-title" class="acms-admin-modal-heading">{identifier}（{label}）<span class="acms-admin-module-en">{name}</span></h1>
+        <!-- ELSE -->
+        <h1 id="acms-admin-module-edit-modal-title" class="acms-admin-modal-heading">新規モジュールID</h1>
+        <!-- END_IF -->
+        <button type="button" class="acms-admin-modal-hide">
+          <i class="acms-admin-icon-delete"></i>
+          <span class="acms-admin-hide-visually">閉じる</span>
+        </button>
+      </header>
       <div class="acms-admin-modal-body">
         <!-- BEGIN_SetRendered id='module-update-url' -->%{HTTP_ROOT}bid/{blog_id}/tpl/ajax/module/edit.html?mid=%{mid}<!-- END_SetRendered -->
 

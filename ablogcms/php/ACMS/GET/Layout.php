@@ -21,8 +21,8 @@ class ACMS_GET_Layout extends ACMS_GET
 
             if (!empty($vars)) {
                 $vars['id'] = $id;
-                $type   = 'type#' . $vars['class'];
-                $count  = count(explode('-', $vars['class']));
+                $type   = 'type#' . $vars['classStr'];
+                $count  = count(explode('-', $vars['classStr']));
 
                 if (!empty($parentID)) {
                     $vars['parent'] = $parentHash;
@@ -30,7 +30,7 @@ class ACMS_GET_Layout extends ACMS_GET
 
                 $typeVars = $vars;
                 if (LAYOUT_EDIT && !LAYOUT_PREVIEW) {
-                    $class  = $data['class'];
+                    $class  = $data['classStr'];
                     $label  = isset($this->aryTypeLabel[$class]) ? $this->aryTypeLabel[$class] : '';
                     $typeVars['blockLabel']  = $label;
 
@@ -87,6 +87,8 @@ class ACMS_GET_Layout extends ACMS_GET
                     foreach ($data as $key => $val) {
                         $row[str_replace('layout_grid_', '', $key)] = $val;
                     }
+                    $row['classStr'] = $row['class'];
+                    unset($row['class']);
                     $Map[$row['parent']][$row['col']][] = $row;
                 }
             }

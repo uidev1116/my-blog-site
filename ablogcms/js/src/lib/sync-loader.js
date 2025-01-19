@@ -1,15 +1,30 @@
+/**
+ * @typedef {Object} SyncLoaderOptions
+ * @property {string} [charset] - Character set to use for loading scripts.
+ * @property {string} [type] - The type attribute for script tags, default is 'text/javascript'.
+ * @property {Function} [error] - Callback function to handle errors.
+ */
+
+/**
+ * @typedef {Object} SyncLoaderQueue
+ * @property {string[]} srcAry - Array of source URLs to be loaded.
+ * @property {Array<Promise<any>>} asyncAry - Array of promises representing async tasks.
+ * @property {string[]} loaded - Array of loaded source URLs.
+ * @property {Function} add - Method to add a source URL to the queue.
+ */
+
 export default class SyncLoader {
   /**
    * constructor
    *
-   * @param options
+   * @param {SyncLoaderOptions} [options={}] - Options for configuring the SyncLoader instance.
    */
-  constructor(options) {
-    const opt = options || {};
+  constructor(options = {}) {
+    this.charset = options.charset;
+    this.type = options.type || 'text/javascript';
+    this.error = options.error || function () {};
 
-    this.charset = opt.charset;
-    this.type = opt.type || 'text/javascript';
-    this.error = opt.error || function () {};
+    /** @type {SyncLoaderQueue} */
     this.queue = {
       srcAry: [],
       asyncAry: [],
@@ -23,9 +38,10 @@ export default class SyncLoader {
   /**
    * Promiseのthenのようなもの
    *
-   * @param arg
-   * @param async
-   * @param callback
+   * @param {string|Function} arg - The source URL or a function to execute.
+   * @param {boolean} async - Whether to load the resource asynchronously.
+   * @param {Function} [callback] - Callback function to execute after loading.
+   * @returns {this} - Returns the instance for method chaining.
    */
   next(arg, async, callback) {
     if (async) {
@@ -39,7 +55,7 @@ export default class SyncLoader {
   /**
    * ロード開始
    *
-   * @param callback
+   * @param {Function} [callback] - Callback function to execute after all resources are loaded.
    */
   load(callback) {
     this.complete = callback || function () {};
@@ -49,7 +65,7 @@ export default class SyncLoader {
   /**
    * 次の要素取得
    *
-   * @returns {boolean}
+   * @returns {boolean} - Returns false if no more elements to process.
    */
   assign() {
     const src = this.queue.srcAry.shift();
@@ -68,7 +84,7 @@ export default class SyncLoader {
   /**
    * 登録された処理を実行（Promise対応）
    *
-   * @param callback
+   * @param {Function} callback - The function to execute.
    * @private
    */
   _exe(callback) {
@@ -88,12 +104,12 @@ export default class SyncLoader {
   /**
    * リソースの読み込み
    *
-   * @param src
-   * @param async
-   * @param callback
+   * @param {string} src - The source URL to load.
+   * @param {boolean} [async=false] - Whether to load the resource asynchronously.
+   * @param {Function} [callback] - Callback function to execute after loading.
    * @private
    */
-  _load(src, async, callback) {
+  _load(src, async = false, callback = () => {}) {
     const tag = document.createElement('script');
     const head = document.getElementsByTagName('script')[0];
 
@@ -127,7 +143,7 @@ export default class SyncLoader {
 
     // for IE
     tag.onreadystatechange = () => {
-      if (0 || !tag.readyState || tag.readyState === 'loaded' || tag.readyState === 'complete') {
+      if (!tag.readyState || tag.readyState === 'loaded' || tag.readyState === 'complete') {
         tag.onreadystatechange = null;
         tag.onload();
       }
@@ -137,18 +153,11 @@ export default class SyncLoader {
   /**
    * キューのチェック
    *
-   * @param src
-   * @returns {boolean}
+   * @param {string} src - The source URL to check.
+   * @returns {boolean} - Returns true if the source URL is already loaded.
    * @private
    */
   _exists(src) {
-    let already = false;
-    for (let i = 0; i < this.queue.loaded.length; i++) {
-      if (this.queue.loaded[i] === src) {
-        already = true;
-        break;
-      }
-    }
-    return already;
+    return this.queue.loaded.includes(src);
   }
 }

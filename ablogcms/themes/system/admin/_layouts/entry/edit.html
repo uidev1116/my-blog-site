@@ -42,20 +42,26 @@
         <tr id="entry-category-display">
           <th id="labelCategory"><label for="entry-category" id="entry-category-label"><!--T-->カテゴリー<!--/T--></label>
           </th>
-          <td><!-- BEGIN_MODULE Touch_Admin -->
-            <div class="js-admin-category-select acms-admin-select2 is-single" data-creation="true"
-              data-narrow-down="true">
-              <div class="js-target"></div>
-              <!-- BEGIN_MODULE Config -->
-              <!-- BEGIN_IF [{entry_edit_category_default}/nem/] -->
-              <input type="hidden" name="category_id" value="{entry_edit_category_default}" class="js-value"
-                id="entry-category">
-              <!-- ELSE -->
-              <input type="hidden" name="category_id" value="%{CID}" class="js-value" id="entry-category">
-              <!-- END_IF -->
-              <!-- END_MODULE Config -->
-              <input type="hidden" name="entry[]" value="category_id">
+          <td>
+            <!-- BEGIN_MODULE Touch_Admin -->
+            <!-- BEGIN_MODULE Config -->
+            <div style="width: min(100%, 250px);">
+              @include("/admin/include/category/select.html", {
+                "target": "#entry-category-value",
+                "defaultValue": "<!-- BEGIN_IF [{entry_edit_category_default}/nem] -->{entry_edit_category_default}<!-- ELSE -->%{CID}<!-- END_IF -->",
+                "narrowDown": "true",
+                "isCreatable": "true",
+                "inputId": "entry-category"
+              })
             </div>
+            <input
+              id="entry-category-value"
+              type="hidden"
+              name="category_id"
+              value="<!-- BEGIN_IF [{entry_edit_category_default}/nem] -->{entry_edit_category_default}<!-- ELSE -->%{CID}<!-- END_IF -->"
+            >
+            <input type="hidden" name="entry[]" value="category_id">
+            <!-- END_MODULE Config -->
             <!-- END_MODULE Touch_Admin -->
           </td>
         </tr>
@@ -63,14 +69,30 @@
         @section("apply-sub-category")
         <!-- BEGIN_MODULE Touch_SubCategoryFunction -->
         <tr id="entry-subcategory-display">
-          <th id="labelSubCategory"><label for="entry-sub-category"
-              id="entry-sub-category-label"><!--T-->サブカテゴリー<!--/T--></label></th>
+          <th id="labelSubCategory">
+            <label
+              for="entry-sub-category"
+              id="entry-sub-category-label"
+            >
+              <!--T-->サブカテゴリー<!--/T-->
+            </label>
+          </th>
           <td>
-            <div class="js-admin-sub-category-select acms-admin-select2">
-              <div class="js-target"></div>
-              <input type="hidden" name="sub_category_id" value="" data-label="" class="js-value"
-                id="entry-sub-category">
-              <input type="hidden" name="entry[]" value="sub_category_id">
+            @include("/admin/include/sub-category/select.html", {
+              "target": "#entry-sub-category-value",
+              "defaultValue": "",
+              "defaultLabel": "",
+              "categoryId": "#entry-category-value",
+              "inputId": "entry-sub-category",
+              "limit": "true"
+            })
+            <input id="entry-sub-category-value" type="hidden" name="sub_category_id" value="">
+            <input type="hidden" name="entry[]" value="sub_category_id">
+            <div role="alert" aria-live="assertive">
+              <div data-validator-label="validator-sub_category_id-max_sub_category_id" class="validator-result-{sub_category_id:validator#max_sub_category_id}">
+                <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention"
+                    aria-hidden="true"></span><!--T-->登録できるサブカテゴリー数を超えています。<!--/T--></p>
+              </div>
             </div>
           </td>
         </tr>
@@ -78,13 +100,19 @@
         @endsection
         @section("apply-tag")
         <tr id="entry-tag-display">
-          <th id="labelTag"><label for="entry-tag" id="entry-tag-label"><!--T-->タグ<!--/T--></label></th>
+          <th id="labelTag">
+            <label for="entry-tag" id="entry-tag-label">
+              <!--T-->タグ<!--/T-->
+            </label>
+          </th>
           <td>
-            <div class="js-admin-tag-select acms-admin-select2">
-              <div class="js-target"></div>
-              <input type="hidden" name="tag" value="" class="js-value" id="entry-tag">
-              <input type="hidden" name="entry[]" value="tag">
-            </div>
+            @include("/admin/include/tag/select.html", {
+              "target": "#entry-tag-value",
+              "defaultValue": "",
+              "inputId": "entry-tag"
+            })
+            <input id="entry-tag-value" type="hidden" name="tag" value="">
+            <input type="hidden" name="entry[]" value="tag">
             <div role="alert" aria-live="assertive">
               <div data-validator-label="validator-tag-reserved" class="validator-result-{tag:validator#reserved}">
                 <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention"
@@ -100,34 +128,83 @@
         @endsection
         @section("apply-date")
         <tr id="entry-date-display">
-          <th id="labelDate"><label for="entryDate" id="entry-date-label"><!--T-->日付<!--/T--></label></th>
+          <th id="labelDate">
+            <label for="entryDate" id="entry-date-label"><!--T-->日時<!--/T--></label>
+          </th>
           <td>
-            <div class="entryFormDateBlock">
-              <div class="acms-admin-form-action acms-admin-form-width-full">
-                <input type="text" name="date" value="%{NOW_DATE}" size="15" id="entryDate"
-                  class="acms-admin-form-width-full js-datepicker2">
-                <a href="#" id="labelDate"
-                  class="updateDate acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
-                  rel="entryDate" aria-describedby="entry-label-date"><i class="acms-admin-icon-schedule"
-                    aria-hidden="true"></i><span role="tooltip" id="entry-label-date"
-                    class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center">現在の日付に合わせる</span></a>
-              </div>
-            </div>
             <div class="entryFormDateBlockWrap">
-              <label for="entryTime" class="entryFormTimeLabel"><!--T-->時刻<!--/T--></label>
+              <label
+                for="entryDate"
+                class="entryFormDateLabel acms-admin-margin-right-small"
+              >
+                <!--T-->日付<!--/T-->
+              </label>
               <div class="entryFormDateBlock">
                 <div class="acms-admin-form-action acms-admin-form-width-full">
-                  <input type="text" name="time" value="%{NOW_TIME}" size="12" id="entryTime"
-                    class="acms-admin-form-width-full js-timepicker">
-                  <a href="#" id="labelTime"
-                    class="updateTime acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
-                    rel="entryTime" aria-describedby="entry-label-time"><i class="acms-admin-icon-time"
-                      aria-hidden="true"></i><span role="tooltip" id="entry-label-time"
-                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center">現在の時刻に合わせる</span></a>
+                  <input
+                    type="text"
+                    name="date"
+                    value="%{NOW_DATE}"
+                    size="15"
+                    id="entryDate"
+                    class="acms-admin-form-width-full js-datepicker2"
+                  >
+                  <a
+                    href="#"
+                    id="labelDate"
+                    class="updateDate acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
+                    rel="entryDate"
+                    aria-describedby="entry-label-date"
+                  >
+                    <i class="acms-admin-icon-schedule" aria-hidden="true"></i>
+                    <span
+                      role="tooltip"
+                      id="entry-label-date"
+                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center"
+                    >
+                      現在の日付に合わせる
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
 
+            <div class="entryFormDateBlockWrap">
+              <label
+                for="entryTime"
+                class="entryFormTimeLabel acms-admin-margin-right-small"
+              >
+                <!--T-->時刻<!--/T-->
+              </label>
+              <div class="entryFormDateBlock">
+                <div class="acms-admin-form-action acms-admin-form-width-full">
+                  <input
+                    type="text"
+                    name="time"
+                    value="%{NOW_TIME}"
+                    size="12"
+                    id="entryTime"
+                    class="acms-admin-form-width-full js-timepicker"
+                  >
+                  <a
+                    href="#"
+                    id="labelTime"
+                    class="updateTime acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
+                    rel="entryTime"
+                    aria-describedby="entry-label-time"
+                  >
+                    <i class="acms-admin-icon-time" aria-hidden="true"></i>
+                    <span
+                      role="tooltip"
+                      id="entry-label-time"
+                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center"
+                    >
+                      現在の時刻に合わせる
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
             <input type="hidden" name="entry[]" value="date" />
             <input type="hidden" name="entry[]" value="time" />
           </td>
@@ -413,29 +490,56 @@
         @endsection
         @section("reapply-category")
         <tr id="entry-category-display">
-          <th id="labelCategory"><label for="entry-category" id="entry-category-label"><!--T-->カテゴリー<!--/T--></label>
+          <th id="labelCategory">
+            <label for="entry-category" id="entry-category-label"><!--T-->カテゴリー<!--/T--></label>
           </th>
           <td>
-            <div class="js-admin-category-select acms-admin-select2 is-single" data-creation="true"
-              data-narrow-down="true">
-              <div class="js-target"></div>
-              <input type="hidden" name="category_id" value="{category_id}" class="js-value" id="entry-category">
-              <input type="hidden" name="entry[]" value="category_id">
+            <div style="width: min(100%, 350px);">
+              @include("/admin/include/category/select.html", {
+                "target": "#entry-category-value",
+                "defaultValue": "{category_id}",
+                "narrowDown": "true",
+                "isCreatable": "true",
+                "inputId": "entry-category"
+              })
             </div>
+            <input
+              id="entry-category-value"
+              type="hidden"
+              name="category_id"
+              value="{category_id}"
+            >
+            <input type="hidden" name="entry[]" value="category_id">
           </td>
         </tr>
         @endsection
         @section("reapply-sub-category")
         <!-- BEGIN_MODULE Touch_SubCategoryFunction -->
         <tr id="entry-sub-category-display">
-          <th id="labelSubCategory"><label for="entry-sub-category"
-              id="entry-sub-category-label"><!--T-->サブカテゴリー<!--/T--></label></th>
+          <th id="labelSubCategory">
+            <label
+              for="entry-sub-category"
+              id="entry-sub-category-label"
+            >
+              <!--T-->サブカテゴリー<!--/T-->
+            </label>
+          </th>
           <td>
-            <div class="js-admin-sub-category-select acms-admin-select2">
-              <div class="js-target"></div>
-              <input type="hidden" name="sub_category_id" value="{sub_category_id}" data-label="{sub_category_label}"
-                class="js-value" id="entry-sub-category">
-              <input type="hidden" name="entry[]" value="sub_category_id">
+            @include("/admin/include/sub-category/select.html", {
+              "target": "#entry-sub-category-value",
+              "defaultValue": "{sub_category_id}",
+              "defaultLabel": "{sub_category_label}",
+              "categoryId": "#entry-category-value",
+              "inputId": "entry-sub-category",
+              "limit": "true"
+            })
+            <input id="entry-sub-category-value" type="hidden" name="sub_category_id" value="{sub_category_id}">
+            <input type="hidden" name="entry[]" value="sub_category_id">
+            <div role="alert" aria-live="assertive">
+              <div data-validator-label="validator-sub_category_id-max_sub_category_id" class="validator-result-{sub_category_id:validator#max_sub_category_id}">
+                <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention"
+                    aria-hidden="true"></span><!--T-->登録できるサブカテゴリー数を超えています。<!--/T--></p>
+              </div>
             </div>
           </td>
         </tr>
@@ -443,13 +547,19 @@
         @endsection
         @section("reapply-tag")
         <tr id="entry-tag-display">
-          <th id="labelTag"><label for="entry-tag" id="entry-tag-label"><!--T-->タグ<!--/T--></label></th>
+          <th id="labelTag">
+            <label for="entry-tag" id="entry-tag-label">
+              <!--T-->タグ<!--/T-->
+            </label>
+          </th>
           <td>
-            <div class="js-admin-tag-select acms-admin-select2">
-              <div class="js-target"></div>
-              <input type="hidden" name="tag" value="{tag}" class="js-value" id="entry-tag">
-              <input type="hidden" name="entry[]" value="tag">
-            </div>
+            @include("/admin/include/tag/select.html", {
+              "target": "#entry-tag-value",
+              "defaultValue": "{tag}",
+              "inputId": "entry-tag"
+            })
+            <input id="entry-tag-value" type="hidden" name="tag" value="{tag}">
+            <input type="hidden" name="entry[]" value="tag">
             <div role="alert" aria-live="assertive">
               <div data-validator-label="validator-tag-reserved" class="validator-result-{tag:validator#reserved}">
                 <p class="error-text"><span class="acms-admin-icon acms-admin-icon-attention"
@@ -465,30 +575,80 @@
         @endsection
         @section("reapply-date")
         <tr id="entry-date-display">
-          <th id="labelDate"><label for="entryDate" id="entry-date-label"><!--T-->日付<!--/T--></label></th>
+          <th id="labelDate">
+            <label for="entryDate" id="entry-date-label"><!--T-->日時<!--/T--></label>
+          </th>
           <td>
-            <div class="entryFormDateBlock">
-              <div class="acms-admin-form-action acms-admin-form-width-full">
-                <input type="text" name="date" value="{date}" size="15" id="entryDate"
-                  class="acms-admin-form-width-full js-datepicker2">
-                <a href="#" id="labelDate"
-                  class="updateDate acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
-                  rel="entryDate" aria-describedby="entry-label-date"><i class="acms-admin-icon-schedule"
-                    aria-hidden="true"></i><span role="tooltip" id="entry-label-date"
-                    class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center">現在の日付に合わせる</span></a>
-              </div>
-            </div>
-            <div class="entryFormDateBlockWrap acms-admin-margin-right-small">
-              <label for="entryTime" class="entryFormTimeLabel"><!--T-->時刻<!--/T--></label>
+            <div class="entryFormDateBlockWrap">
+              <label
+                for="entryDate"
+                class="entryFormDateLabel acms-admin-margin-right-small"
+              >
+                <!--T-->日付<!--/T-->
+              </label>
               <div class="entryFormDateBlock">
                 <div class="acms-admin-form-action acms-admin-form-width-full">
-                  <input type="text" name="time" value="{time}" size="12" id="entryTime"
-                    class="acms-admin-form-width-full js-timepicker">
-                  <a href="#" id="labelTime"
+                  <input
+                    type="text"
+                    name="date"
+                    value="{date}"
+                    size="15"
+                    id="entryDate"
+                    class="acms-admin-form-width-full js-datepicker2"
+                  >
+                  <a
+                    href="#"
+                    id="labelDate"
+                    class="updateDate acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
+                    rel="entryDate"
+                    aria-describedby="entry-label-date"
+                  >
+                    <i class="acms-admin-icon-schedule" aria-hidden="true"></i>
+                    <span
+                      role="tooltip"
+                      id="entry-label-date"
+                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center"
+                    >
+                      現在の日付に合わせる
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="entryFormDateBlockWrap">
+              <label
+                for="entryTime"
+                class="entryFormTimeLabel acms-admin-margin-right-small"
+              >
+                <!--T-->時刻<!--/T-->
+              </label>
+              <div class="entryFormDateBlock">
+                <div class="acms-admin-form-action acms-admin-form-width-full">
+                  <input
+                    type="text"
+                    name="time"
+                    value="{time}"
+                    size="12"
+                    id="entryTime"
+                    class="acms-admin-form-width-full js-timepicker"
+                  >
+                  <a
+                    href="#"
+                    id="labelTime"
                     class="updateTime acms-admin-form-side acms-admin-tooltip-simple acms-admin-tooltip-simple-arrow-right-md"
-                    rel="entryTime" aria-describedby="entry-label-time"><i class="acms-admin-icon-time"
-                      aria-hidden="true"></i><span role="tooltip" id="entry-label-time"
-                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center">現在の時刻に合わせる</span></a>
+                    rel="entryTime"
+                    aria-describedby="entry-label-time"
+                  >
+                    <i class="acms-admin-icon-time" aria-hidden="true"></i>
+                    <span
+                      role="tooltip"
+                      id="entry-label-time"
+                      class="acms-admin-tooltip top acms-admin-tooltip-simple-content acms-admin-text-center"
+                    >
+                      現在の時刻に合わせる
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -562,7 +722,7 @@
         <tr id="entry-start-date-display" class="textM">
           <th id="entry-start-date-label"><!--T-->公開日時<!--/T--></th>
           <td>
-            <div class="entryFormDateBlockWrap acms-admin-margin-right-small">
+            <div class="entryFormDateBlockWrap">
               <label for="entryStartDate"
                 class="entryFormDateLabel acms-admin-margin-right-small"><!--T-->日付<!--/T--></label>
               <div class="entryFormDateBlock">
@@ -577,8 +737,8 @@
                 </div>
               </div>
             </div>
-            <div class="entryFormDateBlockWrap acms-admin-margin-right-small">
-              <label for="entryStartTime" class="entryFormTimeLabel"><!--T-->時刻<!--/T--></label>
+            <div class="entryFormDateBlockWrap">
+              <label for="entryStartTime" class="entryFormTimeLabel acms-admin-margin-right-small"><!--T-->時刻<!--/T--></label>
               <div class="entryFormDateBlock">
                 <div class="acms-admin-form-action acms-admin-form-width-full">
                   <input type="text" name="start_time" value="{start_time}" size="12" id="entryStartTime"
@@ -600,7 +760,7 @@
         <tr id="entry-end-date-display" class="textM">
           <th id="entry-end-date-label"><!--T-->掲載期限<!--/T--></th>
           <td>
-            <div class="entryFormDateBlockWrap acms-admin-margin-right-small">
+            <div class="entryFormDateBlockWrap">
               <label for="entryEndDate"
                 class="entryFormDateLabel acms-admin-margin-right-small"><!--T-->日付<!--/T--></label>
               <div class="entryFormDateBlock">
@@ -616,7 +776,7 @@
               </div>
             </div>
             <div class="entryFormDateBlockWrap">
-              <label for="entryEndTime" class="entryFormTimeLabel"><!--T-->時刻<!--/T--></label>
+              <label for="entryEndTime" class="entryFormTimeLabel acms-admin-margin-right-small"><!--T-->時刻<!--/T--></label>
               <div class="entryFormDateBlock">
                 <div class="acms-admin-form-action acms-admin-form-width-full">
                   <input type="text" name="end_time" value="{end_time}" size="12" id="entryEndTime"

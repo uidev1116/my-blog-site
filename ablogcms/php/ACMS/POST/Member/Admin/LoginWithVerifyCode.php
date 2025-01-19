@@ -22,6 +22,9 @@ class ACMS_POST_Member_Admin_LoginWithVerifyCode extends ACMS_POST_Member_Admin_
         $loginField->deleteField('sent');
 
         // ユーザー決定前のバリデート
+        if ($this->passwordAuth()) {
+            $loginField->setMethod('mailAuthSignin', 'enable', false);
+        }
         $this->preValidate($loginField, $email, $lockKey);
         if (!$this->Post->isValidAll()) {
             return $this->Post;

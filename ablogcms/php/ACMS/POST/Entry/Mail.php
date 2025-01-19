@@ -173,6 +173,9 @@ class ACMS_POST_Entry_Mail extends ACMS_POST_Entry
                 $SQL = SQL::newSelect('user');
                 $SQL->setSelect($config['mail']);
                 $SQL->addWhereOpr($config['magazine'], 'on');
+                $SQL->addWhereOpr('user_status', 'open');
+                $SQL->addWhereOpr('user_login_expire', date('Y-m-d', REQUEST_TIME), '>=');
+
 
                 // 読者以外または読者で本登録済み（user_pass != ''）であること
                 $shouldRegistered = SQL::newWhere();

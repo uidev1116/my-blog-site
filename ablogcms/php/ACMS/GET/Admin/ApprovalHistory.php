@@ -7,9 +7,6 @@ class ACMS_GET_Admin_ApprovalHistory extends ACMS_GET_Admin_Entry
         if ('approval_index' !== ADMIN) {
             return '';
         }
-        if (!enableApproval()) {
-            return '';
-        }
         if (!sessionWithApprovalAdministrator()) {
             return '';
         }

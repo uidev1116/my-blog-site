@@ -33,7 +33,7 @@ export default class ResizeImageUtil {
     url: string,
     resizeType: string,
     resizeSize: number,
-    callback: () => void,
+    callback: () => void
   ): Promise<DataUrlRes> {
     const Mime = await import(/* webpackChunkName: "mime-types" */ 'mime-types');
     const mimeType = Mime.lookup(url) || 'image/png';
@@ -77,7 +77,7 @@ export default class ResizeImageUtil {
     file: File,
     resizeType: string,
     resizeSize: number,
-    callback: () => void,
+    callback: () => void
   ): Promise<DataUrlRes> {
     const mimeType = file.type || 'image/png';
     const image = new Image();
@@ -119,7 +119,7 @@ export default class ResizeImageUtil {
     mimeType: string,
     resizeType: string,
     resizeSize: number,
-    callback: (dataUrl: string, resize: boolean) => void,
+    callback: (dataUrl: string, resize: boolean) => void
   ): Promise<DataUrlRes> {
     return new Promise((resolve) => {
       const onload = () => {
@@ -170,9 +170,9 @@ export default class ResizeImageUtil {
     mimeType: string,
     resizeType: string,
     resizeSize: number,
-    callback?: (blob: Blob | null, resize: boolean) => void,
+    callback?: (blob: Blob | null, resize: boolean) => void
   ): Promise<BlobRes> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const onload = () => {
         const canvas = document.createElement('canvas');
         if (!resizeSize) {
@@ -190,6 +190,10 @@ export default class ResizeImageUtil {
         this._drawImage(image, canvas, destinationSize, drawInfo);
         canvas.toBlob(
           (blob) => {
+            if (blob === null) {
+              reject(new Error('Failed to create Blob'));
+              return;
+            }
             resolve({
               blob,
               resize: destinationSize.resize,
@@ -199,7 +203,7 @@ export default class ResizeImageUtil {
             }
           },
           mimeType,
-          1,
+          1
         );
       };
       if (image.width) {
@@ -223,7 +227,7 @@ export default class ResizeImageUtil {
 
     if (arr.length > 1) {
       // eslint-disable-next-line prefer-destructuring
-      mime = arr[0].match(/:(.*?);/)[1];
+      mime = arr[0].match(/:(.*?);/)![1];
       bstr = atob(arr[1]);
     } else {
       bstr = atob(arr[0]);
@@ -263,16 +267,16 @@ export default class ResizeImageUtil {
     image: HTMLImageElement,
     canvas: HTMLCanvasElement,
     destinationSize: { width: number; height: number },
-    drawInfo: DrawInfo,
+    drawInfo: DrawInfo
   ): HTMLCanvasElement {
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d')!;
     const { rad, dx, dy } = drawInfo;
     const diff = 0.5;
 
     if (image.width * diff > destinationSize.width) {
       // スムーズ処理を入れて、リサイズ
       const oc = document.createElement('canvas');
-      const octx = oc.getContext('2d');
+      const octx = oc.getContext('2d')!;
 
       // step 1 we reduce the image to half by using an off-screen canvas
       oc.width = image.width * diff;
@@ -362,7 +366,7 @@ export default class ResizeImageUtil {
   _fixImageRotation(
     image: HTMLImageElement,
     canvas: HTMLCanvasElement,
-    destinationSize: DestinationSize,
+    destinationSize: DestinationSize
   ): Promise<DrawInfo> {
     return new Promise((resolve) => {
       this._getExifData(image).then((exif) => {
@@ -404,9 +408,11 @@ export default class ResizeImageUtil {
    * @param image
    * @returns {Promise}
    */
-  _getExifData(image: HTMLImageElement) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _getExifData(image: HTMLImageElement): Promise<any> {
     return new Promise((resolve) => {
       import(/* webpackChunkName: "exif-js" */ 'exif-js').then((Exif) => {
+        // @ts-expect-error type definition is not correct
         Exif.getData(image, () => {
           const res = Exif.getAllTags(image);
           resolve(res);

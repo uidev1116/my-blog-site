@@ -3,20 +3,18 @@
 // ------------------------------
 
 // 回転
-@mixin rotate($degrees){
-  -webkit-transform: rotate($degrees);
-  -ms-transform: rotate($degrees);
+@mixin rotate($degrees) {
   transform: rotate($degrees);
 }
+
 // X軸に回転
-@mixin rotateX($degrees){
-  -webkit-transform: rotateX($degrees);
-  -ms-transform: rotateX($degrees); // IE9+
+@mixin rotateX($degrees) {
+  // IE9+
   transform: rotateX($degrees);
 }
+
 // Y軸に回転
-@mixin rotateY($degrees){
-  -webkit-transform: rotateY($degrees);
-  -ms-transform: rotateY($degrees); // IE9+
+@mixin rotateY($degrees) {
+  // IE9+
   transform: rotateY($degrees);
 }

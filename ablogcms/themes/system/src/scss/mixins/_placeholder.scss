@@ -1,14 +1,8 @@
 // ------------------------------
 // プレースホルダー
 // ------------------------------
-@mixin placeholder($color){
-  &:-moz-input-placeholder {
-    color: $color;
-  }
-  &:-ms-input-placeholder {
-    color: $color;
-  }
-  &::-webkit-input-placeholder  {
+@mixin placeholder($color) {
+  &::placeholder {
     color: $color;
   }
 }

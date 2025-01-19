@@ -1,4 +1,4 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  アナウンス
@@ -11,18 +11,18 @@
 }
 
 .acms-announce-title {
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
+
   @include global.font-size(18);
 }
 
 .acms-announce-text {
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
 }
 
 .acms-announce-action {
-  margin: 20px 0 0 0;
+  margin: 20px 0 0;
 }
-
 
 @media (min-width: global.$breakpoint-md-min) {
   .acms-announce {

@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 // 変数
-@use "global/common" as global;
+@use 'global/common' as global;
 
 /* ------------------------------
  会員ページ ベース
@@ -15,27 +15,29 @@
 /* ------------------------------
  会員ページ レイアウト
 ------------------------------- */
+
 /* コンテナー */
 .acms-member-container {
   max-width: 480px;
   margin: 0 auto 80px;
-  background-color: global.$acms-color-white;
   overflow: hidden;
+  background-color: global.$acms-color-white;
 }
+
 @media (min-width: global.$breakpoint-sm-min) {
   .acms-member-container {
     margin-top: 100px;
     margin-bottom: 60px;
     border-radius: var(--member-radius-container);
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    box-shadow: rgb(100 100 111 / 20%) 0 7px 29px 0;
   }
 }
 
 /* メインコンテンツボックス */
 .acms-member-main-box {
+  margin-bottom: var(--member-space-section-y);
   padding-right: var(--member-space-container-x);
   padding-left: var(--member-space-container-x);
-  margin-bottom: var(--member-space-section-y);
 }
 
 /* 新規登録・退会・離脱ボタンボックス */
@@ -44,27 +46,30 @@
   padding-right: var(--member-space-container-x);
   padding-left: var(--member-space-container-x);
 }
+
 @media (min-width: global.$breakpoint-sm-min) {
   .acms-member-main-box-bottom {
-    @include global.round-bottom(var(--member-radius-container));
     padding-top: var(--member-space-section-y);
     padding-bottom: var(--member-space-section-y);
     border-top: 1px solid var(--member-color-border-section);
+
+    @include global.round-bottom(var(--member-radius-container));
   }
 }
 
 /* ------------------------------
  会員ページ パーツ
 ------------------------------- */
+
 /* ヘッダー画像 */
 .acms-member-header-img {
   display: block;
   width: 100%;
   height: auto;
   max-height: 140px;
+  margin-bottom: var(--member-space-section-y);
   object-fit: contain;
   object-position: center;
-  margin-bottom: var(--member-space-section-y);
 }
 
 /* アクションボタンラップ */
@@ -75,13 +80,14 @@
 
 /* 見出し */
 .acms-member-page-title {
-  @include global.font-size(22);
-  color: global.$acms-color-gray80;
-  line-height: 1.2;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: var(--member-space-section-y);
   margin-top: 0;
+  margin-bottom: var(--member-space-section-y);
+  color: global.$acms-color-gray80;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+
+  @include global.font-size(22);
 }
 
 /* 左右ボーダー付きテキスト */
@@ -90,44 +96,51 @@
   width: 100%;
   margin: var(--member-space-section-y) 0;
   text-align: center;
-  &:before {
+
+  &::before {
     position: absolute;
     left: 0;
     margin: 10px 0 0;
     padding: 0 0 0 100%;
     border-top: 1px solid var(--member-color-border-section);
-    content: "";
+    content: '';
   }
 }
+
 .acms-member-border-text {
-  @include global.font-size(13);
-  color: global.$acms-color-black;
-  line-height: 1.4;
   position: relative;
   padding: 0 10px;
+  color: global.$acms-color-black;
+  line-height: 1.4;
   background: global.$acms-color-white;
+
+  @include global.font-size(13);
 }
 
 /* 説明テキスト */
 .acms-member-notice-text {
-  @include global.font-size(13);
   margin: 20px 0;
   color: global.$acms-color-black;
-  line-height: 1.4;
   font-weight: bold;
+  line-height: 1.4;
+
+  @include global.font-size(13);
 }
 
 /* リンクテキスト */
 .acms-member-text-link {
-  @include global.font-size(14);
   line-height: 1.5;
   text-decoration: none;
+
+  @include global.font-size(14);
+
   &:link,
   &:visited,
   &:focus,
   &:active {
     color: var(--member-color-text);
   }
+
   &:hover {
     color: var(--member-color-text-hover);
   }
@@ -136,32 +149,36 @@
 /* ------------------------------
  会員ページ フォームパーツ
 ------------------------------- */
+
 /* フィールドセット */
 .acms-member-form-fieldset {
   margin: var(--member-space-form-item-top) 0 0;
-  border: 0;
   padding: 0;
+  border: 0;
 }
 
 /* フォームラベル */
 .acms-member-form-label {
-  @include global.font-size(14);
   display: block;
   margin-top: var(--member-space-form-item-top);
   margin-bottom: 3px;
-  line-height: 1.4;
+
   /* legendタグスタイルリセット */
   padding: 0;
+  line-height: 1.4;
   border: 0;
+
+  @include global.font-size(14);
 }
 
 /* 注意文 */
 .acms-member-input-caution {
-  @include global.font-size(13);
   margin: 6px 0 0;
   color: var(--member-color-error);
-  line-height: 1.4;
   font-weight: bold;
+  line-height: 1.4;
+
+  @include global.font-size(13);
 }
 
 /* validatorスタイルで入力欄が非表示にならないよう上書き */
@@ -177,10 +194,12 @@
 /* ------------------------------
  会員ページ ソーシャルログイン
 ------------------------------- */
+
 /* ソーシャルログインリスト */
 .acms-member-sns-btn-list {
   margin-bottom: 20px;
 }
+
 .acms-member-sns-btn-item {
   & + & {
     margin-top: 20px;
@@ -191,29 +210,29 @@
 .acms-member-sns-btn-item .acms-btn {
   position: relative;
   display: flex;
-  justify-content: flex-start;
   align-items: stretch;
+  justify-content: flex-start;
   box-sizing: border-box;
   height: var(--member-height-sns-btn);
   padding: 0;
-  border-radius: global.$acms-btn-large-border-radius;
   overflow: hidden;
+  border-radius: global.$acms-btn-large-border-radius;
+
   &::before {
     position: absolute;
+    inset: 0;
     z-index: 1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     background-color: transparent;
-    content: "";
     transition: background-color 0.2s;
+    content: '';
   }
+
   &:hover::before {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgb(0 0 0 / 10%);
   }
+
   &:active::before {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgb(0 0 0 / 30%);
   }
 }
 
@@ -221,11 +240,12 @@
 .acms-member-sns-btn-icon-outer {
   position: relative;
   z-index: 2;
+  display: grid;
   box-sizing: border-box;
   width: calc(var(--member-height-sns-btn) - (var(--member-border-width-btn-sns) * 2));
-  display: grid;
   place-content: center;
 }
+
 .acms-member-sns-btn-icon {
   display: inline-block;
   height: auto;
@@ -235,16 +255,17 @@
 .acms-member-sns-btn-text {
   position: relative;
   z-index: 2;
-  flex: 1;
   display: flex;
-  justify-content: center;
+  flex: 1;
   align-items: center;
+  justify-content: center;
   border-left-width: var(--member-border-width-btn-sns);
   border-left-style: solid;
 }
 
 /* ソーシャルログインボタンのカラー変化
 ------------------------------ */
+
 /* Googleログインボタン */
 .acms-member-sns-btn-google {
   &,
@@ -252,11 +273,12 @@
   &:focus,
   &:active {
     color: #333;
-    background-color: #FFF;
-    border-color: #CECECE;
+    background-color: #fff;
+    border-color: #cecece;
   }
+
   .acms-member-sns-btn-text {
-    border-color: rgba(0, 0, 0, 0.08);
+    border-color: rgb(0 0 0 / 8%);
   }
 }
 
@@ -266,12 +288,13 @@
   &:hover,
   &:focus,
   &:active {
-    color: #FFF;
-    background-color: #06C755;
-    border-color: #06C755;
+    color: #fff;
+    background-color: #06c755;
+    border-color: #06c755;
   }
+
   .acms-member-sns-btn-text {
-    border-color: rgba(0, 0, 0, 0.08);
+    border-color: rgb(0 0 0 / 8%);
   }
 }
 
@@ -281,35 +304,40 @@
   &:hover,
   &:focus,
   &:active {
-    color: #FFF;
+    color: #fff;
     background-color: #000;
     border-color: #000;
   }
+
   .acms-member-sns-btn-text {
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgb(255 255 255 / 35%);
   }
+
   /* Xのみダーク系のためhoverカラーを反転 */
   &.acms-btn:hover::before {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: rgb(255 255 255 / 25%);
   }
+
   &.acms-btn:active::before {
-    background-color: rgba(255, 255, 255, 0.45);
+    background-color: rgb(255 255 255 / 45%);
   }
 }
 
 /* Facebookログインボタン */
+
 /* Facebookによるログイン機能は、将来廃止予定になります。 */
 .acms-member-sns-btn-facebook {
   &,
   &:hover,
   &:focus,
   &:active {
-    color: #FFF;
-    background-color: #1877F2;
-    border-color: #1877F2;
+    color: #fff;
+    background-color: #1877f2;
+    border-color: #1877f2;
   }
+
   .acms-member-sns-btn-text {
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgb(255 255 255 / 35%);
   }
 }
 
@@ -322,9 +350,10 @@ $_member-subscribe-table-line-height: 1.4;
 
 /* インプットテーブル（縦並び） */
 .acms-member-inputs {
+  width: 100%;
   color: global.$acms-color-black;
   line-height: $_member-subscribe-table-line-height;
-  width: 100%;
+
   &,
   tbody,
   tr,
@@ -332,18 +361,23 @@ $_member-subscribe-table-line-height: 1.4;
   td {
     display: block;
   }
+
   th,
   td {
     padding: 0 0 4px;
   }
+
   tr + tr {
     margin-top: 20px;
   }
+
   th {
-    @include global.font-size(#{$_member-subscribe-table-font-size-th});
     font-weight: bold;
     text-align: left;
+
+    @include global.font-size(#{$_member-subscribe-table-font-size-th});
   }
+
   td {
     @include global.font-size(#{$_member-subscribe-table-font-size-td});
   }
@@ -351,29 +385,34 @@ $_member-subscribe-table-line-height: 1.4;
 
 /* インプットテーブル（横並び） */
 .acms-member-inputs-col {
+  width: 100%;
   color: global.$acms-color-black;
   line-height: $_member-subscribe-table-line-height;
-  width: 100%;
+
   th {
-    @include global.font-size(#{$_member-subscribe-table-font-size-th});
     width: 140px;
     padding: 0 10px 4px 0;
     font-weight: bold;
     text-align: left;
     vertical-align: middle;
+
+    @include global.font-size(#{$_member-subscribe-table-font-size-th});
   }
+
   td {
-    @include global.font-size(#{$_member-subscribe-table-font-size-td});
     padding: 0 10px 4px 0;
     vertical-align: middle;
+
+    @include global.font-size(#{$_member-subscribe-table-font-size-td});
   }
 }
 
 /* 確認用テーブル */
 .acms-member-confirm {
+  width: 100%;
   color: global.$acms-color-black;
   line-height: $_member-subscribe-table-line-height;
-  width: 100%;
+
   &,
   tbody,
   tr,
@@ -381,21 +420,27 @@ $_member-subscribe-table-line-height: 1.4;
   td {
     display: block;
   }
+
   th,
   td {
     padding: 0 0 4px;
   }
+
   tr {
     border-bottom: 1px solid var(--member-color-border-section);
   }
+
   tr + tr {
     margin-top: 16px;
   }
+
   th {
-    @include global.font-size(#{$_member-subscribe-table-font-size-th});
     font-weight: bold;
     text-align: left;
+
+    @include global.font-size(#{$_member-subscribe-table-font-size-th});
   }
+
   td {
     @include global.font-size(#{$_member-subscribe-table-font-size-td});
   }
@@ -405,24 +450,28 @@ $_member-subscribe-table-line-height: 1.4;
 .acms-member-geo {
   font-size: 0;
   line-height: 0;
+
   /* 位置情報フォーム */
   .js-geo_form {
     margin-top: 10px;
   }
+
   /* 位置情報キーワード検索入力欄 */
-  input[type=text].js-editable_map-search_text,
-  input[type=text].js-osm-search {
+  input[type='text'].js-editable_map-search_text,
+  input[type='text'].js-osm-search {
     display: inline-block;
     box-sizing: border-box;
-    margin-right: 5px;
     width: calc(100% - 70px);
+    margin-right: 5px;
   }
+
   /* 位置情報キーワード検索ボタン */
   .js-editable_map-search_button,
   .js-osm-search-btn {
     box-sizing: border-box;
     width: 50px;
   }
+
   /* 地図がはみ出さないよう調整 */
   .acms-admin-gmap-box,
   .acms-admin-form-group {
@@ -430,24 +479,27 @@ $_member-subscribe-table-line-height: 1.4;
     width: 100% !important;
     margin-bottom: 5px;
   }
+
   /* 緯度・軽度・ズーム入力欄ラベル */
   label {
-    @include global.font-size(#{$_member-subscribe-table-font-size-th});
     display: inline-block;
-    font-weight: bold;
     box-sizing: border-box;
     width: 50px;
-    padding-right: 10px;
     margin-top: 10px;
+    padding-right: 10px;
+    font-weight: bold;
     line-height: 1;
     vertical-align: middle;
+
+    @include global.font-size(#{$_member-subscribe-table-font-size-th});
   }
+
   /* 緯度・軽度・ズーム入力欄 */
   .acms-admin-form-width-mini {
     display: inline-block;
     box-sizing: border-box;
-    max-width: calc(100% - 60px);
     width: calc(100% - 60px);
+    max-width: calc(100% - 60px);
     margin-top: 10px;
   }
 }
@@ -457,17 +509,19 @@ $_member-subscribe-table-line-height: 1.4;
 ------------------------------- */
 @keyframes acms-member-signin-load {
   from {
-    opacity: 0;
     transform: translateY(20px);
+    opacity: 0;
   }
+
   to {
-    opacity: 1;
     transform: translateY(0);
+    opacity: 1;
   }
 }
+
 .acms-member-signin-load {
   animation-name: acms-member-signin-load;
   animation-duration: 1s;
-  animation-fill-mode: forwards;
   animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+  animation-fill-mode: forwards;
 }

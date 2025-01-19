@@ -29,6 +29,7 @@ function appConfig()
             'Acms\Services\Config\ConfigServiceProvider',
             'Acms\Services\Blog\BlogServiceProvider',
             'Acms\Services\Entry\EntryServiceProvider',
+            'Acms\Services\Unit\UnitServiceProvider',
             'Acms\Services\User\UserServiceProvider',
             'Acms\Services\Module\ModuleServiceProvider',
             'Acms\Services\Common\CommonServiceProvider',

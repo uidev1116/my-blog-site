@@ -1,6 +1,6 @@
 @charset "utf-8";
 /*!
- * acms.css Ver. 2.1.3
+ * acms.css Ver. 2.1.4
  * Copyright appleple
  * license: MIT
  *
@@ -8,6 +8,7 @@
  *
  */
 
+/* stylelint-disable value-keyword-case */
 /* ------------------------------
   共通
  ------------------------------ */
@@ -16,10 +17,12 @@ html {
 }
 
 body {
-  padding: 0 0 40px 0;
-  color: #333333;
+  padding: 0 0 40px;
+  color: #333;
   font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", Meiryo, "メイリオ", "ＭＳ Ｐゴシック", "MS PGothic", Verdana, sans-serif;
-  background: #FFF;
+  background: #fff;
+}
+body {
   font-size: 14px;
 }
 @media print {
@@ -29,7 +32,7 @@ body {
 }
 
 .acms-admin-font {
-  font-family: "acms-admin-fonts", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W6", Meiryo, "メイリオ", "ＭＳ Ｐゴシック", "MS PGothic", Verdana, sans-serif;
+  font-family: acms-admin-fonts, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W6", Meiryo, "メイリオ", "ＭＳ Ｐゴシック", "MS PGothic", Verdana, sans-serif;
 }
 
 /* ------------------------------
@@ -50,7 +53,9 @@ body {
 .tv-page-title {
   margin: 0;
   padding: 10px 0;
-  color: #FFF;
+  color: #fff;
+}
+.tv-page-title {
   font-size: 13px;
 }
 @media print {
@@ -64,27 +69,27 @@ body {
  ------------------------------ */
 .tv-main {
   padding: 0 20px 0 236px;
-  background: #FFF;
+  background: #fff;
 }
 
 .tv-main-contents {
   clear: both;
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
 }
 
 .tv-section {
-  margin: 0 0 30px 0;
-  padding: 5px 0 0 0;
+  margin: 0 0 30px;
+  padding: 5px 0 0;
 }
 
 .tv-header-info {
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
 }
-.tv-header-info:before, .tv-header-info:after {
+.tv-header-info::before, .tv-header-info::after {
   display: table;
   content: " ";
 }
-.tv-header-info:after {
+.tv-header-info::after {
   clear: both;
 }
 
@@ -99,13 +104,13 @@ body {
 }
 
 .tv-tab {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
 }
-.tv-tab:before, .tv-tab:after {
+.tv-tab::before, .tv-tab::after {
   display: table;
   content: " ";
 }
-.tv-tab:after {
+.tv-tab::after {
   clear: both;
 }
 
@@ -126,19 +131,19 @@ body {
   border-bottom: 2px solid transparent;
 }
 .tv-tab-list-link:hover {
-  color: #333333;
+  color: #333;
   text-decoration: none;
-  border-bottom: 2px solid #7E7E8B;
+  border-bottom: 2px solid #7e7e8b;
 }
 .tv-tab-list-link.js-acms_tab-active {
-  color: #333333;
+  color: #333;
   font-weight: bold;
-  border-bottom: 2px solid #7E7E8B;
+  border-bottom: 2px solid #7e7e8b;
 }
 
 .tv-tab-area {
-  margin: 0 0 20px 0;
-  border: 1px solid #CCCCCC;
+  margin: 0 0 20px;
+  border: 1px solid #ccc;
 }
 
 .tv-tab-item {
@@ -149,7 +154,7 @@ body {
   margin: 0;
 }
 .acms-admin-admin-mini-table th {
-  background: #E2E2E8;
+  background: #e2e2e8;
 }
 
 .tv-parameter-text {
@@ -158,32 +163,32 @@ body {
 
 .tv-preview {
   padding: 10px;
-  background-color: #F2F2F5;
+  background-color: #f2f2f5;
 }
 
 .tv-preview-area {
   padding: 10px;
   overflow: scroll;
-  background: #FFF;
+  background: #fff;
 }
 
 .tv-comment {
   position: relative;
-  margin: 0 0 10px 0;
-  padding: 20px 15px 15px 15px;
+  margin: 0 0 10px;
+  padding: 20px 15px 15px;
   line-height: 1.5;
-  border: 1px solid #CCCCCC;
+  border: 1px solid #ccc;
 }
 
 .tv-comment-text {
   position: absolute;
   top: 0;
   left: 0;
-  margin: 0 0 5px 0;
+  margin: 0 0 5px;
   line-height: 1;
 }
 .tv-comment-text .acms-admin-label {
-  border-radius: 0 0 3px 0;
+  border-radius: 0 0 3px;
 }
 
 .tv-pre .linenums {
@@ -202,12 +207,11 @@ body {
   top: 40px;
   bottom: 0;
   left: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   width: 216px;
   height: 100%;
   padding: 12px 0;
-  background: #F2F2F5;
+  background: #f2f2f5;
 }
 .tv-sidebar.fixed {
   position: fixed;
@@ -215,7 +219,7 @@ body {
 }
 
 .tv-form-inner {
-  padding: 0 20px 15px 20px;
+  padding: 0 20px 15px;
 }
 
 .tv-side-navigation-wrap {
@@ -230,17 +234,17 @@ body {
   /* リンクの設定 */
 }
 .tv-side-navigation a {
-  color: #006DD9;
+  color: #006dd9;
   text-decoration: none;
   border: none;
 }
 .tv-side-navigation a:visited,
 .tv-side-navigation a:active {
-  color: #006DD9;
+  color: #006dd9;
   text-decoration: none;
 }
 .tv-side-navigation a:hover {
-  color: #006DD9;
+  color: #006dd9;
   text-decoration: underline;
 }
 
@@ -254,5 +258,5 @@ body {
 }
 .tv-side-navigation-link.current, .tv-side-navigation-link:hover {
   text-decoration: none;
-  background: #E8EFFB;
+  background: #e8effb;
 }

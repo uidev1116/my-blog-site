@@ -9,7 +9,6 @@ use Acms\Services\Facades\Storage;
 use Field;
 use DB;
 use SQL;
-use Template;
 use Tpl;
 use ACMS_Corrector;
 use ACMS_RAM;
@@ -166,7 +165,7 @@ class EmailHandler extends AbstractProcessingHandler
     protected function buildMailTxt($tplPath, $field)
     {
         $tplTxt = Storage::get($tplPath);
-        $tpl = new Template($tplTxt, new ACMS_Corrector());
+        $tpl = (new \Acms\Services\View\Engine())->init($tplTxt, new ACMS_Corrector());
         $vars = Tpl::buildField($field, $tpl);
         $tpl->add(null, $vars);
 

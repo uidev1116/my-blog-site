@@ -33,10 +33,17 @@
 
 <!-- BEGIN_MODULE Admin_Messages -->
 <!-- BEGIN message:loop -->
-<p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+<div class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
   <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
   {message}
-</p>
+  <button
+    type="button"
+    class="js-acms-alert-close acms-admin-alert-icon-after"
+    aria-label="アラートを閉じる"
+  >
+    ×
+  </button>
+</div>
 <!-- END message:loop -->
 <!-- END_MODULE Admin_Messages -->
 
@@ -73,39 +80,63 @@
 
 <!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/eq/1/_and_/%{CURRENT_ROOT}/neq//bid/%{BID}/admin/%{ADMIN}] -->
 <div class="acms-admin-announce">
-  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->該当するエントリーが見つかりませんでした<!--/T--></h2>
-  <p class="acms-admin-announce-text"><!--T-->検索内容に一致したエントリーはありませんでした。<br>再検索または新規作成してください。<!--/T--></p>
+  <h2 class="acms-admin-announce-title">
+    <span class="acms-admin-icon acms-admin-icon-news" aria-hidden="true"></span>
+    <!--T-->該当するエントリーが見つかりませんでした<!--/T-->
+  </h2>
+  <p class="acms-admin-announce-text">
+    <!--T-->検索内容に一致したエントリーはありませんでした。<br>再検索または新規作成してください。<!--/T-->
+  </p>
   <div class="acms-admin-announce-action">
-    <div class="js-fake-form" data-method="post">
-      <div class="js-admin-category-select acms-admin-select2 is-single" data-creation="false"
-           style="display: inline-block;">
-        <div class="js-target"></div>
-        <input type="hidden" name="cid" value="%{CID}" class="js-value">
+    <form action="" method="post" enctype="multipart/form-data">
+      <div style="display: inline-block; width: 350px;">
+        @include("/admin/include/category/select.html", {
+          "target": "#default-category-value",
+          "defaultValue": "%{CID}"
+        })
       </div>
+      <input id="default-category-value" type="hidden" name="cid" value="%{CID}">
       <input type="hidden" name="ACMS_POST_2GET" value="on"/>
       <input type="hidden" name="admin" value="entry_editor"/>
       <input type="hidden" name="bid" value="%{BID}"/>
-      <button class="js-submit acms-admin-btn acms-admin-btn-success" style="vertical-align: top;"><!--T-->エントリー作成<!--/T--></button>
-    </div>
+      <button
+        type="submit"
+        class="acms-admin-btn acms-admin-btn-success"
+        style="vertical-align: top;"
+      >
+        <!--T-->エントリー作成<!--/T-->
+      </button>
+    </form>
   </div>
 </div>
 <!-- ELSE -->
 <!-- BEGIN index#notFound -->
 <div class="acms-admin-announce">
-  <h2 class="acms-admin-announce-title"><span class="acms-admin-icon acms-admin-icon-news"></span><!--T-->エントリーがありません<!--/T--></h2>
+  <h2 class="acms-admin-announce-title">
+    <span class="acms-admin-icon acms-admin-icon-news" aria-hidden="true"></span>
+    <!--T-->エントリーがありません<!--/T-->
+  </h2>
   <p class="acms-admin-announce-text"><!--T-->新しくエントリーを作成してください。<!--/T--></p>
   <div class="acms-admin-announce-action">
-    <div class="js-fake-form" data-method="post">
-      <div class="js-admin-category-select acms-admin-select2 is-single" data-creation="false"
-           style="display: inline-block;">
-        <div class="js-target"></div>
-        <input type="hidden" name="cid" value="%{CID}" class="js-value">
+    <form action="" method="post" enctype="multipart/form-data">
+      <div style="display: inline-block; width: 350px;">
+        @include("/admin/include/category/select.html", {
+          "target": "#default-category-value",
+          "defaultValue": "%{CID}"
+        })
       </div>
+      <input id="default-category-value" type="hidden" name="cid" value="%{CID}">
       <input type="hidden" name="ACMS_POST_2GET" value="on"/>
       <input type="hidden" name="admin" value="entry_editor"/>
       <input type="hidden" name="bid" value="%{BID}"/>
-      <button class="js-submit acms-admin-btn acms-admin-btn-success" style="vertical-align: top;"><!--T-->エントリー作成<!--/T--></button>
-    </div>
+      <button
+        type="submit"
+        class="acms-admin-btn acms-admin-btn-success"
+        style="vertical-align: top;"
+      >
+        <!--T-->エントリー作成<!--/T-->
+      </button>
+    </form>
   </div>
 </div>
 <!-- END index#notFound -->
@@ -120,6 +151,14 @@
 <div class="acms-admin-alert acms-admin-alert-info"><!--T-->ドラッグでカテゴリー絞り込み時の表示順を変更できます
   <!--/T--></div><!-- END sort#headerCategory -->
 
+<form action="" method="post" id="entry-create-form">
+  <input type="hidden" name="ACMS_POST_2GET" value="on"/>
+  <input type="hidden" name="admin" value="entry_editor"/>
+  <input type="hidden" name="bid" value="%{BID}"/>
+</form>
+<form action="" method="post" id="entry-unlock-form">
+  <input type="hidden" name="ACMS_POST_Entry_Lock_Unlock" value="on"/>
+</form>
 
 <form method="post" action="" id="entry-list-form" class="acms-admin-form">
 
@@ -142,17 +181,38 @@
 
     <!-- BEGIN sort:action#entry -->
     <div id="action-order" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
-      <input type="submit" name="ACMS_POST_Entry_Index_Sort_Entry" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary"/>
-    </div><!-- END sort:action#entry --><!-- BEGIN sort:action#category -->
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Sort_Entry"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
+    </div>
+    <!-- END sort:action#entry -->
+    <!-- BEGIN sort:action#category -->
     <div id="action-order" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
-      <input type="submit" name="ACMS_POST_Entry_Index_Sort_Category" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary"/>
-    </div><!-- END sort:action#category --><!-- BEGIN sort:action#user -->
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Sort_Category"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
+    </div>
+    <!-- END sort:action#category -->
+    <!-- BEGIN sort:action#user -->
     <div id="action-order" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
-      <input type="submit" name="ACMS_POST_Entry_Index_Sort_User" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary"/>
-    </div><!-- END sort:action#user -->
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Sort_User"
+        value="<!--T-->変更<!--/T-->"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
+    </div>
+    <!-- END sort:action#user -->
 
     <div id="action-status" class="js-acms-tab-select-panel acms-admin-float-left">
       <select name="status" class="js-select2">
@@ -160,27 +220,47 @@
         <option value="close"><!--T-->非公開<!--/T--></option>
         <option value="draft"><!--T-->下書き<!--/T--></option>
       </select>
-      <input type="submit" name="ACMS_POST_Entry_Index_Status" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary"/>
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Status"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
     </div>
-    <!-- BEGIN userSelect#batch --><!-- BEGIN_MODULE Admin_User_SelectGlobal -->
+    <!-- BEGIN userSelect#batch -->
+    <!-- BEGIN_MODULE Admin_User_SelectGlobal -->
     <div id="action-user" class="js-acms-tab-select-panel acms-admin-float-left">
       <select name="uid" class="js-select2"><!-- BEGIN loop -->
         <option value="{value}" {selected}>{label}</option><!-- END loop -->
       </select>
-      <input type="submit" name="ACMS_POST_Entry_Index_User" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary"/>
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_User"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
     </div>
-    <!-- END_MODULE Admin_User_SelectGlobal --><!-- END userSelect#batch -->
+    <!-- END_MODULE Admin_User_SelectGlobal -->
+    <!-- END userSelect#batch -->
 
     <div id="action-category" class="js-acms-tab-select-panel acms-admin-float-left">
-      <div class="js-admin-category-select acms-admin-select2 is-single"
-           data-creation="false" style="display: inline-block;">
-        <div class="js-target"></div>
-        <input type="hidden" name="cid" value="" class="js-value">
+      <div style="display: inline-block; width: 350px;">
+        @include("/admin/include/category/select.html", {
+          "target": "#index-category-value",
+          "defaultValue": "%{CID}"
+        })
       </div>
-      <input type="submit" name="ACMS_POST_Entry_Index_Category" value="<!--T-->変更<!--/T-->"
-             class="acms-admin-btn-admin acms-admin-btn-admin-primary" style="vertical-align: top;"/>
+      <input id="index-category-value" type="hidden" name="cid" value="%{CID}">
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Category"
+        class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+        style="vertical-align: top;"
+      >
+        <!--T-->変更<!--/T-->
+      </button>
     </div>
 
     <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
@@ -210,27 +290,44 @@
     <!-- END_MODULE Touch_SessionWithCompilation -->
     <!-- BEGIN adminDeleteAction2 -->
     <div id="action-delete" class="js-acms-tab-select-panel acms-admin-float-left">
-      <input type="submit" name="ACMS_POST_Entry_Index_Trash" value="<!--T-->削除<!--/T-->"
-             onclick="return confirm('<!--T-->ゴミ箱に移します。\nよろしいですか？<!--/T-->')"
-             class="acms-admin-btn-admin acms-admin-btn-admin-danger"/>
-    </div><!-- END adminDeleteAction2 -->
-    <div class="js-fake-form acms-admin-float-right" data-method="post">
-      <div class="js-admin-category-select acms-admin-select2 is-single acms-admin-margin-bottom-mini" data-creation="false"
-           style="display: inline-block;">
-        <div class="js-target"></div>
-        <input type="hidden" name="cid" value="%{CID}" class="js-value">
+      <button
+        type="submit"
+        name="ACMS_POST_Entry_Index_Trash"
+        onclick="return confirm('<!--T-->ゴミ箱に移します。\nよろしいですか？<!--/T-->')"
+        class="acms-admin-btn-admin acms-admin-btn-admin-danger"
+      >
+        <!--T-->削除<!--/T-->
+      </button>
+    </div>
+    <!-- END adminDeleteAction2 -->
+    <div class="acms-admin-float-right">
+      <div class="acms-admin-margin-bottom-mini">
+        <div style="display: inline-block; width: 350px;">
+          @include("/admin/include/category/select.html", {
+            "target": "#default-category-value",
+            "defaultValue": "%{CID}",
+            "form": "entry-create-form"
+          })
+        </div>
+        <input id="default-category-value" type="hidden" name="cid" value="%{CID}" form="entry-create-form">
+        <button
+          type="submit"
+          class="acms-admin-btn acms-admin-btn-success"
+          style="vertical-align: top;"
+          form="entry-create-form"
+        >
+          <!--T-->エントリー作成<!--/T-->
+        </button>
       </div>
-      <input type="hidden" name="ACMS_POST_2GET" value="on"/>
-      <input type="hidden" name="admin" value="entry_editor"/>
-      <input type="hidden" name="bid" value="%{BID}"/>
-      <button class="js-submit acms-admin-btn acms-admin-btn-success acms-admin-margin-bottom-mini" style="vertical-align: top;"><!--T-->エントリー作成
-        <!--/T--></button>
     </div>
   </div>
 
   <div class="acms-admin-table-scroll-xs acms-admin-table-scroll-sm acms-admin-table-scroll-md">
-    <table class="acms-admin-table-admin js-admin_table-sortable acms-admin-table-hover" data-sort-enable="{sortable}"
-           data-sort-submit="{postSortType}" data-sort-target="#entry-list-form" data-sort-order="%{ORDER}">
+    <table
+      class="acms-admin-table-admin js-admin_table-sortable acms-admin-table-hover"
+      data-sort-enable="{sortable}"
+      data-sort-submit="{postSortType}" data-sort-target="#entry-list-form" data-sort-order="%{ORDER}"
+    >
       <thead class="acms-admin-table-heading">
       <tr>
         @section("entry-index-table-thead-tr")
@@ -352,19 +449,26 @@
         <td>
           <!-- BEGIN_IF [{lockUser}/nem] -->
           <!-- BEGIN_IF [{selfLock}/eq/yes] -->
-          <div class="js-fake-form" data-method="post">
-            <input type="hidden" name="eid" value="{eid}"/>
-            <input type="hidden" name="ACMS_POST_Entry_Lock_Unlock" value="on"/>
-            <button class="js-submit" style="border: none; background: transparent; padding: 0;" data-confirm="ロックを解除してもよろしいですか？">
-              <i class="acms-admin-icon acms-admin-icon-large acms-admin-icon-logout"></i>
+          <div>
+            <button
+              type="submit"
+              class="acms-admin-btn-icon acms-admin-btn-unstyled"
+              form="entry-unlock-form"
+              onclick="return confirm('<!--T-->ロックを解除してもよろしいですか？<!--/T-->')"
+              name="eid"
+              value="{eid}"
+            >
+              <i class="acms-admin-icon-large acms-admin-icon-logout"></i>
             </button>
           </div>
           <!-- ELSE -->
-          <i
-            class="acms-admin-icon acms-admin-icon-large acms-admin-icon-lock js-acms-tooltip"
-            data-acms-position="top-left"
-            data-acms-tooltip="{lockUser}さんが編集中です"
-          ></i>
+          <span class="acms-admin-btn-icon">
+            <i
+              class="acms-admin-icon-large acms-admin-icon-lock js-acms-tooltip"
+              data-acms-position="top-left"
+              data-acms-tooltip="{lockUser}さんが編集中です"
+            ></i>
+          </span>
           <!-- END_IF -->
           <!-- END_IF -->
         </td>

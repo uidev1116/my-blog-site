@@ -138,7 +138,9 @@ class ACMS_GET_Blog_ChildList extends ACMS_GET
             // field
             $Field  = loadBlogField($bid);
             foreach ($row as $key => $val) {
-                $Field->setField(preg_replace('/blog\_/', '', $key), $val);
+                if ($key !== 'geo_geometry') {
+                    $Field->setField(preg_replace('/blog\_/', '', $key), $val);
+                }
             }
             $Field->set('url', acmsLink([
                 'bid'   => $bid,

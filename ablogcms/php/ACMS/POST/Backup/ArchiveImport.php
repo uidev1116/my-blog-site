@@ -34,9 +34,9 @@ class ACMS_POST_Backup_ArchiveImport extends ACMS_POST_Backup_Import
      */
     protected function run($file_name)
     {
-        $archive_dir = SCRIPT_DIR . ARCHIVES_DIR;
-        $media_dir = SCRIPT_DIR . MEDIA_LIBRARY_DIR;
-        $storage_dir = SCRIPT_DIR . MEDIA_STORAGE_DIR;
+        $archive_dir = ARCHIVES_DIR;
+        $media_dir = MEDIA_LIBRARY_DIR;
+        $storage_dir = MEDIA_STORAGE_DIR;
 
         if (Storage::isFile($this->backupArchivesDir . $file_name)) {
             Storage::removeDirectory($storage_dir . 'archives_tmp');

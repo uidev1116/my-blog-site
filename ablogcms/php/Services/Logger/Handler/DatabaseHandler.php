@@ -2,10 +2,10 @@
 
 namespace Acms\Services\Logger\Handler;
 
+use Acms\Services\Facades\Database as DB;
 use Monolog\Handler\AbstractProcessingHandler;
-use DB;
-use SQL;
 use Session;
+use SQL;
 
 class DatabaseHandler extends AbstractProcessingHandler
 {
@@ -16,6 +16,7 @@ class DatabaseHandler extends AbstractProcessingHandler
      */
     protected function write(array $record): void
     {
+        $dbExceptionSetting = DB::getThrowException();
         try {
             if (!editionWithProfessional() && $record['level'] === 200) {
                 return;
@@ -83,7 +84,7 @@ class DatabaseHandler extends AbstractProcessingHandler
         } catch (\Exception $e) {
         }
         try {
-            DB::setThrowException(false);
+            DB::setThrowException($dbExceptionSetting);
         } catch (\Exception $e) {
         }
     }

@@ -4,10 +4,6 @@ class ACMS_GET_Approval_RequestList extends ACMS_GET
 {
     public function get()
     {
-        if (!enableApproval()) {
-            return '';
-        }
-
         $Tpl    = new Template($this->tpl, new ACMS_Corrector());
         $DB     = DB::singleton(dsn());
         $vars   = [];

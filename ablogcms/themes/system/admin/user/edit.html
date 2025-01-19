@@ -552,6 +552,29 @@
           </td>
         </tr>
         <!-- END_IF -->
+        <!-- BEGIN_MODULE Member_Tfa_Check -->
+        <tr>
+          <th>
+            <!--T-->２段階認証<!--/T-->
+            <i
+              class="acms-admin-icon-tooltip js-acms-tooltip-hover"
+              data-acms-tooltip="<!--T-->２段階認証を設定します。<!--/T-->"
+            ></i>
+          </th>
+          <td>
+            <!-- BEGIN_IF [{step}/eq/unregistered] -->
+            <a href="%{HTTP_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info">
+              <!--T-->設定する<!--/T-->
+            </a>
+            <!-- END_IF -->
+            <!-- BEGIN_IF [{step}/eq/registered] -->
+            <a href="%{HTTP_ROOT}bid/%{BID}/uid/%{UID}/admin/user_tfa/" class="acms-admin-btn acms-admin-btn-info">
+              <!--T-->編集<!--/T--><!--T-->（設定済み）<!--/T-->
+            </a>
+            <!-- END_IF -->
+          </td>
+        </tr>
+        <!-- END_MODULE Member_Tfa_Check -->
         <!-- BEGIN auth:veil -->
         <tr>
           <th>
@@ -657,13 +680,13 @@
         </tr>
         <!-- END login_anywhere:touch#off -->
         <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-        <!-- BEGIN_IF [{auth}/neq/admin] -->
+        <!-- BEGIN_IF [{actually_auth}/neq/administrator] -->
         <tr>
           <th>
             <!--T-->ログイン制限<!--/T-->
             <i
               class="acms-admin-icon-tooltip js-acms-tooltip-hover"
-              data-acms-tooltip="<!--T-->チェックがされたユーザーはが許可された端末からしかログイン出来なくなります。<!--/T-->"
+              data-acms-tooltip="<!--T-->チェックがされたユーザーは許可された端末からしかログイン出来なくなります。<!--/T-->"
             ></i>
           </th>
           <td>

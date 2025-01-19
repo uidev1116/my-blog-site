@@ -3,14 +3,14 @@
 namespace Acms\Services\Config;
 
 use ACMS_Filter;
-use Storage;
-use DB;
-use SQL;
-use Field;
+use ACMS_RAM;
 use Auth;
 use Cache;
 use Config;
-use ACMS_RAM;
+use DB;
+use Field;
+use SQL;
+use Storage;
 use Symfony\Component\Yaml\Exception\DumpException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -49,8 +49,9 @@ class Helper
     public function load($bid = null, $rid = null, $mid = null, $setid = null)
     {
         $cacheKey = "cache-config-$bid-$rid-$mid-$setid";
-        if ($this->cache->has($cacheKey)) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         if ($mid) {
             $setid = null;
@@ -74,7 +75,11 @@ class Helper
         foreach ($all as $row) {
             $config->addField($row['config_key'], $row['config_value']);
         }
-        $this->cache->put($cacheKey, $config, 0, $this->getCacheTags($bid, $rid, $mid, $setid));
+        $cacheItem->set($config);
+        foreach ($this->getCacheTags($bid, $rid, $mid, $setid) as $tag) {
+            $cacheItem->tag($tag);
+        }
+        $this->cache->putItem($cacheItem, 0);
 
         return $config;
     }
@@ -197,8 +202,9 @@ class Helper
     public function loadDefault()
     {
         $cacheKey = 'cache-default-config';
-        if ($this->cache->has($cacheKey) && !$this->needToLoadDefaultConfig()) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit() && !$this->needToLoadDefaultConfig()) {
+            return $cacheItem->get();
         }
         if (!($config = $this->yamlLoad(CONFIG_DEFAULT_FILE))) {
             die('config is broken');
@@ -206,7 +212,9 @@ class Helper
         if ($configUser = $this->yamlLoad(CONFIG_FILE)) {
             $config = array_merge($config, $configUser);
         }
-        $this->cache->put($cacheKey, $config);
+        $cacheItem->set($config);
+        $this->cache->putItem($cacheItem);
+
         return $config;
     }
 
@@ -218,15 +226,17 @@ class Helper
     public function loadDefaultField()
     {
         $cacheKey = 'cache-default-config-field';
-
-        if ($this->cache->has($cacheKey) && !$this->needToLoadDefaultConfig()) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit() && !$this->needToLoadDefaultConfig()) {
+            return $cacheItem->get();
         }
         $config = new Field();
         foreach ($this->loadDefault() as $key => $val) {
             $config->setField($key, $val);
         }
-        $this->cache->put($cacheKey, $config);
+        $cacheItem->set($config);
+        $this->cache->putItem($cacheItem);
+
         return $config;
     }
 
@@ -474,11 +484,15 @@ class Helper
             return '';
         }
         $cacheKey = "cache-config-set-name-$id";
-        if ($this->cache->has($cacheKey)) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         $name = ACMS_RAM::configSetName($id);
-        $this->cache->put($cacheKey, $name);
+
+        $cacheItem->set($name);
+        $this->cache->putItem($cacheItem);
+
         return $name;
     }
 
@@ -492,11 +506,15 @@ class Helper
             return '';
         }
         $cacheKey = "cache-config-set-name-$id";
-        if ($this->cache->has($cacheKey)) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         $name = ACMS_RAM::configSetName($id);
-        $this->cache->put($cacheKey, $name);
+
+        $cacheItem->set($name);
+        $this->cache->putItem($cacheItem);
+
         return $name;
     }
 
@@ -510,11 +528,15 @@ class Helper
             return '';
         }
         $cacheKey = "cache-config-set-name-$id";
-        if ($this->cache->has($cacheKey)) {
-            return $this->cache->get($cacheKey);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
         }
         $name = ACMS_RAM::configSetName($id);
-        $this->cache->put($cacheKey, $name);
+
+        $cacheItem->set($name);
+        $this->cache->putItem($cacheItem);
+
         return $name;
     }
 
@@ -755,8 +777,6 @@ class Helper
 
         return false;
     }
-
-
 
     /**
      * タイプ指定によるデータベーススキーマの取得

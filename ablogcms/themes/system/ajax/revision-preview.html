@@ -9,98 +9,99 @@
   @include("/include/head/admin-js.html")
 </head>
 
-<body class="acms-admin-revision-preview acms-admin-height-max">
+<body>
   <!-- BEGIN_MODULE Admin_Entry_Revision_Info -->
-  <header id="top" class="acms-admin-revision-header">
-    <h2 class="acms-admin-revision-header-title">
-      <!-- BEGIN status:veil -->【{status}】<!-- END status:veil -->{rvid} : {memo}
-    </h2>
-    <div class="acms-admin-revision-header-action-group">
-      <div class="acms-admin-revision-actions">
-        <!-- BEGIN edit -->
-        <form action="" method="post" class="acms-admin-inline">
-          <input type="hidden" name="bid" value="%{BID}" />
-          <input type="hidden" name="eid" value="%{EID}" />
-          <input type="hidden" name="admin" value="entry_editor">
-          <input type="hidden" name="rvid" value="%{RVID}" />
-          <input type="hidden" name="query" value="rvid" />
-          <button
-            type="submit"
-            name="ACMS_POST_2GET"
-            class="acms-admin-btn-admin"
-          >
-            <!--T-->編集ページ<!--/T-->
-          </button>
-        </form>
-        <!-- END edit -->
-        <form action="" method="post" class="acms-admin-inline-block">
-          <input type="hidden" name="bid" value="%{BID}" />
-          <input type="hidden" name="eid" value="%{EID}" />
-          <button
-            type="submit"
-            name="ACMS_POST_2GET"
-            class="acms-admin-btn-admin"
-          >
-            <!--T-->ページを表示<!--/T-->
-          </button>
-        </form>
-        <!-- BEGIN_MODULE Touch_Approval -->
-        <!-- BEGIN_MODULE Touch_sessionWithApprovalAdministrator -->
-        <!-- BEGIN_MODULE Touch_EntryExists -->
-        <form action="" method="post" class="acms-admin-inline-block">
-          <input type="hidden" name="admin" value="entry_approval-history" />
-          <input type="hidden" name="bid" value="%{BID}" />
-          <input type="hidden" name="eid" value="%{EID}" />
-          <button
-            type="submit"
-            name="ACMS_POST_2GET"
-            class="acms-admin-btn-admin"
-          >
-            <!--T-->承認履歴<!--/T-->
-          </button>
-        </form>
-        <!-- END_MODULE Touch_EntryExists -->
-        <!-- END_MODULE Touch_sessionWithApprovalAdministrator -->
-        <!-- END_MODULE Touch_Approval -->
+  <!-- リビジョンIDが1のとき、または承認機能が無効の場合はサイドバーを非表示 -->
+  <div class="acms-admin-revision-preview" data-sidebar="<!-- BEGIN_IF [%{RVID}/eq/1/_or_/<!-- BEGIN_MODULE Touch_NotApproval -->1<!-- END_MODULE Touch_NotApproval -->/nem] -->false<!-- ELSE -->true<!-- END_IF -->">
+    <header id="top" class="acms-admin-revision-header">
+      <h2 class="acms-admin-revision-header-title">
+        <!-- BEGIN status:veil -->【{status}】<!-- END status:veil -->{rvid} : {memo}
+      </h2>
+      <div class="acms-admin-revision-header-action-group">
+        <div class="acms-admin-revision-actions">
+          <!-- BEGIN edit -->
+          <form action="" method="post" class="acms-admin-inline-block">
+            <input type="hidden" name="bid" value="%{BID}" />
+            <input type="hidden" name="eid" value="%{EID}" />
+            <input type="hidden" name="admin" value="entry_editor">
+            <input type="hidden" name="rvid" value="%{RVID}" />
+            <input type="hidden" name="query" value="rvid" />
+            <button
+              type="submit"
+              name="ACMS_POST_2GET"
+              class="acms-admin-btn-admin"
+            >
+              <!--T-->編集ページ<!--/T-->
+            </button>
+          </form>
+          <!-- END edit -->
+          <form action="" method="post" class="acms-admin-inline-block">
+            <input type="hidden" name="bid" value="%{BID}" />
+            <input type="hidden" name="eid" value="%{EID}" />
+            <button
+              type="submit"
+              name="ACMS_POST_2GET"
+              class="acms-admin-btn-admin"
+            >
+              <!--T-->ページを表示<!--/T-->
+            </button>
+          </form>
+          <!-- BEGIN_MODULE Touch_Approval -->
+          <!-- BEGIN_MODULE Touch_sessionWithApprovalAdministrator -->
+          <!-- BEGIN_MODULE Touch_EntryExists -->
+          <form action="" method="post" class="acms-admin-inline-block">
+            <input type="hidden" name="admin" value="entry_approval-history" />
+            <input type="hidden" name="bid" value="%{BID}" />
+            <input type="hidden" name="eid" value="%{EID}" />
+            <button
+              type="submit"
+              name="ACMS_POST_2GET"
+              class="acms-admin-btn-admin"
+            >
+              <!--T-->承認履歴<!--/T-->
+            </button>
+          </form>
+          <!-- END_MODULE Touch_EntryExists -->
+          <!-- END_MODULE Touch_sessionWithApprovalAdministrator -->
+          <!-- END_MODULE Touch_Approval -->
 
-        <!-- BEGIN_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
-        <!-- BEGIN revisionChange -->
-        <!-- BEGIN_IF [{canChange}/eq/1] -->
-        <form action="" method="post" class="acms-admin-inline-block">
-          <input type="hidden" name="eid" value="%{EID}" />
-          <input type="hidden" name="revision" value="%{RVID}" />
-          <!-- BEGIN_IF [{isReserve}/eq/1]-->
-          <span class="acms-admin-margin-right-small acms-admin-margin-left-small">公開日: {reserveDatetime}[datetime('Y/m/d H:i')]</span>
-          <button
-            type="submit"
-            name="ACMS_POST_Revision_Change"
-            onclick="return confirm('<!--T-->このバージョンを公開予約します。公開日時まで切り替わりません。よろしいですか？<!--/T-->');"
-            class="acms-admin-btn-admin acms-admin-btn-admin-primary"
-          >
-            <!--T-->このバージョンを公開予約<!--/T-->
-          </button>
-          <!-- ELSE -->
-          <button
-            type="submit"
-            name="ACMS_POST_Revision_Change"
-            onclick="return confirm('<!--T-->このバージョンに変更します。よろしいですか？<!--/T-->');"
-            class="acms-admin-btn-admin acms-admin-btn-admin-primary"
-          >
-            <!--T-->このバージョンを公開<!--/T-->
-          </button>
+          <!-- BEGIN_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
+          <!-- BEGIN revisionChange -->
+          <!-- BEGIN_IF [{canChange}/eq/1] -->
+          <form action="" method="post" class="acms-admin-inline-block">
+            <input type="hidden" name="eid" value="%{EID}" />
+            <input type="hidden" name="revision" value="%{RVID}" />
+            <!-- BEGIN_IF [{isReserve}/eq/1]-->
+            <span class="acms-admin-margin-right-small acms-admin-margin-left-small">公開日: {reserveDatetime}[datetime('Y/m/d H:i')]</span>
+            <button
+              type="submit"
+              name="ACMS_POST_Revision_Change"
+              onclick="return confirm('<!--T-->このバージョンを公開予約します。公開日時まで切り替わりません。よろしいですか？<!--/T-->');"
+              class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+            >
+              <!--T-->このバージョンを公開予約<!--/T-->
+            </button>
+            <!-- ELSE -->
+            <button
+              type="submit"
+              name="ACMS_POST_Revision_Change"
+              onclick="return confirm('<!--T-->このバージョンに変更します。よろしいですか？<!--/T-->');"
+              class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+            >
+              <!--T-->このバージョンを公開<!--/T-->
+            </button>
+            <!-- END_IF -->
+          </form>
           <!-- END_IF -->
-        </form>
-        <!-- END_IF -->
-        <!-- END revisionChange -->
-        <!-- END_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
+          <!-- END revisionChange -->
+          <!-- END_MODULE Touch_NotApprovalORsessionWithApprovalAdministrator -->
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- BEGIN_MODULE Touch_Approval -->
+    <!-- BEGIN_MODULE Touch_Approval -->
 
-  <!-- BEGIN_IF [%{RVID}/neq/1] -->
-  <div class="acms-admin-height-max">
+    <!-- BEGIN_IF [%{RVID}/neq/1] -->
     <div class="acms-admin-revision-sidebar">
       <!-- BEGIN_IF [{status_code}/nre/^(reject|approved)$]-->
       <div class="acms-admin-padding-small">
@@ -303,32 +304,31 @@
       <!-- END_MODULE Approval_History -->
     </div>
     <!-- END_IF -->
-    <!-- BEGIN_IF [%{RVID}/neq/1] -->
-    <div class="acms-admin-revision-main acms-admin-height-max">
-    <!-- END_IF -->
+    <div class="acms-admin-revision-main">
       <div
         class="js-acms-preview"
         data-url="{url}"
-        style="position: relative; top: 50px; height: calc(100vh - 50px);"
+        data-share="1"
+        data-enable-naked="0"
         data-default-device="%{APPROVAL_PREVIEW_DEFAULT_DEVICE}"
         data-has-history-device="%{APPROVAL_PREVIEW_HAS_HISTORY_DEVICE}"
       ></div>
-    <!-- BEGIN_IF [%{RVID}/neq/1] -->
     </div>
-    <!-- END_IF -->
-  </div>
   <!-- END_MODULE Touch_Approval -->
 
   <!-- BEGIN_MODULE Touch_NotApproval -->
-  <div
-    class="js-acms-preview"
-    data-url="{url}"
-    style="position: relative; top: 50px; height: calc(100vh - 50px);"
-    data-default-device="%{APPROVAL_PREVIEW_DEFAULT_DEVICE}"
-    data-has-history-device="%{APPROVAL_PREVIEW_HAS_HISTORY_DEVICE}"
-  ></div>
+  <div class="acms-admin-revision-main">
+    <div
+      class="js-acms-preview"
+      data-url="{url}"
+      data-share="1"
+      data-enable-naked="0"
+      data-default-device="%{APPROVAL_PREVIEW_DEFAULT_DEVICE}"
+      data-has-history-device="%{APPROVAL_PREVIEW_HAS_HISTORY_DEVICE}"
+    ></div>
+  </div>
   <!-- END_MODULE Touch_NotApproval -->
-
+  </div>
 </body>
 
 </html>

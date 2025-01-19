@@ -1,4 +1,4 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // タブセレクト
@@ -6,6 +6,7 @@
 .acms-tab-text {
   display: block;
   max-width: 300px;
+
   @include global.font-size(12);
 }
 

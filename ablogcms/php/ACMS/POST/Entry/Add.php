@@ -1,5 +1,10 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Database;
+
 class ACMS_POST_Entry_Add extends ACMS_POST_Entry
 {
     function post()
@@ -19,22 +24,24 @@ class ACMS_POST_Entry_Add extends ACMS_POST_Entry
             }
         }
 
-        if (!$Column = Entry::extractColumn()) {
+        $unitRepository = Application::make('unit-repository');
+        assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+
+        $units = $unitRepository->extractUnits(null);
+        if (empty($units)) {
             return acmsLink([
                 'bid'   => BID,
                 'eid'   => EID,
             ]);
         }
-        $DB  = DB::singleton(dsn());
-        $Res = Entry::saveColumn($Column, EID, BID, true);
-        $Column = Entry::getSavedColumn();
+        $imageUnitIdTable = $unitRepository->saveUnits($units, EID, BID, true);
 
         // エントリーにメイン画像がなく，今回画像ユニットが追加されていたら，先頭の1つをメイン画像にする．
-        if (!($utid = ACMS_RAM::entryPrimaryImage(EID)) && !!($utid = reset($Res))) {
-            $SQL    = SQL::newUpdate('entry');
+        if (!($utid = ACMS_RAM::entryPrimaryImage(EID)) && !!($utid = reset($imageUnitIdTable))) {
+            $SQL = SQL::newUpdate('entry');
             $SQL->addUpdate('entry_primary_image', $utid);
             $SQL->addWhereOpr('entry_id', EID);
-            $DB->query($SQL->get(dsn()), 'exec');
+            Database::query($SQL->get(dsn()), 'exec');
             ACMS_RAM::entry(EID, null);
         }
 
@@ -48,11 +55,11 @@ class ACMS_POST_Entry_Add extends ACMS_POST_Entry
         $SQL->addUpdate('entry_last_update_user_id', SUID);
         $SQL->addWhereOpr('entry_id', EID);
         $SQL->addWhereOpr('entry_blog_id', BID);
-        $DB->query($SQL->get(dsn()), 'exec');
+        Database::query($SQL->get(dsn()), 'exec');
         ACMS_RAM::entry(EID, null);
         $this->clearCache(BID, EID);
 
-        AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーにユニットを追加しました');
+        Logger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーにユニットを追加しました');
 
         $this->redirect(acmsLink([
             'bid'   => BID,

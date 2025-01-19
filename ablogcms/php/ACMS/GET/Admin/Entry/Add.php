@@ -1,124 +1,35 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Traits\Unit\UnitRepositoryTrait;
+
 class ACMS_GET_Admin_Entry_Add extends ACMS_GET_Admin_Entry
 {
+    use UnitRepositoryTrait;
+
     public function get()
     {
-        if ('entry-add' <> substr(ADMIN, 0, 9)) {
+        if ('entry-add' !== substr(ADMIN, 0, 9)) {
             return '';
         }
         if (!sessionWithContribution()) {
             return '';
         }
-
         $addType = substr(ADMIN, 10);
 
-        if (!$aryType = configArray('column_def_add_' . $addType . '_type')) {
-            return '';
-        }
+        /** @var \Acms\Services\Unit\Repository $unitService */
+        $unitService = Application::make('unit-repository');
+        /** @var \Acms\Services\Unit\Rendering\Edit $unitRenderingService */
+        $unitRenderingService = Application::make('unit-rendering-edit');
 
-        $aryTypeLabel = [];
-        foreach (configArray('column_add_type') as $i => $type) {
-            $aryTypeLabel[$type] = config('column_add_type_label', '', $i);
-        }
-        $Tpl = new Template($this->tpl, new ACMS_Corrector());
-
-        if (!!EID) {
-            $DB = DB::singleton(dsn());
-            $SQL = SQL::newSelect('column');
-            $SQL->addSelect('*', null, null, 'count');
-            $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
-            $SQL->addWhereOpr('column_entry_id', EID);
-            $offset = intval($DB->query($SQL->get(dsn()), 'one'));
-        } else {
-            $offset = 0;
-        }
-
+        $units = $unitService->loadAddUnit($addType);
+        $offset = EID ? $this->countUnitsTrait(EID) : 0; // @phpstan-ignore-line
         if ($this->Get->get('limit')) {
-            $offset = intval($this->Get->get('limit'));
+            $offset = (int) $this->Get->get('limit');
         }
+        $tpl = new Template($this->tpl, new ACMS_Corrector());
+        $unitRenderingService->renderAddUnit($units, $offset, $tpl, []);
 
-        $cnt = count($aryType) + $offset;
-        foreach ($aryType as $i => $type) {
-            $data = Tpl::getAdminColumnDefinition('add_' . $addType, $type, $i);
-
-
-            $data['type'] = $type;
-            $data['id'] = uniqueString();
-            $data['align'] = config('column_def_add_' . $addType . '_align', '', $i);
-            $data['group'] = config('column_def_add_' . $addType . '_group', '', $i);
-            $data['attr'] = config('column_def_add_' . $addType . '_attr', '', $i);
-            $data['size'] = config('column_def_add_' . $addType . '_size', '', $i);
-            $data['edit'] = config('column_def_add_' . $addType . '_edit', '', $i);
-
-            if (!$this->buildColumn($data, $Tpl)) {
-                continue;
-            }
-
-            //------
-            // sort
-            for ($j = 1; $j <= $cnt; $j++) {
-                $_vars = [
-                    'value' => $j,
-                    'label' => $j,
-                ];
-                if (($i + 1 + $offset) == $j) {
-                    $_vars['selected'] = config('attr_selected');
-                }
-                $Tpl->add('sort:loop', $_vars);
-            }
-
-            //-------
-            // align
-            if (in_array(detectUnitTypeSpecifier($type), ['text', 'custom', 'module', 'table'], true)) {
-                $Tpl->add(['align#liquid'], [
-                    'align:selected#' . $data['align'] => config('attr_selected')
-                ]);
-            } else {
-                $Tpl->add(['align#solid'], [
-                    'align:selected#' . $data['align'] => config('attr_selected')
-                ]);
-            }
-
-            //-------
-            // group
-            if ('on' === config('unit_group')) {
-                $labels = configArray('unit_group_label');
-                foreach ($labels as $i => $label) {
-                    $class = config('unit_group_class', '', $i);
-                    $Tpl->add('group:loop', [
-                        'value' => $class,
-                        'label' => $label,
-                        'selected' => ($class === $data['group']) ? config('attr_selected') : '',
-                    ]);
-                }
-            }
-
-            //------
-            // attr
-            if ($aryAttr = configArray('column_' . $type . '_attr')) {
-                foreach ($aryAttr as $i => $_attr) {
-                    $label = config('column_' . $type . '_attr_label', '', $i);
-                    $_vars = [
-                        'value' => $_attr,
-                        'label' => $label,
-                    ];
-                    if ($data['attr'] == $_attr) {
-                        $_vars['selected'] = config('attr_selected');
-                    }
-                    $Tpl->add('clattr:loop', $_vars);
-                }
-            } else {
-                $Tpl->add('clattr#none');
-            }
-
-
-            $Tpl->add('column:loop', [
-                'cltype' => $type,
-                'uniqid' => $data['id'],
-                'clname' => ite($aryTypeLabel, $type),
-            ]);
-        }
-        return $Tpl->get();
+        return $tpl->get();
     }
 }

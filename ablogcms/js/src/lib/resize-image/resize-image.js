@@ -30,9 +30,9 @@ export default class ResizeImage {
         this.exec(input);
       });
     } else if (
-      1
-      && this.elm.classList.contains(this.targetMarkCF.substr(1))
-      && !this.elm.classList.contains('resizeImage')
+      1 &&
+      this.elm.classList.contains(this.targetMarkCF.substr(1)) &&
+      !this.elm.classList.contains('resizeImage')
     ) {
       this.elm.classList.add('resizeImage');
       this.exec(this.elm);
@@ -111,7 +111,7 @@ export default class ResizeImage {
           this.readFiles(event.dataTransfer.files, target);
           return false;
         },
-        false,
+        false
       );
 
       // ドロップエリアにいる間
@@ -123,7 +123,7 @@ export default class ResizeImage {
           dropArea.classList.add('drag-n-drop-hover');
           return false;
         },
-        false,
+        false
       );
 
       // ドロップエリアに入った時
@@ -136,7 +136,7 @@ export default class ResizeImage {
           dropArea.classList.add('drag-n-drop-hover');
           return false;
         },
-        false,
+        false
       );
 
       // ドロップエリアから出て行った時
@@ -151,7 +151,7 @@ export default class ResizeImage {
           }
           return false;
         },
-        false,
+        false
       );
     } else {
       // ブラウザが対応していない場合の処理
@@ -305,7 +305,7 @@ export default class ResizeImage {
         if (exif.DateTimeOriginal) {
           exif.DateTimeOriginal = exif.DateTimeOriginal.replace(
             /(\d{4}):(\d{2}):(\d{2})\s(\d{2}):(\d{2}):(\d{2})/g,
-            '$1-$2-$3 $4:$5:$6',
+            '$1-$2-$3 $4:$5:$6'
           );
         }
         if (!multi) {
@@ -329,7 +329,7 @@ export default class ResizeImage {
         exifData.setAttribute('type', 'hidden');
         exifData.setAttribute(
           'name',
-          target.querySelector(this.inputMark).getAttribute('name').replace('file', 'exif'),
+          target.querySelector(this.inputMark).getAttribute('name').replace('file', 'exif')
         );
         exifData.value = tpl2(exif);
 

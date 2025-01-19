@@ -618,7 +618,7 @@
               data-acms-tooltip="<!--T-->ブログのテーマカラーを16進数で設定します。<!--/T-->"
             ></i>
           </th>
-          <td class="js-acms-color-picker js-acms-theme-select">
+          <td>
             <input
               class="blog_theme_color acms-admin-float-left acms-admin-margin-bottom-small"
               type="text"
@@ -633,8 +633,9 @@
             />&nbsp;
             <button
               type="button"
-              class="js-acms-color-picker-submit acms-admin-btn-admin"
-              data-target=".blog_theme_color"
+              class="js-acms-color-picker acms-admin-btn-admin"
+              data-target="[name='blog_theme_color']"
+              data-theme-color-select="true"
             >
               <!--T-->色を選択<!--/T-->
             </button>

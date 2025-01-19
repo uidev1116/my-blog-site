@@ -3,6 +3,7 @@
 namespace Acms\Services\Cache\Adapters;
 
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 
 class Tag extends Standard
 {
@@ -12,20 +13,18 @@ class Tag extends Standard
      *
      * @param string $key
      * @param mixed $value
-     * @param array $tags
      * @param int $lifetime
+     * @param array $tags
+     * @return void
      */
-    public function put($key, $value, $lifetime = 0, $tags = [])
+    public function put(string $key, $value, int $lifetime = 0, $tags = []): void
     {
         $item = $this->adapter->getItem($key);
         $item->set($value);
-        if ($lifetime > 0) {
-            $item->expiresAt(new \DateTime('@' . strval(REQUEST_TIME + $lifetime)));
-        }
         foreach ($tags as $tag) {
             $item->tag($tag);
         }
-        $this->adapter->save($item);
+        $this->putItem($item, $lifetime);
     }
 
     /**

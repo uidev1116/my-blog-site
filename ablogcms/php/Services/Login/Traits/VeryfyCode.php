@@ -64,7 +64,7 @@ trait VeryfyCode
     protected function varifyCode(string $key, string $code): bool
     {
         $type = $this->getVerifyCodeType();
-        if (empty($key) || empty($type)) {
+        if (empty($key) || empty($type) || empty($code)) {
             return false;
         }
         $sql = SQL::newSelect('token');
@@ -74,7 +74,9 @@ trait VeryfyCode
         $sql->addWhereOpr('token_value', $code);
         $sql->addWhereOpr('token_expire', date('Y-m-d H:i:s', REQUEST_TIME), '>');
         $t = DB::query($sql->get(dsn()), 'one');
-
+        if (empty($t)) {
+            return false;
+        }
         return $t === $code;
     }
 

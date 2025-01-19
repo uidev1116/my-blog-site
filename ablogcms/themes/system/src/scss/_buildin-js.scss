@@ -1,11 +1,9 @@
-@use "global/common" as global;
+@use 'global/common' as global;
 
 // ------------------------------
 // 変数
 // ------------------------------
-@import "global/variables-fonts";
-
-
+@import 'global/variables-fonts';
 
 // ------------------------------
 // focused image
@@ -16,10 +14,7 @@
 
 #acms-preview-area {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: global.zIndex(preview-area);
 }
 
@@ -27,6 +22,7 @@
   position: relative;
   z-index: 1;
   min-height: 300px;
+
   &.done {
     min-height: 0;
   }
@@ -52,9 +48,9 @@
   height: 32px;
   font-size: 16px;
   text-align: center;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgb(0 0 0 / 10%);
   border-radius: 3px;
-  box-shadow: rgba(0, 0, 0, .2) 0 3px 6px;
+  box-shadow: rgb(0 0 0 / 20%) 0 3px 6px;
 }
 
 .js-acms-expand-btn .acms-icon {
@@ -67,24 +63,28 @@
   padding: 0;
   background: global.$acms-color-white;
 }
+
 .js-acms-expand-inner {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding-top: 60px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
+
 .js-acms-expanded {
   height: 100%;
 }
+
 .js-acms-expanded .js-acms-expand-btn {
   position: fixed;
 }
+
 .js-acms-expanding,
 .js-acms-expanded {
   z-index: global.zIndex(js-ui-expand);
 }
+
 .smartblock-tooltip {
   z-index: global.zIndex(js-ui-expand) !important;
 }
@@ -95,9 +95,11 @@
     top: 10px;
     right: 10px;
   }
+
   .js-acms-expand-inner {
     padding-top: 80px;
   }
+
   .js-acms-expand {
     padding: 10px;
   }
@@ -112,10 +114,10 @@
   position: relative;
 }
 
-.ProseMirror figure.empty-node .caption:before {
+.ProseMirror figure.empty-node .caption::before {
   height: 0;
   color: global.$acms-color-gray70;
-  content: "キャプションを入力してください";
+  content: 'キャプションを入力してください';
   pointer-events: none;
 }
 
@@ -142,7 +144,6 @@
   box-shadow: none;
 }
 
-
 // ------------------------------
 // Lazy Load
 // ------------------------------
@@ -150,7 +151,9 @@
 .js-lazy-load {
   transform: translateY(30px);
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.5, 0, 0, 1) 0.1s, transform 0.9s cubic-bezier(0.5, 0, 0, 1) 0.1s;
+  transition:
+    opacity 0.8s cubic-bezier(0.5, 0, 0, 1) 0.1s,
+    transform 0.9s cubic-bezier(0.5, 0, 0, 1) 0.1s;
 
   &.loading {
     transform: translateY(0);
@@ -164,12 +167,15 @@
 }
 
 img.js-lazy-load {
-  background: global.$acms-lazy-load-bg url('/themes/system/images/marker/icon-lazy-load-image.svg') no-repeat center / 40px 40px;
+  background: global.$acms-lazy-load-bg url('/themes/system/images/marker/icon-lazy-load-image.svg') no-repeat center /
+    40px 40px;
 
   &.loaded {
     background: none;
   }
 }
+
 .js-lazy-load.is-movie {
-  background: global.$acms-lazy-load-bg url('/themes/system/images/marker/icon-lazy-load-movie.svg') no-repeat center / 40px 40px;
+  background: global.$acms-lazy-load-bg url('/themes/system/images/marker/icon-lazy-load-movie.svg') no-repeat center /
+    40px 40px;
 }

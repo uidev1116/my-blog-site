@@ -1,7 +1,14 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Logger as AcmsLogger;
+
 class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
 {
+    use \Acms\Traits\Common\AssetsTrait;
+
     public function post()
     {
         try {
@@ -10,8 +17,8 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                     throw new \RuntimeException('権限がありません');
                 }
             } else {
-                if (!sessionWithCompilation(BID, false)) {
-                    if (!sessionWithContribution(BID, false)) {
+                if (!sessionWithCompilation(BID)) {
+                    if (!sessionWithContribution(BID)) {
                         throw new \RuntimeException('権限がありません');
                     }
                     if (SUID <> ACMS_RAM::entryUser(EID) && !enableApproval(BID, CID)) {
@@ -131,163 +138,16 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
 
     protected function unitDupe($rvid)
     {
-        $DB     = DB::singleton(dsn());
-
-        $SQL    = SQL::newSelect('column_rev');
-        $SQL->addWhereOpr('column_entry_id', EID);
-        $SQL->addWhereOpr('column_rev_id', 1);
-        $SQL->addWhereOpr('column_blog_id', BID);
-        $q      = $SQL->get(dsn());
-
-        $Unit   = SQL::newInsert('column_rev');
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-            do {
-                $type = detectUnitTypeSpecifier($row['column_type']);
-                switch ($type) {
-                    case 'image':
-                        if (empty($row['column_field_2'])) {
-                            break;
-                        }
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-
-                            $path   = ARCHIVES_DIR . $old;
-                            $large  = otherSizeImagePath($path, 'large');
-                            $tiny   = otherSizeImagePath($path, 'tiny');
-                            $square = otherSizeImagePath($path, 'square');
-
-                            $newPath    = ARCHIVES_DIR . $newOld;
-                            $newLarge   = otherSizeImagePath($newPath, 'large');
-                            $newTiny    = otherSizeImagePath($newPath, 'tiny');
-                            $newSquare  = otherSizeImagePath($newPath, 'square');
-
-                            copyFile($path, $newPath);
-                            copyFile($large, $newLarge);
-                            copyFile($tiny, $newTiny);
-                            copyFile($square, $newSquare);
-
-                            $newAry[] = $newOld;
-                        }
-
-                        $row['column_field_2']  = implodeUnitData($newAry);
-                        break;
-                    case 'file':
-                        if (empty($row['column_field_2'])) {
-                            break;
-                        }
-                        $oldAry = explodeUnitData($row['column_field_2']);
-                        $newAry = [];
-                        foreach ($oldAry as $old) {
-                            $info   = pathinfo($old);
-                            $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                            Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                            $ext    = empty($info['extension']) ? '' : '.' . $info['extension'];
-                            $newOld = $dirname . uniqueString() . $ext;
-
-                            $path   = ARCHIVES_DIR . $old;
-                            $newPath    = ARCHIVES_DIR . $newOld;
-
-                            copyFile($path, $newPath);
-
-                            $newAry[]   = $newOld;
-                        }
-
-                        $row['column_field_2']  = implodeUnitData($newAry);
-                        break;
-                    case 'custom':
-                        if (empty($row['column_field_6'])) {
-                            break;
-                        }
-                        $Field = acmsUnserialize($row['column_field_6']);
-                        foreach ($Field->listFields() as $fd) {
-                            if (
-                                1
-                                && !strpos($fd, '@path')
-                                && !strpos($fd, '@tinyPath')
-                                && !strpos($fd, '@largePath')
-                                && !strpos($fd, '@squarePath')
-                            ) {
-                                continue;
-                            }
-                            $set = false;
-                            foreach ($Field->getArray($fd, true) as $i => $old) {
-                                $info = pathinfo($old);
-                                $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-
-                                $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
-                                $newOld = $dirname . uniqueString() . $ext;
-
-                                $path = ARCHIVES_DIR . $old;
-                                $newPath = ARCHIVES_DIR . $newOld;
-
-                                copyFile($path, $newPath);
-                                if (!$set) {
-                                    $Field->delete($fd);
-                                    $set = true;
-                                }
-                                $Field->add($fd, $newOld);
-                            }
-                        }
-                        $row['column_field_6'] = acmsSerialize($Field);
-                        break;
-                }
-                foreach ($row as $key => $val) {
-                    if ($key !== 'column_rev_id') {
-                        $Unit->addInsert($key, $val);
-                    }
-                }
-                $Unit->addInsert('column_rev_id', $rvid);
-                $DB->query($Unit->get(dsn()), 'exec');
-            } while ($row = $DB->fetch($q));
-        }
+        // ユニットを複製
+        /** @var \Acms\Services\Unit\Repository $unitRepository */
+        $unitRepository = Application::make('unit-repository');
+        $unitRepository->duplicateRevisionUnits(EID, 1, $rvid); // @phpstan-ignore-line
     }
 
     protected function fieldDupe($rvid)
     {
         $revisionField  = loadEntryField(EID, 1);
-        foreach ($revisionField->listFields() as $fd) {
-            if (
-                1
-                and !strpos($fd, '@path')
-                and !strpos($fd, '@tinyPath')
-                and !strpos($fd, '@largePath')
-                and !strpos($fd, '@squarePath')
-            ) {
-                continue;
-            }
-            $imageFields = $revisionField->getArray($fd, true);
-            foreach ($imageFields as $i => $val) {
-                $old = $val;
-                if (!Storage::isFile(ARCHIVES_DIR . $old)) {
-                    continue;
-                }
-                $info = pathinfo($old);
-                $dirname = empty($info['dirname']) ? '' : $info['dirname'] . '/';
-                Storage::makeDirectory(ARCHIVES_DIR . $dirname);
-                $ext = empty($info['extension']) ? '' : '.' . $info['extension'];
-                $new = $dirname . uniqueString() . $ext;
-
-                $path = ARCHIVES_DIR . $old;
-                $newPath = ARCHIVES_DIR . $new;
-                copyFile($path, $newPath);
-
-                $imageFields[$i] = $new;
-            }
-            foreach ($imageFields as $i => $val) {
-                if ($i === 0) {
-                    $revisionField->setField($fd, $val);
-                } else {
-                    $revisionField->addField($fd, $val);
-                }
-            }
-        }
+        $this->duplicateFieldsTrait($revisionField);
         Entry::saveFieldRevision(EID, $revisionField, $rvid);
     }
 

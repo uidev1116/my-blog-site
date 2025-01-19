@@ -36,6 +36,7 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
         }
         $SQL = $this->buildQuery();
         if (!$all = $DB->query($SQL->get(dsn()), 'all')) {
+            $Tpl->add('notFound');
             return $Tpl->get();
         }
         $this->build($Tpl, $all);
@@ -113,7 +114,7 @@ class ACMS_GET_Admin_Config_Set_Index extends ACMS_GET_Admin
                     $Tpl->add('notMine');
                 }
             }
-            $Tpl->add('config_set:loop', $vars);
+            $Tpl->add(['config_set:loop'], $vars);
 
             $sort++;
         }

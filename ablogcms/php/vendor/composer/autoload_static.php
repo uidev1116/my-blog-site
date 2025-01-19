@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd5aacc46987f195e1079637b41a784ea
+class ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e
 {
     public static $files = array (
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
@@ -538,6 +538,7 @@ class ComposerStaticInitd5aacc46987f195e1079637b41a784ea
         'Acms\\Services\\Mailer\\Contracts\\MailerInterface' => __DIR__ . '/../../..' . '/php/Services/Mailer/Contracts/MailerInterface.php',
         'Acms\\Services\\Mailer\\Engine' => __DIR__ . '/../../..' . '/php/Services/Mailer/Engine.php',
         'Acms\\Services\\Mailer\\MailerServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Mailer/MailerServiceProvider.php',
+        'Acms\\Services\\Mailer\\Transport\\GoogleApi' => __DIR__ . '/../../..' . '/php/Services/Mailer/Transport/GoogleApi.php',
         'Acms\\Services\\Media\\Download' => __DIR__ . '/../../..' . '/php/Services/Media/Download.php',
         'Acms\\Services\\Media\\Helper' => __DIR__ . '/../../..' . '/php/Services/Media/Helper.php',
         'Acms\\Services\\Media\\MediaServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Media/MediaServiceProvider.php',
@@ -590,6 +591,34 @@ class ComposerStaticInitd5aacc46987f195e1079637b41a784ea
         'Acms\\Services\\Storage\\StorageServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Storage/StorageServiceProvider.php',
         'Acms\\Services\\Template\\Helper' => __DIR__ . '/../../..' . '/php/Services/Template/Helper.php',
         'Acms\\Services\\Template\\TemplateServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Template/TemplateServiceProvider.php',
+        'Acms\\Services\\Unit\\Contracts\\ExportEntry' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/ExportEntry.php',
+        'Acms\\Services\\Unit\\Contracts\\Model' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/Model.php',
+        'Acms\\Services\\Unit\\Contracts\\PrimaryImageUnit' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/PrimaryImageUnit.php',
+        'Acms\\Services\\Unit\\Contracts\\StaticExport' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/StaticExport.php',
+        'Acms\\Services\\Unit\\Contracts\\UnitListModule' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/UnitListModule.php',
+        'Acms\\Services\\Unit\\Contracts\\UnitSetting' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/UnitSetting.php',
+        'Acms\\Services\\Unit\\Contracts\\ValidatePath' => __DIR__ . '/../../..' . '/php/Services/Unit/Contracts/ValidatePath.php',
+        'Acms\\Services\\Unit\\Models\\Custom' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Custom.php',
+        'Acms\\Services\\Unit\\Models\\ExImage' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/ExImage.php',
+        'Acms\\Services\\Unit\\Models\\File' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/File.php',
+        'Acms\\Services\\Unit\\Models\\Image' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Image.php',
+        'Acms\\Services\\Unit\\Models\\Map' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Map.php',
+        'Acms\\Services\\Unit\\Models\\Media' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Media.php',
+        'Acms\\Services\\Unit\\Models\\Module' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Module.php',
+        'Acms\\Services\\Unit\\Models\\NewPage' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/NewPage.php',
+        'Acms\\Services\\Unit\\Models\\OsMap' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/OsMap.php',
+        'Acms\\Services\\Unit\\Models\\Quote' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Quote.php',
+        'Acms\\Services\\Unit\\Models\\RichEditor' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/RichEditor.php',
+        'Acms\\Services\\Unit\\Models\\Table' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Table.php',
+        'Acms\\Services\\Unit\\Models\\Text' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Text.php',
+        'Acms\\Services\\Unit\\Models\\Video' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/Video.php',
+        'Acms\\Services\\Unit\\Models\\YouTube' => __DIR__ . '/../../..' . '/php/Services/Unit/Models/YouTube.php',
+        'Acms\\Services\\Unit\\Registry' => __DIR__ . '/../../..' . '/php/Services/Unit/Registry.php',
+        'Acms\\Services\\Unit\\Rendering\\Config' => __DIR__ . '/../../..' . '/php/Services/Unit/Rendering/Config.php',
+        'Acms\\Services\\Unit\\Rendering\\Edit' => __DIR__ . '/../../..' . '/php/Services/Unit/Rendering/Edit.php',
+        'Acms\\Services\\Unit\\Rendering\\Front' => __DIR__ . '/../../..' . '/php/Services/Unit/Rendering/Front.php',
+        'Acms\\Services\\Unit\\Repository' => __DIR__ . '/../../..' . '/php/Services/Unit/Repository.php',
+        'Acms\\Services\\Unit\\UnitServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Unit/UnitServiceProvider.php',
         'Acms\\Services\\Update\\Database\\DatabaseInfo' => __DIR__ . '/../../..' . '/php/Services/Update/Database/DatabaseInfo.php',
         'Acms\\Services\\Update\\Database\\Rule' => __DIR__ . '/../../..' . '/php/Services/Update/Database/Rule.php',
         'Acms\\Services\\Update\\Database\\Schema' => __DIR__ . '/../../..' . '/php/Services/Update/Database/Schema.php',
@@ -614,6 +643,10 @@ class ComposerStaticInitd5aacc46987f195e1079637b41a784ea
         'Acms\\Services\\Webhook\\Template' => __DIR__ . '/../../..' . '/php/Services/Webhook/Template.php',
         'Acms\\Services\\Webhook\\Validator' => __DIR__ . '/../../..' . '/php/Services/Webhook/Validator.php',
         'Acms\\Services\\Webhook\\WebhookServiceProvider' => __DIR__ . '/../../..' . '/php/Services/Webhook/WebhookServiceProvider.php',
+        'Acms\\Traits\\Common\\AssetsTrait' => __DIR__ . '/../../..' . '/php/Traits/Common/AssetsTrait.php',
+        'Acms\\Traits\\Unit\\UnitModelTrait' => __DIR__ . '/../../..' . '/php/Traits/Unit/UnitModelTrait.php',
+        'Acms\\Traits\\Unit\\UnitRepositoryTrait' => __DIR__ . '/../../..' . '/php/Traits/Unit/UnitRepositoryTrait.php',
+        'Acms\\Traits\\Unit\\UnitTemplateTrait' => __DIR__ . '/../../..' . '/php/Traits/Unit/UnitTemplateTrait.php',
         'Alchemy\\Zippy\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/alchemy/zippy/src/Adapter/AbstractAdapter.php',
         'Alchemy\\Zippy\\Adapter\\AbstractBinaryAdapter' => __DIR__ . '/..' . '/alchemy/zippy/src/Adapter/AbstractBinaryAdapter.php',
         'Alchemy\\Zippy\\Adapter\\AbstractTarAdapter' => __DIR__ . '/..' . '/alchemy/zippy/src/Adapter/AbstractTarAdapter.php',
@@ -2384,10 +2417,10 @@ class ComposerStaticInitd5aacc46987f195e1079637b41a784ea
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd5aacc46987f195e1079637b41a784ea::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd5aacc46987f195e1079637b41a784ea::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd5aacc46987f195e1079637b41a784ea::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitd5aacc46987f195e1079637b41a784ea::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$classMap;
 
         }, null, ClassLoader::class);
     }

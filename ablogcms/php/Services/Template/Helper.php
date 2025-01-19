@@ -5,12 +5,12 @@ namespace Acms\Services\Template;
 use DB;
 use SQL;
 use Storage;
-use Tpl;
 use Common;
 use ACMS_RAM;
 use Field;
 use Field_Validation;
 use ACMS_Filter;
+use Acms\Services\Facades\Application;
 use Acms\Services\Facades\Media;
 use Acms\Services\Facades\RichEditor;
 
@@ -578,25 +578,10 @@ class Helper
      */
     public function eagerLoadFullText($entryIds)
     {
-        $eagerLoadingData = [];
-        if (empty($entryIds)) {
-            return $eagerLoadingData;
-        }
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereIn('column_entry_id', array_unique($entryIds));
-        $SQL->addWhereOpr('column_attr', 'acms-form', '<>');
-        $SQL->addOrder('column_sort', 'ASC');
-        $q = $SQL->get(dsn());
-        $DB->query($q, 'fetch');
-        while ($unit = $DB->fetch($q)) {
-            $eid = $unit['column_entry_id'];
-            if (!isset($eagerLoadingData[$eid])) {
-                $eagerLoadingData[$eid] = [];
-            }
-            $eagerLoadingData[$eid][] = $unit;
-        }
-        return $eagerLoadingData;
+        $unitRepository = Application::make('unit-repository');
+        assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+
+        return $unitRepository->eagerLoadUnits($entryIds);
     }
 
     /**
@@ -610,51 +595,12 @@ class Helper
      */
     public function buildSummaryFulltext($vars, $eid, $eagerLoadingData)
     {
-        $textData = [];
-
         if (isset($eagerLoadingData[$eid]) && is_array($eagerLoadingData[$eid])) {
-            foreach ($eagerLoadingData[$eid] as $unit) {
-                if ($unit['column_align'] === 'hidden') {
-                    continue;
-                }
-                $type = detectUnitTypeSpecifier($unit['column_type']);
-                if ('text' === $type) {
-                    $_text  = $unit['column_field_1'];
-                    $corrector = new \ACMS_Corrector();
-                    switch ($unit['column_field_2']) {
-                        case 'markdown':
-                            $_text = Common::parseMarkdown($_text);
-                            break;
-                        case 'table':
-                            $_text = $corrector->table($_text);
-                            break;
-                    }
-                    $text = preg_replace('@\s+@u', ' ', strip_tags($_text));
-                    $data = explodeUnitData($text);
-                    foreach ($data as $i => $txt) {
-                        if (isset($textData[$i])) {
-                            $textData[$i] .= $txt . ' ';
-                        } else {
-                            $textData[] = $txt . ' ';
-                        }
-                    }
-                } elseif ('rich-editor' === $type) {
-                    $_text  = $unit['column_field_1'];
-                    $html = RichEditor::render($_text);
-                    $text = strip_tags($html);
-                    $data = explodeUnitData($text);
-                    foreach ($data as $i => $txt) {
-                        if (isset($textData[$i])) {
-                            $textData[$i] .= $txt . ' ';
-                        } else {
-                            $textData[] = $txt . ' ';
-                        }
-                    }
-                }
-            }
+            /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+            $unitRenderingService = Application::make('unit-rendering-front');
+            $textData = $unitRenderingService->renderSummaryText($eagerLoadingData[$eid]);
+            buildUnitData($textData, $vars, 'summary');
         }
-        buildUnitData($textData, $vars, 'summary');
-
         return $vars;
     }
 
@@ -765,60 +711,10 @@ class Helper
      */
     function eagerLoadMainImage($entries)
     {
-        $eagerLoadingData = [
-            'unit' => [],
-            'media' => [],
-        ];
-        $mainImageUnits = [];
-        $mediaIds = [];
-        foreach ($entries as $entry) {
-            $primaryImageUnitId = intval($entry['entry_primary_image']);
-            if (empty($primaryImageUnitId)) {
-                continue;
-            }
-            $mainImageUnits[] = $primaryImageUnitId;
-        }
-        if (empty($mainImageUnits)) {
-            return $eagerLoadingData;
-        }
-        $DB = DB::singleton(dsn());
-        $SQL = SQL::newSelect('column');
-        $SQL->addWhereIn('column_id', array_unique($mainImageUnits));
-        $q = $SQL->get(dsn());
-        $DB->query($q, 'fetch');
-        while ($unit = $DB->fetch($q)) {
-            $utid = $unit['column_id'];
-            $type = detectUnitTypeSpecifier($unit['column_type']);
-            $paths = [];
-            $alt = '';
-            $caption = '';
-            if ($type === 'image') {
-                $paths = explodeUnitData($unit['column_field_2']);
-                $alt = explodeUnitData($unit['column_field_4']);
-                $caption = explodeUnitData($unit['column_field_1']);
-            } elseif ($type === 'media') {
-                $paths = explodeUnitData($unit['column_field_1']);
-                $alt = explodeUnitData($unit['column_field_3']);
-                $caption = explodeUnitData($unit['column_field_2']);
-                $mediaIds = array_merge($paths, $mediaIds);
-            }
-            $eagerLoadingData['unit'][$utid] = $unit;
-            $eagerLoadingData['unit'][$utid] += [
-                'type' => $type,
-                'paths' => $paths,
-                'alt' => $alt,
-                'caption' => $caption,
-            ];
-        }
-        $SQL = SQL::newSelect('media');
-        $SQL->addWhereIn('media_id', $mediaIds);
-        $q = $SQL->get(dsn());
-        $DB->query($q, 'fetch');
-        while ($media = $DB->fetch($q)) {
-            $mediaId = $media['media_id'];
-            $eagerLoadingData['media'][$mediaId] = $media;
-        }
-        return $eagerLoadingData;
+        $unitRepository = Application::make('unit-repository');
+        assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+
+        return $unitRepository->eagerLoadPrimaryImageUnits($entries);
     }
 
     /**
@@ -827,7 +723,7 @@ class Helper
      * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
      * @param int $pimageId
      * @param array $config
-     * @param array $eagerLoadingData
+     * @param array{unit: \Acms\Services\Unit\Contracts\Model[], media: array} $eagerLoadingData
      *
      * @return array
      */
@@ -843,11 +739,13 @@ class Helper
 
         if ($pimageId && isset($eagerLoadingData['unit'][$pimageId])) {
             $unit = $eagerLoadingData['unit'][$pimageId];
-            $pathAry = $unit['paths'];
-            $unitType = $unit['type'];
-            $align = $unit['column_align'];
-            $alt = $unit['alt'];
-            $caption = $unit['caption'];
+            $unitType = $unit->getUnitType();
+            $align = $unit->getAlign();
+            if ($unit instanceof \Acms\Services\Unit\Contracts\PrimaryImageUnit) {
+                $pathAry = $unit->getPaths();
+                $alt = $unit->getAlts();
+                $caption = $unit->getCaptions();
+            }
         } else {
             $path = null;
         }
@@ -871,11 +769,13 @@ class Helper
             $vars['focalX' . $fx] = 0;
             $vars['focalY' . $fx] = 0;
             $mediaSize = '';
+            $query = '';
 
             if ($unitType === 'media') {
                 if (isset($eagerLoadingData['media'][$path])) {
                     if ($media = $eagerLoadingData['media'][$path]) {
                         $path = $media['media_path'];
+                        $query = Media::cacheBusting($media['media_update_date']);
                         $focalPoint = $media['media_field_5'];
                         $mediaSize = $media['media_image_size'];
                         if (strpos($focalPoint, ',') !== false) {
@@ -913,7 +813,7 @@ class Helper
                     }
                 }
                 $vars += [
-                    'path' . $fx => Media::urlencode($path),
+                    'path' . $fx => Media::urlencode($path) . $query,
                 ];
                 if ('on' == $config['imageTrim']) {
                     if ($x > $config['imageX'] and $y > $config['imageY']) {
@@ -1030,7 +930,8 @@ class Helper
                     'left' . $fx  => $left,
                     'top' . $fx   => $top,
                     'alt' . $fx   => $alt,
-                    'caption' . $fx => $caption
+                    'caption' . $fx => $caption,
+                    'utid' . $fx => $pimageId,
                 ];
                 //------
                 // tiny
@@ -1038,7 +939,7 @@ class Helper
                 if ($mediaSize) {
                 } elseif ($xy = Storage::getImageSize($tiny)) {
                     $vars += [
-                        'tinyPath' . $fx => $tiny,
+                        'tinyPath' . $fx => $tiny . $query,
                         'tinyX' . $fx => $xy[0],
                         'tinyY' . $fx => $xy[1],
                     ];
@@ -1048,7 +949,7 @@ class Helper
                 $square = $storageDir . preg_replace('@(.*?)([^/]+)$@', '$1square-$2', $filename);
                 if (Storage::isFile($square)) {
                     $vars += [
-                        'squarePath' . $fx => $square,
+                        'squarePath' . $fx => $square . $query,
                         'squareX' . $fx => $squareSize,
                         'squareY' . $fx => $squareSize,
                     ];
@@ -1059,7 +960,7 @@ class Helper
                 if ($mediaSize) {
                 } elseif ($xy = Storage::getImageSize($large)) {
                     $vars += [
-                        'largePath' . $fx => $large,
+                        'largePath' . $fx => $large . $query,
                         'largeX' . $fx => $xy[0],
                         'largeY' . $fx => $xy[1],
                     ];
@@ -1151,9 +1052,13 @@ class Helper
             'imageY' => 100,
             'imageTrim' => 'off',
             'imageCenter' => 'off',
+            'imageZoom' => 'off',
         ];
 
-        foreach ($all as $row) {
+        foreach ($all as $i => $row) {
+            if ($i > 0) {
+                $Tpl->add(array_merge(['related:glue'], $loopblock));
+            }
             $bid    = intval($row['entry_blog_id']);
             $cid    = intval($row['entry_category_id']);
             $eid    = intval($row['entry_id']);
@@ -1479,670 +1384,6 @@ class Helper
                 }
             }
         }
-    }
-
-    /**
-     * 編集ページのユニットのデフォルト値を取得
-     *
-     * @param string $mode
-     * @param string $type
-     * @param int $i
-     *
-     * @return array
-     */
-    public function getAdminColumnDefinition($mode, $type, $i)
-    {
-        $pfx    = 'column_def_' . $mode . '_';
-
-        // 特定指定子を除外した、一般名のユニット種別
-        $type = detectUnitTypeSpecifier($type);
-
-        if ('text' == $type) {
-            return [
-                'text' => config($pfx . 'field_1', '', $i),
-                'tag' => config($pfx . 'field_2', '', $i),
-                'extend_tag' => '',
-            ];
-        } elseif ('table' == $type) {
-            return [
-                'table' => config($pfx . 'field_1', '', $i),
-            ];
-        } elseif ('image' == $type) {
-            return [
-                'caption' => config($pfx . 'field_1', '', $i),
-                'path' => config($pfx . 'field_2', '', $i),
-                'link' => config($pfx . 'field_3', '', $i),
-                'alt' => config($pfx . 'field_4', '', $i),
-                'exif' => config($pfx . 'field_6', '', $i),
-            ];
-        } elseif ('table' == $type) {
-            return [
-                'table' => config($pfx . 'field_1', '', $i),
-            ];
-        } elseif ('file' == $type) {
-            return [
-                'caption'   => config($pfx . 'field_1', '', $i),
-                'path'      => config($pfx . 'field_2', '', $i),
-            ];
-        } elseif ('osmap' == $type || 'map' == $type) {
-            return [
-                'msg'   => config($pfx . 'field_1', '', $i),
-                'lat'   => config($pfx . 'field_2', '35.185574', $i),
-                'lng'   => config($pfx . 'field_3', '136.899066', $i),
-                'zoom'  => config($pfx . 'field_4', '10', $i),
-                'view_activate' => '',
-                'view_pitch' => '',
-                'view_heading' => '',
-                'view_zoom' => '',
-            ];
-        } elseif ('youtube' == $type) {
-            return [
-                'youtube_id'    => config($pfx . 'field_2', '', $i),
-            ];
-        } elseif ('video' == $type) {
-            return [
-                'video_id'    => config($pfx . 'field_2', '', $i),
-            ];
-        } elseif ('eximage' == $type) {
-            return [
-                'caption'   => config($pfx . 'field_1', '', $i),
-                'normal'    => config($pfx . 'field_2', '', $i),
-                'large'     => config($pfx . 'field_3', '', $i),
-                'link'      => config($pfx . 'field_4', '', $i),
-                'alt'       => config($pfx . 'field_5', '', $i),
-            ];
-        } elseif ('quote' == $type) {
-            return [
-                'quote_url' => config($pfx . 'field_6', '', $i),
-                'html'      => config($pfx . 'field_7', '', $i),
-                'site_name' => config($pfx . 'field_1', '', $i),
-                'author'    => config($pfx . 'field_2', '', $i),
-                'title'     => config($pfx . 'field_3', '', $i),
-                'description' => config($pfx . 'field_4', '', $i),
-                'image'     => config($pfx . 'field_5', '', $i),
-            ];
-        } elseif ('media' == $type) {
-            return [
-                'media_id' => config($pfx . 'field_1', '', $i),
-                'caption' => config($pfx . 'field_2', '', $i),
-                'alt' => config($pfx . 'field_3', '', $i),
-                'enlarged' => config($pfx . 'field_4', '', $i),
-                'use_icon' => config($pfx . 'field_5', '', $i),
-                'link' => config($pfx . 'field_7', '', $i),
-            ];
-        } elseif ('rich-editor' == $type) {
-            return [
-                'json' => config($pfx . 'field_1', '', $i)
-            ];
-        } elseif ('break' == $type) {
-            return [
-                'label' => config($pfx . 'field_1', '', $i),
-            ];
-        } elseif ('module' == $type) {
-            return [
-                'mid'   => config($pfx . 'field_1', '', $i),
-                'tpl'   => config($pfx . 'field_2', '', $i),
-            ];
-        } elseif ('custom' == $type) {
-            return [
-                'field' => config($pfx . 'field_6', '', $i),
-            ];
-        } else {
-            return [];
-        }
-    }
-
-    /**
-     * 編集ページのユニットを組み立て
-     *
-     * @param array $data
-     * @param \Acms\Services\View\Contracts\ViewInterface $Tpl
-     * @param string[]|string $rootBlock
-     * @param array $mediaData
-     *
-     * @return bool
-     */
-    public function buildAdminColumn($data, $Tpl, $rootBlock = [], $mediaData = [])
-    {
-        $rootBlock  = empty($rootBlock) ? [] :
-            (is_array($rootBlock) ? $rootBlock : [$rootBlock])
-        ;
-
-        $id     = $data['id'];
-        $clid   = ite($data, 'clid');
-        $typeS  = $data['type'];
-        $size   = $data['size'];
-
-        // 特定指定子を除外した、一般名のユニット種別
-        $type = detectUnitTypeSpecifier($typeS);
-
-        //------
-        // text
-        if ('text' == $type) {
-            $suffix = '';
-            if (preg_match('@(?:id="([^"]+)"|class="([^"]+)")@', $data['attr'], $match)) {
-                if (!empty($match[1])) {
-                    $suffix .= '#' . $match[1];
-                }
-                if (!empty($match[2])) {
-                    $suffix .= '.' . $match[2];
-                }
-            }
-            foreach (configArray('column_text_tag') as $i => $tag) {
-                $vars = [
-                    'value' => $tag,
-                    'label' => config('column_text_tag_label', '', $i),
-                    'extend' => config('column_text_tag_extend_label', '', $i),
-                ];
-                if ($data['tag'] . $suffix === $tag) {
-                    $vars['selected'] = config('attr_selected');
-                }
-                $Tpl->add(array_merge(['textTag:loop', $type], $rootBlock), $vars);
-            }
-            $textVars = [
-                'id' => $id,
-                'extend_tag' => isset($data['extend_tag']) ? $data['extend_tag'] : '',
-            ];
-            buildUnitData($data['text'], $textVars, 'text');
-            $Tpl->add(array_merge([$type], $rootBlock), $textVars);
-
-        //-------
-        // table
-        } elseif ('table' == $type) {
-            $vars = [
-                'id' => $id,
-            ];
-            buildUnitData($data['table'], $vars, 'table');
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-        //-------
-        // image
-        } elseif ('image' == $type) {
-            foreach (configArray('column_image_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'     => config('column_image_size', '', $i),
-                    'label'     => config('column_image_size_label', '', $i),
-                    'display'   => config('column_image_display_size', '', $i),
-                ];
-                if ($size == config('column_image_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                }
-
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-            if (!isset($data['display_size'])) {
-                $data['display_size'] = '';
-            }
-            $vars  = [
-                'old'       => $data['path'],
-                'size_old'  => $size . ':' . $data['display_size'],
-                'caption'   => $data['caption'],
-                'link'      => $data['link'],
-                'alt'       => $data['alt'],
-                'exif'      => $data['exif'],
-                'id'        => $id,
-            ];
-
-            buildUnitData($vars['caption'], $vars, 'caption');
-            buildUnitData($vars['exif'], $vars, 'exif');
-            buildUnitData($vars['link'], $vars, 'link');
-            buildUnitData($vars['alt'], $vars, 'alt');
-            buildUnitData($data['path'], $vars, 'old');
-
-            if (isset($data['edit'])) {
-                $edit = $data['edit'];
-                $vars['edit:selected#' . $edit] = config('attr_selected');
-            }
-
-            //----------------
-            // tiny and large
-            if (!empty($data['path'])) {
-                $nXYAry     = [];
-                $tXYAry     = [];
-                $tinyAry    = [];
-                $lXYAry     = [];
-
-                foreach (explodeUnitData($data['path']) as $normal) {
-                    $nXY   = Storage::getImageSize(ARCHIVES_DIR . $normal);
-                    $tiny  = preg_replace('@[^/]+$@', 'tiny-$0', $normal);
-                    $large = preg_replace('@[^/]+$@', 'large-$0', $normal);
-                    $tXY   = Storage::getImageSize(ARCHIVES_DIR . $tiny);
-                    if ($lXY = Storage::getImageSize(ARCHIVES_DIR . $large)) {
-                        $lXYAry['x'][]  = $lXY[0];
-                        $lXYAry['y'][]  = $lXY[1];
-                    } else {
-                        $lXYAry['x'][]  = '';
-                        $lXYAry['y'][]  = '';
-                    }
-
-                    $nXYAry['x'][] = isset($nXY[0]) ? $nXY[0] : '';
-                    $nXYAry['y'][] = isset($nXY[1]) ? $nXY[1] : '';
-                    $tXYAry['x'][] = isset($tXY[0]) ? $tXY[0] : '';
-                    $tXYAry['y'][] = isset($tXY[1]) ? $tXY[1] : '';
-
-                    $tinyAry[]  = $tiny;
-                }
-
-                $popup = otherSizeImagePath($data['path'], 'large');
-                if (!Storage::getImageSize(ARCHIVES_DIR . $popup)) {
-                    $popup = $data['path'];
-                }
-
-                $vars   += [
-                    'tiny'  => implodeUnitData($tinyAry),
-                    'tinyX' => implodeUnitData($tXYAry['x']),
-                    'tinyY' => implodeUnitData($tXYAry['y']),
-                    'popup' => $popup,
-                    'normalX' => implodeUnitData($nXYAry['x']),
-                    'normalY' => implodeUnitData($nXYAry['y']),
-                    'largeX' => implodeUnitData($lXYAry['x']),
-                    'largeY' => implodeUnitData($lXYAry['y']),
-                ];
-
-                buildUnitData($vars['tiny'], $vars, 'tiny');
-                buildUnitData($vars['tinyX'], $vars, 'tinyX');
-                buildUnitData($vars['popup'], $vars, 'popup');
-                buildUnitData($vars['normalX'], $vars, 'normalX');
-                buildUnitData($vars['normalY'], $vars, 'normalY');
-                buildUnitData($vars['largeX'], $vars, 'largeX');
-                buildUnitData($vars['largeY'], $vars, 'largeY');
-
-                foreach ($vars as $key => $val) {
-                    if ($val == '') {
-                        unset($vars[$key]);
-                    }
-                }
-            } else {
-                $Tpl->add(array_merge(['preview#none', $type], $rootBlock));
-            }
-
-            //-------
-            // rotate
-            if (function_exists('imagerotate')) {
-                $count = count(explodeUnitData($data['path']));
-                for ($i = 0; $i < $count; $i++) {
-                    if (empty($i)) {
-                        $n = '';
-                    } else {
-                        $n = $i + 1;
-                    }
-                    $Tpl->add(array_merge(['rotate' . $n, $type], $rootBlock));
-                }
-            }
-
-            //---------------
-            // primary image
-            if (array_key_exists('primaryImage', $data)) {
-                $vars['primaryImageId'] = $id;
-                if (!empty($clid) and $data['primaryImage'] == $clid) {
-                    $vars['primaryImageChecked']    = config('attr_checked');
-                }
-            }
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //------
-        // file
-        } elseif ('file' == $type) {
-            $vars  = [
-                'id'        => $id,
-            ];
-            if (!empty($data['path'])) {
-                $vars['old']      = $data['path'];
-                $length = count(explodeUnitData($data['path']));
-                buildUnitData($vars['old'], $vars, 'old');
-
-                for ($i = 0; $i < $length; $i++) {
-                    if (empty($i)) {
-                        $fx = '';
-                    } else {
-                        $fx = $i + 1;
-                    }
-
-                    if (!isset($vars['old' . $fx])) {
-                        continue;
-                    }
-                    $path   = $vars['old' . $fx];
-                    $vars['basename' . $fx] = Storage::mbBasename($path);
-
-                    $e    = preg_replace('@.*\.(?=[^.]+$)@', '', $path);
-                    $t   = null;
-                    if (in_array($e, configArray('file_extension_document'), true)) {
-                        $t   = 'document';
-                    } elseif (in_array($e, configArray('file_extension_archive'), true)) {
-                        $t   = 'archive';
-                    } elseif (in_array($e, configArray('file_extension_movie'), true)) {
-                        $t   = 'movie';
-                    } elseif (in_array($e, configArray('file_extension_audio'), true)) {
-                        $t   = 'audio';
-                    }
-                    $cwd    = getcwd();
-                    Storage::changeDir(THEMES_DIR . 'system/' . IMAGES_DIR . 'fileicon/');
-                    $icon   = glob($e . '.*') ? $e : $t;
-                    Storage::changeDir($cwd);
-
-                    $vars['icon' . $fx]   = $icon;
-                    $vars['type' . $fx]   = $icon;
-                }
-
-                $vars['caption']  = $data['caption'];
-                $vars['deleteId'] = $id;
-
-                buildUnitData($vars['caption'], $vars, 'caption');
-            }
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //-----
-        // map
-        } elseif ('map' === $type) {
-            foreach (configArray('column_map_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'   => config('column_map_size', '', $i),
-                    'label'   => config('column_map_size_label', '', $i),
-                    'display' => config('column_map_display_size', '', $i),
-                ];
-                if ($data['size'] == config('column_map_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                }
-
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-
-            $Tpl->add(array_merge([$type], $rootBlock), [
-                'lat'   => $data['lat'],
-                'lng'   => $data['lng'],
-                'zoom'  => $data['zoom'],
-                'msg'   => $data['msg'],
-                'id'    => $id,
-                'view_activate' => isset($data['view_activate']) ? $data['view_activate'] : '',
-                'view_activate:checked#true' => (isset($data['view_activate']) && $data['view_activate'] === 'true') ? ' checked' : '',
-                'view_pitch' => isset($data['view_pitch']) ? $data['view_activate'] : '',
-                'view_heading' => isset($data['view_heading']) ? $data['view_activate'] : '',
-                'view_zoom' => isset($data['view_zoom']) ? $data['view_activate'] : '',
-            ]);
-        } elseif ('osmap' === $type) {
-            foreach (configArray('column_map_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'   => config('column_map_size', '', $i),
-                    'label'   => config('column_map_size_label', '', $i),
-                    'display' => config('column_map_display_size', '', $i),
-                ];
-                if ($data['size'] == config('column_map_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-
-            $Tpl->add(array_merge([$type], $rootBlock), [
-                'lat'   => $data['lat'],
-                'lng'   => $data['lng'],
-                'zoom'  => $data['zoom'],
-                'msg'   => $data['msg'],
-                'id'    => $id,
-            ]);
-        //---------
-        // youtube
-        } elseif ('youtube' == $type) {
-            foreach (configArray('column_youtube_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'   => config('column_youtube_size', '', $i),
-                    'label'   => config('column_youtube_size_label', '', $i),
-                    'display' => config('column_youtube_display_size', '', $i),
-                ];
-                if ($data['size'] == config('column_youtube_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-            $vars = ['id' => $id];
-            buildUnitData($data['youtube_id'], $vars, 'youtubeId');
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //---------
-        // video
-        } elseif ('video' == $type) {
-            foreach (configArray('column_video_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'   => config('column_video_size', '', $i),
-                    'label'   => config('column_video_size_label', '', $i),
-                    'display' => config('column_video_display_size', '', $i),
-                ];
-                if ($data['size'] == config('column_video_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-            $vars = ['id' => $id];
-            buildUnitData($data['video_id'], $vars, 'videoId');
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //---------
-        // eximage
-        } elseif ('eximage' == $type) {
-            if (!empty($size) and ($xy = explode('x', $size))) {
-                $x  = intval($xy[0]);
-                $y  = intval(ite($xy, 1));
-                $size   = max($x, $y);
-            }
-
-            $match  = false;
-            foreach (configArray('column_eximage_size_label') as $i => $_label) {
-                $vars  = [
-                    'value'   => config('column_eximage_size', '', $i),
-                    'label'   => config('column_eximage_size_label', '', $i),
-                    'display' => config('column_eximage_display_size', '', $i),
-                ];
-                if ($size == config('column_eximage_size', '', $i)) {
-                    $vars['selected']  = config('attr_selected');
-                    $match  = true;
-                }
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $vars);
-            }
-            $vars  = [
-                'caption'   => $data['caption'],
-                'large'     => $data['large'],
-                'link'      => $data['link'],
-                'alt'       => $data['alt'],
-                'id'        => $id,
-            ];
-            if (!empty($data['normal'])) {
-                $vars['normal']  = $data['normal'];
-            }
-
-            if (!$match) {
-                $vars['size:selected#none'] = config('attr_selected');
-            }
-
-            buildUnitData($data['caption'], $vars, 'caption');
-            buildUnitData($data['normal'], $vars, 'normal');
-            buildUnitData($data['large'], $vars, 'large');
-            buildUnitData($data['link'], $vars, 'link');
-            buildUnitData($data['alt'], $vars, 'alt');
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //---------
-        // quote
-        } elseif ('quote' == $type) {
-            $vars = [
-                'quote_url' => $data['quote_url'],
-                'html'      => isset($data['html']) ? $data['html'] : '',
-                'site_name' => isset($data['site_name']) ? $data['site_name'] : '',
-                'author'    => isset($data['author']) ? $data['author'] : '',
-                'title'     => isset($data['title']) ? $data['title'] : '',
-                'description'   => isset($data['description']) ? $data['description'] : '',
-                'image'     => isset($data['image']) ? $data['image'] : '',
-                'id'        => $id,
-            ];
-            buildUnitData($vars['quote_url'], $vars, 'quote_url');
-            buildUnitData($vars['html'], $vars, 'html');
-            buildUnitData($vars['site_name'], $vars, 'site_name');
-            buildUnitData($vars['author'], $vars, 'author');
-            buildUnitData($vars['title'], $vars, 'title');
-            buildUnitData($vars['description'], $vars, 'description');
-            buildUnitData($vars['image'], $vars, 'image');
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //---------
-        // media
-        } elseif ('media' == $type) {
-            $DB     = DB::singleton(dsn());
-
-            $midAry = explodeUnitData($data['media_id']);
-            $vars   = ['type' => 'image'];
-            $mediaType = false;
-            foreach ($midAry as $i => $mid) {
-                $mid = intval($mid);
-                if (empty($i)) {
-                    $fx = '';
-                } else {
-                    $fx = $i + 1;
-                }
-
-                if (isset($mediaData[$mid])) {
-                    $media = $mediaData[$mid];
-                } else {
-                    $SQL = SQL::newSelect('media');
-                    $SQL->addWhereOpr('media_id', $mid);
-                    $media = $DB->query($SQL->get(dsn()), 'row');
-                }
-                if (empty($media)) {
-                    $media = [
-                        'media_type' => '',
-                        'media_path' => '',
-                        'media_image_size' => '',
-                        'media_field_1' => '',
-                        'media_field_2' => '',
-                        'media_field_3' => '',
-                        'media_field_4' => '',
-                        'media_file_name' => '',
-                        'media_thumbnail' => ''
-                    ];
-                }
-                if (isset($media['media_type']) && Media::isImageFile($media['media_type'])) {
-                    $mediaType = true;
-                } elseif (isset($media['media_type']) && Media::isSvgFile($media['media_type'])) {
-                    $vars['type' . $fx] = 'svg';
-                } elseif ($media) {
-                    $vars['type' . $fx] = 'file';
-                }
-                $path = Media::urlencode($media['media_path']);
-                $ext = ite(pathinfo($path), 'extension');
-                $size = $media['media_image_size'];
-                $sizes = explode(' x ', $size);
-                $landscape = 'true';
-                if ($sizes && isset($sizes[0]) && isset($sizes[1])) {
-                    $landscape = $sizes[0] > $sizes[1] ? 'true' : 'false';
-                }
-                $vars += [
-                    'id'            => $id,
-                    'media_id' . $fx  => $mid,
-                    'caption' . $fx => $media['media_field_1'],
-                    'link' . $fx      => $media['media_field_2'],
-                    'alt' . $fx       => $media['media_field_3'],
-                    'title' . $fx     => $media['media_field_4'],
-                    'type' . $fx      => $media['media_type'],
-                    'name' . $fx      => $media['media_file_name'],
-                    'path' . $fx      => $path,
-                    'tiny' . $fx      => otherSizeImagePath($path, 'tiny'),
-                    'landscape' . $fx     => $landscape,
-                    'media_pdf' . $fx => 'no',
-                    'use_icon' . $fx => 'false',
-                ];
-                if (!empty($ext)) {
-                    $vars['icon' . $fx] = pathIcon($ext);
-                }
-                if (!empty($media['media_thumbnail'])) {
-                    $vars['thumbnail' . $fx] = Media::getPdfThumbnail($media['media_thumbnail']);
-                    $vars['media_pdf' . $fx] = 'yes';
-                    buildUnitData($data['use_icon'], $vars, 'use_icon');
-                }
-            }
-
-            buildUnitData($data['enlarged'], $vars, 'enlarged');
-            buildUnitData($data['link'], $vars, 'override-link');
-            buildUnitData($data['caption'], $vars, 'override-caption');
-            buildUnitData($data['alt'], $vars, 'override-alt');
-
-            foreach (configArray('column_media_size_label') as $i => $_label) {
-                $sizeAry  = [
-                    'value'   => config('column_media_size', '', $i),
-                    'label'   => config('column_media_size_label', '', $i),
-                    'display' => config('column_media_display_size', '', $i),
-                ];
-                if ($data['size'] == config('column_media_size', '', $i)) {
-                    $sizeAry['selected']  = config('attr_selected');
-                }
-                $Tpl->add(array_merge(['size:loop', $type], $rootBlock), $sizeAry);
-            }
-
-            //---------------
-            // primary image
-            if ($mediaType && array_key_exists('primaryImage', $data)) {
-                $vars['primaryImageId'] = $id;
-                if (!empty($clid) and $data['primaryImage'] == $clid) {
-                    $vars['primaryImageChecked']    = config('attr_checked');
-                }
-            }
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-        } elseif ('rich-editor' == $type) {
-            $vars = ['id' => $id];
-            if (!empty($data['json'])) {
-                buildUnitData(RichEditor::render($data['json']), $vars, 'html');
-            } else {
-                buildUnitData('', $vars, 'html');
-            }
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-        //-------
-        // break
-        } elseif ('break' == $type) {
-            $vars = ['id' => $id];
-            buildUnitData($data['label'], $vars, 'label');
-
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //--------
-        // module
-        } elseif ('module' == $type) {
-            $mid    = $data['mid'];
-            $tpl    = $data['tpl'];
-            $vars   = [
-                'mid'   => $mid,
-                'tpl'   => $tpl,
-                'id'    => $id,
-            ];
-            if (!empty($mid)) {
-                $module     = loadModule($mid);
-                $name       = $module->get('name');
-                $identifier = $module->get('identifier');
-                $vars['view'] = Tpl::spreadModule($name, $identifier, $tpl);
-            }
-            $Tpl->add(array_merge([$type], $rootBlock), $vars);
-
-        //--------
-        // custom
-        } elseif ('custom' == $type) {
-            if (!empty($data['field'])) {
-                $Field  = acmsUnserialize($data['field']);
-                if (!method_exists($Field, 'listFields')) {
-                    $Field = null;
-                }
-            }
-            $block      = array_merge([$typeS], $rootBlock);
-            $vars       = ['id' => $id];
-            if (isset($Field)) {
-                $this->injectMediaField($Field, true);
-                $this->injectRichEditorField($Field, true);
-                $vars += $this->buildField($Field, $Tpl, $block, null, ['id' => $id]);
-            }
-            $Tpl->add($block, $vars);
-        } else {
-            return false;
-        }
-
-        return true;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Acms\Services\Cache\Adapters;
 
 use Acms\Services\Cache\Contracts\AdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Cache\PruneableInterface;
 
 class Standard implements AdapterInterface
@@ -22,12 +23,22 @@ class Standard implements AdapterInterface
     }
 
     /**
+     * キャッシュアイテムの取得
+     * @param string $key
+     * @return CacheItem
+     */
+    public function getItem(string $key): CacheItem
+    {
+        return $this->adapter->getItem($key);
+    }
+
+    /**
      * キャッシュがあるか確認
      *
      * @param string $key
-     * @return boolean
+     * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         $item = $this->adapter->getItem($key);
         return $item->isHit();
@@ -39,7 +50,7 @@ class Standard implements AdapterInterface
      * @param string $key
      * @return mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
         $item = $this->adapter->getItem($key);
         return $item->get();
@@ -52,11 +63,25 @@ class Standard implements AdapterInterface
      * @param string $key
      * @param mixed $value
      * @param int $lifetime
+     * @return void
      */
-    public function put($key, $value, $lifetime = 0)
+    public function put(string $key, $value, int $lifetime = 0): void
     {
         $item = $this->adapter->getItem($key);
         $item->set($value);
+        $this->putItem($item, $lifetime);
+    }
+
+    /**
+     * キャッシュアイテムを設定
+     * $lifetimeを指定しない場合はデフォルト値を設定
+     *
+     * @param CacheItem $item
+     * @param int $lifetime
+     * @return void
+     */
+    public function putItem(CacheItem $item, int $lifetime = 0): void
+    {
         if ($lifetime > 0) {
             $item->expiresAt(new \DateTime('@' . strval(REQUEST_TIME + $lifetime)));
         }
@@ -67,23 +92,29 @@ class Standard implements AdapterInterface
      * キャッシュを削除
      *
      * @param string $key
+     * @return void
      */
-    public function forget($key)
+    public function forget(string $key): void
     {
         $this->adapter->deleteItem($key);
     }
 
     /**
      * キャッシュがなかった場合はコールバックを実行し、キャッシュに追加
+     * @param string $key
+     * @param callable $callback
+     * @param int $lifetime
+     * @return void
      */
-    public function remember($key, $callback, $lifetime = 0)
+    public function remember(string $key, $callback, int $lifetime = 0): void
     {
     }
 
     /**
      * キャッシュを全削除
+     * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         $this->adapter->clear();
     }

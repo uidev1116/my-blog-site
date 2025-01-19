@@ -1,6 +1,6 @@
 <?php
 
-class ACMS_GET_Member_Tfa_Recovery extends ACMS_GET_Member_Signup
+class ACMS_GET_Member_Tfa_Recovery extends ACMS_GET_Member
 {
     /**
      * テンプレート組み立て
@@ -10,9 +10,6 @@ class ACMS_GET_Member_Tfa_Recovery extends ACMS_GET_Member_Signup
      */
     protected function buildTpl(Template $tpl): void
     {
-        if ('on' !== config('subscribe')) {
-            page404();
-        }
         $loginField = $this->Post->getChild('login');
         $vars = [
             'trialTime' => config('login_trial_time', 5),

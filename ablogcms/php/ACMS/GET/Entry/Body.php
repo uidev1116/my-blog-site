@@ -2,6 +2,9 @@
 
 use Acms\Services\Entry\Exceptions\NotFoundException;
 use Acms\Services\Facades\Template as TplHelper;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Application;
+use Acms\Services\Unit\Contracts\Model;
 
 class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 {
@@ -392,13 +395,16 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             if ($this->config['show_all_index'] === 'on') {
                 $summaryRange = null;
             }
-            $sql = SQL::newSelect('column');
-            $sql->addSelect('*', 'column_amount', null, 'COUNT');
-            $sql->addWhereOpr('column_entry_id', $eid);
-            $amount = DB::query($sql->get(dsn()), 'one');
 
-            if ($units = loadColumn($eid, $summaryRange, $rvid_)) {
-                $this->buildColumn($units, $tpl, $eid);
+            /** @var \Acms\Services\Unit\Repository $unitRepository */
+            $unitRepository = Application::make('unit-repository');
+            /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+            $unitRenderingService = Application::make('unit-rendering-front');
+
+            $amount = $unitRepository->countUnitsTrait($eid);
+
+            if ($units = $unitRepository->loadUnits($eid, $rvid_, $summaryRange)) {
+                $unitRenderingService->render($units, $tpl, $eid);
                 if (!empty($summaryRange)) {
                     if ($summaryRange < $amount) {
                         $vars['continueUrl'] = $inheritUrl;
@@ -563,9 +569,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      * @param array $entry
      * @return array{
      *   amount: int,
-     *   unit: array{
-     *     label: string,
-     *   }|null,
+     *   unit: \Acms\Services\Unit\Contracts\Model|null,
      * }
      */
     protected function buildEntryUnit(Template $tpl, array $entry): array
@@ -579,7 +583,12 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $RVID_ = 1;
         }
 
-        $units = loadColumn($eid, null, $RVID_);
+        /** @var \Acms\Services\Unit\Repository $unitService */
+        $unitService = Application::make('unit-repository');
+        /** @var \Acms\Services\Unit\Rendering\Front $unitRenderingService */
+        $unitRenderingService = Application::make('unit-rendering-front');
+
+        $units = $unitService->loadUnits($eid, $RVID_);
         $publicUnits = $units;
 
         $summaryRange = null;
@@ -607,26 +616,11 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
             $publicUnits = $this->filterUnitsByMicroPage($publicUnits, $micropage);
         }
         if (count($publicUnits) > 0) {
-            $this->buildColumn($publicUnits, $tpl, $eid);
+            $unitRenderingService->render($publicUnits, $tpl, $eid);
         } else {
             // ユニットがない場合
             $tpl->add('unit:loop');
-            if (
-                1
-                && VIEW === 'entry'
-                && 'on' === config('entry_edit_inplace_enable')
-                && 'on' === config('entry_edit_inplace')
-                && (!enableApproval() || sessionWithApprovalAdministrator())
-                && $entry['entry_approval'] !== 'pre_approval'
-                && !ADMIN
-                && (0
-                    || roleEntryAuthorization(BID, $entry, false)
-                    || ( 1
-                        && sessionWithContribution()
-                        && SUID == ACMS_RAM::entryUser($eid)
-                    )
-                )
-            ) {
+            if (Entry::isDirectEditEnabled()) {
                 $tpl->add('edit_inplace', [
                     'class' => 'js-edit_inplace'
                 ]);
@@ -810,6 +804,18 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                         $value = ACMS_RAM::entrySort($this->eid);
                     }
                     break;
+                case 'field':
+                case 'intfield':
+                    $entryField = loadEntryField($this->eid);
+                    $entryFieldKey = $this->Field->listFields()[0] ?? null;
+                    if ($entryFieldKey !== null) {
+                        $field = $sortFieldName === 'field' ? 'strfield_sort' : 'intfield_sort';
+                        $value = $entryField->get($entryFieldKey);
+                    } else {
+                        $field = 'entry_id';
+                        $value = $this->eid;
+                    }
+                    break;
                 case 'id':
                 default:
                     $field = 'entry_id';
@@ -830,9 +836,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
      * @param Template $tpl
      * @param array{
      *   amount: int,
-     *   unit: array{
-     *     label: string,
-     *   }|null,
+     *   unit: \Acms\Services\Unit\Contracts\Model|null,
      * } $info
      * @return void
      */
@@ -848,7 +852,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         // micropage
         if (!is_null($info['unit'])) {
             $linkVars = [];
-            buildUnitData($info['unit']['label'], $linkVars, 'label');
+            $info['unit']->formatMultiLangUnitData($info['unit']->getField1(), $linkVars, 'label');
             $linkVars['url'] = acmsLink([
                 '_inherit' => true,
                 'eid' => $this->eid,
@@ -1112,13 +1116,8 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 if (!editionWithProfessional() || sessionWithApprovalAdministrator() || $entry['entry_approval'] === 'pre_approval') {
                     $tpl->add(array_merge(['delete'], $block), $val);
                 }
-                if (
-                    1
-                    && 'on' === config('entry_edit_inplace_enable')
-                    && 'on' === config('entry_edit_inplace')
-                    && (!enableApproval() || sessionWithApprovalAdministrator())
-                    && VIEW === 'entry'
-                ) {
+                if (Entry::isDirectEditEnabled()) {
+                    // ↓未使用のブロックのため削除要検討
                     $tpl->add(array_merge(['adminDetailEdit'], $block), $val);
                 }
             } elseif (sessionWithApprovalAdministrator()) {
@@ -1329,9 +1328,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 
     /**
      * 指定したマイクロページで会員限定ユニットが含まれているかどうか
-     * @param array{
-     *   type: string,
-     * }[] $units エントリーが持つ全てのユニットを含む配列
+     * @param \Acms\Services\Unit\Contracts\Model[] $units エントリーが持つ全てのユニットを含む配列
      * @param int $summaryRange
      * @param int $micropage
      * @return bool
@@ -1346,7 +1343,7 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
         // 公開ユニット内の合計ページ数を取得
         $publicPageAmount = 1;
         foreach ($units as $i => $unit) {
-            if ($unit['type'] === 'break' && $i < $summaryRange) {
+            if ($unit->getUnitType() === 'break' && $i < $summaryRange) {
                 // 会員限定記事のバーより前のユニット（= 公開ユニット）の場合のみカウント
                 $publicPageAmount += 1;
             }
@@ -1361,16 +1358,14 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
 
     /**
      * マイクロページの総ページ数をカウント
-     * @param array{
-     *   type: string,
-     * }[] $units
+     * @param \Acms\Services\Unit\Contracts\Model[] $units
      * @return int
      */
     protected function countMicroPageAmount(array $units): int
     {
         $page = 1;
         foreach ($units as $unit) {
-            if ($unit['type'] === 'break') {
+            if ($unit->getUnitType() === 'break') {
                 $page += 1;
             }
         }
@@ -1380,18 +1375,16 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
     /**
      * 指定したマイクロページに表示するユニットで絞り込んで取得
      *
-     * @param array{
-     *  type: string,
-     * }[] $units
+     * @param \Acms\Services\Unit\Contracts\Model[] $units
      * @param int<1, max> $micropage マイクロページ番号
-     * @return array<string, mixed>[]
+     * @return \Acms\Services\Unit\Contracts\Model[]
      */
     protected function filterUnitsByMicroPage(array $units, int $micropage): array
     {
         $filteredUnits = [];
         $micropageCount = 1;
         foreach ($units as $unit) {
-            if ($unit['type'] === 'break') {
+            if ($unit->getUnitType() === 'break') {
                 $micropageCount += 1;
             }
             if ($micropageCount === $micropage) {
@@ -1401,27 +1394,21 @@ class ACMS_GET_Entry_Body extends ACMS_GET_Entry
                 break;
             }
         }
-
         return $filteredUnits;
     }
 
     /**
      * 指定したマイクロページを分割する改ページユニットを取得
      *
-     * @param array{
-     *  type: string,
-     * }[] $units
+     * @param \Acms\Services\Unit\Contracts\Model[] $units
      * @param int<1, max> $micropage マイクロページ番号
-     * @return array<string, mixed>|null
+     * @return Acms\Services\Unit\Contracts\Model|null
      */
-    protected function getBreakUnitOnMicroPage(array $units, int $micropage): ?array
+    protected function getBreakUnitOnMicroPage(array $units, int $micropage): ?Model
     {
-        $breakUnits = array_filter(
-            $units,
-            function ($unit) {
-                return $unit['type'] === 'break';
-            }
-        );
+        $breakUnits = array_filter($units, function ($unit) {
+            return $unit->getUnitType() === 'break';
+        });
         $micropageCount = 1;
         foreach ($breakUnits as $breakUnit) {
             if ($micropageCount === $micropage) {

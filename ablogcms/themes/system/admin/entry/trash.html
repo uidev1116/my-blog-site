@@ -1,11 +1,11 @@
 <!-- BEGIN_MODULE Admin_Entry_Trash -->
 <header>
-	<div>
-		@include("/admin/topicpath.html")
-	</div>
-	<div>
-		<h1 class="acms-admin-admin-title js-dialog-title"><!--T-->ゴミ箱<!--/T--></h1>
-	</div>
+  <div>
+    @include("/admin/topicpath.html")
+  </div>
+  <div>
+    <h1 class="acms-admin-admin-title js-dialog-title"><!--T-->ゴミ箱<!--/T--></h1>
+  </div>
 </header>
 
 <!-- BEGIN refresh -->
@@ -42,26 +42,38 @@
             <p class="acms-admin-filter-label"><!--T-->詳しい条件<!--/T--></p>
             <div class="acms-admin-filter-content">
               <div class="acms-admin-filter-item">
-                <div class="js-admin-category-select acms-admin-select2 is-single" data-creation="false" style="display: inline-block; vertical-align: middle;">
-                  <div class="js-target"></div>
-                  <input type="hidden" name="cid" value="%{CID}" class="js-value">
+                <div style="display: inline-block; width: 350px;">
+                  @include("/admin/include/category/select.html", {
+                    "target": "#entry-trash-filter-cid-value",
+                    "defaultValue": "%{CID}"
+                  })
+                  <input id="entry-trash-filter-cid-value" type="hidden" name="cid" value="%{CID}">
                 </div>
-              </div><!-- BEGIN_MODULE Admin_Blog_Select -->
+              </div>
+              <!-- BEGIN_MODULE Admin_Blog_Select -->
               <div class="acms-admin-filter-item">
                 <select name="_bid" class="js-select2">
                   <option value=""><!--T-->現在のブログ<!--/T--></option><!-- BEGIN loop -->
                   <option value="{value}"{selected}>{indent}[raw]{label}</option><!-- END loop -->
                 </select>
                 <input type="hidden" name="query[]" value="_bid" />
-              </div><!-- END_MODULE Admin_Blog_Select --><!-- BEGIN axis -->
+              </div>
+              <!-- END_MODULE Admin_Blog_Select -->
+              <!-- BEGIN axis -->
               <div class="acms-admin-filter-item">
                 <div class="acms-admin-form-checkbox">
-                  <input type="checkbox" name="axis" value="descendant-or-self"{axis:checked#descendant-or-self} id="input-checkbox-axis-descendant-or-self" />
+                  <input
+                    type="checkbox"
+                    name="axis"
+                    value="descendant-or-self"{axis:checked#descendant-or-self}
+                    id="input-checkbox-axis-descendant-or-self"
+                  />
                   <label for="input-checkbox-axis-descendant-or-self">
                     <i class="acms-admin-ico-checkbox"></i><!--T-->下階層のブログも表示<!--/T-->
                   </label>
                 </div>
-              </div><!-- END axis -->
+              </div>
+              <!-- END axis -->
             </div>
           </div>
 
@@ -129,122 +141,191 @@
 
 <!-- BEGIN_IF [<!-- BEGIN index#notFound -->1<!-- END index#notFound -->/neq/1] -->
 <form method="post" action="" id="entry-list-form" class="acms-admin-form">
-	<!-- BEGIN adminDeleteAction -->
-	<div class="js-acms-tab-select clearfix js-acms_fix_marker">
-		<div class="acms-admin-inline-block acms-admin-margin-bottom-mini acms-admin-float-left">
-			<select name="action-entry" class="js-acms-tab-select-value acms-admin-float-left">
-				<option value="action-delete"{action-entry:selected#action-delete}><!--T-->完全削除<!--/T--></option><option value="action-restore"{action-entry:selected#action-delete}><!--T-->復元<!--/T--></option>
-			</select>
-			<div id="action-delete" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
-				<input type="submit" name="ACMS_POST_Entry_Index_Delete" value="<!--T-->削除<!--/T-->" onclick="return confirm('<!--T-->完全に削除します。\nよろしいですか？<!--/T-->')" class="acms-admin-btn-admin acms-admin-btn-admin-danger js-hide-on-modal" />
-			</div>
-			<div id="action-restore" class="js-acms-tab-select-panel acms-admin-float-left">
-				<input type="submit" name="ACMS_POST_Entry_Index_TrashRestore" value="<!--T-->復元<!--/T-->" onclick="return confirm('<!--T-->非公開で復元します。\nよろしいですか？<!--/T-->')" class="acms-admin-btn-admin acms-admin-btn-admin-primary" />
-			</div>
-		</div>
-		<!-- BEGIN_MODULE Touch_SessionWithAdministration -->
-		<div class="acms-admin-inline-block acms-admin-margin-bottom-mini acms-admin-float-right">
-			<span class="js-fake-form" data-method="post">
-				<input type="hidden" name="ACMS_POST_Entry_Index_TrashAll" value="Delete All" />
-				<button class="js-submit acms-admin-btn-admin acms-admin-btn-admin-danger" data-confirm="<!--T-->このブログ以下の全てのブログのゴミ箱を空にします。\nこの操作は取り消せません。よろしいですか？<!--/T-->"><!--T-->ゴミ箱を空にする<!--/T--></button>
-			</span>
-		</div>
-		<!-- END_MODULE Touch_SessionWithAdministration -->
-	</div>
-	<!-- END adminDeleteAction -->
-	<div class="acms-admin-table-scroll-xs acms-admin-table-scroll-sm acms-admin-table-scroll-md">
-		<table class="acms-admin-table-admin acms-admin-table-hover" data-sort-enable="{sortable}" data-sort-submit="{postSortType}">
-			<thead class="acms-admin-table-heading">
-				<tr>
-					<th class="acms-admin-table-center acms-admin-th-checkbox acms-admin-table-nowrap"><div class="acms-admin-form-checkbox acms-admin-margin-none"><input type="checkbox" id="checkAll" /><label for="checkAll"><i class="acms-admin-ico-checkbox acms-admin-margin-none"></i><span class="acms-admin-hide-visually"><!--T-->すべてのエントリーを選択する<!--/T--></span></label></div></th>
-					<th class="acms-admin-table-nowrap"><!--T-->表示順<!--/T--></th>
-					<th class="acms-admin-table-nowrap">ID</th>
-					<th><!--T-->タイトル<!--/T--> / <!--T-->コード<!--/T--></th>
-					<th><!--T-->日時<!--/T--></th>
-					<th><!--T-->削除日時<!--/T--></th>
-					<th class="acms-admin-table-nowrap"><!--T-->ブログ<!--/T--> / <!--T-->カテゴリー<!--/T--></th>
-					<th><!--T-->ユーザー<!--/T--></th>
-					<th colspan="2"><!--T-->削除ユーザー<!--/T--></th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- BEGIN entry:loop -->
-				<tr data-sort-level="parallel" data-sort-name="sort-{sort#eid}">
-					<td class="acms-admin-table-center acms-admin-td-checkbox acms-admin-table-nowrap">
-						<div class="acms-admin-form-checkbox acms-admin-margin-none">
-							<input type="checkbox" name="checks[]" value="{bid}:{eid}" id="check-eid{sort#eid}" />
-							<label for="check-eid{sort#eid}"><i class="acms-admin-ico-checkbox acms-admin-margin-none"></i><span class="acms-admin-hide-visually"><!--T-->エントリータイトル「{title}」を選択する<!--/T--></span></label>
-						</div>
-					</td>
-					<td class="acms-admin-td-number acms-admin-table-nowrap">
-						<!-- BEGIN sort:veil -->
-						<input type="text" class="sort-number" name="sort-{sort#eid}" value="{sort}" size="4"{disabled}/><!-- END sort:veil -->
-					</td>
-					<td class="acms-admin-td-id acms-admin-table-nowrap">
-						<span class="acms-admin-label label-default">{eid}</span>
-					</td>
-					<td class="acms-admin-td-status">
-						<a href="{entryUrl}?trash=show" class="acms-admin-td-title">
-							<p class="acms-admin-entryTitle">{title}</p>
-						</a>
-						<p class="acms-admin-margin-none">{code}</p>
-					</td>
-					<td>
-						{datetime}[date('Y/n/d')]<br>{datetime}[date('H:i')]
-					</td>
-					<td>
-						{del_datetime}[date('Y/n/d')]<br>{del_datetime}[date('H:i')]
-					</td>
-					<td>
-						<ul class="acms-admin-list-nostyle">
-							<li><a href="{blogUrl}"><i class="acms-admin-icon acms-admin-icon-blog"></i>{blogName}</a></li>
-							<!-- BEGIN category:veil -->
-							<li><a href="{categoryUrl}"><i class="acms-admin-icon acms-admin-icon-category"></i>{categoryName}</a></li>
-							<!-- END category:veil -->
-						</ul>
-					</td>
-					<td class="acms-admin-td-user">
-						<img src="%{ARCHIVES_DIR}{userIcon}" width="24" height="24" alt="{userName}" class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle">{userName}
-					</td>
-					<td class="acms-admin-td-user">
-						<!-- BEGIN_IF [{delUserName}/nem/] -->
-						<img src="%{ARCHIVES_DIR}{delUserIcon}" width="24" height="24" alt="{delUserName}" class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle">{delUserName}
-						<!-- END_IF -->
-					</td>
+  <!-- BEGIN adminDeleteAction -->
+  <div class="js-acms-tab-select clearfix js-acms_fix_marker">
+    <div class="acms-admin-inline-block acms-admin-margin-bottom-mini acms-admin-float-left">
+      <select name="action-entry" class="js-acms-tab-select-value acms-admin-float-left">
+        <option value="action-delete"{action-entry:selected#action-delete}>
+          <!--T-->完全削除<!--/T-->
+        </option>
+        <option value="action-restore"{action-entry:selected#action-delete}>
+          <!--T-->復元<!--/T-->
+        </option>
+      </select>
+      <div id="action-delete" class="js-acms-tab-select-panel js-acms-tab-select-active acms-admin-float-left">
+        <button
+          type="submit"
+          name="ACMS_POST_Entry_Index_Delete"
+          onclick="return confirm('<!--T-->完全に削除します。\nよろしいですか？<!--/T-->')"
+          class="acms-admin-btn-admin acms-admin-btn-admin-danger js-hide-on-modal"
+        >
+          <!--T-->削除<!--/T-->
+        </button>
+      </div>
+      <div id="action-restore" class="js-acms-tab-select-panel acms-admin-float-left">
+        <button
+          type="submit"
+          name="ACMS_POST_Entry_Index_TrashRestore"
+          onclick="return confirm('<!--T-->非公開で復元します。\nよろしいですか？<!--/T-->')"
+          class="acms-admin-btn-admin acms-admin-btn-admin-primary"
+        >
+          <!--T-->復元<!--/T-->
+        </button>
+      </div>
+    </div>
+    <!-- BEGIN_MODULE Touch_SessionWithAdministration -->
+    <div class="acms-admin-inline-block acms-admin-margin-bottom-mini acms-admin-float-right">
+      <span class="js-fake-form" data-method="post">
+        <input type="hidden" name="ACMS_POST_Entry_Index_TrashAll" value="Delete All" />
+        <button
+          type="button"
+          class="js-submit acms-admin-btn-admin acms-admin-btn-admin-danger"
+          data-confirm="<!--T-->このブログ以下の全てのブログのゴミ箱を空にします。\nこの操作は取り消せません。よろしいですか？<!--/T-->"
+        >
+          <!--T-->ゴミ箱を空にする<!--/T-->
+        </button>
+      </span>
+    </div>
+    <!-- END_MODULE Touch_SessionWithAdministration -->
+  </div>
+  <!-- END adminDeleteAction -->
+  <div class="acms-admin-table-scroll-xs acms-admin-table-scroll-sm acms-admin-table-scroll-md">
+    <table
+      class="acms-admin-table-admin acms-admin-table-hover"
+      data-sort-enable="{sortable}"
+      data-sort-submit="{postSortType}"
+    >
+      <thead class="acms-admin-table-heading">
+        <tr>
+          <th class="acms-admin-table-center acms-admin-th-checkbox acms-admin-table-nowrap">
+            <div class="acms-admin-form-checkbox acms-admin-margin-none">
+              <input type="checkbox" id="checkAll" />
+              <label for="checkAll">
+                <i class="acms-admin-ico-checkbox acms-admin-margin-none"></i>
+                <span class="acms-admin-hide-visually">
+                  <!--T-->すべてのエントリーを選択する<!--/T-->
+                </span>
+              </label>
+            </div>
+          </th>
+          <th class="acms-admin-table-nowrap"><!--T-->表示順<!--/T--></th>
+          <th class="acms-admin-table-nowrap">ID</th>
+          <th><!--T-->タイトル<!--/T--> / <!--T-->コード<!--/T--></th>
+          <th><!--T-->日時<!--/T--></th>
+          <th><!--T-->削除日時<!--/T--></th>
+          <th class="acms-admin-table-nowrap"><!--T-->ブログ<!--/T--> / <!--T-->カテゴリー<!--/T--></th>
+          <th><!--T-->ユーザー<!--/T--></th>
+          <th colspan="2"><!--T-->削除ユーザー<!--/T--></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- BEGIN entry:loop -->
+        <tr data-sort-level="parallel" data-sort-name="sort-{sort#eid}">
+          <td class="acms-admin-table-center acms-admin-td-checkbox acms-admin-table-nowrap">
+            <div class="acms-admin-form-checkbox acms-admin-margin-none">
+              <input type="checkbox" name="checks[]" value="{bid}:{eid}" id="check-eid{sort#eid}" />
+              <label for="check-eid{sort#eid}">
+                <i class="acms-admin-ico-checkbox acms-admin-margin-none"></i>
+                <span class="acms-admin-hide-visually">
+                  <!--T-->エントリータイトル「{title}」を選択する<!--/T-->
+                </span>
+              </label>
+            </div>
+          </td>
+          <td class="acms-admin-td-number acms-admin-table-nowrap">
+            <!-- BEGIN sort:veil -->
+            <input type="text" class="sort-number" name="sort-{sort#eid}" value="{sort}" size="4"{disabled}/>
+            <!-- END sort:veil -->
+          </td>
+          <td class="acms-admin-td-id acms-admin-table-nowrap">
+            <span class="acms-admin-label label-default">{eid}</span>
+          </td>
+          <td class="acms-admin-td-status">
+            <a href="{entryUrl}?trash=show" class="acms-admin-td-title">
+              <p class="acms-admin-entryTitle">{title}</p>
+            </a>
+            <p class="acms-admin-margin-none">{code}</p>
+          </td>
+          <td>
+            {datetime}[date('Y/n/d')]<br>{datetime}[date('H:i')]
+          </td>
+          <td>
+            {del_datetime}[date('Y/n/d')]<br>{del_datetime}[date('H:i')]
+          </td>
+          <td>
+            <ul class="acms-admin-list-nostyle">
+              <li><a href="{blogUrl}"><i class="acms-admin-icon acms-admin-icon-blog"></i>{blogName}</a></li>
+              <!-- BEGIN category:veil -->
+              <li><a href="{categoryUrl}"><i class="acms-admin-icon acms-admin-icon-category"></i>{categoryName}</a></li>
+              <!-- END category:veil -->
+            </ul>
+          </td>
+          <td class="acms-admin-td-user">
+            <img
+              src="%{ARCHIVES_DIR}{userIcon}"
+              width="24"
+              height="24"
+              alt="{userName}"
+              class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle"
+            >
+            {userName}
+          </td>
+          <td class="acms-admin-td-user">
+            <!-- BEGIN_IF [{delUserName}/nem/] -->
+            <img
+              src="%{ARCHIVES_DIR}{delUserIcon}"
+              width="24"
+              height="24"
+              alt="{delUserName}"
+              class="acms-admin-user acms-admin-margin-right-small acms-admin-cell-text-middle"
+            >
+            {delUserName}
+            <!-- END_IF -->
+          </td>
 
-					@include("/admin/entry/field-list.html")
-					<td class="acms-admin-td-edit acms-admin-table-nowrap">
-						<div class="acms-admin-btn-group acms-admin-btn-group-entry admin-entry-dropdown-toggle">
-							<div class="js-acms-dropdown-toggle"><!-- BEGIN adminDeleteActionLoop -->
-								<button type="button" class="acms-admin-btn-admin js-acms_entry_index_trash"><!--T-->復元<!-- /T --></button><!-- END adminDeleteActionLoop -->
+          @include("/admin/entry/field-list.html")
+          <td class="acms-admin-td-edit acms-admin-table-nowrap">
+            <div class="acms-admin-btn-group acms-admin-btn-group-entry admin-entry-dropdown-toggle">
+              <div class="js-acms-dropdown-toggle">
+                <!-- BEGIN adminDeleteActionLoop -->
+                <button
+                  type="button"
+                  class="acms-admin-btn-admin js-acms_entry_index_trash"
+                >
+                  <!--T-->復元<!-- /T -->
+                </button>
+                <!-- END adminDeleteActionLoop -->
 
-								<!-- BEGIN_MODULE Touch_Approval --><!-- BEGIN_MODULE Touch_sessionWithApprovalAdministrator -->
-								<button type="button" class="acms-admin-btn-admin js-acms-dropdown-btn" >
-									<span class="acms-admin-arrow-bottom"></span>
-								</button>
+                <!-- BEGIN_MODULE Touch_Approval -->
+                <!-- BEGIN_MODULE Touch_sessionWithApprovalAdministrator -->
+                <button type="button" class="acms-admin-btn-admin js-acms-dropdown-btn" >
+                  <span class="acms-admin-arrow-bottom"></span>
+                </button>
 
-								<ul class="js-acms-dropdown-menu" role="menu">
-									<li><a href="/bid/%{BID}/eid/{eid}/admin/entry_approval-history/"><!--T-->承認履歴<!--/T--></a></li>
-								</ul><!-- END_MODULE Touch_sessionWithApprovalAdministrator --><!-- END_MODULE Touch_Approval -->
-							</div>
-						</div>
-					</td>
-				</tr>
-				<!-- END entry:loop -->
-			</tbody>
-		</table>
-	</div>
+                <ul class="js-acms-dropdown-menu" role="menu">
+                  <li><a href="/bid/%{BID}/eid/{eid}/admin/entry_approval-history/"><!--T-->承認履歴<!--/T--></a></li>
+                </ul>
+                <!-- END_MODULE Touch_sessionWithApprovalAdministrator -->
+                <!-- END_MODULE Touch_Approval -->
+              </div>
+            </div>
+          </td>
+        </tr>
+        <!-- END entry:loop -->
+      </tbody>
+    </table>
+  </div>
 
-	<!-- BEGIN pager:veil -->
-	<div class="acms-admin-pager-container">
-		<ul class="acms-admin-pager"><!-- BEGIN backLink -->
-			<li class="prev"><a href="{url}">&laquo;<!--T-->前へ<!--/T--></a></li><!-- END backLink --><!-- BEGIN page:loop -->
-			<li{pageCurAttr}[raw]><span><!-- BEGIN link#front --><a href="{url}"><!-- END link#front -->{page}<!-- BEGIN link#rear --></a><!-- END link#rear --></span></li><!-- END page:loop --><!-- BEGIN lastPage:veil -->
-			<li class="last"><a href="{lastPageUrl}">...{lastPage}</a></li><!-- END lastPage:veil --><!-- BEGIN forwardLink -->
-			<li class="next"><a href="{url}"><!--T-->次へ<!--/T-->&raquo;</a></li><!-- END forwardLink -->
-		</ul>
-	</div><!-- END pager:veil -->
-	<!-- END index:veil -->
+  <!-- BEGIN pager:veil -->
+  <div class="acms-admin-pager-container">
+    <ul class="acms-admin-pager"><!-- BEGIN backLink -->
+      <li class="prev"><a href="{url}">&laquo;<!--T-->前へ<!--/T--></a></li><!-- END backLink --><!-- BEGIN page:loop -->
+      <li{pageCurAttr}[raw]><span><!-- BEGIN link#front --><a href="{url}"><!-- END link#front -->{page}<!-- BEGIN link#rear --></a><!-- END link#rear --></span></li><!-- END page:loop --><!-- BEGIN lastPage:veil -->
+      <li class="last"><a href="{lastPageUrl}">...{lastPage}</a></li><!-- END lastPage:veil --><!-- BEGIN forwardLink -->
+      <li class="next"><a href="{url}"><!--T-->次へ<!--/T-->&raquo;</a></li><!-- END forwardLink -->
+    </ul>
+  </div><!-- END pager:veil -->
+  <!-- END index:veil -->
 </form>
 <!-- END_IF -->
 

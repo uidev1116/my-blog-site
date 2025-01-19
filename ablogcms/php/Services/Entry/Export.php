@@ -2,9 +2,10 @@
 
 namespace Acms\Services\Entry;
 
-use SQL;
-use DB;
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Database as DB;
 use Acms\Services\Contracts\Export as ExportBase;
+use SQL;
 
 class Export extends ExportBase
 {
@@ -142,58 +143,17 @@ class Export extends ExportBase
         $q = $sql->get(dsn());
         DB::query($q, 'fetch');
 
+        $unitRepository = Application::make('unit-repository');
+        assert($unitRepository instanceof \Acms\Services\Unit\Repository);
+
         while ($row = DB::fetch($q)) {
-            $type = detectUnitTypeSpecifier($row['column_type']);
-            if ($type === 'image') {
-                $this->archivesFiles[] = $row['column_field_2'];
-                $this->archivesFiles[] = otherSizeImagePath($row['column_field_2'], 'large');
-                $this->archivesFiles[] = otherSizeImagePath($row['column_field_2'], 'tiny');
-                $this->archivesFiles[] = otherSizeImagePath($row['column_field_2'], 'square');
-            }
-            if ($type === 'file') {
-                $this->archivesFiles[] = $row['column_field_2'];
-            }
-            if ($type === 'media') {
-                $mediaId = intval($row['column_field_1']);
-                if ($mediaId > 0 && !in_array($mediaId, $this->targetMediaIds, true)) {
-                    $this->targetMediaIds[] = $mediaId;
-                }
-            }
-            if ($type === 'module') {
-                $this->targetModuleIds[] = intval($row['column_field_1']);
-            }
-            if ($type === 'custom') {
-                $field = acmsUnserialize($row['column_field_6']);
-                if (!($field instanceof \Field)) {
-                    continue;
-                }
-                if (!method_exists($field, 'deleteField')) {
-                    continue;
-                }
-                foreach ($field->listFields() as $fd) {
-                    foreach ($field->getArray($fd, true) as $i => $val) {
-                        if (empty($val)) {
-                            continue;
-                        }
-                        if (strpos($fd, '@media') !== false) {
-                            $mediaId = intval($val);
-                            if ($mediaId > 0 && !in_array($mediaId, $this->targetMediaIds, true)) {
-                                $this->targetMediaIds[] = $mediaId;
-                            }
-                        } elseif (
-                            0
-                            || strpos($fd, '@path')
-                            || strpos($fd, '@tinyPath')
-                            || strpos($fd, '@largePath')
-                            || strpos($fd, '@squarePath')
-                        ) {
-                            $this->archivesFiles[] = $val;
-                        }
-                    }
-                }
+            $unitModel = $unitRepository->loadModel($row);
+            if ($unitModel instanceof \Acms\Services\Unit\Contracts\ExportEntry) {
+                $this->archivesFiles = array_merge($this->archivesFiles, $unitModel->exportArchivesFiles());
+                $this->targetMediaIds = array_merge($this->targetMediaIds, $unitModel->exportMediaIds());
+                $this->targetModuleIds = array_merge($this->targetModuleIds, $unitModel->exportModuleIds());
             }
         }
-
         return $sql;
     }
 

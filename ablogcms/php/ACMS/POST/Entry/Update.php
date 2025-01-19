@@ -1,5 +1,9 @@
 <?php
 
+use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Entry;
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_Entry_Update extends ACMS_POST_Entry
 {
     /**
@@ -13,6 +17,11 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      * @var \Acms\Services\Entry\Lock
      */
     protected $lockService;
+
+    /**
+     * @var \Acms\Services\Unit\Repository $unitRepository
+     */
+    protected $unitRepository;
 
     /**
      * 専用のカスタムフィールドを別テーブルに保存する
@@ -37,8 +46,11 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             httpStatusCode('500 Internal Server Error');
             return $this->Post;
         }
-        $this->lockService = App::make('entry.lock');
+        $this->unitRepository = Application::make('unit-repository');
+        $this->lockService = Application::make('entry.lock');
+        assert($this->unitRepository instanceof \Acms\Services\Unit\Repository);
         assert($this->lockService instanceof \Acms\Services\Entry\Lock);
+
         $updatedResponse = $this->update();
         $redirect = $this->Post->get('redirect');
         $backend = $this->Post->get('backend');
@@ -104,7 +116,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         $isNewVersion = $this->isNewVersion($postEntry); // 新規バージョンとして保存するか判定 $isNewVersionだったもの
         $isApproved = enableApproval() && $preEntry['entry_approval'] !== 'pre_approval';
 
-        if (enableRevision(false) && $postEntry->get('revision_type') === 'new') {
+        if (enableRevision() && $postEntry->get('revision_type') === 'new') {
             Entry::setNewVersion(true);
         }
 
@@ -130,7 +142,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
             return false;
         }
 
-        $units = $this->extractUnit($range); // ユニットの事前処理
+        /** @var \Acms\Services\Unit\Contracts\Model[] $units */
+        $units = $this->unitRepository->extractUnits($range); // ユニットの事前処理
         $entryData = $this->getUpdateEntryData($preEntry, $postEntry, Entry::getSummaryRange()); // エントリーの事前処理
 
         /**
@@ -169,7 +182,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
          * バージョンの保存
          */
         $rvid = null;
-        if (enableRevision(false) && get_called_class() !== 'ACMS_POST_Entry_Update_Detail') {
+        if (enableRevision() && get_called_class() !== 'ACMS_POST_Entry_Update_Detail') {
             $rvid = Entry::saveEntryRevision(EID, RVID, $entryData, $postEntry->get('revision_type'), $postEntry->get('revision_memo'));
             $this->saveRevisionUnit($units, $postEntry, EID, $rvid);
             Entry::saveFieldRevision(EID, $field, $rvid);
@@ -288,7 +301,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function isNewVersion($postEntry)
     {
-        if (enableRevision(false) && $postEntry->get('revision_type') === 'new') {
+        if (enableRevision() && $postEntry->get('revision_type') === 'new') {
             return true;
         }
         return false;
@@ -305,7 +318,6 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         if (!($cid = $postEntry->get('category_id'))) {
             $cid = null;
         }
-
         $postEntry->setMethod('status', 'required');
         $postEntry->setMethod('status', 'in', ['open', 'close', 'draft', 'trash']);
         $postEntry->setMethod('status', 'category', true);
@@ -324,6 +336,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         $postEntry->setMethod('entry', 'operable', $this->isOperable());
         $postEntry->setMethod('entry', 'lock', !$this->isLocked());
         $postEntry = Entry::validTag($postEntry);
+        $postEntry = Entry::validSubCategory($postEntry);
 
         $postEntry->validate(new ACMS_Validator());
     }
@@ -340,40 +353,27 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         if ($field->isValid('recover_acms_Po9H2zdPW4fj', 'required')) {
             $this->addMessage('failure'); // エントリーの復元機能によるエラーの時はメッセージを出さない
         }
-        $units = Entry::extractColumn($range, false); // old画像を削除しない
+        $units = $this->unitRepository->extractUnits($range, false, false);
         $this->Post->set('step', 'reapply');
         $this->Post->set('action', $type);
         $this->Post->set('column', acmsSerialize($units));
     }
 
     /**
-     * ユニットの事前処理 ＆ ファイル類の生成
-     *
-     * @param int $range
-     * @return array
-     */
-    protected function extractUnit($range)
-    {
-        return Entry::extractColumn($range, true, false);
-    }
-
-    /**
      * ユニットをメインデータに保存
      *
-     * @param array $units
+     * @param \Acms\Services\Unit\Contracts\Model[] $units
      * @param int $eid
-     * @param int $primary_image
+     * @param string|null $primary_image
      */
     protected function saveUnit($units, $eid, $primary_image)
     {
-        $primaryImageId = 0;
-        $unitIds = Entry::saveColumn($units, $eid, BID);
-        $primaryImageId = empty($unitIds) ? null : (
-            !$primary_image ? reset($unitIds) : (
-                !empty($unitIds[$primary_image]) ? $unitIds[$primary_image] : reset($unitIds)
+        $imageUnitIdTables = $this->unitRepository->saveUnits($units, $eid, BID);
+        return empty($imageUnitIdTables) ? null : (
+            !$primary_image ? reset($imageUnitIdTables) : (
+                !empty($imageUnitIdTables[$primary_image]) ? $imageUnitIdTables[$primary_image] : reset($imageUnitIdTables)
             )
         );
-        return $primaryImageId;
     }
 
     /**
@@ -387,7 +387,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function saveRevisionUnit($units, $postEntry, $eid, $rvid)
     {
-        $unitIds = Entry::saveUnitRevision($units, $eid, BID, $rvid);
+        $unitIds = $this->unitRepository->saveRevisionUnits($units, $eid, BID, $rvid);
         $primaryImageId = empty($unitIds) ? null : (
             !$postEntry->get('primary_image') ? reset($unitIds) : (
                 !empty($unitIds[$postEntry->get('primary_image')]) ? $unitIds[$postEntry->get('primary_image')] : reset($unitIds)
@@ -411,7 +411,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
     protected function getRange($postEntry)
     {
         $range = strval($postEntry->get('summary_range'));
-        $range = ('' === $range) ? null : intval($range);
+        $range = ('' === $range) ? null : (int) $range;
 
         return $range;
     }
@@ -568,8 +568,8 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
                 return false;
             }
         } else {
-            if (!sessionWithCompilation(BID, false)) {
-                if (!sessionWithContribution(BID, false)) {
+            if (!sessionWithCompilation(BID)) {
+                if (!sessionWithContribution(BID)) {
                     return false;
                 }
                 if (SUID <> ACMS_RAM::entryUser(EID) && (config('approval_contributor_edit_auth') === 'on' || !enableApproval(BID, CID))) {
@@ -577,7 +577,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
                 }
             }
         }
-        if (enableRevision(false) && RVID > 1) {
+        if (enableRevision() && RVID > 1) {
             if (Entry::isNewVersion()) {
                 return true;
             }
@@ -619,7 +619,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
      */
     protected function isLocked()
     {
-        if (enableRevision(false) && Entry::isNewVersion()) {
+        if (enableRevision() && Entry::isNewVersion()) {
             // 新規バージョンとして保存する場合は、ロックが関係ないので、OK
             return false;
         }

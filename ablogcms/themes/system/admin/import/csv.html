@@ -81,12 +81,21 @@
       <td>%{BLOG_NAME}（<!--T-->現在のブログ<!--/T-->）</td>
     </tr>
     <tr>
-      <th><!--T-->インポート先カテゴリー<!--/T--></th>
+      <th>
+        <label for="input-select-category_id">
+          <!--T-->インポート先カテゴリー<!--/T-->
+        </label>
+      </th>
       <td>
-        <select name="category_id" class="js-select2">
-          <option value="0"><!--T-->なし<!--/T--></option><!-- BEGIN_MODULE Admin_Category_Select --><!-- BEGIN loop -->
-          <option value="{value}"{selected}>{indent}[raw]{label} ( {amount} )</option><!-- END loop --><!-- END_MODULE Admin_Category_Select -->
-        </select>
+        <div class="acms-admin-form-width-medium">
+          @include("/admin/include/category/select.html", {
+            "target": "#csv-import-category-value",
+            "defaultValue": "0",
+            "noOption": "true",
+            "isClearable": "false"
+          })
+        </div>
+        <input id="csv-import-category-value" type="hidden" name="category_id" value="0">
       </td>
     </tr>
     <tr>
@@ -96,7 +105,14 @@
     <tr>
       <th></th>
       <td>
-        <input class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-margin-sp"type="submit" name="ACMS_POST_Import_Csv" value="<!--T-->インポートを実行する<!--/T-->" onclick="return confirm('<!--T-->インポートを実行します。よろしいですか？<!--/T-->');">
+        <button
+          class="acms-admin-btn-admin acms-admin-btn-admin-primary acms-admin-margin-sp"
+          type="submit"
+          name="ACMS_POST_Import_Csv"
+          onclick="return confirm('<!--T-->インポートを実行します。よろしいですか？<!--/T-->');"
+        >
+          <!--T-->インポートを実行する<!--/T-->
+        </button>
       </td>
     </tr>
   </table>
@@ -306,4 +322,3 @@
 <!-- END_IF -->
 <!-- END_MODULE Admin_Import_Csv -->
 <!-- END_MODULE Touch_SessionWithAdministration -->
-

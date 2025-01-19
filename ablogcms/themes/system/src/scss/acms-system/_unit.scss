@@ -1,11 +1,11 @@
-@use "../global/common" as global;
+@use '../global/common' as global;
 
 // ------------------------------
 // ユニット設定
 // ------------------------------
 // ユニット囲い
 .acms-unitbox {
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
   padding: 10px;
   background: global.$acms-color-white;
   border: 1px solid global.$edit-entry-bg-color-dark;
@@ -13,7 +13,7 @@
 
 // コンテンツ
 .acms-table-container {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
   background: global.$edit-entry-bg-color-light;
   border: 1px solid global.$edit-entry-bg-color-dark;
 
@@ -45,7 +45,6 @@
       border: 1px solid global.$acms-color-gray60;
     }
   }
-
 
   i.acms-icon-sort {
     margin-right: 4px;

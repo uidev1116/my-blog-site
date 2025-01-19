@@ -46,7 +46,7 @@
       ACMS.eventPool[name] = [];
     }
     ACMS.eventPool[name].push({
-      event: event
+      event: event,
     });
   };
 
@@ -64,17 +64,17 @@
 
   // init tab
   (function ready(fn) {
-    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+    if (document.attachEvent ? document.readyState === 'complete' : document.readyState !== 'loading') {
       fn();
     } else {
       document.addEventListener('DOMContentLoaded', fn);
     }
-  })(function() {
+  })(function () {
     if (document.getElementById('custom-field-maker')) {
       return;
     }
-    [].forEach.call(document.querySelectorAll('.acms-admin-tabs'), function(tabs) {
-      [].forEach.call(tabs.querySelectorAll('.acms-admin-tabs-panel'), function(panel) {
+    [].forEach.call(document.querySelectorAll('.acms-admin-tabs'), function (tabs) {
+      [].forEach.call(tabs.querySelectorAll('.acms-admin-tabs-panel'), function (panel) {
         panel.style.display = 'none';
       });
     });
