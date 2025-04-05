@@ -52,7 +52,8 @@ class ACMS_GET_Navigation extends ACMS_GET
         $pidStack   = [0];
         while (count($pidStack)) {
             $pid    = array_pop($pidStack);
-            while ($row = array_shift($Parent[$pid])) {
+            /** @phpstan-ignore-next-line */
+            while (isset($Parent[$pid]) && $row = array_shift($Parent[$pid])) {
                 $id = $row['id'];
                 $row['end'][]   = 'li#rear';
                 $all[] = $row;
@@ -62,7 +63,6 @@ class ACMS_GET_Navigation extends ACMS_GET
                     break;
                 }
             }
-            // @phpstan-ignore-next-line
             if (!empty($row)) {
                 $row    = array_pop($all);
                 $row['end']   = ['ul#front'];

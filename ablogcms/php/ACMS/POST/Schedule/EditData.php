@@ -22,7 +22,10 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
         // validation result & serialize
         if (!$Conf->isValid() || $build == false) {
             $this->Post->set('step', 'reapply');
-            $this->Post->set('reapply', ['data' => @unserialize($sche), 'field' => @unserialize($sfds)]);
+            $this->Post->set('reapply', [
+                'data' => $sche,
+                'field' => $sfds,
+            ]);
 
             AcmsLogger::info('スケジュールのデータ登録に失敗しました');
             return $this->Post;
@@ -62,8 +65,8 @@ class ACMS_POST_Schedule_EditData extends ACMS_POST_Schedule
             'desc' => $define['desc'],
             'year' => $Conf->get('year'),
             'month' => $Conf->get('month'),
-            'data' => @unserialize($sche),
-            'field' => @unserialize($sfds),
+            'data' => $sche,
+            'field' => $sfds,
         ]);
 
         return $this->Post;

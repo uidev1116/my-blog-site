@@ -42,6 +42,12 @@ class ACMS_POST_Entry_Trash extends ACMS_POST_Trash
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle($eid) . '」エントリーをゴミ箱に移動しました');
 
+        //------
+        // Hook
+        if (HOOK_ENABLE) {
+            $Hook = ACMS_Hook::singleton();
+            $Hook->call('saveEntry', [$eid, null]);
+        }
         $this->redirect(acmsLink([
             'bid'   => BID,
             'cid'   => CID,

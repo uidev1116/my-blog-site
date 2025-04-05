@@ -41,7 +41,7 @@ class ACMS_RAM
      */
     public static function cacheMethod($method, $args = [])
     {
-        $key = $method . '_' . md5(serialize($args));
+        $key = $method . '_' . md5('cache' . json_encode($args, JSON_UNESCAPED_UNICODE));
 
         if (isset(self::$funcCache[$key])) {
             return self::$funcCache[$key];
@@ -83,12 +83,12 @@ class ACMS_RAM
 
     /**
      * 各種レコードの静的なキャッシュテーブルに対するセッター兼ゲッターメソッド
+     * セッターとして利用する場合には元の値を返します。
      *
-     * @template T
      * @param string $key
      * @param int $id
-     * @param T $val
-     * @return (T is null ? string|int|false|null : true)
+     * @param mixed $val
+     * @return mixed
      */
     public static function _mapping($key, $id, $val = null)
     {
@@ -111,20 +111,53 @@ class ACMS_RAM
         $cacheItem = $isCacheType ? self::$cache->getItem($cacheKey) : null;
 
         if (3 <= func_num_args()) {
-            if (empty($val)) {
-                self::$cache->forget($cacheKey);
+            $oldValue = null;
+            if ($isAll) {
+                if (isset($table[$type][$id])) {
+                    $oldValue = $table[$type][$id];
+                }
             } else {
+                if (isset($table[$type][$id][$key])) {
+                    $oldValue = $table[$type][$id][$key];
+                }
+            }
+            if (empty($val)) {
                 if ($isAll) {
-                    $table[$type][$id] = $val;
+                    if (isset($table[$type][$id])) {
+                        unset($table[$type][$id]);
+                    }
                 } else {
-                    $table[$type][$id][$key] = $val;
+                    if (isset($table[$type][$id][$key])) {
+                        unset($table[$type][$id][$key]);
+                    }
                 }
                 if ($isCacheType) {
+                    self::$cache->forget($cacheKey);
+                }
+            } else {
+                if ($isAll) {
+                    if (!isset($table[$type])) {
+                        // typeが存在しない場合は空の配列を作成
+                        $table[$type] = [];
+                    }
+                    $table[$type][$id] = $val;
+                } else {
+                    if (!isset($table[$type])) {
+                        // typeが存在しない場合は空の配列を作成
+                        $table[$type] = [];
+                    }
+                    if (!isset($table[$type][$id])) {
+                        // idが存在しない場合は空の配列を作成
+                        $table[$type][$id] = [];
+                    }
+                    $table[$type][$id][$key] = $val;
+                }
+                if ($isCacheType && isset($table[$type][$id])) {
                     $cacheItem->set($table[$type][$id]);
                     self::$cache->putItem($cacheItem);
                 }
             }
-            return true;
+            return $oldValue;
         } else {
             $table[$type] = $table[$type] ?? [];
             $table[$type][$id] = $table[$type][$id] ?? [];
@@ -165,17 +198,16 @@ class ACMS_RAM
      * 指定されたidから該当するブログのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $bid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function blog($bid, $val = null)
     {
         if ($val !== null && isset($val['blog_domain']) && isUnregisteredDomain()) {
             $val['blog_domain'] = HTTP_HOST;
         }
-        return is_null($val) ? ACMS_RAM::_mapping('blog', $bid) : ACMS_RAM::_mapping('blog', $bid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('blog', $bid) : ACMS_RAM::_mapping('blog', $bid, $val);
     }
 
     /**
@@ -401,7 +433,7 @@ class ACMS_RAM
     /**
      * @param int $bid
      * @param string $mode
-     * @return true
+     * @return string|null
      */
     public static function setBlogMaintenanceMode($bid, $mode)
     {
@@ -411,7 +443,7 @@ class ACMS_RAM
     /**
      * @param int $bid
      * @param int $aid
-     * @return true
+     * @return string|null
      */
     public static function setBlogAliasPrimary($bid, $aid)
     {
@@ -425,14 +457,13 @@ class ACMS_RAM
      * 指定されたidから該当するルールのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $rid
-     * @param T $row
-     * @return (T is null ? array|null : true)
+     * @param array|null $row
+     * @return array|null
      */
     public static function rule($rid, $row = null)
     {
-        return is_null($row) ? ACMS_RAM::_mapping('rule', $rid) : ACMS_RAM::_mapping('rule', $rid, $row);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('rule', $rid) : ACMS_RAM::_mapping('rule', $rid, $row);
     }
 
     /**
@@ -454,14 +485,13 @@ class ACMS_RAM
      * 指定されたidから該当するエイリアスのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $aid
-     * @param T $row
-     * @return (T is null ? array|null : true)
+     * @param array|null $row
+     * @return array|null
      */
     public static function alias($aid, $row = null)
     {
-        return is_null($row) ? ACMS_RAM::_mapping('alias', $aid) : ACMS_RAM::_mapping('alias', $aid, $row);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('alias', $aid) : ACMS_RAM::_mapping('alias', $aid, $row);
     }
 
     /**
@@ -543,14 +573,13 @@ class ACMS_RAM
      * 指定されたidから該当するユーザーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $uid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function user($uid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('user', $uid) : ACMS_RAM::_mapping('user', $uid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('user', $uid) : ACMS_RAM::_mapping('user', $uid, $val);
     }
 
     /**
@@ -741,14 +770,13 @@ class ACMS_RAM
      * 指定されたidから該当するカテゴリーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $cid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function category($cid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('category', $cid) : ACMS_RAM::_mapping('category', $cid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('category', $cid) : ACMS_RAM::_mapping('category', $cid, $val);
     }
 
     /**
@@ -914,14 +942,13 @@ class ACMS_RAM
      * 指定されたidから該当するエントリーのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $eid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function entry($eid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('entry', $eid) : ACMS_RAM::_mapping('entry', $eid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('entry', $eid) : ACMS_RAM::_mapping('entry', $eid, $val);
     }
 
     /**
@@ -1147,14 +1174,13 @@ class ACMS_RAM
      * 指定されたidから該当するユニットのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $utid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function unit($utid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('column', $utid) : ACMS_RAM::_mapping('column', $utid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('column', $utid) : ACMS_RAM::_mapping('column', $utid, $val);
     }
 
     /**
@@ -1308,14 +1334,13 @@ class ACMS_RAM
      * 指定されたidから該当するコメントのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $cmid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function comment($cmid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('comment', $cmid) : ACMS_RAM::_mapping('comment', $cmid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('comment', $cmid) : ACMS_RAM::_mapping('comment', $cmid, $val);
     }
 
     /**
@@ -1506,14 +1531,13 @@ class ACMS_RAM
      * 指定されたidから該当するトラックバックのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $tbid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function trackback($tbid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('trackback', $tbid) : ACMS_RAM::_mapping('trackback', $tbid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('trackback', $tbid) : ACMS_RAM::_mapping('trackback', $tbid, $val);
     }
 
     /**
@@ -1532,14 +1556,13 @@ class ACMS_RAM
      * 指定されたidから該当するメディアのレコードを配列で返します
      * $valが指定されていると，一時的なレコードのキャッシュを上書きします（恒久的な書き換えではありません）
      *
-     * @template T of array|null
      * @param int $mid
-     * @param T $val
-     * @return (T is null ? array|null : true)
+     * @param array|null $val
+     * @return array|null
      */
     public static function media($mid, $val = null)
     {
-        return is_null($val) ? ACMS_RAM::_mapping('media', $mid) : ACMS_RAM::_mapping('media', $mid, $val);
+        return func_num_args() === 1 ? ACMS_RAM::_mapping('media', $mid) : ACMS_RAM::_mapping('media', $mid, $val);
     }
 
     /**

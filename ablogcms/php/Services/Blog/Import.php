@@ -262,7 +262,7 @@ class Import
     private function columnFix($field, $value, $record)
     {
         if (strncmp($record['column_type'], 'custom', 6) === 0 && $field === 'column_field_6') {
-            $data = acmsUnserialize($value);
+            $data = acmsDangerUnserialize($value); // @phpstan-ignore-line
             if ($data instanceof \Field && method_exists($data, 'deleteField')) {
                 $fixMediaField = [];
                 foreach ($data->listFields() as $fd) {

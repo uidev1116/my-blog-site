@@ -261,7 +261,7 @@ class Import
         $type = detectUnitTypeSpecifier($record['column_type']);
 
         if ($type === 'custom' && $field === 'column_field_6') {
-            $data = acmsUnserialize($value);
+            $data = acmsDangerUnserialize($value); // @phpstan-ignore-line
             if ($data instanceof \Field && method_exists($data, 'deleteField')) {
                 $fixMediaField = [];
                 foreach ($data->listFields() as $fd) {

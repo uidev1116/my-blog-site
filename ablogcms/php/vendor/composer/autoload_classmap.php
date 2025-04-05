@@ -94,7 +94,6 @@ return array(
     'Acms\\Services\\Facades\\Media' => $baseDir . '/php/Services/Facades/Media.php',
     'Acms\\Services\\Facades\\Module' => $baseDir . '/php/Services/Facades/Module.php',
     'Acms\\Services\\Facades\\Preview' => $baseDir . '/php/Services/Facades/Preview.php',
-    'Acms\\Services\\Facades\\React' => $baseDir . '/php/Services/Facades/React.php',
     'Acms\\Services\\Facades\\RichEditor' => $baseDir . '/php/Services/Facades/RichEditor.php',
     'Acms\\Services\\Facades\\Session' => $baseDir . '/php/Services/Facades/Session.php',
     'Acms\\Services\\Facades\\Storage' => $baseDir . '/php/Services/Facades/Storage.php',

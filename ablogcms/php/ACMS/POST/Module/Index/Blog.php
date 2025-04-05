@@ -1,20 +1,20 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Config;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
 {
-    function post()
+    public function post()
     {
         if (!($bid = intval($this->Post->get('bid')))) {
             $bid = null;
         }
         $this->Post->setMethod('checks', 'required');
-        if (enableApproval($bid, null)) {
-            $this->Post->setMethod('module', 'operable', sessionWithApprovalAdministrator($bid, null));
-        } elseif (roleAvailableUser()) {
-            $this->Post->setMethod('module', 'operable', roleAuthorization('admin_etc', $bid));
-        } else {
-            $this->Post->setMethod('module', 'operable', sessionWithAdministration($bid));
-        }
+        $this->Post->setMethod('module', 'operable', is_int($bid) && Module::canBulkBlogChange($bid));
 
         $this->Post->validate(new ACMS_Validator());
 
@@ -34,43 +34,51 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
                 $Module = loadModule($mid);
                 $identifier = $Module->get('identifier');
                 $scope = $Module->get('scope');
+                $moduleBlogId = (int)$Module->get('blog_id');
 
-                if (Module::double($identifier, $mid, $scope, $bid)) {
-                    //--------
-                    // module
-                    $SQL    = SQL::newUpdate('module');
-                    $SQL->addUpdate('module_blog_id', $bid);
-                    $SQL->addWhereOpr('module_id', $mid);
-                    $DB->query($SQL->get(dsn()), 'exec');
-
-                    //--------
-                    // config
-                    $SQL    = SQL::newUpdate('config');
-                    $SQL->addUpdate('config_blog_id', $bid);
-                    $SQL->addWhereOpr('config_module_id', $mid);
-                    $DB->query($SQL->get(dsn()), 'exec');
-                    Config::forgetCache(BID, null, $mid);
-
-                    //-------
-                    // field
-                    $SQL    = SQL::newUpdate('field');
-                    $SQL->addUpdate('field_blog_id', $bid);
-                    $SQL->addWhereOpr('field_mid', $mid);
-                    $DB->query($SQL->get(dsn()), 'exec');
-                    Common::deleteFieldCache('mid', $mid);
-
-                    $targetModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
-                } else {
+                if (!Module::canUpdate($moduleBlogId)) {
+                    // モジュールの更新が許可されていない
                     $errorModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
+                    continue;
                 }
+
+                if (!Module::double($identifier, $mid, $scope, $bid)) {
+                    // 移動先のブログに重複したモジュールが存在する
+                    $errorModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
+                    continue;
+                }
+
+                // module
+                $SQL = SQL::newUpdate('module');
+                $SQL->addUpdate('module_blog_id', $bid);
+                $SQL->addWhereOpr('module_id', $mid);
+                $DB->query($SQL->get(dsn()), 'exec');
+
+                //--------
+                // config
+                $SQL    = SQL::newUpdate('config');
+                $SQL->addUpdate('config_blog_id', $bid);
+                $SQL->addWhereOpr('config_module_id', $mid);
+                $DB->query($SQL->get(dsn()), 'exec');
+                Config::forgetCache(BID, null, $mid);
+
+                //-------
+                // field
+                $SQL    = SQL::newUpdate('field');
+                $SQL->addUpdate('field_blog_id', $bid);
+                $SQL->addWhereOpr('field_mid', $mid);
+                $DB->query($SQL->get(dsn()), 'exec');
+                Common::deleteFieldCache('mid', $mid);
+
+                $targetModules[] = $Module->get('label') . '（' . $Module->get('identifier') . '）';
             }
             if (!empty($targetModules)) {
-                AcmsLogger::info('選択したモジュールIDを「' . ACMS_RAM::blogName($bid) . '」ブログに移動しました', [
+                Logger::info('選択したモジュールIDを「' . ACMS_RAM::blogName($bid) . '」ブログに移動しました', [
                     'targetModules' => $targetModules,
                 ]);
             }
             if (!empty($errorModules)) {
-                AcmsLogger::info('選択したモジュールIDのブログ移動に失敗しました', [
+                Logger::info('選択したモジュールIDのブログ移動に失敗しました', [
                     'errorModules' => $errorModules,
                 ]);
             }
@@ -80,7 +88,7 @@ class ACMS_POST_Module_Index_Blog extends ACMS_POST_Module
                 $this->Post->set('refreshed', 'refreshed');
             }
         } else {
-            AcmsLogger::info('選択したモジュールIDのブログ移動に失敗しました');
+            Logger::info('選択したモジュールIDのブログ移動に失敗しました');
         }
 
         return $this->Post;

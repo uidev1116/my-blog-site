@@ -54,7 +54,7 @@ class CopyEntryArchive
                 }
             }
             if ($unit->getUnitType() === 'custom') {
-                $field = acmsUnserialize($unit->getField6());
+                $field = acmsDangerUnserialize($unit->getField6());
                 $this->fieldDupe($field);
             }
         }

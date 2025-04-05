@@ -24,7 +24,7 @@ class Role extends General
      */
     protected function cacheMethod($method, $args = [])
     {
-        $key = $method . '_' . md5(serialize($args));
+        $key = $method . '_' . md5('cache' . json_encode($args, JSON_UNESCAPED_UNICODE));
 
         if (isset($this->cache[$key])) {
             return $this->cache[$key];

@@ -1,6 +1,7 @@
 <?php
 
 use Acms\Services\Facades\Application;
+use Acms\Services\Facades\Entry;
 
 class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
 {
@@ -39,7 +40,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         $unitRenderingService = Application::make('unit-rendering-edit');
 
         $CustomFieldCollection = [];
-        $units = acmsUnserialize($this->Post->get('column'));
+        $units = Entry::getTempUnitData();
         $vars = [];
 
         if (
@@ -144,6 +145,7 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
                 }
                 $SQL->setSelect('tag_name');
                 $SQL->addWhereOpr('tag_entry_id', EID);
+                $SQL->addOrder('tag_sort', 'ASC');
                 $q  = $SQL->get(dsn());
                 if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
                     do {
@@ -288,7 +290,6 @@ class ACMS_GET_Admin_Entry_Edit extends ACMS_GET_Admin_Entry
         $vars   += $this->buildField($Entry, $Tpl, $rootBlock, 'entry');
         $vars   += $this->buildField($Field, $Tpl, $rootBlock, 'field');
         $vars   += $this->buildField($Geo, $Tpl, $rootBlock, 'geometry');
-        $vars['column:takeover']  = base64_encode(gzdeflate(serialize($units)));
 
         //--------------
         // custom field

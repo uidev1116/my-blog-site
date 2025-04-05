@@ -77,8 +77,11 @@ class ConfigServer
             'COMMENT_4' => '信頼できるプロキシのIPを設定します。 例: xxx.xxx.xxx.xxx,yyy.yyy.yyy.yyy',
             'TRUSTED_PROXY_LIST' => '',
             'PROXY_IP_HEADER' => 'HTTP_X_FORWARDED_FOR',
+            'COMMENT_5' => 'オンラインアップデート、Webhook、SNSログイン（LINE）のみ対応',
+            'PROXY_PORT' => '',
+            'PROXY_IP' => '',
             'CHMOD_BR' => 'BR',
-            'COMMENT_5' => 'CMSで作成するディレクトリ・ファイルのパーミッションを設定します',
+            'COMMENT_6' => 'CMSで作成するディレクトリ・ファイルのパーミッションを設定します',
             'CHMOD_DIR' => '(0775 & ~ umask())',
             'CHMOD_FILE' => '(0664 & ~ umask())',
             'SSL_BR' => 'BR',
@@ -115,7 +118,7 @@ class ConfigServer
             'REWRITE_PATH_EXTENSION' => 'pdf|doc|docx|ppt|pptx|xls|xlsx|lzh|zip|rar',
             'ERROR_LOG_FILE' => '',
             'ASYNC_PROCESS_LOG_PATH' => '',
-            'COMMENT_6' => '非同期処理でPHPパスが合わない場合に使用。例1: PHP_BINDIR . \'/php -c /path/to/php.ini\' 例2: \'C:\xampp\php\php.exe\'',
+            'COMMENT_7' => '非同期処理でPHPパスが合わない場合に使用。例1: PHP_BINDIR . \'/php -c /path/to/php.ini\' 例2: \'C:\xampp\php\php.exe\'',
             'PHP_PROCESS_BINARY' => '',
             'SEGMENT_BR' => 'BR',
             'BID_SEGMENT' => 'bid',
@@ -159,9 +162,9 @@ class ConfigServer
             'API_SEGMENT' => 'api',
             'IOS_APP_UA' => 'acms_iOS_app',
             'ETC_BR' => 'BR',
-            'COMMENT_7' => '本番運用時に DEBUG_MODE を必ず 0 に設定して下さい',
+            'COMMENT_8' => '本番運用時に DEBUG_MODE を必ず 0 に設定して下さい',
             'DEBUG_MODE' => 0,
-            'BENCHMARK_MODE' => 0,
+            'BENCHMARK_MODE' => 0
         ];
     }
 }

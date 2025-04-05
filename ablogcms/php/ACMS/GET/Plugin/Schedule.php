@@ -201,10 +201,10 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
                 'field' => false,
             ];
             if (isset($row['schedule_data'])) {
-                $res['data'] = @unserialize($row['schedule_data']);
+                $res['data'] = acmsDangerUnserialize($row['schedule_data']);
             }
             if (isset($row['schedule_field'])) {
-                $res['field'] = @unserialize($row['schedule_field']);
+                $res['field'] = acmsDangerUnserialize($row['schedule_field']);
             }
             return $res;
         }
@@ -229,8 +229,9 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
                 $dayBlock = ['day:loop','week:loop','month:loop','unit:loop'];
 
                 if (isset($day['id']) && isset($DATA['field'][$day['id']]) && !empty($DATA['field'][$day['id']])) { //fieldが存在すればadd
+                    $field = ($field instanceof Field) ? $field : new Field();
                     $vars = $this->buildField($field, $Tpl, $dayBlock, null);
-                    $day  = array_merge($day, $vars);
+                    $day = array_merge($day, $vars);
                 }
                 if (isset($day['timestamp'])) {
                     $day    += $this->buildDate($day['timestamp'], $Tpl, 'day:loop');
@@ -550,7 +551,7 @@ class ACMS_GET_Plugin_Schedule extends ACMS_GET
 
             $dayBlock = ['day:loop','week:loop','month:loop','unit:loop'];
 
-            if (!empty($field)) { //fieldが存在すればadd
+            if ($field instanceof Field) { //fieldが存在すればadd
                 $vars = $this->buildField($field, $Tpl, $dayBlock, null);
                 $day  = array_merge($day, $vars);
             }

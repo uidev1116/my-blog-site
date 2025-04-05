@@ -71,7 +71,7 @@ class ACMS_POST_Form_Insert extends ACMS_POST_Form
             $Data->delete('code');
             $Data->delete('name');
             $Data->delete('log');
-            $SQL->addInsert('form_data', serialize($Data));
+            $SQL->addInsert('form_data', acmsSerialize($Data));
             $DB->query($SQL->get(dsn()), 'exec');
 
             $this->Post->set('edit', 'insert');

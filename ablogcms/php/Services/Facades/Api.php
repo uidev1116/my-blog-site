@@ -2,6 +2,11 @@
 
 namespace Acms\Services\Facades;
 
+/**
+ * Class Api
+ *
+ * @method static never get(string $identifier) モジュールIDのデータをJSON形式で出力する
+ */
 class Api extends Facade
 {
     protected static $instance;

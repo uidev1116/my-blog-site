@@ -144,19 +144,21 @@ class ACMS_POST_Member_Signup_Submit extends ACMS_POST_Member_Signup_Confirm
 
         if (config('subscribe_activation') === 'off') {
             // メールアドレスの有効性を確認しないので、そのままログインさせる
-            AcmsLogger::info('ールアドレスの有効性を確認せずにログインしました', [
+            AcmsLogger::info('メールアドレスの有効性を確認せずにログインしました', [
                 'uid' => $uid,
                 'email' => $inputUserField->get('mail'),
             ]);
-
             Login::subscriberActivation($uid);
-            generateSession($uid);
 
-            $url = acmsLink([
-                'bid' => BID,
-            ], false);
+            if (ACMS_RAM::userStatus($uid) === 'open' && strtotime(ACMS_RAM::userLoginExpire($uid) ?? '') > REQUEST_TIME) {
+                generateSession($uid);
 
-            $this->redirect($url);
+                $url = acmsLink([
+                    'bid' => BID,
+                ], false);
+
+                $this->redirect($url);
+            }
         } else {
             // メールを送信し、メールアドレスの有効性を確認する
             $lifetime = intval(config('user_activation_url_lifetime', 30)) * 60;

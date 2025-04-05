@@ -147,7 +147,10 @@ class ACMS_GET_Admin_CheckList extends ACMS_GET
 
         if (is_array($formAll)) {
             foreach ($formAll as $form) {
-                $formField = unserialize($form['form_data']);
+                $formField = acmsDangerUnserialize($form['form_data']);
+                if (!($formField instanceof Field)) {
+                    continue;
+                }
                 $formVars = $this->buildField($formField, $Tpl, ['formGeneral:loop']);
                 $formVars['bid']    = $form['form_blog_id'];
                 $formVars['fmid']   = $form['form_id'];

@@ -61,6 +61,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                 $this->redirect(acmsLink([
                     'bid'   => BID,
                     'eid'   => EID,
+                    'admin' => 'entry_editor',
                     'tpl'   => 'ajax/revision-preview.html',
                     'query' => [
                         'rvid'  => $rvid,
@@ -70,6 +71,7 @@ class ACMS_POST_Revision_Duplicate extends ACMS_POST_Entry
                 $this->redirect(acmsLink([
                     'bid'   => BID,
                     'eid'   => EID,
+                    'admin' => 'entry_editor',
                     'tpl'   => 'ajax/revision-index-list.html',
                 ]));
             }

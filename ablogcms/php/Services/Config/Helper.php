@@ -6,7 +6,6 @@ use ACMS_Filter;
 use ACMS_RAM;
 use Auth;
 use Cache;
-use Config;
 use DB;
 use Field;
 use SQL;
@@ -51,7 +50,12 @@ class Helper
         $cacheKey = "cache-config-$bid-$rid-$mid-$setid";
         $cacheItem = $this->cache->getItem($cacheKey);
         if ($cacheItem->isHit()) {
-            return $cacheItem->get();
+            $data = $cacheItem->get();
+            if ($this->isValidConfig($data)) {
+                return $data;
+            } else {
+                $this->cache->forget($cacheKey);
+            }
         }
         if ($mid) {
             $setid = null;
@@ -93,7 +97,7 @@ class Helper
      * @param int $mid
      * @param int $setid
      *
-     * @return bool
+     * @return true
      */
     public function saveConfig($Config, $bid = BID, $rid = null, $mid = null, $setid = null)
     {
@@ -228,7 +232,12 @@ class Helper
         $cacheKey = 'cache-default-config-field';
         $cacheItem = $this->cache->getItem($cacheKey);
         if ($cacheItem->isHit() && !$this->needToLoadDefaultConfig()) {
-            return $cacheItem->get();
+            $data = $cacheItem->get();
+            if ($this->isValidConfig($data)) {
+                return $data;
+            } else {
+                $this->cache->forget($cacheKey);
+            }
         }
         $config = new Field();
         foreach ($this->loadDefault() as $key => $val) {
@@ -1168,5 +1177,19 @@ class Helper
         }
 
         return $cacheTags;
+    }
+
+    /**
+     * コンフィグが正しいデータ構造かどうかをチェック
+     *
+     * @param mixed $data
+     * @return boolean
+     */
+    protected function isValidConfig($data): bool
+    {
+        if ($data instanceof Field) {
+            return true;
+        }
+        return false;
     }
 }

@@ -78,7 +78,7 @@ class ACMS_POST_Form_Update extends ACMS_POST_Form
             $Data->delete('code');
             $Data->delete('name');
             $Data->delete('log');
-            $SQL->addUpdate('form_data', serialize($Data));
+            $SQL->addUpdate('form_data', acmsSerialize($Data));
             $SQL->addWhereOpr('form_id', $fmid);
             $SQL->addWhereOpr('form_blog_id', BID);
             $DB->query($SQL->get(dsn()), 'exec');

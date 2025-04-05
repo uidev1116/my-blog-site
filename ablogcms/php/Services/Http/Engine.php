@@ -17,9 +17,9 @@ class Engine
     protected $responseBody;
 
     /**
-     * @var resource|\CurlHandle
+     * @var resource
      */
-    protected $curl; // @phpstan-ignore-line
+    protected $curl;
 
     /**
      * Constructor
@@ -50,6 +50,7 @@ class Engine
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Expect:']);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, MAX_EXECUTION_TIME);
 
+        $this->setCurlProxy($this->curl);
         $this->setCurlOption();
 
         return $this;
@@ -108,7 +109,7 @@ class Engine
     /**
      * get response header
      *
-     * @param string|bool $name
+     * @param string|false $name
      *
      * @return string|array
      */
@@ -167,5 +168,30 @@ class Engine
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_HEADER, true);
+    }
+
+    /**
+     * cURLプロキシを設定する
+     *
+     * @param resource $ch
+     * @return void
+     */
+    public function setCurlProxy($ch): void
+    {
+        $proxy_port = defined('PROXY_PORT') ? PROXY_PORT : '';
+        $proxy_ip = defined('PROXY_IP') ? PROXY_IP : '';
+        $is_ip = false;
+        if ($proxy_ip !== '') {
+            $ip = (string)preg_replace('/^https?:\/\//', '', $proxy_ip);
+            $ip = (string)preg_replace('/:\d+$/', '', $ip);
+            $is_ip = (
+                filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false ||
+                filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false
+            );
+        }
+        if (is_numeric($proxy_port) && $is_ip) {
+            curl_setopt($ch, CURLOPT_PROXYPORT, (int)$proxy_port);
+            curl_setopt($ch, CURLOPT_PROXY, $proxy_ip);
+        }
     }
 }

@@ -6,7 +6,7 @@
 class Template
 {
     /**
-     * @var Acms\Services\View\Engine
+     * @var \Acms\Services\View\Contracts\ViewInterface
      */
     protected $engine;
 
@@ -23,7 +23,7 @@ class Template
     public function __call($name, $args)
     {
         if (method_exists($this->engine, $name)) {
-            return call_user_func_array([$this->engine, $name], $args);
+            return call_user_func_array([$this->engine, $name], $args); // @phpstan-ignore argument.type
         }
     }
 }

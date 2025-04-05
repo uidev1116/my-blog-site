@@ -1,5 +1,10 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Application as App;
+
 class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
 {
     /**
@@ -11,19 +16,13 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
     {
         @set_time_limit(0);
 
-        if (enableApproval(BID, null)) {
-            $this->Post->setMethod('module', 'operative', sessionWithApprovalAdministrator(BID, CID));
-        } elseif (roleAvailableUser()) {
-            $this->Post->setMethod('module', 'operative', roleAuthorization('entry_edit', BID));
-        } else {
-            $this->Post->setMethod('module', 'operative', sessionWithAdministration());
-        }
+        $this->Post->setMethod('module', 'operative', Module::canBulkExport(BID));
 
         $this->Post->setMethod('checks', 'required');
         $this->Post->validate(new ACMS_Validator());
 
         if (!$this->Post->isValidAll()) {
-            AcmsLogger::info('選択したモジュールIDのエクスポートに失敗しました');
+            Logger::info('選択したモジュールIDのエクスポートに失敗しました');
             return $this->Post;
         }
 
@@ -39,8 +38,12 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
                 if ($bid != BID && empty($mid)) {
                     continue;
                 }
-                $this->export->exportModule(BID, $mid);
                 $module = loadModule($mid);
+                $moduleBlogId = (int)$module->get('blog_id');
+                if (!Module::canExport($moduleBlogId)) {
+                    continue;
+                }
+                $this->export->exportModule(BID, $mid);
                 $targetModules[] = $module->get('label') . '（' . $module->get('identifier') . '）';
             }
             $this->yaml = $this->export->getYaml();
@@ -49,7 +52,7 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
             Storage::remove($this->destPath);
             $this->putYaml();
 
-            AcmsLogger::info('選択したモジュールIDをエクスポートしました', [
+            Logger::info('選択したモジュールIDをエクスポートしました', [
                 'targetModules' => $targetModules,
             ]);
 
@@ -58,7 +61,7 @@ class ACMS_POST_Module_Index_Export extends ACMS_POST_Config_Export
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
 
-            AcmsLogger::notice('選択したモジュールIDのエクスポートに失敗しました', [
+            Logger::notice('選択したモジュールIDのエクスポートに失敗しました', [
                 'message' => $e->getMessage(),
                 'targetModules' => $targetModules,
             ]);

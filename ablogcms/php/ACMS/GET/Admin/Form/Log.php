@@ -115,10 +115,10 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
         $DB->query($q, 'fetch');
         while ($row = $DB->fetch($q)) {
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
-                $log_subject        = acmsUnserialize($row['log_form_mail_subject']);
-                $log_body           = acmsUnserialize($row['log_form_mail_body']);
-                $log_admin_subject  = acmsUnserialize($row['log_form_mail_subject_admin']);
-                $log_admin_body     = acmsUnserialize($row['log_form_mail_body_admin']);
+                $log_subject        = acmsDangerUnserialize($row['log_form_mail_subject']);
+                $log_body           = acmsDangerUnserialize($row['log_form_mail_body']);
+                $log_admin_subject  = acmsDangerUnserialize($row['log_form_mail_subject_admin']);
+                $log_admin_body     = acmsDangerUnserialize($row['log_form_mail_body_admin']);
             } else {
                 $log_subject        = $row['log_form_mail_subject'];
                 $log_body           = $row['log_form_mail_body'];
@@ -135,12 +135,10 @@ class ACMS_GET_Admin_Form_Log extends ACMS_GET_Admin_Module
             ];
 
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
-                $Field   = acmsUnserialize($row['log_form_data']);
-            } else {
-                $Field = Common::safeUnSerialize($row['log_form_data']);
-            }
-            if (method_exists($Field, 'isNull') && !$Field->isNull()) {
-                $log += $this->buildField($Field, $Tpl, 'log:loop');
+                $Field = acmsDangerUnserialize($row['log_form_data']);
+                if ($Field instanceof Field && !$Field->isNull()) {
+                    $log += $this->buildField($Field, $Tpl, 'log:loop');
+                }
             }
 
             if ($to === 'adminTo') {

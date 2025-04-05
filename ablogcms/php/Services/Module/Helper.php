@@ -2,12 +2,13 @@
 
 namespace Acms\Services\Module;
 
-use DB;
+use Acms\Services\Facades\Database as DB;
 use SQL;
 use ACMS_Filter;
-use Image;
-use Common;
-use Storage;
+use Acms\Services\Facades\Image;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Preview;
 
 class Helper
 {
@@ -193,5 +194,274 @@ class Helper
             )
         );
         return in_array($Module->get('name'), $allowedMultipleArgsModuleNames, true);
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの一括ブログ変更を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canBulkBlogChange(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('admin_etc', $blogId)) {
+                return true;
+            }
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの一括削除を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canBulkDelete(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('module_edit', $blogId)) {
+                return true;
+            }
+            return false;
+        }
+        if (sessionWithContribution($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの一括エクスポートを許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canBulkExport(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの一括ステータス変更を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canBulkStatusChange(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('module_edit', $blogId)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの削除を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canDelete(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('module_edit', $blogId)) {
+                return true;
+            }
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの複製を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canDuplicate(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの更新を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canUpdate(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('module_edit', $blogId)) {
+                return true;
+            }
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールの作成を許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canCreate(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (roleAvailableUser($suid)) {
+            if (roleAuthorization('module_edit', $blogId)) {
+                return true;
+            }
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールのエクスポートを許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canExport(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 現在ログイン中のユーザーがモジュールのインポートを許可されているかどうか
+     *
+     * @param int $blogId
+     * @return bool
+     */
+    public function canImport(int $blogId): bool
+    {
+        /** @var int|null $suid */
+        $suid = SUID;
+        if (is_null($suid)) {
+            return false;
+        }
+
+        if (Preview::isPreviewMode()) {
+            return false;
+        }
+        if (sessionWithAdministration($blogId)) {
+            return true;
+        }
+        return false;
     }
 }

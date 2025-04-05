@@ -184,33 +184,36 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         $rvid = null;
         if (enableRevision() && get_called_class() !== 'ACMS_POST_Entry_Update_Detail') {
             $rvid = Entry::saveEntryRevision(EID, RVID, $entryData, $postEntry->get('revision_type'), $postEntry->get('revision_memo'));
-            $this->saveRevisionUnit($units, $postEntry, EID, $rvid);
-            Entry::saveFieldRevision(EID, $field, $rvid);
-            $this->saveRevisionTag($postEntry->get('tag'), EID, $rvid);
-            Entry::saveRelatedEntries(EID, $postEntry->getArray('related'), $rvid, $postEntry->getArray('related_type'), $postEntry->getArray('loaded_realted_entries'));
-            Entry::saveSubCategory(EID, $cid, $postEntry->get('sub_category_id'), BID, $rvid);
-            $this->saveGeometry('eid', EID, $this->extract('geometry'), $rvid);
+            $rvid = is_int($rvid) ? $rvid : null;
+            if (is_int($rvid)) {
+                $this->saveRevisionUnit($units, $postEntry, EID, $rvid);
+                Entry::saveFieldRevision(EID, $field, $rvid);
+                $this->saveRevisionTag($postEntry->get('tag'), EID, $rvid);
+                Entry::saveRelatedEntries(EID, $postEntry->getArray('related'), $rvid, $postEntry->getArray('related_type'), $postEntry->getArray('loaded_realted_entries'));
+                Entry::saveSubCategory(EID, $cid, $postEntry->get('sub_category_id'), BID, $rvid);
+                $this->saveGeometry('eid', EID, $this->extract('geometry'), $rvid);
 
-            // エントリのカレントリビジョンを変更
-            if ($isUpdateableForMainEntry) {
-                $sql = SQL::newUpdate('entry');
-                $sql->addUpdate('entry_current_rev_id', $rvid);
-                $sql->addUpdate('entry_reserve_rev_id', 0);
-                $sql->addWhereOpr('entry_id', EID);
-                $sql->addWhereOpr('entry_blog_id', BID);
-                DB::query($sql->get(dsn()), 'exec');
-            } else {
-                $revision = Entry::getRevision(EID, $rvid);
-                if ($isNewVersion) {
-                    AcmsLogger::info('エントリーの新規バージョンを作成しました「' . $revision['entry_title'] . '（' . $revision['entry_rev_memo'] . '）」', [
-                        'eid' => EID,
-                        'rvid' => $rvid,
-                    ]);
+                // エントリのカレントリビジョンを変更
+                if ($isUpdateableForMainEntry) {
+                    $sql = SQL::newUpdate('entry');
+                    $sql->addUpdate('entry_current_rev_id', $rvid);
+                    $sql->addUpdate('entry_reserve_rev_id', 0);
+                    $sql->addWhereOpr('entry_id', EID);
+                    $sql->addWhereOpr('entry_blog_id', BID);
+                    DB::query($sql->get(dsn()), 'exec');
                 } else {
-                    AcmsLogger::info('エントリーのバージョンを上書き保存しました「' . $revision['entry_title'] . '（' . $revision['entry_rev_memo'] . '）」', [
-                        'eid' => EID,
-                        'rvid' => $rvid,
-                    ]);
+                    $revision = Entry::getRevision(EID, $rvid);
+                    if ($isNewVersion) {
+                        AcmsLogger::info('エントリーの新規バージョンを作成しました「' . $revision['entry_title'] . '（' . $revision['entry_rev_memo'] . '）」', [
+                            'eid' => EID,
+                            'rvid' => $rvid,
+                        ]);
+                    } else {
+                        AcmsLogger::info('エントリーのバージョンを上書き保存しました「' . $revision['entry_title'] . '（' . $revision['entry_rev_memo'] . '）」', [
+                            'eid' => EID,
+                            'rvid' => $rvid,
+                        ]);
+                    }
                 }
             }
         }
@@ -356,7 +359,7 @@ class ACMS_POST_Entry_Update extends ACMS_POST_Entry
         $units = $this->unitRepository->extractUnits($range, false, false);
         $this->Post->set('step', 'reapply');
         $this->Post->set('action', $type);
-        $this->Post->set('column', acmsSerialize($units));
+        Entry::setTempUnitData($units);
     }
 
     /**

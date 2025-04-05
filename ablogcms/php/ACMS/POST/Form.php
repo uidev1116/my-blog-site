@@ -139,7 +139,7 @@ class ACMS_POST_Form extends ACMS_POST
             'name'  => $row['form_name'],
             'scope' => $row['form_scope'],
             'log'   => strval($row['form_log']),
-            'data'  => unserialize($row['form_data']),
+            'data'  => acmsDangerUnserialize($row['form_data']),
         ];
     }
 
@@ -152,7 +152,13 @@ class ACMS_POST_Form extends ACMS_POST
     function buildOptions($Option)
     {
         $dup = []; // メールアドレスの重複オプション
-        $field = $this->extract('field');
+
+        $field = new Field_Validation();
+        if ($takeover = $this->Post->get('field:takeover')) {
+            $field->overload(acmsUnserialize($takeover));
+            $this->Post->delete('field:takeover');
+        }
+        $field->overload($this->Post->dig('field'));
 
         foreach ($Option->getArray('field') as $i => $fd) {
             if (empty($fd)) {
@@ -171,6 +177,8 @@ class ACMS_POST_Form extends ACMS_POST
                 $field->setMethod($fd, $method, $value);
             }
         }
+        $this->Post->addChild('field', $field);
+
         return $dup;
     }
 

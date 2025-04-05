@@ -1,8 +1,6 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
-import SmartBlock from 'smartblock/components/smartblock';
-import type { Extension } from 'smartblock';
+import { SmartBlock, type Extension } from 'smartblock';
 import { Schema } from 'smartblock/pm/model';
-
 import 'smartblock/css/smartblock.css';
 
 type ReturnValue = {

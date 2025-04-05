@@ -11775,12 +11775,12 @@ a.acms-admin-label-danger:focus {
   background-color: #ddd;
 }
 
-.entryFormColumnBody .a-table th {
+.acms-admin-table-unit-inner .a-table th {
   font-weight: normal;
   cursor: pointer;
 }
 
-.entryFormColumnBody .a-table td {
+.acms-admin-table-unit-inner .a-table td {
   border: 1px solid #ccc !important;
 }
 

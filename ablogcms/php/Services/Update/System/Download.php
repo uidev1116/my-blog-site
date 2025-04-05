@@ -2,6 +2,7 @@
 
 namespace Acms\Services\Update\System;
 
+use HTTP;
 use Acms\Services\Facades\Storage;
 
 class Download
@@ -42,6 +43,8 @@ class Download
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_FILE, $fp);
         curl_setopt($curl, CURLOPT_TIMEOUT, 0);
+
+        Http::setCurlProxy($curl);
 
         curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);

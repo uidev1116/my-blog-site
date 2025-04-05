@@ -69,7 +69,7 @@ class ACMS_GET_Member_Signup extends ACMS_GET_Member
                 Login::subscriberActivation($uid);
                 $this->removeToken(); // 使用済みトークンを削除
 
-                if (ACMS_RAM::userStatus($uid) === 'open') {
+                if (ACMS_RAM::userStatus($uid) === 'open' && strtotime(ACMS_RAM::userLoginExpire($uid) ?? '') > REQUEST_TIME) {
                     generateSession($uid);
                     $tpl->add('enableAccount');
                 } else {

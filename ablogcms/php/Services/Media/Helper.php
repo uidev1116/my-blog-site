@@ -16,6 +16,11 @@ use RuntimeException;
 
 class Helper
 {
+    /**
+     * メディアライブラリの利用が許可されているかどうかを確認
+     * @param int $bid
+     * @return bool
+     */
     public function validate($bid = BID)
     {
         if (!IS_LICENSED) {
@@ -36,6 +41,11 @@ class Helper
         return true;
     }
 
+    /**
+     * メディアの編集が許可されているかどうかを確認
+     * @param int $mid
+     * @return bool
+     */
     public function canEdit($mid)
     {
         if (sessionWithCompilation()) {
@@ -53,6 +63,13 @@ class Helper
         return false;
     }
 
+    /**
+     * メディアの基本情報を取得
+     * @param array{name: string, tmp_name: string, type: string, size: int} $fileObj
+     * @param string $tags
+     * @param string $name
+     * @return false|array{tags: string, name: string, file: array{name: string, tmp_name: string, type: string, size: int}, size: int, type: string, extension: string}
+     */
     public function getBaseInfo($fileObj, $tags, $name)
     {
         if (!preg_match('@\.([^.]+)$@', $fileObj['name'], $match) && $fileObj['name'] !== 'blob') {
@@ -77,7 +94,8 @@ class Helper
      * @param string $filename
      * @return array{
      *   path: string,
-     *   name: string
+     *   name: string,
+     *   original: string
      * }
      */
     public function copyImages(int $mid, string $filename = ''): array
@@ -142,6 +160,19 @@ class Helper
         ];
     }
 
+    /**
+     * 画像をアップロード
+     * @param string $fieldName
+     * @param bool $original
+     * @return array{
+     *   path: string,
+     *   type: string,
+     *   name: string,
+     *   size: string,
+     *   filesize: int<0, max>|false,
+     *   extension: string,
+     * }
+     */
     public function uploadImage($fieldName = 'file', $original = true)
     {
         $size = [
@@ -161,7 +192,7 @@ class Helper
          *  type: string,
          *  name: string,
          *  size: string
-         * }
+         * } $data
          */
         $data = Image::createImages(
             $_FILES[$fieldName],
@@ -179,6 +210,16 @@ class Helper
         return $data;
     }
 
+    /**
+     * PDFのサムネイルをアップロード
+     * @param string $name
+     * @return array{
+     *   path: string,
+     *   type: string,
+     *   name: string,
+     *   size: string
+     * }
+     */
     public function uploadPdfThumbnail($name)
     {
         return Image::createImages(
@@ -191,6 +232,18 @@ class Helper
         );
     }
 
+    /**
+     * SVGをアップロード
+     * @param int $size
+     * @param string $fieldName
+     * @return array{
+     *   path: string,
+     *   type: string,
+     *   name: string,
+     *   size: string,
+     *   filesize: int,
+     * }
+     */
     public function uploadSvg($size, $fieldName = 'file')
     {
         $data = $this->createFile(MEDIA_LIBRARY_DIR, $fieldName, false);
@@ -202,6 +255,19 @@ class Helper
         return $data;
     }
 
+    /**
+     * ファイルをアップロード
+     * @param int $size
+     * @param string $fieldName
+     * @return array{
+     *   path: string,
+     *   type: string,
+     *   name: string,
+     *   size: string,
+     *   filesize: int,
+     *   extension: string,
+     * }|false
+     */
     public function uploadFile($size, $fieldName = 'file')
     {
         Storage::makeDirectory(MEDIA_STORAGE_DIR);
@@ -249,6 +315,11 @@ class Helper
         $this->removeImageFiles($oldData['path'], true);
     }
 
+    /**
+     * ファイルを削除
+     * @param int $mid
+     * @return void
+     */
     public function deleteFile($mid)
     {
         $oldData = $this->getMedia($mid);
@@ -262,6 +333,13 @@ class Helper
             $Hook->call('mediaDelete', $baseDir . $path);
         }
     }
+
+    /**
+     * ファイルをリネーム
+     * @param array $data
+     * @param string $rename
+     * @return array
+     */
     public function rename($data, $rename)
     {
         if ($data['name'] === $rename) {
@@ -311,12 +389,22 @@ class Helper
         return $data;
     }
 
+    /**
+     * パスをURLエンコード
+     * @param string $path
+     * @return string
+     */
     public function urlencode($path)
     {
         $name = Storage::mbBasename($path);
         return substr($path, 0, strlen($path) - strlen($name)) . rawurlencode($name);
     }
 
+    /**
+     * キャッシュバスティング
+     * @param string $updated
+     * @return string
+     */
     public function cacheBusting(string $updated): string
     {
         return '?v=' . date('YmdHis', strtotime($updated));
@@ -352,31 +440,61 @@ class Helper
         return preg_match('/^file/', $type) === 1;
     }
 
+    /**
+     * 編集されたパスを取得
+     * @param string $path
+     * @return string
+     */
     public function getEdited($path)
     {
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . $path;
     }
 
+    /**
+     * 画像のサムネイルパスを取得
+     * @param string $path
+     * @return string
+     */
     public function getImageThumbnail($path)
     {
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . otherSizeImagePath($path, 'tiny');
     }
 
+    /**
+     * SVGのサムネイルパスを取得
+     * @param string $path
+     * @return string
+     */
     public function getSvgThumbnail($path)
     {
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . $path;
     }
 
+    /**
+     * ファイルのサムネイルパスを取得
+     * @param string $extension
+     * @return string
+     */
     public function getFileThumbnail($extension)
     {
         return '/' . DIR_OFFSET . pathIcon($extension);
     }
 
+    /**
+     * PDFのサムネイルパスを取得
+     * @param string $path
+     * @return string
+     */
     public function getPdfThumbnail($path)
     {
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . $path;
     }
 
+    /**
+     * 画像のパーマリンクを取得
+     * @param string $path
+     * @return string
+     */
     public function getImagePermalink($path)
     {
         $permalink = BASE_URL . MEDIA_LIBRARY_DIR . $path;
@@ -386,6 +504,12 @@ class Helper
         return $permalink;
     }
 
+    /**
+     * ファイルのパーマリンクを取得
+     * @param int $mid
+     * @param bool $fullpath
+     * @return string
+     */
     public function getFilePermalink($mid, $fullpath = true)
     {
         if ($fullpath) {
@@ -398,6 +522,11 @@ class Helper
         return '/' . $offset .  MEDIA_FILE_SEGMENT . '/' . $mid . '/' . $this->getDownloadLinkHash($mid) . '/' . ACMS_RAM::mediaExtension($mid) . '/';
     }
 
+    /**
+     * ダウンロードリンクハッシュを取得
+     * @param int $mid
+     * @return string
+     */
     public function getDownloadLinkHash($mid)
     {
         $pepper = sha1('pepper' . PASSWORD_SALT_1);
@@ -406,6 +535,12 @@ class Helper
         return substr($hash, 0, 16);
     }
 
+    /**
+     * ファイルの古いパーマリンクを取得
+     * @param string $path
+     * @param bool $fullpath
+     * @return string
+     */
     public function getFileOldPermalink($path, $fullpath = true)
     {
         if ($fullpath) {
@@ -414,6 +549,11 @@ class Helper
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . $path;
     }
 
+    /**
+     * オリジナルパスを取得
+     * @param string $original
+     * @return string
+     */
     public function getOriginal($original)
     {
         if ($original && !Storage::exists(MEDIA_LIBRARY_DIR . $original)) {
@@ -425,6 +565,12 @@ class Helper
         return '/' . DIR_OFFSET . MEDIA_LIBRARY_DIR . $original;
     }
 
+    /**
+     * タグをフィルタリング
+     * @param SQL_Select $SQL
+     * @param string[] $tags
+     * @return false|void
+     */
     public function filterTag($SQL, $tags)
     {
         if (!is_array($tags) and empty($tags)) {
@@ -442,6 +588,13 @@ class Helper
         }
     }
 
+    /**
+     * タグを保存
+     * @param int $mid
+     * @param string $tags
+     * @param int $bid
+     * @return void
+     */
     public function saveTags($mid, $tags, $bid = BID)
     {
         $SQL = SQL::newDelete('media_tag');
@@ -460,6 +613,12 @@ class Helper
         }
     }
 
+    /**
+     * タグを削除
+     * @param string $tagName
+     * @param int $bid
+     * @return void
+     */
     public function deleteTag($tagName, $bid = BID)
     {
         $DB = DB::singleton(dsn());
@@ -469,6 +628,13 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
+    /**
+     * タグを更新
+     * @param string $oldTag
+     * @param string $newTag
+     * @param int $bid
+     * @return void
+     */
     public function updateTag($oldTag, $newTag, $bid = BID)
     {
         $DB = DB::singleton(dsn());
@@ -498,6 +664,12 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
+    /**
+     * メディアを挿入
+     * @param int $mid
+     * @param array $data
+     * @return void
+     */
     public function insertMedia($mid, $data)
     {
         $DB = DB::singleton(dsn());
@@ -537,6 +709,12 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
+    /**
+     * メディアを更新
+     * @param int $mid
+     * @param array $data
+     * @return void
+     */
     public function updateMedia($mid, $data)
     {
         $DB = DB::singleton(dsn());
@@ -576,6 +754,44 @@ class Helper
         $DB->query($SQL->get(dsn()), 'exec');
     }
 
+    /**
+     * JSONをビルド
+     * @param int $mid
+     * @param array $data
+     * @param string $tags
+     * @param int $bid
+     * @return array{
+     *   media_status: string,
+     *   media_title: string,
+     *   media_label: string,
+     *   media_last_modified: string,
+     *   media_datetime: string,
+     *   media_id: int,
+     *   media_bid: int,
+     *   media_blog_name: string,
+     *   media_user_id: int,
+     *   media_user_name: string,
+     *   media_last_update_user_id: int|'',
+     *   media_last_update_user_name: string,
+     *   media_size: string,
+     *   media_filesize: int,
+     *   media_path: string,
+     *   media_edited: string,
+     *   media_original: string,
+     *   media_thumbnail: string,
+     *   media_permalink: string,
+     *   media_type: string,
+     *   media_ext: string,
+     *   media_caption: string,
+     *   media_link: string,
+     *   media_alt: string,
+     *   media_text: string,
+     *   media_focal_point: string,
+     *   media_editable: bool,
+     *   media_pdf_page: string,
+     *   checked: false
+     * }
+     */
     public function buildJson($mid, $data, $tags, $bid = BID)
     {
         $path = $this->urlencode($data['path']);
@@ -637,6 +853,11 @@ class Helper
         ];
     }
 
+    /**
+     * メディアのアーカイブリストを取得
+     * @param \SQL $sql
+     * @return string[]
+     */
     public function getMediaArchiveList($sql)
     {
         $archives = [];
@@ -651,6 +872,11 @@ class Helper
         return $archives;
     }
 
+    /**
+     * メディアのタグリストを取得
+     * @param \SQL $sql
+     * @return string[]
+     */
     public function getMediaTagList($sql)
     {
         $tags = [];
@@ -666,6 +892,11 @@ class Helper
         return $tags;
     }
 
+    /**
+     * メディアの拡張子リストを取得
+     * @param \SQL $sql
+     * @return string[]
+     */
     public function getMediaExtensionList($sql)
     {
         $exts = [];
@@ -680,6 +911,11 @@ class Helper
         return $exts;
     }
 
+    /**
+     * メディアのラベルを取得
+     * @param int $mid
+     * @return string
+     */
     public function getMediaLabel($mid)
     {
         $label = '';
@@ -702,7 +938,7 @@ class Helper
     /**
      * Summary of mediaEagerLoadFromUnit
      * @param Model[] $units
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function mediaEagerLoadFromUnit(array $units): array
     {
@@ -735,6 +971,37 @@ class Helper
         return $mediaDataList;
     }
 
+    /**
+     * メディアを取得
+     * @param int $mid
+     * @return array{
+     *   mid: int,
+     *   bid: int,
+     *   status: string,
+     *   path: string,
+     *   thumbnail: string,
+     *   name: string,
+     *   size: string,
+     *   filesize: int,
+     *   type: string,
+     *   extension: string,
+     *   original: string,
+     *   update_date: string,
+     *   upload_date: string,
+     *   field_1: string,
+     *   field_2: string,
+     *   field_3: string,
+     *   field_4: string,
+     *   field_5: string,
+     *   field_6: string,
+     *   blog_name: string,
+     *   user_id: int,
+     *   user_name: string,
+     *   last_update_user_id: int,
+     *   last_update_user_name: string,
+     *   editable: bool
+     * }|array{}
+     */
     public function getMedia($mid)
     {
         $sql = SQL::newSelect('media', 'm');
@@ -815,7 +1082,8 @@ class Helper
     /**
      * メディアの削除
      *
-     * @param $mid
+     * @param int $mid
+     * @return void
      */
     public function deleteItem($mid)
     {
@@ -855,9 +1123,10 @@ class Helper
     /**
      * メディアフィールドの挿入
      *
-     * @param $Field
-     * @param $mediaList
-     * @param $useMediaField
+     * @param \Field $Field
+     * @param array $mediaList
+     * @param string[] $useMediaField
+     * @return void
      */
     public function injectMediaField($Field, $mediaList, $useMediaField)
     {
@@ -1007,6 +1276,7 @@ class Helper
      * メディアファイルのダウンロード
      *
      * @param int $mid
+     * @return never|void
      */
     public function downloadFile($mid)
     {
@@ -1037,7 +1307,7 @@ class Helper
      * @param string $archivesDir
      * @param string $fieldName
      * @param bool $random
-     * @return array
+     * @return array{path: string, type: string, name: string, size: string}
      * @throws RuntimeException
      */
     protected function createFile(string $archivesDir, string $fieldName = 'file', bool $random = true): array

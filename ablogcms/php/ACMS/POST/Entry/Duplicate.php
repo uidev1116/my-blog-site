@@ -40,8 +40,16 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $newEid = $DB->query(SQL::nextval('entry_id', dsn()), 'seq');
         if (enableApproval(BID, CID) && !sessionWithApprovalAdministrator(BID, CID)) {
             $this->approvalDupe($eid, $newEid);
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('saveEntry', [$newEid, 1]);
+            }
         } else {
             $this->dupe($eid, $newEid);
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('saveEntry', [$newEid, null]);
+            }
         }
         return $newEid;
     }
@@ -141,7 +149,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
         $unitRepository = Application::make('unit-repository');
         assert($unitRepository instanceof \Acms\Services\Unit\Repository);
         $rvid = $sourceRev ? 1 : null;
-        $map = $unitRepository->duplicateUnits($eid, $newEid, $rvid);
+        $map = $unitRepository->duplicateUnits($eid, $newEid, $rvid, 1);
 
         //-------
         // entry
@@ -219,7 +227,9 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
                     'entry_rev_user_id',
                     'entry_rev_datetime',
                     'entry_current_rev_id',
-                    'entry_reserve_rev_id'
+                    'entry_reserve_rev_id',
+                    'entry_lock_datetime',
+                    'entry_lock_uid',
                 ], true)
             ) {
                 $SQL->addInsert($fd, $val);
@@ -299,12 +309,17 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
     {
         $DB = DB::singleton(dsn());
         $bid = ACMS_RAM::entryBlog($eid);
+        $approval = ACMS_RAM::entryApproval($eid);
+        $sourceRvid = null;
+        if ($approval === 'pre_approval') {
+            $sourceRvid = 1;
+        }
 
         //-------
         // unit
         $unitRepository = Application::make('unit-repository');
         assert($unitRepository instanceof \Acms\Services\Unit\Repository);
-        $map = $unitRepository->duplicateUnits($eid, $newEid);
+        $map = $unitRepository->duplicateUnits($eid, $newEid, $sourceRvid, null);
 
         //-------
         // entry
@@ -350,6 +365,7 @@ class ACMS_POST_Entry_Duplicate extends ACMS_POST_Entry
 
         $row['entry_id']        = $newEid;
         $row['entry_status']    = 'close';
+        $row['entry_approval']  = 'none';
         $row['entry_title']     = $title;
         $row['entry_code']      = $code;
         if (config('update_datetime_as_duplicate_entry') !== 'off') {

@@ -144,7 +144,7 @@ class ACMS_POST_Form2_Update extends ACMS_POST_Entry
         if (!$this->Post->isValidAll()) {
             $this->Post->set('step', 'reapply');
             $this->Post->set('action', 'update');
-            $this->Post->set('column', acmsSerialize($Column));
+            Entry::setTempUnitData($Column);
 
             AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーの動的フォームを更新に失敗しました', [
                 'Form' => $Form,

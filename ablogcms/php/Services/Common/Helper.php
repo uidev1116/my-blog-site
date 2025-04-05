@@ -59,6 +59,20 @@ class Helper
     protected $cacheField;
 
     /**
+     * 現在のソルト
+     *
+     * @var string|null
+     */
+    private $currentSalt = null;
+
+    /**
+     * 1つ前のソルト
+     *
+     * @var string|null
+     */
+    private $previousSalt = null;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -108,6 +122,67 @@ class Helper
         $cipher->setIV($iv);
 
         return $cipher->decrypt(base64_decode($cipherText)); // @phpstan-ignore-line
+    }
+
+    /**
+     * アプリ全体で使用するSaltを更新・設定
+     *
+     * @return void
+     */
+    public function setAppSalt(): void
+    {
+        $sql = SQL::newSelect('sequence');
+        $item = DB::query($sql->get(dsn()), 'row');
+
+        if (!$item || !array_key_exists('sequence_current_salt', $item) || !array_key_exists('sequence_previous_salt', $item)) {
+            $this->currentSalt = PASSWORD_SALT_1;
+            $this->previousSalt = PASSWORD_SALT_2;
+            AcmsLogger::error('データベースがアップデートされていません。管理画面の更新メニューからDBをアップデートください。');
+            return;
+        }
+        $currentSalt = $item['sequence_current_salt'] ?? null;
+        $previousSalt = $item['sequence_previous_salt'] ?? null;
+        $updatedAt = strtotime($item['sequence_salt_updated_at'] ?? '2000-01-01 00:00:00');
+
+        if ($currentSalt === null || $previousSalt === null) {
+            $currentSalt = "base64:" . base64_encode(random_bytes(32));
+            $previousSalt = "base64:" . base64_encode(random_bytes(32));
+            $sql = SQL::newUpdate('sequence');
+            $sql->addUpdate('sequence_current_salt', $currentSalt);
+            $sql->addUpdate('sequence_previous_salt', $previousSalt);
+            $sql->addUpdate('sequence_salt_updated_at', date('Y-m-d H:i:s', REQUEST_TIME));
+            DB::query($sql->get(dsn()), 'exec');
+        } elseif ((REQUEST_TIME - $updatedAt) > (60 * 60 * 24)) {
+            $previousSalt = $currentSalt;
+            $currentSalt = "base64:" . base64_encode(random_bytes(32));
+            $sql = SQL::newUpdate('sequence');
+            $sql->addUpdate('sequence_current_salt', $currentSalt);
+            $sql->addUpdate('sequence_previous_salt', $previousSalt);
+            $sql->addUpdate('sequence_salt_updated_at', date('Y-m-d H:i:s', REQUEST_TIME));
+            DB::query($sql->get(dsn()), 'exec');
+        }
+        $this->currentSalt = $currentSalt;
+        $this->previousSalt = $previousSalt;
+    }
+
+    /**
+     * 現在のソルトを取得
+     *
+     * @return string
+     */
+    public function getCurrentSalt(): string
+    {
+        return $this->currentSalt ??  base64_encode(random_bytes(32));
+    }
+
+    /**
+     * 1つ前のソルトを取得
+     *
+     * @return string
+     */
+    public function getPreviousSalt(): string
+    {
+        return $this->previousSalt ??  base64_encode(random_bytes(32));
     }
 
     /**
@@ -458,18 +533,14 @@ class Helper
      *   smtp-pass?: string,
      *   mail_from?: string,
      *   sendmail_path?: string,
-     *   additional_headers?: string
+     *   additional_headers?: string,
+     *   smtp-google?: string,
+     *   smtp-google-user?: string
      * } $argConfig
      *
-     * @return array{
-     *   smtp-host: string,
-     *   smtp-port: string,
-     *   smtp-user: string,
-     *   smtp-pass: string,
-     *   mail_from: string,
-     *   sendmail_path: string,
-     *   additional_headers: string
-     * }
+     * @return non-empty-array<'additional_headers'|'mail_from'|'sendmail_path'|'smtp-google'|'smtp-google-user'|'smtp-host'|'smtp-pass'|'smtp-port'|'smtp-user',
+     *   string
+     * >
      */
     public function mailConfig($argConfig = [])
     {
@@ -494,7 +565,7 @@ class Helper
         } else {
             $config['additional_headers'] = 'X-Mailer: a-blog cms';
         }
-        $config['sendmail_path'] = ini_get('sendmail_path');
+        $config['sendmail_path'] = (string)ini_get('sendmail_path');
 
         if (config('mail_additional_headers')) {
             $config['additional_headers']   .= "\x0D\x0A" . config('mail_additional_headers');
@@ -565,28 +636,49 @@ class Helper
         assert($unitRepository instanceof \Acms\Services\Unit\Repository);
 
         $text = $unitRepository->getUnitSearchText($eid);
-        $meta = '';
+        $entry = [
+            'id' => $eid,
+            'title' => ACMS_RAM::entryTitle($eid),
+            'code' => ACMS_RAM::entryCode($eid),
+        ];
 
-        $meta .= "{$eid} ";
-        $meta .= ACMS_RAM::entryTitle($eid) . ' ';
-        $meta .= ACMS_RAM::entryCode($eid) . ' ';
+        $sql = SQL::newSelect('field');
+        $sql->addSelect('field_key');
+        $sql->addSelect('field_value');
+        $sql->addWhereOpr('field_search', 'on');
+        $sql->addWhereOpr('field_eid', $eid);
+        $q = $sql->get(dsn());
 
-        $SQL = SQL::newSelect('field');
-        $SQL->addSelect('field_value');
-        $SQL->addWhereOpr('field_search', 'on');
-        $SQL->addWhereOpr('field_eid', $eid);
-        $q = $SQL->get(dsn());
-
-        if (DB::query($q, 'fetch') and ($row = DB::fetch($q))) {
+        $field = [];
+        if (DB::query($q, 'fetch') && ($row = DB::fetch($q))) {
             do {
-                $meta .= $row['field_value'] . ' ';
+                if (!isset($field[$row['field_key']])) {
+                    $field[$row['field_key']] = [];
+                }
+                $field[$row['field_key']][] = $row['field_value'];
             } while ($row = DB::fetch($q));
         }
 
+        if (HOOK_ENABLE) {
+            $hook = ACMS_Hook::singleton();
+            $hook->call('filterEntryFulltext', [&$entry, &$field, $eid]);
+        }
+
+        $metaText = implode(
+            ' ',
+            [
+                implode(' ', array_values($entry)),
+                implode(' ', array_map(function (array $values) {
+                    return implode(' ', $values);
+                }, $field)),
+            ]
+        );
+
         $text = fulltextUnitData($text);
-        return preg_replace('/\s+/u', ' ', strip_tags($text))
-        . "\x0d\x0a\x0a\x0d" . preg_replace('/\s+/u', ' ', strip_tags($meta))
+        $fulltext = preg_replace('/\s+/u', ' ', strip_tags($text))
+        . "\x0d\x0a\x0a\x0d" . preg_replace('/\s+/u', ' ', strip_tags($metaText))
             ;
+        return $fulltext;
     }
 
     /**
@@ -598,35 +690,45 @@ class Helper
      */
     public function loadUserFulltext($uid)
     {
-        $DB = DB::singleton(dsn());
-
-        // ユーザーフィールド
-        $user = [];
-
-        // カスタムフィールド
-        $meta = [];
-
-        $user[] = ACMS_RAM::userName($uid);
-        $user[] = ACMS_RAM::userCode($uid);
-        $user[] = ACMS_RAM::userMail($uid);
-        $user[] = ACMS_RAM::userMailMobile($uid);
-        $user[] = ACMS_RAM::userUrl($uid);
+        $user = [
+            'name' => ACMS_RAM::userName($uid),
+            'code' => ACMS_RAM::userCode($uid),
+            'mail' => ACMS_RAM::userMail($uid),
+            'mail_mobile' => ACMS_RAM::userMailMobile($uid),
+            'url' => ACMS_RAM::userUrl($uid),
+        ];
 
         $SQL = SQL::newSelect('field');
+        $SQL->addSelect('field_key');
         $SQL->addSelect('field_value');
         $SQL->addWhereOpr('field_search', 'on');
         $SQL->addWhereOpr('field_uid', $uid);
         $q = $SQL->get(dsn());
 
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+        $field = [];
+        if (DB::query($q, 'fetch') && ($row = DB::fetch($q))) {
             do {
-                $meta[] = $row['field_value'];
-            } while ($row = $DB->fetch($q));
+                if (!isset($field[$row['field_key']])) {
+                    $field[$row['field_key']] = [];
+                }
+                $field[$row['field_key']][] = $row['field_value'];
+            } while ($row = DB::fetch($q));
         }
 
-        $user = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $user)));
-        $meta = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $meta)));
-        return $user . "\x0d\x0a\x0a\x0d" . $meta;
+        if (HOOK_ENABLE) {
+            $hook = ACMS_Hook::singleton();
+            $hook->call('filterUserFulltext', [&$user, &$field, $uid]);
+        }
+
+        $userText = implode(' ', array_values($user));
+        $metaText = implode(' ', array_map(function (array $values) {
+            return implode(' ', $values);
+        }, $field));
+
+        $fulltext = preg_replace('/\s+/u', ' ', strip_tags($userText))
+        . "\x0d\x0a\x0a\x0d" . preg_replace('/\s+/u', ' ', strip_tags($metaText))
+            ;
+        return $fulltext;
     }
 
     /**
@@ -638,32 +740,41 @@ class Helper
      */
     public function loadCategoryFulltext($cid)
     {
-        $DB = DB::singleton(dsn());
-
-        // カテゴリーフィールド
-        $category = [];
-
-        // カスタムフィールド
-        $meta = [];
-
-        $category[] = ACMS_RAM::categoryName($cid);
-        $category[] = ACMS_RAM::categoryCode($cid);
+        $category = [
+            'name' => ACMS_RAM::categoryName($cid),
+            'code' => ACMS_RAM::categoryCode($cid),
+        ];
 
         $SQL = SQL::newSelect('field');
+        $SQL->addSelect('field_key');
         $SQL->addSelect('field_value');
         $SQL->addWhereOpr('field_search', 'on');
         $SQL->addWhereOpr('field_cid', $cid);
         $q = $SQL->get(dsn());
 
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+        $field = [];
+        if (DB::query($q, 'fetch') && ($row = DB::fetch($q))) {
             do {
-                $meta[] = $row['field_value'];
-            } while ($row = $DB->fetch($q));
+                if (!isset($field[$row['field_key']])) {
+                    $field[$row['field_key']] = [];
+                }
+                $field[$row['field_key']][] = $row['field_value'];
+            } while ($row = DB::fetch($q));
         }
 
-        $category = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $category)));
-        $meta = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $meta)));
-        return $category . "\x0d\x0a\x0a\x0d" . $meta;
+        if (HOOK_ENABLE) {
+            $hook = ACMS_Hook::singleton();
+            $hook->call('filterCategoryFulltext', [&$category, &$field, $cid]);
+        }
+
+        $categoryText = implode(' ', array_values($category));
+        $metaText = implode(' ', array_map(function (array $values) {
+            return implode(' ', $values);
+        }, $field));
+
+        $fulltext = preg_replace('/\s+/u', ' ', strip_tags($categoryText))
+        . "\x0d\x0a\x0a\x0d" . preg_replace('/\s+/u', ' ', strip_tags($metaText));
+        return $fulltext;
     }
 
     /**
@@ -675,74 +786,42 @@ class Helper
      */
     public function loadBlogFulltext($bid)
     {
-        $DB = DB::singleton(dsn());
-
-        // ブログフィールド
-        $blog = [];
-
-        // カスタムフィールド
-        $meta = [];
-
-        $blog[] = ACMS_RAM::blogName($bid);
-        $blog[] = ACMS_RAM::blogCode($bid);
-        $blog[] = ACMS_RAM::blogDomain($bid);
+        $blog = [
+            'name' => ACMS_RAM::blogName($bid),
+            'code' => ACMS_RAM::blogCode($bid),
+            'domain' => ACMS_RAM::blogDomain($bid),
+        ];
 
         $SQL = SQL::newSelect('field');
+        $SQL->addSelect('field_key');
         $SQL->addSelect('field_value');
         $SQL->addWhereOpr('field_search', 'on');
         $SQL->addWhereOpr('field_bid', $bid);
         $q = $SQL->get(dsn());
 
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
+        $field = [];
+        if (DB::query($q, 'fetch') && ($row = DB::fetch($q))) {
             do {
-                $meta[] = $row['field_value'];
-            } while ($row = $DB->fetch($q));
+                if (!isset($field[$row['field_key']])) {
+                    $field[$row['field_key']] = [];
+                }
+                $field[$row['field_key']][] = $row['field_value'];
+            } while ($row = DB::fetch($q));
         }
 
-        $blog = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $blog)));
-        $meta = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $meta)));
-        return $blog . "\x0d\x0a\x0a\x0d" . $meta;
-    }
-
-    /**
-     * プラグインフルテキストを取得
-     *
-     * @param int $cuid
-     *
-     * @return string
-     */
-    public function loadPluginFulltext($cuid)
-    {
-        $DB = DB::singleton(dsn());
-
-        // ユーザーフィールド
-        $user = [];
-
-        // カスタムフィールド
-        $meta = [];
-
-        $SQL = SQL::newSelect('crm_customer');
-        $SQL->addWhereOpr('customer_id', $cuid);
-        if ($row = $DB->query($SQL->get(dsn()), 'row')) {
-            foreach ($row as $key => $val) {
-                $user[] = $val;
-            }
-        }
-        $SQL = SQL::newSelect('crm_field');
-        $SQL->addSelect('field_value');
-        $SQL->addWhereOpr('field_customer_id', $cuid);
-        $q = $SQL->get(dsn());
-
-        if ($DB->query($q, 'fetch') and ($row = $DB->fetch($q))) {
-            do {
-                $meta[] = $row['field_value'];
-            } while ($row = $DB->fetch($q));
+        if (HOOK_ENABLE) {
+            $hook = ACMS_Hook::singleton();
+            $hook->call('filterBlogFulltext', [&$blog, &$field, $bid]);
         }
 
-        $user = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $user)));
-        $meta = preg_replace('/\s+/u', ' ', strip_tags(implode(' ', $meta)));
+        $blogText = implode(' ', array_values($blog));
+        $metaText = implode(' ', array_map(function (array $values) {
+            return implode(' ', $values);
+        }, $field));
 
-        return $user . "\x0d\x0a\x0a\x0d" . $meta;
+        $fulltext = preg_replace('/\s+/u', ' ', strip_tags($blogText))
+        . "\x0d\x0a\x0a\x0d" . preg_replace('/\s+/u', ' ', strip_tags($metaText));
+        return $fulltext;
     }
 
     /**
@@ -778,41 +857,13 @@ class Helper
     }
 
     /**
-     * プラグインのフルテキスト保存
-     *
-     * @param string $type フルテキストのタイプ
-     * @param int $id
-     * @param string|null $fulltext
-     * @param int $targetBid
-     *
-     * @return void
-     */
-    public function savePluginFulltext($type, $id, $fulltext = null, $targetBid = BID)
-    {
-        $DB     = DB::singleton(dsn());
-        $SQL    = SQL::newDelete('fulltext_plugin');
-        $SQL->addWhereOpr('fulltext_key', $type);
-        $SQL->addWhereOpr('fulltext_id', $id);
-        $DB->query($SQL->get(dsn()), 'exec');
-
-        if (!empty($fulltext)) {
-            $SQL    = SQL::newInsert('fulltext_plugin');
-            $SQL->addInsert('fulltext_value', $fulltext);
-            $SQL->addInsert('fulltext_key', $type);
-            $SQL->addInsert('fulltext_id', $id);
-            $SQL->addInsert('fulltext_blog_id', $targetBid);
-            $DB->query($SQL->get(dsn()), 'exec');
-        }
-    }
-
-    /**
      * ファイルダウンロード
      *
      * @param string $path
      * @param string $fileName
      * @param string|boolean $extension // 指定すると、Content-Disposition: inline になります。
      * @param boolean $remove
-     * @return void
+     * @return never
      */
     public function download($path, $fileName, $extension = false, $remove = false)
     {
@@ -919,8 +970,10 @@ class Helper
      * @param string $type
      * @param int $id
      * @param int|null $rvid
+     * @param int|null $blogId
+     * @return void
      */
-    public function deleteField($type, $id, $rvid = null)
+    public function deleteField($type, $id, $rvid = null, $blogId = null)
     {
         $this->deleteFieldCache($type, $id, $rvid);
 
@@ -928,10 +981,16 @@ class Helper
             $sql = SQL::newDelete('field_rev');
             $sql->addWhereOpr('field_eid', $id);
             $sql->addWhereOpr('field_rev_id', $rvid);
+            if ($blogId !== null) {
+                $sql->addWhereOpr('field_blog_id', $blogId);
+            }
             DB::query($sql->get(dsn()), 'exec');
         } else {
             $sql = SQL::newDelete('field');
             $sql->addWhereOpr('field_' . $type, $id);
+            if ($blogId !== null) {
+                $sql->addWhereOpr('field_blog_id', $blogId);
+            }
             DB::query($sql->get(dsn()), 'exec');
         }
     }
@@ -1285,6 +1344,9 @@ class Helper
             $Field->addChild($fd, $this->extract($fd));
         }
 
+        // アップロード処理中の画像・ファイルを保存する変数
+        // アップロード処理中のファイルが誤って削除されることを防ぐために利用
+        $processingMediaFiles = [];
         foreach ($this->Post->listFields() as $metaFd) {
             //-----------
             // converter
@@ -1464,6 +1526,15 @@ class Helper
                         if (!!preg_match('/\.htaccess$/', $c['filename'])) {
                             continue;
                         }
+
+                        // アップロード処理中のファイルかどうか
+                        $isProcessing = false;
+                        foreach ($processingMediaFiles as $media) {
+                            if ($media['path'] === $ARCHIVES_DIR . $c['old']) {
+                                $isProcessing = true;
+                                break;
+                            }
+                        }
                         //---------------------
                         // セキュリティチェック
                         // リクエストされた削除ファイル名が怪しい場合に削除と上書きをスキップ
@@ -1492,7 +1563,7 @@ class Helper
                             && 'delete' == $c['edit']
                             && !empty($c['old'])
                             && $secretCheck
-                            && empty($tmpMedia)
+                            && !$isProcessing
                             && isExistsRuleModuleConfig()
                         ) {
                             if (!Entry::isNewVersion()) {
@@ -1521,10 +1592,9 @@ class Helper
                             //---------------------------
                             // delete ( 古いファイルの削除 )
                             if (
-                                1
-                                and !empty($c['old'])
-                                and empty($tmpMedia)
-                                and isExistsRuleModuleConfig()
+                                !empty($c['old']) &&
+                                !$isProcessing &&
+                                isExistsRuleModuleConfig()
                             ) {
                                 if (!Entry::isNewVersion()) {
                                     Image::deleteImageAllSize($ARCHIVES_DIR . normalSizeImagePath($c['old']));
@@ -1562,9 +1632,12 @@ class Helper
                             $normal     = $dirname . $basename;
                             $normalPath = $ARCHIVES_DIR . $normal;
 
-                            if (!Storage::exists($normalPath)) {
-                                Image::copyImage($tmp_name, $normalPath, $c['width'], $c['height'], $c['size'], $angle);
-                            }
+                            // ファイル名が重複している場合はファイル名を変更する
+                            $normalPath = Storage::uniqueFilePath($normalPath);
+                            $normal = mb_substr($normalPath, strlen($ARCHIVES_DIR));
+                            $basename = Storage::mbBasename($normalPath);
+
+                            Image::copyImage($tmp_name, $normalPath, $c['width'], $c['height'], $c['size'], $angle);
 
                             if ($xy = Storage::getImageSize($normalPath)) {
                                 $data[$fd . '@path']  = $normal;
@@ -1573,7 +1646,7 @@ class Helper
                                 $data[$fd . '@alt']   = $c['alt'];
                                 $data[$fd . '@fileSize'] = filesize($normalPath);
 
-                                $tmpMedia[] = [
+                                $processingMediaFiles[] = [
                                     'path'  => $normalPath,
                                 ];
                                 Entry::addUploadedFiles($normal); // 新規バージョンとして作成する時にファイルをCOPYするかの判定に利用
@@ -1594,7 +1667,7 @@ class Helper
                                     $data[$fd . '@largeAlt']  = $c['alt'];
                                     $data[$fd . '@largeFileSize']  = filesize($largePath);
 
-                                    $tmpMedia[] = [
+                                    $processingMediaFiles[] = [
                                         'path'  => $normalPath,
                                     ];
                                 }
@@ -1615,7 +1688,7 @@ class Helper
                                     $data[$fd . '@tinyAlt']   = $c['alt'];
                                     $data[$fd . '@tinyFileSize']  = filesize($tinyPath);
 
-                                    $tmpMedia[] = [
+                                    $processingMediaFiles[] = [
                                         'path'  => $normalPath,
                                     ];
                                 }
@@ -1645,7 +1718,7 @@ class Helper
                                     $data[$fd . '@squareAlt']   = $c['alt'];
                                     $data[$fd . '@squareFileSize']  = filesize($squarePath);
 
-                                    $tmpMedia[] = [
+                                    $processingMediaFiles[] = [
                                         'path'  => $normalPath,
                                     ];
                                 }
@@ -1858,6 +1931,15 @@ class Helper
                             continue;
                         }
 
+                        // アップロード処理中のファイルかどうか
+                        $isProcessing = false;
+                        foreach ($processingMediaFiles as $media) {
+                            if ($media['path'] === $ARCHIVES_DIR . $c['old']) {
+                                $isProcessing = true;
+                                break;
+                            }
+                        }
+
                         //---------------------
                         // シークレットチェック
                         $secretCheck = ( 1
@@ -1871,7 +1953,7 @@ class Helper
 
                         //----------------------------
                         // delete ( 指定削除 continue )
-                        if ('delete' === $c['edit'] && !empty($c['old']) && $secretCheck and empty($tmpMedia)) {
+                        if ('delete' === $c['edit'] && !empty($c['old']) && $secretCheck && !$isProcessing) {
                             if (!Entry::isNewVersion()) {
                                 Storage::remove($ARCHIVES_DIR . $c['old']);
                                 if (HOOK_ENABLE) {
@@ -1983,7 +2065,7 @@ class Helper
                             ) {
                                 //---------------------------
                                 // delete ( 古いファイルの削除 )
-                                if (!empty($c['old']) && empty($tmpMedia) && !Entry::isNewVersion()) {
+                                if (!empty($c['old']) && !$isProcessing && !Entry::isNewVersion()) {
                                     Storage::remove($ARCHIVES_DIR . $c['old']);
                                     if (HOOK_ENABLE) {
                                         $Hook = ACMS_Hook::singleton();
@@ -2003,7 +2085,7 @@ class Helper
 
                                 Storage::copy($tmp_name, $realpath);
 
-                                $tmpMedia[] = [
+                                $processingMediaFiles[] = [
                                     'path'  => $realpath,
                                 ];
 
@@ -2221,26 +2303,6 @@ class Helper
     }
 
     /**
-     * データが壊れたserializeデータをunserialize
-     *
-     * @link https://stackoverflow.com/questions/3148712/regex-code-to-fix-corrupt-serialized-php-data
-     * @param $txt
-     * @return string
-     */
-    public function safeUnSerialize($txt)
-    {
-        $unSerialized = @unserialize($txt);
-
-        //In case of failure let's try to repair it
-        if (!$unSerialized) {
-            $repairedSerialization = $this->fixSerialized($txt);
-            $unSerialized = @unserialize($repairedSerialization);
-        }
-
-        return $unSerialized;
-    }
-
-    /**
      * @param $data
      */
     public function responseJson($data)
@@ -2319,7 +2381,7 @@ class Helper
             if ($remoteAddr) {
                 $sql->addWhereOpr('lock_source_address', REMOTE_ADDR);
             }
-            DB::query($sql->get(dsn()), 'exec');
+            DB::query($sql->get(dsn()), 'exec'); // @phpstan-ignore-line
             return false;
         }
         $sql = SQL::newDelete('lock');
@@ -2327,12 +2389,12 @@ class Helper
         if ($remoteAddr) {
             $sql->addWhereOpr('lock_address', REMOTE_ADDR);
         }
-        DB::query($sql->get(dsn()), 'exec');
+        DB::query($sql->get(dsn()), 'exec'); // @phpstan-ignore-line
 
         // １ヶ月前のログは削除
         $sql = SQL::newDelete('lock_source');
         $sql->addWhereOpr('lock_source_datetime', date('Y-m-d H:i:s', REQUEST_TIME - 2764800), '<');
-        DB::query($sql->get(dsn()), 'exec');
+        DB::query($sql->get(dsn()), 'exec'); // @phpstan-ignore-line
 
         return true;
     }
@@ -2478,33 +2540,5 @@ class Helper
         finfo_close($finfo);
 
         return $mimeType;
-    }
-
-    /**
-     * @param $string
-     * @return string
-     */
-    protected function fixSerialized($string)
-    {
-        // securities
-        if (!preg_match('/^[aOs]:/', $string)) {
-            return $string;
-        }
-        if (@unserialize($string) !== false) {
-            return $string;
-        }
-        $string = preg_replace("%\n%", "", $string);
-        // doublequote exploding
-        $data = preg_replace('%";%', "µµµ", $string);
-        $tab = explode("µµµ", $data);
-        $new_data = '';
-        foreach ($tab as $line) {
-            $new_data .= preg_replace_callback('%\bs:(\d+):"(.*)%', function ($matches) {
-                $string = $matches[2];
-                $right_length = strlen($string); // yes, strlen even for UTF-8 characters, PHP wants the mem size, not the char count
-                return 's:' . $right_length . ':"' . $string . '";';
-            }, $line);
-        }
-        return $new_data;
     }
 }

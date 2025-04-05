@@ -76,7 +76,7 @@ abstract class Base
      *
      * @param string $sql
      * @param string $mode
-     * @return array|bool|resource|int|string
+     * @return mixed
      */
     abstract public function query($sql, $mode = 'row');
 
@@ -88,7 +88,7 @@ abstract class Base
      * }
      *
      * @param string $sql
-     * @return array | bool
+     * @return mixed
      */
     abstract public function fetch($sql = null, $reset = false);
 
@@ -204,7 +204,7 @@ abstract class Base
     {
         static $connections = [];
 
-        $id = sha1(serialize($dsn));
+        $id = md5('cache' . json_encode($dsn, JSON_UNESCAPED_UNICODE));
         if (!isset($connections[$id])) {
             $obj = new static();
             $obj->connect($dsn);

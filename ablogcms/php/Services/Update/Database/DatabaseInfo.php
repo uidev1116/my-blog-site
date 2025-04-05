@@ -162,15 +162,15 @@ class DatabaseInfo
      * @param string $method
      * @param string $tb
      * @param string $left
-     * @param array|null $def カラム定義
+     * @param array $def カラム定義
      * @param string $right
      * @return void
      */
-    protected function alterTable($method, $tb, $left, $def = null, $right = null)
+    protected function alterTable($method, $tb, $left, $def = [], $right = null)
     {
         $q = "ALTER TABLE `$tb`";
 
-        $def['Null'] = ($def['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
+        $def['Null'] = (isset($def['Null']) && $def['Null'] == 'NO') ? 'NOT NULL' : 'NULL';
         $def['Default'] = !empty($def['Default']) ? "default '" . $def['Default']  . "'" : null;
         $def['Extra'] = isset($def['Extra']) ? ' ' . $def['Extra'] : '';
 

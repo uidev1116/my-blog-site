@@ -31,7 +31,7 @@
               <div class="js-resize_to_window_height acms-admin-layout-scroll-area acms-admin-layout-sidebar acms-admin-bg-light-gray acms-admin-padding-none" data-offset="200">
                 <ul class="js-module_index_table js-incremental_search">
                   <!-- BEGIN module:loop -->
-                  <li class="search_element acms-admin-layout-sidebar-item js-layout_preview_module_id" data-mid="{mid}">
+                  <li class="search_element acms-admin-layout-sidebar-item js-layout_preview_module_id" data-mid="{mid}" data-tpl="<!-- BEGIN_IF [{mid}/eq/%{mid}] -->%{tpl}<!-- END_IF -->">
                     <div class="acms-admin-layout-sidebar-item-inner">
                       <div class="acms-admin-layout-sidebar-item-cell">
                         <div class="acms-admin-layout-sidebar-item-sub clearfix">
@@ -65,7 +65,13 @@
             <div class="acms-admin-col-8 acms-admin-padding-none">
               <div class="acms-admin-layout-scroll-area">
                 <script id="js-module_info_tpl" type="text/template">
-
+                  <% if ( module.mid ===  0  || module.mid === '') { %>
+                    <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">
+                      <span class="acms-admin-icon acms-admin-icon-news acms-admin-alert-icon-before" aria-hidden="true"></span>
+                      <!--T-->サイドバーからモジュールを選択すると、プレビューが表示されます<!--/T-->
+                    </p>
+                  <% } %>
+                  <% if ( module.mid >  0 ) { %>
                   <header>
                     <div class="acms-admin-module-title-sub clearfix">
                       <p class="acms-admin-margin-none acms-admin-float-left"><span class="acms-admin-label acms-admin-margin-right-small"><%- module.mid %></span><%- module.moduleID %></p>
@@ -91,24 +97,25 @@
                       <button class="js-acms_layout_edit_module acms-admin-btn-admin" data-mid="<%- module.mid %>"><!--T-->設定<!--/T--></button>
                     </div>
 
-                    <form class="acms-admin-form-inline" action="" method="post" enctype="multipart/form-data">
-                      <button class="js-layout_select_module_id acms-admin-btn-admin acms-admin-btn-admin-primary" data-mid="<%- module.mid %>" data-tpl="<%- module.template %>">選択する</button>
+                    <form id="module-template-form" class="acms-admin-form-inline" action="" method="post" enctype="multipart/form-data">
+                      <button type="submit" class="acms-admin-btn-admin acms-admin-btn-admin-primary">選択する</button>
+                      <input type="hidden" name="mid" value="<%- module.mid %>">
                     </form>
 
 
-                    <% if ( module.tpl_type === 'array' ) { %>
-                      <select name="template" class="js-acms_layout_select_template js-select2" data-mid="<%- module.mid %>">
-                        <option value="">標準</option><% _.each(module.tpl_list, function(tpl) { %>
-                        <option value="<%- tpl.tpl %>"<%- tpl.selected %>><%- tpl.label %></option><% }); %>
-                      </select>
-                      <% } else if ( module.tpl_type === 'fix' ) { %>
-                        <span class="acms-admin-layout-module-edit-tpl-type"><!--T-->固定テンプレート<!--/T-->（※<!--T-->テンプレートは変更できません<!--/T-->）</small></span>
-                      <% } %>
+                    <select name="template" class="js-acms_layout_select_template js-select2" data-mid="<%- module.mid %>" data-default-tpl="%{tpl}" form="module-template-form">
+                      <% _.each(module.tpl_list, function(tpl) { %>
+                      <option value="<%- tpl.tpl %>" <%- tpl.selected ? 'selected' : undefined %>>
+                        <%- tpl.label %>
+                      </option>
+                      <% }); %>
+                    </select>
                   </div>
                   <h3 class="acms-admin-admin-title2"><!--T-->プレビュー<!--/T--> (<!--T-->75%表示<!--/T-->)</h3>
                   <div class="acms-admin-layout-module-edit-inner acms-admin-padding-small">
                     <div style="transform: scale(0.75); transform-origin:0 0; width: 133.3%;"><%= module.preview %></div>
                   </div>
+                  <% } %>
                 </script>
                 <div id="js-module_info_box" class="acms-admin-padding-large">
                   <p class="acms-admin-alert acms-admin-alert-icon acms-admin-alert-info">

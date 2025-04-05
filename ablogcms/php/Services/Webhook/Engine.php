@@ -4,6 +4,7 @@ namespace Acms\Services\Webhook;
 
 use DB;
 use SQL;
+use HTTP;
 use ACMS_Filter;
 use Acms\Services\Facades\Logger;
 use Acms\Services\Facades\Common;
@@ -143,9 +144,12 @@ class Engine
      */
     protected function send($hook, $payload, $events)
     {
-        $url = $hook['webhook_url'];
+        $url = (string)$hook['webhook_url'];
         $ch = curl_init($url);
         try {
+            if ($ch === false) {
+                throw new RuntimeException('CURLの初期化に失敗しました。');
+            }
             if (empty($url)) {
                 throw new RuntimeException('空のURLでWebhookが実行されそうになりました。');
             }
@@ -175,6 +179,9 @@ class Engine
             curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
             curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS); // 使用できるプロトコルを限定（SSRF対策）
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+            Http::setCurlProxy($ch);
+
             $response = curl_exec($ch);
             if ($hook['webhook_history'] === 'on') {
                 $this->saveLog($ch, $response, $hook['webhook_id'], $hook['webhook_url'], $events, implode("\n", $headers), $data);
@@ -182,7 +189,9 @@ class Engine
         } catch (Exception $e) {
             Logger::warning($e->getMessage(), Common::exceptionArray($e, $hook));
         } finally {
-            curl_close($ch);
+            if ($ch !== false) {
+                curl_close($ch);
+            }
         }
     }
 

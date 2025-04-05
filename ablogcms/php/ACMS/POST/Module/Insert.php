@@ -1,5 +1,10 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Insert extends ACMS_POST_Module
 {
     public function post()
@@ -28,11 +33,8 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
         }
         $Module->setMethod('page', 'intOrGlobalVars');
 
-        if (roleAvailableUser()) {
-            $Module->setMethod('module', 'operative', roleAuthorization('module_edit', BID));
-        } else {
-            $Module->setMethod('module', 'operative', sessionWithAdministration());
-        }
+        $Module->setMethod('module', 'operative', Module::canCreate(BID));
+
 
         $Module->validate(new ACMS_Validator_Module());
         $this->fix($Module);
@@ -97,7 +99,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
                 $val    = 'ajax/module/edit.html';
             }
 
-            AcmsLogger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを作成しました', [
+            Logger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを作成しました', [
                 'mid' => $mid,
                 'module' => $Module->_aryField,
             ]);
@@ -114,7 +116,7 @@ class ACMS_POST_Module_Insert extends ACMS_POST_Module
         } else {
             $this->Post->set('validate', true);
 
-            AcmsLogger::info('モジュールの作成に失敗しました', [
+            Logger::info('モジュールの作成に失敗しました', [
                 'module' => $Module,
                 'field' => $Field,
             ]);

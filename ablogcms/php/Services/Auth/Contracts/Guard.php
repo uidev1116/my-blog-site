@@ -81,12 +81,12 @@ interface Guard
      * ログインしているユーザーが特定の管理ページで権限があるかチェック
      *
      * @param array{
-     *  bid?: int,
-     *  cid?: int,
-     *  rid?: int,
-     *  mid?: int,
-     *  scid?: int,
-     *  setid?: int
+     *  bid?: int|null,
+     *  cid?: int|null,
+     *  rid?: int|null,
+     *  mid?: int|null,
+     *  scid?: int|null,
+     *  setid?: int|null
      * } $ids
      *
      * @return bool

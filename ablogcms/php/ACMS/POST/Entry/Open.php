@@ -38,18 +38,17 @@ class ACMS_POST_Entry_Open extends ACMS_POST_Entry
             // キャッシュクリア予約
             Entry::updateCacheControl(ACMS_RAM::entryStartDatetime($entryId), ACMS_RAM::entryEndDatetime($entryId), ACMS_RAM::entryBlog($entryId), $entryId);
 
+            //------
+            // Hook
+            if (HOOK_ENABLE) {
+                $Hook = ACMS_Hook::singleton();
+                $Hook->call('saveEntry', [$entryId, null]);
+                Webhook::call(BID, 'entry', 'entry:opened', [$entryId, null]);
+            }
             $this->redirect(acmsLink([
                 'bid'   => BID,
                 'eid'   => $entryId,
             ]));
-        }
-
-        //------
-        // Hook
-        if (HOOK_ENABLE) {
-            $Hook = ACMS_Hook::singleton();
-            $Hook->call('saveEntry', [$entryId, 1]);
-            Webhook::call(BID, 'entry', 'entry:opened', [$entryId, null]);
         }
 
         return $this->Post;

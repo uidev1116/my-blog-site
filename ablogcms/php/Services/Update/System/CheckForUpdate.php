@@ -2,6 +2,7 @@
 
 namespace Acms\Services\Update\System;
 
+use HTTP;
 use Acms\Services\Facades\Storage;
 use Acms\Services\Facades\Common;
 use Acms\Services\Facades\Logger;
@@ -557,8 +558,11 @@ class CheckForUpdate
         curl_setopt($curl, CURLOPT_HTTPPROXYTUNNEL, 1);
         curl_setopt($curl, CURLOPT_TIMEOUT, 5);
 
+        Http::setCurlProxy($curl);
+
         $string = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
         curl_close($curl);
 
         if (empty($string) || $status !== 200) {

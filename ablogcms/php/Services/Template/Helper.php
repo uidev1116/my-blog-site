@@ -159,7 +159,7 @@ class Helper
      * @param string[]|string $block
      * @param string $prefix
      *
-     * @return array
+     * @return array<string, string|false>
      */
     public function buildDate($datetime, $Tpl, $block = [], $prefix = 'date#')
     {
@@ -571,7 +571,7 @@ class Helper
     }
 
     /**
-     * フルテキストのEagerLoading
+     * ユニットのEagerLoading
      *
      * @param int[] $entryIds
      * @return array
@@ -683,6 +683,8 @@ class Helper
      * @param int $eid
      * @param array $eagerLoadingData
      * @param string[] $blocks
+     *
+     * @return void
      */
     public function buildTag($tpl, $eid, $eagerLoadingData, $blocks = [])
     {
@@ -1412,7 +1414,7 @@ class Helper
             if (
                 1
                 && isset($data['values'])
-                && $values = acmsUnserialize($data['values'])
+                && $values = acmsDangerUnserialize($data['values'])
             ) {
                 if (is_array($values)) {
                     foreach ($values as $val) {
@@ -1448,7 +1450,7 @@ class Helper
         //------------
         // validator
         if (isset($data['validatorSet'])) {
-            $validatorSet   = acmsUnserialize($data['validatorSet']);
+            $validatorSet   = acmsDangerUnserialize($data['validatorSet']);
             if (is_array($validatorSet)) {
                 $validator      = $validatorSet['validator'];
                 $validator_val  = $validatorSet['validator-value'];
@@ -1491,12 +1493,12 @@ class Helper
      */
     public function spreadModule($moduleName, $moduleID, $moduleTpl, $onlyLayout = false)
     {
-        $tpl = 'include/module/template/' . $moduleName . '.html';
+        $tpl = 'include/module/template/' . $moduleName . '.html'; // 標準テンプレート
         if (!empty($moduleTpl)) {
-            $tpl = 'include/module/template/' . $moduleName . '/' . $moduleTpl;
+            $tpl = 'include/module/template/' . $moduleName . '/' . $moduleTpl; // 選択テンプレート
         } else {
             $modShort = preg_replace('/' . config('module_identifier_duplicate_suffix') . '.*/', '', $moduleID);
-            $def = 'include/module/template/' . $moduleName . '/' . $modShort . '.html';
+            $def = 'include/module/template/' . $moduleName . '/' . $modShort . '.html'; // 固定テンプレート
             if (findTemplate($def)) {
                 $tpl = $def;
             }
@@ -1520,10 +1522,10 @@ class Helper
 
                     if ($onlyLayout) {
                         if ($moduleName === 'Entry_Body') {
-                            $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
+                            $mTpl   = (string)preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
                             $mTpl   = build($mTpl, Field_Validation::singleton('post'));
                         } else {
-                            $mTpl   = preg_replace(
+                            $mTpl   = (string)preg_replace(
                                 '/<!--[\t 　]*(BEGIN|END)_MODULE+[\t 　]+([^\t 　]+)([^>]*?)[\t 　]*-->/',
                                 '',
                                 $mTpl
@@ -1531,10 +1533,10 @@ class Helper
                             $mTpl   = '<!-- BEGIN_MODULE ' . $moduleName . $opt . ' -->' . $mTpl . '<!-- END_MODULE ' . $moduleName . ' -->';
                         }
                     } elseif ($moduleName === 'Entry_Body') {
-                        $mTpl   = preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
+                        $mTpl   = (string)preg_replace('/<!--[\t 　]*BEGIN_MODULE[\t 　]+Entry_Body[^>]*?-->/', '<!-- BEGIN_MODULE Entry_Body' . $opt . ' -->', $mTpl);
                         $mTpl   = build($mTpl, Field_Validation::singleton('post'));
                     } else {
-                        $mTpl   = preg_replace(
+                        $mTpl   = (string)preg_replace(
                             '/<!--[\t 　]*(BEGIN|END)_MODULE+[\t 　]+([^\t 　]+)([^>]*?)[\t 　]*-->/',
                             '',
                             $mTpl

@@ -33,6 +33,13 @@ class ACMS_POST_Entry_Close extends ACMS_POST_Entry
 
         AcmsLogger::info('「' . ACMS_RAM::entryTitle(EID) . '」エントリーを非公開にしました');
 
+        //------
+        // Hook
+        if (HOOK_ENABLE) {
+            $Hook = ACMS_Hook::singleton();
+            $Hook->call('saveEntry', [$eid, null]);
+        }
+
         $this->redirect(acmsLink([
             'bid'   => BID,
             'eid'   => $eid,

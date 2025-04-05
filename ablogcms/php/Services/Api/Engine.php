@@ -49,6 +49,7 @@ class Engine
 
     /**
      * @param string $identifier
+     * @return never
      */
     public function get($identifier)
     {

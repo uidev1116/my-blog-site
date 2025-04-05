@@ -26,7 +26,7 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
             $formId     = $this->Post->get('form_id');
             $formStatus = $this->Post->get('form_status');
             $Form       =& $this->Post->getChild('form');
-            $Column     = acmsUnserialize($this->Post->get('column'));
+            $Column     = Entry::getTempUnitData();
         } else {
             $Form       = new Field();
             $Field      = new Field();
@@ -118,7 +118,6 @@ class ACMS_GET_Admin_Form2_Edit extends ACMS_GET_Admin_Entry
         //--------------
         // Form
         $vars   += $this->buildField($Form, $Tpl, $rootBlock);
-        $vars['column:takeover']  = base64_encode(gzdeflate(serialize($Column)));
 
         //--------
         // action

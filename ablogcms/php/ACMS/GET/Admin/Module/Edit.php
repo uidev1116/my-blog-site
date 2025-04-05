@@ -31,23 +31,19 @@ class ACMS_GET_Admin_Module_Edit extends ACMS_GET_Admin_Edit
 
     public function auth()
     {
-        if (roleAvailableUser()) {
-            if (roleAuthorization('module_edit', BID)) {
+        if (is_null($this->moduleId)) {
+            // モジュールを作成する場合
+            if (Module::canCreate(BID)) {
                 return true;
             }
-
-            if ($this->shortcutAuthorization()) {
-                return true;
-            }
-
             return false;
         }
-
-        if (sessionWithAdministration()) {
+        // モジュールを編集する場合
+        if (Module::canUpdate(BID)) {
             return true;
         }
 
-        if (!is_null($this->moduleId) && $this->shortcutAuthorization()) {
+        if ($this->shortcutAuthorization()) {
             return true;
         }
 

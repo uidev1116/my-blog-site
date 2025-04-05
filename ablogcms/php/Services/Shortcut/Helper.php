@@ -108,12 +108,12 @@ class Helper
      *
      * @param string $admin
      * @param array{
-     *  bid: int|null,
-     *  cid: int|null,
-     *  rid: int|null,
-     *  mid: int|null,
-     *  scid: int|null,
-     *  setid: int|null
+     *  bid?: int|null,
+     *  cid?: int|null,
+     *  rid?: int|null,
+     *  mid?: int|null,
+     *  scid?: int|null,
+     *  setid?: int|null
      * } $ids
      * @param int $blogId
      *
@@ -123,6 +123,7 @@ class Helper
     {
         $admin = str_replace('/', '_', $admin);
         $baseIds = array_combine($this->types, array_fill(0, count($this->types), null));
+        /** @var array{bid: int|null, cid: int|null, rid: int|null, mid: int|null, scid: int|null, setid: int|null} $ids */
         $ids = array_merge($baseIds, $ids);
         $key = $this->createShortcutKey($admin, $ids);
         $authorities = $this->getAuthorities();

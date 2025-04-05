@@ -2,6 +2,7 @@
 
 namespace Acms\Services\SocialLogin;
 
+use HTTP;
 use Acms\Services\Facades\Session;
 
 class Line
@@ -104,6 +105,8 @@ class Line
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        Http::setCurlProxy($ch);
+
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -129,6 +132,8 @@ class Line
         curl_setopt($ch, CURLOPT_URL, 'https://api.line.me/v2/profile');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        Http::setCurlProxy($ch);
 
         $response = curl_exec($ch);
         curl_close($ch);

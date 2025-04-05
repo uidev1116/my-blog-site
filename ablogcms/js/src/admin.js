@@ -116,12 +116,16 @@ ACMS.Ready(() => {
   ACMS.addListener('acmsAdminDelayedContents', () => {
     dispatchATableField(document);
   });
+  function dispatchATableUnit(context = document) {
+    const tables = context.querySelectorAll('.js-table-unit');
+    [].forEach.call(tables, (table) => {
+      dispatchAtable(table);
+    });
+  }
+  dispatchATableUnit(document);
   ACMS.addListener('acmsAddUnit', (event) => {
     if (event.obj.item && event.obj.item.querySelector) {
-      const tables = event.obj.item.querySelectorAll('.js-table-unit');
-      [].forEach.call(tables, (table) => {
-        dispatchAtable(table);
-      });
+      dispatchATableUnit(event.obj.item);
       dispatchATableField(event.obj.item);
     }
   });

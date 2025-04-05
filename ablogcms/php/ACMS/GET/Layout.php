@@ -1,11 +1,23 @@
 <?php
 
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Template as Tpl;
+
 class ACMS_GET_Layout extends ACMS_GET
 {
     private static $onlyLayout  = false;
     public $aryTypeLabel           = [];
 
-    function build($Doc = '', $parentID = 0, $parentHash = '', $colNum = 1)
+    /**
+     * レイアウトをビルドする
+     *
+     * @param string $Doc レイアウト
+     * @param int $parentID 親ID
+     * @param string $parentHash 親ハッシュ
+     * @param int $colNum 列数
+     * @return string ビルドされたレイアウト
+     */
+    public function build($Doc = '', $parentID = 0, $parentHash = '', $colNum = 1)
     {
         //---------
         // extract
@@ -61,7 +73,14 @@ class ACMS_GET_Layout extends ACMS_GET
         return $Doc;
     }
 
-    function getGridDataAry($parent, $col)
+    /**
+     * グリッドデータ配列を取得する
+     *
+     * @param int $parent 親ID
+     * @param int $col 列数
+     * @return array グリッドデータ配列
+     */
+    public function getGridDataAry($parent, $col)
     {
         static $Map;
 
@@ -100,7 +119,14 @@ class ACMS_GET_Layout extends ACMS_GET
         return [];
     }
 
-    function module($tpl, $layout)
+    /**
+     * モジュールを展開する
+     *
+     * @param string $tpl テンプレート
+     * @param array $layout レイアウト
+     * @return string 展開されたモジュール
+     */
+    public function module($tpl, $layout)
     {
         static $Map;
 
@@ -139,12 +165,25 @@ class ACMS_GET_Layout extends ACMS_GET
         return $tpl;
     }
 
-    function spreadModule($moduleName, $moduleID, $moduleTpl)
+    /**
+     * モジュールを展開する
+     *
+     * @param string $moduleName モジュール名
+     * @param string $moduleID モジュールID
+     * @param string $moduleTpl モジュールテンプレート
+     * @return string 展開されたモジュール
+     */
+    public function spreadModule($moduleName, $moduleID, $moduleTpl)
     {
         return Tpl::spreadModule($moduleName, $moduleID, $moduleTpl, (get_class($this) === 'ACMS_GET_Layout' && self::$onlyLayout));
     }
 
-    function srcUrl()
+    /**
+     * ソースURLを取得する
+     *
+     * @return string ソースURL
+     */
+    public function srcUrl()
     {
         $Get    = $this->Get;
         $query  = '';
@@ -165,7 +204,10 @@ class ACMS_GET_Layout extends ACMS_GET
         return $url;
     }
 
-    function get()
+    /**
+     * @inheritdoc
+     */
+    public function get()
     {
         $Tpl                = new Template($this->tpl, new ACMS_Corrector());
         $response           = '';
@@ -214,10 +256,16 @@ class ACMS_GET_Layout extends ACMS_GET
         return $response;
     }
 
+    /**
+     * ブロックをフォーマットする
+     *
+     * @param string &$mTpl モジュールテンプレート
+     * @param string $type ブロックタイプ
+     */
     static function formatBlock(&$mTpl, $type)
     {
         if ($type === 'dummy') {
-            $mTpl    = preg_replace(
+            $mTpl    = (string)preg_replace(
                 [
                     '/<!--[\t 　]*BEGIN[\t 　]+layout\#display[^>]*?-->.*<!--[\t 　]*END[\t 　]+layout\#display[^>]*?-->/is',
                     '/<!--[\t 　]*(BEGIN|END)[\t 　]+layout\#dummy[^>]*?-->/is',
@@ -229,7 +277,7 @@ class ACMS_GET_Layout extends ACMS_GET
                 $mTpl
             );
         } else {
-            $mTpl    = preg_replace(
+            $mTpl    = (string)preg_replace(
                 [
                     '/<!--[\t 　]*BEGIN[\t 　]+layout\#dummy[^>]*?-->.*<!--[\t 　]*END[\t 　]+layout\#dummy[^>]*?-->/is',
                     '/<!--[\t 　]*(BEGIN|END)[\t 　]+layout\#display[^>]*?-->/is',

@@ -1,18 +1,21 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Duplicate extends ACMS_POST_Module
 {
-    function post()
+    public function post()
     {
         $this->Post->setMethod('module', 'midIsNull', ($mid = idval($this->Get->get('mid'))));
-        $this->Post->setMethod('module', 'operative', sessionWithAdministration());
+        $this->Post->setMethod('module', 'operative', Module::canDuplicate(BID));
         $this->Post->validate();
 
         if ($this->Post->isValidAll()) {
             $new = $this->dup($mid);
 
             $module = loadModule($mid);
-            AcmsLogger::info('「' . $module->get('label') . '（' . $module->get('identifier') . '）」モジュールを複製しました', [
+            Logger::info('「' . $module->get('label') . '（' . $module->get('identifier') . '）」モジュールを複製しました', [
                 'sourceMID' => $mid,
                 'createdMID' => $new,
             ]);
@@ -32,7 +35,7 @@ class ACMS_POST_Module_Duplicate extends ACMS_POST_Module
             ]);
             $this->redirect($url);
         } else {
-            AcmsLogger::info('モジュールの複製に失敗しました', [
+            Logger::info('モジュールの複製に失敗しました', [
                 'mid' => $mid,
             ]);
         }

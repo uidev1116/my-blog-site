@@ -1,5 +1,11 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Application as App;
+use Acms\Services\Facades\Storage;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Export extends ACMS_POST_Config_Export
 {
     /**
@@ -30,16 +36,24 @@ class ACMS_POST_Module_Export extends ACMS_POST_Config_Export
             $this->putYaml();
 
             $module = loadModule($mid);
-            AcmsLogger::info('「' . $module->get('label') . '（' . $module->get('identifier') . '）」モジュールをエクスポートしました');
+            Logger::info('「' . $module->get('label') . '（' . $module->get('identifier') . '）」モジュールをエクスポートしました');
 
             $this->download();
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
             Storage::remove($this->destPath);
 
-            AcmsLogger::notice('モジュールのエクスポートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
+            Logger::notice('モジュールのエクスポートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
 
         return $this->Post;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function checkAuth()
+    {
+        return Module::canExport(BID);
     }
 }

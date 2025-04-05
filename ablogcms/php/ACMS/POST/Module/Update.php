@@ -1,5 +1,13 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Auth;
+use Acms\Services\Facades\Common;
+use Acms\Services\Facades\Config;
+use Acms\Services\Facades\Database as DB;
+use Acms\Services\Facades\Cache;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Update extends ACMS_POST_Module
 {
     /**
@@ -146,7 +154,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
 
             $this->Post->set('edit', 'update');
 
-            AcmsLogger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを更新しました', [
+            Logger::info('「' . $Module->get('label') . '（' . $Module->get('identifier') . '）」モジュールを更新しました', [
                 'mid' => $this->moduleId,
                 'rid' => $this->ruleId,
                 'module' => $Module->_aryField,
@@ -154,7 +162,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
         } else {
             $this->Post->set('validate', true);
 
-            AcmsLogger::info('モジュールの更新に失敗しました', [
+            Logger::info('モジュールの更新に失敗しました', [
                 'mid' => $this->moduleId,
                 'rid' => $this->ruleId,
                 'module' => $Module,
@@ -172,19 +180,7 @@ class ACMS_POST_Module_Update extends ACMS_POST_Module
      */
     protected function isOperable(): bool
     {
-        if (roleAvailableUser()) {
-            if (roleAuthorization('module_edit', BID)) {
-                return true;
-            }
-
-            if ($this->shortcutAuthorization()) {
-                return true;
-            }
-
-            return false;
-        }
-
-        if (sessionWithAdministration()) {
+        if (Module::canUpdate(BID)) {
             return true;
         }
 

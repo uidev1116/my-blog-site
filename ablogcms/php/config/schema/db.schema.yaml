@@ -3425,6 +3425,27 @@
     Key:
     Default:
     Extra:
+  sequence_current_salt:
+    Field: sequence_current_salt
+    Type: varchar(64)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  sequence_previous_salt:
+    Field: sequence_previous_salt
+    Type: varchar(64)
+    'Null': YES
+    Key:
+    Default:
+    Extra:
+  sequence_salt_updated_at:
+    Field: sequence_salt_updated_at
+    Type: datetime
+    'Null': YES
+    Key:
+    Default:
+    Extra:
   sequence_system_version:
     Field: sequence_system_version
     Type: varchar(32)

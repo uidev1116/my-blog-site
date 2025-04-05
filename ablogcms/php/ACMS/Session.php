@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @deprecated ACMS_Session is deprecated. Use Acms\Services\Facades\Session instead.
+ */
 class ACMS_Session
 {
     protected static $instance = [];

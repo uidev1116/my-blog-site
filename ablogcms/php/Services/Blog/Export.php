@@ -322,7 +322,7 @@ class Export extends ExportBase
     private function columnExtractMediaId(array $record): void
     {
         if (strncmp($record['column_type'], 'custom', 6) === 0) {
-            $data = acmsUnserialize($record['column_field_6']);
+            $data = acmsDangerUnserialize($record['column_field_6']);
             if ($data instanceof \Field) {
                 foreach ($data->listFields() as $fd) {
                     foreach ($data->getArray($fd, true) as $i => $val) {

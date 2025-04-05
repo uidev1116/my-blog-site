@@ -206,7 +206,7 @@ class Custom extends Model implements UnitListModule, ExportEntry
      */
     public function handleDuplicate(): void
     {
-        $field = acmsUnserialize($this->getField6());
+        $field = acmsDangerUnserialize($this->getField6());
         if (!($field instanceof Field)) {
             return;
         }
@@ -221,7 +221,7 @@ class Custom extends Model implements UnitListModule, ExportEntry
      */
     public function handleRemove(): void
     {
-        $field = acmsUnserialize($this->getField6());
+        $field = acmsDangerUnserialize($this->getField6());
         if (!($field instanceof Field)) {
             return;
         }
@@ -236,7 +236,7 @@ class Custom extends Model implements UnitListModule, ExportEntry
     public function getSearchText(): string
     {
         $text = '';
-        $field = acmsUnserialize($this->getField6());
+        $field = acmsDangerUnserialize($this->getField6());
 
         if (!($field instanceof Field)) {
             return '';
@@ -322,7 +322,7 @@ class Custom extends Model implements UnitListModule, ExportEntry
      */
     protected function unserializeField(): ?Field
     {
-        $field = acmsUnserialize($this->getField6());
+        $field = acmsDangerUnserialize($this->getField6());
         if (!$field instanceof Field) {
             return null;
         }

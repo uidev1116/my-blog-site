@@ -95,7 +95,7 @@ class Tfa
 
     /**
      * @param int $uid
-     * @return string | boolean
+     * @return string|false
      */
     public function getSecretKey($uid)
     {

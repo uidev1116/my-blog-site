@@ -1670,33 +1670,37 @@ pre .linenums li {
   background: #f2f2f5;
   border: 1px solid #d2d2db;
 }
-.acms-admin-table-container .acms-admin-table {
+.acms-admin-table-container > .acms-admin-table {
   border: none;
 }
-.acms-admin-table-container .acms-admin-table th {
+.acms-admin-table-container > .acms-admin-table > thead > tr > th,
+.acms-admin-table-container > .acms-admin-table > tbody > tr > th,
+.acms-admin-table-container > .acms-admin-table > tfoot > tr > th {
   vertical-align: inherit;
 }
 
-.acms-admin-unitbox .acms-admin-table-container tr,
-.acms-admin-unitbox .acms-admin-table-container th,
-.acms-admin-unitbox .acms-admin-table-container td {
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table {
+  border-spacing: 0;
+}
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr,
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > thead > tr,
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tfoot > tr,
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr > th,
+.acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr > td {
   border: none;
-}
-.acms-admin-unitbox .a-table th {
-  border: 1px dashed #a7a7aa;
-}
-.acms-admin-unitbox .a-table td {
-  border: 1px solid #ccc;
 }
 .acms-admin-unitbox i.acms-admin-icon-sort {
   margin-right: 4px;
 }
 @media screen and (max-width: 767.98px) {
-  .acms-admin-unitbox th,
-  .acms-admin-unitbox td {
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr,
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > thead > tr,
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tfoot > tr,
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr > th,
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr > td {
     display: block;
   }
-  .acms-admin-unitbox .acms-admin-table td.acms-admin-table-action {
+  .acms-admin-unitbox .acms-admin-table-container > .acms-admin-table > tbody > tr > td.acms-admin-table-action {
     width: auto;
     text-align: right;
   }

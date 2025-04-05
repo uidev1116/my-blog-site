@@ -1,5 +1,8 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Logger;
+
 class ACMS_POST_Module_Index_Status extends ACMS_POST
 {
     public function post()
@@ -21,7 +24,7 @@ class ACMS_POST_Module_Index_Status extends ACMS_POST
                      continue;
                 }
 
-                if (!$this->isOperable($moduleBlogId)) {
+                if (!Module::canUpdate($moduleBlogId)) {
                     continue;
                 }
 
@@ -32,11 +35,11 @@ class ACMS_POST_Module_Index_Status extends ACMS_POST
             }
             $this->Post->set('refreshed', 'refreshed');
 
-            AcmsLogger::info('選択したモジュールIDのステータスを「' . $status . '」に設定しました', [
+            Logger::info('選択したモジュールIDのステータスを「' . $status . '」に設定しました', [
                 'targetModules' => $targetModules,
             ]);
         } else {
-            AcmsLogger::info('選択したモジュールIDのステータス設定に失敗しました');
+            Logger::info('選択したモジュールIDのステータス設定に失敗しました');
         }
 
         return $this->Post;
@@ -79,23 +82,7 @@ class ACMS_POST_Module_Index_Status extends ACMS_POST
      */
     protected function isOperable(int $moduleBlogId = BID): bool
     {
-        if (enableApproval($moduleBlogId, CID)) {
-            if (sessionWithApprovalAdministrator($moduleBlogId, CID)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        if (roleAvailableUser()) {
-            if (roleAuthorization('module_edit', $moduleBlogId)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        if (sessionWithAdministration($moduleBlogId)) {
+        if (Module::canBulkStatusChange($moduleBlogId)) {
             return true;
         }
 

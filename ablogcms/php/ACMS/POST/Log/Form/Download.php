@@ -120,11 +120,11 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $aryFd    = [];
         while ($row = $DB->fetch($query)) {
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
-                $Field  = acmsUnserialize($row['log_form_data']);
-            } else {
-                $Field  = Common::safeUnSerialize($row['log_form_data']);
+                $Field = acmsDangerUnserialize($row['log_form_data']);
+                if ($Field instanceof Field) {
+                    $aryFd = array_unique(array_merge($aryFd, $Field->listFields()));
+                }
             }
-            $aryFd    = array_unique(array_merge($aryFd, $Field->listFields()));
         }
         $aryFd[] = 'log_form_datetime';
 
@@ -164,12 +164,14 @@ class ACMS_POST_Log_Form_Download extends ACMS_POST
         $csv = '"' . implode('","', $aryFd) . '"' . "\x0d\x0a";
 
         while ($row = $DB->fetch($query)) {
+            $Field = new Field();
             if (isset($row['log_form_version']) && intval($row['log_form_version']) === 1) {
-                $Field  = acmsUnserialize($row['log_form_data']);
-            } else {
-                $Field  = Common::safeUnSerialize($row['log_form_data']);
+                $data = acmsDangerUnserialize($row['log_form_data']);
+                if ($data instanceof Field) {
+                    $Field = $data;
+                    $Field->set('log_form_datetime', $row['log_form_datetime']);
+                }
             }
-            $Field->set('log_form_datetime', $row['log_form_datetime']);
 
             // @path類を処理
             foreach ($atPathAry as $atPath) {

@@ -38,6 +38,13 @@ class Helper
     protected $isNewVersion = false;
 
     /**
+     * 一時保存したユニットデータ
+     *
+     * @var array|null
+     */
+    protected $tempUnitData = null;
+
+    /**
      * サマリーの表示で使うユニットの範囲を取得
      * extractUnits 後に決定
      *
@@ -101,6 +108,27 @@ class Helper
     public function isNewVersion()
     {
         return $this->isNewVersion;
+    }
+
+    /**
+     * 一時的にユニットを保存
+     *
+     * @param array $data
+     * @return void
+     */
+    public function setTempUnitData(array $data): void
+    {
+        $this->tempUnitData = $data;
+    }
+
+    /**
+     * 一時ユニットデータを取得
+     *
+     * @return array|null
+     */
+    public function getTempUnitData(): ?array
+    {
+        return $this->tempUnitData;
     }
 
     /**
@@ -541,6 +569,8 @@ class Helper
      * @param string $cids
      * @param int $bid
      * @param int|null $rvid
+     *
+     * @return void
      */
     public function saveSubCategory($eid, $masterCid, $cids, $bid = BID, $rvid = null)
     {
@@ -654,7 +684,7 @@ class Helper
      * @param string $type
      * @param string $memo
      *
-     * @return int|false
+     * @return int|false 保存したリビジョンID
      */
     public function saveEntryRevision($eid, $rvid, $entryAry, $type = '', $memo = '')
     {

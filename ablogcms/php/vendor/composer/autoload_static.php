@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e
+class ComposerStaticInit4d1e67ee872c182574808c7735bb0f49
 {
     public static $files = array (
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
@@ -508,7 +508,6 @@ class ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e
         'Acms\\Services\\Facades\\Media' => __DIR__ . '/../../..' . '/php/Services/Facades/Media.php',
         'Acms\\Services\\Facades\\Module' => __DIR__ . '/../../..' . '/php/Services/Facades/Module.php',
         'Acms\\Services\\Facades\\Preview' => __DIR__ . '/../../..' . '/php/Services/Facades/Preview.php',
-        'Acms\\Services\\Facades\\React' => __DIR__ . '/../../..' . '/php/Services/Facades/React.php',
         'Acms\\Services\\Facades\\RichEditor' => __DIR__ . '/../../..' . '/php/Services/Facades/RichEditor.php',
         'Acms\\Services\\Facades\\Session' => __DIR__ . '/../../..' . '/php/Services/Facades/Session.php',
         'Acms\\Services\\Facades\\Storage' => __DIR__ . '/../../..' . '/php/Services/Facades/Storage.php',
@@ -2417,10 +2416,10 @@ class ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit8d49318f6cb26afa00ff1d23cf550a4e::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4d1e67ee872c182574808c7735bb0f49::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4d1e67ee872c182574808c7735bb0f49::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4d1e67ee872c182574808c7735bb0f49::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4d1e67ee872c182574808c7735bb0f49::$classMap;
 
         }, null, ClassLoader::class);
     }

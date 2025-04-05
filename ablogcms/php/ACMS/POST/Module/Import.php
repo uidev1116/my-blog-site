@@ -1,5 +1,11 @@
 <?php
 
+use Acms\Services\Facades\Module;
+use Acms\Services\Facades\Logger;
+use Acms\Services\Facades\Application as App;
+use Acms\Services\Facades\Config;
+use Acms\Services\Facades\Common;
+
 class ACMS_POST_Module_Import extends ACMS_POST
 {
     /**
@@ -14,19 +20,20 @@ class ACMS_POST_Module_Import extends ACMS_POST
         }
         try {
             $import = App::make('config.import.module');
+            assert($import instanceof \Acms\Services\Config\ModuleImport);
             $yaml = Config::yamlLoad($_FILES['file']['tmp_name']);
 
             $import->run(BID, $yaml);
             $this->Post->set('notice', $import->getFailedContents());
             $this->Post->set('import', 'success');
 
-            AcmsLogger::info('モジュールをインポートしました', [
+            Logger::info('モジュールをインポートしました', [
                 'data' => $yaml,
             ]);
         } catch (\Exception $e) {
             $this->addError($e->getMessage());
 
-            AcmsLogger::notice('モジュールのインポートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
+            Logger::notice('モジュールのインポートに失敗しました。' . $e->getMessage(), Common::exceptionArray($e));
         }
         return $this->Post;
     }
@@ -38,7 +45,7 @@ class ACMS_POST_Module_Import extends ACMS_POST
      */
     private function checkAuth()
     {
-        if (!sessionWithAdministration()) {
+        if (!Module::canImport(BID)) {
             return false;
         }
         if (empty($_FILES['file']['tmp_name'])) {

@@ -24,6 +24,9 @@ class ACMS_GET_Member_Tfa_Check extends ACMS_GET_Member_Signup
         if (!SUID || !Tfa::isAvailable()) {
             return;
         }
+        if (UID && SUID !== UID) {
+            return;
+        }
         $vars = [];
 
         if ($secret = Tfa::getSecretKey(SUID)) {

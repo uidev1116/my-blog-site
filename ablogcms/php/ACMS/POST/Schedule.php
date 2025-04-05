@@ -34,7 +34,7 @@ class ACMS_POST_Schedule extends ACMS_POST
         for ($i = 1; $i < $limit; $i++) {
             $schedules[$i] = $_sche[$i]->_aryField;
         }
-        $sche  = serialize($schedules);
+        $sche  = acmsSerialize($schedules);
 
         $sField = [];
         for ($i = 1; $i < $limit; $i++) {
@@ -44,7 +44,7 @@ class ACMS_POST_Schedule extends ACMS_POST
                 $sField[$i]->setField($key, $val);
             }
         }
-        $sfds = serialize($sField);
+        $sfds = acmsSerialize($sField);
 
         return true;
     }

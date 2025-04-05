@@ -24,11 +24,12 @@ class ACMS_GET_Admin_Form_Edit extends ACMS_GET_Admin_Edit
             $SQL    = SQL::newSelect('form');
             $SQL->addWhereOpr('form_id', $formId);
             if ($row = $DB->query($SQL->get(dsn()), 'row')) {
+                $formData = acmsDangerUnserialize($row['form_data']);
                 $Form->set('code', $row['form_code']);
                 $Form->set('name', $row['form_name']);
                 $Form->set('scope', $row['form_scope']);
                 $Form->set('log', $row['form_log']);
-                $Form->overload(unserialize($row['form_data']), true);
+                $Form->overload($formData, true);
             }
         }
 

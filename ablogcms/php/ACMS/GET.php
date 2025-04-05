@@ -436,51 +436,6 @@ class ACMS_GET
      * ToDo: deplicated mehod Ver. 2.7.0
      * 互換性のためpublic宣言
      * @deprecated
-     * @param array $data
-     * @param Template &$Tpl
-     * @param string[]|string $block
-     *
-     * @return array
-     */
-    public function buildInputTextValue($data, &$Tpl, $block = [])
-    {
-        return Tpl::buildInputTextValue($data, $Tpl, $block);
-    }
-
-    /**
-     * ToDo: deplicated mehod Ver. 2.7.0
-     * 互換性のためpublic宣言
-     * @deprecated
-     * @param array $data
-     * @param Template &$Tpl
-     * @param string[]|string $block
-     *
-     * @return array
-     */
-    public function buildInputCheckboxChecked($data, &$Tpl, $block = [])
-    {
-        return Tpl::buildInputCheckboxChecked($data, $Tpl, $block);
-    }
-
-    /**
-     * ToDo: deplicated mehod Ver. 2.7.0
-     * 互換性のためpublic宣言
-     * @deprecated
-     * @param array $data
-     * @param Template &$Tpl
-     * @param string[]|string $block
-     *
-     * @return array
-     */
-    public function buildSelectSelected($data, &$Tpl, $block = [])
-    {
-        return Tpl::buildSelectSelected($data, $Tpl, $block);
-    }
-
-    /**
-     * ToDo: deplicated mehod Ver. 2.7.0
-     * 互換性のためpublic宣言
-     * @deprecated
      * @param int $page ページ数
      * @param int $limit 1ページの件数
      * @param int $amount 総数
@@ -519,11 +474,11 @@ class ACMS_GET
      * @param Template $Tpl
      * @param int $eid
      *
-     * @return mixed
+     * @return void
      */
     public function buildTag(&$Tpl, $eid)
     {
-        return Tpl::buildTag($Tpl, $eid);
+        Tpl::buildTag($Tpl, $eid);
     }
 
     /**
@@ -550,11 +505,11 @@ class ACMS_GET
      * @param int[] $eids
      * @param string[]|string $block
      *
-     * @return mixed
+     * @return void
      */
     public function buildRelatedEntries(&$Tpl, $eids = [], $block = [])
     {
-        return Tpl::buildRelatedEntries($Tpl, $eids, $block, $this->start, $this->end);
+        Tpl::buildRelatedEntries($Tpl, $eids, $block, $this->start, $this->end);
     }
 
     /**
@@ -569,10 +524,10 @@ class ACMS_GET
      * @param array $extraVars
      * @param array $eagerLoadingData
      *
-     * @return mixed
+     * @return void
      */
     public function buildSummary(&$Tpl, $row, $count, $gluePoint, $config, $extraVars = [], $eagerLoadingData = [])
     {
-        return Tpl::buildSummary($Tpl, $row, $count, $gluePoint, $config, $extraVars, $this->page, $eagerLoadingData);
+        Tpl::buildSummary($Tpl, $row, $count, $gluePoint, $config, $extraVars, $this->page, $eagerLoadingData);
     }
 }

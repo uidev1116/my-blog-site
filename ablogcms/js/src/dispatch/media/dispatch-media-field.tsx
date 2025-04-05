@@ -117,7 +117,8 @@ export default function dispatchMediaField(context: Element | Document = documen
     const [dropAreaState, setDropAreaState] = useState<DropAreaState>({
       mid: inputs.length > 0 ? inputs[0].value : '',
       thumbnail,
-      mediaType: thumbnailType || type, // thumbnailTypeが未指定の場合でも動作するようにする
+      // カスタムフィールドメーカーの不具合で、thubmnailType が未指定かつ、mediaTypeがallの場合があるため、その場合はimageとして扱うことで互換性を保つ
+      mediaType: thumbnailType || (type === 'all' ? 'image' : type), // thumbnailTypeが未指定の場合でも動作するようにする
     } as DropAreaState);
 
     useEffect(() => {

@@ -40,6 +40,8 @@ class Download
 
     /**
      * ファイルダウンロード
+     *
+     * @return never
      */
     public function download()
     {
@@ -195,7 +197,7 @@ class Download
         $db->query($q, 'fetch');
 
         while ($unit = $db->fetch($q)) {
-            $field = acmsUnserialize($unit['column_field_6']);
+            $field = acmsDangerUnserialize($unit['column_field_6']);
             if (empty($field)) {
                 continue;
             }

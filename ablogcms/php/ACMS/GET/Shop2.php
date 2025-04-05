@@ -157,7 +157,7 @@ class ACMS_GET_Shop2 extends ACMS_GET
         $this->session->save();
 
         if (!!ACMS_SID) {
-            $CART   = serialize($CART);
+            $CART   = acmsSerialize($CART);
             $DB     = DB::singleton(dsn());
 
             $SQL    = SQL::newDelete('shop_cart');
@@ -181,7 +181,7 @@ class ACMS_GET_Shop2 extends ACMS_GET
         $SQL->addWhereOpr('cart_session_id', $sid);
         $SQL->addWhereOpr('cart_blog_id', $this->bid);
         $DATA   = $DB->query($SQL->get(dsn()), 'row');
-        return @unserialize($DATA['cart_data']);
+        return acmsUnserialize($DATA['cart_data']);
     }
 
     function screenTrans($page = null, $step = null)

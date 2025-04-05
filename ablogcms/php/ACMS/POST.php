@@ -418,15 +418,9 @@ class ACMS_POST
      *   additional_headers?: string
      * } $argConfig
      *
-     * @return array{
-     *   smtp-host: string,
-     *   smtp-port: string,
-     *   smtp-user: string,
-     *   smtp-pass: string,
-     *   mail_from: string,
-     *   sendmail_path: string,
-     *   additional_headers: string
-     * }
+     * @return non-empty-array<'additional_headers'|'mail_from'|'sendmail_path'|'smtp-google'|'smtp-google-user'|'smtp-host'|'smtp-pass'|'smtp-port'|'smtp-user',
+     *   string
+     * >
      */
     public function mailConfig($argConfig = [])
     {
@@ -489,17 +483,6 @@ class ACMS_POST
     public function loadBlogFulltext($bid)
     {
         return Common::loadBlogFulltext($bid);
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     * @deprecated
-     * @param int $cuid
-     * @return string
-     */
-    public function loadPluginFulltext($cuid)
-    {
-        return Common::loadPluginFulltext($cuid);
     }
 
     /**
@@ -576,21 +559,6 @@ class ACMS_POST
     public function saveFulltext($type, $id, $fulltext = null)
     {
         Common::saveFulltext($type, $id, $fulltext);
-        return true;
-    }
-
-    /**
-     * ToDo: deprecated method 2.7.0
-     * @deprecated
-     * @param string $type フルテキストのタイプ
-     * @param int $id
-     * @param string|null $fulltext
-     *
-     * @return bool
-     */
-    public function savePluginFulltext($type, $id, $fulltext = null)
-    {
-        Common::savePluginFulltext($type, $id, $fulltext);
         return true;
     }
 

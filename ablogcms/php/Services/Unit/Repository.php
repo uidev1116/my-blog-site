@@ -279,9 +279,6 @@ class Repository
      */
     public function extractUnits(?int $summaryRange, bool $removeOld = true, bool $isDirectEdit = false): array
     {
-        if (!empty($_POST['column_object'])) {
-            return unserialize(gzinflate(base64_decode($_POST['column_object']))); // @phpstan-ignore-line
-        }
         $units = [];
         $overCount = 0;
         $types = $_POST['type'] ?? null;
@@ -378,13 +375,14 @@ class Repository
      * @param int $eid
      * @param int $newEid
      * @peram int|null $rvid
+     * @peram int|null $newRvid
      * @return array
      */
-    public function duplicateUnits(int $eid, int $newEid, ?int $rvid = null): array
+    public function duplicateUnits(int $eid, int $newEid, ?int $rvid = null, ?int $newRvid = null): array
     {
         /** @var \Acms\Services\Unit\Contracts\Model[] $units */
         $units = $this->loadUnits($eid, $rvid);
-        $isRevision = $rvid && $rvid > 0;
+        $isRevision = $newRvid && $newRvid > 0;
         $idMappingTable = [];
 
         foreach ($units as $unit) {
@@ -394,7 +392,7 @@ class Repository
             $unit->setId($newId);
             $unit->setEntryId($newEid);
             if ($isRevision) {
-                $unit->setRevId($rvid);
+                $unit->setRevId($newRvid);
             }
             $unit->handleDuplicate();
             $unit->insertDataTrait($unit, $isRevision);

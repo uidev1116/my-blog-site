@@ -9,10 +9,12 @@ class ACMS_GET_Member_Update_Tfa extends ACMS_GET_Member
      */
     protected function init(): void
     {
-        if (!SUID) {
+        if (!SUID) { // @phpstan-ignore-line
             page404();
         }
-        /* @phpstan-ignore-next-line */
+        if (UID && UID !== SUID) { // @phpstan-ignore-line
+            page404();
+        }
         if (!Tfa::isAvailable()) {
             page404();
         }

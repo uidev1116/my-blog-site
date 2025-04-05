@@ -291,7 +291,7 @@ class ACMS_GET_Shop2_Cart_List extends ACMS_GET_Shop2
             $data = $unit->explodeUnitData($unit->getField1());
             $mid = $data[0] ?? $data;
             $media = Media::getMedia($mid);
-            $path = MEDIA_LIBRARY_DIR . $media['media_path'];
+            $path = MEDIA_LIBRARY_DIR . $media['path'];
         }
         /**
          * if already deleted unit. when return false.

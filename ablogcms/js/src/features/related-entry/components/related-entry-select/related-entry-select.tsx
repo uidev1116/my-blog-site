@@ -58,6 +58,7 @@ const RelatedEntrySelect = (
       closeMenuOnScroll={false}
       options={filteredOptions}
       placeholder={ACMS.i18n('related_entry.placeholder')}
+      filterOption={null}
       noOptionsMessage={() =>
         keyword ? ACMS.i18n('related_entry.no_options_message') : ACMS.i18n('related_entry.type_to_search')
       }

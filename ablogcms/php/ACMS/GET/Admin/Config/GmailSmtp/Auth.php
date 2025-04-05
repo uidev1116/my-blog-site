@@ -20,7 +20,7 @@ class ACMS_GET_Admin_Config_GmailSmtp_Auth extends ACMS_GET
             $api->init(BID, $setid);
             $client = $api->getClient();
             $authorized = 'false';
-            if ($client->getAccessToken() && !$client->isAccessTokenExpired()) {
+            if ($client->getAccessToken() && $client->getRefreshToken() && !$client->isAccessTokenExpired()) {
                 $authorized = 'true';
             }
             $Tpl->add(null, [

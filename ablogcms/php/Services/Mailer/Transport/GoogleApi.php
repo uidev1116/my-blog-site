@@ -90,18 +90,23 @@ class GoogleApi
 
         $this->client->setRedirectUri($redirect_uri);
         $accessToken = json_decode($this->config->get($this->accessTokenConfigKey), true);
+
         if ($accessToken) {
             // AcmsLogger::debug('アクセストークンがDBに見つかりました');
             $this->client->setAccessToken($accessToken);
             if ($this->client->isAccessTokenExpired()) {
-                // AcmsLogger::debug('アクセストークンが期限切れ');
-                $refreshToken = $this->client->getRefreshToken();
-                // AcmsLogger::debug('リフレッシュトークンを取得', [
-                //     'refreshToken' => $refreshToken,
-                // ]);
                 try {
+                    // AcmsLogger::debug('アクセストークンが期限切れ');
+                    $refreshToken = $this->client->getRefreshToken();
+                    if (!$refreshToken) {
+                        throw new RuntimeException('リフレッシュトークンが取得できません。再認証が必要です。');
+                    }
+                    // AcmsLogger::debug('リフレッシュトークンを取得', [
+                    //     'refreshToken' => $re                freshToken,
+                    // ]);
                     $this->client->refreshToken($refreshToken);
                     $accessToken = $this->client->getAccessToken();
+                    $accessToken['refresh_token'] = $refreshToken; // approval_prompt=force だと、初回時のみしかリフレッシュトークンが取得できないため、再設定する
                     // AcmsLogger::debug('リフレッシュトークンからアクセストークンを取得', [
                     //     'accessToken' => $accessToken,
                     // ]);
@@ -111,7 +116,6 @@ class GoogleApi
                         'Gmail API のアクセストークンの更新に失敗しました。',
                         Common::exceptionArray($e)
                     );
-                    $this->updateAccessToken('');
                 }
             }
         }

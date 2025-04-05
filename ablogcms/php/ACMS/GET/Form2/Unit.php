@@ -50,7 +50,7 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
                 if (
                     1
                     && isset($data['values'])
-                    && $values = acmsUnserialize($data['values'])
+                    && $values = acmsDangerUnserialize($data['values'])
                 ) {
                     if (is_array($values)) {
                         foreach ($values as $i => $val) {
@@ -70,7 +70,7 @@ class ACMS_GET_Form2_Unit extends ACMS_GET
 
             //------------
             // validator
-            $validatorSet   = acmsUnserialize($data['validatorSet']);
+            $validatorSet   = acmsDangerUnserialize($data['validatorSet']);
 
             if (is_array($validatorSet) && isset($validatorSet['validator'])) {
                 $valid          = $validatorSet['validator'];

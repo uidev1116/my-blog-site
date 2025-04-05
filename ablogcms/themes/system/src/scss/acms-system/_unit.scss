@@ -18,31 +18,27 @@
   border: 1px solid global.$edit-entry-bg-color-dark;
 
   // テーブル
-  .acms-table {
+  > .acms-table {
     border: none;
 
-    th {
+    > thead > tr > th,
+    > tbody > tr > th,
+    > tfoot > tr > th {
       vertical-align: inherit;
     }
   }
 }
 
 .acms-unitbox {
-  .acms-table-container {
-    tr,
-    th,
-    td {
+  .acms-table-container > .acms-table {
+    border-spacing: 0;
+
+    > tbody > tr,
+    > thead > tr,
+    > tfoot > tr,
+    > tbody > tr > th,
+    > tbody > tr > td {
       border: none;
-    }
-  }
-
-  .a-table {
-    th {
-      border: 1px dashed #a7a7aa;
-    }
-
-    td {
-      border: 1px solid global.$acms-color-gray60;
     }
   }
 
@@ -51,13 +47,18 @@
   }
 
   @media screen and (max-width: global.$breakpoint-md-max) {
-    th,
-    td {
-      display: block;
+    .acms-table-container > .acms-table {
+      > tbody > tr,
+      > thead > tr,
+      > tfoot > tr,
+      > tbody > tr > th,
+      > tbody > tr > td {
+        display: block;
+      }
     }
 
     // 削除ボタン
-    .acms-table td.acms-table-action {
+    .acms-table-container > .acms-table > tbody > tr > td.acms-table-action {
       width: auto;
       text-align: right;
     }

@@ -469,7 +469,7 @@ class Helper
     /**
      * 一般サインインできる権限を取得
      *
-     * @return array
+     * @return string[]
      */
     public function getSinginAuth()
     {
@@ -482,7 +482,7 @@ class Helper
     /**
      * 管理ログインできる権限を取得
      *
-     * @return array
+     * @return string[]
      */
     public function getAdminLoginAuth()
     {
